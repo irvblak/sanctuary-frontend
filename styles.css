@@ -1,0 +1,287 @@
+/* Basic reset */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f4f6fb;
+  color: #1f2933;
+  line-height: 1.6;
+}
+
+/* Layout helpers */
+.section {
+  padding: 2.5rem 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+h1, h2, h3 {
+  color: #102a43;
+  margin-top: 0;
+}
+
+p {
+  margin: 0.25rem 0 0.75rem;
+}
+
+/* Header & navigation */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: #1f6feb;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.logo-mark {
+  font-size: 1.4rem;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.nav a:hover,
+.nav a:focus {
+  text-decoration: underline;
+}
+
+/* Hero section */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-text p {
+  font-size: 1.05rem;
+}
+
+.hero-image {
+  display: flex;
+  justify-content: center;
+}
+
+.image-placeholder {
+  border-radius: 12px;
+  border: 2px dashed #9fb3c8;
+  background: #e4edf7;
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #52606d;
+}
+
+.small-note {
+  font-size: 0.85rem;
+  color: #62748a;
+}
+
+/* Events layout */
+.events-layout {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 800px) {
+  .events-layout {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.events-table th,
+.events-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #d9e2ec;
+}
+
+.events-table thead {
+  background: #e0ebff;
+}
+
+.events-form {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+
+/* Forms */
+label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.4rem 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 6px;
+  border: 1px solid #cbd2d9;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #1f6feb;
+  outline-offset: 1px;
+  border-color: #1f6feb;
+}
+
+/* Buttons */
+.button {
+  display: inline-block;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.button.primary {
+  background: #1f6feb;
+  color: white;
+}
+
+.button.primary:hover,
+.button.primary:focus {
+  background: #195bcc;
+}
+
+.button.secondary {
+  background: #e4edf7;
+  color: #102a43;
+}
+
+.button.secondary:hover,
+.button.secondary:focus {
+  background: #d0e2ff;
+}
+
+/* Payments card */
+.card {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+  max-width: 500px;
+}
+
+/* Chat section */
+.chat-card {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+
+.chat-messages {
+  border: 1px solid #cbd2d9;
+  border-radius: 8px;
+  padding: 0.75rem;
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
+  background: #f9fbff;
+  font-size: 0.95rem;
+}
+
+.chat-message {
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  background: white;
+}
+
+.chat-label {
+  display: block;
+}
+
+.chat-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chat-form input[type="text"] {
+  flex: 1;
+}
+
+/* Contact layout */
+.contact-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Messages */
+.form-message {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Footer */
+.site-footer {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  background: #1f2933;
+  color: #d9e2ec;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .nav a {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+

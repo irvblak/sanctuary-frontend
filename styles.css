@@ -1,5 +1,7 @@
 body {
-  background-color: yellow !important;
+  background-color: #E9F5E1;  /* pastel green */
+  color: #001F3F;             /* navy text */
+  font-family: Arial, sans-serif;
 }
 
 body {

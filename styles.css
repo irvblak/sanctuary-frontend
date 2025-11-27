@@ -12,7 +12,7 @@ body, .section, p, div, span, td, th, li, input, label, select {
   box-sizing: border-box;
 }
 p, li, td, th, label, input, select, textarea, table, div, span {
-  color: #001F3F !important;
+  color: #003366 !important;
 }
 /* Layout helpers */
 .section {

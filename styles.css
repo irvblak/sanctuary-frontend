@@ -7,6 +7,10 @@ body {
 * {
   box-sizing: border-box;
 }
+p, li, td, th, label, input, select, textarea, table, div, span {
+  color: #001F3F !important;
+}
+
 /* Layout helpers */
 .section {
   padding: 2.5rem 1.5rem;

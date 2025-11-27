@@ -1,10 +1,10 @@
 body {
   background-color: #E9F5E1;  /* pastel green */
-  color: #003366;             /* navy text */
+  color: #1D4F91;             /* french navy text */
   font-family: Arial, sans-serif;
 }
 body, .section, p, div, span, td, th, li, input, label, select {
-  color: #003366  !important;
+  color: #1D4F91  !important;
 }
 
 /* Basic reset */
@@ -12,7 +12,7 @@ body, .section, p, div, span, td, th, li, input, label, select {
   box-sizing: border-box;
 }
 p, li, td, th, label, input, select, textarea, table, div, span {
-  color: #003366 !important;
+  color: #1D4F91 !important;
 }
 /* Layout helpers */
 .section {
@@ -22,7 +22,7 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 }
 
 h1, h2, h3 {
-  color: #102a43;
+  color: #1D4F91;
   margin-top: 0;
 }
 

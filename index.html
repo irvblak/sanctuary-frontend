@@ -1,219 +1,29 @@
-<!DOCTYPE html> html
+
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Sanctuary Club</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanctuary Club</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Simple top bar with logo and navigation -->
-  <header class="site-header">
-    <div class="logo">
-      <!-- This is your logo text – later we can swap this for a real image -->
-      <span class="logo-mark">🏡</span>
-      <span class="logo-text">The Sanctuary Club</span>
-    </div>
-    <nav class="nav">
-      <a href="#home">Home</a>
-      <a href="#events">Events diary</a>
-      <a href="#payments">Payments</a>
-      <a href="#chat">Club chat</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
+    <header class="hero">
+        <img src="assets/clubhouse.jpg" alt="Sanctuary Clubhouse" class="hero-img">
+        <h1 class="title">The Sanctuary Club</h1>
+        <p class="subtitle">Community • Activities • Events</p>
+    </header>
 
-  <main>
-    <!-- HERO / INTRO SECTION -->
-    <section id="home" class="section hero">
-      <div class="hero-text">
-        <h1 class="hero-title">The Sanctuary Club</h1>
-        <p>
-          A friendly social club for all residents of our community;
-          based in the clubhouse with excellent activity, leisure, entertainment and function facilities.
-        </p>
-        <p>
-          Browse upcoming events, register your interest, and (later) pay
-          securely online through our club account.
-        </p>
-        <a href="#events" class="button primary">View events diary</a>
-      </div>
-      <div class="hero-image">
-        
-        <img src="ClubhousePhoto.jpg" alt="Clubhouse Photo" width=400">
-        </div>
-      </div>
-    </section>
+    <main>
+        <section id="events">
+            <h2>Upcoming Events</h2>
+            <div id="events-list">
+                <!-- Populated by script.js -->
+            </div>
+        </section>
+    </main>
 
-    <!-- EVENTS DIARY SECTION -->
-    <section id="events" class="section">
-      <h2>Events diary</h2>
-      <p>
-        Here is a sample diary. We can later connect this to your live backend
-        so you can add and edit events online.
-      </p>
-
-      <div class="events-layout">
-        <div class="events-list">
-          <table class="events-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Event</th>
-                <th>Location</th>
-                <th>Cost</th>
-              </tr>
-            </thead>
-            <tbody id="events-table-body">
-              <!-- These are example events for now -->
-              <tr>
-                <td>Mon 8 Dec</td>
-                <td>Morning Walk &amp; Coffee</td>
-                <td>Clubhouse lounge</td>
-                <td>£0</td>
-              </tr>
-              <tr>
-                <td>Thu 11 Dec</td>
-                <td>Coach trip to seaside</td>
-                <td>Depart from main gate</td>
-                <td>£20</td>
-              </tr>
-              <tr>
-                <td>Sat 20 Dec</td>
-                <td>Clubhouse Christmas Social</td>
-                <td>Main function room</td>
-                <td>£10</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Simple “register interest” form -->
-        <div class="events-form">
-          <h3>Register your interest</h3>
-          <p class="small-note">
-            This form is a placeholder. Later it can send details to your live backend.
-          </p>
-          <form id="event-signup-form">
-            <label>
-              Your name
-              <input type="text" name="name" required />
-            </label>
-
-            <label>
-              Email address
-              <input type="email" name="email" required />
-            </label>
-
-            <label>
-              Event
-              <select name="event">
-                <option>Morning Walk &amp; Coffee</option>
-                <option>Coach trip to seaside</option>
-                <option>Clubhouse Christmas Social</option>
-              </select>
-            </label>
-
-            <button type="submit" class="button primary">Register interest</button>
-          </form>
-          <div id="event-signup-message" class="form-message" aria-live="polite"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAYMENTS SECTION (STRIPE WILL COME LATER) -->
-    <section id="payments" class="section">
-      <h2>Payments &amp; club account</h2>
-      <p>
-        In the future, this section will allow members to:
-      </p>
-      <ul>
-        <li>Top up their Sanctuary Club balance</li>
-        <li>Pay for events using a secure card payment (Stripe)</li>
-        <li>View a simple statement of what they’ve paid for</li>
-      </ul>
-
-      <div class="card">
-        <h3>Example payment button</h3>
-        <p class="small-note">
-          This button is just a placeholder. Later, we’ll connect it to Stripe
-          and your backend.
-        </p>
-        <button class="button secondary" id="pay-button" type="button">
-          Pay for an event (demo)
-        </button>
-        <div id="payment-message" class="form-message" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <!-- CHAT SECTION -->
-    <section id="chat" class="section">
-      <h2>Club chat (simple demo)</h2>
-      <p>
-        This is a simple chat-style noticeboard. At the moment, messages are only
-        stored in your browser while the page is open. Later we can connect this
-        to your backend and a database so that messages are shared between members.
-      </p>
-
-      <div class="chat-card">
-        <div id="chat-messages" class="chat-messages" aria-live="polite">
-          <!-- Chat messages will be added here by JavaScript -->
-        </div>
-        <form id="chat-form" class="chat-form">
-          <label class="chat-label">
-            Message
-            <input
-              type="text"
-              id="chat-input"
-              placeholder="Write a friendly message to other members..."
-              required
-            />
-          </label>
-          <button type="submit" class="button primary">Send</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- CONTACT SECTION -->
-    <section id="contact" class="section">
-      <h2>Contact &amp; practical information</h2>
-      <p>
-        If you have questions, suggestions for events, or would like help using
-        the website, please contact the Sanctuary Club committee.
-      </p>
-
-      <div class="contact-grid">
-        <div>
-          <h3>Clubhouse</h3>
-          <p>
-            The Sanctuary Club<br />
-            [Your Gated Community Name]<br />
-            [Town / City]<br />
-            [Postcode]
-          </p>
-          <p class="small-note">
-            (Replace these details with the real address later.)
-          </p>
-        </div>
-        <div>
-          <h3>Contact</h3>
-          <p>
-            Email: <a href="mailto:club@example.com">club@example.com</a><br />
-            Phone: 01234 567890
-          </p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>&copy; <span id="year"></span> The Sanctuary Club. All rights reserved.</p>
-    <p class="small-note">
-      Backend hosted on Render. Frontend to be hosted via GitHub / Render.What - withgin the
-    </p>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-<!--force rebuild -->
+     

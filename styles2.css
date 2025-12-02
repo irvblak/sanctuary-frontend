@@ -38,7 +38,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    linear-gradient(rgba(0,140,140,0.55), rgba(0,140,140,0.55)),
+    linear-gradient(rgba(0,140,140,0.45), rgba(0,140,140,0.45)),
 
 
     z-index: 1000;

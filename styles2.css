@@ -24,7 +24,7 @@ body {
     overflow: hidden;
     position: relative;
 }
-body::before {
+
     content: "";
     position: fixed;
     top: 0;

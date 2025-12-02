@@ -81,3 +81,7 @@ h1 {
     h1 { font-size: 2rem; }
     .main-button { font-size: 1.1rem; padding: 12px 30px; }
 }
+/* Force content to NEVER have a background */
+.content {
+    background: none !important;
+}

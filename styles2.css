@@ -1,3 +1,15 @@
+/* Centered content */
+.content {
+    position: relative;
+    z-index: 9999 !important;   /* FORCE it above everything */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 html, body {
     height: 100%;
 }
@@ -44,21 +56,6 @@ body::before {
     z-index: 1000;         /* ensures overlay sits ABOVE all content */
     pointer-events: none;  /* allows clicking buttons underneath */
 }
-
-
-/* Centered content */
-.content {
-    position: relative;
-    z-index: 2001; /* Above tint + overlay */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-
 h1 {
     font-size: 2.8rem;
     color: #0f3e3e;

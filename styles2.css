@@ -1,78 +1,77 @@
-/* Centered content */
-.content {
-    position: relative;
-    z-index: 9999 !important;   /* FORCE it above everything */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
+
+/* ------ GENERAL RESET ------ */
 
 html, body {
     height: 100%;
-}
-/* Full-page faint background using your clubhouse image */
-body {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    width: 100vw;
-    
     font-family: Arial, sans-serif;
     overflow: hidden;
     position: relative;
 }
 
-    content: "";
+/* ------ BACKGROUND LAYER (IMAGE + TINT) ------ */
+
+.background-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-image:
+        linear-gradient(rgba(0,140,140,0.35), rgba(0,140,140,0.35)),
+        url("assets/clubhouse.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ------ WHITE SOFT OVERLAY ------ */
+
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-
-    /* image + tint in ONE layer */
-    background:
-        linear-gradient(rgba(0,140,140,0.35), rgba(0,140,140,0.35)),
-        url("assets/clubhouse.jpg") center center / cover no-repeat;
-
-    backdrop-filter: blur(2px);
-    z-index: 500; /* ← 500 is fine */
+    background: rgba(255, 255, 255, 0.10);
+    z-index: 1000;
+    pointer-events: none;
 }
 
-/* Blue-green tint + fade */
+/* ------ TITLE ------ */
 
-
-/* Subtle softening on top */
-.overlay {
-    position: fixed;       /* stays fixed to the screen */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.10); /* lighter white overlay */
-} 
-    z-index: 1000;         /* ensures overlay sits ABOVE all content */
-    pointer-events: none;  /* allows clicking buttons underneath */
-}
 .site-title {
-
     position: absolute;
-    top: 40px;          /* distance from top of page */
-    left: 40px;         /* distance from left side */
-    font-size: 3.8rem;  /* larger title */
-    color: #0f3e3e;     /* same colour unless you want white */
+    top: 40px;
+    left: 40px;
+    font-size: 3.8rem;
+    color: #0f3e3e;
     margin: 0;
     padding: 0;
-    text-shadow: 0px 3px 8px rgba(0,0,0,0.25);  /* subtle readability shadow */
-    z-index: 9999;      /* ensure it is ABOVE overlays */
-    pointer-events: none;           /* don't block clicks */
-}
+    text-shadow: 0px 3px 8px rgba(0,0,0,0.25);
+    z-index: 9999;
+    pointer-events: none;
 }
 
+/* ------ CENTERED CONTENT (BUTTONS) ------ */
 
-/* Buttons */
+.content {
+    position: relative;
+    z-index: 9999;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ------ BUTTON PANEL ------ */
+
 .button-panel {
     display: flex;
     flex-direction: column;
@@ -93,12 +92,9 @@ body {
     background: #154949;
 }
 
-/* Mobile adjustments */
+/* ------ MOBILE ------ */
+
 @media (max-width: 600px) {
-    h1 { font-size: 2rem; }
+    .site-title { font-size: 2.4rem; top: 20px; left: 20px; }
     .main-button { font-size: 1.1rem; padding: 12px 30px; }
-}
-/* Force content to NEVER have a background */
-.content {
-   
 }

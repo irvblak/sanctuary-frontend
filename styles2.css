@@ -56,7 +56,8 @@ body::before {
     z-index: 1000;         /* ensures overlay sits ABOVE all content */
     pointer-events: none;  /* allows clicking buttons underneath */
 }
-.site-title {
+<h1 class="site-title">
+
     position: absolute;
     top: 40px;          /* distance from top of page */
     left: 40px;         /* distance from left side */

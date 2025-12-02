@@ -7,24 +7,30 @@ body {
     padding: 0;
     height: 100vh;
     width: 100vw;
-    background: url("assets/clubhouse.jpg") center center / cover no-repeat fixed;
+    
     font-family: Arial, sans-serif;
     overflow: hidden;
     position: relative;
 }
-
-/* Blue-green tint + fade */
 body::before {
     content: "";
-    position: fixed;   /* <- important change */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 140, 140, 0.35);
+
+    /* image + tint in ONE layer */
+    background:
+        linear-gradient(rgba(0,140,140,0.35), rgba(0,140,140,0.35)),
+        url("assets/clubhouse.jpg") center center / cover no-repeat;
+
     backdrop-filter: blur(2px);
-    z-index: 500;      /* ← raise above background, below overlay */
+    z-index: 500; /* ← 500 is fine */
 }
+
+/* Blue-green tint + fade */
+
 
 /* Subtle softening on top */
 .overlay {

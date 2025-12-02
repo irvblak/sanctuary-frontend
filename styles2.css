@@ -20,6 +20,7 @@ html, body {
     height: 100vh;
 
     background-image:
+        linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.35) 100%),  
         linear-gradient(rgba(0,140,140,0.35), rgba(0,140,140,0.35)),
         url("assets/clubhouse.jpg");
     background-size: cover;

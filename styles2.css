@@ -31,16 +31,11 @@ html, body {
     background: transparent;
 }
 
-    
-
-
-
-
 /* ------ TITLE ------ */
 
 .site-title {
     position: absolute;
-    top: 40px;
+    top: 10px;
     left: 40px;
     font-size: 3.8rem;
     color: #0f3e3e;

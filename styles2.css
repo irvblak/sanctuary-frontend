@@ -1,148 +1,247 @@
 
-/* ------ GENERAL RESET ------ */
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    position: relative;
+/* Base page styling */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #E9F5E1;  /* pastel green */
+  color: #003366;             /* navy text */
 }
 
-/* ------ BACKGROUND LAYER (IMAGE) ------ */
-.background-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-
-    background-image: url("assets/clubhouse.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    z-index: 0;
-    pointer-events: none;
+/* Make most text navy by default */
+p, li, td, th, label, input, select, textarea, table, div, span {
+  color: #003366;
 }
 
-.overlay {
-    background: transparent;
+/* Layout helper */
+.section {
+  padding: 2.5rem 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-/* ------ TITLE ------ */
-
-.site-title {
-    position: absolute;
-    top: 10px;
-    left: 40px;
-    font-size: 3.8rem;
-    color: #0f3e3e;
-    margin: 0;
-    padding: 0;
-    text-shadow: 0px 3px 8px rgba(0,0,0,0.25);
-    z-index: 9999;
-    pointer-events: none;
+/* Header & navigation */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: #5bbecf; /* soft teal */
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* ------ CONTENT AREA ------ */
-
-.content {
-    position: relative;
-    z-index: 9999;
-    height: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-bottom: 0;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-/* ------ BUTTON PANEL (HORIZONTAL) ------ */
-
-.button-panel {
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    position: absolute;
-    bottom: 25px; /* Adjust position of entire button row */
-    left: 50%;
-    transform: translateX(-50%);
+.logo-mark {
+  font-size: 1.4rem;
 }
 
-/* ------ BUTTONS ------ */
-
-.main-button {
-    text-decoration: none;
-    background: #1b5e5e;
-    color: white;
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-size: 1.3rem;
-    transition: background 0.2s;
+.nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 0.75rem;
+  font-size: 0.95rem;
 }
 
-.main-button:hover {
-    background: #154949;
-}
-/* ===== SUBPAGE LAYOUT (very pale background + clean content) ===== */
-
-.subpage {
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    background:
-        linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)),
-        url("assets/clubhouse.jpg") center/cover no-repeat;
-    background-attachment: fixed;
+.nav a:hover,
+.nav a:focus {
+  text-decoration: underline;
 }
 
-.page-container {
-    max-width: 900px;
-    margin: 100px auto;
-    padding: 40px;
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #0f3e3e;
-    position: relative;
-    z-index: 10;
+/* Hero section */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
+  gap: 2rem;
+  align-items: center;
 }
 
-/* Subpage title */
-.page-container h1 {
-    margin-top: 0;
-    font-size: 2.4rem;
-    color: #0f3e3e;
-    text-align: center;
+.hero-text p {
+  font-size: 1.05rem;
 }
 
-/* Home button */
+.hero-text h1 {
+  font-size: 2.1rem;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* Home buttons under hero text */
+.home-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
 .home-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: rgba(255,255,255,0.75);
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #0f3e3e;
-    font-weight: bold;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    z-index: 3000;
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: #ffffffcc; /* soft white card */
+  border: 1px solid #cbd2d9;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.home-button:hover {
-    background: rgba(255,255,255,0.9);
+.home-button:hover,
+.home-button:focus {
+  background: #f5faf5;
+  border-color: #5bbecf;
 }
 
-/* ------ MOBILE ------ */
-
-
-@media (max-width: 600px) {
-    .site-title { font-size: 2.4rem; top: 20px; left: 20px; }
-    .main-button { font-size: 1.1rem; padding: 12px 30px; }
+.home-button-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
+.home-button-sub {
+  font-size: 0.9rem;
+}
+
+/* Clubhouse photo framing */
+.hero-image {
+  display: flex;
+  justify-content: center;
+}
+
+.image-frame {
+  border-radius: 16px;
+  padding: 0.5rem;
+  background: #ffffffdd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.clubhouse-photo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* Headings */
+h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* Cards & tables */
+.card {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+  margin-top: 1rem;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.events-table th,
+.events-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #d9e2ec;
+}
+
+.events-table thead {
+  background: #e0f4f8; /* light teal tint */
+}
+
+.small-note {
+  font-size: 0.85rem;
+  color: #62748a;
+}
+
+/* Notices */
+.notices-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.notice-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+
+/* Account layout */
+.account-layout {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.placeholder-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.placeholder-form input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #cbd2d9;
+}
+
+/* Buttons */
+.button {
+  display: inline-block;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.button.primary {
+  background: #5bbecf;
+  color: white;
+}
+
+.button.primary:hover,
+.button.primary:focus {
+  background: #48aac0;
+}
+
+/* Footer */
+.site-footer {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  background: transparent;
+  color: #003366;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .nav a {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

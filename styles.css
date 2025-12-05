@@ -243,6 +243,119 @@ h2 {
   .nav a {
     margin-left: 0.5rem;
     font-size: 0.9rem;
+/* === Events Diary – Calendar View === */
+
+.events-calendar {
+  padding: 1.5rem;
+}
+
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-controls button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #c9b27f;
+  background: #fffaf0;
+  cursor: pointer;
+}
+
+.calendar-controls button:hover {
+  background: #f7edd8;
+}
+
+#calendar-month-label {
+  font-weight: 600;
+}
+
+/* Calendar grid */
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: #fdf7ec;
+  padding: 0.7rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.calendar-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+.calendar-cell {
+  min-height: 70px;
+  background: #fffaf3;
+  border-radius: 10px;
+  padding: 0.25rem;
+  position: relative;
+  font-size: 0.8rem;
+}
+
+.calendar-weekdays .calendar-cell {
+  background: transparent;
+  box-shadow: none;
+  font-weight: 600;
+  text-align: center;
+}
+
+.day-number {
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+.empty-cell {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Events within calendar cells */
+
+.calendar-event {
+  margin-top: 0.1rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.calendar-event.free {
+  background: #e5f5ea;
+  color: #246c3b;
+}
+
+.calendar-event.payable {
+  background: #fff3d6;
+  color: #8a5b00;
+}
+
+/* Legend */
+
+.legend-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+
+.legend-free {
+  background: #e5f5ea;
+}
+
+.legend-payable {
+  background: #fff3d6;
+}
+
+
+    
   }
 }
 

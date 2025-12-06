@@ -17,7 +17,7 @@ body {
 .hero {
   position: relative;
   width: 100vw;
-  height: 108vh;                      /* fill entire screen */
+  height: 128vh;                      /* fill entire screen */
   background-image: url("clubhouse.jpg");
   background-size: cover;           /* show whole photo */
   background-repeat: no-repeat;

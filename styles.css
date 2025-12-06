@@ -356,7 +356,7 @@ h2 {
 
 .hero {
   position: relative;
-  min-height: 80vh; /* fill the screen */
+  min-height: 120vh; /* fill the screen */
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-position: center bottom;

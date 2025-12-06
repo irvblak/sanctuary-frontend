@@ -23,10 +23,11 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   position: relative;
   height: 100vh;                    /* fixed hero height for consistency */
   background-image: url("clubhouse.jpg");
-  background-size: 80% auto;   /* scales photo down by ~20% */
+  background-size: 120% auto;     /* scales image down while keeping full width */
 background-repeat: no-repeat;
-background-position: center bottom;
-  
+background-position: center top; /* shifts crop upward to restore sky */
+background-color: none;
+
   overflow: hidden;
 }
 

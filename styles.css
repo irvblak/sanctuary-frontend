@@ -26,8 +26,7 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   background-size: 80% auto;   /* scales photo down by ~20% */
 background-repeat: no-repeat;
 background-position: center bottom;
-
-   background-position: center bottom;
+  
   overflow: hidden;
 }
 

@@ -4,7 +4,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #E9F5E1;
+  background: none;                /* remove green band behind hero */
   color: #003366;
 }
 
@@ -13,15 +13,16 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 }
 
 /* =========================================================
-   HOME HERO — full photo, title, buttons, footer
+   HOME HERO — photo, title, buttons, footer
    ========================================================= */
 
 .hero {
   position: relative;
-  min-height: 160vh;                         /* your chosen height */
+  height: 160vh;                    /* fixed hero height for consistency */
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-position: center bottom;
+  overflow: hidden;
 }
 
 .hero-overlay {
@@ -30,7 +31,7 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   height: 100%;
 }
 
-/* Title in the sky */
+/* Title in sky (top-left) */
 .hero-title {
   position: absolute;
   top: 2%;
@@ -38,29 +39,26 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   margin: 0;
   font-size: 72px;
   font-weight: 700;
-  color: #001f4d;                            /* navy */
+  color: #001f4d;             
   text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
 }
 
-/* Horizontal buttons slightly left, above hedge */
+/* Horizontal buttons above hedge */
 .hero-buttons {
   position: absolute;
-  bottom: 14%;                               /* adjusts vertical placement */
-  left: 40%;                                 /* shifts the row slightly left */
-  transform: translateX(-40%);               /* keeps centering relative */
-  
+  bottom: 18%;                      /* sits above hedge; adjust as needed */
+  left: 45%;                        /* slightly leftish */
+  transform: translateX(-45%);
+
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;               /* aligns row slightly left */
+  justify-content: flex-start;
   align-items: center;
 
-  flex-wrap: nowrap !important;
-  white-space: nowrap !important;
-
-  gap: 1.5rem;                                /* spacing between buttons */
+  gap: 1.5rem;
+  white-space: nowrap;
 }
 
-/* Oval brown buttons */
 .hero-button {
   display: inline-block;
   padding: 0.7rem 1.8rem;
@@ -71,7 +69,6 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   font-size: 1.2rem;
   font-weight: 500;
   box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  white-space: nowrap !important;
 }
 
 .hero-button:hover {
@@ -80,21 +77,20 @@ p, li, td, th, label, input, select, textarea, table, div, span {
   box-shadow: 0 5px 12px rgba(0,0,0,0.35);
 }
 
-/* Footer on hedge */
+/* Footer text sitting IN the hedge */
 .site-footer {
   position: absolute;
-  bottom: 4%;                                 /* sits directly on hedge */
+  bottom: 2%;                       /* sits inside hedge area */
   width: 100%;
   text-align: center;
   font-size: 1rem;
-  color: #001f4d;                              /* navy */
   background: none !important;
+  color: #001f4d;                   /* navy */
   text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
-  pointer-events: none;                        /* ensures buttons remain clickable */
 }
 
 /* =========================================================
-   INTERNAL PAGE LAYOUT (very minimal)
+   INTERNAL PAGES (simple layout)
    ========================================================= */
 
 .section {
@@ -107,7 +103,7 @@ h2 {
   margin-top: 0;
 }
 
-/* Cards, tables, notices — unchanged */
+/* Card, table, notices styling unchanged */
 .card {
   background: white;
   padding: 1.25rem;
@@ -137,9 +133,7 @@ h2 {
   gap: 1rem;
 }
 
-/* Calendar styles preserved exactly as before */
-/* (Copied from your working version, with no changes) */
-
+/* Calendar preserved exactly */
 .events-calendar {
   padding: 1.5rem;
 }
@@ -150,22 +144,6 @@ h2 {
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
-}
-
-.calendar-controls button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid #c9b27f;
-  background: #fffaf0;
-  cursor: pointer;
-}
-
-.calendar-controls button:hover {
-  background: #f7edd8;
-}
-
-#calendar-month-label {
-  font-weight: 600;
 }
 
 .calendar-grid {
@@ -193,59 +171,10 @@ h2 {
   font-size: 0.8rem;
 }
 
-.calendar-weekdays .calendar-cell {
-  background: transparent;
-  box-shadow: none;
-  font-weight: 600;
-  text-align: center;
-}
-
-.day-number {
-  font-weight: 600;
-  margin-bottom: 0.15rem;
-}
-
-.empty-cell {
-  background: transparent;
-  box-shadow: none;
-}
-
-.calendar-event {
-  margin-top: 0.1rem;
-  padding: 0.1rem 0.2rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-}
-
-.calendar-event.free {
-  background: #e5f5ea;
-  color: #246c3b;
-}
-
-.calendar-event.payable {
-  background: #fff3d6;
-  color: #8a5b00;
-}
-
-.legend-box {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 4px;
-  margin-right: 0.25rem;
-}
-
-.legend-free {
-  background: #e5f5ea;
-}
-
-.legend-payable {
-  background: #fff3d6;
-}
-
 /* =========================================================
-   Responsive adjustments
+   RESPONSIVE
    ========================================================= */
+
 @media (max-width: 700px) {
 
   .hero-title {
@@ -255,7 +184,7 @@ h2 {
   }
 
   .hero-buttons {
-    bottom: 6%;
+    bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
     flex-wrap: wrap;
@@ -265,5 +194,9 @@ h2 {
   .hero-button {
     font-size: 1rem;
     padding: 0.6rem 1.4rem;
+  }
+
+  .site-footer {
+    bottom: 3%;
   }
 }

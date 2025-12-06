@@ -19,7 +19,7 @@ body {
   width: 100vw;
   height: 108vh;                      /* fill entire screen */
   background-image: url("clubhouse.jpg");
-  background-size: contain;           /* show whole photo */
+  background-size: cover;           /* show whole photo */
   background-repeat: no-repeat;
   background-position: center bottom; /* building centred, hedge visible */
   background-color: black;            /* fills any leftover edges invisibly */

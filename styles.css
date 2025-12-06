@@ -20,7 +20,8 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 
 .hero {
   position: relative;
-  height: 100vh;                       /* fills screen exactly */
+  min-height: 100vh;                       /* fills screen exactly */
+  height: auto;                    /* prevents cropping */ 
   background-image: url("clubhouse.jpg");
   background-size: cover;              /* natural proper scaling */
   background-position: center bottom;  /* hedge fully visible */

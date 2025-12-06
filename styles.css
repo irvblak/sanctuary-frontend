@@ -25,7 +25,7 @@ body {
   background-image: url("clubhouse.jpg");
   background-size: contain;      /* shows entire photo */
   background-repeat: no-repeat;
-  background-position: center 95%;  /* hedge and sky preserved */
+  background-position: center 92%;  /* hedge and sky preserved */
 }
 
 /* blurred fill behind the photo */
@@ -90,7 +90,7 @@ body {
 /* Horizontal buttons across the grass */
 .hero-buttons {
   position: absolute;
-  bottom: 16%;                        /* place above hedge */
+  bottom: 22%;                        /* place above hedge */
   left: 50%;
   transform: translateX(-50%);
   display: flex;

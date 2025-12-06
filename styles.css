@@ -18,7 +18,7 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 
 .hero {
   position: relative;
-  height: 100vh;                    /* fixed hero height for consistency */
+  height: 80vh;                    /* fixed hero height for consistency */
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-position: center bottom;

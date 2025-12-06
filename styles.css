@@ -25,7 +25,7 @@ body {
   background-image: url("clubhouse.jpg");
   background-size: contain;      /* shows entire photo */
   background-repeat: no-repeat;
-  background-position: center bottom;  /* hedge and sky preserved */
+  background-position: center 95%;  /* hedge and sky preserved */
 }
 
 /* blurred fill behind the photo */

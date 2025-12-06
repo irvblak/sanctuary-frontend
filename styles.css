@@ -17,7 +17,7 @@ body {
 .hero {
   position: relative;
   width: 100vw;
-  height: 100vh;                      /* fill entire screen */
+  height: 108vh;                      /* fill entire screen */
   background-image: url("clubhouse.jpg");
   background-size: contain;           /* show whole photo */
   background-repeat: no-repeat;
@@ -36,7 +36,7 @@ body {
 /* Floating Title (Top-left sky area) */
 .hero-title {
   position: absolute;
-  top: 2%;
+  top: 1.2%;
   left: 2%;
   margin: 0;
   font-size: 72px;
@@ -49,7 +49,7 @@ body {
 /* Horizontal buttons across the grass */
 .hero-buttons {
   position: absolute;
-  bottom: 12%;                        /* place above hedge */
+  bottom: 16%;                        /* place above hedge */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -79,7 +79,7 @@ body {
 /* Footer on the hedge */
 .site-footer {
   position: absolute;
-  bottom: 3%;
+  bottom: 6%;
   width: 100%;
   text-align: center;
   font-size: 1rem;

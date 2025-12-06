@@ -51,20 +51,7 @@ body {
 
 
 
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("clubhouse.jpg");
-  background-size: cover;
-  background-position: center;
-  filter: blur(18px) brightness(0.65);
-  transform: scale(1.2);
-  z-index: -1;
-}
+
 
 .hero-overlay {
   position: absolute;

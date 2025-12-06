@@ -7,244 +7,36 @@
   <title>The Sanctuary Club</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-  <!-- SITE HEADER -->
-  <header class="site-header">
-    <div class="logo">
-      <span class="logo-mark">🏡</span>
-      <span class="logo-text">The Sanctuary Club</span>
-    </div>
-    <nav class="nav">
-      <a href="#home">Home</a>
-      <a href="#events">Events diary</a>
-      <a href="#notices">Notices</a>
-      <a href="#directory">Members</a>
-      <a href="#account">My account</a>
-    </nav>
-  </header>
 
   <main>
-    <!-- HERO / INTRO SECTION -->
-    <section id="home" class="section hero">
-      <div class="hero-text">
-        <h1>The Sanctuary Club</h1>
-        <p>
-          A friendly community club for residents of Sanctuary Mews and Sanctuary Court.
-          
-        </p>
-        <p>
-          From here you can view the events diary, read important notices and,
-          in future, access a simple member area for bookings and contact details.
-        </p>
+    <section class="hero">
+      <div class="hero-overlay">
 
-        <!-- MAIN HOME BUTTONS -->
-        <div class="home-actions">
-          <a href="#events" class="home-button">
-            <span class="home-button-title">Events diary</span>
-            <span class="home-button-sub">See what’s coming up</span>
-          </a>
-          <a href="#notices" class="home-button">
-            <span class="home-button-title">Notices</span>
-            <span class="home-button-sub">Important club information</span>
-          </a>
-          <a href="#directory" class="home-button">
-            <span class="home-button-title">Members</span>
-            <span class="home-button-sub">Resident contact options</span>
-          </a>
-          <a href="#account" class="home-button">
-            <span class="home-button-title">My account</span>
-            <span class="home-button-sub">Future login &amp; bookings</span>
-          </a>
-        </div>
-      </div>
+        <!-- FLOATING TITLE IN SKY (TOP-LEFT) -->
+        <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <div class="hero-image">
-        <div class="image-frame">
-          <img
-            src="ClubhousePhoto.jpg"
-            alt="The Sanctuary Clubhouse"
-            class="clubhouse-photo"
-          />
-        </div>
-      </div>
-    </section>
-
-    <!-- EVENTS DIARY -->
-    <section id="events" class="section">
-      <h2>Events diary</h2>
-      <p>
-        This is a sample diary layout. Later, it will be connected to the
-        Sanctuary Club events database so that hosts and committee members can
-        manage real events, capacity and waiting lists.
-      </p>
-
-      <div class="card">
-        <table class="events-table">
-          <thead>
-          <tr>
-            <th>Date</th>
-            <th>Event</th>
-            <th>Location</th>
-            <th>Cost</th>
-            <th>Spaces left</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>Mon 8 Dec</td>
-            <td>Morning Walk &amp; Coffee</td>
-            <td>Meet at Clubhouse</td>
-            <td>Free</td>
-            <td>12</td>
-          </tr>
-          <tr>
-            <td>Thu 11 Dec</td>
-            <td>Coach trip to the seaside</td>
-            <td>Depart main gate</td>
-            <td>£20</td>
-            <td>5</td>
-          </tr>
-          <tr>
-            <td>Sat 20 Dec</td>
-            <td>Christmas Social</td>
-            <td>Clubhouse function room</td>
-            <td>£10</td>
-            <td>Waiting list</td>
-          </tr>
-          </tbody>
-        </table>
-
-        <p class="small-note">
-          In the working system, “Spaces left” will be updated automatically as
-          bookings are made and payments recorded by bank transfer or cash.
-        </p>
-      </div>
-    </section>
-
-    <!-- NOTICES / ANNOUNCEMENTS -->
-    <section id="notices" class="section">
-      <h2>Notices</h2>
-      <p>
-        A space for the committee to post important information: event
-        changes, cancellations and general club notices.
-      </p>
-
-      <div class="notices-list">
-        <article class="notice-card">
-          <h3>Event bookings – non-resident guests</h3>
-          <p>
-            Club events are open first to Sanctuary residents. Non-resident
-            family members and friends may attend if space is available within
-            seven days of the event date, or at the host’s discretion. Guest
-            bookings should always be made through a resident.
-          </p>
-        </article>
-
-        <article class="notice-card">
-          <h3>Payments for chargeable events</h3>
-          <p>
-            Payments for chargeable events will be made by bank transfer to a
-            single club account or, where agreed, by cash directly to the
-            event host. Full details will be added here once the club account
-            arrangements are finalised.
-          </p>
-        </article>
-
-        <article class="notice-card">
-          <h3>Contacting the committee</h3>
-          <p>
-            A small group of residents will act as the Sanctuary Club
-            committee. Contact details and responsibilities will be listed in
-            the members area once the system is in regular use.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <!-- MEMBERS / DIRECTORY EXPLANATION -->
-    <section id="directory" class="section">
-      <h2>Members &amp; contact details</h2>
-      <p>
-        The members directory will allow residents to share, if they wish,
-        their name, email address and (optionally) phone number, together
-        with a simple property code such as SM12 or SC07.
-      </p>
-      <p>
-        This directory will be visible only to Sanctuary Club members and will
-        respect individual privacy preferences. It is intended to make it
-        easier for neighbours to stay in touch socially and around club
-        activities.
-      </p>
-
-      <div class="card">
-        <h3>Planned directory features</h3>
-        <ul>
-          <li>Search by name or property code (SM1–73, SC1–43, SCH).</li>
-          <li>
-            Each occupant decides what to show: email, phone, or neither.
-          </li>
-          <li>
-            Occupants can opt in or out of appearing in the shared directory at
-            any time.
-          </li>
-        </ul>
-        <p class="small-note">
-          Behind the scenes, this will be powered by a members database with
-          roles such as resident, event host, committee member and treasurer.
-        </p>
-      </div>
-    </section>
-
-    <!-- ACCOUNT / FUTURE DASHBOARD -->
-    <section id="account" class="section">
-      <h2>My account (coming later)</h2>
-      <p>
-        This section will become the secure area where residents can log in,
-        view their bookings and, in future, see any tickets or payments linked
-        to their property.
-      </p>
-
-      <div class="account-layout">
-        <div class="card">
-          <h3>Resident login</h3>
-          <p class="small-note">
-            A simple sign-in screen will allow any occupant to access their own
-            details. For now, this is only a placeholder.
-          </p>
-          <form class="placeholder-form">
-            <label>
-              Email
-              <input type="email" disabled placeholder="(login not yet active)" />
-            </label>
-            <label>
-              Password
-              <input type="password" disabled />
-            </label>
-            <button type="button" class="button primary" disabled>
-              Log in (future)
-            </button>
-          </form>
+        <!-- OVAL BUTTONS ON THE GRASS -->
+        <div class="hero-buttons">
+          <a href="about.html" class="hero-button">About</a>
+          <a href="notices.html" class="hero-button">Notices</a>
+          <a href="events.html" class="hero-button">Diary</a>
+          <a href="payments.html" class="hero-button">Payments</a>
+          <a href="contact.html" class="hero-button">Contact</a>
         </div>
 
-        <div class="card">
-          <h3>Planned resident dashboard</h3>
-          <ul>
-            <li>View upcoming event bookings for your property.</li>
-            <li>See tickets once the refund window has closed.</li>
-            <li>Update your contact preferences for the directory.</li>
-            <li>
-              If you are a host, see bookings and payments for your own event(s).
-            </li>
-          </ul>
-        </div>
       </div>
     </section>
   </main>
 
+  <!-- KEEPING YOUR EXISTING FOOTER EXACTLY AS IT WAS -->
   <footer class="site-footer">
     <p>© The Sanctuary Club. All rights reserved.</p>
   </footer>
 
+  <!-- KEEPING YOUR SCRIPT REFERENCE -->
   <script src="script.js"></script>
+
 </body>
 </html>

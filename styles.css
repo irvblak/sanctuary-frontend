@@ -21,15 +21,14 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 
 .hero {
   position: relative;
-  height: 100vh;                    /* fixed hero height for consistency */
+  height: 100vh;                       /* fills screen exactly */
   background-image: url("clubhouse.jpg");
-  background-size: 100% auto;     /* scales image down while keeping full width */
-background-repeat: no-repeat;
-background-position: center top; /* shifts crop upward to restore sky */
-background-color: none;
-
+  background-size: cover;              /* natural proper scaling */
+  background-position: center bottom;  /* hedge fully visible */
+  background-repeat: no-repeat;
   overflow: hidden;
 }
+
 
 .hero-overlay {
   position: relative;
@@ -52,18 +51,14 @@ background-color: none;
 /* Horizontal buttons above hedge */
 .hero-buttons {
   position: absolute;
-  bottom: 18%;                      /* sits above hedge; adjust as needed */
-  left: 45%;                        /* slightly leftish */
+  bottom: 12%;                          /* moves them onto the grass */
+  left: 45%;                            /* slight left shift */
   transform: translateX(-45%);
-
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-
   gap: 1.5rem;
   white-space: nowrap;
 }
+
 
 .hero-button {
   display: inline-block;
@@ -86,14 +81,16 @@ background-color: none;
 /* Footer text sitting IN the hedge */
 .site-footer {
   position: absolute;
-  bottom: 2%;                       /* sits inside hedge area */
+  bottom: 3%;                           /* deep inside hedge */
   width: 100%;
   text-align: center;
   font-size: 1rem;
-  background: none !important;
-  color: #001f4d;                   /* navy */
+  color: #001f4d;
+  background: none;
   text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
+  pointer-events: none;
 }
+
 
 /* =========================================================
    INTERNAL PAGES (simple layout)

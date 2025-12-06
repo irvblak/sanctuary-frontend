@@ -58,12 +58,7 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 }
 
 /* Hero section */
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
-  gap: 2rem;
-  align-items: center;
-}
+
 
 .hero-text p {
   font-size: 1.05rem;
@@ -361,7 +356,7 @@ h2 {
 
 .hero {
   position: relative;
-  min-height: 100vh; /* fill the screen */
+  min-height: 80vh; /* fill the screen */
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-position: center bottom;

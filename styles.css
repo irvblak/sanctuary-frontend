@@ -13,17 +13,21 @@ body {
 /* =========================================================
    HERO SECTION — photo, title, buttons, footer
    ========================================================= */
-
 .hero {
   position: relative;
   width: 100vw;
-  height: 90vh;                      /* fill entire screen */
+  height: 90vh;
+
   background-image: url("clubhouse.jpg");
-  background-size: contain;           /* show whole photo */
+  background-size: cover;               /* Fills the entire area, no bars */
   background-repeat: no-repeat;
-  background-position: center 88%; /* building centred, hedge visible */
-  background-color: black;            /* fills any leftover edges invisibly */
+  background-position: center 88%;      /* Adjusts sky/hedge balance */
+
+  background-color: transparent;        /* Allows blurred layer to show where needed */
+  overflow: hidden;                     /* Important for the blur layer edges */
 }
+
+
 .hero::before {
   content: "";
   position: absolute;

@@ -33,8 +33,8 @@ p, li, td, th, label, input, select, textarea, table, div, span {
 .hero-overlay {
   position: relative;
   width: 100%;
-  height: 100%;
-}
+  }
+
 
 /* Title in sky (top-left) */
 .hero-title {

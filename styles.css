@@ -3,10 +3,13 @@
    ========================================================= */
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
-  background: none;                /* remove green band behind hero */
+  background: none;
   color: #003366;
+  overflow: hidden;   /* removes scrolling & white band */
 }
+
 
 p, li, td, th, label, input, select, textarea, table, div, span {
   color: #003366;

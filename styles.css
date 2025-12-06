@@ -21,7 +21,7 @@ body {
   background-image: url("clubhouse.jpg");
   background-size: cover;               /* Fills the entire area, no bars */
   background-repeat: no-repeat;
-  background-position: center 130%;      /* Adjusts sky/hedge balance */
+  background-position: center 60%%;      /* Adjusts sky/hedge balance */
 
   background-color: transparent;        /* Allows blurred layer to show where needed */
   overflow: hidden;                     /* Important for the blur layer edges */

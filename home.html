@@ -1,68 +1,35 @@
-
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Sanctuary Club</title>
-    <link rel="stylesheet" href="styles2.css?v=1">
-    <style>
-    /* TEMPORARY INLINE CSS TO BYPASS CACHING — ENSURES TINT WORKS */
-
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        background: url("assets/clubhouse.jpg") center center / cover no-repeat fixed;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-        position: relative;
-    }
-
-    body::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 140, 140, 0.35);
-        backdrop-filter: blur(2px);
-        z-index: 0;
-    }
-
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.25);
-        z-index: 1000;
-        pointer-events: none;
-    }
-
-    .content {
-        position: relative;
-        z-index: 1;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Sanctuary Club</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-    <div class="content">
-        <h1>THIS IS A TEST</h1>
-    </div>
+  <section class="hero">
+    <div class="hero-overlay">
 
-    <div class="overlay"></div>
+      <h1 class="hero-title">The Sanctuary Club</h1>
+
+      <div class="hero-buttons">
+        <a href="about.html" class="hero-button">About</a>
+        <a href="notices.html" class="hero-button">Notices</a>
+        <a href="events.html" class="hero-button">Diary</a>
+        <a href="payments.html" class="hero-button">Payments</a>
+        <a href="contact.html" class="hero-button">Contact</a>
+      </div>
+
+      <footer class="site-footer">
+        <p>© The Sanctuary Club. All rights reserved.</p>
+      </footer>
+
+    </div>
+  </section>
+
+  <script src="script.js"></script>
 
 </body>
 </html>

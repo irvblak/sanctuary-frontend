@@ -21,7 +21,7 @@ body {
   background-image: url("clubhouse.jpg");
   background-size: contain;           /* show whole photo */
   background-repeat: no-repeat;
-  background-position: center bottom; /* building centred, hedge visible */
+  background-position: 88%; /* building centred, hedge visible */
   background-color: black;            /* fills any leftover edges invisibly */
 }
 .hero::before {

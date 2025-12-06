@@ -353,6 +353,73 @@ h2 {
 .legend-payable {
   background: #fff3d6;
 }
+/* === Home hero: clubhouse photo, floating title, oval buttons === */
+
+.hero {
+  position: relative;
+  min-height: 100vh; /* fill the screen */
+  background-image: url("clubhouse.jpg");
+  background-size: cover;
+  background-position: center bottom;
+}
+
+.hero-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating title in the sky, near top-left corner */
+.hero-title {
+  position: absolute;
+  top: 2%;   /* ~1.5cm from top on typical screens */
+  left: 2%;  /* ~1.5cm from left */
+  margin: 0;
+  font-size: 72px;       /* Enlarged per your request */
+  font-weight: 700;
+  color: #001f4d;        /* Navy blue */
+  text-shadow: 2px 2px 6px rgba(255, 255, 255, 0.6); /* Soft light halo */
+}
+
+/* Button row on the grass near the bottom of the photo */
+.hero-buttons {
+  position: absolute;
+  bottom: 10%;   /* adjust if you want higher/lower on the grass */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* Smart oval brown buttons with white script */
+.hero-button {
+  display: inline-block;
+  padding: 0.6rem 1.6rem;
+  border-radius: 999px;       
+  background-color: #8b5a2b;  
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2rem;   /* slightly larger */
+  font-weight: 500;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button:hover {
+  background-color: #a06830;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Footer always at the bottom */
+.site-footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+}
 
 
     

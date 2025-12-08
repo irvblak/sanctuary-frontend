@@ -95,26 +95,24 @@
   background: none;
   text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
   pointer-events: none;
-/* =========================================================
-   LOGOUT LINK — small top-right utility link
-   ========================================================= */
+
+   /* Logout link — fixed top-right */
 .logout-link {
   position: fixed;
-  top: 12px;
-  right: 16px;
-  color: #003366;
-  text-decoration: none;
+  top: 1rem;
+  right: 1rem;
   font-size: 1rem;
-  font-weight: bold;
-  background: rgba(255,255,255,0.6);
-  padding: 6px 12px;
+  text-decoration: none;
+  color: #003366;
+  background: rgba(255,255,255,0.8);
+  padding: 0.4rem 0.8rem;
   border-radius: 8px;
-  backdrop-filter: blur(3px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 999;
 }
 
 .logout-link:hover {
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,1);
 }
 
-   
-}
+

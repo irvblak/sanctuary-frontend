@@ -1,58 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Diary – The Sanctuary Club</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
 
-<main class="page events-list">
-  <section class="page-header">
-    <h1>Events Diary – List View</h1>
-    <p>All upcoming Sanctuary Clubhouse events in date order.</p>
-    <a class="button-secondary" href="events-calendar.html">View as calendar</a>
-  </section>
+<body class="subpage">
+<div class="member-topbar">
+    <a href="#" id="logout-link">Logout</a>
+</div>
+    <!-- Logout bar -->
+    <div class="member-topbar">
+        <a href="#" id="logout-link">Logout</a>
+    </div>
 
-  <section class="events-table-wrapper">
-    <table class="events-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Event</th>
-          <th>Location</th>
-          <th>Type</th>
-          <th>Cost</th>
-        </tr>
-      </thead>
-      <tbody id="events-list-body">
-        <!-- TEMPORARY EXAMPLE ROWS – replace with real events or let the backend fill these -->
-        <tr>
-          <td>17 Jan 2026</td>
-          <td>Burns Night Supper</td>
-          <td>Clubhouse</td>
-          <td><span class="badge badge-payable">Payable</span></td>
-          <td>£15 pp</td>
-        </tr>
-        <tr>
-          <td>25 Jan 2026</td>
-          <td>Film Night – Classic Cinema</td>
-          <td>Club lounge</td>
-          <td><span class="badge badge-free">Free</span></td>
-          <td>–</td>
-        </tr>
-        <tr>
-          <td>01 Feb 2026</td>
-          <td>Quiz Night</td>
-          <td>Clubhouse</td>
-          <td><span class="badge badge-payable">Payable</span></td>
-          <td>£2 pp</td>
-        </tr>
-        <tr>
-          <td>10 Feb 2026</td>
-          <td>Bingo Evening</td>
-          <td>Clubhouse main room</td>
-          <td><span class="badge badge-free">Free</span></td>
-          <td>–</td>
-        </tr>
-        <!-- END OF TEMPORARY EXAMPLE ROWS -->
-      </tbody>
-    </table>
-    <p class="events-note">
-      <strong>Note:</strong> Events marked <span class="badge-inline badge-payable-inline">Payable</span> involve a fee. 
-      Events marked <span class="badge-inline badge-free-inline">Free</span> are free to attend.
-    </p>
-  </section>
-</main>
+    <main class="page events-list">
+      <section class="page-header">
+        <h1>Events Diary – List View</h1>
+        <p>All upcoming Sanctuary Clubhouse events in date order.</p>
+        <a class="button-secondary" href="events-calendar.html">View as calendar</a>
+      </section>
+
+      <section class="events-table-wrapper">
+        <table class="events-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Event</th>
+              <th>Location</th>
+              <th>Type</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody id="events-list-body">
+            <!-- TEMPORARY EXAMPLE ROWS – replace with real events or let the backend fill these -->
+            <tr>
+              <td>17 Jan 2026</td>
+              <td>Burns Night Supper</td>
+              <td>Clubhouse</td>
+              <td><span class="badge badge-payable">Payable</span></td>
+              <td>£15 pp</td>
+            </tr>
+            <tr>
+              <td>25 Jan 2026</td>
+              <td>Film Night – Classic Cinema</td>
+              <td>Club lounge</td>
+              <td><span class="badge badge-free">Free</span></td>
+              <td>–</td>
+            </tr>
+            <tr>
+              <td>01 Feb 2026</td>
+              <td>Quiz Night</td>
+              <td>Clubhouse</td>
+              <td><span class="badge badge-payable">Payable</span></td>
+              <td>£2 pp</td>
+            </tr>
+            <tr>
+              <td>10 Feb 2026</td>
+              <td>Bingo Evening</td>
+              <td>Clubhouse main room</td>
+              <td><span class="badge badge-free">Free</span></td>
+              <td>–</td>
+            </tr>
+            <!-- END OF TEMPORARY EXAMPLE ROWS -->
+          </tbody>
+        </table>
+
+        <p class="events-note">
+          <strong>Note:</strong> Events marked 
+          <span class="badge-inline badge-payable-inline">Payable</span> involve a fee.
+          Events marked 
+          <span class="badge-inline badge-free-inline">Free</span> are free to attend.
+        </p>
+
+      </section>
+    </main>
+
+    <script src="script.js?v=2" defer></script>
+</body>
+</html>

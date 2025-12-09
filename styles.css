@@ -241,3 +241,333 @@ h2 {
   background: #fde8c5;
   color: #8a5700;
 }
+
+/* =========================================================
+   CALENDAR THEME — Modern Pastel Grid (Theme B)
+   ========================================================= */
+
+/* Overall container */
+.calendar-container {
+  max-width: 900px;
+  margin: 5rem auto 2rem auto;
+  padding: 1rem;
+}
+
+/* Header: month label + buttons */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.calendar-header button {
+  padding: 0.4rem 1rem;
+  background: #e7f0fa;
+  border: 1px solid #b8cbe0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #003366;
+  transition: 0.2s;
+}
+
+.calendar-header button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.calendar-header button:hover:not(:disabled) {
+  background: #d9e8f8;
+}
+
+.calendar-month-label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #003366;
+}
+
+/* Grid layout */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+/* Weekday names (Mon–Sun) */
+.calendar-weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  background: #f0f7ff;
+  border-radius: 8px;
+  color: #003366;
+  border: 1px solid #d2e3f3;
+}
+
+/* Regular day boxes */
+.calendar-day {
+  min-height: 85px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.4rem;
+  border: 1px solid #e4e4e4;
+  position: relative;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+/* Shaded weekends */
+.calendar-day.weekend {
+  background: #fff5ef; /* soft peach */
+  border-color: #ffd9c7;
+}
+
+/* Day number badge */
+.calendar-day-number {
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 0.3rem;
+}
+
+/* Hover highlight */
+.calendar-day:hover {
+  background: #eef7ff;
+  border-color: #bcd6f1;
+}
+
+/* Event tags (future feature placeholder) */
+.calendar-event {
+  margin-top: 0.25rem;
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Free event */
+.calendar-event.free {
+  background: #e8f9ef;
+  color: #2b7a42;
+}
+
+/* Payable event */
+.calendar-event.payable {
+  background: #fff2d8;
+  color: #a56800;
+}
+
+/* Responsiveness */
+@media (max-width: 700px) {
+  .calendar-month-label {
+    font-size: 1.3rem;
+  }
+  .calendar-day {
+    min-height: 65px;
+  }
+
+/* =========================================================
+   CALENDAR THEME — Modern Pastel Grid (Theme B)
+   ========================================================= */
+
+/* Overall container */
+.calendar-container {
+  max-width: 900px;
+  margin: 5rem auto 2rem auto;
+  padding: 1rem;
+}
+
+/* Header: month label + buttons */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.calendar-header button {
+  padding: 0.4rem 1rem;
+  background: #e7f0fa;
+  border: 1px solid #b8cbe0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #003366;
+  transition: 0.2s;
+}
+
+.calendar-header button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.calendar-header button:hover:not(:disabled) {
+  background: #d9e8f8;
+}
+
+.calendar-month-label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #003366;
+}
+
+/* Grid layout */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+/* Weekday names (Mon–Sun) */
+.calendar-weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  background: #f0f7ff;
+  border-radius: 8px;
+  color: #003366;
+  border: 1px solid #d2e3f3;
+}
+
+/* Regular day boxes */
+.calendar-day {
+  min-height: 85px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.4rem;
+  border: 1px solid #e4e4e4;
+  position: relative;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+/* Shaded weekends */
+.calendar-day.weekend {
+  background: #fff5ef; /* soft peach */
+  border-color: #ffd9c7;
+}
+
+/* Day number badge */
+.calendar-day-number {
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 0.3rem;
+}
+
+/* Hover highlight */
+.calendar-day:hover {
+  background: #eef7ff;
+  border-color: #bcd6f1;
+}
+
+/* Event tags (future feature placeholder) */
+.calendar-event {
+  margin-top: 0.25rem;
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Free event */
+.calendar-event.free {
+  background: #e8f9ef;
+  color: #2b7a42;
+}
+
+/* Payable event */
+.calendar-event.payable {
+  background: #fff2d8;
+  color: #a56800;
+}
+
+/* Responsiveness */
+@media (max-width: 700px) {
+  .calendar-month-label {
+    font-size: 1.3rem;
+  }
+  .calendar-day {
+    min-height: 65px;
+  }
+
+/* =========================================================
+   CALENDAR THEME — Modern Pastel Grid (Theme B)
+   ========================================================= */
+
+/* Overall container */
+.calendar-container {
+  max-width: 900px;
+  margin: 5rem auto 2rem auto;
+  padding: 1rem;
+}
+
+/* Header: month label + buttons */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.calendar-header button {
+  padding: 0.4rem 1rem;
+  background: #e7f0fa;
+  border: 1px solid #b8cbe0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #003366;
+  transition: 0.2s;
+}
+
+.calendar-header button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.calendar-header button:hover:not(:disabled) {
+  background: #d9e8f8;
+}
+
+.calendar-month-label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #003366;
+}
+/* Grid layout */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+/* Weekday names (Mon–Sun) */
+.calendar-weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  background: #f0f7ff;
+  border-radius: 8px;
+  color: #003366;
+  border: 1px solid #d2e3f3;
+}
+
+/* Regular day boxes */
+.calendar-day {
+  min-height: 85px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.4rem;
+  border: 1px solid #e4e4e4;
+  position: relative;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+/* Shaded weekends */
+.calendar-day.weekend {
+  background: #fff5ef; /* soft peach */
+  border-color: #ffd9c7;
+}

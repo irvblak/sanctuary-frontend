@@ -1,14 +1,13 @@
-
-// =========================================================
-// SANCTUARY CLUB – FRONTEND LOGIN + 3-MONTH CALENDAR SYSTEM
-// Phase 1 (Demo Only) – No real backend yet
-// =========================================================
+/* =========================================================
+   SANCTUARY CLUB – FRONTEND LOGIN + 3-MONTH CALENDAR
+   Phase 1 (Demo Only)
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ---------------------------------------
-  //  LOGIN PROTECTION + REDIRECT SYSTEM
-  // ---------------------------------------
+  /* ---------------------------------------------------------
+     LOGIN PROTECTION
+  --------------------------------------------------------- */
   const protectedPages = [
     "about.html",
     "notices.html",
@@ -41,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const currentPage = getCurrentPage();
 
-  // Protect internal pages
+  // Redirect access to protected pages
   if (protectedPages.includes(currentPage) && currentPage !== "member-login.html") {
     if (!isLoggedIn()) {
       const redirectTarget = encodeURIComponent(currentPage);
@@ -50,40 +49,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Intercept homepage buttons
+  // Intercept hero buttons on homepage
   if (currentPage === "index.html") {
-    const heroLinks = document.querySelectorAll(".hero-buttons a.hero-button");
-
-    heroLinks.forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const href = link.getAttribute("href");
-
-        if (href && protectedPages.includes(href) && !isLoggedIn()) {
+    document.querySelectorAll(".hero-buttons a.hero-button").forEach(link => {
+      link.addEventListener("click", event => {
+        const target = link.getAttribute("href");
+        if (protectedPages.includes(target) && !isLoggedIn()) {
           event.preventDefault();
-          const redirectTarget = encodeURIComponent(href);
-          window.location.href = `member-login.html?redirect=${redirectTarget}`;
+          window.location.href = `member-login.html?redirect=${encodeURIComponent(target)}`;
         }
       });
     });
   }
 
-  // Handle login page
+  // Login page handler
   if (currentPage === "member-login.html") {
     const form = document.querySelector("form");
 
     if (form) {
-      form.addEventListener("submit", (event) => {
+      form.addEventListener("submit", event => {
         event.preventDefault();
 
         const email = form.querySelector('input[type="email"]').value.trim();
         const pin = form.querySelector('input[type="password"]').value.trim();
 
         if (!email || pin.length !== 4) {
-          alert("Please enter your registered email and 4-digit PIN.");
+          alert("Enter your email and 4-digit PIN.");
           return;
         }
 
-        // Phase 1 demo only: accept ANY email + ANY 4-digit pin
         setLoggedIn(email);
 
         const params = new URLSearchParams(window.location.search);
@@ -93,25 +87,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Logout handler (works on all pages)
+  // Logout handler
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
-    logoutLink.addEventListener("click", (event) => {
+    logoutLink.addEventListener("click", event => {
       event.preventDefault();
       logout();
       window.location.href = "index.html";
     });
   }
 
-  // =========================================================
-  // 3-MONTH SMART CALENDAR (Only runs on events-calendar.html)
-  // =========================================================
-  const grid = document.getElementById("calendar-grid");
-  const monthLabel = document.getElementById("calendar-month-label");
-  const prevBtn = document.getElementById("prev-month");
-  const nextBtn = document.getElementById("next-month");
+  /* ==========================================================
+     SMART 3-MONTH CALENDAR (only runs on events-calendar.html)
+     ========================================================== */
 
-  if (grid) {
+  function initCalendar() {
+    const grid = document.getElementById("calendar-grid");
+    const monthLabel = document.getElementById("calendar-month-label");
+    const prevBtn = document.getElementById("prev-month");
+    const nextBtn = document.getElementById("next-month");
+
+    // Retry until calendar HTML exists
+    if (!grid || !monthLabel || !prevBtn || !nextBtn) {
+      setTimeout(initCalendar, 100);
+      return;
+    }
+
     const today = new Date();
     let offset = 0;
 
@@ -132,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "January","February","March","April","May","June",
         "July","August","September","October","November","December"
       ];
+
       monthLabel.textContent = `${monthNames[data.monthIndex]} ${data.year}`;
 
       const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -149,24 +151,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       while (dayCounter <= data.totalDays) {
         currentRow.push(`<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`);
-
         if (currentRow.length === 7) {
           html += `<div class="cal-row">${currentRow.join("")}</div>`;
           currentRow = [];
         }
-
         dayCounter++;
       }
 
       if (currentRow.length > 0) {
-        while (currentRow.length < 7) currentRow.push(`<div class="cal-cell empty"></div>`);
+        while (currentRow.length < 7) {
+          currentRow.push(`<div class="cal-cell empty"></div>`);
+        }
         html += `<div class="cal-row">${currentRow.join("")}</div>`;
       }
 
       grid.innerHTML = html;
 
-      prevBtn.disabled = (offset === 0);
-      nextBtn.disabled = (offset === 2);
+      prevBtn.disabled = offset === 0;
+      nextBtn.disabled = offset === 2;
     }
 
     prevBtn.addEventListener("click", () => {
@@ -179,5 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buildCalendar(offset);
   }
+
+  // Start calendar loader
+  initCalendar();
 
 });

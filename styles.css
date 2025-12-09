@@ -571,3 +571,47 @@ h2 {
   background: #fff5ef; /* soft peach */
   border-color: #ffd9c7;
 }
+/* Day number */
+.calendar-day-number {
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 0.3rem;
+}
+
+/* Hover highlight */
+.calendar-day:hover {
+  background: #eef7ff;
+  border-color: #bcd6f1;
+}
+
+/* Event tags */
+.calendar-event {
+  margin-top: 0.25rem;
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Free event */
+.calendar-event.free {
+  background: #e8f9ef;
+  color: #2b7a42;
+}
+
+/* Payable event */
+.calendar-event.payable {
+  background: #fff2d8;
+  color: #a56800;
+}
+
+/* Mobile scaling */
+@media (max-width: 700px) {
+  .calendar-month-label {
+    font-size: 1.3rem;
+  }
+  .calendar-day {
+    min-height: 65px;
+  }
+}

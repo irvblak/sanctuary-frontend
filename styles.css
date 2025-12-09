@@ -1,620 +1,6 @@
-/* =========================================================
-   BASE STYLING
-   ========================================================= */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  color: #003366;
-  background: none;
-  overflow: hidden; /* no scrolling */
-}
 
 /* =========================================================
-   TOP NAVIGATION — Home (left) / Logout (right)
-   ========================================================= */
-.top-nav {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1.25rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10; /* stay above page content */
-}
-
-.top-nav a {
-  font-size: 1rem;
-  text-decoration: none;
-  color: #003366;
-  font-weight: 600;
-}
-
-/* Fix Logout button so it's not flush against the right edge */
-.top-nav-logout {
-  margin-right: 1.5rem;   /* ← shifts Logout left so full word is visible */
-}
-
-
-/* =========================================================
-   HERO SECTION — photo, title, buttons, footer
-   ========================================================= */
-.hero {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-
-  background-image: url("clubhouse.jpg");
-  background-size: contain; /* show whole photo */
-  background-repeat: no-repeat;
-  background-position: center 92%; /* sky + hedge balanced */
-}
-
-/* SIDE GRADIENT to gracefully replace blurred fillers */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-
-  background: linear-gradient(
-      to right,
-      rgba(136,186,232,1) 0%,
-      rgba(136,186,232,0) 15%,
-      rgba(136,186,232,0) 85%,
-      rgba(136,186,232,1) 100%
-  );
-}
-
-/* overlay container */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* Floating title (in sky area) */
-.hero-title {
-  position: absolute;
-  top: 1.2%;
-  left: 2%;
-  margin: 0;
-  font-size: 72px;
-  font-weight: 700;
-  color: #001f4d;
-  text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
-  white-space: nowrap;
-}
-
-/* Buttons across the grass */
-.hero-buttons {
-  position: absolute;
-  bottom: 22%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1.5rem;
-  white-space: nowrap;
-}
-
-/* Oval brown buttons */
-.hero-button {
-  display: inline-block;
-  padding: 0.7rem 1.8rem;
-  border-radius: 999px;
-  background-color: #8b5a2b;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 500;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-}
-
-.hero-button:hover {
-  background-color: #a06830;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 12px rgba(0,0,0,0.35);
-}
-
-/* Footer on hedge */
-.site-footer {
-  position: absolute;
-  bottom: 6%;
-  width: 100%;
-  text-align: center;
-  font-size: 1rem;
-  color: #001f4d; /* navy to match title */
-  background: none;
-  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
-  pointer-events: none;
-}
-
-/* =========================================================
-   INTERNAL PAGE STYLES (your existing content)
-   ========================================================= */
-
-.section {
-  padding: 2rem 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-h2 {
-  margin-top: 0;
-}
-
-/* Add any additional internal page styling below */
-
-/* =========================================================
-   CALENDAR PAGE — Full Grid Layout
-   ========================================================= */
-
-.calendar-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.calendar-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.calendar-header button {
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #8b5a2b;
-  background: #fff7ed;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.calendar-header button:hover {
-  background: #fcead2;
-}
-
-.calendar-month-label {
-  font-size: 1.6rem;
-  font-weight: bold;
-}
-
-/* Grid itself */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-
-/* Weekday row */
-.weekday {
-  text-align: center;
-  font-weight: bold;
-  padding: 0.4rem;
-  background: #e5eef7;
-  border-radius: 6px;
-}
-
-/* Date cell */
-.calendar-cell {
-  background: #ffffff;
-  min-height: 120px;
-  border-radius: 10px;
-  padding: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  position: relative;
-}
-
-.calendar-cell .day-number {
-  font-weight: bold;
-  font-size: 1rem;
-  color: #003366;
-}
-
-.calendar-cell.empty {
-  background: transparent;
-  box-shadow: none;
-}
-
-/* Event tags */
-.calendar-event {
-  margin-top: 4px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  display: inline-block;
-}
-
-.calendar-event.free {
-  background: #e1f6e8;
-  color: #22663a;
-}
-
-.calendar-event.payable {
-  background: #fde8c5;
-  color: #8a5700;
-}
-
-/* =========================================================
-   CALENDAR THEME — Modern Pastel Grid (Theme B)
-   ========================================================= */
-
-/* Overall container */
-.calendar-container {
-  max-width: 900px;
-  margin: 5rem auto 2rem auto;
-  padding: 1rem;
-}
-
-/* Header: month label + buttons */
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-}
-
-.calendar-header button {
-  padding: 0.4rem 1rem;
-  background: #e7f0fa;
-  border: 1px solid #b8cbe0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #003366;
-  transition: 0.2s;
-}
-
-.calendar-header button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.calendar-header button:hover:not(:disabled) {
-  background: #d9e8f8;
-}
-
-.calendar-month-label {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #003366;
-}
-
-/* Grid layout */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.4rem;
-}
-
-/* Weekday names (Mon–Sun) */
-.calendar-weekday {
-  text-align: center;
-  font-weight: 600;
-  padding: 0.5rem 0;
-  background: #f0f7ff;
-  border-radius: 8px;
-  color: #003366;
-  border: 1px solid #d2e3f3;
-}
-
-/* Regular day boxes */
-.calendar-day {
-  min-height: 85px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 0.4rem;
-  border: 1px solid #e4e4e4;
-  position: relative;
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
-}
-
-/* Shaded weekends */
-.calendar-day.weekend {
-  background: #fff5ef; /* soft peach */
-  border-color: #ffd9c7;
-}
-
-/* Day number badge */
-.calendar-day-number {
-  font-weight: 700;
-  color: #003366;
-  margin-bottom: 0.3rem;
-}
-
-/* Hover highlight */
-.calendar-day:hover {
-  background: #eef7ff;
-  border-color: #bcd6f1;
-}
-
-/* Event tags (future feature placeholder) */
-.calendar-event {
-  margin-top: 0.25rem;
-  display: inline-block;
-  padding: 0.15rem 0.4rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* Free event */
-.calendar-event.free {
-  background: #e8f9ef;
-  color: #2b7a42;
-}
-
-/* Payable event */
-.calendar-event.payable {
-  background: #fff2d8;
-  color: #a56800;
-}
-
-/* Responsiveness */
-@media (max-width: 700px) {
-  .calendar-month-label {
-    font-size: 1.3rem;
-  }
-  .calendar-day {
-    min-height: 65px;
-  }
-
-/* =========================================================
-   CALENDAR THEME — Modern Pastel Grid (Theme B)
-   ========================================================= */
-
-/* Overall container */
-.calendar-container {
-  max-width: 900px;
-  margin: 5rem auto 2rem auto;
-  padding: 1rem;
-}
-
-/* Header: month label + buttons */
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-}
-
-.calendar-header button {
-  padding: 0.4rem 1rem;
-  background: #e7f0fa;
-  border: 1px solid #b8cbe0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #003366;
-  transition: 0.2s;
-}
-
-.calendar-header button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.calendar-header button:hover:not(:disabled) {
-  background: #d9e8f8;
-}
-
-.calendar-month-label {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #003366;
-}
-
-/* Grid layout */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.4rem;
-}
-
-/* Weekday names (Mon–Sun) */
-.calendar-weekday {
-  text-align: center;
-  font-weight: 600;
-  padding: 0.5rem 0;
-  background: #f0f7ff;
-  border-radius: 8px;
-  color: #003366;
-  border: 1px solid #d2e3f3;
-}
-
-/* Regular day boxes */
-.calendar-day {
-  min-height: 85px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 0.4rem;
-  border: 1px solid #e4e4e4;
-  position: relative;
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
-}
-
-/* Shaded weekends */
-.calendar-day.weekend {
-  background: #fff5ef; /* soft peach */
-  border-color: #ffd9c7;
-}
-
-/* Day number badge */
-.calendar-day-number {
-  font-weight: 700;
-  color: #003366;
-  margin-bottom: 0.3rem;
-}
-
-/* Hover highlight */
-.calendar-day:hover {
-  background: #eef7ff;
-  border-color: #bcd6f1;
-}
-
-/* Event tags (future feature placeholder) */
-.calendar-event {
-  margin-top: 0.25rem;
-  display: inline-block;
-  padding: 0.15rem 0.4rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* Free event */
-.calendar-event.free {
-  background: #e8f9ef;
-  color: #2b7a42;
-}
-
-/* Payable event */
-.calendar-event.payable {
-  background: #fff2d8;
-  color: #a56800;
-}
-
-/* Responsiveness */
-@media (max-width: 700px) {
-  .calendar-month-label {
-    font-size: 1.3rem;
-  }
-  .calendar-day {
-    min-height: 65px;
-  }
-
-/* =========================================================
-   CALENDAR THEME — Modern Pastel Grid (Theme B)
-   ========================================================= */
-
-/* Overall container */
-.calendar-container {
-  max-width: 900px;
-  margin: 5rem auto 2rem auto;
-  padding: 1rem;
-}
-
-/* Header: month label + buttons */
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-}
-
-.calendar-header button {
-  padding: 0.4rem 1rem;
-  background: #e7f0fa;
-  border: 1px solid #b8cbe0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #003366;
-  transition: 0.2s;
-}
-
-.calendar-header button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.calendar-header button:hover:not(:disabled) {
-  background: #d9e8f8;
-}
-
-.calendar-month-label {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #003366;
-}
-/* Grid layout */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.4rem;
-}
-
-/* Weekday names (Mon–Sun) */
-.calendar-weekday {
-  text-align: center;
-  font-weight: 600;
-  padding: 0.5rem 0;
-  background: #f0f7ff;
-  border-radius: 8px;
-  color: #003366;
-  border: 1px solid #d2e3f3;
-}
-
-/* Regular day boxes */
-.calendar-day {
-  min-height: 85px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 0.4rem;
-  border: 1px solid #e4e4e4;
-  position: relative;
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
-}
-
-/* Shaded weekends */
-.calendar-day.weekend {
-  background: #fff5ef; /* soft peach */
-  border-color: #ffd9c7;
-}
-/* Day number */
-.calendar-day-number {
-  font-weight: 700;
-  color: #003366;
-  margin-bottom: 0.3rem;
-}
-
-/* Hover highlight */
-.calendar-day:hover {
-  background: #eef7ff;
-  border-color: #bcd6f1;
-}
-
-/* Event tags */
-.calendar-event {
-  margin-top: 0.25rem;
-  display: inline-block;
-  padding: 0.15rem 0.4rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* Free event */
-.calendar-event.free {
-  background: #e8f9ef;
-  color: #2b7a42;
-}
-
-/* Payable event */
-.calendar-event.payable {
-  background: #fff2d8;
-  color: #a56800;
-}
-
-/* Mobile scaling */
-@media (max-width: 700px) {
-  .calendar-month-label {
-    font-size: 1.3rem;
-  }
-  .calendar-day {
-    min-height: 65px;
-/* =========================================================
-   CALENDAR LAYOUT (Events Calendar Page)
+   CALENDAR PAGE — Clean Hybrid Pastel Grid (Matches script.js)
    ========================================================= */
 
 .calendar-page-body {
@@ -624,17 +10,19 @@ h2 {
   font-family: Arial, sans-serif;
 }
 
+/* Wrapper */
 .calendar-container {
-  max-width: 900px;
+  max-width: 950px;
   margin: 6rem auto 3rem;
   padding: 1rem;
 }
 
+/* Header with month + nav buttons */
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .calendar-month-label {
@@ -659,45 +47,98 @@ h2 {
   background: #a06830;
 }
 
-/* Calendar grid wrapper */
+/* =========================================================
+   GRID LAYOUT (7 columns)
+   ========================================================= */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 6px;
 }
 
-/* Weekday row */
+/* Top weekday row (Mon–Sun) */
 .weekday-row .cal-cell {
-  background: #e0f0ff;
+  background: #e5efff;
+  border-radius: 6px;
+  padding: 0.5rem 0;
   font-weight: bold;
   text-align: center;
-  padding: 0.5rem 0;
-  border-radius: 6px;
+  color: #003366;
+  border: 1px solid #cfdff4;
 }
 
 /* Individual date cells */
 .cal-cell {
-  min-height: 80px;
+  min-height: 110px;
   background: #ffffff;
   border-radius: 10px;
-  padding: 4px;
+  padding: 6px;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  border: 1px solid #e3e7ee;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
+/* Empty filler cells */
 .cal-cell.empty {
   background: transparent;
+  border: none;
   box-shadow: none;
 }
 
+/* Day number badge */
 .day-number {
   position: absolute;
   top: 6px;
   right: 8px;
   font-size: 0.9rem;
-  color: #003366;
   font-weight: bold;
+  color: #003366;
 }
 
-     
- 
+/* Light pastel weekend shading */
+.cal-cell.weekend {
+  background: #fff6ef;
+  border-color: #f7d9c5;
+}
+
+/* Hover highlight */
+.cal-cell:hover {
+  background: #eef7ff;
+  border-color: #bcd6f1;
+}
+
+/* =========================================================
+   Event tag placeholders (future feature)
+   ========================================================= */
+
+.calendar-event {
+  margin-top: 6px;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.calendar-event.free {
+  background: #e7f9ee;
+  color: #2b7a42;
+}
+
+.calendar-event.payable {
+  background: #fff2d8;
+  color: #a56800;
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+   ========================================================= */
+@media (max-width: 700px) {
+  .calendar-month-label {
+    font-size: 1.35rem;
+  }
+  .cal-cell {
+    min-height: 85px;
+  }
+

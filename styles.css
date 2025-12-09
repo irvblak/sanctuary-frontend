@@ -2,6 +2,7 @@
 /* =========================================================
    CALENDAR PAGE — Clean Hybrid Pastel Grid (Matches script.js)
    ========================================================= */
+body { background: yellow !important; }
 
 .calendar-page-body {
   background: #f5f9ff;

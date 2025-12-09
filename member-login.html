@@ -82,7 +82,15 @@
       <input type="email" required>
 
       <label>4-digit access PIN</label>
-      <input type="password" maxlength="4" required>
+      <input 
+  type="text"
+  inputmode="numeric"
+  pattern="\d{4}"
+  maxlength="4"
+  placeholder="4-digit PIN"
+  required
+>
+
 
       <button type="submit">Login</button>
     </form>

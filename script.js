@@ -108,3 +108,83 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/* =========================================================
+   SANCTUARY CLUB – SMART ROLLING 3-MONTH CALENDAR SYSTEM
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const grid = document.getElementById("calendar-grid");
+  const monthLabel = document.getElementById("calendar-month-label");
+  const prevBtn = document.getElementById("prev-month");
+  const nextBtn = document.getElementById("next-month");
+
+  // Only run this code on the calendar page
+  if (!grid) return;
+
+  const today = new Date();
+  let offset = 0;
+
+  function getMonthData(offset) {
+      const base = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+      return {
+          year: base.getFullYear(),
+          monthIndex: base.getMonth(),
+          totalDays: new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(),
+          firstWeekday: new Date(base.getFullYear(), base.getMonth(), 1).getDay()
+      };
+  }
+
+  function buildCalendar(offset) {
+      const data = getMonthData(offset);
+
+      const monthNames = [
+          "January","February","March","April","May","June",
+          "July","August","September","October","November","December"
+      ];
+      monthLabel.textContent = `${monthNames[data.monthIndex]} ${data.year}`;
+
+      const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      let html = `<div class="cal-row weekday-row">`;
+      weekdays.forEach(d => html += `<div class="cal-cell wk">${d}</div>`);
+      html += `</div>`;
+
+      let dayCounter = 1;
+      let currentRow = [];
+
+      let padding = (data.firstWeekday + 6) % 7;
+      for (let i = 0; i < padding; i++) {
+          currentRow.push(`<div class="cal-cell empty"></div>`);
+      }
+
+      while (dayCounter <= data.totalDays) {
+          currentRow.push(`<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`);
+          if (currentRow.length === 7) {
+              html += `<div class="cal-row">${currentRow.join("")}</div>`;
+              currentRow = [];
+          }
+          dayCounter++;
+      }
+
+      if (currentRow.length > 0) {
+          while (currentRow.length < 7) {
+              currentRow.push(`<div class="cal-cell empty"></div>`);
+          }
+          html += `<div class="cal-row">${currentRow.join("")}</div>`;
+      }
+
+      grid.innerHTML = html;
+
+      prevBtn.disabled = (offset === 0);
+      nextBtn.disabled = (offset === 2);
+  }
+
+  prevBtn.addEventListener("click", () => {
+      if (offset > 0) { offset--; buildCalendar(offset); }
+  });
+
+  nextBtn.addEventListener("click", () => {
+      if (offset < 2) { offset++; buildCalendar(offset); }
+  });
+
+  buildCalendar(offset);
+});

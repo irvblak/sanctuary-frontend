@@ -22,7 +22,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10; /* ensure it stays above hero content */
+  z-index: 10; /* stay above page content */
 }
 
 .top-nav a {
@@ -31,6 +31,12 @@ body {
   color: #003366;
   font-weight: 600;
 }
+
+/* Fix Logout button so it's not flush against the right edge */
+.top-nav-logout {
+  margin-right: 1.5rem;   /* ← shifts Logout left so full word is visible */
+}
+
 
 /* =========================================================
    HERO SECTION — photo, title, buttons, footer

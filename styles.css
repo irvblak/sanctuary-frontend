@@ -1,29 +1,163 @@
 
 /* =========================================================
-   CALENDAR PAGE — Clean Hybrid Pastel Grid (Matches script.js)
+   BASE STYLING
    ========================================================= */
-body { background: yellow !important; }
-
-.calendar-page-body {
-  background: #f5f9ff;
+body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  color: #003366;
 }
 
-/* Wrapper */
+/* =========================================================
+   TOP NAVIGATION — Home (left) / Logout (right)
+   ========================================================= */
+.top-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+.top-nav a {
+  font-size: 1rem;
+  text-decoration: none;
+  color: #003366;
+  font-weight: 600;
+}
+
+.top-nav-logout {
+  margin-right: 1.5rem; 
+}
+
+/* =========================================================
+   HERO SECTION — photo, title, buttons, footer
+   ========================================================= */
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  background-image: url("clubhouse.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center 92%;
+}
+
+/* SIDE GRADIENT for filler left + right */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to right,
+    rgba(136,186,232,1) 0%,
+    rgba(136,186,232,0) 15%,
+    rgba(136,186,232,0) 85%,
+    rgba(136,186,232,1) 100%
+  );
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* Title */
+.hero-title {
+  position: absolute;
+  top: 1.2%;
+  left: 2%;
+  margin: 0;
+  font-size: 72px;
+  font-weight: 700;
+  color: #001f4d;
+  text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
+  white-space: nowrap;
+}
+
+/* Buttons */
+.hero-buttons {
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5rem;
+}
+
+.hero-button {
+  padding: 0.7rem 1.8rem;
+  background: #8b5a2b;
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.hero-button:hover {
+  background: #a06830;
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.site-footer {
+  position: absolute;
+  bottom: 6%;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  color: #001f4d;
+  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
+  pointer-events: none;
+}
+
+/* =========================================================
+   SUBPAGE LAYOUT
+   ========================================================= */
+.page-container {
+  max-width: 900px;
+  padding: 2rem;
+  margin: 6rem auto;
+}
+
+.home-button {
+  display: block;
+  padding: 1rem 0;
+  margin-left: 2rem;
+  text-decoration: none;
+  color: #003366;
+  font-weight: bold;
+}
+
+/* =========================================================
+   CALENDAR PAGE — Clean + Working Layout
+   ========================================================= */
+.calendar-page-body {
+  background: #f5f9ff;
+}
+
 .calendar-container {
-  max-width: 950px;
+  max-width: 900px;
   margin: 6rem auto 3rem;
   padding: 1rem;
 }
 
-/* Header with month + nav buttons */
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .calendar-month-label {
@@ -32,8 +166,7 @@ body { background: yellow !important; }
   color: #003366;
 }
 
-#prev-month,
-#next-month {
+#prev-month, #next-month {
   background: #8b5a2b;
   color: white;
   border: none;
@@ -43,103 +176,46 @@ body { background: yellow !important; }
   font-size: 1rem;
 }
 
-#prev-month:hover,
-#next-month:hover {
+#prev-month:hover, #next-month:hover {
   background: #a06830;
 }
 
-/* =========================================================
-   GRID LAYOUT (7 columns)
-   ========================================================= */
+/* Grid */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 4px;
 }
 
-/* Top weekday row (Mon–Sun) */
+/* Weekday headings */
 .weekday-row .cal-cell {
-  background: #e5efff;
-  border-radius: 6px;
+  background: #e0f0ff;
   padding: 0.5rem 0;
-  font-weight: bold;
   text-align: center;
-  color: #003366;
-  border: 1px solid #cfdff4;
+  font-weight: bold;
+  border-radius: 6px;
 }
 
-/* Individual date cells */
+/* Date cells */
 .cal-cell {
-  min-height: 110px;
-  background: #ffffff;
+  min-height: 80px;
+  background: white;
   border-radius: 10px;
-  padding: 6px;
+  padding: 4px;
   position: relative;
-  border: 1px solid #e3e7ee;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  transition: background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-/* Empty filler cells */
 .cal-cell.empty {
   background: transparent;
-  border: none;
   box-shadow: none;
 }
 
-/* Day number badge */
 .day-number {
   position: absolute;
   top: 6px;
   right: 8px;
   font-size: 0.9rem;
-  font-weight: bold;
   color: #003366;
+  font-weight: bold;
 }
-
-/* Light pastel weekend shading */
-.cal-cell.weekend {
-  background: #fff6ef;
-  border-color: #f7d9c5;
-}
-
-/* Hover highlight */
-.cal-cell:hover {
-  background: #eef7ff;
-  border-color: #bcd6f1;
-}
-
-/* =========================================================
-   Event tag placeholders (future feature)
-   ========================================================= */
-
-.calendar-event {
-  margin-top: 6px;
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.calendar-event.free {
-  background: #e7f9ee;
-  color: #2b7a42;
-}
-
-.calendar-event.payable {
-  background: #fff2d8;
-  color: #a56800;
-}
-
-/* =========================================================
-   MOBILE RESPONSIVE
-   ========================================================= */
-@media (max-width: 700px) {
-  .calendar-month-label {
-    font-size: 1.35rem;
-  }
-  .cal-cell {
-    min-height: 85px;
-  }
-

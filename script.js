@@ -64,28 +64,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Login page handler
   if (currentPage === "member-login.html") {
-    const form = document.querySelector("form");
+  const form = document.querySelector("form");
 
-    if (form) {
-      form.addEventListener("submit", event => {
-        event.preventDefault();
+  if (form) {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-        const email = form.querySelector('input[type="email"]').value.trim();
-        const pin = form.querySelector('input[type="password"]').value.trim();
+      const email = form.querySelector('input[type="email"]').value.trim();
+      const pin = form.querySelector('input[type="password"]').value.trim();
 
-        if (!email || pin.length !== 4) {
-          alert("Enter your email and 4-digit PIN.");
-          return;
-        }
-
-        setLoggedIn(email);
-
-        const params = new URLSearchParams(window.location.search);
-        const redirect = params.get("redirect") || "member-profile.html";
-        window.location.href = redirect;
+      const response = await fetch("https://sanctuary-backend.onrender.com/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, pin })
       });
-    }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        alert("Invalid email or PIN. Please try again.");
+        return;
+      }
+
+      // Store session
+      localStorage.setItem("sc_logged_in", "true");
+      localStorage.setItem("sc_user_email", result.member.email);
+
+      // Redirect
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect") || "member-profile.html";
+      window.location.href = redirect;
+    });
   }
+}
 
   // Logout handler
   const logoutLink = document.getElementById("logout-link");

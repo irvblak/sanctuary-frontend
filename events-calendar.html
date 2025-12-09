@@ -14,20 +14,21 @@
   <a href="index.html" class="top-nav-home">Home</a>
   <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
 </div>
-
 <div class="calendar-container">
 
-    <!-- Month controls -->
-    <div class="calendar-controls">
-        <button id="prev-month" class="cal-nav-btn">◀</button>
-        <h2 id="calendar-month-label"></h2>
-        <button id="next-month" class="cal-nav-btn">▶</button>
-    </div>
+  <div class="calendar-header">
+    <button id="prev-month">← Prev</button>
+    <div id="calendar-month-label" class="calendar-month-label"></div>
+    <button id="next-month">Next →</button>
+  </div>
 
-    <!-- Calendar grid -->
-    <div id="calendar-grid" class="calendar-grid"></div>
+  <div class="calendar-grid" id="calendar-grid">
+    <!-- JS will place days here -->
+  </div>
 
 </div>
+
+
 
 <script src="script.js?v=3"></script>
 

@@ -1,9 +1,14 @@
-// Sanctuary Club - Phase 1 frontend "login" prototype
-// NOTE: This is ONLY for demonstration.
-// It does NOT provide real security and must be replaced later by a real backend.
+
+// =========================================================
+// SANCTUARY CLUB – FRONTEND LOGIN + 3-MONTH CALENDAR SYSTEM
+// Phase 1 (Demo Only) – No real backend yet
+// =========================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Which pages should be considered "internal" (members only)
+
+  // ---------------------------------------
+  //  LOGIN PROTECTION + REDIRECT SYSTEM
+  // ---------------------------------------
   const protectedPages = [
     "about.html",
     "notices.html",
@@ -16,9 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   function getCurrentPage() {
-    const path = window.location.pathname;
-    const last = path.split("/").pop();
-    return last === "" ? "index.html" : last;
+    const p = window.location.pathname.split("/").pop();
+    return p === "" ? "index.html" : p;
   }
 
   function isLoggedIn() {
@@ -37,26 +41,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const currentPage = getCurrentPage();
 
-  // 1) Protect internal pages (other than the login page itself)
-  if (
-    protectedPages.includes(currentPage) &&
-    currentPage !== "member-login.html"
-  ) {
+  // Protect internal pages
+  if (protectedPages.includes(currentPage) && currentPage !== "member-login.html") {
     if (!isLoggedIn()) {
       const redirectTarget = encodeURIComponent(currentPage);
       window.location.href = `member-login.html?redirect=${redirectTarget}`;
-      return; // stop running further code on this page
+      return;
     }
   }
 
-  // 2) Intercept hero buttons on the homepage (index)
+  // Intercept homepage buttons
   if (currentPage === "index.html") {
     const heroLinks = document.querySelectorAll(".hero-buttons a.hero-button");
+
     heroLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         const href = link.getAttribute("href");
 
-        // Only gate the pages we consider protected
         if (href && protectedPages.includes(href) && !isLoggedIn()) {
           event.preventDefault();
           const redirectTarget = encodeURIComponent(href);
@@ -66,30 +67,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3) Handle Member Login form behaviour
+  // Handle login page
   if (currentPage === "member-login.html") {
     const form = document.querySelector("form");
+
     if (form) {
       form.addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const emailInput = form.querySelector('input[type="email"]');
-        const pinInput = form.querySelector('input[type="password"]');
-
-        const email = emailInput ? emailInput.value.trim() : "";
-        const pin = pinInput ? pinInput.value.trim() : "";
+        const email = form.querySelector('input[type="email"]').value.trim();
+        const pin = form.querySelector('input[type="password"]').value.trim();
 
         if (!email || pin.length !== 4) {
           alert("Please enter your registered email and 4-digit PIN.");
           return;
         }
 
-        // PHASE 1 DEMO ONLY:
-        // We accept ANY email + ANY 4-digit PIN.
-        // In Phase 2, this will call the backend to validate against the real database.
+        // Phase 1 demo only: accept ANY email + ANY 4-digit pin
         setLoggedIn(email);
 
-        // Redirect to originally requested page, or member-profile as default
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get("redirect") || "member-profile.html";
         window.location.href = redirect;
@@ -97,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 4) (Optional) Simple logout handler, if you add a link with id="logout-link"
+  // Logout handler (works on all pages)
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
     logoutLink.addEventListener("click", (event) => {
@@ -106,40 +102,35 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "index.html";
     });
   }
-});
 
-/* =========================================================
-   SANCTUARY CLUB – SMART ROLLING 3-MONTH CALENDAR SYSTEM
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-
+  // =========================================================
+  // 3-MONTH SMART CALENDAR (Only runs on events-calendar.html)
+  // =========================================================
   const grid = document.getElementById("calendar-grid");
   const monthLabel = document.getElementById("calendar-month-label");
   const prevBtn = document.getElementById("prev-month");
   const nextBtn = document.getElementById("next-month");
 
-  // Only run this code on the calendar page
-  if (!grid) return;
+  if (grid) {
+    const today = new Date();
+    let offset = 0;
 
-  const today = new Date();
-  let offset = 0;
-
-  function getMonthData(offset) {
+    function getMonthData(offset) {
       const base = new Date(today.getFullYear(), today.getMonth() + offset, 1);
       return {
-          year: base.getFullYear(),
-          monthIndex: base.getMonth(),
-          totalDays: new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(),
-          firstWeekday: new Date(base.getFullYear(), base.getMonth(), 1).getDay()
+        year: base.getFullYear(),
+        monthIndex: base.getMonth(),
+        totalDays: new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(),
+        firstWeekday: new Date(base.getFullYear(), base.getMonth(), 1).getDay()
       };
-  }
+    }
 
-  function buildCalendar(offset) {
+    function buildCalendar(offset) {
       const data = getMonthData(offset);
 
       const monthNames = [
-          "January","February","March","April","May","June",
-          "July","August","September","October","November","December"
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
       ];
       monthLabel.textContent = `${monthNames[data.monthIndex]} ${data.year}`;
 
@@ -148,43 +139,45 @@ document.addEventListener("DOMContentLoaded", () => {
       weekdays.forEach(d => html += `<div class="cal-cell wk">${d}</div>`);
       html += `</div>`;
 
+      let padding = (data.firstWeekday + 6) % 7;
       let dayCounter = 1;
       let currentRow = [];
 
-      let padding = (data.firstWeekday + 6) % 7;
       for (let i = 0; i < padding; i++) {
-          currentRow.push(`<div class="cal-cell empty"></div>`);
+        currentRow.push(`<div class="cal-cell empty"></div>`);
       }
 
       while (dayCounter <= data.totalDays) {
-          currentRow.push(`<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`);
-          if (currentRow.length === 7) {
-              html += `<div class="cal-row">${currentRow.join("")}</div>`;
-              currentRow = [];
-          }
-          dayCounter++;
+        currentRow.push(`<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`);
+
+        if (currentRow.length === 7) {
+          html += `<div class="cal-row">${currentRow.join("")}</div>`;
+          currentRow = [];
+        }
+
+        dayCounter++;
       }
 
       if (currentRow.length > 0) {
-          while (currentRow.length < 7) {
-              currentRow.push(`<div class="cal-cell empty"></div>`);
-          }
-          html += `<div class="cal-row">${currentRow.join("")}</div>`;
+        while (currentRow.length < 7) currentRow.push(`<div class="cal-cell empty"></div>`);
+        html += `<div class="cal-row">${currentRow.join("")}</div>`;
       }
 
       grid.innerHTML = html;
 
       prevBtn.disabled = (offset === 0);
       nextBtn.disabled = (offset === 2);
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (offset > 0) { offset--; buildCalendar(offset); }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (offset < 2) { offset++; buildCalendar(offset); }
+    });
+
+    buildCalendar(offset);
   }
 
-  prevBtn.addEventListener("click", () => {
-      if (offset > 0) { offset--; buildCalendar(offset); }
-  });
-
-  nextBtn.addEventListener("click", () => {
-      if (offset < 2) { offset++; buildCalendar(offset); }
-  });
-
-  buildCalendar(offset);
 });

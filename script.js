@@ -73,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = form.querySelector('input[type="email"]').value.trim();
       const pin = form.querySelector('input[type="password"]').value.trim();
 
-      const response = await fetch("https://sanctuary-backend.onrender.com/auth/login", {
+     const response = await fetch("https://sanctuary-backend-8iqc.onrender.com/auth/login", {
+ 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, pin })

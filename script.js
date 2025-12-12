@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("LOGIN FORM SUBMITTED"); 
 
       const email = form.querySelector('input[type="email"]').value.trim();
-      const pin = form.querySelector('input[type="password"]').value.trim();
+      const pin = form.querySelector('input[type="pin"]').value.trim();
 
      const response = await fetch("https://sanctuary-backend-8iqc.onrender.com/auth/login", {
  

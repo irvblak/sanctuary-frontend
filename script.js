@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (form) {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      console.log("LOGIN FORM SUBMITTED"); 
 
       const email = form.querySelector('input[type="email"]').value.trim();
       const pin = form.querySelector('input[type="password"]').value.trim();

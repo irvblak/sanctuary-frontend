@@ -83,9 +83,7 @@ const pin   = form.querySelector('input[name="pin"]').value.trim();
       });
 
       const result = await response.json();
-       console.log("LOGIN RESULT:", result);
-
-
+       
       if (!result.success) {
         alert("Invalid email or PIN. Please try again.");
         return;

@@ -79,29 +79,27 @@
   <div class="login-box">
     <h2>Member Login</h2>
 
-    <form>
-      <label>Email address</label>
-      <input
-       <input type="email" id="login-email" required>
- 
-        name="email"
-        required
-      >
+    <form id="login-form">
+  <label>Email address</label>
+  <input
+    type="email"
+    name="email"
+    required
+  >
 
-      <label>4-digit access PIN</label>
-<input
-  type="text"
-  id="login-pin"
-  name="pin"
-  inputmode="numeric"
-  pattern="\d{4}"
-  maxlength="4"
-  placeholder="4-digit PIN"
-  required
->
+  <label>4-digit access PIN</label>
+  <input
+    type="text"
+    name="pin"
+    inputmode="numeric"
+    pattern="\d{4}"
+    maxlength="4"
+    placeholder="4-digit PIN"
+    required
+  >
 
-      <button type="submit">Login</button>
-    </form>
+  <button type="submit">Login</button>
+</form>
 
     <p class="note">
       Demo mode: your registered email + PIN will log you in.

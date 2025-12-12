@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Membership Enrollment — The Sanctuary Club</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f8f3;
+      color: #003366;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .form-box {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border-radius: 6px;
+      border: 1px solid #b5c5b5;
+      font-size: 1rem;
+    }
+
+    .resident {
+      border: 1px solid #d5e2d5;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      background: #8b5a2b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #a06830;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      color: #445;
+    }
+
+    .output {
+      margin-top: 2rem;
+      background: #eef4ee;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="form-box">
+  <h2>Membership Enrollment</h2>
+
+  <!-- PROPERTY -->
+  <label>Property Group</label>
+  <select id="group">
+    <option value="SCH">Sanctuary Clubhouse (SCH)</option>
+    <option value="SM">Sanctuary Mews (SM)</option>
+    <option value="SC">Sanctuary Court (SC)</option>
+  </select>
+
+  <label>Property Number</label>
+  <input type="number" id="number" min="1" required />
+
+  <!-- LOGIN -->
+  <label>Email (required)</label>
+  <input type="email" id="email" required />
+
+  <label>4-Digit PIN</label>
+  <input type="text" id="pin" pattern="\d{4}" maxlength="4" required />
+
+  <!-- RESIDENTS -->
+  <label>Number of Residents</label>
+  <select id="residentCount">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  <div id="residents"></div>
+
+  <button id="submitBtn">Create Membership</button>
+
+  <div class="note">
+    Your membership ID will be generated automatically.
+  </div>
+
+  <div class="output" id="output"></div>
+</div>
+
+<script>
+  const residentsDiv = document.getElementById("residents");
+  const residentCount = document.getElementById("residentCount");
+
+  function buildResidents(count) {
+    residentsDiv.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      residentsDiv.innerHTML += `
+        <div class="resident">
+          <label>Resident ${i + 1} Name</label>
+          <input type="text" class="res-name" />
+
+          <label>Phone (optional)</label>
+          <input type="text" class="res-phone" />
+        </div>
+      `;
+    }
+  }
+
+  residentCount.addEventListener("change", e => {
+    buildResidents(e.target.value);
+  });
+
+  buildResidents(1);
+
+  document.getElementById("submitBtn").addEventListener("click", () => {
+    const group = document.getElementById("group").value;
+    const number = document.getElementById("number").value;
+    const email = document.getElementById("email").value.trim();
+    const pin = document.getElementById("pin").value.trim();
+
+    if (!group || !number || !email || pin.length !== 4) {
+      alert("Please complete all required fields.");
+      return;
+    }
+
+    const residents = [...document.querySelectorAll(".resident")].map((box, i) => ({
+      name: box.querySelector(".res-name").value,
+      phone: box.querySelector(".res-phone").value,
+      role: i === 0 ? "primary" : "additional"
+    }));
+
+    const payload = {
+      membership_id: `${group}${number}`,
+      property_group: group,
+      property_number: Number(number),
+      email,
+      pin,
+      residents
+    };
+
+    const out = document.getElementById("output");
+    out.style.display = "block";
+    out.textContent = JSON.stringify(payload, null, 2);
+  });
+</script>
+
+</body>
+</html>

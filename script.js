@@ -193,10 +193,49 @@ const pin   = form.querySelector('input[name="pin"]').value.trim();
       if (offset < 2) { offset++; buildCalendar(offset); }
     });
 
-    buildCalendar(offset);
+   buildCalendar(offset);
   }
 
   // Start calendar loader
   initCalendar();
 
 });
+
+// ===============================
+// TEST: Fetch events from backend
+// ===============================
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("https://sanctuary-backend-8iqc.onrender.com/events")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Events fetched from backend:", data);
+
+      const container = document.querySelector(".calendar-container");
+      const testNote = document.createElement("div");
+      testNote.style.margin = "10px 0";
+      testNote.style.padding = "10px";
+      testNote.style.background = "#e6ffe6";
+      testNote.style.border = "1px solid #99cc99";
+      testNote.textContent = `✅ ${data.events.length} events loaded from backend`;
+      container.prepend(testNote);
+    })
+    .catch(error => {
+      console.error("Error fetching events:", error);
+
+      const container = document.querySelector(".calendar-container");
+      const errorNote = document.createElement("div");
+      errorNote.style.margin = "10px 0";
+      errorNote.style.padding = "10px";
+      errorNote.style.background = "#ffe6e6";
+      errorNote.style.border = "1px solid #cc9999";
+      errorNote.textContent = "❌ Failed to load events from backend";
+      container.prepend(errorNote);
+    });
+});
+

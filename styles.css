@@ -219,3 +219,49 @@ body {
   color: #003366;
   font-weight: bold;
 }
+/* ===== Hero wrapper with side panels ===== */
+
+.hero-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Side panels */
+.hero-panel {
+  width: 20%;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.hero-panel p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Hero stays central */
+.hero {
+  width: 60%;
+}
+
+/* Hide panels on small screens */
+@media (max-width: 900px) {
+  .hero-panel {
+    display: none;
+  }
+
+  .hero {
+    width: 100%;
+  }
+}

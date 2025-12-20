@@ -39,9 +39,8 @@ body {
    HERO SECTION — photo, title, buttons, footer
    ========================================================= */
 .hero {
-  width: 60%;
-  min-height: 100vh;
-  position: relative;
+  width: 60%;mi
+   position: relative;
 
   background-image: url("clubhouse.jpg");
   background-size: cover;
@@ -49,22 +48,7 @@ body {
   background-position: center;
 }
 
-/* SIDE GRADIENT for filler left + right */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
 
-  background: linear-gradient(
-    to right,
-    rgba(136,186,232,1) 0%,
-    rgba(136,186,232,0) 15%,
-    rgba(136,186,232,0) 85%,
-    rgba(136,186,232,1) 100%
-  );
-}
 
 .hero-overlay {
   position: absolute;
@@ -219,6 +203,12 @@ body {
   font-weight: bold;
 }
 /* ===== Hero wrapper with side panels ===== */
+/* ===== Hero wrapper with side panels ===== */
+.hero-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
 
 .hero-panel {
   width: 20%;

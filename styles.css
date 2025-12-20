@@ -39,14 +39,17 @@ body {
    HERO SECTION — photo, title, buttons, footer
    ========================================================= */
 .hero {
-  width: 60%;mi
-   position: relative;
+  width: 60%;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
+
 
 
 
@@ -208,6 +211,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
+position: relative;   
 }
 
 .hero-panel {
@@ -218,7 +222,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  z-index: 2;
 }
+
 
 
 

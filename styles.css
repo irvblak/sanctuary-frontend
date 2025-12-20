@@ -208,11 +208,12 @@ body {
 /* ===== Hero wrapper with side panels ===== */
 /* ===== Hero wrapper with side panels ===== */
 .hero-wrapper {
+  position: relative;
   display: flex;
   width: 100%;
-  min-height: 100vh;
-position: relative;   
+  height: 100vh;
 }
+
 
 .hero-panel {
   width: 17%

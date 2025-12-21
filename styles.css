@@ -219,15 +219,16 @@ body {
 /* Side panels */
 .hero-panel {
   flex: 0 0 17%;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 0, 0, 0.4); /* TEMP TEST — bright red */
   padding: 2rem 1.5rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
-  z-index: 2;
+  z-index: 10;
 }
+
 
 .hero-panel h3 {
   margin-top: 0;

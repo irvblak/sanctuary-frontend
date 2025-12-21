@@ -205,28 +205,6 @@ body {
   color: #003366;
   font-weight: bold;
 }
-/* ===== Hero wrapper with side panels ===== */
-/* ===== Hero wrapper with side panels ===== */
-.hero-wrapper {
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
-
-
-.hero-panel {
-  width: 17%
-  background: rgba(255, 255, 255, 0.92);
-  padding: 2rem 1.5rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  z-index: 2;
-}
-
-
 
 
 .hero-panel h3 {
@@ -245,6 +223,45 @@ body {
 .hero {
   width: 60%;
 }
+/* ===== Hero wrapper with side panels ===== */
+.hero-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Side panels */
+.hero-panel {
+  flex: 0 0 17%;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.hero-panel p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Hero stays central */
+.hero {
+  flex: 1 1 auto;
+  position: relative;
+  z-index: 1;
+}
 
 /* Hide panels on small screens */
 @media (max-width: 900px) {
@@ -256,3 +273,4 @@ body {
     width: 100%;
   }
 }
+

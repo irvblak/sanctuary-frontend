@@ -39,10 +39,6 @@ body {
    HERO SECTION — photo, title, buttons, footer
    ========================================================= */
 
-
-
-
-
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -250,7 +246,8 @@ body {
   min-height: 100vh;
   position: relative;
   z-index: 1;
-
+overflow: hidden;
+   
   background-image: url("clubhouse.jpg");
   background-size: cover;
   background-repeat: no-repeat;

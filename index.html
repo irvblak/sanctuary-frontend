@@ -34,6 +34,47 @@
  
   <a href="notices.html" class="hero-button">Info</a>
 </div>
+<div class="hero-overlay">
+
+  <!-- Title -->
+  <h1 class="hero-title">The Sanctuary Club</h1>
+
+  <!-- Buttons -->
+  <div class="hero-buttons">
+    <a href="events-calendar.html" class="hero-button">What’s On</a>
+    <a href="notices.html" class="hero-button">Info</a>
+  </div>
+
+  <!-- ACCESS CODE GATE (hidden by default) -->
+  <div id="access-gate" class="access-gate" style="display:none;">
+
+    <p class="access-text">
+      Enter your Sanctuary Club access code to continue.
+    </p>
+
+    <input
+      type="password"
+      id="access-code-input"
+      placeholder="Access code"
+      autocomplete="off"
+    />
+
+    <button id="access-submit" class="hero-button">
+      Continue
+    </button>
+
+    <p id="access-error" class="access-error" style="display:none;">
+      The access code was not recognised.
+    </p>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© The Sanctuary Club. All rights reserved.</p>
+  </footer>
+
+</div>
 
       <!-- Footer INSIDE hero -->
       <footer class="site-footer">

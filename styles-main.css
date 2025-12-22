@@ -218,13 +218,13 @@ body {
 
 /* Side panels */
 .hero-panel {
-  flex: 0 0 17%;
+ flex: 0 0 17%;
   background: linear-gradient(
-  to bottom,
-  #cfe7fb 0%,
-  #e6f2fc 45%,
-  #ffffff 100%
-);
+    to bottom,
+    #8bbce8 0%,
+    #cfe6fb 35%,
+    #ffffff 75%
+  ); 
 
   padding: 2rem 1.5rem;
   box-sizing: border-box;

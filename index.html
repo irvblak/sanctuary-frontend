@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
-  <link rel="stylesheet" href="styles-main.css?v=1011" />
 
+  <link rel="stylesheet" href="styles-main.css?v=1011" />
 </head>
 
 <body>
 
- <div class="hero-wrapper">
+<div class="hero-wrapper">
 
-  <!-- Left info panel -->
+  <!-- LEFT PANEL -->
   <div class="hero-panel hero-panel-left">
     <h3>Welcome to The Sanctuary Club</h3>
     <p>
@@ -20,83 +20,67 @@
     </p>
   </div>
 
+  <!-- HERO (CENTRE) -->
   <section class="hero">
-     
     <div class="hero-overlay">
 
-      <!-- Title -->
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- Buttons -->
-<div class="hero-buttons">
- <a href="https://irvblak.github.io/sanctuary-frontend/events-calendar.html"
-   class="hero-button">What’s On</a>
- 
-  <a href="notices.html" class="hero-button">Info</a>
-</div>
-<div class="hero-overlay">
+      <div class="hero-buttons">
+        <a href="events-calendar.html" class="hero-button">What’s On</a>
+        <a href="notices.html" class="hero-button">Info</a>
+      </div>
 
-  <!-- Title -->
-  <h1 class="hero-title">The Sanctuary Club</h1>
-
-  <!-- Buttons -->
-  <div class="hero-buttons">
-    <a href="events-calendar.html" class="hero-button">What’s On</a>
-    <a href="notices.html" class="hero-button">Info</a>
-  </div>
-
-  <!-- ACCESS CODE GATE (hidden by default) -->
-  <div id="access-gate" class="access-gate" style="display:none;">
-
-    <p class="access-text">
-      Enter your Sanctuary Club access code to continue.
-    </p>
-
-    <input
-      type="password"
-      id="access-code-input"
-      placeholder="Access code"
-      autocomplete="off"
-    />
-
-    <button id="access-submit" class="hero-button">
-      Continue
-    </button>
-
-    <p id="access-error" class="access-error" style="display:none;">
-      The access code was not recognised.
-    </p>
-
-  </div>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <p>© The Sanctuary Club. All rights reserved.</p>
-  </footer>
-
-</div>
-
-      <!-- Footer INSIDE hero -->
       <footer class="site-footer">
         <p>© The Sanctuary Club. All rights reserved.</p>
       </footer>
 
-        </div>
-    </section>
+    </div>
+  </section>
 
-  <!-- Right info panel -->
+  <!-- RIGHT PANEL -->
   <div class="hero-panel hero-panel-right">
-  <p>
-    <strong><em>
-      See what’s on, join activities, and optionally share contact details
-      so neighbours can reach you — or so you can reach them.
-    </em></strong>
-  </p>
-</div>
 
-  </div> <!-- end hero-wrapper -->
-  
-    <script src="script.js?v=1017"></script>
- 
+    <p>
+      <strong><em>
+        See what’s on, join activities, and optionally share contact details
+        so neighbours can reach you — or so you can reach them.
+      </em></strong>
+    </p>
+
+    <!-- ACCESS CODE GATE (hidden until needed) -->
+    <div id="access-gate" class="access-gate-inline" style="display:none;">
+
+      <div class="access-input-wrapper">
+        <input
+          type="password"
+          id="access-code-input"
+          placeholder="Access code"
+          autocomplete="off"
+        />
+
+        <button
+          type="button"
+          class="toggle-visibility"
+          aria-label="Show access code"
+        >👁</button>
+      </div>
+
+      <button id="access-submit" class="hero-button">
+        Continue
+      </button>
+
+      <div id="access-error" class="access-error" style="display:none;">
+        Invalid access code
+      </div>
+
+    </div>
+
+  </div>
+
+</div> <!-- end hero-wrapper -->
+
+<script src="script.js?v=1017"></script>
+
 </body>
 </html>

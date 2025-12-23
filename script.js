@@ -1,12 +1,12 @@
 /* =========================================================
-   SANCTUARY CLUB – FRONTEND ACCESS GATE + 3-MONTH CALENDAR
-   LOCKED VERSION
+   SANCTUARY CLUB – FRONTEND ACCESS GATE + CALENDAR
+   FINAL LOCKED VERSION
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------------------------------------------------------
-     BASIC HELPERS
+     HELPERS
   --------------------------------------------------------- */
 
   function getCurrentPage() {
@@ -14,21 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return p === "" ? "index.html" : p;
   }
 
+  const currentPage = getCurrentPage();
+
   const accessGranted =
     localStorage.getItem("sanctuaryAccessGranted") === "true";
-
-  const protectedPages = [
-    "about.html",
-    "notices.html",
-    "events.html",
-    "payments.html",
-    "contact.html",
-    "member-profile.html",
-    "host-event-request.html",
-    "admin-panel.html"
-  ];
-
-  const currentPage = getCurrentPage();
 
   /* ---------------------------------------------------------
      GLOBAL PAGE PROTECTION
@@ -43,40 +32,35 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------------------------------------------------
      ACCESS GATE (INDEX ONLY)
   --------------------------------------------------------- */
-const toggleBtn = document.querySelector(".toggle-visibility");
-
-if (toggleBtn && accessInput) {
-  toggleBtn.addEventListener("click", () => {
-    const isHidden = accessInput.type === "password";
-    accessInput.type = isHidden ? "text" : "password";
-    toggleBtn.textContent = isHidden ? "🙈" : "👁";
-  });
-}
 
   if (currentPage === "index.html") {
+
     const accessGate   = document.getElementById("access-gate");
     const accessInput  = document.getElementById("access-code-input");
     const accessButton = document.getElementById("access-submit");
     const accessError  = document.getElementById("access-error");
+    const eyeToggle    = document.querySelector(".toggle-visibility");
 
     let pendingDestination = null;
 
-    // Intercept homepage buttons
-    document.querySelectorAll(".hero-buttons a.hero-button").forEach(link => {
-      link.addEventListener("click", e => {
-        if (accessGranted) return;
+    /* Intercept homepage buttons */
+    document
+      .querySelectorAll(".hero-buttons a.hero-button")
+      .forEach(link => {
+        link.addEventListener("click", e => {
+          if (accessGranted) return;
 
-        e.preventDefault();
-        pendingDestination = link.getAttribute("href");
+          e.preventDefault();
+          pendingDestination = link.getAttribute("href");
 
-        accessGate.style.display = "block";
-        accessError.style.display = "none";
-        accessInput.value = "";
-        accessInput.focus();
+          accessGate.style.display = "block";
+          accessError.style.display = "none";
+          accessInput.value = "";
+          accessInput.focus();
+        });
       });
-    });
 
-    // Submit access code
+    /* Submit access code */
     if (accessButton) {
       accessButton.addEventListener("click", async () => {
         const code = accessInput.value.trim();
@@ -96,7 +80,8 @@ if (toggleBtn && accessInput) {
 
           if (data.valid) {
             localStorage.setItem("sanctuaryAccessGranted", "true");
-            window.location.href = pendingDestination || "about.html";
+            window.location.href =
+              pendingDestination || "events-calendar.html";
           } else {
             accessError.style.display = "block";
           }
@@ -105,10 +90,32 @@ if (toggleBtn && accessInput) {
         }
       });
     }
+
+    /* Eye toggle */
+    if (eyeToggle && accessInput) {
+      eyeToggle.addEventListener("click", () => {
+        const isPassword = accessInput.type === "password";
+        accessInput.type = isPassword ? "text" : "password";
+        eyeToggle.textContent = isPassword ? "🙈" : "👁";
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------
+     LOGOUT (ALL PAGES)
+  --------------------------------------------------------- */
+
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", e => {
+      e.preventDefault();
+      localStorage.removeItem("sanctuaryAccessGranted");
+      window.location.href = "index.html";
+    });
   }
 
   /* ==========================================================
-     SMART 3-MONTH CALENDAR (events.html only)
+     SMART 3-MONTH CALENDAR (events-calendar.html only)
      ========================================================== */
 
   function initCalendar() {
@@ -156,7 +163,9 @@ if (toggleBtn && accessInput) {
       }
 
       while (dayCounter <= data.totalDays) {
-        row.push(`<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`);
+        row.push(
+          `<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`
+        );
         if (row.length === 7) {
           html += `<div class="cal-row">${row.join("")}</div>`;
           row = [];
@@ -177,31 +186,22 @@ if (toggleBtn && accessInput) {
     }
 
     prevBtn.addEventListener("click", () => {
-      if (offset > 0) { offset--; buildCalendar(offset); }
+      if (offset > 0) {
+        offset--;
+        buildCalendar(offset);
+      }
     });
 
     nextBtn.addEventListener("click", () => {
-      if (offset < 2) { offset++; buildCalendar(offset); }
+      if (offset < 2) {
+        offset++;
+        buildCalendar(offset);
+      }
     });
 
     buildCalendar(offset);
   }
 
   initCalendar();
-/* ---------------------------------------------------------
-   LOGOUT (ALL PAGES)
---------------------------------------------------------- */
 
-const logoutLink = document.getElementById("logout-link");
-
-if (logoutLink) {
-  logoutLink.addEventListener("click", e => {
-    e.preventDefault();
-
-    // Clear access gate
-    localStorage.removeItem("sanctuaryAccessGranted");
-
-    window.location.href = "index.html";
-  });
-}
 });

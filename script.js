@@ -184,10 +184,15 @@ document.addEventListener("DOMContentLoaded", () => {
 --------------------------------------------------------- */
 
 const logoutLink = document.getElementById("logout-link");
+
 if (logoutLink) {
   logoutLink.addEventListener("click", e => {
     e.preventDefault();
-    logout();
+
+    // Clear access gate
+    localStorage.removeItem("sanctuaryAccessGranted");
+
     window.location.href = "index.html";
   });
-
+}
+});

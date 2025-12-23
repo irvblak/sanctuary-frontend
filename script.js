@@ -43,6 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------------------------------------------------
      ACCESS GATE (INDEX ONLY)
   --------------------------------------------------------- */
+const toggleBtn = document.querySelector(".toggle-visibility");
+
+if (toggleBtn && accessInput) {
+  toggleBtn.addEventListener("click", () => {
+    const isHidden = accessInput.type === "password";
+    accessInput.type = isHidden ? "text" : "password";
+    toggleBtn.textContent = isHidden ? "🙈" : "👁";
+  });
+}
 
   if (currentPage === "index.html") {
     const accessGate   = document.getElementById("access-gate");

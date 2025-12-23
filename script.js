@@ -179,5 +179,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   initCalendar();
+/* ---------------------------------------------------------
+   LOGOUT (ALL PAGES)
+--------------------------------------------------------- */
 
-});
+const logoutLink = document.getElementById("logout-link");
+if (logoutLink) {
+  logoutLink.addEventListener("click", e => {
+    e.preventDefault();
+    logout();
+    window.location.href = "index.html";
+  });
+

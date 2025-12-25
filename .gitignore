@@ -1,0 +1,7 @@
+# Environment & secrets
+.env
+.env.*
+config/secrets.json
+
+# OS / editor noise (optional but good)
+.DS_Store

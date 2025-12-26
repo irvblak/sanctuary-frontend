@@ -153,35 +153,39 @@ body {
   background: #a06830;
 }
 
-/* Grid */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-/* Weekday headings */
-.weekday-row .cal-cell {
-  background: #e0f0ff;
-  padding: 0.5rem 0;
-  text-align: center;
-  font-weight: bold;
-  border-radius: 6px;
-}
-
-/* Date cells */
-.cal-cell {
-  min-height: 80px;
-  background: white;
-  border-radius: 10px;
-  padding: 4px;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-}
 
 .cal-cell.empty {
   background: transparent;
   box-shadow: none;
+}
+/* --- Calendar grid alignment fix --- */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+}
+
+.calendar-grid > div {
+  box-sizing: border-box;
+  min-height: 80px;           /* adjust later if desired */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Weekday header cells */
+.calendar-grid .weekday {
+  font-weight: 600;
+  background: transparent;
+}
+
+/* Date cells */
+.calendar-grid .day {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 6px;
 }
 
 .day-number {

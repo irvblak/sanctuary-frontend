@@ -10,43 +10,29 @@
 
 <body class="calendar-page-body">
 
-  <!-- Top navigation -->
-  <div class="top-nav">
-    <span class="top-nav-home">Calendar</span>
-    <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
+<!-- Top navigation -->
+<div class="top-nav">
+  <span class="top-nav-home">Calendar</span>
+  <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
+</div>
+
+<div class="calendar-container">
+
+  <div class="calendar-header">
+    <button id="prev-month">← Prev</button>
+    <div id="calendar-month-label" class="calendar-month-label"></div>
+    <button id="next-month">Next →</button>
   </div>
 
-  <div class="calendar-container">
+  <!-- Calendar grid -->
+  <div class="calendar-grid" id="calendar-grid">
+    <!-- JS will render weekday headers + dates here -->
+  </div>
 
-    <div class="calendar-header">
-      <button id="prev-month">← Prev</button>
-      <div id="calendar-month-label" class="calendar-month-label"></div>
-      <button id="next-month">Next →</button>
-    </div>
+</div> <!-- end calendar container -->
 
-    <!-- Weekday header -->
-    <div class="calendar-weekdays">
-      <div>Mon</div>
-      <div>Tue</div>
-      <div>Wed</div>
-      <div>Thu</div>
-      <div>Fri</div>
-      <div>Sat</div>
-      <div>Sun</div>
-    </div>
-
-    <!-- Calendar grid -->
-    <div class="calendar-grid" id="calendar-grid">
-      <!-- JS will place days here -->
-    </div>
-
-  </div> <!-- end calendar container -->
-
-  <!-- Main site logic -->
-  <script src="script.js?v=1017" defer></script>
-
-  <!-- Access guard (must be last) -->
-  <script src="access.js"></script>
+<script src="script.js?v=1017" defer></script>
+<script src="access.js"></script>
 
 </body>
 </html>

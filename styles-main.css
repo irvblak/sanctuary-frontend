@@ -157,6 +157,7 @@ body {
 .cal-cell.empty {
   background: transparent;
   box-shadow: none;
+}   
 }
 /* --- Calendar grid alignment fix --- */
 

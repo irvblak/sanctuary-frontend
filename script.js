@@ -1,92 +1,60 @@
-document.addEventListener("DOMContentLoaded", () => {
+// script.js
+document.addEventListener("DOMContentLoaded", function () {
 
-  /* ===========================
-     CALENDAR INITIALISATION
-     =========================== */
+  const ACCESS_CODE = "sanctuary"; // change if needed
 
-  const grid = document.getElementById("calendar-grid");
-  const monthLabel = document.getElementById("calendar-month-label");
-  const prevBtn = document.getElementById("prev-month");
-  const nextBtn = document.getElementById("next-month");
+  const accessGate = document.getElementById("access-gate");
+  const accessInput = document.getElementById("access-code-input");
+  const accessSubmit = document.getElementById("access-submit");
+  const accessError = document.getElementById("access-error");
+  const toggleVisibility = document.querySelector(".toggle-visibility");
 
-  if (!grid || !monthLabel || !prevBtn || !nextBtn) {
-    return; // Not on calendar page
+  // Pages that require access
+  const protectedPages = [
+    "events-calendar.html",
+    "notices.html"
+  ];
+
+  const currentPage = window.location.pathname.split("/").pop();
+
+  const accessGranted = localStorage.getItem("sanctuaryAccessGranted") === "true";
+
+  /* --------------------------------------------------
+     PROTECTED PAGE GUARD
+  -------------------------------------------------- */
+  if (protectedPages.includes(currentPage) && !accessGranted) {
+    window.location.href = "index.html";
+    return;
   }
 
-  let offset = 0; // 0 = current month, 1 = next, 2 = month after
+  /* --------------------------------------------------
+     INDEX PAGE — SHOW ACCESS GATE WHEN NEEDED
+  -------------------------------------------------- */
+  if (currentPage === "" || currentPage === "index.html") {
 
-  function buildCalendar(monthOffset) {
-    const today = new Date();
-    const firstOfMonth = new Date(
-      today.getFullYear(),
-      today.getMonth() + monthOffset,
-      1
-    );
-
-    const year = firstOfMonth.getFullYear();
-    const month = firstOfMonth.getMonth();
-
-    const monthNames = [
-      "January","February","March","April","May","June",
-      "July","August","September","October","November","December"
-    ];
-
-    monthLabel.textContent = `${monthNames[month]} ${year}`;
-
-    const firstWeekday = firstOfMonth.getDay(); // 0 = Sunday
-    const totalDays = new Date(year, month + 1, 0).getDate();
-
-    // Clear grid
-    grid.innerHTML = "";
-
-    /* ===== Weekday headers ===== */
-    const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-    weekdays.forEach(day => {
-      const div = document.createElement("div");
-      div.className = "weekday";
-      div.textContent = day;
-      grid.appendChild(div);
-    });
-
-    /* ===== Padding before day 1 ===== */
-    const padding = (firstWeekday + 6) % 7; // convert Sunday=0 to Sunday=6
-    for (let i = 0; i < padding; i++) {
-      const empty = document.createElement("div");
-      empty.className = "cal-cell empty";
-      grid.appendChild(empty);
+    if (!accessGranted && accessGate) {
+      accessGate.style.display = "block";
     }
 
-    /* ===== Day cells ===== */
-    for (let day = 1; day <= totalDays; day++) {
-      const cell = document.createElement("div");
-      cell.className = "cal-cell day";
+    if (accessSubmit) {
+      accessSubmit.addEventListener("click", function () {
+        const entered = accessInput.value.trim();
 
-      const num = document.createElement("span");
-      num.className = "day-number";
-      num.textContent = day;
-
-      cell.appendChild(num);
-      grid.appendChild(cell);
+        if (entered === ACCESS_CODE) {
+          localStorage.setItem("sanctuaryAccessGranted", "true");
+          window.location.href = "events-calendar.html";
+        } else {
+          accessError.style.display = "block";
+        }
+      });
     }
 
-    prevBtn.disabled = monthOffset === 0;
-    nextBtn.disabled = monthOffset === 2;
+    if (toggleVisibility && accessInput) {
+      toggleVisibility.addEventListener("click", function () {
+        accessInput.type =
+          accessInput.type === "password" ? "text" : "password";
+      });
+    }
   }
-
-  prevBtn.addEventListener("click", () => {
-    if (offset > 0) {
-      offset--;
-      buildCalendar(offset);
-    }
-  });
-
-  nextBtn.addEventListener("click", () => {
-    if (offset < 2) {
-      offset++;
-      buildCalendar(offset);
-    }
-  });
-
-  buildCalendar(offset);
 
 });

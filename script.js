@@ -1,4 +1,4 @@
-// script.js — Sanctuary Club access gate (fixed interception)
+// script.js — Sanctuary Club access gate (buttons version)
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -10,9 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const error = document.getElementById("access-error");
   const toggle = document.querySelector(".toggle-visibility");
 
-  const links = document.querySelectorAll(
-    'a[href="events-calendar.html"], a[href="notices.html"]'
-  );
+  const buttons = document.querySelectorAll(".hero-button[data-dest]");
 
   let pendingDestination = null;
 
@@ -27,19 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (input) input.focus();
   }
 
-  // HARD block navigation at capture phase
-  links.forEach(link => {
-    link.addEventListener(
-      "click",
-      function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        showGate(link.getAttribute("href"));
-      },
-      true // capture phase — critical
-    );
+  // Intercept button clicks
+  buttons.forEach(btn => {
+    btn.addEventListener("click", function () {
+      const dest = btn.getAttribute("data-dest");
+      showGate(dest);
+    });
   });
 
+  // Submit access code
   if (submit && input) {
     submit.addEventListener("click", function () {
       const value = input.value.trim();
@@ -53,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Enter key support
   if (input) {
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
@@ -61,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Toggle visibility
   if (toggle && input) {
     toggle.addEventListener("click", function () {
       input.type = input.type === "password" ? "text" : "password";

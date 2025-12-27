@@ -34,15 +34,15 @@
       z-index: 10;
     }
 
-    .top-nav-home {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
     .top-nav a {
       text-decoration: none;
       font-weight: 600;
       color: #003366;
+    }
+
+    .nav-center {
+      font-weight: 700;
+      font-size: 1.1rem;
     }
 
     /* ================================
@@ -77,26 +77,16 @@
     }
 
     button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.day.past {
-  background: #f0f0f0;
-  color: #9aa3ad;
-}
-
-.day.past .day-number {
-  color: #9aa3ad;
-}
+      opacity: 0.4;
+      cursor: default;
+    }
 
     /* ================================
-       CALENDAR GRID (THE FIX)
+       CALENDAR GRID
     ================================= */
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 0;
       border-top: 1px solid #cfd8e3;
       border-left: 1px solid #cfd8e3;
     }
@@ -130,6 +120,16 @@
       font-size: 0.85rem;
       font-weight: 700;
     }
+
+    /* Past dates */
+    .day.past {
+      background: #f0f0f0;
+      color: #9aa3ad;
+    }
+
+    .day.past .day-number {
+      color: #9aa3ad;
+    }
   </style>
 </head>
 
@@ -137,8 +137,9 @@
 
   <!-- Top navigation -->
   <div class="top-nav">
-    <span class="top-nav-home">Calendar</span>
     <a href="index.html">Home</a>
+    <div class="nav-center">Calendar</div>
+    <a href="notices.html">Info</a>
   </div>
 
   <div class="calendar-container">
@@ -160,7 +161,6 @@
     const nextBtn = document.getElementById("next-month");
 
     let offset = 0;
-
     const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
     function buildCalendar(monthOffset) {
@@ -184,8 +184,8 @@
         grid.appendChild(el);
       });
 
-      // Padding before day 1 (Mon-based)
-      let start = (firstDay.getDay() + 6) % 7;
+      // Padding (Mon-based)
+      const start = (firstDay.getDay() + 6) % 7;
       for (let i = 0; i < start; i++) {
         const empty = document.createElement("div");
         empty.className = "day empty";
@@ -193,9 +193,19 @@
       }
 
       // Days
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
       for (let day = 1; day <= lastDay.getDate(); day++) {
         const cell = document.createElement("div");
         cell.className = "day";
+
+        const cellDate = new Date(year, month, day);
+        cellDate.setHours(0,0,0,0);
+
+        if (cellDate < today) {
+          cell.classList.add("past");
+        }
 
         const num = document.createElement("span");
         num.className = "day-number";
@@ -218,6 +228,9 @@
 
     buildCalendar(0);
   </script>
+
+  <!-- Access gate -->
+  <script src="access.js"></script>
 
 </body>
 </html>

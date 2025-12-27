@@ -1,207 +1,92 @@
-/* =========================================================
-   SANCTUARY CLUB – FRONTEND ACCESS GATE + CALENDAR
-   FINAL LOCKED VERSION
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ---------------------------------------------------------
-     HELPERS
-  --------------------------------------------------------- */
+  /* ===========================
+     CALENDAR INITIALISATION
+     =========================== */
 
-  function getCurrentPage() {
-    const p = window.location.pathname.split("/").pop();
-    return p === "" ? "index.html" : p;
+  const grid = document.getElementById("calendar-grid");
+  const monthLabel = document.getElementById("calendar-month-label");
+  const prevBtn = document.getElementById("prev-month");
+  const nextBtn = document.getElementById("next-month");
+
+  if (!grid || !monthLabel || !prevBtn || !nextBtn) {
+    return; // Not on calendar page
   }
 
-  const currentPage = getCurrentPage();
+  let offset = 0; // 0 = current month, 1 = next, 2 = month after
 
-  const accessGranted =
-    localStorage.getItem("sanctuaryAccessGranted") === "true";
-
-  /* ---------------------------------------------------------
-     GLOBAL PAGE PROTECTION
-     (Everything except index.html)
-  --------------------------------------------------------- */
-
-  if (currentPage !== "index.html" && !accessGranted) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  /* ---------------------------------------------------------
-     ACCESS GATE (INDEX ONLY)
-  --------------------------------------------------------- */
-
-  if (currentPage === "index.html") {
-
-    const accessGate   = document.getElementById("access-gate");
-    const accessInput  = document.getElementById("access-code-input");
-    const accessButton = document.getElementById("access-submit");
-    const accessError  = document.getElementById("access-error");
-    const eyeToggle    = document.querySelector(".toggle-visibility");
-
-    let pendingDestination = null;
-
-    /* Intercept homepage buttons */
-    document
-      .querySelectorAll(".hero-buttons a.hero-button")
-      .forEach(link => {
-        link.addEventListener("click", e => {
-          if (accessGranted) return;
-
-          e.preventDefault();
-          pendingDestination = link.getAttribute("href");
-
-          accessGate.style.display = "block";
-          accessError.style.display = "none";
-          accessInput.value = "";
-          accessInput.focus();
-        });
-      });
-
-    /* Submit access code */
-    if (accessButton) {
-      accessButton.addEventListener("click", async () => {
-        const code = accessInput.value.trim();
-        if (!code) return;
-
-        try {
-          const res = await fetch(
-            "https://sanctuary-backend-8iqc.onrender.com/validate-access-code",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ code })
-            }
-          );
-
-          const data = await res.json();
-
-          if (data.valid) {
-            localStorage.setItem("sanctuaryAccessGranted", "true");
-            window.location.href =
-              pendingDestination || "events-calendar.html";
-          } else {
-            accessError.style.display = "block";
-          }
-        } catch {
-          accessError.style.display = "block";
-        }
-      });
-    }
-
-    /* Eye toggle */
-    if (eyeToggle && accessInput) {
-      eyeToggle.addEventListener("click", () => {
-        const isPassword = accessInput.type === "password";
-        accessInput.type = isPassword ? "text" : "password";
-        eyeToggle.textContent = isPassword ? "🙈" : "👁";
-      });
-    }
-  }
-
-  /* ---------------------------------------------------------
-     LOGOUT (ALL PAGES)
-  --------------------------------------------------------- */
-
-  const logoutLink = document.getElementById("logout-link");
-  if (logoutLink) {
-    logoutLink.addEventListener("click", e => {
-      e.preventDefault();
-      localStorage.removeItem("sanctuaryAccessGranted");
-      window.location.href = "index.html";
-    });
-  }
-
-  /* ==========================================================
-     SMART 3-MONTH CALENDAR (events-calendar.html only)
-     ========================================================== */
-
-  function initCalendar() {
-    const grid = document.getElementById("calendar-grid");
-    const monthLabel = document.getElementById("calendar-month-label");
-    const prevBtn = document.getElementById("prev-month");
-    const nextBtn = document.getElementById("next-month");
-
-    if (!grid || !monthLabel || !prevBtn || !nextBtn) return;
-
+  function buildCalendar(monthOffset) {
     const today = new Date();
-    let offset = 0;
+    const firstOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + monthOffset,
+      1
+    );
 
-    function getMonthData(offset) {
-      const base = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-      return {
-        year: base.getFullYear(),
-        monthIndex: base.getMonth(),
-        totalDays: new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(),
-        firstWeekday: new Date(base.getFullYear(), base.getMonth(), 1).getDay()
-      };
-    }
+    const year = firstOfMonth.getFullYear();
+    const month = firstOfMonth.getMonth();
 
-    function buildCalendar(offset) {
-      const data = getMonthData(offset);
+    const monthNames = [
+      "January","February","March","April","May","June",
+      "July","August","September","October","November","December"
+    ];
 
-      const monthNames = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-      ];
+    monthLabel.textContent = `${monthNames[month]} ${year}`;
 
-      monthLabel.textContent = `${monthNames[data.monthIndex]} ${data.year}`;
+    const firstWeekday = firstOfMonth.getDay(); // 0 = Sunday
+    const totalDays = new Date(year, month + 1, 0).getDate();
 
-      const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-      let html = `<div class="cal-row weekday-row">`;
-      weekdays.forEach(d => html += `<div class="cal-cell wk">${d}</div>`);
-      html += `</div>`;
+    // Clear grid
+    grid.innerHTML = "";
 
-      let padding = (data.firstWeekday + 6) % 7;
-      let dayCounter = 1;
-      let row = [];
-
-      for (let i = 0; i < padding; i++) {
-        row.push(`<div class="cal-cell empty"></div>`);
-      }
-
-      while (dayCounter <= data.totalDays) {
-        row.push(
-          `<div class="cal-cell"><span class="day-number">${dayCounter}</span></div>`
-        );
-        if (row.length === 7) {
-          html += `<div class="cal-row">${row.join("")}</div>`;
-          row = [];
-        }
-        dayCounter++;
-      }
-
-      if (row.length) {
-        while (row.length < 7) {
-          row.push(`<div class="cal-cell empty"></div>`);
-        }
-        html += `<div class="cal-row">${row.join("")}</div>`;
-      }
-
-      grid.innerHTML = html;
-      prevBtn.disabled = offset === 0;
-      nextBtn.disabled = offset === 2;
-    }
-
-    prevBtn.addEventListener("click", () => {
-      if (offset > 0) {
-        offset--;
-        buildCalendar(offset);
-      }
+    /* ===== Weekday headers ===== */
+    const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    weekdays.forEach(day => {
+      const div = document.createElement("div");
+      div.className = "weekday";
+      div.textContent = day;
+      grid.appendChild(div);
     });
 
-    nextBtn.addEventListener("click", () => {
-      if (offset < 2) {
-        offset++;
-        buildCalendar(offset);
-      }
-    });
+    /* ===== Padding before day 1 ===== */
+    const padding = (firstWeekday + 6) % 7; // convert Sunday=0 to Sunday=6
+    for (let i = 0; i < padding; i++) {
+      const empty = document.createElement("div");
+      empty.className = "cal-cell empty";
+      grid.appendChild(empty);
+    }
 
-    buildCalendar(offset);
+    /* ===== Day cells ===== */
+    for (let day = 1; day <= totalDays; day++) {
+      const cell = document.createElement("div");
+      cell.className = "cal-cell day";
+
+      const num = document.createElement("span");
+      num.className = "day-number";
+      num.textContent = day;
+
+      cell.appendChild(num);
+      grid.appendChild(cell);
+    }
+
+    prevBtn.disabled = monthOffset === 0;
+    nextBtn.disabled = monthOffset === 2;
   }
 
-  initCalendar();
+  prevBtn.addEventListener("click", () => {
+    if (offset > 0) {
+      offset--;
+      buildCalendar(offset);
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (offset < 2) {
+      offset++;
+      buildCalendar(offset);
+    }
+  });
+
+  buildCalendar(offset);
 
 });

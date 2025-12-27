@@ -1,38 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Events Calendar – The Sanctuary Club</title>
-  <link rel="stylesheet" href="styles-main.css?v=2">
+
   <meta name="robots" content="noindex, nofollow">
+
+  <style>
+    /* ================================
+       BASE
+    ================================= */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f9ff;
+      color: #003366;
+    }
+
+    /* ================================
+       TOP NAV
+    ================================= */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f5f9ff;
+      z-index: 10;
+    }
+
+    .top-nav-home {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #003366;
+    }
+
+    /* ================================
+       CALENDAR CONTAINER
+    ================================= */
+    .calendar-container {
+      max-width: 900px;
+      margin: 6rem auto 3rem;
+      padding: 1rem;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-month-label {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    button {
+      background: #8b5a2b;
+      color: white;
+      border: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    /* ================================
+       CALENDAR GRID (THE FIX)
+    ================================= */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0;
+      border-top: 1px solid #cfd8e3;
+      border-left: 1px solid #cfd8e3;
+    }
+
+    .weekday,
+    .day {
+      border-right: 1px solid #cfd8e3;
+      border-bottom: 1px solid #cfd8e3;
+      min-height: 90px;
+      padding: 6px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .weekday {
+      min-height: auto;
+      font-weight: 700;
+      text-align: center;
+      background: #eef4fb;
+      padding: 8px 0;
+    }
+
+    .day.empty {
+      background: #fafcff;
+    }
+
+    .day-number {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+  </style>
 </head>
 
-<body class="calendar-page-body">
+<body>
 
-<!-- Top navigation -->
-<div class="top-nav">
-  <span class="top-nav-home">Calendar</span>
-  <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
-</div>
-
-<div class="calendar-container">
-
-  <div class="calendar-header">
-    <button id="prev-month">← Prev</button>
-    <div id="calendar-month-label" class="calendar-month-label"></div>
-    <button id="next-month">Next →</button>
+  <!-- Top navigation -->
+  <div class="top-nav">
+    <span class="top-nav-home">Calendar</span>
+    <a href="index.html">Home</a>
   </div>
 
-  <!-- Calendar grid -->
-  <div class="calendar-grid" id="calendar-grid">
-    <!-- JS will render weekday headers + dates here -->
+  <div class="calendar-container">
+
+    <div class="calendar-header">
+      <button id="prev-month">← Prev</button>
+      <div id="month-label" class="calendar-month-label"></div>
+      <button id="next-month">Next →</button>
+    </div>
+
+    <div id="calendar-grid" class="calendar-grid"></div>
+
   </div>
 
-</div> <!-- end calendar container -->
+  <script>
+    const grid = document.getElementById("calendar-grid");
+    const monthLabel = document.getElementById("month-label");
+    const prevBtn = document.getElementById("prev-month");
+    const nextBtn = document.getElementById("next-month");
 
-<script src="script.js?v=1017" defer></script>
-<script src="access.js"></script>
+    let offset = 0;
+
+    const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+    function buildCalendar(monthOffset) {
+      grid.innerHTML = "";
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + monthOffset;
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+
+      monthLabel.textContent =
+        firstDay.toLocaleString("default", { month: "long", year: "numeric" });
+
+      // Weekday headers
+      weekdays.forEach(d => {
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = d;
+        grid.appendChild(el);
+      });
+
+      // Padding before day 1 (Mon-based)
+      let start = (firstDay.getDay() + 6) % 7;
+      for (let i = 0; i < start; i++) {
+        const empty = document.createElement("div");
+        empty.className = "day empty";
+        grid.appendChild(empty);
+      }
+
+      // Days
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const cell = document.createElement("div");
+        cell.className = "day";
+
+        const num = document.createElement("span");
+        num.className = "day-number";
+        num.textContent = day;
+
+        cell.appendChild(num);
+        grid.appendChild(cell);
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      offset--;
+      buildCalendar(offset);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      offset++;
+      buildCalendar(offset);
+    });
+
+    buildCalendar(0);
+  </script>
 
 </body>
 </html>

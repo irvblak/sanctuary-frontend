@@ -1,47 +1,45 @@
-// script.js — Sanctuary Club access gate (authoritative)
+// script.js — Sanctuary Club access gate (fixed interception)
 
 document.addEventListener("DOMContentLoaded", function () {
 
   const ACCESS_CODE = "SM0185SC";
 
-  // Elements (may or may not exist depending on page)
   const gate = document.getElementById("access-gate");
   const input = document.getElementById("access-code-input");
   const submit = document.getElementById("access-submit");
   const error = document.getElementById("access-error");
   const toggle = document.querySelector(".toggle-visibility");
 
-  const whatsOnBtn = document.querySelector('a[href="events-calendar.html"]');
-  const infoBtn = document.querySelector('a[href="notices.html"]');
+  const links = document.querySelectorAll(
+    'a[href="events-calendar.html"], a[href="notices.html"]'
+  );
 
   let pendingDestination = null;
 
-  // If already granted, do nothing here
+  // If already granted, do nothing
   if (localStorage.getItem("sanctuaryAccessGranted") === "true") {
     return;
   }
 
-  // Show gate instead of navigating
-  function intercept(e, destination) {
-    e.preventDefault();
+  function showGate(destination) {
     pendingDestination = destination;
     if (gate) gate.style.display = "block";
     if (input) input.focus();
   }
 
-  if (whatsOnBtn) {
-    whatsOnBtn.addEventListener("click", (e) =>
-      intercept(e, "events-calendar.html")
+  // HARD block navigation at capture phase
+  links.forEach(link => {
+    link.addEventListener(
+      "click",
+      function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        showGate(link.getAttribute("href"));
+      },
+      true // capture phase — critical
     );
-  }
+  });
 
-  if (infoBtn) {
-    infoBtn.addEventListener("click", (e) =>
-      intercept(e, "notices.html")
-    );
-  }
-
-  // Submit access code
   if (submit && input) {
     submit.addEventListener("click", function () {
       const value = input.value.trim();
@@ -55,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Enter key support
   if (input) {
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
@@ -64,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Toggle visibility
   if (toggle && input) {
     toggle.addEventListener("click", function () {
       input.type = input.type === "password" ? "text" : "password";

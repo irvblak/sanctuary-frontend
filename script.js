@@ -1,46 +1,121 @@
-// access.js — global access guard + universal logout
+/* =========================================================
+   Sanctuary Club – Access Gate + Navigation
+   ========================================================= */
 
 (function () {
-  try {
-    const granted = localStorage.getItem("sanctuaryAccessGranted");
+  "use strict";
 
-    const isIndex =
-      window.location.pathname.endsWith("/") ||
-      window.location.pathname.endsWith("index.html");
+  /* -----------------------------
+     CONFIG
+     ----------------------------- */
+  const ACCESS_CODE = "SM0185SC";
+  const ACCESS_KEY = "sanctuaryAccessGranted";
 
-    // If not authorised and not on index, bounce home
-    if (!isIndex && granted !== "true") {
-      window.location.href = "index.html";
-      return;
-    }
+  /* -----------------------------
+     ELEMENTS
+     ----------------------------- */
+  const accessGate = document.getElementById("access-gate");
+  const accessInput = document.getElementById("access-code-input");
+  const accessSubmit = document.getElementById("access-submit");
+  const accessError = document.getElementById("access-error");
 
-    // If authorised and not index, inject Logout
-    if (!isIndex && granted === "true") {
-      const nav = document.createElement("div");
-      nav.style.position = "fixed";
-      nav.style.top = "1rem";
-      nav.style.right = "1.25rem";
-      nav.style.zIndex = "1000";
+  const navButtons = document.querySelectorAll(".nav-button");
 
-      const logout = document.createElement("a");
-      logout.href = "#";
-      logout.textContent = "Logout";
-      logout.style.fontWeight = "600";
-      logout.style.color = "#003366";
-      logout.style.textDecoration = "none";
-      logout.style.cursor = "pointer";
+  /* -----------------------------
+     STATE
+     ----------------------------- */
+  const accessGranted = localStorage.getItem(ACCESS_KEY) === "true";
 
-      logout.addEventListener("click", function (e) {
-        e.preventDefault();
-        localStorage.removeItem("sanctuaryAccessGranted");
-        window.location.href = "index.html";
-      });
-
-      nav.appendChild(logout);
-      document.body.appendChild(nav);
-    }
-
-  } catch (err) {
-    console.error("Access guard error:", err);
+  /* -----------------------------
+     HELPERS
+     ----------------------------- */
+  function showAccessGate() {
+    if (accessGate) accessGate.style.display = "block";
   }
+
+  function hideAccessGate() {
+    if (accessGate) accessGate.style.display = "none";
+  }
+
+  function grantAccess() {
+    localStorage.setItem(ACCESS_KEY, "true");
+  }
+
+  function denyAccess() {
+    if (accessError) accessError.style.display = "block";
+  }
+
+  /* -----------------------------
+     NAV BUTTON HANDLER
+     ----------------------------- */
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const destination = btn.dataset.dest;
+      if (!destination) return;
+
+      if (localStorage.getItem(ACCESS_KEY) === "true") {
+        window.location.href = destination;
+      } else {
+        showAccessGate();
+        accessInput && accessInput.focus();
+        btn.dataset.pendingDest = destination;
+      }
+    });
+  });
+
+  /* -----------------------------
+     ACCESS SUBMIT
+     ----------------------------- */
+  if (accessSubmit) {
+    accessSubmit.addEventListener("click", () => {
+      const entered = (accessInput.value || "").trim();
+
+      if (entered === ACCESS_CODE) {
+        grantAccess();
+
+        const pendingBtn = document.querySelector(
+          '.nav-button[data-pending-dest]'
+        );
+
+        const destination = pendingBtn
+          ? pendingBtn.dataset.pendingDest
+          : "events-calendar.html";
+
+        window.location.href = destination;
+      } else {
+        denyAccess();
+      }
+    });
+  }
+
+  /* -----------------------------
+     ENTER KEY SUPPORT
+     ----------------------------- */
+  if (accessInput) {
+    accessInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        accessSubmit.click();
+      }
+    });
+  }
+
+  /* -----------------------------
+     PASSWORD VISIBILITY TOGGLE
+     ----------------------------- */
+  document.querySelectorAll(".toggle-visibility").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const input = btn.previousElementSibling;
+      if (!input) return;
+
+      input.type = input.type === "password" ? "text" : "password";
+    });
+  });
+
+  /* -----------------------------
+     AUTO-HIDE GATE IF ALREADY AUTH
+     ----------------------------- */
+  if (accessGranted) {
+    hideAccessGate();
+  }
+
 })();

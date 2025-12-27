@@ -1,60 +1,74 @@
-// script.js
+// script.js — Sanctuary Club access gate (authoritative)
+
 document.addEventListener("DOMContentLoaded", function () {
 
-  const ACCESS_CODE = "sanctuary"; // change if needed
+  const ACCESS_CODE = "SM0185SC";
 
-  const accessGate = document.getElementById("access-gate");
-  const accessInput = document.getElementById("access-code-input");
-  const accessSubmit = document.getElementById("access-submit");
-  const accessError = document.getElementById("access-error");
-  const toggleVisibility = document.querySelector(".toggle-visibility");
+  // Elements (may or may not exist depending on page)
+  const gate = document.getElementById("access-gate");
+  const input = document.getElementById("access-code-input");
+  const submit = document.getElementById("access-submit");
+  const error = document.getElementById("access-error");
+  const toggle = document.querySelector(".toggle-visibility");
 
-  // Pages that require access
-  const protectedPages = [
-    "events-calendar.html",
-    "notices.html"
-  ];
+  const whatsOnBtn = document.querySelector('a[href="events-calendar.html"]');
+  const infoBtn = document.querySelector('a[href="notices.html"]');
 
-  const currentPage = window.location.pathname.split("/").pop();
+  let pendingDestination = null;
 
-  const accessGranted = localStorage.getItem("sanctuaryAccessGranted") === "true";
-
-  /* --------------------------------------------------
-     PROTECTED PAGE GUARD
-  -------------------------------------------------- */
-  if (protectedPages.includes(currentPage) && !accessGranted) {
-    window.location.href = "index.html";
+  // If already granted, do nothing here
+  if (localStorage.getItem("sanctuaryAccessGranted") === "true") {
     return;
   }
 
-  /* --------------------------------------------------
-     INDEX PAGE — SHOW ACCESS GATE WHEN NEEDED
-  -------------------------------------------------- */
-  if (currentPage === "" || currentPage === "index.html") {
+  // Show gate instead of navigating
+  function intercept(e, destination) {
+    e.preventDefault();
+    pendingDestination = destination;
+    if (gate) gate.style.display = "block";
+    if (input) input.focus();
+  }
 
-    if (!accessGranted && accessGate) {
-      accessGate.style.display = "block";
-    }
+  if (whatsOnBtn) {
+    whatsOnBtn.addEventListener("click", (e) =>
+      intercept(e, "events-calendar.html")
+    );
+  }
 
-    if (accessSubmit) {
-      accessSubmit.addEventListener("click", function () {
-        const entered = accessInput.value.trim();
+  if (infoBtn) {
+    infoBtn.addEventListener("click", (e) =>
+      intercept(e, "notices.html")
+    );
+  }
 
-        if (entered === ACCESS_CODE) {
-          localStorage.setItem("sanctuaryAccessGranted", "true");
-          window.location.href = "events-calendar.html";
-        } else {
-          accessError.style.display = "block";
-        }
-      });
-    }
+  // Submit access code
+  if (submit && input) {
+    submit.addEventListener("click", function () {
+      const value = input.value.trim();
 
-    if (toggleVisibility && accessInput) {
-      toggleVisibility.addEventListener("click", function () {
-        accessInput.type =
-          accessInput.type === "password" ? "text" : "password";
-      });
-    }
+      if (value === ACCESS_CODE) {
+        localStorage.setItem("sanctuaryAccessGranted", "true");
+        window.location.href = pendingDestination || "events-calendar.html";
+      } else {
+        if (error) error.style.display = "block";
+      }
+    });
+  }
+
+  // Enter key support
+  if (input) {
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        submit.click();
+      }
+    });
+  }
+
+  // Toggle visibility
+  if (toggle && input) {
+    toggle.addEventListener("click", function () {
+      input.type = input.type === "password" ? "text" : "password";
+    });
   }
 
 });

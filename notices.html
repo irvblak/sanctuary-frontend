@@ -1,31 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notices – The Sanctuary Club</title>
-    <link rel="stylesheet" href="styles-main.css?v=2">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Info – The Sanctuary Club</title>
+
+  <meta name="robots" content="noindex, nofollow">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f9ff;
+      color: #003366;
+    }
+
+    /* ================================
+       TOP NAV
+    ================================= */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f5f9ff;
+      z-index: 10;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #003366;
+    }
+
+    .nav-center {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    /* ================================
+       PAGE CONTENT
+    ================================= */
+    .info-container {
+      max-width: 700px;
+      margin: 6rem auto 3rem;
+      padding: 1rem;
+    }
+
+    .info-container h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .menu a {
+      display: block;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      background: white;
+      text-decoration: none;
+      color: #003366;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .menu a:hover {
+      background: #eef4fb;
+    }
+
+    .menu .placeholder {
+      opacity: 0.5;
+      cursor: default;
+    }
+  </style>
 </head>
 
-<body class="subpage">
+<body>
 
   <!-- Top navigation -->
   <div class="top-nav">
-  <a href="events-calendar.html" class="top-nav-home">← Back to Calendar</a>
-  <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
-</div>
-
-  <div class="page-container">
-
-    <h1>Notices</h1>
-
-    <p>
-      This page will display important announcements and updates for
-      Sanctuary Mews and Sanctuary Court members.
-    </p>
-
+    <a href="index.html">Home</a>
+    <div class="nav-center">Info</div>
+    <a href="events-calendar.html">Calendar</a>
   </div>
-<script src="script.js?v=1017"></script>
-<script src="access.js"></script>
+
+  <div class="info-container">
+    <h1>Member Information</h1>
+
+    <div class="menu">
+      <a href="#">📣 Notices</a>
+
+      <a href="#">📅 Host an Event</a>
+
+      <a href="payments.html">💳 Payments</a>
+
+      <div class="placeholder menu-item">
+        👥 Directory (coming soon)
+      </div>
+
+      <div class="placeholder menu-item">
+        📜 Club info & rules (coming soon)
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

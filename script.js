@@ -1,66 +1,46 @@
-// script.js — Sanctuary Club access gate (buttons version)
+// access.js — global access guard + universal logout
 
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  try {
+    const granted = localStorage.getItem("sanctuaryAccessGranted");
 
-  const ACCESS_CODE = "SM0185SC";
+    const isIndex =
+      window.location.pathname.endsWith("/") ||
+      window.location.pathname.endsWith("index.html");
 
-  const gate = document.getElementById("access-gate");
-  const input = document.getElementById("access-code-input");
-  const submit = document.getElementById("access-submit");
-  const error = document.getElementById("access-error");
-  const toggle = document.querySelector(".toggle-visibility");
+    // If not authorised and not on index, bounce home
+    if (!isIndex && granted !== "true") {
+      window.location.href = "index.html";
+      return;
+    }
 
-  const buttons = document.querySelectorAll(".hero-button[data-dest]");
+    // If authorised and not index, inject Logout
+    if (!isIndex && granted === "true") {
+      const nav = document.createElement("div");
+      nav.style.position = "fixed";
+      nav.style.top = "1rem";
+      nav.style.right = "1.25rem";
+      nav.style.zIndex = "1000";
 
-  let pendingDestination = null;
+      const logout = document.createElement("a");
+      logout.href = "#";
+      logout.textContent = "Logout";
+      logout.style.fontWeight = "600";
+      logout.style.color = "#003366";
+      logout.style.textDecoration = "none";
+      logout.style.cursor = "pointer";
 
-  // If already granted, do nothing
-  if (localStorage.getItem("sanctuaryAccessGranted") === "true") {
-    return;
+      logout.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("sanctuaryAccessGranted");
+        window.location.href = "index.html";
+      });
+
+      nav.appendChild(logout);
+      document.body.appendChild(nav);
+    }
+
+  } catch (err) {
+    console.error("Access guard error:", err);
   }
-
-  function showGate(destination) {
-    pendingDestination = destination;
-    if (gate) gate.style.display = "block";
-    if (input) input.focus();
-  }
-
-  // Intercept button clicks
-  buttons.forEach(btn => {
-    btn.addEventListener("click", function () {
-      const dest = btn.getAttribute("data-dest");
-      showGate(dest);
-    });
-  });
-
-  // Submit access code
-  if (submit && input) {
-    submit.addEventListener("click", function () {
-      const value = input.value.trim();
-
-      if (value === ACCESS_CODE) {
-        localStorage.setItem("sanctuaryAccessGranted", "true");
-        window.location.href = pendingDestination || "events-calendar.html";
-      } else {
-        if (error) error.style.display = "block";
-      }
-    });
-  }
-
-  // Enter key support
-  if (input) {
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        submit.click();
-      }
-    });
-  }
-
-  // Toggle visibility
-  if (toggle && input) {
-    toggle.addEventListener("click", function () {
-      input.type = input.type === "password" ? "text" : "password";
-    });
-  }
-
-});
+})();

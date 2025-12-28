@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=3001" />
+  <link rel="stylesheet" href="styles-main.css?v=1018" />
 </head>
 
 <body>
@@ -26,40 +26,37 @@
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- BOTTOM STACK -->
-      <div class="hero-bottom-stack">
+      <!-- MAIN BUTTONS -->
+      <div class="hero-buttons">
+        <button id="btn-whats-on" class="hero-button">What’s On</button>
+        <button id="btn-info" class="hero-button">Info</button>
+      </div>
 
-        <!-- MAIN BUTTONS -->
-        <div class="hero-buttons">
-          <a href="events-calendar.html" class="hero-button">What’s On</a>
-          <a href="notices.html" class="hero-button">Info</a>
+      <!-- ACCESS GATE (hidden until button click) -->
+      <div id="access-gate" class="access-gate-inline" style="display:none; margin-top:1.5rem; text-align:center;">
+
+        <div class="access-input-wrapper" style="display:inline-flex; align-items:center;">
+          <input
+            type="password"
+            id="access-code-input"
+            placeholder="Access code"
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            aria-label="Show access code"
+          >👁</button>
         </div>
 
-        <!-- ACCESS GATE -->
-        <div id="access-gate" class="access-gate-bottom">
-
-          <div class="access-input-wrapper">
-            <input
-              type="password"
-              id="access-code-input"
-              placeholder="Access code"
-              autocomplete="off"
-            />
-            <button
-              type="button"
-              class="toggle-visibility"
-              aria-label="Show access code"
-            >👁</button>
-          </div>
-
+        <div style="margin-top:0.75rem;">
           <button id="access-submit" class="hero-button">
             Continue
           </button>
+        </div>
 
-          <div id="access-error" class="access-error">
-            Invalid access code
-          </div>
-
+        <div id="access-error" class="access-error" style="display:none; margin-top:0.5rem;">
+          Invalid access code
         </div>
 
       </div>
@@ -81,9 +78,9 @@
     </p>
   </div>
 
-</div>
+</div> <!-- end hero-wrapper -->
 
-<script src="script.js?v=3001"></script>
+<script src="script.js?v=1018"></script>
 
 </body>
 </html>

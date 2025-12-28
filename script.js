@@ -1,72 +1,60 @@
-// script.js — Sanctuary Club core logic
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-  /* ======================================================
-     ACCESS GATE — INDEX PAGE
-     ====================================================== */
+  /* =====================================================
+     FRONT PAGE ACCESS GATE CONTROLLER
+     ===================================================== */
 
-  const ACCESS_CODE = "SM0185SC";
-
-  const gate = document.getElementById("access-gate");
-  const input = document.getElementById("access-code-input");
-  const submit = document.getElementById("access-submit");
-  const error = document.getElementById("access-error");
+  const accessGate = document.getElementById("access-gate");
+  const accessInput = document.getElementById("access-code-input");
+  const accessSubmit = document.getElementById("access-submit");
+  const accessError = document.getElementById("access-error");
   const navButtons = document.querySelectorAll(".nav-button");
 
   let pendingDestination = null;
 
-  // If already granted, buttons go straight through
-  const accessGranted =
-    localStorage.getItem("sanctuaryAccessGranted") === "true";
+  // Your shared access code (single source of truth)
+  const ACCESS_CODE = "SM0185SC";
 
+  // Handle navigation button clicks
   navButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const dest = btn.dataset.dest;
+      const granted = localStorage.getItem("sanctuaryAccessGranted");
 
-      if (accessGranted) {
-        window.location.href = dest;
+      if (granted === "true") {
+        window.location.href = btn.dataset.dest;
       } else {
-        pendingDestination = dest;
-        if (gate) gate.style.display = "block";
-        if (error) error.style.display = "none";
-        if (input) input.focus();
+        pendingDestination = btn.dataset.dest;
+        accessGate.style.display = "block";
+        accessInput.focus();
       }
     });
   });
 
-  // Submit access code
-  if (submit) {
-    submit.addEventListener("click", () => {
-      if (!input) return;
+  // Handle access submission
+  if (accessSubmit) {
+    accessSubmit.addEventListener("click", () => {
+      const entered = accessInput.value.trim();
 
-      if (input.value.trim() === ACCESS_CODE) {
+      if (entered === ACCESS_CODE) {
         localStorage.setItem("sanctuaryAccessGranted", "true");
-        window.location.href = pendingDestination || "events-calendar.html";
+        accessError.style.display = "none";
+
+        if (pendingDestination) {
+          window.location.href = pendingDestination;
+        }
       } else {
-        if (error) error.style.display = "block";
+        accessError.style.display = "block";
       }
     });
   }
 
-  // Allow Enter key
-  if (input) {
-    input.addEventListener("keydown", e => {
+  // Allow Enter key to submit
+  if (accessInput) {
+    accessInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        submit.click();
+        accessSubmit.click();
       }
     });
   }
-
-  /* ======================================================
-     PASSWORD VISIBILITY TOGGLE
-     ====================================================== */
-
-  document.querySelectorAll(".toggle-visibility").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const field = btn.previousElementSibling;
-      if (!field) return;
-      field.type = field.type === "password" ? "text" : "password";
-    });
-  });
 
 });

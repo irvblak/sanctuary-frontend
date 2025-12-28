@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=1018" />
+  <link rel="stylesheet" href="styles-main.css" />
 </head>
 
 <body>
@@ -26,41 +26,13 @@
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- MAIN BUTTONS -->
+      <!-- ACTION BUTTONS -->
       <div class="hero-buttons">
-        <button id="btn-whats-on" class="hero-button">What’s On</button>
-        <button id="btn-info" class="hero-button">Info</button>
+        <button class="hero-button" type="button">What’s On</button>
+        <button class="hero-button" type="button">Info</button>
       </div>
 
-      <!-- ACCESS GATE (hidden until button click) -->
-      <div id="access-gate" class="access-gate-inline" style="display:none; margin-top:1.5rem; text-align:center;">
-
-        <div class="access-input-wrapper" style="display:inline-flex; align-items:center;">
-          <input
-            type="password"
-            id="access-code-input"
-            placeholder="Access code"
-            autocomplete="off"
-          />
-          <button
-            type="button"
-            class="toggle-visibility"
-            aria-label="Show access code"
-          >👁</button>
-        </div>
-
-        <div style="margin-top:0.75rem;">
-          <button id="access-submit" class="hero-button">
-            Continue
-          </button>
-        </div>
-
-        <div id="access-error" class="access-error" style="display:none; margin-top:0.5rem;">
-          Invalid access code
-        </div>
-
-      </div>
-
+      <!-- FOOTER -->
       <footer class="site-footer">
         <p>© The Sanctuary Club. All rights reserved.</p>
       </footer>
@@ -78,9 +50,7 @@
     </p>
   </div>
 
-</div> <!-- end hero-wrapper -->
-
-<script src="script.js?v=1018"></script>
+</div>
 
 </body>
 </html>

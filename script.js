@@ -1,32 +1,39 @@
 // script.js
-// Step 3 — Front page gate reveal only
+// Step 3 — Reliable gate reveal on front page
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const whatsOnBtn = document.querySelector('a[href="events-calendar.html"]');
-  const infoBtn = document.querySelector('a[href="notices.html"]');
   const gate = document.getElementById("access-gate");
+  const buttons = document.querySelectorAll(".hero-buttons .hero-button");
 
-  // Safety check
-  if (!gate || !whatsOnBtn || !infoBtn) return;
+  if (!gate || buttons.length < 2) {
+    console.warn("Gate or buttons not found");
+    return;
+  }
 
   // Ensure gate starts hidden
   gate.style.display = "none";
 
-  function showGate(targetPage) {
+  function showGate(target) {
     gate.style.display = "block";
-    gate.dataset.target = targetPage;
+    gate.dataset.target = target;
+
+    // Ensure visibility even on small screens
+    gate.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  // Intercept button clicks
-  whatsOnBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    showGate("events-calendar.html");
-  });
+  buttons.forEach(button => {
+    button.addEventListener("click", function (e) {
+      e.preventDefault();
 
-  infoBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    showGate("notices.html");
+      const label = button.textContent.trim();
+
+      if (label.includes("What")) {
+        showGate("events-calendar.html");
+      } else if (label.includes("Info")) {
+        showGate("notices.html");
+      }
+    });
   });
 
 });

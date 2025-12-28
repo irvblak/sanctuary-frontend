@@ -1,60 +1,59 @@
+// script.js — homepage gate + navigation only
+
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* =====================================================
-     FRONT PAGE ACCESS GATE CONTROLLER
-     ===================================================== */
+  const ACCESS_CODE = "WXYZ"; // <-- change this if needed
 
-  const accessGate = document.getElementById("access-gate");
-  const accessInput = document.getElementById("access-code-input");
-  const accessSubmit = document.getElementById("access-submit");
-  const accessError = document.getElementById("access-error");
-  const navButtons = document.querySelectorAll(".nav-button");
+  const btnWhatsOn = document.getElementById("btn-whats-on");
+  const btnInfo = document.getElementById("btn-info");
+
+  const gate = document.getElementById("access-gate");
+  const input = document.getElementById("access-code-input");
+  const submit = document.getElementById("access-submit");
+  const error = document.getElementById("access-error");
 
   let pendingDestination = null;
 
-  // Your shared access code (single source of truth)
-  const ACCESS_CODE = "SM0185SC";
+  // Show gate when either button is clicked
+  function revealGate(destination) {
+    pendingDestination = destination;
+    gate.style.display = "block";
+    error.style.display = "none";
+    input.value = "";
+    input.focus();
+  }
 
-  // Handle navigation button clicks
-  navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const granted = localStorage.getItem("sanctuaryAccessGranted");
-
-      if (granted === "true") {
-        window.location.href = btn.dataset.dest;
-      } else {
-        pendingDestination = btn.dataset.dest;
-        accessGate.style.display = "block";
-        accessInput.focus();
-      }
+  if (btnWhatsOn) {
+    btnWhatsOn.addEventListener("click", function () {
+      revealGate("events-calendar.html");
     });
-  });
+  }
 
-  // Handle access submission
-  if (accessSubmit) {
-    accessSubmit.addEventListener("click", () => {
-      const entered = accessInput.value.trim();
+  if (btnInfo) {
+    btnInfo.addEventListener("click", function () {
+      revealGate("notices.html");
+    });
+  }
+
+  // Handle access code submission
+  if (submit) {
+    submit.addEventListener("click", function () {
+      const entered = input.value.trim();
 
       if (entered === ACCESS_CODE) {
-        localStorage.setItem("sanctuaryAccessGranted", "true");
-        accessError.style.display = "none";
-
-        if (pendingDestination) {
-          window.location.href = pendingDestination;
-        }
+        sessionStorage.setItem("siteAccessGranted", "true");
+        window.location.href = pendingDestination;
       } else {
-        accessError.style.display = "block";
+        error.style.display = "block";
       }
     });
   }
 
-  // Allow Enter key to submit
-  if (accessInput) {
-    accessInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        accessSubmit.click();
-      }
-    });
-  }
+  // Optional: Enter key submits
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      submit.click();
+    }
+  });
 
 });

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css" />
+  <link rel="stylesheet" href="styles-main.css?v=1020" />
 </head>
 
 <body>
@@ -26,10 +26,43 @@
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- ACTION BUTTONS -->
-      <div class="hero-buttons">
-        <button class="hero-button" type="button">What’s On</button>
-        <button class="hero-button" type="button">Info</button>
+      <!-- ACTION STACK -->
+      <div class="hero-actions">
+
+        <!-- ACCESS GATE (hidden until buttons clicked) -->
+        <div id="access-gate" class="access-gate-inline" style="display:none;">
+
+          <div class="access-input-wrapper">
+            <input
+              type="password"
+              id="access-code-input"
+              placeholder="Access code"
+              autocomplete="off"
+            />
+
+            <button
+              type="button"
+              class="toggle-visibility"
+              aria-label="Show access code"
+            >👁</button>
+          </div>
+
+          <button id="access-submit" class="hero-button">
+            Continue
+          </button>
+
+          <div id="access-error" class="access-error" style="display:none;">
+            Invalid access code
+          </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="hero-buttons">
+          <a href="events-calendar.html" class="hero-button">What’s On</a>
+          <a href="notices.html" class="hero-button">Info</a>
+        </div>
+
       </div>
 
       <!-- FOOTER -->
@@ -51,6 +84,8 @@
   </div>
 
 </div>
+
+<script src="script.js?v=1020"></script>
 
 </body>
 </html>

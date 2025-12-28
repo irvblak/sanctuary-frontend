@@ -166,42 +166,49 @@ body {
   }
 }
 /* =========================================================
-   HERO ACTION STACK — Buttons + Access Gate
-   Centre-bottom layout (C + D)
+   HERO ACTION STACK — FINAL FIX
+   Buttons centred, gate above, footer below
    ========================================================= */
 
 .hero-overlay {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;   /* vertical centre */
   align-items: center;
-  padding-bottom: 14vh; /* keeps stack above footer */
+  height: 100%;
 }
 
-/* Stack gate ABOVE buttons */
+/* Action stack = gate + buttons */
+.hero-buttons,
 #access-gate {
-  order: 1;
-  margin-bottom: 1.25rem;
+  position: static !important;
+  transform: none !important;
 }
 
-/* Buttons stay grouped */
+/* Gate sits ABOVE buttons */
+#access-gate {
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+/* Buttons row */
 .hero-buttons {
-  order: 2;
-  position: static;     /* override absolute */
-  transform: none;
   display: flex;
   gap: 1.5rem;
 }
 
-/* Ensure inputs don’t stretch oddly */
-.access-input-wrapper input {
-  padding: 0.6rem;
-  font-size: 1rem;
+/* Footer stays at bottom */
+.site-footer {
+  position: absolute;
+  bottom: 6%;
+  width: 100%;
+  text-align: center;
 }
 
 /* Mobile safety */
 @media (max-height: 700px) {
-  .hero-overlay {
-    padding-bottom: 18vh;
+  .site-footer {
+    bottom: 4%;
   }
 }

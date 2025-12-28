@@ -1,82 +1,59 @@
 /* =========================================================
-   BASE STYLING
+   BASE
    ========================================================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
   color: #003366;
   background: #eaf2fb;
 }
 
 /* =========================================================
-   TOP NAVIGATION
-   ========================================================= */
-.top-nav {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1.25rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-}
-
-.top-nav a {
-  font-size: 1rem;
-  text-decoration: none;
-  color: #003366;
-  font-weight: 600;
-}
-
-/* =========================================================
    HERO LAYOUT
    ========================================================= */
 .hero-wrapper {
-  position: relative;
   display: flex;
-  width: 100%;
   min-height: 100vh;
+  width: 100%;
 }
 
 /* Side panels */
 .hero-panel {
   flex: 0 0 17%;
+  padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
     #8bbce8 0%,
     #cfe6fb 35%,
     #ffffff 75%
   );
-  padding: 2rem 1.5rem;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  z-index: 10; /* important */
+  z-index: 2;
 }
 
-/* HERO CENTER */
+/* Centre hero */
 .hero {
-  flex: 1 1 auto;
-  min-height: 100vh;
+  flex: 1;
   position: relative;
-  z-index: 5;
-  overflow: hidden;
   background-image: url("clubhouse.jpg");
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: center;
+  overflow: hidden;
 }
 
-/* Overlay */
+/* Overlay content container */
 .hero-overlay {
   position: relative;
-  inset: 0;
-  z-index: 6;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Title */
@@ -92,24 +69,24 @@ body {
   white-space: nowrap;
 }
 
-/* Buttons */
+/* =========================================================
+   ACTION AREA (buttons)
+   ========================================================= */
 .hero-buttons {
-  position: absolute;
-  bottom: 22%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: auto;
+  margin-bottom: 20%;
   display: flex;
   gap: 1.5rem;
 }
 
 .hero-button {
   padding: 0.7rem 1.8rem;
-  background: #8b5a2b;
-  color: white;
-  border-radius: 999px;
   font-size: 1.2rem;
-  cursor: pointer;
+  border-radius: 999px;
   border: none;
+  background: #8b5a2b;
+  color: #fff;
+  cursor: pointer;
 }
 
 .hero-button:hover {
@@ -117,40 +94,15 @@ body {
 }
 
 /* =========================================================
-   ACCESS GATE — THIS IS THE FIX
+   FOOTER
    ========================================================= */
-.access-gate-inline {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-  z-index: 9999;          /* FORCE VISIBILITY */
-  position: relative;    /* ESCAPE FLEX STACKING */
-}
-
-.access-input-wrapper {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.access-error {
-  color: #a00000;
-  font-size: 0.9rem;
-}
-
-/* =========================================================
-   CALENDAR PAGE
-   ========================================================= */
-.calendar-page-body {
-  background: #f5f9ff;
-}
-
-.calendar-container {
-  max-width: 900px;
-  margin: 6rem auto 3rem;
-  padding: 1rem;
+.site-footer {
+  position: absolute;
+  bottom: 6%;
+  width: 100%;
+  text-align: center;
+  color: #001f4d;
+  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
 }
 
 /* =========================================================
@@ -163,52 +115,5 @@ body {
 
   .hero {
     width: 100%;
-  }
-}
-/* =========================================================
-   HERO ACTION STACK — FINAL FIX
-   Buttons centred, gate above, footer below
-   ========================================================= */
-
-.hero-overlay {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;   /* vertical centre */
-  align-items: center;
-  height: 100%;
-}
-
-/* Action stack = gate + buttons */
-.hero-buttons,
-#access-gate {
-  position: static !important;
-  transform: none !important;
-}
-
-/* Gate sits ABOVE buttons */
-#access-gate {
-  margin-bottom: 1.2rem;
-  text-align: center;
-}
-
-/* Buttons row */
-.hero-buttons {
-  display: flex;
-  gap: 1.5rem;
-}
-
-/* Footer stays at bottom */
-.site-footer {
-  position: absolute;
-  bottom: 6%;
-  width: 100%;
-  text-align: center;
-}
-
-/* Mobile safety */
-@media (max-height: 700px) {
-  .site-footer {
-    bottom: 4%;
   }
 }

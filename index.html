@@ -27,19 +27,19 @@
       <h1 class="hero-title">The Sanctuary Club</h1>
 
       <div class="hero-buttons">
-        <!-- JS-controlled navigation buttons -->
+        <!-- DIRECT gate triggers -->
         <button
           type="button"
-          class="hero-button nav-button"
-          data-dest="events-calendar.html"
+          class="hero-button"
+          onclick="openGate('events-calendar.html')"
         >
           What’s On
         </button>
 
         <button
           type="button"
-          class="hero-button nav-button"
-          data-dest="notices.html"
+          class="hero-button"
+          onclick="openGate('notices.html')"
         >
           Info
         </button>
@@ -92,7 +92,20 @@
 
   </div>
 
-</div> <!-- end hero-wrapper -->
+</div>
+
+<script>
+  // Minimal, explicit gate opener
+  function openGate(dest) {
+    if (localStorage.getItem("sanctuaryAccessGranted") === "true") {
+      window.location.href = dest;
+      return;
+    }
+    window.pendingDestination = dest;
+    document.getElementById("access-gate").style.display = "block";
+    document.getElementById("access-code-input").focus();
+  }
+</script>
 
 <script src="script.js?v=1017"></script>
 

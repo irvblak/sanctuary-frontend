@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=1012" />
+  <link rel="stylesheet" href="styles-main.css?v=3001" />
 </head>
 
 <body>
@@ -26,53 +26,40 @@
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- ACTION BUTTONS -->
-      <div class="hero-buttons">
-        <button
-          type="button"
-          class="hero-button"
-          onclick="openGate('events-calendar.html')"
-        >
-          What’s On
-        </button>
+      <!-- BOTTOM STACK -->
+      <div class="hero-bottom-stack">
 
-        <button
-          type="button"
-          class="hero-button"
-          onclick="openGate('notices.html')"
-        >
-          Info
-        </button>
-      </div>
-
-      <!-- ACCESS GATE (NOW UNDER BUTTONS) -->
-      <div id="access-gate" style="display:none; margin-top: 2rem; text-align: center;">
-
-        <div class="access-input-wrapper" style="justify-content: center;">
-          <input
-            type="password"
-            id="access-code-input"
-            placeholder="Access code"
-            autocomplete="off"
-          />
-
-          <button
-            type="button"
-            class="toggle-visibility"
-            aria-label="Show access code"
-          >👁</button>
+        <!-- MAIN BUTTONS -->
+        <div class="hero-buttons">
+          <a href="events-calendar.html" class="hero-button">What’s On</a>
+          <a href="notices.html" class="hero-button">Info</a>
         </div>
 
-        <button id="access-submit" class="hero-button" style="margin-top: 0.75rem;">
-          Continue
-        </button>
+        <!-- ACCESS GATE -->
+        <div id="access-gate" class="access-gate-bottom">
 
-        <div
-          id="access-error"
-          class="access-error"
-          style="display:none; margin-top: 0.5rem;"
-        >
-          Invalid access code
+          <div class="access-input-wrapper">
+            <input
+              type="password"
+              id="access-code-input"
+              placeholder="Access code"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="toggle-visibility"
+              aria-label="Show access code"
+            >👁</button>
+          </div>
+
+          <button id="access-submit" class="hero-button">
+            Continue
+          </button>
+
+          <div id="access-error" class="access-error">
+            Invalid access code
+          </div>
+
         </div>
 
       </div>
@@ -96,20 +83,7 @@
 
 </div>
 
-<!-- Gate opener (explicit, simple, reliable) -->
-<script>
-  function openGate(dest) {
-    if (localStorage.getItem("sanctuaryAccessGranted") === "true") {
-      window.location.href = dest;
-      return;
-    }
-    window.pendingDestination = dest;
-    document.getElementById("access-gate").style.display = "block";
-    document.getElementById("access-code-input").focus();
-  }
-</script>
-
-<script src="script.js?v=1017"></script>
+<script src="script.js?v=3001"></script>
 
 </body>
 </html>

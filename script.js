@@ -1,36 +1,32 @@
-// =====================================================
-// Sanctuary Club — Secondary Page Access Guard + Logout
-// Applies to: Calendar, Info, future internal pages
-// =====================================================
+// script.js
+// Step 3 — Front page gate reveal only
 
-(function () {
-  try {
-    // Check access flag (must match index.js exactly)
-    const granted = localStorage.getItem("sanctuaryAccessGranted");
+document.addEventListener("DOMContentLoaded", function () {
 
-    // If access not granted, return to homepage
-    if (granted !== "true") {
-      window.location.replace("index.html");
-      return;
-    }
+  const whatsOnBtn = document.querySelector('a[href="events-calendar.html"]');
+  const infoBtn = document.querySelector('a[href="notices.html"]');
+  const gate = document.getElementById("access-gate");
 
-    // Logout handler (if present)
-    const logoutLink = document.getElementById("logout-link");
+  // Safety check
+  if (!gate || !whatsOnBtn || !infoBtn) return;
 
-    if (logoutLink) {
-      logoutLink.addEventListener("click", function (e) {
-        e.preventDefault();
+  // Ensure gate starts hidden
+  gate.style.display = "none";
 
-        // Clear access
-        localStorage.removeItem("sanctuaryAccessGranted");
-
-        // Return to homepage
-        window.location.replace("index.html");
-      });
-    }
-
-  } catch (err) {
-    // Fail-safe: never block rendering
-    console.error("Access guard error:", err);
+  function showGate(targetPage) {
+    gate.style.display = "block";
+    gate.dataset.target = targetPage;
   }
-})();
+
+  // Intercept button clicks
+  whatsOnBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    showGate("events-calendar.html");
+  });
+
+  infoBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    showGate("notices.html");
+  });
+
+});

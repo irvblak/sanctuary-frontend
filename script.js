@@ -1,10 +1,12 @@
-// access.js — secondary page access guard + logout
-// Applies to: Calendar, Info, and any future internal pages
+// =====================================================
+// Sanctuary Club — Secondary Page Access Guard + Logout
+// Applies to: Calendar, Info, future internal pages
+// =====================================================
 
 (function () {
   try {
-    // Check session access
-    const granted = sessionStorage.getItem("siteAccessGranted");
+    // Check access flag (must match index.js exactly)
+    const granted = localStorage.getItem("sanctuaryAccessGranted");
 
     // If access not granted, return to homepage
     if (granted !== "true") {
@@ -12,15 +14,15 @@
       return;
     }
 
-    // Attach logout handler if link exists
+    // Logout handler (if present)
     const logoutLink = document.getElementById("logout-link");
 
     if (logoutLink) {
       logoutLink.addEventListener("click", function (e) {
         e.preventDefault();
 
-        // Clear session access
-        sessionStorage.removeItem("siteAccessGranted");
+        // Clear access
+        localStorage.removeItem("sanctuaryAccessGranted");
 
         // Return to homepage
         window.location.replace("index.html");
@@ -28,7 +30,7 @@
     }
 
   } catch (err) {
-    // Fail safe: never block rendering
+    // Fail-safe: never block rendering
     console.error("Access guard error:", err);
   }
 })();

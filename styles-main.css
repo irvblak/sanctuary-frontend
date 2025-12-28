@@ -74,7 +74,10 @@ body {
    ========================================================= */
 .hero-buttons {
   margin-top: auto;
-  margin-bottom: 20%;
+
+  /* ↓ This controls vertical position of buttons */
+  margin-bottom: 14vh;   /* ~3–4cm lower than centre on most screens */
+
   display: flex;
   gap: 1.5rem;
 }

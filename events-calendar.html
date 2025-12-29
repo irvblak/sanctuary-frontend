@@ -7,6 +7,15 @@
 
   <meta name="robots" content="noindex, nofollow">
 
+  <!-- 🔒 ACCESS PROTECTION -->
+  <script>
+    (function () {
+      if (sessionStorage.getItem("sanctuaryAccess") !== "granted") {
+        window.location.replace("index.html");
+      }
+    })();
+  </script>
+
   <style>
     /* ================================
        BASE
@@ -228,9 +237,6 @@
 
     buildCalendar(0);
   </script>
-
-  <!-- Access gate -->
-  <script src="access.js"></script>
 
 </body>
 </html>

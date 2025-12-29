@@ -18,106 +18,57 @@ body {
 
 /* Side panels */
 .hero-panel {
-  flex: 0 0 17%;
+  width: 17%;
+  padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
     #8bbce8 0%,
     #cfe6fb 35%,
     #ffffff 75%
   );
-  padding: 2rem 1.5rem;
-  box-sizing: border-box;
-
-  /* FIX: vertical text flow */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.75rem;
 }
 
-.hero-panel h2 {
-  margin: 0;
-}
-
-.hero-panel p {
-  margin: 0;
-}
-
-/* Hero centre */
-.hero {
-  flex: 1;
-  background-image: url("clubhouse.jpg");
-  background-size: cover;
-  background-position: center;
-  position: relative;
+.hero-panel h3 {
+  margin-top: 0;
 }
 
 /* =========================================================
-   HERO CONTENT
+   HERO CENTER
    ========================================================= */
+.hero {
+  flex: 1;
+  background: url("clubhouse.jpg") center/cover no-repeat;
+  position: relative;
+}
+
 .hero-overlay {
   min-height: 100vh;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Title */
 .hero-title {
   position: absolute;
-  top: 2%;
-  left: 2%;
-  font-size: 72px;
-  font-weight: 700;
+  top: 1.5rem;
+  left: 2rem;
+  font-size: 64px;
   color: #001f4d;
   text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
-  margin: 0;
-  white-space: nowrap;
 }
 
 /* =========================================================
    ACTION STACK (GATE + BUTTONS)
    ========================================================= */
-.hero-actions {
-  position: absolute;
-
-  /* FIX: bottom placement */
-  bottom: 18%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-/* Buttons */
-.hero-buttons {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.hero-button {
-  padding: 0.7rem 1.8rem;
-  background: #8b5a2b;
-  color: #fff;
-  border-radius: 999px;
-  font-size: 1.2rem;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-}
-
-.hero-button:hover {
-  background: #a06830;
-}
-
-/* =========================================================
-   ACCESS GATE
-   ========================================================= */
-.access-gate-inline {
-  display: none; /* shown by JS */
+#access-gate {
+  margin-bottom: 1rem;
   background: rgba(255,255,255,0.95);
-  padding: 1rem 1.2rem;
+  padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   text-align: center;
@@ -129,22 +80,24 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.access-input-wrapper input {
-  padding: 0.5rem;
-  font-size: 1rem;
+.hero-buttons {
+  display: flex;
+  gap: 1.5rem;
 }
 
-.toggle-visibility {
-  background: none;
+/* Buttons */
+.hero-button {
+  padding: 0.7rem 1.8rem;
+  background: #8b5a2b;
+  color: white;
+  border-radius: 999px;
+  font-size: 1.2rem;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
 }
 
-.access-error {
-  color: #a00000;
-  font-size: 0.9rem;
-  margin-top: 0.4rem;
+.hero-button:hover {
+  background: #a06830;
 }
 
 /* =========================================================
@@ -152,30 +105,17 @@ body {
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 6%;
+  bottom: 2rem;
   width: 100%;
   text-align: center;
-  color: #001f4d;
-  text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
+  font-size: 0.9rem;
 }
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
    ========================================================= */
 @media (max-width: 900px) {
   .hero-panel {
     display: none;
-  }
-
-  .hero {
-    width: 100%;
-  }
-
-  .hero-title {
-    font-size: 48px;
-  }
-
-  .hero-actions {
-    bottom: 16%;
   }
 }

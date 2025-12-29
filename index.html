@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=1012" />
+  <link rel="stylesheet" href="styles-main.css?v=2001" />
 </head>
 
 <body>
@@ -13,21 +13,21 @@
 <div class="hero-wrapper">
 
   <!-- LEFT PANEL -->
-  <div class="hero-panel hero-panel-left">
+  <div class="hero-panel">
     <h3>Welcome to The Sanctuary Club</h3>
     <p>
       A residents’ club for Sanctuary Mews and Sanctuary Court.
     </p>
   </div>
 
-  <!-- HERO (CENTRE) -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-overlay">
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
       <!-- ACCESS GATE (hidden by default) -->
-      <div id="access-gate" class="access-gate-inline" style="display:none;">
+      <div id="access-gate" style="display:none;">
         <div class="access-input-wrapper">
           <input
             type="password"
@@ -37,7 +37,7 @@
           />
           <button
             type="button"
-            class="toggle-visibility"
+            id="toggle-access-visibility"
             aria-label="Show access code"
           >👁</button>
         </div>
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <!-- ACTION BUTTONS -->
+      <!-- BUTTONS -->
       <div class="hero-buttons">
         <button id="btn-whats-on" class="hero-button">What’s On</button>
         <button id="btn-info" class="hero-button">Info</button>
@@ -66,7 +66,7 @@
   </section>
 
   <!-- RIGHT PANEL -->
-  <div class="hero-panel hero-panel-right">
+  <div class="hero-panel">
     <p>
       <strong><em>
         See what’s on, join activities, and optionally share contact details
@@ -77,7 +77,7 @@
 
 </div>
 
-<script src="script.js?v=1020"></script>
+<script src="script.js?v=2001"></script>
 
 </body>
 </html>

@@ -1,144 +1,110 @@
 /* =========================================================
-   BASE STYLING
+   BASE
    ========================================================= */
 body {
   margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
   color: #003366;
-  background: #eaf2fb;
 }
 
 /* =========================================================
-   TOP NAVIGATION (internal pages only)
-   ========================================================= */
-.top-nav {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1.25rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-}
-
-.top-nav a {
-  font-size: 1rem;
-  text-decoration: none;
-  color: #003366;
-  font-weight: 600;
-}
-
-/* =========================================================
-   HERO LAYOUT
+   HERO WRAPPER
    ========================================================= */
 .hero-wrapper {
-  position: relative;
   display: flex;
-  width: 100%;
   min-height: 100vh;
 }
 
-/* Side panels */
+/* =========================================================
+   SIDE PANELS
+   ========================================================= */
 .hero-panel {
   flex: 0 0 17%;
+  padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
     #8bbce8 0%,
     #cfe6fb 35%,
     #ffffff 75%
   );
-  padding: 2rem 1.5rem;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  z-index: 10;
 }
 
 /* =========================================================
-   HERO CENTER
+   HERO (CENTRE)
    ========================================================= */
 .hero {
-  flex: 1 1 auto;
-  min-height: 100vh;
+  flex: 1;
+  background: url("clubhouse.jpg") center / cover no-repeat;
   position: relative;
-  z-index: 5;
-  overflow: hidden;
-  background-image: url("clubhouse.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+}
+
+/* Overlay uses full height */
+.hero-overlay {
+  position: relative;
+  min-height: 100vh;
 }
 
 /* =========================================================
-   HERO OVERLAY — FINAL, STABLE STRUCTURE
+   TITLE
    ========================================================= */
-.hero-overlay {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-/* Title */
 .hero-title {
   position: absolute;
   top: 1.5rem;
   left: 2rem;
-  margin: 0;
   font-size: 64px;
   font-weight: 700;
   color: #001f4d;
   text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
-  white-space: nowrap;
 }
 
 /* =========================================================
-   ACCESS GATE
+   ACTION STACK (Gate + Buttons)
    ========================================================= */
-.access-gate-inline {
-  margin-top: auto;              /* pushes gate to bottom */
-  margin-bottom: 1rem;
+.action-stack {
+  position: absolute;
+  bottom: 6.5rem;   /* 👈 sits just above footer */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Gate */
+#access-gate {
   background: rgba(255,255,255,0.95);
-  padding: 1rem;
+  padding: 1rem 1.2rem;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   text-align: center;
-  z-index: 20;
 }
 
+/* Gate input row */
 .access-input-wrapper {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
-.access-error {
-  color: #a00000;
-  font-size: 0.9rem;
-}
-
-/* =========================================================
-   ACTION BUTTONS
-   ========================================================= */
+/* Buttons row */
 .hero-buttons {
   display: flex;
   gap: 1.5rem;
-  margin-bottom: 2.5rem; /* space above footer */
 }
 
+/* Buttons */
 .hero-button {
   padding: 0.7rem 1.8rem;
   background: #8b5a2b;
   color: white;
   border-radius: 999px;
   font-size: 1.2rem;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
 }
 
 .hero-button:hover {
@@ -150,24 +116,11 @@ body {
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 2rem;
   width: 100%;
   text-align: center;
   font-size: 0.9rem;
-  color: #001f4d;
-}
-
-/* =========================================================
-   CALENDAR PAGE
-   ========================================================= */
-.calendar-page-body {
-  background: #f5f9ff;
-}
-
-.calendar-container {
-  max-width: 900px;
-  margin: 6rem auto 3rem;
-  padding: 1rem;
+  color: #003366;
 }
 
 /* =========================================================
@@ -176,9 +129,5 @@ body {
 @media (max-width: 900px) {
   .hero-panel {
     display: none;
-  }
-
-  .hero {
-    width: 100%;
   }
 }

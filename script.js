@@ -1,31 +1,38 @@
-// script.js
-// Step 8 — Gate trigger + eye toggle
-// NO navigation yet. NO redirects. NO storage.
+// script.js — Homepage gate logic (clean + deterministic)
 
 document.addEventListener("DOMContentLoaded", () => {
-  const whatsOnBtn = document.getElementById("whats-on-btn");
-  const infoBtn = document.getElementById("info-btn");
 
+  // Elements
+  const btnWhatsOn = document.getElementById("btn-whats-on");
+  const btnInfo = document.getElementById("btn-info");
   const gate = document.getElementById("access-gate");
   const input = document.getElementById("access-code-input");
+  const submit = document.getElementById("access-submit");
+  const error = document.getElementById("access-error");
   const eyeBtn = document.getElementById("access-eye");
 
-  // Safety check
-  if (!gate || !whatsOnBtn || !infoBtn) {
-    console.warn("Gate or buttons not found");
-    return;
-  }
+  let targetPage = null;
 
-  // ---- Show gate when either button is clicked ----
-  function showGate() {
+  // ---- Button clicks show gate ----
+  function showGate(destination) {
+    targetPage = destination;
     gate.style.display = "block";
-    input && input.focus();
+    input.focus();
   }
 
-  whatsOnBtn.addEventListener("click", showGate);
-  infoBtn.addEventListener("click", showGate);
+  if (btnWhatsOn) {
+    btnWhatsOn.addEventListener("click", () => {
+      showGate("events-calendar.html");
+    });
+  }
 
-  // ---- 👁 Eye toggle ----
+  if (btnInfo) {
+    btnInfo.addEventListener("click", () => {
+      showGate("notices.html");
+    });
+  }
+
+  // ---- Eye toggle ----
   if (eyeBtn && input) {
     eyeBtn.addEventListener("click", () => {
       if (input.type === "password") {
@@ -37,4 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // ---- Submit access code ----
+  if (submit) {
+    submit.addEventListener("click", () => {
+      const code = input.value.trim();
+
+      // TEMP access code (we will upgrade later)
+      if (code === "WXYZ") {
+        error.style.display = "none";
+        window.location.href = targetPage;
+      } else {
+        error.style.display = "block";
+      }
+    });
+  }
+
 });

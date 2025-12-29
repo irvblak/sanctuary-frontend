@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=1018" />
+  <link rel="stylesheet" href="styles-main.css?v=1100" />
 </head>
 
 <body>
@@ -15,50 +15,49 @@
   <!-- LEFT PANEL -->
   <div class="hero-panel hero-panel-left">
     <h3>Welcome to The Sanctuary Club</h3>
-    <p>
-      A residents’ club for Sanctuary Mews and Sanctuary Court.
-    </p>
+    <p>A residents’ club for Sanctuary Mews and Sanctuary Court.</p>
   </div>
 
-  <!-- HERO (CENTRE) -->
+  <!-- HERO CENTRE -->
   <section class="hero">
     <div class="hero-overlay">
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- ACCESS GATE (hidden by default) -->
-      <div id="access-gate" class="access-gate-inline" style="display:none;">
+      <!-- ACTION STACK (gate + buttons) -->
+      <div class="hero-actions">
 
-        <div class="access-input-wrapper">
-          <input
-            type="password"
-            id="access-code-input"
-            placeholder="Access code"
-            autocomplete="off"
-          />
+        <!-- ACCESS GATE (hidden by default) -->
+        <div id="access-gate" class="access-gate-inline" style="display:none;">
+          <div class="access-input-wrapper">
+            <input
+              type="password"
+              id="access-code-input"
+              placeholder="Access code"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              id="access-eye"
+              aria-label="Show access code"
+            >👁</button>
+          </div>
 
-          <button
-            type="button"
-            id="access-eye"
-            class="toggle-visibility"
-            aria-label="Show access code"
-          >👁</button>
+          <button id="access-submit" class="hero-button">
+            Continue
+          </button>
+
+          <div id="access-error" class="access-error" style="display:none;">
+            Invalid access code
+          </div>
         </div>
 
-        <button id="access-submit" class="hero-button">
-          Continue
-        </button>
-
-        <div id="access-error" class="access-error" style="display:none;">
-          Invalid access code
+        <!-- BUTTONS -->
+        <div class="hero-buttons">
+          <button class="hero-button" id="whats-on-btn">What’s On</button>
+          <button class="hero-button" id="info-btn">Info</button>
         </div>
 
-      </div>
-
-      <!-- ACTION BUTTONS -->
-      <div class="hero-buttons">
-        <button id="btn-whats-on" class="hero-button">What’s On</button>
-        <button id="btn-info" class="hero-button">Info</button>
       </div>
 
       <!-- FOOTER -->
@@ -81,7 +80,6 @@
 
 </div>
 
-<script src="script.js?v=1018"></script>
-
+<script src="script.js?v=1100"></script>
 </body>
 </html>

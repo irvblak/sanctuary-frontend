@@ -7,6 +7,15 @@
 
   <meta name="robots" content="noindex, nofollow">
 
+  <!-- 🔒 ACCESS PROTECTION -->
+  <script>
+    (function () {
+      if (sessionStorage.getItem("sanctuaryAccess") !== "granted") {
+        window.location.replace("index.html");
+      }
+    })();
+  </script>
+
   <style>
     body {
       margin: 0;
@@ -99,9 +108,7 @@
 
     <div class="menu">
       <a href="#">📣 Notices</a>
-
       <a href="#">📅 Host an Event</a>
-
       <a href="payments.html">💳 Payments</a>
 
       <div class="placeholder menu-item">

@@ -1,33 +1,69 @@
-// script.js
-// Step 5 — Reveal access gate on button click
+// =======================================================
+// GATE LOGIC — HOMEPAGE (index.html)
+// =======================================================
 
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  try {
+    const ACCESS_CODE = "WXYZ"; // global site access code
 
-  const gate = document.getElementById("access-gate");
-  const buttons = document.querySelectorAll(".hero-buttons .hero-button");
+    const gate = document.getElementById("access-gate");
+    const input = document.getElementById("access-code-input");
+    const submit = document.getElementById("access-submit");
+    const error = document.getElementById("access-error");
+    const toggle = document.querySelector(".toggle-visibility");
 
-  if (!gate || buttons.length === 0) return;
+    const whatsOnBtn = document.querySelector('a[href="events-calendar.html"]');
+    const infoBtn = document.querySelector('a[href="notices.html"]');
 
-  gate.style.display = "none";
+    let targetPage = null;
 
-  function showGate(target) {
-    gate.style.display = "block";
-    gate.dataset.target = target;
-    gate.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+    // -------------------------------
+    // Show gate when buttons clicked
+    // -------------------------------
+    function revealGate(page) {
+      targetPage = page;
+      error.style.display = "none";
+      gate.style.display = "block";
+      input.focus();
+    }
 
-  buttons.forEach(button => {
-    button.addEventListener("click", function (e) {
+    whatsOnBtn.addEventListener("click", function (e) {
       e.preventDefault();
+      revealGate("events-calendar.html");
+    });
 
-      if (button.textContent.includes("What")) {
-        showGate("events-calendar.html");
-      }
+    infoBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      revealGate("notices.html");
+    });
 
-      if (button.textContent.includes("Info")) {
-        showGate("notices.html");
+    // -------------------------------
+    // Toggle password visibility
+    // -------------------------------
+    toggle.addEventListener("click", function () {
+      input.type = input.type === "password" ? "text" : "password";
+    });
+
+    // -------------------------------
+    // Submit access code
+    // -------------------------------
+    submit.addEventListener("click", function () {
+      const entered = input.value.trim();
+
+      if (entered === ACCESS_CODE) {
+        // Grant session access
+        sessionStorage.setItem("siteAccessGranted", "true");
+
+        // Navigate
+        if (targetPage) {
+          window.location.href = targetPage;
+        }
+      } else {
+        error.style.display = "block";
       }
     });
-  });
 
-});
+  } catch (err) {
+    console.error("Gate logic error:", err);
+  }
+})();

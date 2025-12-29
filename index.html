@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=1100" />
+  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
 </head>
 
 <body>
@@ -13,22 +13,23 @@
 <div class="hero-wrapper">
 
   <!-- LEFT PANEL -->
-  <div class="hero-panel hero-panel-left">
+  <div class="hero-panel">
     <h3>Welcome to The Sanctuary Club</h3>
     <p>A residents’ club for Sanctuary Mews and Sanctuary Court.</p>
   </div>
 
-  <!-- HERO CENTRE -->
+  <!-- HERO (CENTRE) -->
   <section class="hero">
     <div class="hero-overlay">
 
+      <!-- TITLE -->
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- ACTION STACK (gate + buttons) -->
-      <div class="hero-actions">
+      <!-- ACTION STACK -->
+      <div class="action-stack">
 
-        <!-- ACCESS GATE (hidden by default) -->
-        <div id="access-gate" class="access-gate-inline" style="display:none;">
+        <!-- ACCESS GATE -->
+        <div id="access-gate" style="display:none;">
           <div class="access-input-wrapper">
             <input
               type="password"
@@ -39,6 +40,7 @@
             <button
               type="button"
               id="access-eye"
+              class="toggle-visibility"
               aria-label="Show access code"
             >👁</button>
           </div>
@@ -54,8 +56,8 @@
 
         <!-- BUTTONS -->
         <div class="hero-buttons">
-          <button class="hero-button" id="whats-on-btn">What’s On</button>
-          <button class="hero-button" id="info-btn">Info</button>
+          <button id="btn-whats-on" class="hero-button">What’s On</button>
+          <button id="btn-info" class="hero-button">Info</button>
         </div>
 
       </div>
@@ -69,7 +71,7 @@
   </section>
 
   <!-- RIGHT PANEL -->
-  <div class="hero-panel hero-panel-right">
+  <div class="hero-panel">
     <p>
       <strong><em>
         See what’s on, join activities, and optionally share contact details
@@ -80,6 +82,7 @@
 
 </div>
 
-<script src="script.js?v=1100"></script>
+<script src="script.js?v=FINAL"></script>
+
 </body>
 </html>

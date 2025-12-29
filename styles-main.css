@@ -27,8 +27,20 @@ body {
   );
   padding: 2rem 1.5rem;
   box-sizing: border-box;
+
+  /* FIX: vertical text flow */
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.hero-panel h2 {
+  margin: 0;
+}
+
+.hero-panel p {
+  margin: 0;
 }
 
 /* Hero centre */
@@ -45,11 +57,7 @@ body {
    ========================================================= */
 .hero-overlay {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 14vh; /* space for footer */
+  position: relative;
 }
 
 /* Title */
@@ -69,6 +77,13 @@ body {
    ACTION STACK (GATE + BUTTONS)
    ========================================================= */
 .hero-actions {
+  position: absolute;
+
+  /* FIX: bottom placement */
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -158,5 +173,9 @@ body {
 
   .hero-title {
     font-size: 48px;
+  }
+
+  .hero-actions {
+    bottom: 16%;
   }
 }

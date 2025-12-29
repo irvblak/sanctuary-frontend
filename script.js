@@ -1,37 +1,43 @@
-// script.js — Gate trigger + eye toggle (NO navigation yet)
+// script.js — Gate trigger + eye toggle (robust)
 
 document.addEventListener("DOMContentLoaded", () => {
   const gate = document.getElementById("access-gate");
   const whatsOnBtn = document.getElementById("btn-whats-on");
   const infoBtn = document.getElementById("btn-info");
-  const eyeBtn = document.querySelector(".toggle-visibility");
+
   const input = document.getElementById("access-code-input");
+  const eyeBtn = document.getElementById("access-eye");
 
-  if (!gate || !whatsOnBtn || !infoBtn) {
-    console.warn("Gate or buttons not found");
-    return;
-  }
-
+  // ---------- Gate trigger ----------
   function showGate(target) {
+    if (!gate) return;
     sessionStorage.setItem("requestedPage", target);
     gate.style.display = "block";
     if (input) input.focus();
   }
 
-  whatsOnBtn.addEventListener("click", () => {
-    showGate("events-calendar.html");
-  });
+  if (whatsOnBtn) {
+    whatsOnBtn.addEventListener("click", () => {
+      showGate("events-calendar.html");
+    });
+  }
 
-  infoBtn.addEventListener("click", () => {
-    showGate("notices.html");
-  });
+  if (infoBtn) {
+    infoBtn.addEventListener("click", () => {
+      showGate("notices.html");
+    });
+  }
 
-  // 👁 Toggle visibility
+  // ---------- 👁 Toggle visibility ----------
   if (eyeBtn && input) {
     eyeBtn.addEventListener("click", () => {
-      const isHidden = input.type === "password";
-      input.type = isHidden ? "text" : "password";
-      eyeBtn.textContent = isHidden ? "🙈" : "👁";
+      if (input.type === "password") {
+        input.type = "text";
+        eyeBtn.textContent = "🙈";
+      } else {
+        input.type = "password";
+        eyeBtn.textContent = "👁";
+      }
     });
   }
 });

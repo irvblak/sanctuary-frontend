@@ -1,10 +1,11 @@
-// script.js — Home page gate trigger ONLY
-// No navigation, no validation yet
+// script.js — Gate trigger + eye toggle (NO navigation yet)
 
 document.addEventListener("DOMContentLoaded", () => {
   const gate = document.getElementById("access-gate");
   const whatsOnBtn = document.getElementById("btn-whats-on");
   const infoBtn = document.getElementById("btn-info");
+  const eyeBtn = document.querySelector(".toggle-visibility");
+  const input = document.getElementById("access-code-input");
 
   if (!gate || !whatsOnBtn || !infoBtn) {
     console.warn("Gate or buttons not found");
@@ -12,14 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showGate(target) {
-    // Remember where user wanted to go (later use)
     sessionStorage.setItem("requestedPage", target);
-
-    // Show gate
     gate.style.display = "block";
-
-    // Focus input
-    const input = document.getElementById("access-code-input");
     if (input) input.focus();
   }
 
@@ -30,4 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
   infoBtn.addEventListener("click", () => {
     showGate("notices.html");
   });
+
+  // 👁 Toggle visibility
+  if (eyeBtn && input) {
+    eyeBtn.addEventListener("click", () => {
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      eyeBtn.textContent = isHidden ? "🙈" : "👁";
+    });
+  }
 });

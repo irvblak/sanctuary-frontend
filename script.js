@@ -1,6 +1,10 @@
-// script.js — Homepage gate logic (clean + deterministic)
+// script.js — Homepage gate logic with session access
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // CONFIG
+  const ACCESS_CODE = "WXYZ";
+  const SESSION_KEY = "sanctuaryAccess";
 
   // Elements
   const btnWhatsOn = document.getElementById("btn-whats-on");
@@ -13,22 +17,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let targetPage = null;
 
-  // ---- Button clicks show gate ----
-  function showGate(destination) {
-    targetPage = destination;
-    gate.style.display = "block";
-    input.focus();
+  // ---- Helpers ----
+  function hasAccess() {
+    return sessionStorage.getItem(SESSION_KEY) === "granted";
+  }
+
+  function grantAccess() {
+    sessionStorage.setItem(SESSION_KEY, "granted");
+  }
+
+  // ---- Button clicks ----
+  function handleNav(destination) {
+    if (hasAccess()) {
+      window.location.href = destination;
+    } else {
+      targetPage = destination;
+      gate.style.display = "block";
+      input.focus();
+    }
   }
 
   if (btnWhatsOn) {
     btnWhatsOn.addEventListener("click", () => {
-      showGate("events-calendar.html");
+      handleNav("events-calendar.html");
     });
   }
 
   if (btnInfo) {
     btnInfo.addEventListener("click", () => {
-      showGate("notices.html");
+      handleNav("notices.html");
     });
   }
 
@@ -50,10 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
     submit.addEventListener("click", () => {
       const code = input.value.trim();
 
-      // TEMP access code (we will upgrade later)
-      if (code === "WXYZ") {
+      if (code === ACCESS_CODE) {
         error.style.display = "none";
-        window.location.href = targetPage;
+        grantAccess();
+
+        if (targetPage) {
+          window.location.href = targetPage;
+        }
       } else {
         error.style.display = "block";
       }

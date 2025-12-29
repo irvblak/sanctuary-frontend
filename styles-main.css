@@ -1,87 +1,114 @@
 /* =========================================================
-   BASE
+   BASE STYLING
    ========================================================= */
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
   color: #003366;
   background: #eaf2fb;
 }
 
 /* =========================================================
+   TOP NAVIGATION (internal pages only)
+   ========================================================= */
+.top-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.top-nav a {
+  font-size: 1rem;
+  text-decoration: none;
+  color: #003366;
+  font-weight: 600;
+}
+
+/* =========================================================
    HERO LAYOUT
    ========================================================= */
 .hero-wrapper {
+  position: relative;
   display: flex;
+  width: 100%;
   min-height: 100vh;
 }
 
 /* Side panels */
 .hero-panel {
-  width: 17%;
-  padding: 2rem 1.5rem;
+  flex: 0 0 17%;
   background: linear-gradient(
     to bottom,
     #8bbce8 0%,
     #cfe6fb 35%,
     #ffffff 75%
   );
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.hero-panel h3 {
-  margin-top: 0;
+  z-index: 10;
 }
 
 /* =========================================================
    HERO CENTER
    ========================================================= */
 .hero {
-  flex: 1;
-  background: url("clubhouse.jpg") center/cover no-repeat;
+  flex: 1 1 auto;
+  min-height: 100vh;
   position: relative;
+  z-index: 5;
+  overflow: hidden;
+  background-image: url("clubhouse.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
+
+/* =========================================================
+   HERO OVERLAY — FINAL, STABLE STRUCTURE
+   ========================================================= */
 .hero-overlay {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
-/* Push actions to bottom */
-.hero-buttons {
-  margin-top: auto;
-  margin-bottom: 1.5rem;
-}
-
-/* Gate sits above buttons */
-#access-gate {
-  margin-bottom: 1rem;
-}
-
-
 
 /* Title */
 .hero-title {
   position: absolute;
   top: 1.5rem;
   left: 2rem;
+  margin: 0;
   font-size: 64px;
+  font-weight: 700;
   color: #001f4d;
   text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
+  white-space: nowrap;
 }
 
 /* =========================================================
-   ACTION STACK (GATE + BUTTONS)
+   ACCESS GATE
    ========================================================= */
-#access-gate {
+.access-gate-inline {
+  margin-top: auto;              /* pushes gate to bottom */
   margin-bottom: 1rem;
   background: rgba(255,255,255,0.95);
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   text-align: center;
+  z-index: 20;
 }
 
 .access-input-wrapper {
@@ -90,20 +117,28 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.access-error {
+  color: #a00000;
+  font-size: 0.9rem;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
 .hero-buttons {
   display: flex;
   gap: 1.5rem;
+  margin-bottom: 2.5rem; /* space above footer */
 }
 
-/* Buttons */
 .hero-button {
   padding: 0.7rem 1.8rem;
   background: #8b5a2b;
   color: white;
   border-radius: 999px;
   font-size: 1.2rem;
-  border: none;
   cursor: pointer;
+  border: none;
 }
 
 .hero-button:hover {
@@ -115,17 +150,35 @@ body {
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1.5rem;
   width: 100%;
   text-align: center;
   font-size: 0.9rem;
+  color: #001f4d;
 }
 
 /* =========================================================
-   MOBILE
+   CALENDAR PAGE
+   ========================================================= */
+.calendar-page-body {
+  background: #f5f9ff;
+}
+
+.calendar-container {
+  max-width: 900px;
+  margin: 6rem auto 3rem;
+  padding: 1rem;
+}
+
+/* =========================================================
+   RESPONSIVE
    ========================================================= */
 @media (max-width: 900px) {
   .hero-panel {
     display: none;
+  }
+
+  .hero {
+    width: 100%;
   }
 }

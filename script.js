@@ -1,4 +1,4 @@
-// script.js — Homepage gate logic with session access
+// script.js — Homepage gate logic with hardened session access
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -26,7 +26,13 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.setItem(SESSION_KEY, "granted");
   }
 
-  // ---- Button clicks ----
+  // ---- HARD SESSION END ----
+  // Clear access when tab/window closes
+  window.addEventListener("beforeunload", () => {
+    sessionStorage.removeItem(SESSION_KEY);
+  });
+
+  // ---- Navigation handling ----
   function handleNav(destination) {
     if (hasAccess()) {
       window.location.href = destination;

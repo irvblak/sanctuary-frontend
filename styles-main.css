@@ -43,14 +43,24 @@ body {
   background: url("clubhouse.jpg") center/cover no-repeat;
   position: relative;
 }
-
 .hero-overlay {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
+/* Push actions to bottom */
+.hero-buttons {
+  margin-top: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* Gate sits above buttons */
+#access-gate {
+  margin-bottom: 1rem;
+}
+
+
 
 /* Title */
 .hero-title {

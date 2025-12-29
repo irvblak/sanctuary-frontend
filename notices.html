@@ -44,6 +44,7 @@
       text-decoration: none;
       font-weight: 600;
       color: #003366;
+      margin-left: 1rem;
     }
 
     .nav-center {
@@ -98,7 +99,10 @@
 
   <!-- Top navigation -->
   <div class="top-nav">
-    <a href="index.html">Home</a>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="#" id="logout-link">Logout</a>
+    </div>
     <div class="nav-center">Info</div>
     <a href="events-calendar.html">Calendar</a>
   </div>
@@ -111,15 +115,24 @@
       <a href="#">📅 Host an Event</a>
       <a href="payments.html">💳 Payments</a>
 
-      <div class="placeholder menu-item">
+      <div class="placeholder">
         👥 Directory (coming soon)
       </div>
 
-      <div class="placeholder menu-item">
+      <div class="placeholder">
         📜 Club info & rules (coming soon)
       </div>
     </div>
   </div>
+
+  <!-- 🔓 LOGOUT -->
+  <script>
+    document.getElementById("logout-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      sessionStorage.removeItem("sanctuaryAccess");
+      window.location.replace("index.html");
+    });
+  </script>
 
 </body>
 </html>

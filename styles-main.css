@@ -12,7 +12,8 @@ body {
    ========================================================= */
 .hero-wrapper {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* =========================================================
@@ -37,16 +38,18 @@ body {
    ========================================================= */
 .hero {
   flex: 1;
-  background: url("clubhouse.jpg") center / cover no-repeat;
   position: relative;
+  background-image: url("clubhouse.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
+/* Overlay fills hero exactly */
 .hero-overlay {
   position: relative;
-  min-height: 100vh;
-  overflow: visible;
+  height: 100%;
 }
-
 
 /* =========================================================
    TITLE
@@ -73,36 +76,23 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  z-index: 5; /* 🔑 ensure above hero image */
+  z-index: 5;
 }
 
 /* =========================================================
    ACCESS GATE
    ========================================================= */
 #access-gate {
-  display: none;                /* JS controls visibility */
-  background: #eef4fb;          /* soft blue, not stark white */
+  display: none;
+  background: #eef4fb;
   padding: 1.2rem 1.4rem;
   border-radius: 14px;
   box-shadow: 0 10px 28px rgba(0,0,0,0.18);
   text-align: center;
   min-width: 260px;
-
-  /* Animation setup */
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* When gate is shown */
-#access-gate[style*="display: block"] {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* =========================================================
-   GATE INPUT ROW
-   ========================================================= */
+/* Gate input row */
 .access-input-wrapper {
   display: flex;
   gap: 0.5rem;
@@ -110,13 +100,29 @@ body {
 }
 
 /* =========================================================
-   BUTTONS ROW
+   BUTTONS
    ========================================================= */
 .hero-buttons {
   display: flex;
   gap: 1.5rem;
 }
 
+.hero-button {
+  padding: 0.75rem 2rem;
+  background: #8b5a2b;
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.hero-button:hover {
+  background: #a06830;
+  transform: translateY(-1px);
+}
 
 /* =========================================================
    FOOTER
@@ -136,5 +142,10 @@ body {
 @media (max-width: 900px) {
   .hero-panel {
     display: none;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    left: 1.5rem;
   }
 }

@@ -75,19 +75,16 @@ body {
 }
 
 /* Gate */
-/* Gate */
+/* Access gate */
 #access-gate {
-  background: #eef4fb;
+  display: none;               /* hidden by default */
+  background: #eef4fb;         /* soft blue */
   padding: 1.2rem;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
   text-align: center;
-
-  /* hidden state */
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
 }
+
 
 
 

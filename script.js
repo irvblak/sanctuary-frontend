@@ -1,6 +1,21 @@
 // script.js — Homepage gate logic with session access (stable)
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Homepage logout link (only when session exists)
+  const logoutLink = document.getElementById("logout-link");
+  const hasAccess = sessionStorage.getItem("sanctuaryAccess") === "granted";
+
+  if (logoutLink && hasAccess) {
+    logoutLink.style.display = "block";
+
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    });
+  }
+
+ 
 
  // CONFIG
 const ACCESS_CODE = "WXYZ";

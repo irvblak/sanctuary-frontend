@@ -41,11 +41,12 @@ body {
   position: relative;
 }
 
-/* Overlay uses full height */
 .hero-overlay {
   position: relative;
   min-height: 100vh;
+  overflow: visible;
 }
+
 
 /* =========================================================
    TITLE

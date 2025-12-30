@@ -6,6 +6,38 @@
   <title>The Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css?v=FINAL" />
+<style>
+  /* === Gentle homepage interactions === */
+
+  .hero-button {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .hero-button:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  /* Dim buttons when gate is active */
+  .buttons-dimmed .hero-button {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Gate fade-in */
+  #access-gate {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  #access-gate.visible {
+    opacity: 1;
+  }
+</style>
+
+
+
+  
 </head>
 
 <body>

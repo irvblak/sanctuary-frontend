@@ -9,7 +9,7 @@
     const TIME_KEY = "sanctuaryAccessTime";
 
     // 1 hour = 60 minutes × 60 seconds × 1000 ms
-    const SESSION_DURATION = 60 * 60 * 1000;
+    const SESSION_DURATION = 5000;
 
     // ================================
     // ACCESS CHECK

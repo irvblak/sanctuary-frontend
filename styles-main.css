@@ -12,7 +12,8 @@ body {
    ========================================================= */
 .hero-wrapper {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* =========================================================
@@ -41,10 +42,10 @@ body {
   background: url("clubhouse.jpg") center / cover no-repeat;
 }
 
-/* Overlay MUST fill viewport */
+/* Overlay must FILL hero — not exceed it */
 .hero-overlay {
   position: relative;
-  min-height: 100vh;
+  height: 100%;
 }
 
 /* =========================================================

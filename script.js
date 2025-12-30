@@ -2,9 +2,11 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // CONFIG
-  const ACCESS_CODE = "WXYZ";
-  const SESSION_KEY = "sanctuaryAccess";
+ // CONFIG
+const ACCESS_CODE = "WXYZ";
+const SESSION_KEY = "sanctuaryAccess";
+const SESSION_TIME_KEY = "sanctuaryAccessTime";
+ 
 
   // Elements
   const btnWhatsOn = document.getElementById("btn-whats-on");

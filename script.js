@@ -103,7 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
         grantAccess();
         window.location.href = targetPage;
       } else {
-        error.style.display = "block";
+      gate.style.opacity = "1";
+gate.style.pointerEvents = "auto";
+ 
       }
     });
   }

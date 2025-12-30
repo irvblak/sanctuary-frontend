@@ -78,12 +78,18 @@ body {
 /* Gate */
 /* Access gate */
 #access-gate {
-  display: none;               /* hidden by default */
-  background: #eef4fb;         /* soft blue */
-  padding: 1.2rem;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+
+  background: red;
+  color: white;
+  padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  text-align: center;
+  font-size: 1.2rem;
 }
 
 

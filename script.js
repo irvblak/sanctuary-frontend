@@ -1,18 +1,7 @@
-// script.js — Homepage gate + session grant + homepage logout
-// Clean, defensive, deterministic
+// script.js — Homepage gate logic (stable + boring)
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ================================
-  // CONFIG
-  // ================================
-  const ACCESS_CODE = "WXYZ";
-  const SESSION_KEY = "sanctuaryAccess";
-  const SESSION_TIME_KEY = "sanctuaryAccessTime";
-
-  // ================================
-  // ELEMENTS
-  // ================================
   const btnWhatsOn = document.getElementById("btn-whats-on");
   const btnInfo = document.getElementById("btn-info");
   const gate = document.getElementById("access-gate");
@@ -20,37 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const submit = document.getElementById("access-submit");
   const error = document.getElementById("access-error");
   const eyeBtn = document.getElementById("access-eye");
-  const logoutLink = document.getElementById("logout-link");
 
   let targetPage = null;
 
-  // ================================
-  // SESSION CHECK (homepage)
-  // ================================
-  const hasAccess =
-    sessionStorage.getItem(SESSION_KEY) === "granted";
-
-  if (logoutLink && hasAccess) {
-    logoutLink.style.display = "block";
-
-    logoutLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      sessionStorage.clear();
-      window.location.href = "index.html";
-    });
-  }
-
-  // ================================
-  // SHOW GATE
-  // ================================
   function showGate(destination) {
     targetPage = destination;
-    if (gate) {
-      gate.style.display = "block";
-    }
-    if (input) {
-      input.focus();
-    }
+    gate.style.display = "block";
+    input.focus();
   }
 
   if (btnWhatsOn) {
@@ -65,9 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ================================
-  // EYE TOGGLE
-  // ================================
   if (eyeBtn && input) {
     eyeBtn.addEventListener("click", () => {
       if (input.type === "password") {
@@ -80,32 +42,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ================================
-  // GRANT ACCESS
-  // ================================
-  function grantAccess() {
-    sessionStorage.setItem(SESSION_KEY, "granted");
-    sessionStorage.setItem(
-      SESSION_TIME_KEY,
-      Date.now().toString()
-    );
-  }
-
-  // ================================
-  // SUBMIT CODE
-  // ================================
   if (submit) {
     submit.addEventListener("click", () => {
       const code = input.value.trim();
 
-      if (code === ACCESS_CODE && targetPage) {
+      if (code === "WXYZ") {
         error.style.display = "none";
-        grantAccess();
+        sessionStorage.setItem("sanctuaryAccess", "granted");
+        sessionStorage.setItem("sanctuaryAccessTime", Date.now());
+
         window.location.href = targetPage;
       } else {
-      gate.style.opacity = "1";
-gate.style.pointerEvents = "auto";
- 
+        error.style.display = "block";
       }
     });
   }

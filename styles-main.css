@@ -66,11 +66,11 @@ body {
 }
 
 /* =========================================================
-   TITLE (visibly lifted)
+   TITLE (lifted further ~1.5cm)
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: -10px;                  /* lifted ~30px from original */
+  top: -60px;                 /* 👈 lifted ~1.5cm */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;
@@ -79,11 +79,11 @@ body {
 }
 
 /* =========================================================
-   ACTION STACK (lowered)
+   ACTION STACK
    ========================================================= */
 .action-stack {
   position: absolute;
-  bottom: 3.5rem;              /* lowered ~20px */
+  bottom: 3.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -134,11 +134,11 @@ body {
 }
 
 /* =========================================================
-   FOOTER (lowered)
+   FOOTER
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 0.5rem;              /* lowered ~20px */
+  bottom: 0.5rem;
   width: 100%;
   text-align: center;
   font-size: 0.9rem;

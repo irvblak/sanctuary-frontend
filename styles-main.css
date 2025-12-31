@@ -18,7 +18,6 @@ body {
 .hero-wrapper {
   display: flex;
   height: 100vh;
-  /* ❌ overflow hidden REMOVED — was killing the title */
 }
 
 /* =========================================================
@@ -65,11 +64,11 @@ body {
 }
 
 /* =========================================================
-   TITLE — NORMAL, HUMAN POSITIONING
+   TITLE — DROPPED ~3cm
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: 2.5rem;          /* ✅ simple, visible, stable */
+  top: 160px;             /* 👈 dropped ~3cm */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

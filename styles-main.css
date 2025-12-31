@@ -22,7 +22,7 @@ body {
 }
 
 /* =========================================================
-   SIDE PANELS (asymmetric widths)
+   SIDE PANELS
    ========================================================= */
 .hero-panel {
   padding: 2rem 1.5rem;
@@ -66,11 +66,11 @@ body {
 }
 
 /* =========================================================
-   TITLE (lifted further ~1.5cm)
+   TITLE (lowered ~1cm)
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: -60px;                 /* 👈 lifted ~1.5cm */
+  top: -22px;                /* 👈 lowered ~1cm */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

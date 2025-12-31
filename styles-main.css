@@ -68,7 +68,7 @@ body {
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: 105px;   /* 👈 half correction */
+  top: 205px;   /* 👈 half correction */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

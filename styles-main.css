@@ -22,10 +22,9 @@ body {
 }
 
 /* =========================================================
-   SIDE PANELS (slightly slimmer)
+   SIDE PANELS (asymmetric widths)
    ========================================================= */
 .hero-panel {
-  flex: 0 0 14%;               /* was 17% */
   padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
@@ -36,6 +35,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* Left panel */
+.hero-wrapper > .hero-panel:first-child {
+  flex: 0 0 11%;
+}
+
+/* Right panel */
+.hero-wrapper > .hero-panel:last-child {
+  flex: 0 0 14%;
 }
 
 /* =========================================================
@@ -57,11 +66,11 @@ body {
 }
 
 /* =========================================================
-   TITLE (lifted slightly)
+   TITLE (visibly lifted)
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: 0.5rem;                 /* was 1.5rem */
+  top: -10px;                  /* lifted ~30px from original */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;
@@ -70,11 +79,11 @@ body {
 }
 
 /* =========================================================
-   ACTION STACK (lowered slightly)
+   ACTION STACK (lowered)
    ========================================================= */
 .action-stack {
   position: absolute;
-  bottom: 5rem;                /* was 6.5rem */
+  bottom: 3.5rem;              /* lowered ~20px */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -125,11 +134,11 @@ body {
 }
 
 /* =========================================================
-   FOOTER (lowered slightly)
+   FOOTER (lowered)
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 1rem;                /* was 2rem */
+  bottom: 0.5rem;              /* lowered ~20px */
   width: 100%;
   text-align: center;
   font-size: 0.9rem;

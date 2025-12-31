@@ -1,7 +1,14 @@
-// script.js — Homepage gate logic (stable + boring)
+// script.js — Homepage gate logic (clean, deterministic, session-aware)
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // CONFIG
+  const ACCESS_CODE = "WXYZ";
+  const SESSION_KEY = "sanctuaryAccess";
+  const SESSION_TIME_KEY = "sanctuaryAccessTime";
+  const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
+
+  // Elements
   const btnWhatsOn = document.getElementById("btn-whats-on");
   const btnInfo = document.getElementById("btn-info");
   const gate = document.getElementById("access-gate");
@@ -12,24 +19,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let targetPage = null;
 
+  // --- Helpers ---
+  function sessionIsValid() {
+    const granted = sessionStorage.getItem(SESSION_KEY);
+    const time = sessionStorage.getItem(SESSION_TIME_KEY);
+
+    if (granted !== "granted" || !time) return false;
+    return Date.now() - Number(time) < SESSION_DURATION;
+  }
+
+  function grantSession() {
+    sessionStorage.setItem(SESSION_KEY, "granted");
+    sessionStorage.setItem(SESSION_TIME_KEY, Date.now());
+  }
+
+  // --- Gate display ---
   function showGate(destination) {
     targetPage = destination;
     gate.style.display = "block";
+    error.style.display = "none";
+    input.value = "";
     input.focus();
   }
 
+  // --- Button handlers ---
   if (btnWhatsOn) {
     btnWhatsOn.addEventListener("click", () => {
-      showGate("events-calendar.html");
+      if (sessionIsValid()) {
+        window.location.href = "events-calendar.html";
+      } else {
+        showGate("events-calendar.html");
+      }
     });
   }
 
   if (btnInfo) {
     btnInfo.addEventListener("click", () => {
-      showGate("notices.html");
+      if (sessionIsValid()) {
+        window.location.href = "notices.html";
+      } else {
+        showGate("notices.html");
+      }
     });
   }
 
+  // --- Eye toggle ---
   if (eyeBtn && input) {
     eyeBtn.addEventListener("click", () => {
       if (input.type === "password") {
@@ -42,15 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- Submit access code ---
   if (submit) {
     submit.addEventListener("click", () => {
       const code = input.value.trim();
 
-      if (code === "WXYZ") {
-        error.style.display = "none";
-        sessionStorage.setItem("sanctuaryAccess", "granted");
-        sessionStorage.setItem("sanctuaryAccessTime", Date.now());
-
+      if (code === ACCESS_CODE && targetPage) {
+        grantSession();
         window.location.href = targetPage;
       } else {
         error.style.display = "block";

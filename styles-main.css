@@ -1,14 +1,19 @@
 /* =========================================================
-   BASE
+   ROOT + BASE (CRITICAL)
    ========================================================= */
+html,
 body {
+  height: 100%;
   margin: 0;
+}
+
+body {
   font-family: Arial, sans-serif;
   color: #003366;
 }
 
 /* =========================================================
-   HERO WRAPPER (controls full viewport height)
+   HERO WRAPPER (owns viewport)
    ========================================================= */
 .hero-wrapper {
   display: flex;
@@ -43,7 +48,7 @@ body {
 }
 
 /* =========================================================
-   HERO OVERLAY (fills hero only)
+   HERO OVERLAY
    ========================================================= */
 .hero-overlay {
   position: relative;
@@ -64,7 +69,7 @@ body {
 }
 
 /* =========================================================
-   ACTION STACK (Gate + Buttons)
+   ACTION STACK
    ========================================================= */
 .action-stack {
   position: absolute;
@@ -90,7 +95,6 @@ body {
   text-align: center;
 }
 
-/* Gate input row */
 .access-input-wrapper {
   display: flex;
   gap: 0.5rem;

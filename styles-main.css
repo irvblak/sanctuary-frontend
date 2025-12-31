@@ -22,10 +22,10 @@ body {
 }
 
 /* =========================================================
-   SIDE PANELS
+   SIDE PANELS (slightly slimmer)
    ========================================================= */
 .hero-panel {
-  flex: 0 0 17%;
+  flex: 0 0 14%;               /* was 17% */
   padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
@@ -43,7 +43,7 @@ body {
    ========================================================= */
 .hero {
   flex: 1;
-  height: 100%;                 /* 🔑 CRITICAL FIX */
+  height: 100%;
   background: url("clubhouse.jpg") center / cover no-repeat;
   position: relative;
 }
@@ -57,11 +57,11 @@ body {
 }
 
 /* =========================================================
-   TITLE
+   TITLE (lifted slightly)
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: 1.5rem;
+  top: 0.5rem;                 /* was 1.5rem */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;
@@ -70,11 +70,11 @@ body {
 }
 
 /* =========================================================
-   ACTION STACK
+   ACTION STACK (lowered slightly)
    ========================================================= */
 .action-stack {
   position: absolute;
-  bottom: 6.5rem;
+  bottom: 5rem;                /* was 6.5rem */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -125,11 +125,11 @@ body {
 }
 
 /* =========================================================
-   FOOTER
+   FOOTER (lowered slightly)
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1rem;                /* was 2rem */
   width: 100%;
   text-align: center;
   font-size: 0.9rem;

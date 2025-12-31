@@ -65,11 +65,11 @@ body {
 }
 
 /* =========================================================
-   TITLE — ANCHORED CORRECTLY
+   TITLE — FINAL POSITION
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: -140px;        /* 👈 clearly higher; stable anchor */
+  top: -102px;              /* 👈 down ~1cm from previous */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

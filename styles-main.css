@@ -64,7 +64,7 @@ body {
 }
 .hero-title {
   position: absolute;
-  top: 50rem;          /* stable baseline */
+  top: 5rem;          /* stable baseline */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

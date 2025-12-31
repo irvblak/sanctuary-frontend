@@ -66,11 +66,11 @@ body {
 }
 
 /* =========================================================
-   TITLE (moved DOWN ~1cm)
+   TITLE (moved UP ~2cm)
    ========================================================= */
 .hero-title {
   position: absolute;
-  top: 16px;                 /* 👈 moved DOWN ~1cm */
+  top: -60px;                /* 👈 moved UP ~2cm */
   left: 2rem;
   font-size: 64px;
   font-weight: 700;

@@ -24,6 +24,7 @@ body {
    SIDE PANELS
    ========================================================= */
 .hero-panel {
+   flex: 0 0 14%;
   padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,

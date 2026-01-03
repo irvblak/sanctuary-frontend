@@ -2,104 +2,126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Member Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Information – The Sanctuary Club</title>
+
+  <meta name="robots" content="noindex, nofollow">
 
   <link rel="stylesheet" href="styles-main.css" />
+
+  <style>
+    /* =========================================================
+       MEMBER INFO PAGE (SCOPED — DOES NOT TOUCH HOMEPAGE)
+       ========================================================= */
+    .member-info-page {
+      min-height: 100vh;
+      background: linear-gradient(
+        to bottom,
+        #8bbce8 0%,
+        #cfe6fb 35%,
+        #ffffff 75%
+      );
+      padding-top: 5.5rem;
+    }
+
+    .member-info-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .member-info-container h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #003366;
+    }
+
+    .member-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .member-menu a {
+      display: block;
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      background: white;
+      text-decoration: none;
+      color: #003366;
+      font-size: 1.05rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .member-menu a:hover {
+      background: #eef4fb;
+    }
+
+    .menu-note {
+      font-size: 0.85rem;
+      color: #4b5f78;
+      margin-top: -0.4rem;
+      margin-bottom: 0.6rem;
+      padding-left: 0.3rem;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="hero-wrapper">
+  <!-- Top navigation -->
+  <div class="top-nav">
+    <a href="index.html">Home</a>
+    <div class="nav-center">Member Information</div>
+    <a href="events-calendar.html">Calendar</a>
 
-  <!-- LEFT PANEL -->
-  <div class="hero-panel">
-    <h3>Member Information</h3>
-    <p>Select an option below.</p>
-  </div>
-
-  <!-- HERO (CENTRE) -->
-  <section class="hero">
-    <div class="hero-overlay">
-
-      <!-- TITLE -->
-      <h1 class="hero-title">Member Information</h1>
-
-      <!-- ACTION STACK -->
-      <div class="action-stack">
-
-        <div class="menu-list">
-
-          <div class="menu-row">
-            <a href="your-info.html" class="hero-button">Your Info</a>
-            <span class="menu-note">Update your contact details (optional)</span>
-          </div>
-
-          <div class="menu-row">
-            <a href="members-info.html" class="hero-button">Members Info</a>
-            <span class="menu-note">View members directory</span>
-          </div>
-
-          <div class="menu-row">
-            <a href="events-calendar.html" class="hero-button">What’s On</a>
-            <span class="menu-note">See upcoming events & activities</span>
-          </div>
-
-          <div class="menu-row">
-            <a href="events.html" class="hero-button">Host an Event</a>
-            <span class="menu-note">Add or manage your own event</span>
-          </div>
-
-          <div class="menu-row">
-            <a href="payments.html" class="hero-button">Payments</a>
-            <span class="menu-note">Club contributions & information</span>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- FOOTER -->
-      <footer class="site-footer">
-        <p>© The Sanctuary Club. All rights reserved.</p>
-      </footer>
-
-    </div>
-  </section>
-
-  <!-- RIGHT PANEL -->
-  <div class="hero-panel" style="position: relative;">
-
+    <!-- Logout -->
     <a
       href="#"
       id="logout-link"
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 0.9rem;
-        text-decoration: underline;
-        cursor: pointer;
-      "
-      onclick="
-        sessionStorage.removeItem('sanctuaryAccess');
-        sessionStorage.removeItem('sanctuaryAccessTime');
-        window.location.href='index.html';
-      "
+      style="margin-left:auto; font-weight:600;"
     >
       Logout
     </a>
-
-    <p>
-      <strong><em>
-        Your details are optional, but sharing helps neighbours connect
-        and keeps everyone informed.
-      </em></strong>
-    </p>
-
   </div>
 
-</div>
+  <main class="member-info-page">
+    <div class="member-info-container">
+      <h1>Member Information</h1>
+
+      <div class="member-menu">
+
+        <a href="your-info.html">👤 Your Info</a>
+        <div class="menu-note">
+          Add or update your contact details (optional but helpful)
+        </div>
+
+        <a href="members-info.html">👥 Members Info</a>
+        <div class="menu-note">
+          View shared contact details of other members
+        </div>
+
+        <a href="notices-board.html">📣 Notices</a>
+        <div class="menu-note">
+          Important updates and announcements
+        </div>
+
+        <a href="events.html">📅 Host an Event</a>
+        <div class="menu-note">
+          Create and manage your own activities or events
+        </div>
+
+        <a href="payments.html">💷 Payments</a>
+        <div class="menu-note">
+          Club subscriptions and contributions (no cards required)
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="access.js"></script>
 
 </body>
 </html>

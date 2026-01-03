@@ -1,143 +1,139 @@
 // your-info.js
-// Member self-managed contact details (local-only, safe, reversible)
+// Handles member self-managed contact information
+// Storage is local (localStorage) for now — no server required
 
-(function () {
-  const FORM_ID = "your-info-form";
-  const STORAGE_KEY = "sanctuaryMemberInfo";
-
-  const form = document.getElementById(FORM_ID);
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("member-info-form");
   if (!form) return;
 
-  const membershipInput = form.querySelector("#membership-number");
+  const memberNumberInput = document.getElementById("member-number");
+  const residentCountSelect = document.getElementById("resident-count");
   const residentsContainer = document.getElementById("residents-container");
-  const addResidentBtn = document.getElementById("add-resident");
   const statusMsg = document.getElementById("save-status");
 
-  let memberData = loadAllData();
+  const STORAGE_KEY_PREFIX = "sanctuary-member-";
 
-  // -------------------------------
-  // Utilities
-  // -------------------------------
-  function loadAllData() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch {
-      return {};
-    }
+  /* --------------------------------------------------
+     Helpers
+  -------------------------------------------------- */
+
+  function storageKey(memberNumber) {
+    return STORAGE_KEY_PREFIX + memberNumber.toUpperCase();
   }
 
-  function saveAllData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(memberData));
+  function clearResidents() {
+    residentsContainer.innerHTML = "";
   }
 
-  function createResidentBlock(index, data = {}) {
-    const div = document.createElement("div");
-    div.className = "resident-block";
+  function createResidentFields(index, data = {}) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "resident-block";
 
-    div.innerHTML = `
-      <h3>Resident ${index + 1}</h3>
-
+    wrapper.innerHTML = `
+      <h4>Resident ${index + 1}</h4>
       <label>
-        Name
-        <input type="text" name="name" value="${data.name || ""}">
+        Name (optional)
+        <input type="text" name="resident_name_${index}" value="${data.name || ""}">
       </label>
 
       <label>
-        Email
-        <input type="email" name="email" value="${data.email || ""}">
+        Email (optional)
+        <input type="email" name="resident_email_${index}" value="${data.email || ""}">
       </label>
 
       <label>
-        Mobile
-        <input type="tel" name="mobile" value="${data.mobile || ""}">
+        Mobile (optional)
+        <input type="tel" name="resident_mobile_${index}" value="${data.mobile || ""}">
       </label>
 
       <label>
-        Phone
-        <input type="tel" name="phone" value="${data.phone || ""}">
+        Phone (optional)
+        <input type="tel" name="resident_phone_${index}" value="${data.phone || ""}">
       </label>
     `;
 
-    return div;
+    residentsContainer.appendChild(wrapper);
   }
 
-  function renderResidents(residents = []) {
-    residentsContainer.innerHTML = "";
-    residents.forEach((r, i) => {
-      residentsContainer.appendChild(createResidentBlock(i, r));
-    });
-  }
-
-  function collectResidents() {
-    const blocks = residentsContainer.querySelectorAll(".resident-block");
-    const residents = [];
-
-    blocks.forEach(block => {
-      const inputs = block.querySelectorAll("input");
-      const resident = {};
-
-      inputs.forEach(input => {
-        if (input.value.trim() !== "") {
-          resident[input.name] = input.value.trim();
-        }
-      });
-
-      if (Object.keys(resident).length > 0) {
-        residents.push(resident);
-      }
-    });
-
-    return residents;
-  }
-
-  // -------------------------------
-  // Load existing member data
-  // -------------------------------
-  membershipInput.addEventListener("blur", () => {
-    const key = membershipInput.value.trim();
-    if (!key) return;
-
-    const existing = memberData[key];
-    if (existing && existing.residents) {
-      renderResidents(existing.residents);
-    } else {
-      renderResidents([{}]);
+  function buildResidents(count, existing = []) {
+    clearResidents();
+    for (let i = 0; i < count; i++) {
+      createResidentFields(i, existing[i]);
     }
-  });
+  }
 
-  // -------------------------------
-  // Add resident (max 4)
-  // -------------------------------
-  addResidentBtn.addEventListener("click", () => {
-    const count = residentsContainer.children.length;
-    if (count >= 4) return;
+  /* --------------------------------------------------
+     Load existing data when membership number entered
+  -------------------------------------------------- */
 
-    residentsContainer.appendChild(createResidentBlock(count));
-  });
+  memberNumberInput.addEventListener("change", () => {
+    const memberNumber = memberNumberInput.value.trim();
+    if (!memberNumber) return;
 
-  // -------------------------------
-  // Save handler
-  // -------------------------------
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const membership = membershipInput.value.trim();
-    if (!membership) {
-      statusMsg.textContent = "Membership number is required.";
+    const saved = localStorage.getItem(storageKey(memberNumber));
+    if (!saved) {
+      buildResidents(parseInt(residentCountSelect.value, 10));
       return;
     }
 
-    const residents = collectResidents();
-
-    memberData[membership] = {
-      residents,
-      updated: Date.now()
-    };
-
-    saveAllData();
-
-    statusMsg.textContent = "Your information has been saved.";
-    statusMsg.style.opacity = 1;
+    try {
+      const data = JSON.parse(saved);
+      residentCountSelect.value = data.residentCount || 1;
+      buildResidents(data.residentCount || 1, data.residents || []);
+    } catch (e) {
+      console.warn("Corrupt member data:", e);
+      buildResidents(parseInt(residentCountSelect.value, 10));
+    }
   });
 
-})();
+  /* --------------------------------------------------
+     Change resident count
+  -------------------------------------------------- */
+
+  residentCountSelect.addEventListener("change", () => {
+    const count = parseInt(residentCountSelect.value, 10);
+    buildResidents(count);
+  });
+
+  /* --------------------------------------------------
+     Save
+  -------------------------------------------------- */
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const memberNumber = memberNumberInput.value.trim();
+    if (!memberNumber) {
+      alert("Please enter your membership number.");
+      return;
+    }
+
+    const residentCount = parseInt(residentCountSelect.value, 10);
+    const residents = [];
+
+    for (let i = 0; i < residentCount; i++) {
+      residents.push({
+        name: form[`resident_name_${i}`]?.value.trim() || "",
+        email: form[`resident_email_${i}`]?.value.trim() || "",
+        mobile: form[`resident_mobile_${i}`]?.value.trim() || "",
+        phone: form[`resident_phone_${i}`]?.value.trim() || ""
+      });
+    }
+
+    const payload = {
+      memberNumber: memberNumber.toUpperCase(),
+      residentCount,
+      residents,
+      savedAt: new Date().toISOString()
+    };
+
+    localStorage.setItem(storageKey(memberNumber), JSON.stringify(payload));
+
+    statusMsg.textContent = "Your information has been saved.";
+    statusMsg.style.display = "block";
+
+    setTimeout(() => {
+      statusMsg.style.display = "none";
+    }, 3000);
+  });
+});

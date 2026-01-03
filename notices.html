@@ -2,110 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Member Information – The Sanctuary Club</title>
 
   <meta name="robots" content="noindex, nofollow">
 
-  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
-  <script src="access.js" defer></script>
-
-  <style>
-    /* ================================
-       INFO MENU
-    ================================= */
-    .info-container {
-      max-width: 700px;
-      margin: 6rem auto 3rem;
-      padding: 1rem;
-    }
-
-    .info-container h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: #003366;
-    }
-
-    .menu {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .menu a {
-      display: block;
-      padding: 1rem 1.25rem;
-      border-radius: 12px;
-      background: white;
-      text-decoration: none;
-      color: #003366;
-      font-size: 1.1rem;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .menu a:hover {
-      background: #eef4fb;
-    }
-
-    .menu .placeholder {
-      opacity: 0.5;
-      cursor: default;
-      padding: 1rem 1.25rem;
-      border-radius: 12px;
-      background: white;
-      font-weight: 600;
-    }
-  </style>
+  <link rel="stylesheet" href="styles-main.css" />
 </head>
 
 <body>
 
-  <!-- TOP NAV -->
+  <!-- Top navigation -->
   <div class="top-nav">
     <a href="index.html">Home</a>
     <div class="nav-center">Member Information</div>
     <a href="events-calendar.html">Calendar</a>
+
+    <!-- Logout -->
+    <a href="#" id="logout-link" class="logout-link">Logout</a>
   </div>
 
-  <!-- CONTENT -->
+  <!-- Page content -->
   <div class="info-container">
     <h1>Member Information</h1>
 
     <div class="menu">
 
-      <!-- YOUR INFO -->
+      <!-- NEW: Your Info -->
       <a href="your-info.html">
-        👤 Your Info
+        👤 <strong>Your Info</strong><br>
+        <span class="menu-note">
+          Add or update your contact details (optional)
+        </span>
       </a>
 
-      <!-- DIRECTORY (future grid view) -->
-      <a href="#">
-        👥 Members Info
-      </a>
-
-      <!-- NOTICES -->
-      <a href="#">
+      <a href="notices.html">
         📣 Notices
       </a>
 
-      <!-- HOSTING -->
-      <a href="#">
+      <a href="events.html">
         📅 Host an Event
       </a>
 
-      <!-- PAYMENTS -->
       <a href="payments.html">
         💳 Payments
       </a>
 
-      <!-- PLACEHOLDERS -->
-      <div class="placeholder">
+      <a href="#" class="placeholder">
+        👥 Members Info (coming soon)
+      </a>
+
+      <a href="#" class="placeholder">
         📜 Club info & rules (coming soon)
-      </div>
+      </a>
 
     </div>
   </div>
+
+  <!-- Access protection + logout -->
+  <script src="access.js"></script>
 
 </body>
 </html>

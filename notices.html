@@ -2,65 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Member Information – The Sanctuary Club</title>
-
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Member Information | The Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css" />
 </head>
 
 <body>
 
-  <!-- Top navigation -->
-  <div class="top-nav">
-    <a href="index.html">Home</a>
-    <div class="nav-center">Member Information</div>
-    <a href="events-calendar.html">Calendar</a>
+<div class="hero-wrapper">
 
-    <!-- Logout -->
-    <a href="#" id="logout-link" class="logout-link">Logout</a>
+  <!-- LEFT PANEL -->
+  <div class="hero-panel">
+    <h3>Member Information</h3>
+    <p>
+      Access notices, events, member details and club information.
+    </p>
   </div>
 
-  <!-- Page content -->
-  <div class="info-container">
-    <h1>Member Information</h1>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-overlay">
 
-    <div class="menu">
-
-      <!-- NEW: Your Info -->
-      <a href="your-info.html">
-        👤 <strong>Your Info</strong><br>
-        <span class="menu-note">
-          Add or update your contact details (optional)
-        </span>
+      <!-- HOME (top left) -->
+      <a
+        href="index.html"
+        class="hero-button"
+        style="position:absolute; top:1.5rem; left:2rem;"
+      >
+        Home
       </a>
 
-      <a href="notices.html">
-        📣 Notices
+      <!-- CALENDAR (top centre) -->
+      <a
+        href="events-calendar.html"
+        class="hero-button"
+        style="position:absolute; top:1.5rem; left:50%; transform:translateX(-50%);"
+      >
+        Calendar
       </a>
 
-      <a href="events.html">
-        📅 Host an Event
+      <!-- LOGOUT (top right) -->
+      <a
+        href="#"
+        id="logout-link"
+        class="hero-button"
+        style="position:absolute; top:1.5rem; right:2rem;"
+      >
+        Logout
       </a>
 
-      <a href="payments.html">
-        💳 Payments
-      </a>
+      <!-- MENU STACK -->
+      <div class="action-stack" style="bottom:7rem;">
 
-      <a href="#" class="placeholder">
-        👥 Members Info (coming soon)
-      </a>
+        <div class="hero-buttons" style="flex-direction:column; gap:1rem;">
 
-      <a href="#" class="placeholder">
-        📜 Club info & rules (coming soon)
-      </a>
+          <a href="your-info.html" class="hero-button">
+            👤 Your Info
+          </a>
+
+          <a href="members-info.html" class="hero-button">
+            👥 Members Info
+          </a>
+
+          <a href="notices.html" class="hero-button">
+            📣 Notices
+          </a>
+
+          <a href="events.html" class="hero-button">
+            📅 Host an Event
+          </a>
+
+          <a href="payments.html" class="hero-button">
+            💳 Payments
+          </a>
+
+          <button class="hero-button" disabled style="opacity:0.4;">
+            📜 Club info & rules (coming soon)
+          </button>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="site-footer">
+        <p>© The Sanctuary Club. All rights reserved.</p>
+      </footer>
 
     </div>
+  </section>
+
+  <!-- RIGHT PANEL -->
+  <div class="hero-panel">
+    <p>
+      <strong><em>
+        Keep your details up to date and stay connected with your neighbours.
+      </em></strong>
+    </p>
   </div>
 
-  <!-- Access protection + logout -->
-  <script src="access.js"></script>
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Member Information | The Sanctuary Club</title>
+  <title>Member Information</title>
 
   <link rel="stylesheet" href="styles-main.css" />
 </head>
@@ -15,73 +15,48 @@
   <!-- LEFT PANEL -->
   <div class="hero-panel">
     <h3>Member Information</h3>
-    <p>
-      Access notices, events, member details and club information.
-    </p>
+    <p>Select an option below.</p>
   </div>
 
-  <!-- HERO -->
+  <!-- HERO (CENTRE) -->
   <section class="hero">
     <div class="hero-overlay">
 
-      <!-- HOME (top left) -->
-      <a
-        href="index.html"
-        class="hero-button"
-        style="position:absolute; top:1.5rem; left:2rem;"
-      >
-        Home
-      </a>
+      <!-- TITLE -->
+      <h1 class="hero-title">Member Information</h1>
 
-      <!-- CALENDAR (top centre) -->
-      <a
-        href="events-calendar.html"
-        class="hero-button"
-        style="position:absolute; top:1.5rem; left:50%; transform:translateX(-50%);"
-      >
-        Calendar
-      </a>
+      <!-- ACTION STACK -->
+      <div class="action-stack">
 
-      <!-- LOGOUT (top right) -->
-      <a
-        href="#"
-        id="logout-link"
-        class="hero-button"
-        style="position:absolute; top:1.5rem; right:2rem;"
-      >
-        Logout
-      </a>
+        <div class="menu-list">
 
-      <!-- MENU STACK -->
-      <div class="action-stack" style="bottom:7rem;">
+          <div class="menu-row">
+            <a href="your-info.html" class="hero-button">Your Info</a>
+            <span class="menu-note">Update your contact details (optional)</span>
+          </div>
 
-        <div class="hero-buttons" style="flex-direction:column; gap:1rem;">
+          <div class="menu-row">
+            <a href="members-info.html" class="hero-button">Members Info</a>
+            <span class="menu-note">View members directory</span>
+          </div>
 
-          <a href="your-info.html" class="hero-button">
-            👤 Your Info
-          </a>
+          <div class="menu-row">
+            <a href="events-calendar.html" class="hero-button">What’s On</a>
+            <span class="menu-note">See upcoming events & activities</span>
+          </div>
 
-          <a href="members-info.html" class="hero-button">
-            👥 Members Info
-          </a>
+          <div class="menu-row">
+            <a href="events.html" class="hero-button">Host an Event</a>
+            <span class="menu-note">Add or manage your own event</span>
+          </div>
 
-          <a href="notices.html" class="hero-button">
-            📣 Notices
-          </a>
-
-          <a href="events.html" class="hero-button">
-            📅 Host an Event
-          </a>
-
-          <a href="payments.html" class="hero-button">
-            💳 Payments
-          </a>
-
-          <button class="hero-button" disabled style="opacity:0.4;">
-            📜 Club info & rules (coming soon)
-          </button>
+          <div class="menu-row">
+            <a href="payments.html" class="hero-button">Payments</a>
+            <span class="menu-note">Club contributions & information</span>
+          </div>
 
         </div>
+
       </div>
 
       <!-- FOOTER -->
@@ -93,17 +68,38 @@
   </section>
 
   <!-- RIGHT PANEL -->
-  <div class="hero-panel">
+  <div class="hero-panel" style="position: relative;">
+
+    <a
+      href="#"
+      id="logout-link"
+      style="
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 0.9rem;
+        text-decoration: underline;
+        cursor: pointer;
+      "
+      onclick="
+        sessionStorage.removeItem('sanctuaryAccess');
+        sessionStorage.removeItem('sanctuaryAccessTime');
+        window.location.href='index.html';
+      "
+    >
+      Logout
+    </a>
+
     <p>
       <strong><em>
-        Keep your details up to date and stay connected with your neighbours.
+        Your details are optional, but sharing helps neighbours connect
+        and keeps everyone informed.
       </em></strong>
     </p>
+
   </div>
 
 </div>
-
-<script src="script.js"></script>
 
 </body>
 </html>

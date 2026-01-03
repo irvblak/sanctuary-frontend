@@ -1,139 +1,87 @@
 // your-info.js
-// Handles member self-managed contact information
-// Storage is local (localStorage) for now — no server required
+// Handles member self-editing of contact info (up to 4 residents)
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("member-info-form");
+  const form = document.getElementById("your-info-form");
   if (!form) return;
 
-  const memberNumberInput = document.getElementById("member-number");
-  const residentCountSelect = document.getElementById("resident-count");
-  const residentsContainer = document.getElementById("residents-container");
+  const membershipInput = document.getElementById("membership-number");
   const statusMsg = document.getElementById("save-status");
 
-  const STORAGE_KEY_PREFIX = "sanctuary-member-";
+  const residentFields = [
+    { name: "res1_name", email: "res1_email", mobile: "res1_mobile" },
+    { name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
+    { name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
+    { name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
+  ];
 
-  /* --------------------------------------------------
-     Helpers
-  -------------------------------------------------- */
-
-  function storageKey(memberNumber) {
-    return STORAGE_KEY_PREFIX + memberNumber.toUpperCase();
+  function storageKey(membership) {
+    return `member_${membership}`;
   }
 
-  function clearResidents() {
-    residentsContainer.innerHTML = "";
+  function loadData(membership) {
+    const raw = localStorage.getItem(storageKey(membership));
+    return raw ? JSON.parse(raw) : {};
   }
 
-  function createResidentFields(index, data = {}) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "resident-block";
-
-    wrapper.innerHTML = `
-      <h4>Resident ${index + 1}</h4>
-      <label>
-        Name (optional)
-        <input type="text" name="resident_name_${index}" value="${data.name || ""}">
-      </label>
-
-      <label>
-        Email (optional)
-        <input type="email" name="resident_email_${index}" value="${data.email || ""}">
-      </label>
-
-      <label>
-        Mobile (optional)
-        <input type="tel" name="resident_mobile_${index}" value="${data.mobile || ""}">
-      </label>
-
-      <label>
-        Phone (optional)
-        <input type="tel" name="resident_phone_${index}" value="${data.phone || ""}">
-      </label>
-    `;
-
-    residentsContainer.appendChild(wrapper);
+  function saveData(membership, data) {
+    localStorage.setItem(storageKey(membership), JSON.stringify(data));
   }
 
-  function buildResidents(count, existing = []) {
-    clearResidents();
-    for (let i = 0; i < count; i++) {
-      createResidentFields(i, existing[i]);
-    }
+  function populateForm(data) {
+    residentFields.forEach((res, index) => {
+      Object.values(res).forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && data[res.name]) {
+          el.value = data[res.name][id] || "";
+        }
+      });
+    });
   }
 
-  /* --------------------------------------------------
-     Load existing data when membership number entered
-  -------------------------------------------------- */
+  function collectFormData() {
+    const data = {};
+    residentFields.forEach((res) => {
+      const entry = {};
+      let hasAny = false;
 
-  memberNumberInput.addEventListener("change", () => {
-    const memberNumber = memberNumberInput.value.trim();
-    if (!memberNumber) return;
+      Object.values(res).forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && el.value.trim() !== "") {
+          entry[id] = el.value.trim();
+          hasAny = true;
+        }
+      });
 
-    const saved = localStorage.getItem(storageKey(memberNumber));
-    if (!saved) {
-      buildResidents(parseInt(residentCountSelect.value, 10));
-      return;
-    }
+      if (hasAny) {
+        data[res.name] = entry;
+      }
+    });
+    return data;
+  }
 
-    try {
-      const data = JSON.parse(saved);
-      residentCountSelect.value = data.residentCount || 1;
-      buildResidents(data.residentCount || 1, data.residents || []);
-    } catch (e) {
-      console.warn("Corrupt member data:", e);
-      buildResidents(parseInt(residentCountSelect.value, 10));
-    }
+  membershipInput.addEventListener("blur", () => {
+    const membership = membershipInput.value.trim();
+    if (!membership) return;
+
+    const data = loadData(membership);
+    populateForm(data);
   });
-
-  /* --------------------------------------------------
-     Change resident count
-  -------------------------------------------------- */
-
-  residentCountSelect.addEventListener("change", () => {
-    const count = parseInt(residentCountSelect.value, 10);
-    buildResidents(count);
-  });
-
-  /* --------------------------------------------------
-     Save
-  -------------------------------------------------- */
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const memberNumber = memberNumberInput.value.trim();
-    if (!memberNumber) {
-      alert("Please enter your membership number.");
+    const membership = membershipInput.value.trim();
+    if (!membership) {
+      statusMsg.textContent = "Please enter your membership number.";
+      statusMsg.style.color = "darkred";
       return;
     }
 
-    const residentCount = parseInt(residentCountSelect.value, 10);
-    const residents = [];
-
-    for (let i = 0; i < residentCount; i++) {
-      residents.push({
-        name: form[`resident_name_${i}`]?.value.trim() || "",
-        email: form[`resident_email_${i}`]?.value.trim() || "",
-        mobile: form[`resident_mobile_${i}`]?.value.trim() || "",
-        phone: form[`resident_phone_${i}`]?.value.trim() || ""
-      });
-    }
-
-    const payload = {
-      memberNumber: memberNumber.toUpperCase(),
-      residentCount,
-      residents,
-      savedAt: new Date().toISOString()
-    };
-
-    localStorage.setItem(storageKey(memberNumber), JSON.stringify(payload));
+    const data = collectFormData();
+    saveData(membership, data);
 
     statusMsg.textContent = "Your information has been saved.";
-    statusMsg.style.display = "block";
-
-    setTimeout(() => {
-      statusMsg.style.display = "none";
-    }, 3000);
+    statusMsg.style.color = "green";
   });
 });

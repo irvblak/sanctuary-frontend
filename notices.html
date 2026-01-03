@@ -2,58 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Info – The Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Member Information – The Sanctuary Club</title>
 
   <meta name="robots" content="noindex, nofollow">
 
-  <!-- 🔒 ACCESS PROTECTION -->
-  <script>
-    (function () {
-      if (sessionStorage.getItem("sanctuaryAccess") !== "granted") {
-        window.location.replace("index.html");
-      }
-    })();
-  </script>
+  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
+  <script src="access.js" defer></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f9ff;
-      color: #003366;
-    }
-
     /* ================================
-       TOP NAV
-    ================================= */
-    .top-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.25rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: #f5f9ff;
-      z-index: 10;
-    }
-
-    .top-nav a {
-      text-decoration: none;
-      font-weight: 600;
-      color: #003366;
-      margin-left: 1rem;
-    }
-
-    .nav-center {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    /* ================================
-       PAGE CONTENT
+       INFO MENU
     ================================= */
     .info-container {
       max-width: 700px;
@@ -64,6 +23,7 @@
     .info-container h1 {
       font-size: 2rem;
       margin-bottom: 1.5rem;
+      color: #003366;
     }
 
     .menu {
@@ -75,7 +35,7 @@
     .menu a {
       display: block;
       padding: 1rem 1.25rem;
-      border-radius: 10px;
+      border-radius: 12px;
       background: white;
       text-decoration: none;
       color: #003366;
@@ -91,48 +51,61 @@
     .menu .placeholder {
       opacity: 0.5;
       cursor: default;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      background: white;
+      font-weight: 600;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Top navigation -->
+  <!-- TOP NAV -->
   <div class="top-nav">
-    <div>
-      <a href="index.html">Home</a>
-      <a href="#" id="logout-link">Logout</a>
-    </div>
-    <div class="nav-center">Info</div>
+    <a href="index.html">Home</a>
+    <div class="nav-center">Member Information</div>
     <a href="events-calendar.html">Calendar</a>
   </div>
 
+  <!-- CONTENT -->
   <div class="info-container">
     <h1>Member Information</h1>
 
     <div class="menu">
-      <a href="#">📣 Notices</a>
-      <a href="#">📅 Host an Event</a>
-      <a href="payments.html">💳 Payments</a>
 
-      <div class="placeholder">
-        👥 Directory (coming soon)
-      </div>
+      <!-- YOUR INFO -->
+      <a href="your-info.html">
+        👤 Your Info
+      </a>
 
+      <!-- DIRECTORY (future grid view) -->
+      <a href="#">
+        👥 Members Info
+      </a>
+
+      <!-- NOTICES -->
+      <a href="#">
+        📣 Notices
+      </a>
+
+      <!-- HOSTING -->
+      <a href="#">
+        📅 Host an Event
+      </a>
+
+      <!-- PAYMENTS -->
+      <a href="payments.html">
+        💳 Payments
+      </a>
+
+      <!-- PLACEHOLDERS -->
       <div class="placeholder">
         📜 Club info & rules (coming soon)
       </div>
+
     </div>
   </div>
-
-  <!-- 🔓 LOGOUT -->
-  <script>
-    document.getElementById("logout-link").addEventListener("click", (e) => {
-      e.preventDefault();
-      sessionStorage.removeItem("sanctuaryAccess");
-      window.location.replace("index.html");
-    });
-  </script>
 
 </body>
 </html>

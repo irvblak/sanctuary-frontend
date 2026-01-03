@@ -1,5 +1,5 @@
 /* =========================================================
-   ROOT + BASE
+   ROOT + BASE (CRITICAL)
    ========================================================= */
 html,
 body {
@@ -13,18 +13,19 @@ body {
 }
 
 /* =========================================================
-   HERO WRAPPER
+   HERO WRAPPER (owns viewport)
    ========================================================= */
 .hero-wrapper {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* =========================================================
    SIDE PANELS
    ========================================================= */
 .hero-panel {
-   flex: 0 0 14%;
+  flex: 0 0 14%;
   padding: 2rem 1.5rem;
   background: linear-gradient(
     to bottom,
@@ -35,16 +36,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-/* Left panel */
-.hero-wrapper > .hero-panel:first-child {
-  flex: 0 0 11%;
-}
-
-/* Right panel */
-.hero-wrapper > .hero-panel:last-child {
-  flex: 0 0 14%;
 }
 
 /* =========================================================
@@ -63,9 +54,13 @@ body {
   position: relative;
   height: 100%;
 }
+
+/* =========================================================
+   TITLE
+   ========================================================= */
 .hero-title {
   position: absolute;
-  top: -2.5rem;          /* stable baseline */
+  top: 1.8rem;
   left: 2rem;
   font-size: 64px;
   font-weight: 700;
@@ -73,14 +68,12 @@ body {
   text-shadow: 2px 2px 6px rgba(255,255,255,0.6);
 }
 
-
-
 /* =========================================================
-   ACTION STACK
+   ACTION STACK (HOMEPAGE ONLY)
    ========================================================= */
 .action-stack {
   position: absolute;
-  bottom: 3.5rem;
+  bottom: 6.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -88,6 +81,11 @@ body {
   align-items: center;
   gap: 1rem;
   z-index: 5;
+}
+
+/* Prevent any non-home elements affecting layout */
+.action-stack > * {
+  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -109,14 +107,14 @@ body {
 }
 
 /* =========================================================
-   BUTTONS
+   HOMEPAGE BUTTONS ONLY
    ========================================================= */
-.hero-buttons {
+.action-stack .hero-buttons {
   display: flex;
   gap: 1.5rem;
 }
 
-.hero-button {
+.action-stack .hero-button {
   padding: 0.7rem 1.8rem;
   background: #8b5a2b;
   color: white;
@@ -124,10 +122,41 @@ body {
   font-size: 1.2rem;
   border: none;
   cursor: pointer;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
 }
 
-.hero-button:hover {
+.action-stack .hero-button:hover {
   background: #a06830;
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   MENU / INNER PAGES (explicitly isolated)
+   ========================================================= */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.menu-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.menu-row .hero-button {
+  width: auto;
+  min-width: 160px;
+}
+
+.menu-note {
+  font-size: 0.9rem;
+  color: #003366;
+  max-width: 28rem;
 }
 
 /* =========================================================
@@ -135,7 +164,7 @@ body {
    ========================================================= */
 .site-footer {
   position: absolute;
-  bottom: 0.5rem;
+  bottom: 2rem;
   width: 100%;
   text-align: center;
   font-size: 0.9rem;

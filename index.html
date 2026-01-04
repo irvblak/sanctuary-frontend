@@ -56,16 +56,6 @@
 
         <!-- BUTTONS -->
         <div class="hero-buttons">
-
-          <!-- LOGIN (logged-out only) -->
-          <button
-            id="btn-login"
-            class="hero-button"
-            style="display:none;"
-          >
-            Login
-          </button>
-
           <button id="btn-whats-on" class="hero-button">What’s On</button>
           <button id="btn-info" class="hero-button">Info</button>
         </div>
@@ -92,7 +82,7 @@
         position: absolute;
         top: 0;
         right: 0;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-decoration: underline;
         cursor: pointer;
         display: none;
@@ -115,28 +105,23 @@
 <script src="script.js?v=FINAL"></script>
 <script src="logout.js"></script>
 
-<!-- LOGIN / LOGOUT VISIBILITY -->
+<!-- SHOW LOGOUT ON HOME IF SESSION EXISTS -->
 <script>
-  (function () {
-    const loginBtn = document.getElementById("btn-login");
+  function updateLogoutVisibility() {
     const logoutLink = document.getElementById("logout-link");
-    const gate = document.getElementById("access-gate");
+    if (!logoutLink) return;
 
     const loggedIn =
       sessionStorage.getItem("sanctuaryAccess") === "granted";
 
-    if (loggedIn) {
-      if (logoutLink) logoutLink.style.display = "inline";
-    } else {
-      if (loginBtn) loginBtn.style.display = "inline";
-    }
+    logoutLink.style.display = loggedIn ? "inline" : "none";
+  }
 
-    if (loginBtn && gate) {
-      loginBtn.addEventListener("click", () => {
-        gate.style.display = "block";
-      });
-    }
-  })();
+  // Run on normal load
+  updateLogoutVisibility();
+
+  // Run when returning via back/forward cache
+  window.addEventListener("pageshow", updateLogoutVisibility);
 </script>
 
 </body>

@@ -73,9 +73,11 @@
   <!-- RIGHT PANEL -->
   <div class="hero-panel" style="position: relative;">
 
+    <!-- CONDITIONAL LOGOUT -->
     <a
       href="#"
       id="logout-link"
+      onclick="logout(); return false;"
       style="
         position: absolute;
         top: 0;
@@ -100,7 +102,23 @@
 
 </div>
 
+<!-- EXISTING FRONT-PAGE LOGIC -->
 <script src="script.js?v=FINAL"></script>
+
+<!-- LOGOUT FUNCTION -->
+<script src="logout.js"></script>
+
+<!-- FRONT-PAGE VISIBILITY CHECK -->
+<script>
+  (function () {
+    const logoutLink = document.getElementById("logout-link");
+    if (!logoutLink) return;
+
+    if (sessionStorage.getItem("sanctuaryAccess") === "true") {
+      logoutLink.style.display = "inline";
+    }
+  })();
+</script>
 
 </body>
 </html>

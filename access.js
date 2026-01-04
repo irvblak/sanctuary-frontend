@@ -1,31 +1,25 @@
-// access.js
-// -------------------------------------------------
-// Purpose:
-// - Enforce member-only access
-// - Optionally expire session
-// -------------------------------------------------
+// access.js — canonical access guard (safe, non-destructive)
 
 (function () {
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
-
-  // 1 hour session
-  const SESSION_DURATION = 60 * 60 * 1000;
+  const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
 
   const granted = sessionStorage.getItem(ACCESS_KEY);
   const accessTime = sessionStorage.getItem(TIME_KEY);
 
-  // Not logged in
-  if (granted !== "true" || !accessTime) {
-    sessionStorage.clear();
-    window.location.href = "index.html";
+  // If no session, redirect (do NOT clear storage here)
+  if (granted !== "granted" || !accessTime) {
+    window.location.replace("index.html");
     return;
   }
 
-  // Expired session
+  // Check expiry
   const elapsed = Date.now() - Number(accessTime);
   if (elapsed > SESSION_DURATION) {
     sessionStorage.clear();
-    window.location.href = "index.html";
+    window.location.replace("index.html");
+    return;
   }
+
 })();

@@ -108,13 +108,13 @@
 <!-- LOGOUT FUNCTION -->
 <script src="logout.js"></script>
 
-<!-- FRONT-PAGE VISIBILITY CHECK -->
+<!-- SHOW LOGOUT ONLY IF LOGGED IN -->
 <script>
   (function () {
     const logoutLink = document.getElementById("logout-link");
     if (!logoutLink) return;
 
-    if (sessionStorage.getItem("sanctuaryAccess") === "true") {
+    if (sessionStorage.getItem("sanctuaryAccess") === "granted") {
       logoutLink.style.display = "inline";
     }
   })();

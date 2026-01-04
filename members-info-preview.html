@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Members Info – The Sanctuary Club</title>
+
+  <link rel="stylesheet" href="styles-main.css" />
+
+  <style>
+    .members-info-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .members-info-page h1 {
+      color: #003366;
+      margin-bottom: 0.5rem;
+    }
+
+    .members-intro {
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+
+    table.members-directory {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    .members-directory th,
+    .members-directory td {
+      padding: 0.6rem 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 0.95rem;
+    }
+
+    .members-directory th {
+      font-weight: 700;
+      color: #003366;
+    }
+
+    .member-id {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .expand-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .resident-row {
+      color: #333;
+      background: #fafcff;
+    }
+
+    .not-shared {
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="members-info-page">
+
+    <h1>Members Info</h1>
+
+    <p class="members-intro">
+      Only details that members choose to share are shown here.
+    </p>
+
+    <table class="members-directory">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <!-- SINGLE RESIDENT -->
+        <tr class="household-row">
+          <td class="member-id">SM01</td>
+          <td>John Smith</td>
+          <td>john@example.com</td>
+          <td>07123 456789</td>
+          <td></td>
+        </tr>
+
+        <!-- MULTI RESIDENT (COLLAPSED PREVIEW) -->
+        <tr class="household-row has-more">
+          <td class="member-id">SM12</td>
+          <td>Alice Brown</td>
+          <td>alice@example.com</td>
+          <td>07000 123456</td>
+          <td>
+            <button class="expand-toggle" aria-expanded="false">▾</button>
+          </td>
+        </tr>
+
+        <tr class="resident-row">
+          <td></td>
+          <td>Bob Brown</td>
+          <td>—</td>
+          <td>07888 222333</td>
+          <td></td>
+        </tr>
+
+        <tr class="resident-row">
+          <td></td>
+          <td>Carol Brown</td>
+          <td>carol@example.com</td>
+          <td>—</td>
+          <td></td>
+        </tr>
+
+        <!-- NO SHARED DETAILS -->
+        <tr class="household-row">
+          <td class="member-id">SM34</td>
+          <td colspan="3" class="not-shared">
+            Details not shared
+          </td>
+          <td></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <p style="margin-top:1.5rem; font-size:0.9rem;">
+      Want to add or update your details?
+      <a href="your-info.html">Your Info</a>
+    </p>
+
+  </main>
+
+</body>
+</html>

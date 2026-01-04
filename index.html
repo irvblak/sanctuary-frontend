@@ -56,6 +56,16 @@
 
         <!-- BUTTONS -->
         <div class="hero-buttons">
+
+          <!-- LOGIN (logged-out only) -->
+          <button
+            id="btn-login"
+            class="hero-button"
+            style="display:none;"
+          >
+            Login
+          </button>
+
           <button id="btn-whats-on" class="hero-button">What’s On</button>
           <button id="btn-info" class="hero-button">Info</button>
         </div>
@@ -73,7 +83,7 @@
   <!-- RIGHT PANEL -->
   <div class="hero-panel" style="position: relative;">
 
-    <!-- CONDITIONAL LOGOUT -->
+    <!-- LOGOUT (logged-in only) -->
     <a
       href="#"
       id="logout-link"
@@ -102,20 +112,29 @@
 
 </div>
 
-<!-- EXISTING FRONT-PAGE LOGIC -->
 <script src="script.js?v=FINAL"></script>
-
-<!-- LOGOUT FUNCTION -->
 <script src="logout.js"></script>
 
-<!-- SHOW LOGOUT ONLY IF LOGGED IN -->
+<!-- LOGIN / LOGOUT VISIBILITY -->
 <script>
   (function () {
+    const loginBtn = document.getElementById("btn-login");
     const logoutLink = document.getElementById("logout-link");
-    if (!logoutLink) return;
+    const gate = document.getElementById("access-gate");
 
-    if (sessionStorage.getItem("sanctuaryAccess") === "granted") {
-      logoutLink.style.display = "inline";
+    const loggedIn =
+      sessionStorage.getItem("sanctuaryAccess") === "granted";
+
+    if (loggedIn) {
+      if (logoutLink) logoutLink.style.display = "inline";
+    } else {
+      if (loginBtn) loginBtn.style.display = "inline";
+    }
+
+    if (loginBtn && gate) {
+      loginBtn.addEventListener("click", () => {
+        gate.style.display = "block";
+      });
     }
   })();
 </script>

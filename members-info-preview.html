@@ -28,8 +28,7 @@
       margin-bottom: 2rem;
     }
 
-    /* ===== GRID ===== */
-
+    /* GRID */
     .member-grid {
       max-width: 900px;
       margin: 0 auto;
@@ -58,8 +57,7 @@
       background: #f2f6fc;
     }
 
-    /* ===== EXPANDED PANEL ===== */
-
+    /* DETAIL PANEL */
     .member-detail {
       max-width: 900px;
       margin: 1.2rem auto 0;
@@ -112,39 +110,19 @@
 </div>
 
 <div class="member-grid">
-  <!-- SM1–SM25 -->
   <div class="member-tile" data-member="SM1">SM1</div>
   <div class="member-tile empty" data-member="SM2">SM2</div>
   <div class="member-tile" data-member="SM3">SM3</div>
   <div class="member-tile empty" data-member="SM4">SM4</div>
   <div class="member-tile empty" data-member="SM5">SM5</div>
 
-  <div class="member-tile empty">SM6</div>
-  <div class="member-tile">SM7</div>
-  <div class="member-tile empty">SM8</div>
-  <div class="member-tile empty">SM9</div>
-  <div class="member-tile empty">SM10</div>
-
-  <div class="member-tile empty">SM11</div>
-  <div class="member-tile empty">SM12</div>
-  <div class="member-tile">SM13</div>
-  <div class="member-tile empty">SM14</div>
-  <div class="member-tile empty">SM15</div>
-
-  <div class="member-tile empty">SM16</div>
-  <div class="member-tile empty">SM17</div>
-  <div class="member-tile empty">SM18</div>
-  <div class="member-tile empty">SM19</div>
-  <div class="member-tile empty">SM20</div>
-
-  <div class="member-tile empty">SM21</div>
-  <div class="member-tile empty">SM22</div>
-  <div class="member-tile empty">SM23</div>
-  <div class="member-tile empty">SM24</div>
-  <div class="member-tile empty">SM25</div>
+  <div class="member-tile empty" data-member="SM6">SM6</div>
+  <div class="member-tile" data-member="SM7">SM7</div>
+  <div class="member-tile empty" data-member="SM8">SM8</div>
+  <div class="member-tile empty" data-member="SM9">SM9</div>
+  <div class="member-tile empty" data-member="SM10">SM10</div>
 </div>
 
-<!-- DETAIL PANEL -->
 <div id="detail" class="member-detail">
   <h2 id="detail-title"></h2>
 
@@ -167,7 +145,7 @@
 </div>
 
 <script>
-  const data = {
+  const directoryData = {
     SM1: {
       name: "Jane Smith",
       email: "jane@domain.com",
@@ -185,29 +163,28 @@
       email: "alex@domain.com",
       phone: "07123 456789",
       extra: ""
-    },
-    SM13: {
-      name: "Mary Collins",
-      email: "—",
-      phone: "—",
-      extra: ""
     }
   };
 
   const detail = document.getElementById("detail");
+  const dName = document.getElementById("d-name");
+  const dEmail = document.getElementById("d-email");
+  const dPhone = document.getElementById("d-phone");
+  const dExtra = document.getElementById("d-extra");
+  const dTitle = document.getElementById("detail-title");
 
   document.querySelectorAll(".member-tile").forEach(tile => {
     tile.addEventListener("click", () => {
-      const key = tile.textContent;
-      const info = data[key];
+      const key = tile.dataset.member;
+      const info = directoryData[key];
 
-      document.getElementById("detail-title").textContent = "Member " + key;
+      dTitle.textContent = "Member " + key;
 
       if (info) {
         dName.textContent = info.name;
         dEmail.textContent = info.email;
         dPhone.textContent = info.phone;
-        dExtra.textContent = info.extra;
+        dExtra.textContent = info.extra || "";
       } else {
         dName.textContent = "—";
         dEmail.textContent = "—";

@@ -7,273 +7,240 @@
 
   <meta name="robots" content="noindex, nofollow">
 
-  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
+  <link rel="stylesheet" href="styles-main.css">
 
   <style>
-    /* =========================================================
-       LAYOUT
-       ========================================================= */
-    .content-wrapper {
-      display: flex;
+    /* ===== PAGE LAYOUT ===== */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f7fa;
+    }
+
+    .page-wrapper {
+      display: grid;
+      grid-template-columns: 1fr minmax(320px, 520px) 1fr;
       min-height: 100vh;
     }
 
-    .content-panel {
-      flex: 0 0 18%;
-      padding: 2rem 1.5rem;
+    /* ===== SIDE PANELS ===== */
+    .side-panel {
       background: linear-gradient(
         to bottom,
         #8bbce8 0%,
         #cfe6fb 35%,
-        #ffffff 75%
+        #ffffff 85%
       );
+      padding: 2rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    .content-main {
-      flex: 1;
-      padding: 6rem 2rem 3rem;
-    }
-
-    @media (max-width: 900px) {
-      .content-panel {
-        display: none;
-      }
-      .content-main {
-        padding-top: 5rem;
-      }
-    }
-
-    /* =========================================================
-       TYPOGRAPHY
-       ========================================================= */
-    h1 {
-      margin-top: 0;
+    .side-panel p {
+      margin-top: 5rem;
+      font-style: italic;
+      font-weight: 600;
       color: #003366;
+      text-align: center;
+      max-width: 260px;
     }
 
-    .page-intro {
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      background: white;
+      padding: 2rem 1.8rem 2.5rem;
+      box-shadow: 0 0 18px rgba(0,0,0,0.06);
+    }
+
+    h1 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro-text {
+      text-align: center;
       font-size: 0.95rem;
       color: #4b5f78;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-      max-width: 700px;
+      margin-bottom: 1.8rem;
     }
 
-    /* =========================================================
-       FORM
-       ========================================================= */
-    form {
-      max-width: 700px;
-      background: #eef4fb;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    /* ===== MEMBERSHIP ACCESS ===== */
+    .membership-access {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.8rem;
     }
 
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      color: #003366;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.6rem;
+    .membership-access input {
+      width: 5cm;
+      padding: 0.45rem 0.5rem;
       font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      text-transform: uppercase;
     }
 
-    .resident-block {
-      border-top: 1px solid #cbdcf0;
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-    }
-
-    .save-btn {
-      margin-top: 1.5rem;
-      padding: 0.7rem 2rem;
-      background: #8b5a2b;
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      font-size: 1.05rem;
+    .membership-access button {
+      padding: 0.45rem 0.8rem;
+      font-size: 0.95rem;
       cursor: pointer;
     }
 
-    .save-btn:hover {
-      background: #a06830;
-    }
-
-    .status {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #003366;
+    /* ===== FORM ===== */
+    form {
       display: none;
     }
 
-    /* =========================================================
-       TOP NAV
-       ========================================================= */
-    .top-nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 56px;
-      background: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      z-index: 1000;
+    .resident-box {
+      border: 1px solid #d8e1ec;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
     }
 
-    .top-nav a {
-      text-decoration: none;
-      font-weight: 600;
+    .resident-box h3 {
+      margin: 0 0 0.8rem;
+      font-size: 1rem;
       color: #003366;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.6rem;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      color: #4b5f78;
+      margin-bottom: 0.15rem;
+    }
+
+    .field input {
+      padding: 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    .admin-note {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: #6a7f99;
+      text-align: center;
+    }
+
+    .save-btn {
+      display: block;
+      margin: 1.8rem auto 0;
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-<!-- TOP NAV -->
-<div class="top-nav">
-  <a href="notices.html">← Member Information</a>
-  <a href="#" onclick="logout(); return false;">Logout</a>
-</div>
-
-<div class="content-wrapper">
+<div class="page-wrapper">
 
   <!-- LEFT PANEL -->
-  <aside class="content-panel">
-    <h3>Your Info</h3>
+  <div class="side-panel">
     <p>
-      You can add as much or as little contact information as you wish.
-      Sharing details can help neighbours connect and stay informed,
-      but everything here is optional.
+      Add or update contact details for your household so neighbours can reach you if needed.
     </p>
-  </aside>
+  </div>
 
-  <!-- MAIN CONTENT -->
-  <main class="content-main">
+  <!-- MAIN PANEL -->
+  <div class="main-panel">
 
     <h1>Your Information</h1>
 
-    <p class="page-intro">
-      Enter your optional details for up to four residents.<br />
-      If you need to change your membership number or have any difficulties,
-      please contact the Club Admin.
-    </p>
+    <div class="intro-text">
+      Enter your optional details for up to four residents.
+    </div>
 
-    <form id="your-info-form">
+    <!-- MEMBERSHIP NUMBER ACCESS -->
+    <div class="membership-access">
+      <input
+        type="text"
+        id="membership-number"
+        placeholder="SM12 / SC8"
+        autocomplete="off"
+      />
+      <button type="button" id="unlock-btn">Continue</button>
+    </div>
 
-      <!-- MEMBERSHIP -->
-      <div class="form-group">
-        <label for="membership">Membership Number</label>
-        <input
-          id="membership"
-          required
-          placeholder="e.g. SM55 or SC12"
-        />
+    <!-- FORM -->
+    <form id="info-form">
+
+      <!-- RESIDENT 1 -->
+      <div class="resident-box">
+        <h3>Resident 1</h3>
+        <div class="field"><label>Name</label><input></div>
+        <div class="field"><label>Email</label><input></div>
+        <div class="field"><label>Phone</label><input></div>
+        <div class="field"><label>Mobile</label><input></div>
       </div>
 
-      <!-- RESIDENTS -->
-      <div id="residents"></div>
+      <!-- RESIDENT 2 -->
+      <div class="resident-box">
+        <h3>Resident 2</h3>
+        <div class="field"><label>Name</label><input></div>
+        <div class="field"><label>Email</label><input></div>
+        <div class="field"><label>Phone</label><input></div>
+        <div class="field"><label>Mobile</label><input></div>
+      </div>
 
-      <button type="submit" class="save-btn">
-        Save information
-      </button>
+      <!-- RESIDENT 3 -->
+      <div class="resident-box">
+        <h3>Resident 3</h3>
+        <div class="field"><label>Name</label><input></div>
+        <div class="field"><label>Email</label><input></div>
+        <div class="field"><label>Phone</label><input></div>
+        <div class="field"><label>Mobile</label><input></div>
+      </div>
 
-      <div class="status" id="status-msg">
-        Saved ✔
+      <!-- RESIDENT 4 -->
+      <div class="resident-box">
+        <h3>Resident 4</h3>
+        <div class="field"><label>Name</label><input></div>
+        <div class="field"><label>Email</label><input></div>
+        <div class="field"><label>Phone</label><input></div>
+        <div class="field"><label>Mobile</label><input></div>
+      </div>
+
+      <button type="button" class="save-btn">Save</button>
+
+      <div class="admin-note">
+        Contact Club Admin if you want to change any details.
       </div>
 
     </form>
 
-  </main>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="side-panel">
+    <p>
+      Your information is only visible to other members who choose to share theirs.
+    </p>
+  </div>
 
 </div>
 
-<script src="access.js"></script>
-<script src="logout.js"></script>
-
 <script>
-  const MAX_RESIDENTS = 4;
-  const residentsWrap = document.getElementById("residents");
-  const form = document.getElementById("your-info-form");
-  const membershipInput = document.getElementById("membership");
-  const statusMsg = document.getElementById("status-msg");
+  const unlockBtn = document.getElementById("unlock-btn");
+  const membershipInput = document.getElementById("membership-number");
+  const form = document.getElementById("info-form");
 
-  function residentBlock(index, data = {}) {
-    return `
-      <div class="resident-block">
-        <h3>Resident ${index}</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input data-field="name" value="${data.name || ""}">
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input type="email" data-field="email" value="${data.email || ""}">
-        </div>
-
-        <div class="form-group">
-          <label>Mobile (optional)</label>
-          <input type="tel" data-field="mobile" value="${data.mobile || ""}">
-        </div>
-
-        <div class="form-group">
-          <label>Phone (optional)</label>
-          <input type="tel" data-field="phone" value="${data.phone || ""}">
-        </div>
-      </div>
-    `;
-  }
-
-  function renderResidents(data = []) {
-    residentsWrap.innerHTML = "";
-    for (let i = 1; i <= MAX_RESIDENTS; i++) {
-      residentsWrap.insertAdjacentHTML(
-        "beforeend",
-        residentBlock(i, data[i - 1] || {})
-      );
+  unlockBtn.addEventListener("click", () => {
+    if (membershipInput.value.trim().length >= 2) {
+      form.style.display = "block";
+      membershipInput.disabled = true;
+      unlockBtn.disabled = true;
     }
-  }
-
-  function loadData(member) {
-    const stored = localStorage.getItem("member-" + member);
-    if (!stored) {
-      renderResidents();
-      return;
-    }
-    const parsed = JSON.parse(stored);
-    renderResidents(parsed.residents || []);
-  }
-
-  membershipInput.addEventListener("blur", () => {
-    const member = membershipInput.value.trim();
-    if (member) loadData(member);
   });
+</script>
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const member = membershipInput.value.trim();
-    if (!member) return;
-
-    const residents = [];
-    document.querySelectorAll(".resident-block").forEach(block => {
-      const data = {};
-      block.querySelectorAll("input").forEach(input => {
-        data[input.dataset.field] = inp
+</body>
+</html>

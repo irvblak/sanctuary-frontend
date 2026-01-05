@@ -3,116 +3,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Members Info – The Sanctuary Club</title>
+  <title>Members Directory – The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
+  <link rel="stylesheet" href="styles-main.css" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <style>
+    body {
+      background: #eef4fb;
+      margin: 0;
+      padding: 2rem 1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #003366;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      margin: 2rem auto 0.6rem;
+      max-width: 1100px;
+      font-size: 1.3rem;
+      color: #001f4d;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #4b5f78;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== GRID ===== */
+
+    .member-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .member-tile {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 0.6rem;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      user-select: none;
+    }
+
+    .member-tile.empty {
+      color: #9aa8bd;
+      font-weight: 600;
+    }
+
+    .member-tile:hover {
+      background: #f2f6fc;
+    }
+
+    /* ===== DETAIL PANEL ===== */
+
+    .member-detail {
+      max-width: 1100px;
+      margin: 1.2rem auto 0;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .member-detail h3 {
+      margin-top: 0;
+      margin-bottom: 0.8rem;
+      font-size: 1.25rem;
+    }
+
+    .resident {
+      margin-bottom: 0.6rem;
+    }
+
+    .resident-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      padding: 0.15rem 0;
+    }
+
+    .label {
+      color: #5a6f8c;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .value.muted {
+      color: #9aa8bd;
+      font-style: italic;
+    }
+
+    .divider {
+      border-top: 1px solid #dde6f3;
+      margin: 0.6rem 0;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="hero-wrapper">
-
-  <!-- LEFT PANEL -->
-  <div class="hero-panel">
-    <h3>Members Info</h3>
-    <p>
-      Contact details shared voluntarily by residents to help neighbours
-      connect.
-    </p>
-  </div>
-
-  <!-- CENTRE -->
-  <section class="hero">
-    <div class="hero-overlay">
-
-      <!-- HEADER -->
-      <header class="page-header">
-        <h1 class="hero-title">Members Info</h1>
-      </header>
-
-      <!-- CONTENT -->
-      <main class="page-content">
-
-        <p class="soft-note">
-          Sharing your details is optional. Adding a name helps neighbours
-          recognise each other, and an email address allows members to be
-          contacted about club activities.
-        </p>
-
-        <!-- MEMBERS GRID -->
-        <div class="members-grid">
-
-          <!-- Header row -->
-          <div class="members-row members-header">
-            <div>Membership</div>
-            <div>Name(s)</div>
-            <div>Contact</div>
-          </div>
-
-          <!-- Placeholder rows -->
-          <div class="members-row">
-            <div>SM 01</div>
-            <div>—</div>
-            <div>—</div>
-          </div>
-
-          <div class="members-row">
-            <div>SM 02</div>
-            <div>—</div>
-            <div>—</div>
-          </div>
-
-          <div class="members-row">
-            <div>SM 03</div>
-            <div>—</div>
-            <div>—</div>
-          </div>
-
-          <!-- More rows will be injected by JS later -->
-
-        </div>
-
-      </main>
-
-      <!-- FOOTER -->
-      <footer class="site-footer">
-        <p>© The Sanctuary Club. All rights reserved.</p>
-      </footer>
-
-    </div>
-  </section>
-
-  <!-- RIGHT PANEL -->
-  <div class="hero-panel" style="position: relative;">
-
-    <!-- Logout -->
-    <a
-      href="#"
-      id="logout-link"
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 0.9rem;
-        text-decoration: underline;
-        cursor: pointer;
-      "
-    >
-      Logout
-    </a>
-
-    <p>
-      <strong><em>
-        Addresses are known internally by membership number only.
-        No addresses are displayed.
-      </em></strong>
-    </p>
-
-  </div>
-
+<h1>Members Directory</h1>
+<div class="note">
+  Select a membership number to view household contact details.
 </div>
 
-<script src="access.js?v=FINAL"></script>
+<!-- SANCTUARY MEWS -->
+<h2>Sanctuary Mews</h2>
+<div class="member-grid" id="grid-mews"></div>
+
+<!-- SANCTUARY COURT -->
+<h2>Sanctuary Court</h2>
+<div class="member-grid" id="grid-court"></div>
+
+<!-- DETAIL PANEL -->
+<div id="detail" class="member-detail">
+  <h3 id="detail-title"></h3>
+  <div id="detail-content"></div>
+</div>
+
+<script>
+  /* =========================================
+     PLACEHOLDER DIRECTORY DATA
+     (to be replaced by Your Info storage)
+     ========================================= */
+
+  const directoryData = {
+    SCH: {
+      residents: [
+        { name: "Clubhouse Manager", email: "manager@sanctuary.club", mobile: "07•• ••••••" }
+      ]
+    },
+    SM1: {
+      residents: [
+        { name: "Jane Smith", email: "jane@domain.com", mobile: "07•• ••••••" },
+        { name: "Alex Smith", mobile: "07•• ••••••" }
+      ]
+    },
+    SC3: {
+      residents: [
+        { name: "Robert Hill", email: "r.hill@domain.com" }
+      ]
+    }
+  };
+
+  /* =========================================
+     GRID GENERATION
+     ========================================= */
+
+  function createTile(code) {
+    const div = document.createElement("div");
+    div.className = "member-tile" + (directoryData[code] ? "" : " empty");
+    div.textContent = code;
+    div.dataset.member = code;
+    return div;
+  }
+
+  const gridMews = document.getElementById("grid-mews");
+  const gridCourt = document.getElementById("grid-court");
+
+  // SCH
+  gridMews.appendChild(createTile("SCH"));
+
+  // SM1–SM73
+  for (let i = 1; i <= 73; i++) {
+    gridMews.appendChild(createTile("SM" + i));
+  }
+
+  // SC1–SC43
+  for (let i = 1; i <= 43; i++) {
+    gridCourt.appendChild(createTile("SC" + i));
+  }
+
+  /* =========================================
+     DETAIL PANEL LOGIC
+     ========================================= */
+
+  const detail = document.getElementById("detail");
+  const title = document.getElementById("detail-title");
+  const content = document.getElementById("detail-content");
+
+  document.addEventListener("click", (e) => {
+    const tile = e.target.closest(".member-tile");
+    if (!tile) return;
+
+    const code = tile.dataset.member;
+    const data = directoryData[code];
+
+    title.textContent = "Member " + code;
+    content.innerHTML = "";
+
+    if (!data || !data.residents || data.residents.length === 0) {
+      content.innerHTML = `<div class="value muted">No information entered</div>`;
+    } else {
+      data.residents.forEach((res, idx) => {
+        const block = document.createElement("div");
+        block.className = "resident";
+
+        block.innerHTML = `
+          <div class="resident-title">Resident ${idx + 1}</div>
+          <div class="detail-row"><div class="label">Name</div><div>${res.name || "—"}</div></div>
+          <div class="detail-row"><div class="label">Email</div><div>${res.email || "—"}</div></div>
+          <div class="detail-row"><div class="label">Mobile</div><div>${res.mobile || "—"}</div></div>
+        `;
+
+        content.appendChild(block);
+        if (idx < data.residents.length - 1) {
+          content.appendChild(document.createElement("div")).className = "divider";
+        }
+      });
+    }
+
+    detail.style.display = "block";
+    detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+</script>
 
 </body>
 </html>

@@ -1,150 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Members Info – The Sanctuary Club</title>
+# Members Directory – C1 (Compact Column Mock)
 
-  <link rel="stylesheet" href="styles-main.css" />
+This is a **single-column (C1) compact mock** showing how one third of the final directory will look. The full version will place **three identical columns side‑by‑side** using CSS Grid.
 
-  <style>
-    .members-info-page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
+---
 
-    .members-info-page h1 {
-      color: #003366;
-      margin-bottom: 0.5rem;
-    }
+## Member Column (C1)
 
-    .members-intro {
-      font-size: 0.95rem;
-      color: #444;
-      margin-bottom: 1.5rem;
-    }
+<div class="members-column">
 
-    table.members-directory {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-    }
+  <div class="member-card">
+    <div class="member-header">Member SM1</div>
+    <div class="member-row"><span>Name</span><span>Jane Smith</span></div>
+    <div class="member-row"><span>Email</span><span>jane@domain.com</span></div>
+    <div class="member-row"><span>Phone</span><span>01234 567890</span></div>
+    <button class="expand-btn">+ 2 more residents</button>
+    <div class="extra-residents">
+      <div class="member-row"><span>Name</span><span>Alex Smith</span></div>
+      <div class="member-row"><span>Mobile</span><span>07•• ••••••</span></div>
+      <div class="member-row"><span>Name</span><span>Chris Smith</span></div>
+    </div>
+  </div>
 
-    .members-directory th,
-    .members-directory td {
-      padding: 0.6rem 0.5rem;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-      font-size: 0.95rem;
-    }
+  <div class="member-card">
+    <div class="member-header">Member SM2</div>
+    <div class="member-row"><span>Name</span><span>—</span></div>
+    <div class="member-row"><span>Email</span><span>—</span></div>
+    <div class="member-row"><span>Phone</span><span>—</span></div>
+  </div>
 
-    .members-directory th {
-      font-weight: 700;
-      color: #003366;
-    }
+  <div class="member-card">
+    <div class="member-header">Member SM3</div>
+    <div class="member-row"><span>Name</span><span>Robert Hill</span></div>
+    <div class="member-row"><span>Email</span><span>r.hill@domain.com</span></div>
+    <div class="member-row"><span>Phone</span><span>—</span></div>
+    <button class="expand-btn">+ 1 more resident</button>
+    <div class="extra-residents">
+      <div class="member-row"><span>Name</span><span>Mary Hill</span></div>
+    </div>
+  </div>
 
-    .member-id {
-      font-weight: 700;
-      white-space: nowrap;
-    }
+</div>
 
-    .expand-toggle {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-    }
+---
 
-    .resident-row {
-      color: #333;
-      background: #fafcff;
-    }
+## Styling (conceptual – for density)
 
-    .not-shared {
-      font-style: italic;
-      color: #666;
-    }
-  </style>
-</head>
+* Small font (≈ 0.9rem)
+* Tight row spacing
+* Muted labels
+* Cards visually aligned so three columns feel like a table
 
-<body>
+```css
+.members-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
 
-  <main class="members-info-page">
+.member-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  font-size: 0.9rem;
+}
 
-    <h1>Members Info</h1>
+.member-header {
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
 
-    <p class="members-intro">
-      Only details that members choose to share are shown here.
-    </p>
+.member-row {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
+}
 
-    <table class="members-directory">
-      <thead>
-        <tr>
-          <th>Member</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Mobile</th>
-          <th></th>
-        </tr>
-      </thead>
+.expand-btn {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  background: none;
+  border: none;
+  color: #003366;
+  cursor: pointer;
+}
 
-      <tbody>
+.extra-residents {
+  margin-top: 0.3rem;
+}
+```
 
-        <!-- SINGLE RESIDENT -->
-        <tr class="household-row">
-          <td class="member-id">SM01</td>
-          <td>John Smith</td>
-          <td>john@example.com</td>
-          <td>07123 456789</td>
-          <td></td>
-        </tr>
+---
 
-        <!-- MULTI RESIDENT (COLLAPSED PREVIEW) -->
-        <tr class="household-row has-more">
-          <td class="member-id">SM12</td>
-          <td>Alice Brown</td>
-          <td>alice@example.com</td>
-          <td>07000 123456</td>
-          <td>
-            <button class="expand-toggle" aria-expanded="false">▾</button>
-          </td>
-        </tr>
+### What this demonstrates
 
-        <tr class="resident-row">
-          <td></td>
-          <td>Bob Brown</td>
-          <td>—</td>
-          <td>07888 222333</td>
-          <td></td>
-        </tr>
+* ✔ Tight, non‑tedious layout
+* ✔ Clear household grouping (SMx)
+* ✔ Empty vs populated states
+* ✔ Dropdown expansion for additional residents
+* ✔ Ready to be repeated into **three equal columns**
 
-        <tr class="resident-row">
-          <td></td>
-          <td>Carol Brown</td>
-          <td>carol@example.com</td>
-          <td>—</td>
-          <td></td>
-        </tr>
-
-        <!-- NO SHARED DETAILS -->
-        <tr class="household-row">
-          <td class="member-id">SM34</td>
-          <td colspan="3" class="not-shared">
-            Details not shared
-          </td>
-          <td></td>
-        </tr>
-
-      </tbody>
-    </table>
-
-    <p style="margin-top:1.5rem; font-size:0.9rem;">
-      Want to add or update your details?
-      <a href="your-info.html">Your Info</a>
-    </p>
-
-  </main>
-
-</body>
-</html>
+Next step (after your OK): convert this into a **3‑column grid** and wire expand/collapse behaviour.

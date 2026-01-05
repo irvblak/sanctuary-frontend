@@ -3,51 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Info – The Sanctuary Club</title>
+  <title>Your Information – The Sanctuary Club</title>
 
-  <!-- Shared site styles -->
+  <meta name="robots" content="noindex, nofollow">
+
   <link rel="stylesheet" href="styles-main.css?v=FINAL" />
 
   <style>
-    /* =========================================================
-       MEMBER ENROL – LOCAL STYLES ONLY
-       ========================================================= */
-
-    .content-wrapper {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .content-panel {
-      flex: 0 0 17%;
-      padding: 2rem 1.5rem;
-      background: linear-gradient(
-        to bottom,
-        #8bbce8 0%,
-        #cfe6fb 35%,
-        #ffffff 75%
-      );
-    }
-
-    .content-main {
-      flex: 1;
-      padding: 3rem 2rem;
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 6rem 1.5rem 3rem;
     }
 
     h1 {
-      margin-top: 0;
-      color: #001f4d;
+      color: #003366;
+      margin-bottom: 0.5rem;
     }
 
-    .intro {
-      max-width: 700px;
+    .page-intro {
+      font-size: 0.95rem;
+      color: #4b5f78;
       margin-bottom: 2rem;
-      font-size: 1rem;
       line-height: 1.5;
     }
 
     form {
-      max-width: 700px;
       background: #eef4fb;
       padding: 2rem;
       border-radius: 12px;
@@ -60,189 +41,192 @@
 
     label {
       display: block;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 0.3rem;
+      color: #003366;
     }
 
-    input,
-    select {
+    input {
       width: 100%;
       padding: 0.6rem;
-      font-size: 1rem;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
     .resident-block {
       border-top: 1px solid #cbdcf0;
-      margin-top: 1.5rem;
       padding-top: 1.5rem;
+      margin-top: 1.5rem;
     }
 
-    .save-button {
+    .save-btn {
       margin-top: 1.5rem;
       padding: 0.7rem 2rem;
-      background: #8b5a2b;
-      color: #fff;
       border: none;
       border-radius: 999px;
-      font-size: 1.1rem;
+      background: #8b5a2b;
+      color: white;
+      font-size: 1.05rem;
       cursor: pointer;
     }
 
-    .save-button:hover {
+    .save-btn:hover {
       background: #a06830;
     }
 
-    .note {
-      font-size: 0.9rem;
-      color: #333;
+    .status {
       margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #003366;
+      display: none;
     }
 
-    @media (max-width: 900px) {
-      .content-panel {
-        display: none;
-      }
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      z-index: 1000;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #003366;
     }
   </style>
 </head>
 
 <body>
 
-<div class="content-wrapper">
-
-  <!-- LEFT PANEL -->
-  <aside class="content-panel">
-    <h3>Your Info</h3>
-    <p>
-      Add as much or as little contact information as you wish.
-      Sharing details can help neighbours connect and stay informed,
-      but everything here is optional.
-    </p>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="content-main">
-
-    <h1>Your Information</h1>
-
-    <p class="intro">
-      Your membership number links your household to a known address.
-      You may add up to four residents. All contact details are optional.
-    </p>
-
-    <form>
-
-      <!-- MEMBERSHIP -->
-      <div class="form-group">
-        <label for="membership-number">Membership Number</label>
-        <input
-          type="text"
-          id="membership-number"
-          placeholder="e.g. SM 55"
-          required
-        />
-      </div>
-
-      <!-- RESIDENT 1 -->
-      <div class="resident-block">
-        <h3>Resident 1</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input type="text" />
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input type="email" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile phone (optional)</label>
-          <input type="tel" />
-        </div>
-
-        <div class="form-group">
-          <label>Landline (optional)</label>
-          <input type="tel" />
-        </div>
-      </div>
-
-      <!-- RESIDENT 2 -->
-      <div class="resident-block">
-        <h3>Resident 2</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input type="text" />
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input type="email" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile phone (optional)</label>
-          <input type="tel" />
-        </div>
-      </div>
-
-      <!-- RESIDENT 3 -->
-      <div class="resident-block">
-        <h3>Resident 3</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input type="text" />
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input type="email" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile phone (optional)</label>
-          <input type="tel" />
-        </div>
-      </div>
-
-      <!-- RESIDENT 4 -->
-      <div class="resident-block">
-        <h3>Resident 4</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input type="text" />
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input type="email" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile phone (optional)</label>
-          <input type="tel" />
-        </div>
-      </div>
-
-      <button type="button" class="save-button">
-        Save information
-      </button>
-
-      <p class="note">
-        You can update this information at any time.
-      </p>
-
-    </form>
-
-  </main>
-
+<!-- TOP NAV -->
+<div class="top-nav">
+  <a href="notices.html">← Member Information</a>
+  <a href="#" onclick="logout(); return false;">Logout</a>
 </div>
+
+<div class="page-wrap">
+
+  <h1>Your Information</h1>
+  <p class="page-intro">
+    Enter your optional details for up to four residents.<br />
+    If you need to change your membership number or have any difficulties,
+    please contact the Club Admin.
+  </p>
+
+  <form id="your-info-form">
+
+    <!-- MEMBERSHIP -->
+    <div class="form-group">
+      <label for="membership">Membership Number</label>
+      <input id="membership" required placeholder="e.g. SM55 or SC12" />
+    </div>
+
+    <!-- RESIDENTS -->
+    <div id="residents"></div>
+
+    <button type="submit" class="save-btn">Save information</button>
+    <div class="status" id="status-msg">Saved ✔</div>
+
+  </form>
+</div>
+
+<script src="access.js"></script>
+<script src="logout.js"></script>
+
+<script>
+  const MAX_RESIDENTS = 4;
+  const residentsWrap = document.getElementById("residents");
+  const form = document.getElementById("your-info-form");
+  const membershipInput = document.getElementById("membership");
+  const statusMsg = document.getElementById("status-msg");
+
+  function residentBlock(index, data = {}) {
+    return `
+      <div class="resident-block">
+        <h3>Resident ${index}</h3>
+
+        <div class="form-group">
+          <label>Name (optional)</label>
+          <input data-field="name" value="${data.name || ""}">
+        </div>
+
+        <div class="form-group">
+          <label>Email (optional)</label>
+          <input data-field="email" type="email" value="${data.email || ""}">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile (optional)</label>
+          <input data-field="mobile" type="tel" value="${data.mobile || ""}">
+        </div>
+
+        <div class="form-group">
+          <label>Phone (optional)</label>
+          <input data-field="phone" type="tel" value="${data.phone || ""}">
+        </div>
+      </div>
+    `;
+  }
+
+  function renderResidents(data = []) {
+    residentsWrap.innerHTML = "";
+    for (let i = 1; i <= MAX_RESIDENTS; i++) {
+      residentsWrap.insertAdjacentHTML(
+        "beforeend",
+        residentBlock(i, data[i - 1] || {})
+      );
+    }
+  }
+
+  function loadData(member) {
+    const stored = localStorage.getItem("member-" + member);
+    if (!stored) {
+      renderResidents();
+      return;
+    }
+    const parsed = JSON.parse(stored);
+    renderResidents(parsed.residents || []);
+  }
+
+  membershipInput.addEventListener("blur", () => {
+    const member = membershipInput.value.trim();
+    if (member) loadData(member);
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const member = membershipInput.value.trim();
+    if (!member) return;
+
+    const residents = [];
+    document.querySelectorAll(".resident-block").forEach(block => {
+      const data = {};
+      block.querySelectorAll("input").forEach(input => {
+        data[input.dataset.field] = input.value.trim();
+      });
+      residents.push(data);
+    });
+
+    localStorage.setItem(
+      "member-" + member,
+      JSON.stringify({ residents })
+    );
+
+    statusMsg.style.display = "block";
+    setTimeout(() => statusMsg.style.display = "none", 2000);
+  });
+
+  renderResidents();
+</script>
 
 </body>
 </html>

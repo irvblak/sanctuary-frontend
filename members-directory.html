@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Members Directory – The Sanctuary Club</title>
+
+  <link rel="stylesheet" href="styles-main.css" />
+
+  <style>
+    /* =====================================
+       MEMBERS DIRECTORY
+       ===================================== */
+
+    .directory-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .directory-wrapper h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #003366;
+    }
+
+    .directory-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .directory-section h2 {
+      margin-bottom: 0.8rem;
+      color: #003366;
+    }
+
+    /* ---- Member grid ---- */
+    #members-directory {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .member-button {
+      padding: 0.45rem 0;
+      border-radius: 6px;
+      border: 1px solid #cbdcf0;
+      background: #ffffff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: #003366;
+    }
+
+    .member-button:hover {
+      background: #eef4fb;
+    }
+
+    .member-button.active {
+      background: #8bbce8;
+      color: #001f4d;
+    }
+
+    .member-button.inactive {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    /* ---- Detail reveal ---- */
+    #member-detail {
+      margin-top: 2rem;
+    }
+
+    .member-detail-wrapper {
+      background: #eef4fb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+
+    .member-detail-wrapper h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #003366;
+    }
+
+    .resident-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .resident-header {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #003366;
+    }
+
+    .resident-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .resident-row span:first-child {
+      color: #4b5f78;
+    }
+
+    /* ---- Mobile ---- */
+    @media (max-width: 600px) {
+      .resident-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="directory-wrapper">
+
+    <h1>Members Directory</h1>
+
+    <!-- Sanctuary Mews -->
+    <section class="directory-section">
+      <h2>Sanctuary Mews</h2>
+      <div id="members-directory"></div>
+    </section>
+
+    <!-- Sanctuary Court (same grid continues logically) -->
+    <section class="directory-section">
+      <h2>Sanctuary Court</h2>
+      <!-- grid continues; headings are visual only -->
+    </section>
+
+    <!-- Detail reveal -->
+    <div id="member-detail"></div>
+
+  </main>
+
+  <script src="members-directory.js"></script>
+
+</body>
+</html>

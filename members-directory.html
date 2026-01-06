@@ -6,11 +6,68 @@
   <title>Members Directory – The Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css" />
+
+  <style>
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .member-button {
+      padding: 0.5rem 0;
+      border-radius: 6px;
+      border: none;
+      background: #e6eef6;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .member-button.inactive {
+      background: #f0f0f0;
+      color: #999;
+    }
+
+    .member-button.active {
+      background: #003366;
+      color: #fff;
+    }
+
+    #member-detail {
+      margin-top: 2rem;
+    }
+
+    .member-detail-wrapper {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .resident-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      min-width: 220px;
+    }
+
+    .resident-header {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .resident-row {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      font-size: 0.9rem;
+      padding: 0.1rem 0;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- Top navigation -->
 <div class="top-nav">
   <a href="index.html">Home</a>
   <span>Members Directory</span>
@@ -31,11 +88,8 @@
 
 </main>
 
-<!-- ACCESS + LOGOUT -->
 <script src="access.js"></script>
 <script src="logout.js"></script>
-
-<!-- DIRECTORY LOGIC -->
 <script src="members-directory.js"></script>
 
 </body>

@@ -3,127 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Members Directory – The Sanctuary Club</title>
+  <title>Members Directory</title>
 
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
-    /* ===============================
-       PAGE LAYOUT
-       =============================== */
-
-    body {
-      background: #f4f7fb;
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    .page-wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem 4rem;
-    }
-
-    h1 {
-      text-align: center;
-      color: #003366;
-      margin-bottom: 2rem;
+    .directory-section {
+      max-width: 1100px;
+      margin: 6rem auto 2rem;
+      padding: 0 1rem;
     }
 
     h2 {
-      margin-top: 3rem;
-      margin-bottom: 1rem;
+      margin-top: 2.5rem;
+      margin-bottom: 0.6rem;
       color: #003366;
-      border-bottom: 2px solid #cbdcf0;
-      padding-bottom: 0.3rem;
     }
-
-    /* ===============================
-       MEMBER GRID
-       =============================== */
 
     .member-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 0.6rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.5rem;
     }
 
-    .member-tile {
-      background: #ffffff;
+    .member-btn {
+      padding: 0.5rem;
       border-radius: 8px;
-      padding: 0.6rem 0.4rem;
-      text-align: center;
       font-weight: 600;
+      border: none;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      color: #003366;
-      user-select: none;
     }
 
-    .member-tile:hover {
+    .member-btn.inactive {
+      background: #e2e6ea;
+      color: #9aa5b1;
+      cursor: default;
+    }
+
+    .member-btn.active {
+      background: #ffffff;
+      color: #003366;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .member-btn.active:hover {
       background: #eef4fb;
     }
 
-    /* ===============================
-       EXPANDED HOUSEHOLD
-       =============================== */
-
-    .household-details {
-      grid-column: 1 / -1;
-      background: #ffffff;
-      border-radius: 10px;
+    .details-panel {
+      margin-top: 1.5rem;
       padding: 1rem;
-      margin-top: 0.3rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: none;
     }
 
-    .resident-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.8rem;
-    }
-
-    @media (max-width: 700px) {
-      .resident-cards {
-        grid-template-columns: 1fr;
-      }
+    .resident-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.8rem;
     }
 
     .resident-card {
-      border: 1px solid #d6e3f3;
+      background: #f8fafc;
+      padding: 0.6rem 0.8rem;
       border-radius: 8px;
-      padding: 0.6rem;
-      font-size: 0.9rem;
-    }
-
-    .resident-card h4 {
-      margin: 0 0 0.4rem;
-      font-size: 0.95rem;
-      color: #003366;
-    }
-
-    .field {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.4rem;
-      margin: 0.15rem 0;
+      min-width: 220px;
+      flex: 1;
     }
 
     .label {
-      color: #666;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      color: #6b7c93;
     }
 
     .value {
-      font-weight: 500;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    @media (max-width: 640px) {
+      .resident-row {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="page-wrapper">
+<div class="directory-section">
+
   <h1>Members Directory</h1>
 
   <h2>Sanctuary Mews</h2>
@@ -131,97 +103,11 @@
 
   <h2>Sanctuary Court</h2>
   <div class="member-grid" id="grid-court"></div>
+
+  <div id="details-panel" class="details-panel"></div>
+
 </div>
 
-<script>
-  /* ===============================
-     DATA HELPERS
-     =============================== */
-
-  function getHouseholdData(code) {
-    const raw = localStorage.getItem("member_" + code);
-    return raw ? JSON.parse(raw) : null;
-  }
-
-  function displayValue(val) {
-    return val && val.trim() ? val : "—";
-  }
-
-  function createResidentCard(resident, index) {
-    return `
-      <div class="resident-card">
-        <h4>Resident ${index + 1}</h4>
-        <div class="field">
-          <span class="label">Name</span>
-          <span class="value">${displayValue(resident.name)}</span>
-        </div>
-        <div class="field">
-          <span class="label">Email</span>
-          <span class="value">${displayValue(resident.email)}</span>
-        </div>
-        <div class="field">
-          <span class="label">Mobile</span>
-          <span class="value">${displayValue(resident.mobile)}</span>
-        </div>
-        ${index === 0 ? `
-        <div class="field">
-          <span class="label">Landline</span>
-          <span class="value">${displayValue(resident.landline)}</span>
-        </div>` : ``}
-      </div>
-    `;
-  }
-
-  function createHouseholdDetails(code) {
-    const data = getHouseholdData(code);
-    const residents = data?.residents || [{},{},{},{}];
-
-    return `
-      <div class="household-details">
-        <div class="resident-cards">
-          ${residents.map(createResidentCard).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  function setupGrid(containerId, prefix, start, end) {
-    const grid = document.getElementById(containerId);
-    let openDetails = null;
-
-    for (let i = start; i <= end; i++) {
-      const num = String(i).padStart(2, "0");
-      const code = prefix + num;
-
-      const tile = document.createElement("div");
-      tile.className = "member-tile";
-      tile.textContent = code;
-
-      tile.addEventListener("click", () => {
-        if (openDetails) {
-          openDetails.remove();
-          openDetails = null;
-        }
-
-        const details = document.createElement("div");
-        details.innerHTML = createHouseholdDetails(code);
-        details.firstElementChild.classList.add("household-details");
-
-        tile.after(details.firstElementChild);
-        openDetails = details.firstElementChild;
-      });
-
-      grid.appendChild(tile);
-    }
-  }
-
-  /* ===============================
-     BUILD GRIDS
-     =============================== */
-
-  setupGrid("grid-mews", "SM", 1, 73);
-  setupGrid("grid-court", "SC", 1, 43);
-</script>
-
+<script src="members-directory.js"></script>
 </body>
 </html>

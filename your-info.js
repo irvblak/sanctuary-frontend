@@ -1,6 +1,6 @@
 // your-info.js
 // Handles member self-editing of contact info (up to 4 residents)
-// Also syncs data into Members Directory (sanctuaryMembers)
+// Writes to BOTH personal storage and shared directory storage
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("your-info-form");
@@ -11,28 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "sanctuaryMembers";
 
-  const residentFields = [
-    { key: "res1", name: "res1_name", email: "res1_email", mobile: "res1_mobile", landline: "res1_landline" },
-    { key: "res2", name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
-    { key: "res3", name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
-    { key: "res4", name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
+  const residents = [
+    { prefix: "res1", hasLandline: true },
+    { prefix: "res2" },
+    { prefix: "res3" },
+    { prefix: "res4" }
   ];
 
-  // -------- local per-member storage (unchanged)
-  function memberKey(membership) {
-    return `member_${membership}`;
-  }
-
-  function loadPersonal(membership) {
-    const raw = localStorage.getItem(memberKey(membership));
-    return raw ? JSON.parse(raw) : {};
-  }
-
-  function savePersonal(membership, data) {
-    localStorage.setItem(memberKey(membership), JSON.stringify(data));
-  }
-
-  // -------- directory storage
   function loadDirectory() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
@@ -45,70 +30,53 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  // -------- form helpers
-  function populateForm(data) {
-    residentFields.forEach(res => {
-      const block = data[res.key];
-      if (!block) return;
+  function populateForm(memberData) {
+    if (!memberData || !memberData.residents) return;
 
-      Object.values(res).forEach(id => {
-        const el = document.getElementById(id);
-        if (el && block[id]) el.value = block[id];
-      });
+    memberData.residents.forEach((res, idx) => {
+      const base = residents[idx]?.prefix;
+      if (!base) return;
+
+      if (res.name) document.getElementById(`${base}_name`).value = res.name;
+      if (res.email) document.getElementById(`${base}_email`).value = res.email;
+      if (res.mobile) document.getElementById(`${base}_mobile`).value = res.mobile;
+      if (res.landline)
+        document.getElementById(`${base}_landline`).value = res.landline;
     });
   }
 
-  function collectFormData() {
-    const data = {};
-    residentFields.forEach(res => {
-      const entry = {};
-      let hasAny = false;
+  function collectResidents() {
+    const list = [];
 
-      Object.values(res).forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.value.trim()) {
-          entry[id] = el.value.trim();
-          hasAny = true;
-        }
-      });
+    residents.forEach(({ prefix, hasLandline }) => {
+      const name = document.getElementById(`${prefix}_name`)?.value.trim();
+      const email = document.getElementById(`${prefix}_email`)?.value.trim();
+      const mobile = document.getElementById(`${prefix}_mobile`)?.value.trim();
+      const landline = hasLandline
+        ? document.getElementById(`${prefix}_landline`)?.value.trim()
+        : "";
 
-      if (hasAny) data[res.key] = entry;
-    });
-    return data;
-  }
-
-  // -------- sync into Members Directory
-  function syncToDirectory(membership, personalData) {
-    const directory = loadDirectory();
-    const residents = [];
-
-    residentFields.forEach(res => {
-      const d = personalData[res.key];
-      if (!d) return;
-
-      residents.push({
-        name: d[res.name] || "",
-        email: d[res.email] || "",
-        mobile: d[res.mobile] || "",
-        landline: d[res.landline] || ""
-      });
+      if (name || email || mobile || landline) {
+        list.push({
+          name: name || "",
+          email: email || "",
+          mobile: mobile || "",
+          landline: landline || ""
+        });
+      }
     });
 
-    if (residents.length) {
-      directory[membership] = { residents };
-      saveDirectory(directory);
-    }
+    return list;
   }
 
-  // -------- load on membership blur
   membershipInput.addEventListener("blur", () => {
     const membership = membershipInput.value.trim();
     if (!membership) return;
 
-    populateForm(loadPersonal(membership));
+    const directory = loadDirectory();
+    populateForm(directory[membership]);
   });
 
-  // -------- save handler
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -119,9 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const data = collectFormData();
-    savePersonal(membership, data);
-    syncToDirectory(membership, data);
+    const residentsData = collectResidents();
+    const directory = loadDirectory();
+
+    directory[membership] = {
+      residents: residentsData
+    };
+
+    saveDirectory(directory);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";

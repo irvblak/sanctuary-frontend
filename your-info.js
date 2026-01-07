@@ -54,20 +54,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---- When membership number entered → auto-fill
   membershipInput.addEventListener("blur", () => {
-    const membership = membershipInput.value.trim();
-    if (membership) populateForm(membership);
-  });
+  const membership = membershipInput.value.trim().toUpperCase();
+  if (membership) populateForm(membership);
+});
+
 
   // ---- Save handler
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-    const membership = membershipInput.value.trim();
-    if (!membership) {
-      statusMsg.textContent = "Please enter your membership number.";
-      statusMsg.style.color = "darkred";
-      return;
-    }
+  const membership = membershipInput.value.trim().toUpperCase();
+  if (!membership) {
+    statusMsg.textContent = "Please enter your membership number.";
+    statusMsg.style.color = "darkred";
+    return;
+  }
+
+  // (rest unchanged)
+});
+
 
     const residents = [];
 

@@ -1,4 +1,4 @@
-// your-info.js — canonical member self-editing (writes to sanctuaryMembers)
+// your-info.js — canonical save + load for Members Directory
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("your-info-form");
@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "sanctuaryMembers";
 
-  const residents = [
-    { name: "res1_name", email: "res1_email", mobile: "res1_mobile", landline: "res1_landline" },
-    { name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
-    { name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
-    { name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
+  const residentDefs = [
+    { idx: 0, landline: true },
+    { idx: 1 },
+    { idx: 2 },
+    { idx: 3 }
   ];
 
-  function loadAllMembers() {
+  function loadAll() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     } catch {
@@ -24,51 +24,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveAllMembers(data) {
+  function saveAll(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  function populateForm(memberData) {
-    if (!memberData || !memberData.residents) return;
+  function readResidentsFromForm() {
+    const residents = [];
 
-    memberData.residents.forEach((res, i) => {
-      const map = residents[i];
-      if (!map) return;
+    residentDefs.forEach(({ idx, landline }) => {
+      const name = document.getElementById(`res${idx + 1}_name`)?.value.trim();
+      const email = document.getElementById(`res${idx + 1}_email`)?.value.trim();
+      const mobile = document.getElementById(`res${idx + 1}_mobile`)?.value.trim();
+      const land = landline
+        ? document.getElementById(`res${idx + 1}_landline`)?.value.trim()
+        : "";
 
-      Object.keys(map).forEach(key => {
-        const el = document.getElementById(map[key]);
-        if (el && res[key]) el.value = res[key];
-      });
+      if (name || email || mobile || land) {
+        residents.push({
+          name: name || "",
+          email: email || "",
+          mobile: mobile || "",
+          landline: land || ""
+        });
+      }
     });
+
+    return residents;
   }
 
-  function collectResidents() {
-    const list = [];
-
-    residents.forEach((map, i) => {
-      const res = {};
-      let hasData = false;
-
-      Object.keys(map).forEach(key => {
-        const el = document.getElementById(map[key]);
-        if (el && el.value.trim()) {
-          res[key] = el.value.trim();
-          hasData = true;
-        }
-      });
-
-      if (hasData) list.push(res);
+  function populateForm(residents = []) {
+    residents.forEach((res, i) => {
+      if (!residentDefs[i]) return;
+      document.getElementById(`res${i + 1}_name`).value = res.name || "";
+      document.getElementById(`res${i + 1}_email`).value = res.email || "";
+      document.getElementById(`res${i + 1}_mobile`).value = res.mobile || "";
+      if (i === 0 && document.getElementById(`res1_landline`)) {
+        document.getElementById(`res1_landline`).value = res.landline || "";
+      }
     });
-
-    return list;
   }
 
   membershipInput.addEventListener("blur", () => {
     const id = membershipInput.value.trim().toUpperCase();
     if (!id) return;
 
-    const members = loadAllMembers();
-    populateForm(members[id]);
+    const all = loadAll();
+    if (all[id]?.residents) {
+      populateForm(all[id].residents);
+    }
   });
 
   form.addEventListener("submit", e => {
@@ -81,11 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const members = loadAllMembers();
-    const residentsData = collectResidents();
+    const residents = readResidentsFromForm();
+    const all = loadAll();
 
-    members[id] = { residents: residentsData };
-    saveAllMembers(members);
+    all[id] = { residents };
+    saveAll(all);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";

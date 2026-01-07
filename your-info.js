@@ -1,6 +1,5 @@
 // your-info.js
-// Handles member self-editing of contact info (up to 4 residents)
-// Writes to BOTH personal storage and shared directory storage
+// Writes member data into the shared Members Directory store
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("your-info-form");
@@ -11,14 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "sanctuaryMembers";
 
-  const residents = [
-    { prefix: "res1", hasLandline: true },
-    { prefix: "res2" },
-    { prefix: "res3" },
-    { prefix: "res4" }
+  const residentMap = [
+    { prefix: "res1", landline: true },
+    { prefix: "res2", landline: false },
+    { prefix: "res3", landline: false },
+    { prefix: "res4", landline: false }
   ];
 
-  function loadDirectory() {
+  function loadAll() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     } catch {
@@ -26,75 +25,74 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveDirectory(data) {
+  function saveAll(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
   function populateForm(memberData) {
-    if (!memberData || !memberData.residents) return;
+    if (!memberData?.residents) return;
 
     memberData.residents.forEach((res, idx) => {
-      const base = residents[idx]?.prefix;
-      if (!base) return;
+      const map = residentMap[idx];
+      if (!map) return;
 
-      if (res.name) document.getElementById(`${base}_name`).value = res.name;
-      if (res.email) document.getElementById(`${base}_email`).value = res.email;
-      if (res.mobile) document.getElementById(`${base}_mobile`).value = res.mobile;
-      if (res.landline)
-        document.getElementById(`${base}_landline`).value = res.landline;
+      ["name", "email", "mobile", "landline"].forEach(field => {
+        const el = document.getElementById(`${map.prefix}_${field}`);
+        if (el && res[field]) el.value = res[field];
+      });
     });
   }
 
   function collectResidents() {
-    const list = [];
+    const residents = [];
 
-    residents.forEach(({ prefix, hasLandline }) => {
-      const name = document.getElementById(`${prefix}_name`)?.value.trim();
-      const email = document.getElementById(`${prefix}_email`)?.value.trim();
-      const mobile = document.getElementById(`${prefix}_mobile`)?.value.trim();
-      const landline = hasLandline
-        ? document.getElementById(`${prefix}_landline`)?.value.trim()
-        : "";
+    residentMap.forEach(map => {
+      const res = {};
+      let hasData = false;
 
-      if (name || email || mobile || landline) {
-        list.push({
-          name: name || "",
-          email: email || "",
-          mobile: mobile || "",
-          landline: landline || ""
-        });
-      }
+      ["name", "email", "mobile", "landline"].forEach(field => {
+        if (field === "landline" && !map.landline) return;
+        const el = document.getElementById(`${map.prefix}_${field}`);
+        if (el && el.value.trim()) {
+          res[field] = el.value.trim();
+          hasData = true;
+        }
+      });
+
+      if (hasData) residents.push(res);
     });
 
-    return list;
+    return residents;
   }
 
   membershipInput.addEventListener("blur", () => {
-    const membership = membershipInput.value.trim();
-    if (!membership) return;
+    const id = membershipInput.value.trim().toUpperCase();
+    if (!id) return;
 
-    const directory = loadDirectory();
-    populateForm(directory[membership]);
+    const all = loadAll();
+    populateForm(all[id]);
   });
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", e => {
     e.preventDefault();
 
-    const membership = membershipInput.value.trim();
-    if (!membership) {
+    const id = membershipInput.value.trim().toUpperCase();
+    if (!id) {
       statusMsg.textContent = "Please enter your membership number.";
       statusMsg.style.color = "darkred";
       return;
     }
 
-    const residentsData = collectResidents();
-    const directory = loadDirectory();
+    const residents = collectResidents();
+    if (!residents.length) {
+      statusMsg.textContent = "Nothing to save.";
+      statusMsg.style.color = "#555";
+      return;
+    }
 
-    directory[membership] = {
-      residents: residentsData
-    };
-
-    saveDirectory(directory);
+    const all = loadAll();
+    all[id] = { residents };
+    saveAll(all);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";

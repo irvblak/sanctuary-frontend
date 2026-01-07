@@ -1,9 +1,11 @@
 // =====================================
 // Sanctuary Club – Your Information
-// Canonical member self-editing script
+// Single source of truth: localStorage["sanctuaryMembers"]
 // =====================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("your-info.js loaded");
+
   const form = document.getElementById("your-info-form");
   if (!form) return;
 
@@ -12,9 +14,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "sanctuaryMembers";
 
-  // ---- Helpers --------------------------------------------------
+  // ---- Resident field mappings (IDs in HTML)
+  const residentMaps = [
+    { name: "res1_name", email: "res1_email", mobile: "res1_mobile", landline: "res1_landline" },
+    { name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
+    { name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
+    { name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
+  ];
 
-  function loadAllMembers() {
+  // ---- Load entire directory
+  function loadDirectory() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     } catch {
@@ -22,75 +31,66 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveAllMembers(data) {
+  // ---- Save entire directory
+  function saveDirectory(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  function normaliseMembership(raw) {
-    return raw.trim().toUpperCase();
+  // ---- Populate form from storage
+  function populateForm(entry) {
+    if (!entry || !entry.residents) return;
+
+    entry.residents.forEach((res, index) => {
+      const map = residentMaps[index];
+      if (!map) return;
+
+      Object.keys(map).forEach(key => {
+        const el = document.getElementById(map[key]);
+        if (el && res[key]) {
+          el.value = res[key];
+        }
+      });
+    });
   }
 
-  // ---- Collect residents from form ----------------------------
-
+  // ---- Collect form data
   function collectResidents() {
     const residents = [];
 
-    for (let i = 1; i <= 4; i++) {
-      const name = document.getElementById(`res${i}_name`)?.value.trim() || "";
-      const email = document.getElementById(`res${i}_email`)?.value.trim() || "";
-      const mobile = document.getElementById(`res${i}_mobile`)?.value.trim() || "";
-      const landline =
-        i === 1
-          ? document.getElementById("res1_landline")?.value.trim() || ""
-          : "";
+    residentMaps.forEach(map => {
+      const resident = {};
+      let hasData = false;
 
-      if (name || email || mobile || landline) {
-        residents.push({ name, email, mobile, landline });
-      }
-    }
+      Object.keys(map).forEach(key => {
+        const el = document.getElementById(map[key]);
+        if (el && el.value.trim() !== "") {
+          resident[key] = el.value.trim();
+          hasData = true;
+        }
+      });
+
+      if (hasData) residents.push(resident);
+    });
 
     return residents;
   }
 
-  // ---- Populate form from stored data --------------------------
-
-  function populateForm(memberData) {
-    if (!memberData || !Array.isArray(memberData.residents)) return;
-
-    memberData.residents.forEach((res, idx) => {
-      const i = idx + 1;
-      if (i > 4) return;
-
-      if (res.name)
-        document.getElementById(`res${i}_name`).value = res.name;
-      if (res.email)
-        document.getElementById(`res${i}_email`).value = res.email;
-      if (res.mobile)
-        document.getElementById(`res${i}_mobile`).value = res.mobile;
-      if (i === 1 && res.landline)
-        document.getElementById("res1_landline").value = res.landline;
-    });
-  }
-
-  // ---- Load existing data when membership entered --------------
-
+  // ---- When membership number entered, pre-fill if exists
   membershipInput.addEventListener("blur", () => {
-    const membership = normaliseMembership(membershipInput.value);
+    const membership = membershipInput.value.trim().toUpperCase();
     if (!membership) return;
 
-    membershipInput.value = membership;
-
-    const allMembers = loadAllMembers();
-    populateForm(allMembers[membership]);
+    const directory = loadDirectory();
+    if (directory[membership]) {
+      populateForm(directory[membership]);
+    }
   });
 
-  // ---- Save handler --------------------------------------------
-
+  // ---- Save handler
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const membership = normaliseMembership(membershipInput.value);
-
+    const membership = membershipInput.value.trim().toUpperCase();
     if (!membership) {
       statusMsg.textContent = "Please enter your membership number.";
       statusMsg.style.color = "darkred";
@@ -98,17 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const residents = collectResidents();
-    const allMembers = loadAllMembers();
 
-    if (residents.length === 0) {
-      delete allMembers[membership];
-    } else {
-      allMembers[membership] = { residents };
-    }
+    const directory = loadDirectory();
+    directory[membership] = { residents };
 
-    saveAllMembers(allMembers);
+    saveDirectory(directory);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";
+
+    console.log("Saved sanctuaryMembers:", directory);
   });
 });

@@ -1,5 +1,4 @@
-// your-info.js
-// Writes member data into the shared Members Directory store
+// your-info.js — canonical member self-editing (writes to sanctuaryMembers)
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("your-info-form");
@@ -10,14 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "sanctuaryMembers";
 
-  const residentMap = [
-    { prefix: "res1", landline: true },
-    { prefix: "res2", landline: false },
-    { prefix: "res3", landline: false },
-    { prefix: "res4", landline: false }
+  const residents = [
+    { name: "res1_name", email: "res1_email", mobile: "res1_mobile", landline: "res1_landline" },
+    { name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
+    { name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
+    { name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
   ];
 
-  function loadAll() {
+  function loadAllMembers() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     } catch {
@@ -25,52 +24,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveAll(data) {
+  function saveAllMembers(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
   function populateForm(memberData) {
-    if (!memberData?.residents) return;
+    if (!memberData || !memberData.residents) return;
 
-    memberData.residents.forEach((res, idx) => {
-      const map = residentMap[idx];
+    memberData.residents.forEach((res, i) => {
+      const map = residents[i];
       if (!map) return;
 
-      ["name", "email", "mobile", "landline"].forEach(field => {
-        const el = document.getElementById(`${map.prefix}_${field}`);
-        if (el && res[field]) el.value = res[field];
+      Object.keys(map).forEach(key => {
+        const el = document.getElementById(map[key]);
+        if (el && res[key]) el.value = res[key];
       });
     });
   }
 
   function collectResidents() {
-    const residents = [];
+    const list = [];
 
-    residentMap.forEach(map => {
+    residents.forEach((map, i) => {
       const res = {};
       let hasData = false;
 
-      ["name", "email", "mobile", "landline"].forEach(field => {
-        if (field === "landline" && !map.landline) return;
-        const el = document.getElementById(`${map.prefix}_${field}`);
+      Object.keys(map).forEach(key => {
+        const el = document.getElementById(map[key]);
         if (el && el.value.trim()) {
-          res[field] = el.value.trim();
+          res[key] = el.value.trim();
           hasData = true;
         }
       });
 
-      if (hasData) residents.push(res);
+      if (hasData) list.push(res);
     });
 
-    return residents;
+    return list;
   }
 
   membershipInput.addEventListener("blur", () => {
     const id = membershipInput.value.trim().toUpperCase();
     if (!id) return;
 
-    const all = loadAll();
-    populateForm(all[id]);
+    const members = loadAllMembers();
+    populateForm(members[id]);
   });
 
   form.addEventListener("submit", e => {
@@ -83,16 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const residents = collectResidents();
-    if (!residents.length) {
-      statusMsg.textContent = "Nothing to save.";
-      statusMsg.style.color = "#555";
-      return;
-    }
+    const members = loadAllMembers();
+    const residentsData = collectResidents();
 
-    const all = loadAll();
-    all[id] = { residents };
-    saveAll(all);
+    members[id] = { residents: residentsData };
+    saveAllMembers(members);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";

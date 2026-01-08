@@ -9,13 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const accessTime = sessionStorage.getItem(TIME_KEY);
 
   if (granted !== "granted" || !accessTime) {
-    window.location.replace("index.html");
+   window.location.href = "index.html";
+ 
     return;
   }
 
   const elapsed = Date.now() - Number(accessTime);
   if (elapsed > SESSION_DURATION) {
     sessionStorage.clear();
-    window.location.replace("index.html");
+    window.location.href = "index.html";
+
   }
 });

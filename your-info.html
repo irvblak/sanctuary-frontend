@@ -6,255 +6,102 @@
   <title>Your Information – The Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css" />
-
-  <style>
-    /* ===============================
-       LAYOUT
-       =============================== */
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #ffffff;
-    }
-
-    .content-wrapper {
-      display: grid;
-      grid-template-columns: 1fr minmax(320px, 700px) 1fr;
-      min-height: 100vh;
-    }
-
-    .side-panel {
-      padding: 3rem 1.5rem;
-      background: linear-gradient(
-        to bottom,
-        #8bbce8 0%,
-        #cfe6fb 35%,
-        #ffffff 75%
-      );
-      font-size: 0.95rem;
-      color: #003366;
-    }
-
-    .side-panel p {
-      max-width: 260px;
-      line-height: 1.4;
-    }
-
-    .main-content {
-      padding: 3rem 1.5rem;
-    }
-
-    h1 {
-      margin-top: 0;
-      color: #003366;
-      text-align: center;
-    }
-
-    .intro {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    form {
-      background: #eef4fb;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-
-    .membership-input {
-      max-width: 5cm;
-    }
-
-    .resident-block {
-      margin-top: 1.5rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid #cbdcf0;
-    }
-
-    .save-button {
-      margin-top: 1.8rem;
-      padding: 0.7rem 2.5rem;
-      background: #8b5a2b;
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .save-button:hover {
-      background: #a06830;
-    }
-
-    .note {
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: 1rem;
-      color: #333;
-    }
-
-    @media (max-width: 900px) {
-      .content-wrapper {
-        grid-template-columns: 1fr;
-      }
-      .side-panel {
-        display: none;
-      }
-    }
-  </style>
 </head>
 
 <body>
 
-<div class="content-wrapper">
-
-  <!-- LEFT PANEL -->
-  <aside class="side-panel">
-    <p>
-      Enter your optional contact details for up to four residents.
-      
-    </p>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main-content">
-
-    <h1>Your Information</h1>
-
-    <p class="intro">
-      Your membership number is where you live (SMxx or SCxx).
-      Single-digit numbers use a leading zero (e.g. SM05).
-    </p>
-
-    <form id="info-form">
-
-      <!-- MEMBERSHIP -->
-      <div class="form-group">
-        <label for="membership">Membership number</label>
-        <input
-          id="membership"
-          class="membership-input"
-          placeholder="SM12 / SC08"
-          required
-        />
-      </div>
-
-      <!-- RESIDENT 1 -->
-      <div class="resident-block">
-        <h3>Resident 1</h3>
-
-        <div class="form-group">
-          <label>Name (optional)</label>
-          <input data-r="0" data-f="name" />
-        </div>
-
-        <div class="form-group">
-          <label>Email (optional)</label>
-          <input data-r="0" data-f="email" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile (optional)</label>
-          <input data-r="0" data-f="mobile" />
-        </div>
-
-        <div class="form-group">
-          <label>Landline (optional)</label>
-          <input data-r="0" data-f="landline" />
-        </div>
-      </div>
-
-      <!-- RESIDENTS 2–4 -->
-      <script>
-        for (let i = 2; i <= 4; i++) {
-          document.write(`
-            <div class="resident-block">
-              <h3>Resident ${i}</h3>
-
-              <div class="form-group">
-                <label>Name (optional)</label>
-                <input data-r="${i-1}" data-f="name" />
-              </div>
-
-              <div class="form-group">
-                <label>Email (optional)</label>
-                <input data-r="${i-1}" data-f="email" />
-              </div>
-
-              <div class="form-group">
-                <label>Mobile (optional)</label>
-                <input data-r="${i-1}" data-f="mobile" />
-              </div>
-            </div>
-          `);
-        }
-      </script>
-
-      <button type="submit" class="save-button">Save information</button>
-
-      <p class="note">
-        Contact Club Admin if you wish to change or remove your details.
-      </p>
-
-    </form>
-  </main>
-
-  <!-- RIGHT PANEL -->
-  <aside class="side-panel">
-    <p>
-      Your information will be in the Members Directory and visible to other members
-    </p>
-  </aside>
-
+<div class="top-nav">
+  <a href="index.html">Home</a>
+  <span>Your Information</span>
+  <a href="#" onclick="logout(); return false;">Logout</a>
 </div>
 
+<main style="max-width:720px;margin:0 auto;padding:2.5rem 1.5rem;">
+
+  <h1>Your Information</h1>
+
+  <p>
+    Enter optional contact details for up to four residents.
+    These details will appear in the Members Directory.
+  </p>
+
+  <form id="info-form">
+
+    <div class="form-group">
+      <label>Membership number (SMxx or SCxx)</label>
+      <input id="membership" required placeholder="SM55" />
+    </div>
+
+    <hr />
+
+    <div id="residents"></div>
+
+    <button type="submit">Save information</button>
+
+    <p id="status" style="margin-top:1rem;"></p>
+
+  </form>
+
+</main>
+
+<script src="access.js"></script>
+<script src="logout.js"></script>
+
 <script>
-  document.getElementById("info-form").addEventListener("submit", function (e) {
-    e.preventDefault();
+const STORAGE_KEY = "sanctuaryMembers";
+const residentsDiv = document.getElementById("residents");
 
-    const membership = document.getElementById("membership").value.trim().toUpperCase();
-    if (!membership) return;
+// build resident fields
+for (let i = 0; i < 4; i++) {
+  residentsDiv.insertAdjacentHTML("beforeend", `
+    <fieldset style="margin-bottom:1rem;">
+      <legend>Resident ${i + 1}</legend>
+      <input data-r="${i}" data-f="name" placeholder="Name" />
+      <input data-r="${i}" data-f="email" placeholder="Email" />
+      <input data-r="${i}" data-f="mobile" placeholder="Mobile" />
+      ${i === 0 ? `<input data-r="${i}" data-f="landline" placeholder="Landline" />` : ""}
+    </fieldset>
+  `);
+}
 
-    const residents = [{},{},{},{}];
+// load existing
+document.getElementById("membership").addEventListener("blur", () => {
+  const key = document.getElementById("membership").value.trim().toUpperCase();
+  if (!key) return;
 
-    document.querySelectorAll("input[data-r]").forEach(input => {
-      const r = Number(input.dataset.r);
-      const f = input.dataset.f;
-      residents[r][f] = input.value.trim();
-    });
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  const data = all[key];
+  if (!data) return;
 
-    localStorage.setItem(
-      "member_" + membership,
-      JSON.stringify({ residents })
-    );
-
-    alert("Your information has been saved.");
+  document.querySelectorAll("input[data-r]").forEach(inp => {
+    const r = inp.dataset.r;
+    const f = inp.dataset.f;
+    inp.value = data.residents?.[r]?.[f] || "";
   });
+});
+
+// save
+document.getElementById("info-form").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const membership = document.getElementById("membership").value.trim().toUpperCase();
+  if (!membership) return;
+
+  const residents = [];
+  document.querySelectorAll("input[data-r]").forEach(inp => {
+    const r = inp.dataset.r;
+    const f = inp.dataset.f;
+    residents[r] ??= {};
+    if (inp.value.trim()) residents[r][f] = inp.value.trim();
+  });
+
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  all[membership] = { residents };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+
+  document.getElementById("status").textContent = "Saved ✔";
+});
 </script>
-<script src="your-info.js"></script>
 
 </body>
 </html>

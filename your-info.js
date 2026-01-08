@@ -1,20 +1,23 @@
-// your-info.js — FINAL, CANONICAL
-// Writes directly to sanctuaryMembers for Members Directory compatibility
+// =====================================
+// Sanctuary Club — Your Information
+// FINAL canonical version
+// Writes to sanctuaryMembers (shared)
+// =====================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  const STORAGE_KEY = "sanctuaryMembers";
+
   const form = document.getElementById("your-info-form");
   if (!form) return;
 
   const membershipInput = document.getElementById("membership-number");
   const statusMsg = document.getElementById("save-status");
 
-  const STORAGE_KEY = "sanctuaryMembers";
-
-  const residentsConfig = [
-    { prefix: "res1", landline: true },
-    { prefix: "res2" },
-    { prefix: "res3" },
-    { prefix: "res4" }
+  const residentFields = [
+    { name: "res1_name", email: "res1_email", mobile: "res1_mobile", landline: "res1_landline" },
+    { name: "res2_name", email: "res2_email", mobile: "res2_mobile" },
+    { name: "res3_name", email: "res3_email", mobile: "res3_mobile" },
+    { name: "res4_name", email: "res4_email", mobile: "res4_mobile" }
   ];
 
   function loadAllMembers() {
@@ -29,89 +32,67 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  function populateForm(memberData) {
-    if (!memberData || !memberData.residents) return;
+  function populateForm(members, membership) {
+    const entry = members[membership];
+    if (!entry || !entry.residents) return;
 
-    residentsConfig.forEach(({ prefix }) => {
-      const res = memberData.residents[prefix];
-      if (!res) return;
+    entry.residents.forEach((res, index) => {
+      const map = residentFields[index];
+      if (!map) return;
 
-      Object.keys(res).forEach(key => {
-        const el = document.getElementById(key);
-        if (el) el.value = res[key];
+      Object.entries(map).forEach(([key, id]) => {
+        const el = document.getElementById(id);
+        if (el && res[key]) el.value = res[key];
       });
     });
   }
 
   function collectResidents() {
-    const residents = {};
-    let hasAnyData = false;
+    const residents = [];
 
-    residentsConfig.forEach(({ prefix, landline }) => {
-      const resData = {};
-      let filled = false;
+    residentFields.forEach(map => {
+      const resident = {};
+      let hasAny = false;
 
-      ["name", "email", "mobile"].forEach(field => {
-        const id = `${prefix}_${field}`;
+      Object.entries(map).forEach(([key, id]) => {
         const el = document.getElementById(id);
-        if (el && el.value.trim()) {
-          resData[id] = el.value.trim();
-          filled = true;
+        if (el && el.value.trim() !== "") {
+          resident[key] = el.value.trim();
+          hasAny = true;
         }
       });
 
-      if (landline) {
-        const id = `${prefix}_landline`;
-        const el = document.getElementById(id);
-        if (el && el.value.trim()) {
-          resData[id] = el.value.trim();
-          filled = true;
-        }
-      }
-
-      if (filled) {
-        residents[prefix] = resData;
-        hasAnyData = true;
-      }
+      if (hasAny) residents.push(resident);
     });
 
-    return hasAnyData ? residents : null;
+    return residents;
   }
 
-  // Load existing data when membership entered
+  // Populate when membership number entered
   membershipInput.addEventListener("blur", () => {
-    const memberId = membershipInput.value.trim();
-    if (!memberId) return;
+    const membership = membershipInput.value.trim();
+    if (!membership) return;
 
-    const allMembers = loadAllMembers();
-    populateForm(allMembers[memberId]);
+    const members = loadAllMembers();
+    populateForm(members, membership);
   });
 
   // Save handler
   form.addEventListener("submit", e => {
     e.preventDefault();
 
-    const memberId = membershipInput.value.trim();
-    if (!memberId) {
+    const membership = membershipInput.value.trim();
+    if (!membership) {
       statusMsg.textContent = "Please enter your membership number.";
       statusMsg.style.color = "darkred";
       return;
     }
 
     const residents = collectResidents();
-    if (!residents) {
-      statusMsg.textContent = "Please enter at least one detail.";
-      statusMsg.style.color = "darkred";
-      return;
-    }
+    const members = loadAllMembers();
 
-    const allMembers = loadAllMembers();
-
-    allMembers[memberId] = {
-      residents
-    };
-
-    saveAllMembers(allMembers);
+    members[membership] = { residents };
+    saveAllMembers(members);
 
     statusMsg.textContent = "Your information has been saved.";
     statusMsg.style.color = "green";

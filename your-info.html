@@ -2,111 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Your Information</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Information – The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
+      color: #222;
+    }
+
+    nav {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #005ea8;
+    }
+
+    .your-info-container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+
+    .intro-text {
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+    }
+
+    .intro-text .subtle {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .intro-text a {
+      font-weight: 500;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.25rem;
+      padding: 0.6rem 1.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      input, textarea {
+        font-size: 16px;
+      }
+
+      .intro-text {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <nav>
+    <a href="members-directory.html">Members Directory →</a>
+    <a href="logout.html">Log out</a>
+  </nav>
 
-<div class="top-nav">
-  <a href="index.html">Home</a>
-  <span>Your Information</span>
-  <a href="#" onclick="logout(); return false;">Logout</a>
-</div>
+  <main class="your-info-container">
+    <h1>Your Information</h1>
 
-<main style="max-width:720px;margin:0 auto;padding:2.5rem 1.5rem;">
-
-  <h1>Your Information</h1>
-<p style="text-align:center; margin-top:-0.5rem; margin-bottom:1.5rem;">
-  <a href="notices.html" style="color:#003366; font-weight:600; text-decoration:none;">
-    ← Back to Member Information
-  </a>
-</p>
-
-  <p>
-    Enter optional contact details for up to four residents.
-    These details will appear in the Members Directory.
-  </p>
-
-  <form id="info-form">
-
-    <div class="form-group">
-      <label>Membership number (SMxx or SCxx)</label>
-      <input id="membership" required placeholder="SM55" />
+    <div class="intro-text">
+      <p>
+        Enter as much information as you wish to share.<br>
+        <span class="subtle">(You can change it at any time.)</span>
+      </p>
+      <p>
+        See it in the
+        <a href="members-directory.html">Members Directory →</a>
+      </p>
     </div>
 
-    <hr />
+    <!-- Your existing form fields + JS go here -->
+    <!-- Intentionally open / trust-based -->
 
-    <div id="residents"></div>
-
-    <button type="submit">Save information</button>
-
-    <p id="status" style="margin-top:1rem;"></p>
-
-  </form>
-
-</main>
-
-<script src="access.js"></script>
-<script src="logout.js"></script>
-
-<script>
-const STORAGE_KEY = "sanctuaryMembers";
-const residentsDiv = document.getElementById("residents");
-
-// build resident fields
-for (let i = 0; i < 4; i++) {
-  residentsDiv.insertAdjacentHTML("beforeend", `
-    <fieldset style="margin-bottom:1rem;">
-      <legend>Resident ${i + 1}</legend>
-      <input data-r="${i}" data-f="name" placeholder="Name" />
-      <input data-r="${i}" data-f="email" placeholder="Email" />
-      <input data-r="${i}" data-f="mobile" placeholder="Mobile" />
-      ${i === 0 ? `<input data-r="${i}" data-f="landline" placeholder="Landline" />` : ""}
-    </fieldset>
-  `);
-}
-
-// load existing
-document.getElementById("membership").addEventListener("blur", () => {
-  const key = document.getElementById("membership").value.trim().toUpperCase();
-  if (!key) return;
-
-  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const data = all[key];
-  if (!data) return;
-
-  document.querySelectorAll("input[data-r]").forEach(inp => {
-    const r = inp.dataset.r;
-    const f = inp.dataset.f;
-    inp.value = data.residents?.[r]?.[f] || "";
-  });
-});
-
-// save
-document.getElementById("info-form").addEventListener("submit", e => {
-  e.preventDefault();
-
-  const membership = document.getElementById("membership").value.trim().toUpperCase();
-  if (!membership) return;
-
-  const residents = [];
-  document.querySelectorAll("input[data-r]").forEach(inp => {
-    const r = inp.dataset.r;
-    const f = inp.dataset.f;
-    residents[r] ??= {};
-    if (inp.value.trim()) residents[r][f] = inp.value.trim();
-  });
-
-  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  all[membership] = { residents };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-
-  document.getElementById("status").textContent = "Saved ✔";
-});
-</script>
-
+  </main>
 </body>
 </html>

@@ -22,47 +22,29 @@
   <section class="hero">
     <div class="hero-overlay">
 
-      <!-- TITLE -->
       <h1 class="hero-title">The Sanctuary Club</h1>
 
-      <!-- ACTION STACK -->
       <div class="action-stack">
 
-        <!-- ACCESS GATE -->
-        <div id="access-gate">
-          <div class="access-input-wrapper">
-            <input
-              type="password"
-              id="access-code-input"
-              placeholder="Access code"
-              autocomplete="off"
-            />
-            <button
-              type="button"
-              id="access-eye"
-              class="toggle-visibility"
-              aria-label="Show access code"
-            >👁</button>
-          </div>
-
-          <button id="access-submit" class="hero-button">
-            Continue
+        <!-- PRIMARY ACTIONS -->
+        <div class="hero-buttons">
+          <button
+            class="hero-button"
+            onclick="location.href='events.html'"
+          >
+            What’s On
           </button>
 
-          <div id="access-error" class="access-error" style="display:none;">
-            Invalid access code
-          </div>
-        </div>
-
-        <!-- BUTTONS -->
-        <div class="hero-buttons">
-          <button id="btn-whats-on" class="hero-button">What’s On</button>
-          <button id="btn-info" class="hero-button">Info</button>
+          <button
+            class="hero-button"
+            onclick="location.href='members-directory.html'"
+          >
+            Member Information
+          </button>
         </div>
 
       </div>
 
-      <!-- FOOTER -->
       <footer class="site-footer">
         <p>© The Sanctuary Club. All rights reserved.</p>
       </footer>
@@ -73,7 +55,7 @@
   <!-- RIGHT PANEL -->
   <div class="hero-panel" style="position: relative;">
 
-    <!-- LOGOUT (logged-in only) -->
+    <!-- LOGOUT -->
     <a
       href="#"
       id="logout-link"
@@ -102,10 +84,8 @@
 
 </div>
 
-<script src="script.js?v=FINAL"></script>
 <script src="logout.js"></script>
 
-<!-- SHOW LOGOUT ON HOME IF SESSION EXISTS -->
 <script>
   function updateLogoutVisibility() {
     const logoutLink = document.getElementById("logout-link");
@@ -117,10 +97,7 @@
     logoutLink.style.display = loggedIn ? "inline" : "none";
   }
 
-  // Run on normal load
   updateLogoutVisibility();
-
-  // Run when returning via back/forward cache
   window.addEventListener("pageshow", updateLogoutVisibility);
 </script>
 

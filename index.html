@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE" />
+  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE_FIX" />
 </head>
 
 <body>
@@ -59,9 +59,9 @@
 
           <button
             class="hero-button"
-            onclick="location.href='members-directory.html'"
+            onclick="location.href='members-info.html'"
           >
-            Member Information
+            Info
           </button>
         </div>
 
@@ -131,14 +131,12 @@
     return granted && Date.now() - time < SESSION_DURATION;
   }
 
-  // Initial state
   if (hasValidSession()) {
     showMembers();
   } else {
     showGate();
   }
 
-  // Continue (trust-based: any input grants access)
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();
     if (!value) return;
@@ -148,13 +146,11 @@
     showMembers();
   };
 
-  // Eye toggle
   document.getElementById("access-eye").onclick = () => {
     const input = document.getElementById("access-code-input");
     input.type = input.type === "password" ? "text" : "password";
   };
 
-  // Logout
   logoutLink.onclick = () => {
     sessionStorage.clear();
     showGate();

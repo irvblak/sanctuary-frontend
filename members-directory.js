@@ -43,16 +43,25 @@ function renderGrid(containerId, memberIds, members, detailArea) {
   let activeButton = null;
 
   memberIds.forEach(memberId => {
+    const data = members[memberId];
+
+    // ✅ ONE-LINE VISIBILITY DECISION (as agreed)
+    const hasData =
+      data &&
+      Array.isArray(data.residents) &&
+      data.residents.some(res =>
+        Object.values(res || {}).some(v => String(v).trim() !== "")
+      );
+
     const btn = document.createElement("button");
     btn.textContent = memberId;
     btn.className = "member-button";
 
-    const data = members[memberId];
-    const hasData = data && Array.isArray(data.residents) && data.residents.length > 0;
-
     if (!hasData) btn.classList.add("inactive");
 
     btn.addEventListener("click", () => {
+      if (!hasData) return;
+
       if (activeButton === btn) {
         btn.classList.remove("active");
         detailArea.innerHTML = "";
@@ -66,9 +75,7 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
-      if (hasData) {
-        renderMemberDetail(memberId, data, detailArea);
-      }
+      renderMemberDetail(memberId, data, detailArea);
     });
 
     container.appendChild(btn);

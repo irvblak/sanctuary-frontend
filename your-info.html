@@ -1,206 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Your Information</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Your Information</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
-      color: #222;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
+}
 
-    nav {
-      padding: 1rem 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+nav {
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
 
-    nav a {
-      text-decoration: none;
-      font-weight: 500;
-      color: #005ea8;
-    }
+nav a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #005ea8;
+}
 
-    .your-info-container {
-      max-width: 720px;
-      margin: 0 auto 2rem;
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
+main {
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-    h1 {
-      margin-top: 0;
-      font-size: 1.4rem;
-    }
+h1 { margin-top: 0; }
 
-    .intro-text {
-      margin-bottom: 1.25rem;
-      font-size: 1rem;
-    }
+.intro-text {
+  margin-bottom: 1rem;
+}
 
-    .intro-text .subtle {
-      color: #666;
-      font-size: 0.9rem;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: 500;
-    }
+th, td {
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}
 
-    input, textarea {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
+th {
+  text-align: left;
+  font-weight: 600;
+}
 
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
+input {
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 0.3rem;
+}
 
-    button {
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.25rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
 
-    .saved {
-      margin-top: 1rem;
-      color: #2a6f2a;
-      font-size: 0.95rem;
-    }
+.saved {
+  margin-top: 0.75rem;
+  color: #2a6f2a;
+  display: none;
+}
 
-    @media (max-width: 640px) {
-      input, textarea {
-        font-size: 16px; /* prevent iOS zoom */
-      }
-
-      .intro-text {
-        font-size: 0.95rem;
-      }
-    }
-  </style>
+@media (max-width: 640px) {
+  th, td { font-size: 0.85rem; }
+  input { font-size: 16px; }
+}
+</style>
 </head>
 
 <body>
 
-  <nav>
-    <a href="members-directory.html">Members Directory →</a>
-    <a href="logout.html">Log out</a>
-  </nav>
+<nav>
+  <div><a href="index.html">Home</a></div>
+  <div>
+    <a href="calendar.html">Calendar</a> ·
+    <a href="members-directory.html">Members</a>
+  </div>
+  <div style="text-align:right;"><a href="logout.html">Logout</a></div>
+</nav>
 
-  <main class="your-info-container">
-    <h1>Your Information</h1>
+<main>
+<h1>Your Information</h1>
 
-    <div class="intro-text">
-      <p>
-        Enter as much information as you wish to share.<br>
-        <span class="subtle">(You can change it at any time.)</span>
-      </p>
-      <p>
-        See it in the
-        <a href="members-directory.html">Members Directory →</a>
-      </p>
-    </div>
+<div class="intro-text">
+  Enter as much information as you wish to share.
+  <br>(You can change it at any time.)
+</div>
 
-    <form id="yourInfoForm">
-      <label>
-        Name
-        <input type="text" id="name" />
-      </label>
+<form id="infoForm">
+<table>
+  <thead>
+    <tr>
+      <th>Resident</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Mobile</th>
+      <th>Landline</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${[1,2,3,4].map(i => `
+    <tr>
+      <td>${i}</td>
+      <td><input data-field="name" data-idx="${i-1}"></td>
+      <td><input data-field="email" data-idx="${i-1}"></td>
+      <td><input data-field="mobile" data-idx="${i-1}"></td>
+      <td><input data-field="landline" data-idx="${i-1}"></td>
+    </tr>`).join("")}
+  </tbody>
+</table>
 
-      <label>
-        Address
-        <input type="text" id="address" />
-      </label>
+<button type="submit">Save</button>
+<div class="saved" id="savedMsg">Saved.</div>
+</form>
+</main>
 
-      <label>
-        Phone
-        <input type="text" id="phone" />
-      </label>
+<script>
+const STORAGE_KEY = "sanctuaryMembers";
+const memberId = sessionStorage.getItem("memberId"); // ⚠️ adjust if named differently
 
-      <label>
-        Email
-        <input type="email" id="email" />
-      </label>
+if (!memberId) {
+  alert("Member ID not found.");
+}
 
-      <label>
-        Notes / Interests
-        <textarea id="notes"></textarea>
-      </label>
+function load() {
+  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  const residents = (members[memberId]?.residents) || [];
 
-      <button type="submit">Save</button>
+  document.querySelectorAll("input").forEach(inp => {
+    const i = inp.dataset.idx;
+    const f = inp.dataset.field;
+    inp.value = residents[i]?.[f] || "";
+  });
+}
 
-      <div class="saved" id="savedMessage" style="display:none;">
-        Your information has been saved.
-      </div>
-    </form>
-  </main>
+document.getElementById("infoForm").onsubmit = e => {
+  e.preventDefault();
 
-  <script>
-    const STORAGE_KEY = "sanctuaryMembers";
+  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  const residents = [];
 
-    function loadMembers() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    }
-
-    function saveMembers(members) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
-    }
-
-    function getCurrentMemberIndex() {
-      // Trust-based model: single entry per browser/session
-      // If one exists, edit it; otherwise create one
-      return 0;
-    }
-
-    function loadForm() {
-      const members = loadMembers();
-      const member = members[0] || {};
-
-      document.getElementById("name").value = member.name || "";
-      document.getElementById("address").value = member.address || "";
-      document.getElementById("phone").value = member.phone || "";
-      document.getElementById("email").value = member.email || "";
-      document.getElementById("notes").value = member.notes || "";
-    }
-
-    document.getElementById("yourInfoForm").addEventListener("submit", e => {
-      e.preventDefault();
-
-      const members = loadMembers();
-      const idx = getCurrentMemberIndex();
-
-      members[idx] = {
-        name: document.getElementById("name").value.trim(),
-        address: document.getElementById("address").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        notes: document.getElementById("notes").value.trim(),
-        lastUpdated: new Date().toISOString()
-      };
-
-      saveMembers(members);
-
-      const msg = document.getElementById("savedMessage");
-      msg.style.display = "block";
-      setTimeout(() => (msg.style.display = "none"), 3000);
+  for (let i=0;i<4;i++) {
+    const res = {};
+    ["name","email","mobile","landline"].forEach(f => {
+      const v = document.querySelector(`input[data-field="${f}"][data-idx="${i}"]`).value.trim();
+      if (v) res[f] = v;
     });
+    if (Object.keys(res).length) residents.push(res);
+  }
 
-    loadForm();
-  </script>
+  members[memberId] = { residents };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+
+  document.getElementById("savedMsg").style.display = "block";
+  setTimeout(()=>savedMsg.style.display="none",2000);
+};
+
+load();
+</script>
 
 </body>
 </html>

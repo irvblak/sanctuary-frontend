@@ -5,17 +5,25 @@
 <title>Your Information</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<!-- Session gate -->
+<script src="access.js"></script>
+
+<!-- Logout handler -->
+<script src="logout.js"></script>
+
 <style>
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
+  color: #222;
 }
 
+/* ---------- NAV ---------- */
 nav {
   padding: 1rem 1.25rem;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -25,6 +33,7 @@ nav a {
   color: #005ea8;
 }
 
+/* ---------- MAIN ---------- */
 main {
   max-width: 900px;
   margin: 0 auto 2rem;
@@ -34,12 +43,15 @@ main {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-h1 { margin-top: 0; }
+h1 {
+  margin-top: 0;
+}
 
 .intro-text {
   margin-bottom: 1rem;
 }
 
+/* ---------- TABLE ---------- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -57,25 +69,24 @@ th {
 
 input {
   width: 100%;
-  font-size: 0.9rem;
   padding: 0.3rem;
+  font-size: 0.9rem;
 }
 
 button {
   margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1.25rem;
   font-size: 1rem;
   cursor: pointer;
 }
 
-.saved {
+#savedMsg {
   margin-top: 0.75rem;
   color: #2a6f2a;
   display: none;
 }
 
 @media (max-width: 640px) {
-  th, td { font-size: 0.85rem; }
   input { font-size: 16px; }
 }
 </style>
@@ -84,27 +95,30 @@ button {
 <body>
 
 <nav>
-  <div><a href="index.html">Home</a></div>
   <div>
-    <a href="calendar.html">Calendar</a> ·
+    <a href="index.html">Home</a> ·
     <a href="members-directory.html">Members</a>
   </div>
-  <div style="text-align:right;"><a href="logout.html">Logout</a></div>
+  <div>
+    <span>Calendar</span> ·
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
 </nav>
 
 <main>
+
 <h1>Your Information</h1>
 
 <div class="intro-text">
-  Enter as much information as you wish to share.
-  <br>(You can change it at any time.)
+  Enter as much information as you wish to share.<br>
+  <span style="color:#666;">(You can change it at any time.)</span>
 </div>
 
 <form id="infoForm">
 <table>
   <thead>
     <tr>
-      <th>Resident</th>
+      <th>#</th>
       <th>Name</th>
       <th>Email</th>
       <th>Mobile</th>
@@ -112,64 +126,89 @@ button {
     </tr>
   </thead>
   <tbody>
-    ${[1,2,3,4].map(i => `
     <tr>
-      <td>${i}</td>
-      <td><input data-field="name" data-idx="${i-1}"></td>
-      <td><input data-field="email" data-idx="${i-1}"></td>
-      <td><input data-field="mobile" data-idx="${i-1}"></td>
-      <td><input data-field="landline" data-idx="${i-1}"></td>
-    </tr>`).join("")}
+      <td>1</td>
+      <td><input data-i="0" data-f="name"></td>
+      <td><input data-i="0" data-f="email"></td>
+      <td><input data-i="0" data-f="mobile"></td>
+      <td><input data-i="0" data-f="landline"></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><input data-i="1" data-f="name"></td>
+      <td><input data-i="1" data-f="email"></td>
+      <td><input data-i="1" data-f="mobile"></td>
+      <td><input data-i="1" data-f="landline"></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><input data-i="2" data-f="name"></td>
+      <td><input data-i="2" data-f="email"></td>
+      <td><input data-i="2" data-f="mobile"></td>
+      <td><input data-i="2" data-f="landline"></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><input data-i="3" data-f="name"></td>
+      <td><input data-i="3" data-f="email"></td>
+      <td><input data-i="3" data-f="mobile"></td>
+      <td><input data-i="3" data-f="landline"></td>
+    </tr>
   </tbody>
 </table>
 
 <button type="submit">Save</button>
-<div class="saved" id="savedMsg">Saved.</div>
+<div id="savedMsg">Saved.</div>
 </form>
+
 </main>
 
 <script>
 const STORAGE_KEY = "sanctuaryMembers";
-const memberId = sessionStorage.getItem("memberId"); // ⚠️ adjust if named differently
+const memberId = sessionStorage.getItem("memberId");
 
+/* HARD FAIL SAFE:
+   If this page is ever opened without a session,
+   return calmly to Home instead of showing alerts */
 if (!memberId) {
-  alert("Member ID not found.");
+  window.location.href = "index.html";
 }
 
-function load() {
+function loadData() {
   const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const residents = (members[memberId]?.residents) || [];
+  const residents = members[memberId]?.residents || [];
 
   document.querySelectorAll("input").forEach(inp => {
-    const i = inp.dataset.idx;
-    const f = inp.dataset.field;
+    const i = inp.dataset.i;
+    const f = inp.dataset.f;
     inp.value = residents[i]?.[f] || "";
   });
 }
 
-document.getElementById("infoForm").onsubmit = e => {
+document.getElementById("infoForm").addEventListener("submit", e => {
   e.preventDefault();
 
   const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   const residents = [];
 
-  for (let i=0;i<4;i++) {
-    const res = {};
+  for (let i = 0; i < 4; i++) {
+    const r = {};
     ["name","email","mobile","landline"].forEach(f => {
-      const v = document.querySelector(`input[data-field="${f}"][data-idx="${i}"]`).value.trim();
-      if (v) res[f] = v;
+      const v = document.querySelector(`input[data-i="${i}"][data-f="${f}"]`).value.trim();
+      if (v) r[f] = v;
     });
-    if (Object.keys(res).length) residents.push(res);
+    if (Object.keys(r).length) residents.push(r);
   }
 
   members[memberId] = { residents };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
 
-  document.getElementById("savedMsg").style.display = "block";
-  setTimeout(()=>savedMsg.style.display="none",2000);
-};
+  const msg = document.getElementById("savedMsg");
+  msg.style.display = "block";
+  setTimeout(() => msg.style.display = "none", 2000);
+});
 
-load();
+loadData();
 </script>
 
 </body>

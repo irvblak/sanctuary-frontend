@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=FINAL" />
+  <link rel="stylesheet" href="styles-main.css?v=RESTORE_A" />
 </head>
 
 <body>
@@ -26,7 +26,33 @@
 
       <div class="action-stack">
 
-        <!-- LOGGED-IN ACTIONS -->
+        <!-- ACCESS GATE -->
+        <div id="access-gate">
+          <div class="access-input-wrapper">
+            <input
+              type="password"
+              id="access-code-input"
+              placeholder="Access code"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              id="access-eye"
+              class="toggle-visibility"
+              aria-label="Show access code"
+            >👁</button>
+          </div>
+
+          <button id="access-submit" class="hero-button">
+            Continue
+          </button>
+
+          <div id="access-error" class="access-error" style="display:none;">
+            Invalid access code
+          </div>
+        </div>
+
+        <!-- MEMBER ACTIONS (HIDDEN UNTIL ACCESS) -->
         <div class="hero-buttons" id="member-actions" style="display:none;">
           <button
             class="hero-button"
@@ -40,16 +66,6 @@
             onclick="location.href='members-directory.html'"
           >
             Member Information
-          </button>
-        </div>
-
-        <!-- LOGGED-OUT ACTION -->
-        <div class="hero-buttons" id="login-action" style="display:none;">
-          <button
-            class="hero-button"
-            onclick="location.href='member-login.html'"
-          >
-            Member Login
           </button>
         </div>
 
@@ -69,7 +85,6 @@
     <a
       href="#"
       id="logout-link"
-      onclick="logout(); return false;"
       style="
         position: absolute;
         top: 0;
@@ -94,22 +109,65 @@
 
 </div>
 
-<script src="logout.js"></script>
-
 <script>
-  const loggedIn =
-    sessionStorage.getItem("sanctuaryAccess") === "granted";
+  const ACCESS_KEY = "sanctuaryAccess";
+  const TIME_KEY = "sanctuaryAccessTime";
+  const ACCESS_CODE = "sanctuary"; // ← your existing code
+  const SESSION_DURATION = 60 * 60 * 1000;
 
-  document.getElementById("member-actions").style.display =
-    loggedIn ? "flex" : "none";
-
-  document.getElementById("login-action").style.display =
-    loggedIn ? "none" : "flex";
-
+  const gate = document.getElementById("access-gate");
+  const actions = document.getElementById("member-actions");
   const logoutLink = document.getElementById("logout-link");
-  if (logoutLink) {
-    logoutLink.style.display = loggedIn ? "inline" : "none";
+  const errorBox = document.getElementById("access-error");
+
+  function showMembers() {
+    gate.style.display = "none";
+    actions.style.display = "flex";
+    logoutLink.style.display = "inline";
   }
+
+  function showGate() {
+    gate.style.display = "block";
+    actions.style.display = "none";
+    logoutLink.style.display = "none";
+  }
+
+  function hasValidSession() {
+    const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
+    const time = Number(sessionStorage.getItem(TIME_KEY));
+    return granted && Date.now() - time < SESSION_DURATION;
+  }
+
+  // Initial state
+  if (hasValidSession()) {
+    showMembers();
+  } else {
+    showGate();
+  }
+
+  // Submit access code
+  document.getElementById("access-submit").onclick = () => {
+    const input = document.getElementById("access-code-input").value.trim();
+    if (input === ACCESS_CODE) {
+      sessionStorage.setItem(ACCESS_KEY, "granted");
+      sessionStorage.setItem(TIME_KEY, Date.now());
+      showMembers();
+    } else {
+      errorBox.style.display = "block";
+    }
+  };
+
+  // Eye toggle
+  document.getElementById("access-eye").onclick = () => {
+    const input = document.getElementById("access-code-input");
+    input.type = input.type === "password" ? "text" : "password";
+  };
+
+  // Logout
+  logoutLink.onclick = () => {
+    sessionStorage.clear();
+    showGate();
+  };
 </script>
 
 </body>

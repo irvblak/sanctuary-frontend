@@ -1,93 +1,30 @@
-// script.js — Homepage gate logic (clean, deterministic, session-aware)
+// script.js — Member login handler (trust-based)
 
 document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("login-form");
+  if (!form) return;
 
-  // CONFIG
-  const ACCESS_CODE = "WXYZ";
-  const SESSION_KEY = "sanctuaryAccess";
-  const SESSION_TIME_KEY = "sanctuaryAccessTime";
-  const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
+  form.addEventListener("submit", e => {
+    e.preventDefault();
 
-  // Elements
-  const btnWhatsOn = document.getElementById("btn-whats-on");
-  const btnInfo = document.getElementById("btn-info");
-  const gate = document.getElementById("access-gate");
-  const input = document.getElementById("access-code-input");
-  const submit = document.getElementById("access-submit");
-  const error = document.getElementById("access-error");
-  const eyeBtn = document.getElementById("access-eye");
+    const email = form.email.value.trim().toLowerCase();
+    const pin = form.pin.value.trim();
 
-  let targetPage = null;
+    if (!email || !pin) return;
 
-  // --- Helpers ---
-  function sessionIsValid() {
-    const granted = sessionStorage.getItem(SESSION_KEY);
-    const time = sessionStorage.getItem(SESSION_TIME_KEY);
+    // ---- Grant access
+    sessionStorage.setItem("sanctuaryAccess", "granted");
+    sessionStorage.setItem("sanctuaryAccessTime", Date.now());
 
-    if (granted !== "granted" || !time) return false;
-    return Date.now() - Number(time) < SESSION_DURATION;
-  }
+    // ---- Derive stable memberId from email
+    // Non-sensitive, deterministic
+    const memberId = email
+      .replace(/[^a-z0-9]/g, "")
+      .slice(0, 12);
 
-  function grantSession() {
-    sessionStorage.setItem(SESSION_KEY, "granted");
-    sessionStorage.setItem(SESSION_TIME_KEY, Date.now());
-  }
+    sessionStorage.setItem("memberId", memberId);
 
-  // --- Gate display ---
-  function showGate(destination) {
-    targetPage = destination;
-    gate.style.display = "block";
-    error.style.display = "none";
-    input.value = "";
-    input.focus();
-  }
-
-  // --- Button handlers ---
-  if (btnWhatsOn) {
-    btnWhatsOn.addEventListener("click", () => {
-      if (sessionIsValid()) {
-        window.location.href = "events-calendar.html";
-      } else {
-        showGate("events-calendar.html");
-      }
-    });
-  }
-
-  if (btnInfo) {
-    btnInfo.addEventListener("click", () => {
-      if (sessionIsValid()) {
-        window.location.href = "notices.html";
-      } else {
-        showGate("notices.html");
-      }
-    });
-  }
-
-  // --- Eye toggle ---
-  if (eyeBtn && input) {
-    eyeBtn.addEventListener("click", () => {
-      if (input.type === "password") {
-        input.type = "text";
-        eyeBtn.textContent = "🙈";
-      } else {
-        input.type = "password";
-        eyeBtn.textContent = "👁";
-      }
-    });
-  }
-
-  // --- Submit access code ---
-  if (submit) {
-    submit.addEventListener("click", () => {
-      const code = input.value.trim();
-
-      if (code === ACCESS_CODE && targetPage) {
-        grantSession();
-        window.location.href = targetPage;
-      } else {
-        error.style.display = "block";
-      }
-    });
-  }
-
+    // ---- Redirect to Home
+    window.location.href = "index.html";
+  });
 });

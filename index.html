@@ -26,8 +26,8 @@
 
       <div class="action-stack">
 
-        <!-- PRIMARY ACTIONS -->
-        <div class="hero-buttons">
+        <!-- LOGGED-IN ACTIONS -->
+        <div class="hero-buttons" id="member-actions" style="display:none;">
           <button
             class="hero-button"
             onclick="location.href='events.html'"
@@ -40,6 +40,16 @@
             onclick="location.href='members-directory.html'"
           >
             Member Information
+          </button>
+        </div>
+
+        <!-- LOGGED-OUT ACTION -->
+        <div class="hero-buttons" id="login-action" style="display:none;">
+          <button
+            class="hero-button"
+            onclick="location.href='member-login.html'"
+          >
+            Member Login
           </button>
         </div>
 
@@ -87,18 +97,19 @@
 <script src="logout.js"></script>
 
 <script>
-  function updateLogoutVisibility() {
-    const logoutLink = document.getElementById("logout-link");
-    if (!logoutLink) return;
+  const loggedIn =
+    sessionStorage.getItem("sanctuaryAccess") === "granted";
 
-    const loggedIn =
-      sessionStorage.getItem("sanctuaryAccess") === "granted";
+  document.getElementById("member-actions").style.display =
+    loggedIn ? "flex" : "none";
 
+  document.getElementById("login-action").style.display =
+    loggedIn ? "none" : "flex";
+
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
     logoutLink.style.display = loggedIn ? "inline" : "none";
   }
-
-  updateLogoutVisibility();
-  window.addEventListener("pageshow", updateLogoutVisibility);
 </script>
 
 </body>

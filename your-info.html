@@ -28,7 +28,7 @@
 
     .your-info-container {
       max-width: 720px;
-      margin: 0 auto;
+      margin: 0 auto 2rem;
       background: #fff;
       border-radius: 12px;
       padding: 1.5rem;
@@ -50,10 +50,6 @@
       font-size: 0.9rem;
     }
 
-    .intro-text a {
-      font-weight: 500;
-    }
-
     label {
       display: block;
       margin-top: 1rem;
@@ -65,18 +61,30 @@
       padding: 0.5rem;
       margin-top: 0.25rem;
       font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
     }
 
     button {
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
       padding: 0.6rem 1.25rem;
       font-size: 1rem;
       cursor: pointer;
     }
 
+    .saved {
+      margin-top: 1rem;
+      color: #2a6f2a;
+      font-size: 0.95rem;
+    }
+
     @media (max-width: 640px) {
       input, textarea {
-        font-size: 16px;
+        font-size: 16px; /* prevent iOS zoom */
       }
 
       .intro-text {
@@ -87,6 +95,7 @@
 </head>
 
 <body>
+
   <nav>
     <a href="members-directory.html">Members Directory →</a>
     <a href="logout.html">Log out</a>
@@ -106,9 +115,92 @@
       </p>
     </div>
 
-    <!-- Your existing form fields + JS go here -->
-    <!-- Intentionally open / trust-based -->
+    <form id="yourInfoForm">
+      <label>
+        Name
+        <input type="text" id="name" />
+      </label>
 
+      <label>
+        Address
+        <input type="text" id="address" />
+      </label>
+
+      <label>
+        Phone
+        <input type="text" id="phone" />
+      </label>
+
+      <label>
+        Email
+        <input type="email" id="email" />
+      </label>
+
+      <label>
+        Notes / Interests
+        <textarea id="notes"></textarea>
+      </label>
+
+      <button type="submit">Save</button>
+
+      <div class="saved" id="savedMessage" style="display:none;">
+        Your information has been saved.
+      </div>
+    </form>
   </main>
+
+  <script>
+    const STORAGE_KEY = "sanctuaryMembers";
+
+    function loadMembers() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    }
+
+    function saveMembers(members) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+    }
+
+    function getCurrentMemberIndex() {
+      // Trust-based model: single entry per browser/session
+      // If one exists, edit it; otherwise create one
+      return 0;
+    }
+
+    function loadForm() {
+      const members = loadMembers();
+      const member = members[0] || {};
+
+      document.getElementById("name").value = member.name || "";
+      document.getElementById("address").value = member.address || "";
+      document.getElementById("phone").value = member.phone || "";
+      document.getElementById("email").value = member.email || "";
+      document.getElementById("notes").value = member.notes || "";
+    }
+
+    document.getElementById("yourInfoForm").addEventListener("submit", e => {
+      e.preventDefault();
+
+      const members = loadMembers();
+      const idx = getCurrentMemberIndex();
+
+      members[idx] = {
+        name: document.getElementById("name").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        notes: document.getElementById("notes").value.trim(),
+        lastUpdated: new Date().toISOString()
+      };
+
+      saveMembers(members);
+
+      const msg = document.getElementById("savedMessage");
+      msg.style.display = "block";
+      setTimeout(() => (msg.style.display = "none"), 3000);
+    });
+
+    loadForm();
+  </script>
+
 </body>
 </html>

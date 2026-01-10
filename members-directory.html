@@ -1,165 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Members</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Members Directory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
-      color: #222;
-    }
+<script src="access.js"></script>
+<script src="members-directory.js" defer></script>
+<script src="logout.js"></script>
 
-    /* --- Top Navigation --- */
-    nav {
-      padding: 1rem 1.25rem;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
+  color: #222;
+}
 
-    nav a {
-      text-decoration: none;
-      font-weight: 500;
-      color: #005ea8;
-    }
+/* ---------- NAV ---------- */
+nav {
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
 
-    .nav-left { justify-self: start; }
-    .nav-center {
-      justify-self: center;
-      display: flex;
-      gap: 1.25rem;
-    }
-    .nav-right { justify-self: end; }
+nav a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #005ea8;
+  margin: 0 0.5rem;
+}
 
-    /* --- Layout --- */
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
+nav .center-links {
+  text-align: center;
+}
 
-    h1 {
-      margin-top: 0;
-      font-size: 1.4rem;
-    }
+nav .right {
+  text-align: right;
+}
 
-    .section {
-      margin-bottom: 1.5rem;
-    }
+/* ---------- MAIN ---------- */
+main {
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
 
-    .member-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 0.5rem;
-    }
+h2 {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+}
 
-    .member-button {
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #fff;
-      cursor: pointer;
-      font-weight: 500;
-    }
+/* ---------- BUTTON GRID ---------- */
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
 
-    .member-button.inactive {
-      opacity: 0.4;
-      cursor: default;
-    }
+.member-button {
+  padding: 0.4rem 0.3rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  background: #f8f8f8;
+}
 
-    .member-button.active {
-      background: #e3edf7;
-      border-color: #005ea8;
-    }
+.member-button.active {
+  background: #005ea8;
+  color: #fff;
+}
 
-    /* --- Detail area --- */
-    #member-detail {
-      margin-top: 1.5rem;
-    }
+.member-button.inactive {
+  opacity: 0.4;
+  cursor: default;
+}
 
-    .member-detail-wrapper {
-      display: grid;
-      gap: 1rem;
-    }
+/* ---------- DETAIL ---------- */
+#member-detail {
+  margin-top: 1rem;
+}
 
-    .resident-card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      border-left: 4px solid #e3edf7;
-    }
+.member-detail-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
 
-    .resident-header {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
+.resident-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
 
-    .resident-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.95rem;
-      margin-bottom: 0.25rem;
-    }
+.resident-header {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
 
-    .resident-row span:first-child {
-      color: #555;
-    }
+.resident-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
 
-    /* --- Mobile polish --- */
-    @media (max-width: 640px) {
-      nav {
-        grid-template-columns: 1fr;
-        row-gap: 0.75rem;
-        text-align: center;
-      }
-
-      .nav-left,
-      .nav-center,
-      .nav-right {
-        justify-self: center;
-      }
-    }
-  </style>
+@media (max-width: 640px) {
+  .member-grid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <nav>
-    <div class="nav-left">
-      <a href="index.html">Home</a>
-    </div>
+<nav>
+  <!-- LEFT -->
+  <div>
+    <a href="index.html">Home</a>
+  </div>
 
-    <div class="nav-center">
-      <a href="calendar.html">Calendar</a>
-      <a href="your-info.html">Your Information</a>
-    </div>
+  <!-- CENTER -->
+  <div class="center-links">
+    <span>Calendar</span> ·
+    <a href="your-info.html">Your Information</a>
+  </div>
 
-    <div class="nav-right">
-      <a href="logout.html">Logout</a>
-    </div>
-  </nav>
+  <!-- RIGHT -->
+  <div class="right">
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
 
-  <main>
-    <h1>Members</h1>
+<main>
 
-    <div class="section">
-      <h2>Sanctuary Mews</h2>
-      <div id="members-mews" class="member-grid"></div>
-    </div>
+<h2>Sanctuary Mews</h2>
+<div id="members-mews" class="member-grid"></div>
 
-    <div class="section">
-      <h2>Sanctuary Court</h2>
-      <div id="members-court" class="member-grid"></div>
-    </div>
+<h2>Sanctuary Court</h2>
+<div id="members-court" class="member-grid"></div>
 
-    <div id="member-detail"></div>
-  </main>
+<div id="member-detail"></div>
 
-  <script src="members-directory.js"></script>
+</main>
+
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=RESTORE_A" />
+  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE" />
 </head>
 
 <body>
@@ -46,13 +46,9 @@
           <button id="access-submit" class="hero-button">
             Continue
           </button>
-
-          <div id="access-error" class="access-error" style="display:none;">
-            Invalid access code
-          </div>
         </div>
 
-        <!-- MEMBER ACTIONS (HIDDEN UNTIL ACCESS) -->
+        <!-- MEMBER ACTIONS -->
         <div class="hero-buttons" id="member-actions" style="display:none;">
           <button
             class="hero-button"
@@ -81,7 +77,6 @@
   <!-- RIGHT PANEL -->
   <div class="hero-panel" style="position: relative;">
 
-    <!-- LOGOUT -->
     <a
       href="#"
       id="logout-link"
@@ -112,13 +107,11 @@
 <script>
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
-  const ACCESS_CODE = "sanctuary"; // ← your existing code
   const SESSION_DURATION = 60 * 60 * 1000;
 
   const gate = document.getElementById("access-gate");
   const actions = document.getElementById("member-actions");
   const logoutLink = document.getElementById("logout-link");
-  const errorBox = document.getElementById("access-error");
 
   function showMembers() {
     gate.style.display = "none";
@@ -145,16 +138,14 @@
     showGate();
   }
 
-  // Submit access code
+  // Continue (trust-based: any input grants access)
   document.getElementById("access-submit").onclick = () => {
-    const input = document.getElementById("access-code-input").value.trim();
-    if (input === ACCESS_CODE) {
-      sessionStorage.setItem(ACCESS_KEY, "granted");
-      sessionStorage.setItem(TIME_KEY, Date.now());
-      showMembers();
-    } else {
-      errorBox.style.display = "block";
-    }
+    const value = document.getElementById("access-code-input").value.trim();
+    if (!value) return;
+
+    sessionStorage.setItem(ACCESS_KEY, "granted");
+    sessionStorage.setItem(TIME_KEY, Date.now());
+    showMembers();
   };
 
   // Eye toggle

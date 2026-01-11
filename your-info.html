@@ -8,62 +8,52 @@
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
-    body {
+    /* ---- HARD ISOLATION FROM GLOBAL CSS ---- */
+    body.yi-page {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: linear-gradient(180deg, #e9f2fb 0%, #ffffff 65%);
       color: #222;
     }
 
-    nav {
+    .yi-root * {
+      box-sizing: border-box;
+    }
+
+    .yi-nav {
       padding: 1rem 1.25rem;
       display: flex;
       gap: 1.25rem;
       align-items: center;
     }
 
-    nav a {
+    .yi-nav a {
       text-decoration: none;
       font-weight: 500;
       color: #005ea8;
     }
 
-    .container {
+    .yi-container {
       max-width: 760px;
       margin: 0 auto;
       padding: 1rem;
     }
 
-    h1 {
-      margin-top: 0.5rem;
-      font-size: 1.5rem;
-    }
-
-    .intro {
-      margin-bottom: 1.25rem;
-      font-size: 1rem;
-    }
-
-    .subtle {
-      color: #666;
-      font-size: 0.9rem;
-    }
-
-    .panel {
+    .yi-panel {
       background: #fff;
       border-radius: 12px;
       padding: 1.25rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    label {
+    .yi-panel label {
       display: block;
       margin-top: 0.9rem;
       font-weight: 500;
       font-size: 0.9rem;
     }
 
-    input {
+    .yi-panel input {
       width: 100%;
       padding: 0.45rem;
       margin-top: 0.25rem;
@@ -87,7 +77,7 @@
       gap: 0.6rem 0.8rem;
     }
 
-    button {
+    .yi-save {
       margin-top: 1.4rem;
       padding: 0.6rem 1.4rem;
       font-size: 1rem;
@@ -95,92 +85,111 @@
     }
 
     @media (max-width: 640px) {
-      input {
+      .yi-panel input {
         font-size: 16px;
       }
     }
   </style>
 </head>
 
-<body>
+<body class="yi-page">
 
-  <nav>
+<div class="yi-root">
+
+  <!-- NAV -->
+  <nav class="yi-nav">
     <a href="index.html">Home</a>
     <a href="events-calendar.html">Calendar</a>
     <a href="members-directory.html">Members Directory</a>
-    <a href="logout.html">Logout</a>
+    <a href="#" id="logout-link">Logout</a>
   </nav>
 
-  <main class="container">
+  <main class="yi-container">
 
     <h1>Your Information</h1>
 
-    <p class="intro">
+    <p>
       Enter as much information as you wish to share.<br>
-      <span class="subtle">(You can change it at any time.)</span>
+      <span style="color:#666;font-size:0.9rem;">(You can change it at any time.)</span>
     </p>
 
-    <div class="panel">
+    <div class="yi-panel">
 
-      <label for="memberId">Your home</label>
+      <label>Your home</label>
       <input id="memberId" placeholder="e.g. SM14 or SC03">
 
       <div id="residents"></div>
 
-      <button id="saveBtn">Save information</button>
+      <button class="yi-save" id="saveBtn">Save information</button>
 
     </div>
 
   </main>
 
-  <script>
-    const STORAGE_KEY = "sanctuaryMembers";
-    const memberInput = document.getElementById("memberId");
-    const residentsDiv = document.getElementById("residents");
-    const saveBtn = document.getElementById("saveBtn");
+</div>
 
-    function loadMembers() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      } catch {
-        return {};
-      }
+<script src="logout.js"></script>
+
+<script>
+  const STORAGE_KEY = "sanctuaryMembers";
+  const memberInput = document.getElementById("memberId");
+  const residentsDiv = document.getElementById("residents");
+
+  function loadMembers() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function renderResidents(existing = []) {
+    residentsDiv.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+      const r = existing[i] || {};
+      const div = document.createElement("div");
+      div.className = "resident";
+      div.innerHTML = `
+        <h3>Resident ${i + 1}</h3>
+        <div class="grid">
+          <div><label>Name</label><input data-field="name" value="${r.name || ""}"></div>
+          <div><label>Email</label><input data-field="email" value="${r.email || ""}"></div>
+          <div><label>Mobile</label><input data-field="mobile" value="${r.mobile || ""}"></div>
+          ${i === 0 ? `<div><label>Landline</label><input data-field="landline" value="${r.landline || ""}"></div>` : ""}
+        </div>
+      `;
+      residentsDiv.appendChild(div);
     }
+  }
 
-    function saveMembers(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
+  memberInput.addEventListener("blur", () => {
+    const id = memberInput.value.trim().toUpperCase();
+    if (!id) return;
+    const members = loadMembers();
+    renderResidents(members[id]?.residents || []);
+    localStorage.setItem("sanctuaryLastMemberId", id);
+  });
 
-    function renderResidents(existing = []) {
-      residentsDiv.innerHTML = "";
-      for (let i = 0; i < 4; i++) {
-        const r = existing[i] || {};
-        const div = document.createElement("div");
-        div.className = "resident";
-        div.innerHTML = `
-          <h3>Resident ${i + 1}</h3>
-          <div class="grid">
-            <div>
-              <label>Name</label>
-              <input data-field="name" value="${r.name || ""}">
-            </div>
-            <div>
-              <label>Email</label>
-              <input data-field="email" value="${r.email || ""}">
-            </div>
-            <div>
-              <label>Mobile</label>
-              <input data-field="mobile" value="${r.mobile || ""}">
-            </div>
-            ${i === 0 ? `
-            <div>
-              <label>Landline</label>
-              <input data-field="landline" value="${r.landline || ""}">
-            </div>` : ``}
-          </div>
-        `;
-        residentsDiv.appendChild(div);
-      }
-    }
+  document.getElementById("saveBtn").onclick = () => {
+    const id = memberInput.value.trim().toUpperCase();
+    if (!id) return alert("Please enter your home.");
 
-    memberInput.addEventListener("blur", () =>
+    const residents = [];
+    residentsDiv.querySelectorAll(".resident").forEach(div => {
+      const r = {};
+      div.querySelectorAll("input").forEach(i => r[i.dataset.field] = i.value.trim());
+      if (Object.values(r).some(v => v)) residents.push(r);
+    });
+
+    const members = loadMembers();
+    members[id] = { residents };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+    alert("Your information has been saved.");
+  };
+
+  const last = localStorage.getItem("sanctuaryLastMemberId");
+  if (last) {
+    memberInput.value = last;
+    renderResidents(loadMembers()[last]?.residents || []);
+  }
+</script>
+
+</body>
+</html>

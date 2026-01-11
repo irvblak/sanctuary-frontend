@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE_FIX" />
+  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE_FINAL" />
+
+  <!-- FORCE VISIBILITY CONTROL (beats styles-main.css) -->
+  <style>
+    #access-gate { display: block; }
+    #member-actions { display: none; }
+  </style>
 </head>
 
 <body>
@@ -49,7 +55,7 @@
         </div>
 
         <!-- MEMBER ACTIONS -->
-        <div class="hero-buttons" id="member-actions" style="display:none;">
+        <div class="hero-buttons" id="member-actions">
           <button
             class="hero-button"
             onclick="location.href='events.html'"
@@ -131,11 +137,7 @@
     return granted && Date.now() - time < SESSION_DURATION;
   }
 
-  if (hasValidSession()) {
-    showMembers();
-  } else {
-    showGate();
-  }
+  hasValidSession() ? showMembers() : showGate();
 
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();

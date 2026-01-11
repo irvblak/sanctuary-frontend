@@ -2,112 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Members Directory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Member Information — The Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css" />
-
-  <style>
-    .directory-section {
-      max-width: 1100px;
-      margin: 6rem auto 2rem;
-      padding: 0 1rem;
-    }
-
-    h2 {
-      margin-top: 2.5rem;
-      margin-bottom: 0.6rem;
-      color: #003366;
-    }
-
-    .member-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 0.5rem;
-    }
-
-    .member-btn {
-      padding: 0.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-    }
-
-    .member-btn.inactive {
-      background: #e2e6ea;
-      color: #9aa5b1;
-      cursor: default;
-    }
-
-    .member-btn.active {
-      background: #ffffff;
-      color: #003366;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .member-btn.active:hover {
-      background: #eef4fb;
-    }
-
-    .details-panel {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      display: none;
-    }
-
-    .resident-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.8rem;
-    }
-
-    .resident-card {
-      background: #f8fafc;
-      padding: 0.6rem 0.8rem;
-      border-radius: 8px;
-      min-width: 220px;
-      flex: 1;
-    }
-
-    .label {
-      font-size: 0.75rem;
-      color: #6b7c93;
-    }
-
-    .value {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-
-    @media (max-width: 640px) {
-      .resident-row {
-        flex-direction: column;
-      }
-    }
-  </style>
 </head>
 
-<body>
+<body class="member-page">
 
-<div class="directory-section">
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="events-calendar.html">Calendar</a>
+    <a href="#" id="logout-link">Logout</a>
+  </nav>
 
-  <h1>Members Directory</h1>
+  <main class="content-wrapper">
 
-  <h2>Sanctuary Mews</h2>
-  <div class="member-grid" id="grid-mews"></div>
+    <h1>Member Information</h1>
 
-  <h2>Sanctuary Court</h2>
-  <div class="member-grid" id="grid-court"></div>
+    <p class="intro">
+      Access member resources, update your details, or browse the directory.
+    </p>
 
-  <div id="details-panel" class="details-panel"></div>
+    <div class="card-grid">
 
-</div>
+      <a href="members-directory.html" class="info-card">
+        <h3>Members Directory</h3>
+        <p>View contact details shared by residents.</p>
+      </a>
 
-<script src="members-directory.js"></script>
+      <a href="your-info.html" class="info-card">
+        <h3>Your Information</h3>
+        <p>Update household members and contact preferences.</p>
+      </a>
+
+    </div>
+
+  </main>
+
+  <script src="logout.js"></script>
+
 </body>
 </html>

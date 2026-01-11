@@ -1,26 +1,39 @@
-// access.js — safe access guard (stable, refreshes session)
+// access.js — Sanctuary Club session guard
+// SAFE + PAGE-AWARE
 
 document.addEventListener("DOMContentLoaded", () => {
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
   const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
 
-  const granted = sessionStorage.getItem(ACCESS_KEY);
+  const page = location.pathname.split("/").pop();
+
+  // Pages that NEVER require gating
+  const ALLOWED_PAGES = [
+    "index.html",
+    "members-info.html",
+    "your-info.html",
+    ""
+  ];
+
+  if (ALLOWED_PAGES.includes(page)) return;
+
+  const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
   const accessTime = Number(sessionStorage.getItem(TIME_KEY));
 
-  // No valid session → return to Home
-  if (granted !== "granted" || !accessTime) {
-    window.location.href = "index.html";
+  if (!granted || !accessTime) {
+    redirectHome();
     return;
   }
 
-  // Expired session → clear and return to Home
   if (Date.now() - accessTime > SESSION_DURATION) {
     sessionStorage.clear();
-    window.location.href = "index.html";
-    return;
+    redirectHome();
   }
 
-  // ✅ SESSION IS VALID — REFRESH TIMER
-  sessionStorage.setItem(TIME_KEY, Date.now());
+  function redirectHome() {
+    if (!location.pathname.endsWith("index.html")) {
+      window.location.replace("index.html");
+    }
+  }
 });

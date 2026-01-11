@@ -1,215 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Your Information</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Information — The Sanctuary Club</title>
 
-<!-- Session gate -->
-<script src="access.js"></script>
+  <link rel="stylesheet" href="styles-main.css" />
 
-<!-- Logout handler -->
-<script src="logout.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #e9f2fb 0%, #ffffff 65%);
+      color: #222;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
-  color: #222;
-}
+    nav {
+      padding: 1rem 1.25rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
 
-/* ---------- NAV ---------- */
-nav {
-  padding: 1rem 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #005ea8;
+    }
 
-nav a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #005ea8;
-}
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
 
-/* ---------- MAIN ---------- */
-main {
-  max-width: 900px;
-  margin: 0 auto 2rem;
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 1.5rem;
+    }
 
-h1 {
-  margin-top: 0;
-}
+    .intro {
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+    }
 
-.intro-text {
-  margin-bottom: 1rem;
-}
+    .subtle {
+      color: #666;
+      font-size: 0.9rem;
+    }
 
-/* ---------- TABLE ---------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-th, td {
-  padding: 0.4rem;
-  font-size: 0.9rem;
-}
+    label {
+      display: block;
+      margin-top: 0.9rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
 
-th {
-  text-align: left;
-  font-weight: 600;
-}
+    input {
+      width: 100%;
+      padding: 0.45rem;
+      margin-top: 0.25rem;
+      font-size: 0.95rem;
+    }
 
-input {
-  width: 100%;
-  padding: 0.3rem;
-  font-size: 0.9rem;
-}
+    .resident {
+      margin-top: 1.2rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #e6eaf0;
+    }
 
-button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.25rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
+    .resident h3 {
+      margin: 0 0 0.4rem 0;
+      font-size: 1rem;
+    }
 
-#savedMsg {
-  margin-top: 0.75rem;
-  color: #2a6f2a;
-  display: none;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.6rem 0.8rem;
+    }
 
-@media (max-width: 640px) {
-  input { font-size: 16px; }
-}
-</style>
+    button {
+      margin-top: 1.4rem;
+      padding: 0.6rem 1.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      input {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<nav>
-  <div>
-    <a href="index.html">Home</a> ·
-    <a href="members-directory.html">Members</a>
-  </div>
-  <div>
-    <span>Calendar</span> ·
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-</nav>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="events-calendar.html">Calendar</a>
+    <a href="members-directory.html">Members Directory</a>
+    <a href="logout.html">Logout</a>
+  </nav>
 
-<main>
+  <main class="container">
 
-<h1>Your Information</h1>
+    <h1>Your Information</h1>
 
-<div class="intro-text">
-  Enter as much information as you wish to share.<br>
-  <span style="color:#666;">(You can change it at any time.)</span>
-</div>
+    <p class="intro">
+      Enter as much information as you wish to share.<br>
+      <span class="subtle">(You can change it at any time.)</span>
+    </p>
 
-<form id="infoForm">
-<table>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Mobile</th>
-      <th>Landline</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td><input data-i="0" data-f="name"></td>
-      <td><input data-i="0" data-f="email"></td>
-      <td><input data-i="0" data-f="mobile"></td>
-      <td><input data-i="0" data-f="landline"></td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td><input data-i="1" data-f="name"></td>
-      <td><input data-i="1" data-f="email"></td>
-      <td><input data-i="1" data-f="mobile"></td>
-      <td><input data-i="1" data-f="landline"></td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td><input data-i="2" data-f="name"></td>
-      <td><input data-i="2" data-f="email"></td>
-      <td><input data-i="2" data-f="mobile"></td>
-      <td><input data-i="2" data-f="landline"></td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td><input data-i="3" data-f="name"></td>
-      <td><input data-i="3" data-f="email"></td>
-      <td><input data-i="3" data-f="mobile"></td>
-      <td><input data-i="3" data-f="landline"></td>
-    </tr>
-  </tbody>
-</table>
+    <div class="panel">
 
-<button type="submit">Save</button>
-<div id="savedMsg">Saved.</div>
-</form>
+      <label for="memberId">Your home</label>
+      <input id="memberId" placeholder="e.g. SM14 or SC03">
 
-</main>
+      <div id="residents"></div>
 
-<script>
-const STORAGE_KEY = "sanctuaryMembers";
-const memberId = sessionStorage.getItem("memberId");
+      <button id="saveBtn">Save information</button>
 
-/* HARD FAIL SAFE:
-   If this page is ever opened without a session,
-   return calmly to Home instead of showing alerts */
-if (!memberId) {
-  window.location.href = "index.html";
-}
+    </div>
 
-function loadData() {
-  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const residents = members[memberId]?.residents || [];
+  </main>
 
-  document.querySelectorAll("input").forEach(inp => {
-    const i = inp.dataset.i;
-    const f = inp.dataset.f;
-    inp.value = residents[i]?.[f] || "";
-  });
-}
+  <script>
+    const STORAGE_KEY = "sanctuaryMembers";
+    const memberInput = document.getElementById("memberId");
+    const residentsDiv = document.getElementById("residents");
+    const saveBtn = document.getElementById("saveBtn");
 
-document.getElementById("infoForm").addEventListener("submit", e => {
-  e.preventDefault();
+    function loadMembers() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
 
-  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const residents = [];
+    function saveMembers(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
 
-  for (let i = 0; i < 4; i++) {
-    const r = {};
-    ["name","email","mobile","landline"].forEach(f => {
-      const v = document.querySelector(`input[data-i="${i}"][data-f="${f}"]`).value.trim();
-      if (v) r[f] = v;
-    });
-    if (Object.keys(r).length) residents.push(r);
-  }
+    function renderResidents(existing = []) {
+      residentsDiv.innerHTML = "";
+      for (let i = 0; i < 4; i++) {
+        const r = existing[i] || {};
+        const div = document.createElement("div");
+        div.className = "resident";
+        div.innerHTML = `
+          <h3>Resident ${i + 1}</h3>
+          <div class="grid">
+            <div>
+              <label>Name</label>
+              <input data-field="name" value="${r.name || ""}">
+            </div>
+            <div>
+              <label>Email</label>
+              <input data-field="email" value="${r.email || ""}">
+            </div>
+            <div>
+              <label>Mobile</label>
+              <input data-field="mobile" value="${r.mobile || ""}">
+            </div>
+            ${i === 0 ? `
+            <div>
+              <label>Landline</label>
+              <input data-field="landline" value="${r.landline || ""}">
+            </div>` : ``}
+          </div>
+        `;
+        residentsDiv.appendChild(div);
+      }
+    }
 
-  members[memberId] = { residents };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
-
-  const msg = document.getElementById("savedMsg");
-  msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 2000);
-});
-
-loadData();
-</script>
-
-</body>
-</html>
+    memberInput.addEventListener("blur", () =>

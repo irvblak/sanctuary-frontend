@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_GATE_V1" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_LAYOUT_V2" />
 </head>
 
 <body>
@@ -14,19 +14,31 @@
 
   <!-- LEFT PANEL -->
   <div class="hero-panel">
-    <h3>Welcome to The Sanctuary Club</h3>
-    <p>A residents’ club for Sanctuary Mews and Sanctuary Court.</p>
+    <h3>Welcome</h3>
+    <p>
+      The Sanctuary Club is a residents’ club for
+      Sanctuary Mews and Sanctuary Court.
+    </p>
   </div>
 
   <!-- HERO (CENTRE) -->
   <section class="hero">
     <div class="hero-overlay">
 
-      <h1 class="hero-title">The Sanctuary Club</h1>
+      <!-- LIFTED HEADER -->
+      <h1 class="hero-title" style="margin-top: 0.5rem;">
+        The Sanctuary Club
+      </h1>
+
+      <!-- INTRO TEXT (RESTORED) -->
+      <p style="max-width: 520px; margin: 0.5rem auto 1.8rem; color:#445;">
+        See what’s on, join events, and optionally share contact details
+        so neighbours can reach you — or so you can reach them.
+      </p>
 
       <div class="action-stack">
 
-        <!-- ACCESS GATE (hidden by default) -->
+        <!-- ACCESS GATE (hidden until needed) -->
         <div id="access-gate" style="display:none;">
           <div class="access-input-wrapper">
             <input
@@ -48,7 +60,7 @@
           </button>
         </div>
 
-        <!-- HOME BUTTONS (always visible) -->
+        <!-- HOME BUTTONS -->
         <div class="hero-buttons" id="member-actions">
           <button class="hero-button" data-target="events.html">
             What’s On
@@ -89,8 +101,8 @@
 
     <p>
       <strong><em>
-        See what’s on, join activities, and optionally share contact details
-        so neighbours can reach you — or so you can reach them.
+        For residents only.
+        Access to events, information and the members’ directory.
       </em></strong>
     </p>
 
@@ -104,7 +116,6 @@
   const SESSION_DURATION = 60 * 60 * 1000;
 
   const gate = document.getElementById("access-gate");
-  const actions = document.getElementById("member-actions");
   const logoutLink = document.getElementById("logout-link");
 
   let pendingTarget = null;
@@ -123,7 +134,6 @@
     gate.style.display = "none";
   }
 
-  // HOME BUTTON HANDLERS
   document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
     btn.onclick = () => {
       if (hasValidSession()) {
@@ -135,7 +145,6 @@
     };
   });
 
-  // GATE SUBMIT
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();
     if (!value) return;
@@ -143,25 +152,20 @@
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
 
-    if (pendingTarget) {
-      location.href = pendingTarget;
-    }
+    if (pendingTarget) location.href = pendingTarget;
   };
 
-  // EYE TOGGLE
   document.getElementById("access-eye").onclick = () => {
     const input = document.getElementById("access-code-input");
     input.type = input.type === "password" ? "text" : "password";
   };
 
-  // LOGOUT
   logoutLink.onclick = () => {
     sessionStorage.clear();
     hideGate();
     logoutLink.style.display = "none";
   };
 
-  // INITIAL STATE
   hideGate();
   logoutLink.style.display = hasValidSession() ? "inline" : "none";
 </script>

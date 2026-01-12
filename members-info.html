@@ -5,32 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Member Information — The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=MI_RESTORE_1" />
+  <link rel="stylesheet" href="styles-main.css?v=MI_LAYOUT_2" />
 
   <style>
     body {
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
+      margin: 0;
     }
 
+    /* ---- TOP NAV LAYOUT ---- */
+    .top-nav {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 1rem 1.25rem;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #005ea8;
+    }
+
+    .nav-left {
+      justify-self: start;
+    }
+
+    .nav-centre {
+      justify-self: center;
+    }
+
+    .nav-right {
+      justify-self: end;
+    }
+
+    /* ---- PAGE CONTENT ---- */
     .mi-wrapper {
       max-width: 720px;
-      margin: 6rem auto 3rem;
+      margin: 3.5rem auto 4rem;
       padding: 0 1rem;
     }
 
     h1 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       color: #003366;
     }
 
     .intro {
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
       color: #445;
     }
 
     .mi-list {
       display: grid;
-      gap: 1rem;
+      gap: 1.1rem;
     }
 
     .mi-item {
@@ -59,6 +87,12 @@
       font-size: 0.95rem;
       color: #556;
     }
+
+    .mi-item.disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+    }
   </style>
 </head>
 
@@ -66,9 +100,9 @@
 
   <!-- TOP NAV -->
   <nav class="top-nav">
-    <a href="index.html">Home</a>
-    <a href="events-calendar.html">Calendar</a>
-    <a href="#" id="logout-link">Logout</a>
+    <a href="index.html" class="nav-left">Home</a>
+    <a href="events-calendar.html" class="nav-centre">Calendar</a>
+    <a href="#" id="logout-link" class="nav-right">Logout</a>
   </nav>
 
   <main class="mi-wrapper">
@@ -93,13 +127,13 @@
         <p>View contact details shared by residents.</p>
       </a>
 
-      <!-- FUTURE ITEMS (placeholders only) -->
-      <div class="mi-item" style="opacity:0.55; cursor:default;">
+      <!-- FUTURE ITEMS -->
+      <div class="mi-item disabled">
         <h3>Host</h3>
         <p>Coming soon.</p>
       </div>
 
-      <div class="mi-item" style="opacity:0.55; cursor:default;">
+      <div class="mi-item disabled">
         <h3>Payments</h3>
         <p>Coming soon.</p>
       </div>

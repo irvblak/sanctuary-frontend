@@ -8,145 +8,145 @@
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-
     body {
+      margin: 0;
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #223;
     }
 
-    /* TOP NAV */
-    .top-nav {
+    /* ---- TOP NAV ---- */
+    .mi-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: transparent;
+      padding: 1rem 1.25rem 0.5rem;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 1rem 1.25rem;
-      flex-shrink: 0;
     }
 
-    .nav-left { justify-self: start; }
-    .nav-center { justify-self: center; }
-    .nav-right { justify-self: end; }
-
-    .top-nav a {
+    .mi-nav a {
       text-decoration: none;
       font-weight: 500;
       color: #005ea8;
     }
 
-    /* SCROLL AREA */
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 2rem;
+    .mi-nav .center {
+      justify-self: center;
     }
 
-    /* MAIN */
-    .content-wrapper {
-      max-width: 720px;
-      margin: 2rem auto 0;
-      padding: 0 1rem;
+    .mi-nav .right {
+      justify-self: end;
+    }
+
+    /* ---- CONTENT ---- */
+    main {
+      max-width: 820px;
+      margin: 2.5rem auto 3rem;
+      padding: 0 1rem 2rem;
     }
 
     h1 {
+      margin-top: 0;
       color: #003366;
-      margin-bottom: 0.4rem;
     }
 
     .intro {
+      margin-bottom: 2rem;
       color: #445;
-      margin-bottom: 1.6rem;
+      max-width: 640px;
     }
 
-    /* MENU */
-    .menu-grid {
+    /* ---- MENU GRID ---- */
+    .card-grid {
       display: grid;
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, max-content));
+      gap: 1.25rem;
+      justify-content: flex-start;
     }
 
-    .menu-item {
+    .info-card {
       display: block;
-      max-width: 460px;
-      padding: 0.9rem 1.1rem;
+      padding: 1.2rem 1.3rem;
       background: #ffffff;
       border-radius: 14px;
       text-decoration: none;
       color: inherit;
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      max-width: 420px;
     }
 
-    .menu-item:hover {
+    .info-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     }
 
-    .menu-item h3 {
-      margin: 0 0 0.35rem 0;
+    .info-card h3 {
+      margin: 0 0 0.4rem 0;
       color: #003366;
-      font-size: 1.05rem;
     }
 
-    .menu-item p {
+    .info-card p {
       margin: 0;
       color: #556;
       font-size: 0.95rem;
-      line-height: 1.35;
+      max-width: 360px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- NAV -->
-  <nav class="top-nav">
-    <div class="nav-left">
-      <a href="index.html">Home</a>
-    </div>
-
-    <div class="nav-center">
-      <a href="events-calendar.html">Calendar</a>
-    </div>
-
-    <div class="nav-right">
-      <a href="#" id="logout-link">Logout</a>
-    </div>
+  <!-- TOP NAV -->
+  <nav class="mi-nav">
+    <a href="index.html">Home</a>
+    <a href="events-calendar.html" class="center">Calendar</a>
+    <a href="#" id="logout-link" class="right">Logout</a>
   </nav>
 
-  <!-- SCROLLABLE CONTENT -->
-  <div class="scroll-area">
-    <main class="content-wrapper">
+  <main>
 
-      <h1>Member Information</h1>
+    <h1>Member Information</h1>
 
-      <p class="intro">
-        Access member resources, update your details, or browse the directory.
-      </p>
+    <p class="intro">
+      Access member resources, update your details, or browse the directory.
+    </p>
 
-      <div class="menu-grid">
+    <div class="card-grid">
 
-        <a href="your-info.html" class="menu-item">
-          <h3>Your Information</h3>
-          <p>Update household members and contact preferences.</p>
-        </a>
+      <a href="your-info.html" class="info-card">
+        <h3>Your Information</h3>
+        <p>Update household members and contact preferences.</p>
+      </a>
 
-        <a href="members-directory.html" class="menu-item">
-          <h3>Members Directory</h3>
-          <p>View contact details shared by residents.</p>
-        </a>
+      <a href="members-directory.html" class="info-card">
+        <h3>Members Directory</h3>
+        <p>View contact details shared by residents.</p>
+      </a>
 
-        <!-- future items will scroll correctly -->
+      <!-- Future items intentionally supported
+      <a href="host.html" class="info-card">…</a>
+      <a href="payments.html" class="info-card">…</a>
+      -->
 
-      </div>
+    </div>
 
-    </main>
-  </div>
+  </main>
 
-  <script src="logout.js"></script>
+  <!-- LOCAL LOGOUT (ROBUST) -->
+  <script>
+    const logout = document.getElementById("logout-link");
+    if (logout) {
+      logout.addEventListener("click", e => {
+        e.preventDefault();
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      });
+    }
+  </script>
 
 </body>
 </html>

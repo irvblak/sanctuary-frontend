@@ -5,13 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=TRUST_GATE_FINAL" />
-
-  <!-- FORCE VISIBILITY CONTROL (beats styles-main.css) -->
-  <style>
-    #access-gate { display: block; }
-    #member-actions { display: none; }
-  </style>
+  <link rel="stylesheet" href="styles-main.css?v=GATE_RESTORE_1" />
 </head>
 
 <body>
@@ -33,7 +27,7 @@
       <div class="action-stack">
 
         <!-- ACCESS GATE -->
-        <div id="access-gate">
+        <div id="access-gate" style="display:none;">
           <div class="access-input-wrapper">
             <input
               type="password"
@@ -52,21 +46,19 @@
           <button id="access-submit" class="hero-button">
             Continue
           </button>
+
+          <div id="access-error" class="access-error" style="display:none;">
+            Invalid access code
+          </div>
         </div>
 
-        <!-- MEMBER ACTIONS -->
-        <div class="hero-buttons" id="member-actions">
-          <button
-            class="hero-button"
-            onclick="location.href='events.html'"
-          >
+        <!-- MAIN BUTTONS -->
+        <div class="hero-buttons" id="hero-buttons">
+          <button class="hero-button" data-target="events-calendar.html">
             What’s On
           </button>
 
-          <button
-            class="hero-button"
-            onclick="location.href='members-info.html'"
-          >
+          <button class="hero-button" data-target="members-info.html">
             Info
           </button>
         </div>
@@ -113,23 +105,13 @@
 <script>
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
+  const TARGET_KEY = "sanctuaryTarget";
   const SESSION_DURATION = 60 * 60 * 1000;
 
   const gate = document.getElementById("access-gate");
-  const actions = document.getElementById("member-actions");
+  const buttons = document.getElementById("hero-buttons");
   const logoutLink = document.getElementById("logout-link");
-
-  function showMembers() {
-    gate.style.display = "none";
-    actions.style.display = "flex";
-    logoutLink.style.display = "inline";
-  }
-
-  function showGate() {
-    gate.style.display = "block";
-    actions.style.display = "none";
-    logoutLink.style.display = "none";
-  }
+  const errorBox = document.getElementById("access-error");
 
   function hasValidSession() {
     const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
@@ -137,26 +119,64 @@
     return granted && Date.now() - time < SESSION_DURATION;
   }
 
-  hasValidSession() ? showMembers() : showGate();
+  function showGate() {
+    gate.style.display = "block";
+    buttons.style.display = "none";
+    logoutLink.style.display = "none";
+  }
 
+  function showButtons() {
+    gate.style.display = "none";
+    buttons.style.display = "flex";
+    logoutLink.style.display = "inline";
+  }
+
+  // Button clicks
+  document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.target;
+
+      if (hasValidSession()) {
+        window.location.href = target;
+      } else {
+        sessionStorage.setItem(TARGET_KEY, target);
+        showGate();
+      }
+    });
+  });
+
+  // Submit access code
   document.getElementById("access-submit").onclick = () => {
-    const value = document.getElementById("access-code-input").value.trim();
-    if (!value) return;
+    const code = document.getElementById("access-code-input").value.trim();
+    if (!code) return;
 
+    // Trust-based gate (no validation yet)
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
-    showMembers();
+
+    const target = sessionStorage.getItem(TARGET_KEY) || "index.html";
+    sessionStorage.removeItem(TARGET_KEY);
+    window.location.href = target;
   };
 
+  // Eye toggle
   document.getElementById("access-eye").onclick = () => {
     const input = document.getElementById("access-code-input");
     input.type = input.type === "password" ? "text" : "password";
   };
 
+  // Logout
   logoutLink.onclick = () => {
     sessionStorage.clear();
-    showGate();
+    showButtons();
   };
+
+  // Initial state
+  if (hasValidSession()) {
+    showButtons();
+  } else {
+    showButtons();
+  }
 </script>
 
 </body>

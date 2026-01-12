@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_LAYOUT_V3" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_V4" />
 </head>
 
 <body>
@@ -27,8 +27,7 @@
   <section class="hero">
     <div class="hero-overlay">
 
-      <!-- HEADER -->
-      <h1 class="hero-title" style="margin-top: 0.5rem;">
+      <h1 class="hero-title" style="margin-top:0.5rem;">
         The Sanctuary Club
       </h1>
 
@@ -47,7 +46,6 @@
               type="button"
               id="access-eye"
               class="toggle-visibility"
-              aria-label="Show access code"
             >👁</button>
           </div>
 
@@ -77,19 +75,20 @@
   </section>
 
   <!-- RIGHT PANEL -->
-  <div class="hero-panel" style="position: relative;">
+  <div class="hero-panel" style="position:relative;">
 
+    <!-- LOGOUT -->
     <a
       href="#"
       id="logout-link"
       style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 0.85rem;
-        text-decoration: underline;
-        cursor: pointer;
-        display: none;
+        position:absolute;
+        top:0;
+        right:0;
+        font-size:0.85rem;
+        text-decoration:underline;
+        cursor:pointer;
+        display:none;
       "
     >
       Logout
@@ -156,12 +155,14 @@
     input.type = input.type === "password" ? "text" : "password";
   };
 
-  logoutLink.onclick = () => {
+  logoutLink.onclick = e => {
+    e.preventDefault();
     sessionStorage.clear();
-    hideGate();
     logoutLink.style.display = "none";
+    hideGate();
   };
 
+  // INIT
   hideGate();
   logoutLink.style.display = hasValidSession() ? "inline" : "none";
 </script>

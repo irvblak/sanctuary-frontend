@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Member Information — The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=MI_V3" />
+  <link rel="stylesheet" href="styles-main.css?v=MI_V4" />
 
   <style>
     body {
       margin: 0;
+      min-height: 100vh;
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
-      color: #003366;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #003366;
+      overflow-y: auto; /* force scroll */
     }
 
     /* --- TOP NAV --- */
@@ -41,59 +43,52 @@
     /* --- PAGE WRAPPER --- */
     .content-wrapper {
       max-width: 720px;
-      margin: 3.5rem auto 3rem; /* lifted */
-      padding: 0 1rem;
+      margin: 2rem auto 3rem; /* lifted */
+      padding: 0 1rem 2rem;
     }
 
     h1 {
-      margin-top: 0;
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.4rem 0;
     }
 
     .intro {
       color: #445;
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.4rem;
     }
 
-    /* --- MENU GRID --- */
-    .card-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
+    /* --- MENU LIST --- */
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
     }
 
-    .info-card {
+    .menu-item {
       display: block;
-      padding: 1.1rem 1.2rem;
+      max-width: 520px;
+      padding: 1rem 1.2rem;
       background: #ffffff;
       border-radius: 12px;
       text-decoration: none;
       color: inherit;
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      max-width: 520px;
     }
 
-    .info-card:hover {
+    .menu-item:hover {
       transform: translateY(-1px);
       box-shadow: 0 5px 14px rgba(0,0,0,0.12);
     }
 
-    .info-card h3 {
-      margin: 0 0 0.3rem 0;
+    .menu-item h3 {
+      margin: 0 0 0.25rem 0;
       color: #003366;
     }
 
-    .info-card p {
+    .menu-item p {
       margin: 0;
-      color: #556;
       font-size: 0.95rem;
-    }
-
-    @media (min-width: 700px) {
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
+      color: #556;
     }
   </style>
 </head>
@@ -120,20 +115,27 @@
       Access member resources, update your details, or browse the directory.
     </p>
 
-    <div class="card-grid">
+    <div class="menu-list">
 
-      <a href="your-info.html" class="info-card">
+      <a href="your-info.html" class="menu-item">
         <h3>Your Information</h3>
         <p>Update household members and contact preferences.</p>
       </a>
 
-      <a href="members-directory.html" class="info-card">
+      <a href="members-directory.html" class="menu-item">
         <h3>Members Directory</h3>
         <p>View contact details shared by residents.</p>
       </a>
 
-      <!-- Space intentionally left for future items -->
-      <!-- Host • Payments • Notices -->
+      <a href="#" class="menu-item" onclick="return false;">
+        <h3>Host</h3>
+        <p>Hosting guidance and shared facilities (coming soon).</p>
+      </a>
+
+      <a href="#" class="menu-item" onclick="return false;">
+        <h3>Payments</h3>
+        <p>Event fees and shared costs (coming soon).</p>
+      </a>
 
     </div>
 

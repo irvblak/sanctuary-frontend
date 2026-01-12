@@ -8,9 +8,15 @@
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
-      margin: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     /* TOP NAV */
@@ -19,19 +25,12 @@
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       padding: 1rem 1.25rem;
+      flex-shrink: 0;
     }
 
-    .nav-left {
-      justify-self: start;
-    }
-
-    .nav-center {
-      justify-self: center;
-    }
-
-    .nav-right {
-      justify-self: end;
-    }
+    .nav-left { justify-self: start; }
+    .nav-center { justify-self: center; }
+    .nav-right { justify-self: end; }
 
     .top-nav a {
       text-decoration: none;
@@ -39,11 +38,18 @@
       color: #005ea8;
     }
 
+    /* SCROLL AREA */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 2rem;
+    }
+
     /* MAIN */
     .content-wrapper {
       max-width: 720px;
-      margin: 2rem auto;
-      padding: 0 1rem 2rem;
+      margin: 2rem auto 0;
+      padding: 0 1rem;
     }
 
     h1 {
@@ -111,31 +117,34 @@
     </div>
   </nav>
 
-  <main class="content-wrapper">
+  <!-- SCROLLABLE CONTENT -->
+  <div class="scroll-area">
+    <main class="content-wrapper">
 
-    <h1>Member Information</h1>
+      <h1>Member Information</h1>
 
-    <p class="intro">
-      Access member resources, update your details, or browse the directory.
-    </p>
+      <p class="intro">
+        Access member resources, update your details, or browse the directory.
+      </p>
 
-    <div class="menu-grid">
+      <div class="menu-grid">
 
-      <a href="your-info.html" class="menu-item">
-        <h3>Your Information</h3>
-        <p>Update household members and contact preferences.</p>
-      </a>
+        <a href="your-info.html" class="menu-item">
+          <h3>Your Information</h3>
+          <p>Update household members and contact preferences.</p>
+        </a>
 
-      <a href="members-directory.html" class="menu-item">
-        <h3>Members Directory</h3>
-        <p>View contact details shared by residents.</p>
-      </a>
+        <a href="members-directory.html" class="menu-item">
+          <h3>Members Directory</h3>
+          <p>View contact details shared by residents.</p>
+        </a>
 
-      <!-- Future menu items go here -->
+        <!-- future items will scroll correctly -->
 
-    </div>
+      </div>
 
-  </main>
+    </main>
+  </div>
 
   <script src="logout.js"></script>
 

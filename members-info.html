@@ -8,20 +8,29 @@
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
-    html, body {
-      height: 100%;
-    }
-
     body {
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
+      margin: 0;
     }
 
     /* TOP NAV */
     .top-nav {
-      display: flex;
-      gap: 1.25rem;
-      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
+      padding: 1rem 1.25rem;
+    }
+
+    .nav-left {
+      justify-self: start;
+    }
+
+    .nav-center {
+      justify-self: center;
+    }
+
+    .nav-right {
+      justify-self: end;
     }
 
     .top-nav a {
@@ -30,12 +39,11 @@
       color: #005ea8;
     }
 
-    /* MAIN WRAPPER */
+    /* MAIN */
     .content-wrapper {
       max-width: 720px;
-      margin: 2rem auto 0;
+      margin: 2rem auto;
       padding: 0 1rem 2rem;
-      min-height: calc(100vh - 110px); /* ensures scroll */
     }
 
     h1 {
@@ -48,7 +56,7 @@
       margin-bottom: 1.6rem;
     }
 
-    /* MENU GRID */
+    /* MENU */
     .menu-grid {
       display: grid;
       gap: 1rem;
@@ -88,11 +96,19 @@
 
 <body>
 
-  <!-- TOP NAV -->
+  <!-- NAV -->
   <nav class="top-nav">
-    <a href="index.html">Home</a>
-    <a href="events-calendar.html">Calendar</a>
-    <a href="#" id="logout-link">Logout</a>
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+    </div>
+
+    <div class="nav-center">
+      <a href="events-calendar.html">Calendar</a>
+    </div>
+
+    <div class="nav-right">
+      <a href="#" id="logout-link">Logout</a>
+    </div>
   </nav>
 
   <main class="content-wrapper">
@@ -115,18 +131,7 @@
         <p>View contact details shared by residents.</p>
       </a>
 
-      <!-- Future items go here -->
-      <!--
-      <a href="#" class="menu-item">
-        <h3>Hosting</h3>
-        <p>Volunteer or manage hosted events.</p>
-      </a>
-
-      <a href="#" class="menu-item">
-        <h3>Payments</h3>
-        <p>View or manage paid events.</p>
-      </a>
-      -->
+      <!-- Future menu items go here -->
 
     </div>
 

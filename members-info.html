@@ -5,38 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Member Information — The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css" />
+  <link rel="stylesheet" href="styles-main.css?v=MI_RESTORE_1" />
 
   <style>
     body {
       background: linear-gradient(180deg, #e9f1fb, #f6f9fc);
     }
 
-    .content-wrapper {
-      max-width: 900px;
+    .mi-wrapper {
+      max-width: 720px;
       margin: 6rem auto 3rem;
       padding: 0 1rem;
     }
 
     h1 {
-      color: #003366;
       margin-bottom: 0.5rem;
+      color: #003366;
     }
 
     .intro {
-      color: #445;
       margin-bottom: 2rem;
+      color: #445;
     }
 
-    .card-grid {
+    .mi-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.2rem;
+      gap: 1rem;
     }
 
-    .info-card {
+    .mi-item {
       display: block;
-      padding: 1.4rem;
+      padding: 1.25rem 1.4rem;
       background: #ffffff;
       border-radius: 14px;
       text-decoration: none;
@@ -45,21 +44,20 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .info-card:hover {
+    .mi-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     }
 
-    .info-card h3 {
-      margin-top: 0;
-      margin-bottom: 0.4rem;
+    .mi-item h3 {
+      margin: 0 0 0.35rem 0;
       color: #003366;
     }
 
-    .info-card p {
+    .mi-item p {
       margin: 0;
-      color: #556;
       font-size: 0.95rem;
+      color: #556;
     }
   </style>
 </head>
@@ -73,7 +71,7 @@
     <a href="#" id="logout-link">Logout</a>
   </nav>
 
-  <main class="content-wrapper">
+  <main class="mi-wrapper">
 
     <h1>Member Information</h1>
 
@@ -81,18 +79,30 @@
       Access member resources, update your details, or browse the directory.
     </p>
 
-    <div class="card-grid">
+    <div class="mi-list">
 
-      <a href="members-directory.html" class="info-card">
+      <!-- YOUR INFORMATION -->
+      <a href="your-info.html" class="mi-item">
+        <h3>Your Information</h3>
+        <p>Update household members and contact preferences.</p>
+      </a>
+
+      <!-- MEMBERS DIRECTORY -->
+      <a href="members-directory.html" class="mi-item">
         <h3>Members Directory</h3>
         <p>View contact details shared by residents.</p>
       </a>
 
-      <a href="your-info.html" class="info-card">
+      <!-- FUTURE ITEMS (placeholders only) -->
+      <div class="mi-item" style="opacity:0.55; cursor:default;">
+        <h3>Host</h3>
+        <p>Coming soon.</p>
+      </div>
 
-        <h3>Your Information</h3>
-        <p>Update household members and contact preferences.</p>
-      </a>
+      <div class="mi-item" style="opacity:0.55; cursor:default;">
+        <h3>Payments</h3>
+        <p>Coming soon.</p>
+      </div>
 
     </div>
 

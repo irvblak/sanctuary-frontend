@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_GATE_V1" />
 </head>
 
 <body>
@@ -20,14 +20,14 @@
 
   <!-- HERO (CENTRE) -->
   <section class="hero">
-    <div class="hero-overlay" style="padding-top:3.5rem;">
+    <div class="hero-overlay">
 
       <h1 class="hero-title">The Sanctuary Club</h1>
 
       <div class="action-stack">
 
-        <!-- ACCESS GATE -->
-        <div id="access-gate">
+        <!-- ACCESS GATE (hidden by default) -->
+        <div id="access-gate" style="display:none;">
           <div class="access-input-wrapper">
             <input
               type="password"
@@ -48,19 +48,13 @@
           </button>
         </div>
 
-        <!-- MEMBER ACTIONS -->
-        <div class="hero-buttons" id="member-actions" style="display:none;">
-          <button
-            class="hero-button"
-            onclick="location.href='events.html'"
-          >
+        <!-- HOME BUTTONS (always visible) -->
+        <div class="hero-buttons" id="member-actions">
+          <button class="hero-button" data-target="events.html">
             What’s On
           </button>
 
-          <button
-            class="hero-button"
-            onclick="location.href='members-info.html'"
-          >
+          <button class="hero-button" data-target="members-info.html">
             Info
           </button>
         </div>
@@ -107,54 +101,69 @@
 <script>
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
-  const SESSION_DURATION = 60 * 60 * 1000; // 1 hour
+  const SESSION_DURATION = 60 * 60 * 1000;
 
   const gate = document.getElementById("access-gate");
   const actions = document.getElementById("member-actions");
   const logoutLink = document.getElementById("logout-link");
 
-  function showMembers() {
-    gate.style.display = "none";
-    actions.style.display = "flex";
-    logoutLink.style.display = "inline";
-  }
-
-  function showGate() {
-    gate.style.display = "block";
-    actions.style.display = "none";
-    logoutLink.style.display = "none";
-  }
+  let pendingTarget = null;
 
   function hasValidSession() {
     const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
     const time = Number(sessionStorage.getItem(TIME_KEY));
-    return granted && (Date.now() - time < SESSION_DURATION);
+    return granted && Date.now() - time < SESSION_DURATION;
   }
 
-  if (hasValidSession()) {
-    showMembers();
-  } else {
-    showGate();
+  function showGate() {
+    gate.style.display = "block";
   }
 
+  function hideGate() {
+    gate.style.display = "none";
+  }
+
+  // HOME BUTTON HANDLERS
+  document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
+    btn.onclick = () => {
+      if (hasValidSession()) {
+        location.href = btn.dataset.target;
+      } else {
+        pendingTarget = btn.dataset.target;
+        showGate();
+      }
+    };
+  });
+
+  // GATE SUBMIT
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();
     if (!value) return;
 
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
-    showMembers();
+
+    if (pendingTarget) {
+      location.href = pendingTarget;
+    }
   };
 
+  // EYE TOGGLE
   document.getElementById("access-eye").onclick = () => {
     const input = document.getElementById("access-code-input");
     input.type = input.type === "password" ? "text" : "password";
   };
 
+  // LOGOUT
   logoutLink.onclick = () => {
     sessionStorage.clear();
-    showGate();
+    hideGate();
+    logoutLink.style.display = "none";
   };
+
+  // INITIAL STATE
+  hideGate();
+  logoutLink.style.display = hasValidSession() ? "inline" : "none";
 </script>
 
 </body>

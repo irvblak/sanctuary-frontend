@@ -20,8 +20,7 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: transparent;
-      padding: 1rem 1.25rem 0.5rem;
+      padding: 1rem 1.25rem 0.75rem;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
@@ -43,9 +42,9 @@
 
     /* ---- CONTENT ---- */
     main {
-      max-width: 820px;
-      margin: 2.5rem auto 3rem;
-      padding: 0 1rem 2rem;
+      max-width: 900px;
+      margin: 2.5rem auto 0;
+      padding: 0 1rem 5rem; /* <-- SCROLL HEADROOM */
     }
 
     h1 {
@@ -56,14 +55,14 @@
     .intro {
       margin-bottom: 2rem;
       color: #445;
-      max-width: 640px;
+      max-width: 680px;
     }
 
     /* ---- MENU GRID ---- */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, max-content));
-      gap: 1.25rem;
+      gap: 1.25rem 1.5rem;
       justify-content: flex-start;
     }
 
@@ -76,7 +75,7 @@
       color: inherit;
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      max-width: 420px;
+      max-width: 440px;
     }
 
     .info-card:hover {
@@ -93,7 +92,18 @@
       margin: 0;
       color: #556;
       font-size: 0.95rem;
-      max-width: 360px;
+      max-width: 380px;
+    }
+
+    /* ---- PLACEHOLDER CARDS ---- */
+    .info-card.disabled {
+      opacity: 0.65;
+      cursor: default;
+    }
+
+    .info-card.disabled:hover {
+      transform: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
   </style>
 </head>
@@ -127,10 +137,15 @@
         <p>View contact details shared by residents.</p>
       </a>
 
-      <!-- Future items intentionally supported
-      <a href="host.html" class="info-card">…</a>
-      <a href="payments.html" class="info-card">…</a>
-      -->
+      <div class="info-card disabled">
+        <h3>Hosting</h3>
+        <p>Offer to host events or activities for the community.</p>
+      </div>
+
+      <div class="info-card disabled">
+        <h3>Payments</h3>
+        <p>Manage event payments and contributions (coming soon).</p>
+      </div>
 
     </div>
 

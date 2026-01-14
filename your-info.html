@@ -1,226 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Your Information</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<script>
-/* TEMP DIAGNOSTIC SAFETY NET */
-if (!sessionStorage.getItem("memberId")) {
-  sessionStorage.setItem("memberId", "SM55");
-}
-</script>
+  <meta charset="UTF-8" />
+  <title>Your Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- Session gate -->
-<script src="access.js"></script>
+  <!-- Session gate -->
+  <script src="access.js"></script>
 
-<!-- Logout handler -->
-<script src="logout.js"></script>
+  <!-- Logout handler -->
+  <script src="logout.js"></script>
 
+  <style>
+    body.yi-page {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #e9f2fb 0%, #ffffff 65%);
+      color: #222;
+    }
 
+    .yi-root * {
+      box-sizing: border-box;
+    }
 
+    /* NAV */
+    .yi-nav {
+      padding: 1rem 1.25rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
 
+    .yi-nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #005ea8;
+    }
 
+    /* LAYOUT */
+    .yi-container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 60%);
-  color: #222;
-}
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 1.5rem;
+    }
 
-/* ---------- NAV ---------- */
-nav {
-  padding: 1rem 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .yi-intro {
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+    }
 
-nav a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #005ea8;
-  margin: 0 0.5rem;
-}
+    .yi-subtle {
+      color: #666;
+      font-size: 0.9rem;
+    }
 
-/* ---------- MAIN ---------- */
-main {
-  max-width: 900px;
-  margin: 0 auto 2rem;
-  padding: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    .yi-panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-h1 {
-  margin-top: 0;
-}
+    .yi-panel label {
+      display: block;
+      margin-top: 0.9rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
 
-.intro {
-  margin-bottom: 1rem;
-  color: #444;
-}
+    .yi-panel input {
+      width: 100%;
+      padding: 0.45rem;
+      margin-top: 0.25rem;
+      font-size: 0.95rem;
+    }
 
-/* ---------- TABLE ---------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .resident {
+      margin-top: 1.25rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #eee;
+    }
 
-th, td {
-  padding: 0.4rem;
-  text-align: left;
-}
+    .resident h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
 
-th {
-  font-size: 0.85rem;
-  color: #555;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.6rem 0.8rem;
+    }
 
-input {
-  width: 100%;
-  padding: 0.4rem;
-  font-size: 0.9rem;
-}
+    .yi-save {
+      margin-top: 1.4rem;
+      padding: 0.6rem 1.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
 
-button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.25rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-#savedMsg {
-  margin-top: 0.75rem;
-  color: #2a6f2a;
-  display: none;
-}
-
-@media (max-width: 640px) {
-  th, td { font-size: 0.85rem; }
-  input { font-size: 16px; }
-}
-</style>
+    @media (max-width: 640px) {
+      .yi-panel input {
+        font-size: 16px; /* prevent iOS zoom */
+      }
+    }
+  </style>
 </head>
 
-<body>
+<body class="yi-page">
+<div class="yi-root">
 
-<nav>
-  <div>
-    <a href="index.html">Home</a> ·
-    <a href="members-directory.html">Members</a>
-  </div>
-  <div>
-    <span>Your Information</span> ·
+  <!-- NAV -->
+  <nav class="yi-nav">
+    <a href="index.html">Home</a>
+    <a href="events-calendar.html">Calendar</a>
+    <a href="members-directory.html">Members Directory</a>
     <a href="#" onclick="logout(); return false;">Logout</a>
-  </div>
-</nav>
+  </nav>
 
-<main>
+  <!-- MAIN -->
+  <main class="yi-container">
 
-<h1>Your Information</h1>
+    <h1>Your Information</h1>
 
-<p class="intro">
-Enter any details you wish to share.  
-Only households with data appear in the Members Directory.
-</p>
+    <p class="yi-intro">
+      Enter as much information as you wish to share.<br>
+      <span class="yi-subtle">(You can change it at any time.)</span>
+    </p>
 
-<form id="infoForm">
+    <div class="yi-panel">
 
-<table>
-<thead>
-<tr>
-  <th>Resident</th>
-  <th>Name</th>
-  <th>Email</th>
-  <th>Mobile</th>
-  <th>Landline</th>
-</tr>
-</thead>
-<tbody>
-<!-- Fixed 4-resident grid -->
-<tr>
-  <td>1</td>
-  <td><input data-i="0" data-f="name"></td>
-  <td><input data-i="0" data-f="email"></td>
-  <td><input data-i="0" data-f="mobile"></td>
-  <td><input data-i="0" data-f="landline"></td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><input data-i="1" data-f="name"></td>
-  <td><input data-i="1" data-f="email"></td>
-  <td><input data-i="1" data-f="mobile"></td>
-  <td></td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><input data-i="2" data-f="name"></td>
-  <td><input data-i="2" data-f="email"></td>
-  <td><input data-i="2" data-f="mobile"></td>
-  <td></td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><input data-i="3" data-f="name"></td>
-  <td><input data-i="3" data-f="email"></td>
-  <td><input data-i="3" data-f="mobile"></td>
-  <td></td>
-</tr>
-</tbody>
-</table>
+      <label>Your home</label>
+      <input id="memberId" placeholder="e.g. SM14 or SC03">
 
-<button type="submit">Save information</button>
-<div id="savedMsg">Saved ✔</div>
+      <div id="residents"></div>
 
-</form>
+      <button class="yi-save" id="saveBtn">Save information</button>
 
-</main>
+    </div>
+
+  </main>
+</div>
 
 <script>
-const STORAGE_KEY = "sanctuaryMembers";
-const memberId = sessionStorage.getItem("memberId");
+  const STORAGE_KEY = "sanctuaryMembers";
 
-if (!memberId) {
-  window.location.href = "index.html";
-}
+  const memberInput = document.getElementById("memberId");
+  const residentsDiv = document.getElementById("residents");
+  const saveBtn = document.getElementById("saveBtn");
 
-// ---- Load existing data
-(function loadData() {
-  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const residents = members[memberId]?.residents || [];
+  function loadMembers() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch {
+      return {};
+    }
+  }
 
-  document.querySelectorAll("input[data-i]").forEach(inp => {
-    const i = inp.dataset.i;
-    const f = inp.dataset.f;
-    inp.value = residents[i]?.[f] || "";
+  function renderResidents(existing = []) {
+    residentsDiv.innerHTML = "";
+
+    for (let i = 0; i < 4; i++) {
+      const r = existing[i] || {};
+      const div = document.createElement("div");
+      div.className = "resident";
+
+      div.innerHTML = `
+        <h3>Resident ${i + 1}</h3>
+        <div class="grid">
+          <div>
+            <label>Name</label>
+            <input data-field="name" value="${r.name || ""}">
+          </div>
+          <div>
+            <label>Email</label>
+            <input data-field="email" value="${r.email || ""}">
+          </div>
+          <div>
+            <label>Mobile</label>
+            <input data-field="mobile" value="${r.mobile || ""}">
+          </div>
+          ${i === 0 ? `
+          <div>
+            <label>Landline</label>
+            <input data-field="landline" value="${r.landline || ""}">
+          </div>` : ``}
+        </div>
+      `;
+
+      residentsDiv.appendChild(div);
+    }
+  }
+
+  memberInput.addEventListener("blur", () => {
+    const id = memberInput.value.trim().toUpperCase();
+    if (!id) return;
+
+    const members = loadMembers();
+    renderResidents(members[id]?.residents || []);
+    localStorage.setItem("sanctuaryLastMemberId", id);
   });
-})();
 
-// ---- Save
-document.getElementById("infoForm").addEventListener("submit", e => {
-  e.preventDefault();
+  saveBtn.onclick = () => {
+    const id = memberInput.value.trim().toUpperCase();
+    if (!id) {
+      alert("Please enter your home (e.g. SM14).");
+      return;
+    }
 
-  const members = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  const residents = [{},{},{},{}];
+    const residents = [];
 
-  document.querySelectorAll("input[data-i]").forEach(inp => {
-    const i = inp.dataset.i;
-    const f = inp.dataset.f;
-    const v = inp.value.trim();
-    if (v) residents[i][f] = v;
-  });
+    residentsDiv.querySelectorAll(".resident").forEach(div => {
+      const r = {};
+      div.querySelectorAll("input").forEach(i => {
+        const v = i.value.trim();
+        if (v) r[i.dataset.field] = v;
+      });
+      if (Object.values(r).some(v => v)) residents.push(r);
+    });
 
-  members[memberId] = { residents };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+    const members = loadMembers();
+    members[id] = { residents };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
 
-  const msg = document.getElementById("savedMsg");
-  msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 2000);
-});
+    alert("Your information has been saved.");
+  };
+
+  // Restore last-used member
+  const last = localStorage.getItem("sanctuaryLastMemberId");
+  if (last) {
+    memberInput.value = last;
+    renderResidents(loadMembers()[last]?.residents || []);
+  }
 </script>
 
 </body>

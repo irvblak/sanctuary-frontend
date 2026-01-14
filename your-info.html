@@ -4,8 +4,21 @@
 <meta charset="UTF-8" />
 <title>Your Information</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+/* TEMP DIAGNOSTIC SAFETY NET */
+if (!sessionStorage.getItem("memberId")) {
+  sessionStorage.setItem("memberId", "SM55");
+}
+</script>
 
-<!-- Session guard -->
+<!-- Session gate -->
+<script src="access.js"></script>
+
+<!-- Logout handler -->
+<script src="logout.js"></script>
+
+
+
 
 
 

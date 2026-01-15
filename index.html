@@ -33,7 +33,7 @@
 
       <div class="action-stack">
 
-        <!-- ACCESS GATE -->
+        <!-- ACCESS GATE (visual only) -->
         <div id="access-gate" style="display:none;">
           <div class="access-input-wrapper">
             <input
@@ -54,16 +54,15 @@
           </button>
         </div>
 
-        <!-- HOME BUTTONS -->
+        <!-- HOME BUTTONS (NORMAL LINKS) -->
         <div class="hero-buttons" id="member-actions">
-          <button class="hero-button" data-target="events.html">
+          <a class="hero-button" href="events.html">
             What’s On
-          </button>
+          </a>
 
-          <button class="hero-button" data-target="members-directory.html"
-
+          <a class="hero-button" href="members-directory.html">
             Info
-          </button>
+          </a>
         </div>
 
       </div>
@@ -114,17 +113,13 @@
   const gate = document.getElementById("access-gate");
   const logoutLink = document.getElementById("logout-link");
 
-  let pendingTarget = null;
+  function hasValidSession() {
+    if (sessionStorage.getItem("memberId")) return true;
 
- function hasValidSession() {
-  // Front-page access OR active member session
-  if (sessionStorage.getItem("memberId")) return true;
-
-  const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
-  const time = Number(sessionStorage.getItem(TIME_KEY));
-  return granted && Date.now() - time < SESSION_DURATION;
-}
- 
+    const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
+    const time = Number(sessionStorage.getItem(TIME_KEY));
+    return granted && Date.now() - time < SESSION_DURATION;
+  }
 
   function showGate() {
     gate.style.display = "block";
@@ -134,17 +129,6 @@
     gate.style.display = "none";
   }
 
-  document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
-    btn.onclick = () => {
-      if (hasValidSession()) {
-        location.href = btn.dataset.target;
-      } else {
-        pendingTarget = btn.dataset.target;
-        showGate();
-      }
-    };
-  });
-
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();
     if (!value) return;
@@ -152,7 +136,8 @@
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
 
-    if (pendingTarget) location.href = pendingTarget;
+    hideGate();
+    logoutLink.style.display = "inline";
   };
 
   document.getElementById("access-eye").onclick = () => {
@@ -164,12 +149,16 @@
     e.preventDefault();
     sessionStorage.clear();
     logoutLink.style.display = "none";
-    hideGate();
+    showGate();
   };
 
   // INIT
-  hideGate();
-  logoutLink.style.display = hasValidSession() ? "inline" : "none";
+  if (hasValidSession()) {
+    hideGate();
+    logoutLink.style.display = "inline";
+  } else {
+    showGate();
+  }
 </script>
 
 </body>

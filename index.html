@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_V6" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_RESTORE_1" />
 
   <style>
     #access-gate {
@@ -44,7 +44,7 @@
 
       <div class="action-stack">
 
-        <!-- ACCESS GATE -->
+        <!-- ACCESS GATE (deferred) -->
         <div id="access-gate">
           <div class="access-input-wrapper">
             <input
@@ -61,18 +61,15 @@
           </button>
         </div>
 
-        <!-- BUTTONS -->
+        <!-- HOME BUTTONS -->
         <div class="hero-buttons">
           <button class="hero-button" data-target="events.html">
             What’s On
           </button>
 
-        <button class="hero-button" data-target="members-info.html">
-  Info
-</button>
-  
-
-            
+          <button class="hero-button" data-target="members-info.html">
+            Info
+          </button>
         </div>
 
       </div>
@@ -115,12 +112,14 @@
 </div>
 
 <script>
+  const ACCESS_CODE = "WXYZ";
   const ACCESS_KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
   const SESSION_DURATION = 60 * 60 * 1000;
 
   const gate = document.getElementById("access-gate");
   const logoutLink = document.getElementById("logout-link");
+
   let pendingTarget = null;
 
   function hasValidSession() {
@@ -142,12 +141,12 @@
 
   document.getElementById("access-submit").onclick = () => {
     const val = document.getElementById("access-code-input").value.trim();
-    if (!val || !pendingTarget) return;
+    if (val !== ACCESS_CODE) return;
 
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
 
-    location.href = pendingTarget;
+    if (pendingTarget) location.href = pendingTarget;
   };
 
   document.getElementById("access-eye").onclick = () => {

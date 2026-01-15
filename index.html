@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_V4" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_V5" />
+
+  <style>
+    /* Ensure gate never blocks buttons */
+    #access-gate {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .hero-buttons a.hero-button {
+      display: inline-block;
+      text-align: center;
+      text-decoration: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -34,7 +48,7 @@
       <div class="action-stack">
 
         <!-- ACCESS GATE (visual only) -->
-        <div id="access-gate" style="display:none;">
+        <div id="access-gate">
           <div class="access-input-wrapper">
             <input
               type="password"
@@ -54,8 +68,8 @@
           </button>
         </div>
 
-        <!-- HOME BUTTONS (NORMAL LINKS) -->
-        <div class="hero-buttons" id="member-actions">
+        <!-- HOME BUTTONS -->
+        <div class="hero-buttons">
           <a class="hero-button" href="events.html">
             What’s On
           </a>
@@ -121,14 +135,6 @@
     return granted && Date.now() - time < SESSION_DURATION;
   }
 
-  function showGate() {
-    gate.style.display = "block";
-  }
-
-  function hideGate() {
-    gate.style.display = "none";
-  }
-
   document.getElementById("access-submit").onclick = () => {
     const value = document.getElementById("access-code-input").value.trim();
     if (!value) return;
@@ -136,7 +142,7 @@
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
 
-    hideGate();
+    gate.style.display = "none";
     logoutLink.style.display = "inline";
   };
 
@@ -149,15 +155,15 @@
     e.preventDefault();
     sessionStorage.clear();
     logoutLink.style.display = "none";
-    showGate();
+    gate.style.display = "block";
   };
 
-  // INIT
+  // INIT — gate is optional, never blocks navigation
   if (hasValidSession()) {
-    hideGate();
+    gate.style.display = "none";
     logoutLink.style.display = "inline";
   } else {
-    showGate();
+    gate.style.display = "block";
   }
 </script>
 

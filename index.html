@@ -116,11 +116,15 @@
 
   let pendingTarget = null;
 
-  function hasValidSession() {
-    const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
-    const time = Number(sessionStorage.getItem(TIME_KEY));
-    return granted && Date.now() - time < SESSION_DURATION;
-  }
+ function hasValidSession() {
+  // Front-page access OR active member session
+  if (sessionStorage.getItem("memberId")) return true;
+
+  const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
+  const time = Number(sessionStorage.getItem(TIME_KEY));
+  return granted && Date.now() - time < SESSION_DURATION;
+}
+ 
 
   function showGate() {
     gate.style.display = "block";

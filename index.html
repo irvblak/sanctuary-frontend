@@ -5,19 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_V5" />
+  <link rel="stylesheet" href="styles-main.css?v=HOME_V6" />
 
   <style>
-    /* Ensure gate never blocks buttons */
     #access-gate {
       display: none;
-      margin-bottom: 1rem;
+      margin-top: 1rem;
     }
 
-    .hero-buttons a.hero-button {
-      display: inline-block;
-      text-align: center;
-      text-decoration: none;
+    .hero-button {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -37,7 +34,7 @@
     </p>
   </div>
 
-  <!-- HERO (CENTRE) -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-overlay">
 
@@ -47,7 +44,7 @@
 
       <div class="action-stack">
 
-        <!-- ACCESS GATE (visual only) -->
+        <!-- ACCESS GATE -->
         <div id="access-gate">
           <div class="access-input-wrapper">
             <input
@@ -56,11 +53,7 @@
               placeholder="Access code"
               autocomplete="off"
             />
-            <button
-              type="button"
-              id="access-eye"
-              class="toggle-visibility"
-            >👁</button>
+            <button type="button" id="access-eye">👁</button>
           </div>
 
           <button id="access-submit" class="hero-button">
@@ -68,15 +61,15 @@
           </button>
         </div>
 
-        <!-- HOME BUTTONS -->
+        <!-- BUTTONS -->
         <div class="hero-buttons">
-          <a class="hero-button" href="events.html">
+          <button class="hero-button" data-target="events.html">
             What’s On
-          </a>
+          </button>
 
-          <a class="hero-button" href="members-directory.html">
+          <button class="hero-button" data-target="members-directory.html">
             Info
-          </a>
+          </button>
         </div>
 
       </div>
@@ -91,7 +84,6 @@
   <!-- RIGHT PANEL -->
   <div class="hero-panel" style="position:relative;">
 
-    <!-- LOGOUT -->
     <a
       href="#"
       id="logout-link"
@@ -126,24 +118,33 @@
 
   const gate = document.getElementById("access-gate");
   const logoutLink = document.getElementById("logout-link");
+  let pendingTarget = null;
 
   function hasValidSession() {
-    if (sessionStorage.getItem("memberId")) return true;
-
     const granted = sessionStorage.getItem(ACCESS_KEY) === "granted";
     const time = Number(sessionStorage.getItem(TIME_KEY));
     return granted && Date.now() - time < SESSION_DURATION;
   }
 
+  document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
+    btn.onclick = () => {
+      if (hasValidSession()) {
+        location.href = btn.dataset.target;
+      } else {
+        pendingTarget = btn.dataset.target;
+        gate.style.display = "block";
+      }
+    };
+  });
+
   document.getElementById("access-submit").onclick = () => {
-    const value = document.getElementById("access-code-input").value.trim();
-    if (!value) return;
+    const val = document.getElementById("access-code-input").value.trim();
+    if (!val || !pendingTarget) return;
 
     sessionStorage.setItem(ACCESS_KEY, "granted");
     sessionStorage.setItem(TIME_KEY, Date.now());
 
-    gate.style.display = "none";
-    logoutLink.style.display = "inline";
+    location.href = pendingTarget;
   };
 
   document.getElementById("access-eye").onclick = () => {
@@ -154,16 +155,13 @@
   logoutLink.onclick = e => {
     e.preventDefault();
     sessionStorage.clear();
+    gate.style.display = "none";
     logoutLink.style.display = "none";
-    gate.style.display = "block";
   };
 
-  // INIT — gate is optional, never blocks navigation
+  // INIT
   if (hasValidSession()) {
-    gate.style.display = "none";
     logoutLink.style.display = "inline";
-  } else {
-    gate.style.display = "block";
   }
 </script>
 

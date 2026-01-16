@@ -76,7 +76,16 @@
       font-weight: 700;
     }
 
-    button {
+    .calendar-links {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin: 0.25rem 0 1rem;
+      flex-wrap: wrap;
+    }
+
+    button,
+    .link-button {
       background: #8b5a2b;
       color: white;
       border: none;
@@ -84,6 +93,8 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 1rem;
+      text-decoration: none;
+      display: inline-block;
     }
 
     button:disabled {
@@ -132,119 +143,4 @@
     }
 
     .day.past {
-      background: #f0f0f0;
-      color: #9aa3ad;
-    }
-
-    .day.past .day-number {
-      color: #9aa3ad;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- Top navigation -->
-  <div class="top-nav">
-    <div>
-      <a href="index.html">Home</a>
-      <a href="#" id="logout-link">Logout</a>
-    </div>
-    <div class="nav-center">Calendar</div>
-    <a href="notices.html">Info</a>
-  </div>
-
-  <div class="calendar-container">
-    <div class="calendar-header">
-      <button id="prev-month">← Prev</button>
-      <div id="month-label" class="calendar-month-label"></div>
-      <button id="next-month">Next →</button>
-    </div>
-
-    <div id="calendar-grid" class="calendar-grid"></div>
-  </div>
-
-  <!-- 🔓 LOGOUT -->
-  <script>
-    document.getElementById("logout-link").addEventListener("click", (e) => {
-      e.preventDefault();
-      sessionStorage.removeItem("sanctuaryAccess");
-      window.location.replace("index.html");
-    });
-  </script>
-
-  <!-- 📅 CALENDAR LOGIC -->
-  <script>
-    const grid = document.getElementById("calendar-grid");
-    const monthLabel = document.getElementById("month-label");
-    const prevBtn = document.getElementById("prev-month");
-    const nextBtn = document.getElementById("next-month");
-
-    let offset = 0;
-    const weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-
-    function buildCalendar(monthOffset) {
-      grid.innerHTML = "";
-
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + monthOffset;
-
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
-
-      monthLabel.textContent =
-        firstDay.toLocaleString("default", { month: "long", year: "numeric" });
-
-      weekdays.forEach(d => {
-        const el = document.createElement("div");
-        el.className = "weekday";
-        el.textContent = d;
-        grid.appendChild(el);
-      });
-
-      const start = (firstDay.getDay() + 6) % 7;
-      for (let i = 0; i < start; i++) {
-        const empty = document.createElement("div");
-        empty.className = "day empty";
-        grid.appendChild(empty);
-      }
-
-      const today = new Date();
-      today.setHours(0,0,0,0);
-
-      for (let day = 1; day <= lastDay.getDate(); day++) {
-        const cell = document.createElement("div");
-        cell.className = "day";
-
-        const cellDate = new Date(year, month, day);
-        cellDate.setHours(0,0,0,0);
-
-        if (cellDate < today) {
-          cell.classList.add("past");
-        }
-
-        const num = document.createElement("span");
-        num.className = "day-number";
-        num.textContent = day;
-
-        cell.appendChild(num);
-        grid.appendChild(cell);
-      }
-    }
-
-    prevBtn.addEventListener("click", () => {
-      offset--;
-      buildCalendar(offset);
-    });
-
-    nextBtn.addEventListener("click", () => {
-      offset++;
-      buildCalendar(offset);
-    });
-
-    buildCalendar(0);
-  </script>
-
-</body>
-</html>
+      background: #

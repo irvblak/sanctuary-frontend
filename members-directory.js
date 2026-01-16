@@ -1,12 +1,9 @@
 // members-directory.js
-// =====================================
-// Sanctuary Club – Members Directory
-// Reads from localStorage["sanctuaryMembers"]
-// =====================================
+// Sanctuary Club – Members Directory (RESTORED CORE)
 
 const STORAGE_KEY = "sanctuaryMembers";
 
-// ---- Load all members
+// ---------- Load members safely
 function loadMembers() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
@@ -15,77 +12,72 @@ function loadMembers() {
   }
 }
 
-// ---- Pad helper
-function pad(num) {
-  return num.toString().padStart(2, "0");
+// ---------- Helpers
+function pad(n) {
+  return String(n).padStart(2, "0");
 }
 
-// ---- Build Sanctuary Mews list
 function buildMews() {
-  const list = ["SCH"];
+  const list = [];
   for (let i = 1; i <= 73; i++) list.push(`SM${pad(i)}`);
   return list;
 }
 
-// ---- Build Sanctuary Court list
 function buildCourt() {
   const list = [];
   for (let i = 1; i <= 43; i++) list.push(`SC${pad(i)}`);
   return list;
 }
 
-// ---- Render a grid
+// ---------- Render grid
 function renderGrid(containerId, memberIds, members, detailArea) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   container.innerHTML = "";
-  let activeButton = null;
+  let activeBtn = null;
 
-  memberIds.forEach(memberId => {
-    const data = members[memberId];
+  memberIds.forEach(id => {
+    const btn = document.createElement("button");
+    btn.className = "member-button";
+    btn.textContent = id;
 
-    // ✅ ONE-LINE VISIBILITY DECISION (as agreed)
+    const data = members[id];
     const hasData =
       data &&
       Array.isArray(data.residents) &&
-      data.residents.some(res =>
-        Object.values(res || {}).some(v => String(v).trim() !== "")
-      );
+      data.residents.length > 0;
 
-    const btn = document.createElement("button");
-    btn.textContent = memberId;
-    btn.className = "member-button";
+    if (hasData) btn.classList.add("has-data");
+    else btn.classList.add("inactive");
 
-    if (!hasData) btn.classList.add("inactive");
-
-    btn.addEventListener("click", () => {
+    btn.onclick = () => {
       if (!hasData) return;
 
-      if (activeButton === btn) {
+      if (activeBtn === btn) {
         btn.classList.remove("active");
         detailArea.innerHTML = "";
-        activeButton = null;
+        activeBtn = null;
         return;
       }
 
-      if (activeButton) activeButton.classList.remove("active");
+      if (activeBtn) activeBtn.classList.remove("active");
 
-      activeButton = btn;
+      activeBtn = btn;
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
-      renderMemberDetail(memberId, data, detailArea);
-    });
+      renderMemberDetail(id, data, detailArea);
+    };
 
     container.appendChild(btn);
   });
 }
 
-// ---- Render household detail
+// ---------- Render resident cards
 function renderMemberDetail(memberId, data, container) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "member-detail-wrapper";
+  const wrap = document.createElement("div");
+  wrap.className = "member-detail-wrapper";
 
   data.residents.forEach((res, idx) => {
     const card = document.createElement("div");
@@ -103,13 +95,13 @@ function renderMemberDetail(memberId, data, container) {
       }
     `;
 
-    wrapper.appendChild(card);
+    wrap.appendChild(card);
   });
 
-  container.appendChild(wrapper);
+  container.appendChild(wrap);
 }
 
-// ---- Init
+// ---------- Init
 document.addEventListener("DOMContentLoaded", () => {
   const members = loadMembers();
   const detailArea = document.getElementById("member-detail");

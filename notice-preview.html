@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notice Sheet Preview</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #e7eef7;
+      color: #222;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    /* ---------- NOTICE SHEET ---------- */
+    .notice-sheet {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .notice-head {
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .notice-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.25rem;
+    }
+
+    .tag {
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: #eef4fb;
+      color: #003366;
+      border: 1px solid #d3e2f5;
+    }
+
+    .notice-head h2 {
+      margin: 0.25rem 0 0 0;
+      font-size: 1.35rem;
+      color: #003366;
+    }
+
+    .notice-body {
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .notice-body ul {
+      margin-left: 1.2rem;
+    }
+
+    .notice-foot {
+      border-top: 1px solid #e5e5e5;
+      margin-top: 1.25rem;
+      padding-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+<main>
+
+  <article class="notice-sheet">
+    <header class="notice-head">
+      <div class="notice-meta">
+        <span class="tag">Committee</span>
+        <span>17 January 2026</span>
+      </div>
+      <h2>Pool Room – Temporary Closure</h2>
+    </header>
+
+    <div class="notice-body">
+      <p>
+        The Pool Room will be temporarily closed for essential maintenance.
+      </p>
+      <ul>
+        <li>Closure date: Monday 20 January</li>
+        <li>Expected reopening: Wednesday morning</li>
+      </ul>
+      <p>
+        We apologise for any inconvenience and appreciate your cooperation.
+      </p>
+    </div>
+
+    <footer class="notice-foot">
+      <span>Posted by: The Committee</span>
+      <span>Contact: committee@sanctuary-club.uk</span>
+    </footer>
+  </article>
+
+</main>
+
+</body>
+</html>

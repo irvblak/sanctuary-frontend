@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🔒 Session gate -->
+  <script src="access.js"></script>
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
+      color:#222;
+      min-height:100vh;
+    }
+
+    nav{
+      padding:1rem 1.25rem;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+    }
+    nav a{
+      text-decoration:none;
+      font-weight:600;
+      color:#003366;
+    }
+    .nav-left{justify-self:start;}
+    .nav-center{justify-self:center;}
+    .nav-right{justify-self:end; display:flex; gap:1rem; align-items:center;}
+
+    main{max-width:980px; margin:0 auto 1rem; padding:0 1rem;}
+
+    .card{
+      background:#fff;
+      border-radius:14px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.06);
+      padding:1.25rem;
+    }
+
+    h1{margin:0 0 0.75rem 0; font-size:1.6rem; color:#003366;}
+
+    .subtle{color:#666; font-size:0.95rem; line-height:1.45;}
+    .subtle p{margin:0.55rem 0;}
+
+    .row{display:grid; grid-template-columns:1fr; gap:0.85rem; margin-top:1rem;}
+
+    .field label{
+      display:block;
+      font-size:0.85rem;
+      color:#555;
+      margin-bottom:0.25rem;
+    }
+
+    input{
+      width:100%;
+      padding:0.5rem;
+      font-size:1rem;
+      border:1px solid #cfd8e3;
+      border-radius:10px;
+      box-sizing:border-box;
+    }
+
+    .box{
+      margin-top:1rem;
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      background:#fbfdff;
+      padding:0.95rem;
+    }
+
+    .box h2{
+      margin:0 0 0.5rem 0;
+      font-size:1.05rem;
+      color:#003366;
+    }
+
+    .pin-grid{
+      display:grid;
+      grid-template-columns: 1fr 170px;
+      gap:0.75rem;
+      align-items:end;
+      margin-top:0.5rem;
+    }
+
+    button{
+      background:#005ea8;
+      color:#fff;
+      border:none;
+      padding:0.6rem 1rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1rem;
+      font-weight:700;
+    }
+
+    button.secondary{background:#7f97ad;}
+    button:disabled{opacity:0.45; cursor:default;}
+
+    .residents{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+
+    .resident-card{
+      border:1px solid #ddd;
+      border-radius:12px;
+      padding:0.9rem;
+      background:#fafafa;
+    }
+
+    .resident-card h3{
+      margin:0 0 0.6rem 0;
+      font-size:1rem;
+      color:#003366;
+    }
+
+    .actions{
+      display:flex;
+      gap:0.75rem;
+      flex-wrap:wrap;
+      margin-top:1rem;
+    }
+
+    .linklike{
+      color:#005ea8;
+      text-decoration:underline;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    @media (max-width:720px){
+      nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
+      .nav-left,.nav-center,.nav-right{justify-self:center;}
+      .pin-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+
+<body>
+<nav>
+  <div class="nav-left"><a href="index.html">Home</a></div>
+  <div class="nav-center"><a href="events-calendar.html">Calendar</a></div>
+  <div class="nav-right">
+    <a href="members-info.html">Hub</a>
+    <a href="#" id="logout-link">Logout</a>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <h1>Your Information</h1>
+
+    <div class="subtle">
+      <p>
+        See it in the <a href="members-directory.html">Members Directory →</a>
+      </p>
+
+      <p>
+        Most properties will only need Resident 1. If you want to add another resident,
+        click <span class="linklike" id="addResidentInline">add another resident</span>.
+        (You can add up to 4 residents, one at a time.)
+      </p>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Membership number (e.g. SM55, SC12)</label>
+        <input id="memberId" placeholder="SM55" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- PIN box always visible (but actions disabled until memberId entered) -->
+    <div class="box" id="pinBox">
+      <h2>PIN security</h2>
+      <div class="subtle">
+        <p>
+          Choose a 4-digit PIN. This helps ensure only you can update what you share.
+        </p>
+        <p>
+          If you forget your PIN, we can later send a reset to the email address or mobile number you provide.
+          <strong>Note:</strong> that “send back” feature needs the secure members system (backend) — this static site
+          cannot email/text automatically yet.
+        </p>
+      </div>
+
+      <div class="pin-grid">
+        <div class="field">
+          <label id="pinLabel">4-digit PIN</label>
+          <input id="pinInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234" autocomplete="off" />
+        </div>
+        <button id="unlockBtn" type="button" disabled>Unlock editing</button>
+      </div>
+
+      <p class="subtle" style="margin-top:0.6rem;">
+        You’ll need your PIN whenever you want to change your details on this device.
+      </p>
+    </div>
+
+    <div class="residents" id="residents"></div>
+
+    <div class="actions">
+      <button id="addResidentBtn" class="secondary" type="button" disabled>Add another resident</button>
+      <button id="saveBtn" type="button" disabled>Save</button>
+    </div>
+
+    <p class="subtle" style="margin-top:0.75rem;">
+      Privacy: only the fields you fill in will be shown in the Members Directory.
+      (For now, your entries are stored on this device/browser.)
+    </p>
+  </div>
+</main>
+
+<script>
+  const STORAGE_KEY = "sanctuaryMembers";
+  const PIN_KEY = "sanctuaryPins";
+  const ACCESS_KEY = "sanctuaryAccess";
+  const TIME_KEY = "sanctuaryAccessTime";
+
+  const memberIdEl = document.getElementById("memberId");
+  const residentsEl = document.getElementById("residents");
+
+  const pinInput = document.getElementById("pinInput");
+  const pinLabel = document.getElementById("pinLabel");
+  const unlockBtn = document.getElementById("unlockBtn");
+
+  const addResidentBtn = document.getElementById("addResidentBtn");
+  const saveBtn = document.getElementById("saveBtn");
+
+  const addResidentInline = document.getElementById("addResidentInline");
+
+  let unlocked = false;
+  let shownResidents = 1;       // SHOW ONLY Resident 1 initially
+  let existingResidents = [];   // saved residents, if any (we reveal only if user clicks Add)
+
+  function loadStore(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveStore(store){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  }
+
+  function loadPins(){
+    try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function savePins(pins){
+    localStorage.setItem(PIN_KEY, JSON.stringify(pins));
+  }
+
+  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+  async function pinHash(memberId, pin){
+    return sha256Hex(`${memberId}::${pin}::sanctuary`);
+  }
+
+  function setUnlocked(state){
+    unlocked = state;
+    addResidentBtn.disabled = !unlocked;
+    saveBtn.disabled = !unlocked;
+    renderResidents();
+  }
+
+  function makeResidentCard(index, data = {}){
+    const div = document.createElement("div");
+    div.className = "resident-card";
+    div.innerHTML = `
+      <h3>Resident ${index + 1}</h3>
+      <label>Name</label>
+      <input data-field="name" value="${data.name || ""}" ${unlocked ? "" : "disabled"}>
+      <label>Email</label>
+      <input data-field="email" value="${data.email || ""}" ${unlocked ? "" : "disabled"}>
+      <label>Mobile</label>
+      <input data-field="mobile" value="${data.mobile || ""}" ${unlocked ? "" : "disabled"}>
+      ${index === 0 ? `
+        <label>Landline</label>
+        <input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>
+      ` : ""}
+    `;
+    return div;
+  }
+
+  function renderResidents(){
+    residentsEl.innerHTML = "";
+    for (let i = 0; i < shownResidents; i++){
+      residentsEl.appendChild(makeResidentCard(i, existingResidents[i] || {}));
+    }
+  }
+
+  function updatePinUI(memberId){
+    const pins = loadPins();
+    const hasPin = !!pins[memberId];
+
+    if (!hasPin){
+      pinLabel.textContent = "Choose a 4-digit PIN";
+      unlockBtn.textContent = "Set PIN & Unlock";
+    } else {
+      pinLabel.textContent = "Enter your 4-digit PIN";
+      unlockBtn.textContent = "Unlock editing";
+    }
+  }
+
+  async function handleUnlock(){
+    const memberId = memberIdEl.value.trim();
+    if (!memberId) return;
+
+    const pins = loadPins();
+    const hasPin = !!pins[memberId];
+    const pin = pinInput.value.trim();
+
+    if (!onlyDigits4(pin)){
+      alert("Please enter a 4-digit PIN (numbers only).");
+      return;
+    }
+
+    if (!hasPin){
+      pins[memberId] = await pinHash(memberId, pin);
+      savePins(pins);
+      setUnlocked(true);
+      alert("PIN set. You can now add or update your information.");
+      return;
+    }
+
+    const hashed = await pinHash(memberId, pin);
+    if (hashed !== pins[memberId]){
+      alert("Incorrect PIN.");
+      return;
+    }
+
+    setUnlocked(true);
+  }
+
+  function loadExistingFor(memberId){
+    const store = loadStore();
+    existingResidents = store[memberId]?.residents || [];
+  }
+
+  // Inline “add another resident” link in the explanatory text
+  addResidentInline.addEventListener("click", () => {
+    addResidentBtn.click();
+  });
+
+  addResidentBtn.addEventListener("click", () => {
+    if (!unlocked) return;
+    if (shownResidents >= 4) return;
+    shownResidents++;
+    renderResidents();
+  });
+
+  saveBtn.addEventListener("click", () => {
+    if (!unlocked) return;
+    const memberId = memberIdEl.value.trim();
+    if (!memberId) return;
+
+    const residents = [...document.querySelectorAll(".resident-card")]
+      .map(card => {
+        const obj = {};
+        card.querySelectorAll("input").forEach(inp => {
+          if (inp.disabled) return;
+          const v = inp.value.trim();
+          if (v) obj[inp.dataset.field] = v;
+        });
+        return obj;
+      })
+      .filter(r => Object.keys(r).length);
+
+    const store = loadStore();
+    store[memberId] = { residents };
+    saveStore(store);
+
+    // keep only what was saved as the “existing”
+    existingResidents = residents;
+
+    alert("Saved");
+  });
+
+  memberIdEl.addEventListener("input", () => {
+    const memberId = memberIdEl.value.trim();
+
+    // Always reset the visual state for a new visitor:
+    shownResidents = 1;
+    existingResidents = [];
+    setUnlocked(false);
+
+    unlockBtn.disabled = !memberId;
+    addResidentBtn.disabled = true;
+    saveBtn.disabled = true;
+
+    if (!memberId){
+      residentsEl.innerHTML = "";
+      return;
+    }
+
+    loadExistingFor(memberId);
+    updatePinUI(memberId);
+
+    // show Resident 1 only (prefilled if it exists)
+    renderResidents();
+  });
+
+  unlockBtn.addEventListener("click", handleUnlock);
+
+  // Logout
+  document.getElementById("logout-link").onclick = (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem(ACCESS_KEY);
+    sessionStorage.removeItem(TIME_KEY);
+    location.href = "index.html";
+  };
+
+  // Initial: show nothing until membership number entered
+  residentsEl.innerHTML = "";
+</script>
+
+</body>
+</html>

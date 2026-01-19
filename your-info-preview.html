@@ -110,11 +110,13 @@
     button.secondary{background:#7f97ad;}
     button:disabled{opacity:0.45; cursor:default;}
 
+    /* ✅ Prevent single card stretching full width */
     .residents{
       display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
       gap:1rem;
       margin-top:0.75rem;
+      justify-content:start;
     }
 
     .resident-card{
@@ -239,7 +241,7 @@
   const saveBtn = document.getElementById("saveBtn");
 
   let unlocked = false;
-  let shownResidents = 1;      // show Resident 1 only initially
+  let shownResidents = 1;      // will be set based on saved data after membership number entered
   let existingResidents = [];  // prefill if any saved
 
   function loadStore(){
@@ -319,8 +321,7 @@
     const pins = loadPins();
     const hasPin = !!pins[memberId];
 
-    // IMPORTANT: keep your custom label text unchanged.
-    // Only adjust button text.
+    // keep your custom label text unchanged; only adjust button text.
     unlockBtn.textContent = hasPin ? "Unlock" : "Set PIN & Unlock";
   }
 
@@ -387,25 +388,34 @@
     saveStore(store);
 
     existingResidents = residents;
+
+    // ✅ after saving, show the full picture next render
+    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+    renderResidents();
+
     alert("Saved");
   });
 
   memberIdEl.addEventListener("input", () => {
     const memberId = memberIdEl.value.trim();
 
-    shownResidents = 1;
     existingResidents = [];
     setUnlocked(false);
 
     unlockBtn.disabled = !memberId;
     if (!memberId){
       residentsEl.innerHTML = "";
+      shownResidents = 1;
       return;
     }
 
     loadExistingFor(memberId);
     updatePinUI(memberId);
-    renderResidents(); // shows Resident 1 only, prefilled if present
+
+    // ✅ show all saved residents immediately (up to 4). If none, show Resident 1 only.
+    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+
+    renderResidents();
   });
 
   unlockBtn.addEventListener("click", handleUnlock);

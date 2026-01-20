@@ -384,7 +384,8 @@
       .filter(r => Object.keys(r).length);
 
     const store = loadStore();
-    store[memberId] = { residents };
+    store[memberId] = { residents, joined: true, updated: Date.now() };
+
     saveStore(store);
 
     existingResidents = residents;

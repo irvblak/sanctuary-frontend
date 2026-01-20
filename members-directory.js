@@ -1,5 +1,5 @@
 // members-directory.js
-// Sanctuary Club – Members Directory (RESTORED CORE)
+// Sanctuary Club – Members Directory (JOINED + DETAILS)
 
 const STORAGE_KEY = "sanctuaryMembers";
 
@@ -43,17 +43,23 @@ function renderGrid(containerId, memberIds, members, detailArea) {
     btn.textContent = id;
 
     const data = members[id];
-    const hasData =
+
+    const hasResidents =
       data &&
       Array.isArray(data.residents) &&
       data.residents.length > 0;
 
-    if (hasData) btn.classList.add("has-data");
+    const isJoined = !!(data && data.joined);
+
+    // Highlight if joined OR has residents
+    if (hasResidents || isJoined) btn.classList.add("has-data");
     else btn.classList.add("inactive");
 
     btn.onclick = () => {
-      if (!hasData) return;
+      // If not joined and no residents, do nothing
+      if (!hasResidents && !isJoined) return;
 
+      // Toggle close
       if (activeBtn === btn) {
         btn.classList.remove("active");
         detailArea.innerHTML = "";
@@ -62,11 +68,24 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       }
 
       if (activeBtn) activeBtn.classList.remove("active");
-
       activeBtn = btn;
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
+      // Joined but no details yet
+      if (isJoined && !hasResidents) {
+        const msg = document.createElement("div");
+        msg.style.padding = "0.9rem 1rem";
+        msg.style.borderRadius = "10px";
+        msg.style.background = "#fff";
+        msg.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
+        msg.style.color = "#444";
+        msg.innerHTML = `<strong>${id}</strong><br><span style="color:#666;">Member joined — no contact details shared yet.</span>`;
+        detailArea.appendChild(msg);
+        return;
+      }
+
+      // Otherwise show details
       renderMemberDetail(id, data, detailArea);
     };
 
@@ -79,7 +98,7 @@ function renderMemberDetail(memberId, data, container) {
   const wrap = document.createElement("div");
   wrap.className = "member-detail-wrapper";
 
-  data.residents.forEach((res, idx) => {
+  (data.residents || []).forEach((res, idx) => {
     const card = document.createElement("div");
     card.className = "resident-card";
 

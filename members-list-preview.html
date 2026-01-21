@@ -7,7 +7,7 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-    <script src="logout.js"></script>
+  <script src="logout.js"></script>
 
   <style>
     body{
@@ -149,17 +149,14 @@
   <div class="card">
     <h1>Members List</h1>
     <p class="sub">
-      This is a list-style view of the Members Directory content.
-      It populates as residents enter their details in <strong>Your Information</strong>.
-      If details are edited in Your Information, this view reflects the latest saved data.
+      This is a list-style view of the Members Directory.
     </p>
 
     <div class="split">
       <!-- LEFT: SCH + SM -->
       <section class="panel">
         <div class="panel-head">
-          <span>SCH + Sanctuary Mews</span>
-          <span class="muted" id="countLeft"></span>
+          <span>SCH (clubhouse) &amp; Sanctuary Mews</span>
         </div>
         <div class="panel-body">
           <table>
@@ -181,7 +178,6 @@
       <section class="panel">
         <div class="panel-head">
           <span>Sanctuary Court</span>
-          <span class="muted" id="countRight"></span>
         </div>
         <div class="panel-body">
           <table>
@@ -232,32 +228,51 @@
     return out;
   }
 
-  // Your original scheme includes SCH 1–6, SM 1–73, SC 1–43
+  // Now: SCH (single), SM 1–73, SC 1–43
   function buildLeftIds(){
     return [
-      ...buildIds("SCH", 1, 6),
+      "SCH",
       ...buildIds("SM", 1, 73)
     ];
   }
+
   function buildRightIds(){
     return buildIds("SC", 1, 43);
   }
 
-  function getPrimaryResident(store, memberId){
-    const residents = store[memberId]?.residents || [];
-    return residents[0] || null; // MD shows Resident 1 (plus landline)
+  function getPrimaryResidentFromEntry(entry){
+    const residents = entry?.residents || [];
+    return residents[0] || null; // primary resident
   }
 
-  function renderTable(tbodyId, ids, store, countElId){
+  function isPopulatedResident(r){
+    return !!(r && (r.name || r.email || r.mobile || r.landline));
+  }
+
+  // Backwards-compatible:
+  // If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06 and display that under SCH.
+  function getPrimaryResident(store, memberId){
+    if (memberId === "SCH") {
+      const direct = getPrimaryResidentFromEntry(store["SCH"]);
+      if (isPopulatedResident(direct)) return direct;
+
+      for (let i = 1; i <= 6; i++) {
+        const legacyId = "SCH" + pad2(i);
+        const legacy = getPrimaryResidentFromEntry(store[legacyId]);
+        if (isPopulatedResident(legacy)) return legacy;
+      }
+      return null;
+    }
+
+    return getPrimaryResidentFromEntry(store[memberId]) || null;
+  }
+
+  function renderTable(tbodyId, ids, store){
     const tbody = document.getElementById(tbodyId);
-    let populated = 0;
 
     const rows = ids.map(memberId => {
       const r = getPrimaryResident(store, memberId);
-      const hasAny =
-        r && (r.name || r.email || r.mobile || r.landline);
-
-      if (hasAny) populated++;
+      const hasAny = isPopulatedResident(r);
 
       const name = hasAny ? (r.name || "—") : "—";
       const email = hasAny ? (r.email || "—") : "—";
@@ -276,15 +291,12 @@
     });
 
     tbody.innerHTML = rows.join("");
-
-    const countEl = document.getElementById(countElId);
-    if (countEl) countEl.textContent = `${populated} populated`;
   }
 
   function render(){
     const store = loadStore();
-    renderTable("rowsLeft", buildLeftIds(), store, "countLeft");
-    renderTable("rowsRight", buildRightIds(), store, "countRight");
+    renderTable("rowsLeft", buildLeftIds(), store);
+    renderTable("rowsRight", buildRightIds(), store);
   }
 
   render();

@@ -2,158 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Member Information – The Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notices – The Sanctuary Club</title>
 
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex, nofollow" />
 
-  <link rel="stylesheet" href="styles-main.css" />
+  <!-- 🔒 Session gate -->
+  <script src="access.js"></script>
 
   <style>
-    /* =========================================================
-       TOP NAV (FIXED LAYOUT)
-       ========================================================= */
-    .top-nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 56px;
-      background: #ffffff;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      padding: 0 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      z-index: 1000;
-    }
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#e7eef7;color:#222;}
+    nav{padding:1rem 1.25rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:#e7eef7;}
+    nav a{text-decoration:none;font-weight:600;color:#003366;}
+    .nav-left{justify-self:start;}
+    .nav-center{justify-self:center;font-weight:800;color:#003366;}
+    .nav-right{justify-self:end;display:flex;gap:1rem;align-items:center;}
+    main{max-width:900px;margin:1rem auto 2rem;padding:0 1rem;}
+    h1{margin:0.5rem 0;font-size:1.6rem;color:#003366;}
+    .intro{color:#555;margin:0 0 1.25rem;line-height:1.45;}
 
-    .top-nav a {
-      text-decoration: none;
-      font-weight: 600;
-      color: #003366;
-    }
-
-    .top-nav .nav-center {
-      text-align: center;
-      font-weight: 700;
-      color: #003366;
-    }
-
-    /* =========================================================
-       MEMBER INFO PAGE
-       ========================================================= */
-    .member-info-page {
-      min-height: 100vh;
-      background: linear-gradient(
-        to bottom,
-        #8bbce8 0%,
-        #cfe6fb 35%,
-        #ffffff 75%
-      );
-      padding-top: 5.5rem;
-    }
-
-    .member-info-container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .member-info-container h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: #003366;
-    }
-
-    .member-menu {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .member-menu a {
-      display: block;
-      width: 9cm;
-      max-width: 90%;
-      padding: 0.8rem 1rem;
-      border-radius: 10px;
-      background: white;
-      text-decoration: none;
-      color: #003366;
-      font-size: 1.05rem;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      text-align: center;
-    }
-
-    .member-menu a:hover {
-      background: #eef4fb;
-    }
-
-    .menu-note {
-      width: 9cm;
-      max-width: 90%;
-      font-size: 0.85rem;
-      color: #4b5f78;
-      margin-top: -0.3rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
+    .notice-sheet{background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.08);padding:1.5rem 1.75rem;margin-bottom:1.25rem;}
+    .notice-head{border-bottom:1px solid #e5e5e5;margin-bottom:1rem;padding-bottom:0.5rem;}
+    .notice-meta{display:flex;justify-content:space-between;gap:0.75rem;font-size:0.85rem;color:#555;margin-bottom:0.25rem;flex-wrap:wrap;}
+    .tag{font-weight:700;padding:0.15rem 0.55rem;border-radius:999px;background:#eef4fb;color:#003366;border:1px solid #d3e2f5;}
+    .notice-head h2{margin:0.25rem 0 0 0;font-size:1.35rem;color:#003366;}
+    .notice-body{line-height:1.5;font-size:1rem;}
+    .notice-body ul{margin-left:1.2rem;}
+    .notice-foot{border-top:1px solid #e5e5e5;margin-top:1.25rem;padding-top:0.5rem;font-size:0.85rem;color:#555;display:flex;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;}
   </style>
 </head>
 
 <body>
-
-  <!-- Top navigation -->
-  <div class="top-nav">
-    <a href="index.html">Home</a>
-
-    <div class="nav-center">
-      <a href="events-calendar.html">Calendar</a>
-    </div>
-
+<nav>
+  <div class="nav-left"><a href="index.html">Home</a></div>
+  <div class="nav-center">Notices</div>
+  <div class="nav-right">
+    <a href="members-info.html">Hub</a>
     <a href="#" onclick="logout(); return false;">Logout</a>
-
   </div>
+</nav>
 
-  <main class="member-info-page">
-    <div class="member-info-container">
-      <h1>Member Information</h1>
+<main>
+  <h1>Notices</h1>
+  <p class="intro">Messages from the Committee, hosts and organisers, and clubhouse admin.</p>
 
-      <div class="member-menu">
-
-        <a href="your-info.html">👤 Your Info</a>
-        <div class="menu-note">
-          Add or update your contact details (optional but helpful)
-        </div>
-
-        <a href="members-directory.html">👥 Members Directory</a>
-
-        <div class="menu-note">
-          View shared contact details of other members
-        </div>
-
-        <a href="notices-board.html">📣 Notices</a>
-        <div class="menu-note">
-          Important updates and announcements
-        </div>
-
-        <a href="events.html">📅 Host an Event</a>
-        <div class="menu-note">
-          Create and manage your own activities or events
-        </div>
-
-        <a href="payments.html">💷 Payments</a>
-
+  <article class="notice-sheet">
+    <header class="notice-head">
+      <div class="notice-meta">
+        <span class="tag">Committee</span>
+        <span>17 January 2026</span>
       </div>
+      <h2>Pool Room – Temporary Closure</h2>
+    </header>
+
+    <div class="notice-body">
+      <p>The Pool Room will be temporarily closed for essential maintenance.</p>
+      <ul>
+        <li>Closure date: Monday 20 January</li>
+        <li>Expected reopening: Wednesday morning</li>
+      </ul>
+      <p>We apologise for any inconvenience and appreciate your cooperation.</p>
     </div>
-  </main>
 
-  <script src="access.js"></script>
+    <footer class="notice-foot">
+      <span>Posted by: The Committee</span>
+      <span>Contact: committee@sanctuary-club.uk</span>
+    </footer>
+  </article>
+</main>
+
 <script src="logout.js"></script>
-
 </body>
 </html>

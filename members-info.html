@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Member Information – The Sanctuary Club</title>
+  <title>Members Hub – The Sanctuary Club</title>
 
   <meta name="robots" content="noindex, nofollow">
 
   <link rel="stylesheet" href="styles-main.css" />
 
   <style>
+    /* =========================================================
+       TOP NAV
+       ========================================================= */
     .top-nav {
       position: fixed;
       top: 0;
@@ -37,7 +40,10 @@
       color: #003366;
     }
 
-    .member-info-page {
+    /* =========================================================
+       HUB PAGE
+       ========================================================= */
+    .hub-page {
       min-height: 100vh;
       background: linear-gradient(
         to bottom,
@@ -48,33 +54,33 @@
       padding-top: 5.5rem;
     }
 
-    .member-info-container {
+    .hub-container {
       max-width: 720px;
       margin: 0 auto;
       padding: 1.5rem;
       text-align: center;
     }
 
-    .member-info-container h1 {
+    .hub-container h1 {
       font-size: 2rem;
       margin-bottom: 1.5rem;
       color: #003366;
     }
 
-    .member-menu {
+    .hub-menu {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.8rem;
     }
 
-    .member-menu a {
+    .hub-menu a {
       display: block;
       width: 9cm;
       max-width: 90%;
-      padding: 0.8rem 1rem;
-      border-radius: 10px;
-      background: white;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #ffffff;
       text-decoration: none;
       color: #003366;
       font-size: 1.05rem;
@@ -83,7 +89,7 @@
       text-align: center;
     }
 
-    .member-menu a:hover {
+    .hub-menu a:hover {
       background: #eef4fb;
     }
 
@@ -92,15 +98,21 @@
       max-width: 90%;
       font-size: 0.85rem;
       color: #4b5f78;
-      margin-top: -0.3rem;
-      margin-bottom: 0.5rem;
+      margin-top: -0.35rem;
+      margin-bottom: 0.6rem;
       text-align: center;
+    }
+
+    .muted {
+      opacity: 0.55;
+      pointer-events: none;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Top navigation -->
   <div class="top-nav">
     <a href="index.html">Home</a>
 
@@ -111,34 +123,36 @@
     <a href="#" onclick="logout(); return false;">Logout</a>
   </div>
 
-  <main class="member-info-page">
-    <div class="member-info-container">
-      <h1>Member Information</h1>
+  <main class="hub-page">
+    <div class="hub-container">
+      <h1>Members Hub</h1>
 
-      <div class="member-menu">
+      <div class="hub-menu">
 
-        <a href="your-info.html">👤 Your Info</a>
+        <a href="your-info.html">👤 Your Information</a>
         <div class="menu-note">
-          Add or update your contact details (optional but helpful)
+          You choose what to share with other members
         </div>
 
         <a href="members-directory.html">👥 Members Directory</a>
         <div class="menu-note">
-          View shared contact details of other members
+          View contact details shared by members
         </div>
 
-        <!-- ✅ FIXED: Notices now points to notices.html -->
         <a href="notices.html">📣 Notices</a>
         <div class="menu-note">
-          Important updates and announcements
+          Messages from the Committee, hosts and clubhouse admin
         </div>
 
-        <a href="events.html">📅 Host an Event</a>
+        <a href="#" class="muted">📅 Host an Event</a>
         <div class="menu-note">
-          Create and manage your own activities or events
+          Any member may host an event (coming soon)
         </div>
 
-        <a href="payments.html">💷 Payments</a>
+        <a href="#" class="muted">💷 Payments</a>
+        <div class="menu-note">
+          Pay by bank transfer to the club account or cash (coming soon)
+        </div>
 
       </div>
     </div>

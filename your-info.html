@@ -166,6 +166,29 @@
       margin-top:1rem;
     }
 
+    /* --- SCH quick-pick row --- */
+    .pickline{
+      display:flex;
+      align-items:center;
+      gap:0.75rem;
+      flex-wrap:wrap;
+      margin-top:0.85rem;
+      padding:0.6rem 0.75rem;
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      background:#fbfdff;
+    }
+    .pickline .picklabel{
+      font-weight:800;
+      color:#003366;
+    }
+    .pickline .pickbtn{
+      padding:0.45rem 0.8rem;
+      border-radius:10px;
+      font-size:0.95rem;
+      font-weight:800;
+    }
+
     @media (max-width:720px){
       nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
       .nav-left,.nav-center,.nav-right{justify-self:center;}
@@ -207,8 +230,14 @@
       </div>
     </div>
 
+    <!-- ✅ Quick pick: SCH on same line after label -->
+    <div class="pickline" aria-label="Residence quick pick">
+      <span class="picklabel">SCH (Clubhouse)</span>
+      <button id="pickSCH" class="pickbtn" type="button">SCH</button>
+    </div>
+
     <!-- Membership number (small box) -->
-    <div class="row" style="margin-top:1rem;">
+    <div class="row" style="margin-top:0.85rem;">
       <div class="field">
         <label>Membership number</label>
         <input id="memberId" class="member-input" placeholder="SM55" autocomplete="off" />
@@ -420,6 +449,13 @@
   });
 
   unlockBtn.addEventListener("click", handleUnlock);
+
+  // ✅ SCH quick-pick button: fills membership number and triggers normal load logic
+  document.getElementById("pickSCH").addEventListener("click", () => {
+    memberIdEl.value = "SCH";
+    memberIdEl.dispatchEvent(new Event("input", { bubbles: true }));
+    memberIdEl.focus();
+  });
 
   // Logout
   document.getElementById("logout-link").onclick = (e) => {

@@ -37,19 +37,14 @@
       margin: 0 0.5rem;
     }
 
-    .nav-left {
-      justify-self: start;
-    }
-
+    .nav-left { justify-self: start; }
     .nav-center {
       justify-self: center;
       display: flex;
       gap: 1.25rem;
+      flex-wrap: wrap;
     }
-
-    .nav-right {
-      justify-self: end;
-    }
+    .nav-right { justify-self: end; }
 
     /* ---------- MAIN ---------- */
     main {
@@ -162,10 +157,10 @@
   </div>
 
   <div class="nav-center">
-  <a href="events-calendar.html">Calendar</a>
-  <a href="your-info.html">Your Information</a>
-</div>
-
+    <a href="events-calendar.html">Calendar</a>
+    <a href="your-info.html">Your Information</a>
+    <a href="members-list-preview.html">Members List</a>
+  </div>
 
   <div class="nav-right">
     <a href="#" onclick="logout(); return false;">Logout</a>
@@ -174,6 +169,9 @@
 
 <main>
   <h1>Members Directory</h1>
+
+  <h2>SCH (Clubhouse)</h2>
+  <div id="members-sch" class="member-grid"></div>
 
   <h2>Sanctuary Mews</h2>
   <div id="members-mews" class="member-grid"></div>

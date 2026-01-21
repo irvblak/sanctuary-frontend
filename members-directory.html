@@ -64,6 +64,13 @@
       color: #003366;
     }
 
+    .subtle{
+      color:#555;
+      line-height:1.45;
+      margin:0.35rem 0 1rem 0;
+      max-width: 70ch;
+    }
+
     /* ---------- MEMBER GRID ---------- */
     .member-grid {
       display: grid;
@@ -80,6 +87,12 @@
       background: #f8f8f8;
       cursor: pointer;
       font-weight: 500;
+    }
+
+    /* ✅ Joined / has-any-data highlight */
+    .member-button.has-data{
+      background:#e8f2ff;
+      border-color:#005ea8;
     }
 
     .member-button.active {
@@ -169,6 +182,11 @@
 
 <main>
   <h1>Members Directory</h1>
+
+  <p class="subtle">
+    Buttons shown with a light blue background indicate a member has joined the club (minimum requirement met).
+    Clicking a member shows only the contact fields they chose to fill in. If nothing has been shared yet, you’ll see a simple “joined” message.
+  </p>
 
   <h2>SCH (Clubhouse)</h2>
   <div id="members-sch" class="member-grid"></div>

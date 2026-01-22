@@ -110,7 +110,6 @@
     button.secondary{background:#7f97ad;}
     button:disabled{opacity:0.45; cursor:default;}
 
-    /* ✅ Prevent single card stretching full width */
     .residents{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
@@ -132,7 +131,6 @@
       color:#003366;
     }
 
-    /* tighter resident form spacing */
     .resident-card label{
       display:block;
       font-size:0.8rem;
@@ -145,7 +143,6 @@
       border-radius:9px;
     }
 
-    /* placeholder "landline" row to keep heights consistent */
     .placeholder{
       height: 40px;
       display:flex;
@@ -190,11 +187,12 @@
     <div class="subtle">
       <p>See it in the <a href="members-directory.html">Members Directory →</a></p>
       <p class="subtle">
-        For your privacy only the fields you fill in will be shown in the Members Directory.
-      </p>
+       <p> For your privacy only the fields you fill in will be shown in the Members Directory.</p>
+        <p> Your personal membership ID is where you live (e.g.SMXX/1,SMXX/2 etc) </p>
+      
     </div>
 
-    <!-- PIN Security ABOVE membership number -->
+    <!-- PIN Security -->
     <div class="pin-wrap" style="margin-top:0.9rem;">
       <div class="section-title" style="margin:0 0 0.35rem 0;">PIN security</div>
 
@@ -207,7 +205,7 @@
       </div>
     </div>
 
-    <!-- Membership number (small box) -->
+    <!-- Membership number -->
     <div class="row" style="margin-top:1rem;">
       <div class="field">
         <label>Membership number</label>
@@ -215,7 +213,6 @@
       </div>
     </div>
 
-    <!-- Resident(s) -->
     <div class="residents" id="residents"></div>
 
     <div class="actions">
@@ -241,8 +238,8 @@
   const saveBtn = document.getElementById("saveBtn");
 
   let unlocked = false;
-  let shownResidents = 1;      // will be set based on saved data after membership number entered
-  let existingResidents = [];  // prefill if any saved
+  let shownResidents = 1;
+  let existingResidents = [];
 
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -284,27 +281,17 @@
 
     const landlineRow =
       index === 0
-        ? `
-          <label>Landline</label>
-          <input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>
-        `
-        : `
-          <label>Landline</label>
-          <div class="placeholder">—</div>
-        `;
+        ? `<label>Landline</label><input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>`
+        : `<label>Landline</label><div class="placeholder">—</div>`;
 
     div.innerHTML = `
       <h3>Resident ${index + 1}</h3>
-
       <label>Name</label>
       <input data-field="name" value="${data.name || ""}" ${unlocked ? "" : "disabled"}>
-
       <label>Email</label>
       <input data-field="email" value="${data.email || ""}" ${unlocked ? "" : "disabled"}>
-
       <label>Mobile</label>
       <input data-field="mobile" value="${data.mobile || ""}" ${unlocked ? "" : "disabled"}>
-
       ${landlineRow}
     `;
     return div;
@@ -319,10 +306,7 @@
 
   function updatePinUI(memberId){
     const pins = loadPins();
-    const hasPin = !!pins[memberId];
-
-    // keep your custom label text unchanged; only adjust button text.
-    unlockBtn.textContent = hasPin ? "Unlock" : "Set PIN & Unlock";
+    unlockBtn.textContent = pins[memberId] ? "Unlock" : "Set PIN & Unlock";
   }
 
   async function handleUnlock(){
@@ -330,26 +314,17 @@
     if (!memberId) return;
 
     const pins = loadPins();
-    const hasPin = !!pins[memberId];
     const pin = pinInput.value.trim();
+    if (!onlyDigits4(pin)) return alert("Please enter a 4-digit PIN.");
 
-    if (!onlyDigits4(pin)){
-      alert("Please enter a 4-digit PIN (numbers only).");
-      return;
-    }
-
-    if (!hasPin){
+    if (!pins[memberId]) {
       pins[memberId] = await pinHash(memberId, pin);
       savePins(pins);
-      setUnlocked(true);
-      return;
+      return setUnlocked(true);
     }
 
-    const hashed = await pinHash(memberId, pin);
-    if (hashed !== pins[memberId]){
-      alert("Incorrect PIN.");
-      return;
-    }
+    if ((await pinHash(memberId, pin)) !== pins[memberId])
+      return alert("Incorrect PIN.");
 
     setUnlocked(true);
   }
@@ -359,76 +334,58 @@
     existingResidents = store[memberId]?.residents || [];
   }
 
-  addResidentBtn.addEventListener("click", () => {
-    if (!unlocked) return;
-    if (shownResidents >= 4) return;
-    shownResidents++;
-    renderResidents();
-  });
+  addResidentBtn.onclick = () => {
+    if (unlocked && shownResidents < 4) {
+      shownResidents++;
+      renderResidents();
+    }
+  };
 
-  saveBtn.addEventListener("click", () => {
+  saveBtn.onclick = () => {
     if (!unlocked) return;
     const memberId = memberIdEl.value.trim();
     if (!memberId) return;
 
     const residents = [...document.querySelectorAll(".resident-card")]
       .map(card => {
-        const obj = {};
-        card.querySelectorAll("input").forEach(inp => {
-          if (inp.disabled) return;
-          const v = inp.value.trim();
-          if (v) obj[inp.dataset.field] = v;
+        const o = {};
+        card.querySelectorAll("input").forEach(i => {
+          if (!i.disabled && i.value.trim()) o[i.dataset.field] = i.value.trim();
         });
-        return obj;
+        return o;
       })
-      .filter(r => Object.keys(r).length);
+      .filter(o => Object.keys(o).length);
 
     const store = loadStore();
-    store[memberId] = { residents };
+    store[memberId] = { residents, joined:true, updated:Date.now() };
     saveStore(store);
 
     existingResidents = residents;
-
-    // ✅ after saving, show the full picture next render
-    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+    shownResidents = Math.min(Math.max(residents.length,1),4);
     renderResidents();
-
     alert("Saved");
-  });
+  };
 
-  memberIdEl.addEventListener("input", () => {
+  memberIdEl.oninput = () => {
     const memberId = memberIdEl.value.trim();
-
     existingResidents = [];
     setUnlocked(false);
-
     unlockBtn.disabled = !memberId;
-    if (!memberId){
-      residentsEl.innerHTML = "";
-      shownResidents = 1;
-      return;
-    }
-
+    if (!memberId) return residentsEl.innerHTML="";
     loadExistingFor(memberId);
     updatePinUI(memberId);
-
-    // ✅ show all saved residents immediately (up to 4). If none, show Resident 1 only.
-    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
-
+    shownResidents = Math.min(Math.max(existingResidents.length,1),4);
     renderResidents();
-  });
+  };
 
-  unlockBtn.addEventListener("click", handleUnlock);
+  unlockBtn.onclick = handleUnlock;
 
-  // Logout
-  document.getElementById("logout-link").onclick = (e) => {
+  document.getElementById("logout-link").onclick = e => {
     e.preventDefault();
     sessionStorage.removeItem(ACCESS_KEY);
     sessionStorage.removeItem(TIME_KEY);
-    location.href = "index.html";
+    location.href="index.html";
   };
-
-  residentsEl.innerHTML = "";
 </script>
 
 </body>

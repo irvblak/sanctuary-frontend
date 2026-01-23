@@ -75,14 +75,12 @@
       flex-wrap:wrap;
     }
 
-    .panel-body{
-      overflow:auto; /* lets the table scroll if needed */
-    }
+    .panel-body{ overflow:auto; }
 
     table{
       border-collapse:collapse;
       width:100%;
-      min-width: 720px; /* forces horizontal scroll if screen is narrow */
+      min-width: 760px;
       background:#fff;
     }
 
@@ -105,11 +103,11 @@
       z-index:1;
     }
 
-    /* first column (membership id) has no heading label */
     th.idhead{
       background:#ffffff;
-      width: 90px;
+      width: 120px;
     }
+
     td.idcell{
       font-weight:800;
       color:#003366;
@@ -117,13 +115,44 @@
       border-right:1px solid #e6eef8;
     }
 
-    td.empty{
-      color:#999;
+    td.empty{ color:#999; }
+
+    /* --- Expand/collapse for extra residents --- */
+    .toggle{
+      margin-left:0.45rem;
+      padding:0.22rem 0.5rem;
+      border:1px solid #bcd2ea;
+      border-radius:999px;
+      background:#eef6ff;
+      color:#003366;
+      font-weight:800;
+      font-size:0.78rem;
+      cursor:pointer;
+    }
+    .toggle[disabled]{
+      opacity:0.4;
+      cursor:default;
+    }
+
+    tr.extra{ display:none; }
+    tr.extra td{
+      background:#fcfeff;
+    }
+    tr.extra td:first-child{
+      border-right:1px solid #e6eef8;
+      background:#fbfdff;
+    }
+
+    .rid{
+      display:inline-block;
+      font-weight:800;
+      color:#003366;
+      margin-right:0.4rem;
     }
 
     @media (max-width: 980px){
       .split{ grid-template-columns: 1fr; }
-      table{ min-width: 680px; }
+      table{ min-width: 720px; }
     }
 
     @media (max-width: 720px){
@@ -148,9 +177,7 @@
 <main>
   <div class="card">
     <h1>Members List</h1>
-    <p class="sub">
-      This is a list-style view of the Members Directory.
-    </p>
+    <p class="sub">This is a list-style view of the Members Directory.</p>
 
     <div class="split">
       <!-- LEFT: SCH + SM -->
@@ -228,69 +255,116 @@
     return out;
   }
 
-  // Now: SCH (single), SM 1–73, SC 1–43
   function buildLeftIds(){
-    return [
-      "SCH",
-      ...buildIds("SM", 1, 73)
-    ];
+    return ["SCH", ...buildIds("SM", 1, 73)];
   }
-
   function buildRightIds(){
     return buildIds("SC", 1, 43);
   }
 
-  function getPrimaryResidentFromEntry(entry){
-    const residents = entry?.residents || [];
-    return residents[0] || null; // primary resident
+  function getResidents(store, memberId){
+    const residents = store[memberId]?.residents || [];
+    return Array.isArray(residents) ? residents : [];
   }
 
-  function isPopulatedResident(r){
-    return !!(r && (r.name || r.email || r.mobile || r.landline));
+  function anyField(r){
+    return r && (r.name || r.email || r.mobile || r.landline);
   }
 
-  // Backwards-compatible:
-  // If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06 and display that under SCH.
-  function getPrimaryResident(store, memberId){
-    if (memberId === "SCH") {
-      const direct = getPrimaryResidentFromEntry(store["SCH"]);
-      if (isPopulatedResident(direct)) return direct;
+  function rowHtml(memberId, ridSuffix, r, isPrimary, showToggle, hasExtras){
+    const name = r?.name || "—";
+    const email = r?.email || "—";
+    const mobile = r?.mobile || "—";
+    const landline = (isPrimary ? (r?.landline || "—") : "—");
 
-      for (let i = 1; i <= 6; i++) {
-        const legacyId = "SCH" + pad2(i);
-        const legacy = getPrimaryResidentFromEntry(store[legacyId]);
-        if (isPopulatedResident(legacy)) return legacy;
-      }
-      return null;
-    }
+    const toggleBtn = showToggle
+      ? `<button class="toggle" type="button" data-toggle="${esc(memberId)}" aria-expanded="false">${hasExtras ? "More ▾" : "More"}</button>`
+      : "";
 
-    return getPrimaryResidentFromEntry(store[memberId]) || null;
+    return `
+      <tr class="${isPrimary ? "primary" : "extra"}" data-parent="${esc(memberId)}">
+        <td class="idcell">
+          ${esc(memberId)}
+          ${toggleBtn}
+        </td>
+        <td class="${anyField(r) ? "" : "empty"}">
+          <span class="rid">${esc(memberId)}/${esc(ridSuffix)}</span>${esc(name)}
+        </td>
+        <td class="${anyField(r) ? "" : "empty"}">${esc(email)}</td>
+        <td class="${anyField(r) ? "" : "empty"}">${esc(mobile)}</td>
+        <td class="${anyField(r) ? "" : "empty"}">${esc(landline)}</td>
+      </tr>
+    `;
   }
 
   function renderTable(tbodyId, ids, store){
     const tbody = document.getElementById(tbodyId);
+    const rows = [];
 
-    const rows = ids.map(memberId => {
-      const r = getPrimaryResident(store, memberId);
-      const hasAny = isPopulatedResident(r);
+    ids.forEach(memberId => {
+      const residents = getResidents(store, memberId).filter(anyField);
+      const hasAny = residents.length > 0;
 
-      const name = hasAny ? (r.name || "—") : "—";
-      const email = hasAny ? (r.email || "—") : "—";
-      const mobile = hasAny ? (r.mobile || "—") : "—";
-      const landline = hasAny ? (r.landline || "—") : "—";
+      if (!hasAny){
+        // show blank primary row (no toggle)
+        rows.push(`
+          <tr>
+            <td class="idcell">${esc(memberId)}</td>
+            <td class="empty">—</td>
+            <td class="empty">—</td>
+            <td class="empty">—</td>
+            <td class="empty">—</td>
+          </tr>
+        `);
+        return;
+      }
 
-      return `
-        <tr>
-          <td class="idcell">${esc(memberId)}</td>
-          <td class="${hasAny ? "" : "empty"}">${esc(name)}</td>
-          <td class="${hasAny ? "" : "empty"}">${esc(email)}</td>
-          <td class="${hasAny ? "" : "empty"}">${esc(mobile)}</td>
-          <td class="${hasAny ? "" : "empty"}">${esc(landline)}</td>
-        </tr>
-      `;
+      const primary = residents[0];
+      const extras = residents.slice(1);
+      const showToggle = true;
+      const hasExtras = extras.length > 0;
+
+      // primary row
+      rows.push(rowHtml(memberId, 1, primary, true, showToggle, hasExtras));
+
+      // extra rows (hidden by default) — blank ID cell for neatness
+      extras.forEach((r, idx) => {
+        rows.push(`
+          <tr class="extra" data-parent="${esc(memberId)}">
+            <td class="idcell"></td>
+            <td><span class="rid">${esc(memberId)}/${esc(idx + 2)}</span>${esc(r?.name || "—")}</td>
+            <td>${esc(r?.email || "—")}</td>
+            <td>${esc(r?.mobile || "—")}</td>
+            <td>—</td>
+          </tr>
+        `);
+      });
     });
 
     tbody.innerHTML = rows.join("");
+  }
+
+  function toggleExtras(memberId, btn){
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+    const now = !expanded;
+
+    btn.setAttribute("aria-expanded", String(now));
+    btn.textContent = now ? "Less ▴" : "More ▾";
+
+    document.querySelectorAll(`tr.extra[data-parent="${CSS.escape(memberId)}"]`)
+      .forEach(tr => tr.style.display = now ? "table-row" : "none");
+  }
+
+  function wireToggles(){
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-toggle]");
+      if (!btn) return;
+      const memberId = btn.getAttribute("data-toggle");
+      // Only toggle if there are extra rows to show
+      const extras = document.querySelectorAll(`tr.extra[data-parent="${CSS.escape(memberId)}"]`);
+      if (!extras.length) return; // nothing to expand
+      toggleExtras(memberId, btn);
+    });
   }
 
   function render(){
@@ -299,6 +373,7 @@
     renderTable("rowsRight", buildRightIds(), store);
   }
 
+  wireToggles();
   render();
 </script>
 

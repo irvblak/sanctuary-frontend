@@ -237,6 +237,18 @@
   let shownResidents = 1;
   let existingResidents = [];
 
+  // ✅ Normalise any member id typed/pasted (e.g. "SM55/1" -> "SM55")
+  function baseId(raw){
+    return String(raw || "").trim().split("/")[0];
+  }
+
+  // ✅ Read the normalised membership key AND snap the input field to it
+  function getKeyAndNormaliseInput(){
+    const key = baseId(memberIdEl.value);
+    if (memberIdEl.value.trim() !== key) memberIdEl.value = key;
+    return key;
+  }
+
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
@@ -261,6 +273,7 @@
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
   }
   async function pinHash(memberId, pin){
+    // memberId here is ALWAYS normalised (SM55 / SC03 / SCH)
     return sha256Hex(`${memberId}::${pin}::sanctuary`);
   }
 
@@ -275,7 +288,7 @@
     const div = document.createElement("div");
     div.className = "resident-card";
 
-    const mid = memberIdEl.value.trim();
+    const mid = baseId(memberIdEl.value);
     const header = mid ? `${mid}/${index + 1}` : `Resident ${index + 1}`;
 
     const landlineRow =
@@ -303,41 +316,42 @@
     }
   }
 
-  function updatePinUI(memberId){
+  function updatePinUI(memberIdKey){
     const pins = loadPins();
-    unlockBtn.textContent = pins[memberId] ? "Unlock" : "Set PIN & Unlock";
+    unlockBtn.textContent = pins[memberIdKey] ? "Unlock" : "Set PIN & Unlock";
+  }
+
+  function loadExistingFor(memberIdKey){
+    const store = loadStore();
+    existingResidents = store[memberIdKey]?.residents || [];
   }
 
   async function handleUnlock(){
-    const memberId = memberIdEl.value.trim();
-    if (!memberId) return;
+    const memberIdKey = getKeyAndNormaliseInput();
+    if (!memberIdKey) return;
 
     const pins = loadPins();
     const pin = pinInput.value.trim();
     if (!onlyDigits4(pin)) return alert("Please enter a 4-digit PIN.");
 
-    if (!pins[memberId]) {
-      pins[memberId] = await pinHash(memberId, pin);
+    if (!pins[memberIdKey]) {
+      pins[memberIdKey] = await pinHash(memberIdKey, pin);
       savePins(pins);
-      return setUnlocked(true);
+      // ✅ always reload and render on unlock
+      loadExistingFor(memberIdKey);
+      shownResidents = Math.min(Math.max(existingResidents.length,1),4);
+      setUnlocked(true);
+      return;
     }
 
-    if ((await pinHash(memberId, pin)) !== pins[memberId])
+    if ((await pinHash(memberIdKey, pin)) !== pins[memberIdKey])
       return alert("Incorrect PIN.");
 
+    // ✅ always reload and render on unlock
+    loadExistingFor(memberIdKey);
+    shownResidents = Math.min(Math.max(existingResidents.length,1),4);
     setUnlocked(true);
   }
-
-  function baseId(raw){
-  return String(raw || "").trim().split("/")[0]; // SM55/1 -> SM55
-}
-
-function loadExistingFor(memberId){
-  const store = loadStore();
-  const key = baseId(memberId);
-  existingResidents = store[key]?.residents || [];
-}
-
 
   addResidentBtn.onclick = () => {
     if (unlocked && shownResidents < 4) {
@@ -348,9 +362,9 @@ function loadExistingFor(memberId){
 
   saveBtn.onclick = () => {
     if (!unlocked) return;
-    const memberId = baseId(memberIdEl.value);
 
-    if (!memberId) return;
+    const memberIdKey = getKeyAndNormaliseInput();
+    if (!memberIdKey) return;
 
     const residents = [...document.querySelectorAll(".resident-card")]
       .map(card => {
@@ -363,7 +377,7 @@ function loadExistingFor(memberId){
       .filter(o => Object.keys(o).length);
 
     const store = loadStore();
-    store[memberId] = { residents, joined:true, updated:Date.now() };
+    store[memberIdKey] = { residents, joined:true, updated:Date.now() };
     saveStore(store);
 
     existingResidents = residents;
@@ -373,14 +387,17 @@ function loadExistingFor(memberId){
   };
 
   memberIdEl.oninput = () => {
-   const memberId = baseId(memberIdEl.value);
- 
+    const memberIdKey = getKeyAndNormaliseInput();
+
     existingResidents = [];
     setUnlocked(false);
-    unlockBtn.disabled = !memberId;
-    if (!memberId) return residentsEl.innerHTML="";
-    loadExistingFor(memberId);
-    updatePinUI(memberId);
+
+    unlockBtn.disabled = !memberIdKey;
+    if (!memberIdKey) return residentsEl.innerHTML="";
+
+    loadExistingFor(memberIdKey);
+    updatePinUI(memberIdKey);
+
     shownResidents = Math.min(Math.max(existingResidents.length,1),4);
     renderResidents();
   };

@@ -373,7 +373,8 @@ function loadExistingFor(memberId){
   };
 
   memberIdEl.oninput = () => {
-    const memberId = memberIdEl.value.trim();
+   const memberId = baseId(memberIdEl.value);
+ 
     existingResidents = [];
     setUnlocked(false);
     unlockBtn.disabled = !memberId;

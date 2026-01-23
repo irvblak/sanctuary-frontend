@@ -328,10 +328,16 @@
     setUnlocked(true);
   }
 
-  function loadExistingFor(memberId){
-    const store = loadStore();
-    existingResidents = store[memberId]?.residents || [];
-  }
+  function baseId(raw){
+  return String(raw || "").trim().split("/")[0]; // SM55/1 -> SM55
+}
+
+function loadExistingFor(memberId){
+  const store = loadStore();
+  const key = baseId(memberId);
+  existingResidents = store[key]?.residents || [];
+}
+
 
   addResidentBtn.onclick = () => {
     if (unlocked && shownResidents < 4) {

@@ -78,7 +78,6 @@
       box-sizing:border-box;
     }
 
-    /* SMALL inputs */
     .pin-input{width: 120px;}
     .member-input{width: 160px;}
 
@@ -186,20 +185,19 @@
 
     <div class="subtle">
       <p>See it in the <a href="members-directory.html">Members Directory →</a></p>
-      <p class="subtle">
-       <p> For your privacy only the fields you fill in will be shown in the Members Directory.</p>
-        <p> Your personal membership ID is where you live (e.g.SMXX/1,SMXX/2 etc) </p>
-      
+      <p>For your privacy only the fields you fill in will be shown in the Members Directory.</p>
+      <p>Your personal membership ID is where you live (e.g. SM55/1, SM55/2 etc).</p>
     </div>
 
     <!-- PIN Security -->
     <div class="pin-wrap" style="margin-top:0.9rem;">
-      <div class="section-title" style="margin:0 0 0.35rem 0;">PIN security</div>
+      <div class="section-title">PIN security</div>
 
       <div class="pin-inline" style="margin-top:0.6rem;">
         <div class="field">
-          <label id="pinLabel">Choose your own 4-digit PIN, so only you can change your info</label>
-          <input id="pinInput" class="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234" autocomplete="off" />
+          <label>Choose your own 4-digit PIN, so only you can change your info</label>
+          <input id="pinInput" class="pin-input" inputmode="numeric" pattern="[0-9]*"
+                 maxlength="4" placeholder="1234" autocomplete="off" />
         </div>
         <button id="unlockBtn" type="button" disabled>Unlock</button>
       </div>
@@ -230,10 +228,8 @@
 
   const memberIdEl = document.getElementById("memberId");
   const residentsEl = document.getElementById("residents");
-
   const pinInput = document.getElementById("pinInput");
   const unlockBtn = document.getElementById("unlockBtn");
-
   const addResidentBtn = document.getElementById("addResidentBtn");
   const saveBtn = document.getElementById("saveBtn");
 
@@ -279,13 +275,16 @@
     const div = document.createElement("div");
     div.className = "resident-card";
 
+    const mid = memberIdEl.value.trim();
+    const header = mid ? `${mid}/${index + 1}` : `Resident ${index + 1}`;
+
     const landlineRow =
       index === 0
         ? `<label>Landline</label><input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>`
         : `<label>Landline</label><div class="placeholder">—</div>`;
 
     div.innerHTML = `
-      <h3>Resident ${index + 1}</h3>
+      <h3>${header}</h3>
       <label>Name</label>
       <input data-field="name" value="${data.name || ""}" ${unlocked ? "" : "disabled"}>
       <label>Email</label>

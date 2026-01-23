@@ -348,7 +348,8 @@ function loadExistingFor(memberId){
 
   saveBtn.onclick = () => {
     if (!unlocked) return;
-    const memberId = memberIdEl.value.trim();
+    const memberId = baseId(memberIdEl.value);
+
     if (!memberId) return;
 
     const residents = [...document.querySelectorAll(".resident-card")]

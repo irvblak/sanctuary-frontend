@@ -67,7 +67,7 @@
       border:1px solid #cfd8e3;
       border-radius:10px;
       box-sizing:border-box;
-      width:220px;
+      width:240px;
     }
     button{
       background:#005ea8;
@@ -178,7 +178,7 @@
     <h1>Admin – Members emails & grid</h1>
     <p class="sub">
       This page reads <strong>browser-local</strong> membership data from this device only.
-      It is intended for admin use (e.g. copy/paste a BCC list, export CSV).
+      It is intended for admin use (e.g. copy/paste a BCC list, export mail-merge CSV).
     </p>
 
     <div class="gate" id="adminGate">
@@ -200,18 +200,19 @@
 
       <div class="tools">
         <div>
-          <div style="font-weight:900; color:#003366; margin:0.25rem 0 0.35rem;">Copy-ready email list (deduped)</div>
+          <div style="font-weight:900; color:#003366; margin:0.25rem 0 0.35rem;">
+            Copy-ready email list (per resident, deduped)
+          </div>
 
           <div class="opts">
             <label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label>
-            <label><input type="checkbox" id="resident1Only"> Resident 1 emails only</label>
           </div>
 
           <textarea id="emailList" readonly></textarea>
 
           <div class="row" style="margin-top:0.6rem;">
-            <button id="copyEmails" type="button">Copy emails</button>
-            <button id="downloadCsv" type="button" class="secondary">Download CSV</button>
+            <button id="copyEmails" type="button">Copy emails (comma-separated)</button>
+            <button id="downloadCsv" type="button" class="secondary">Download mail-merge CSV</button>
             <span class="muted" id="stats"></span>
           </div>
         </div>
@@ -248,7 +249,9 @@
 <script>
   const STORAGE_KEY = "sanctuaryMembers";
   const ADMIN_KEY = "sanctuaryAdminUnlocked";
-  const ADMIN_PASSPHRASE = "SC_ADMIN_2026"; // change this to your own private phrase
+
+  // 🔐 CHANGE THIS to something private
+  const ADMIN_PASSPHRASE = "SC_ADMIN_2026";
 
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -265,20 +268,21 @@
   }
 
   function fmtDate(ms){
-    if (!ms) return "—";
-    try {
-      const d = new Date(ms);
-      return d.toLocaleString();
-    } catch {
-      return "—";
-    }
+    if (!ms) return "";
+    try { return new Date(ms).toLocaleString(); }
+    catch { return ""; }
   }
 
   function isEmailLike(s){
     const v = String(s || "").trim();
     if (!v) return false;
-    // Simple sanity check (good enough for this stage)
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function splitResidentId(rid){
+    // rid is "SM55/2"
+    const [membership, no] = String(rid || "").split("/");
+    return { membership: membership || "", residentNo: no || "" };
   }
 
   function buildRows(store, opts){
@@ -287,29 +291,30 @@
 
     const keys = Object.keys(store).sort();
 
-    keys.forEach(memberId => {
-      const entry = store[memberId] || {};
+    keys.forEach(membershipId => {
+      const entry = store[membershipId] || {};
       const joined = !!entry.joined;
       const updated = entry.updated || null;
       const residents = Array.isArray(entry.residents) ? entry.residents : [];
 
       if (opts.onlyJoined && !joined) return;
 
-      const list = opts.resident1Only ? residents.slice(0,1) : residents;
+      // Per-resident rows (mail merge wants one row per person)
+      residents.forEach((r, idx) => {
+        const rid = `${membershipId}/${idx + 1}`;
+        const name = String(r?.name || "").trim();
+        const email = String(r?.email || "").trim();
+        const mobile = String(r?.mobile || "").trim();
+        const landline = (idx === 0 ? String(r?.landline || "").trim() : "");
 
-      list.forEach((r, idx) => {
-        const rid = `${memberId}/${idx + 1}`;
-        const name = r?.name || "—";
-        const email = r?.email || "";
-        const mobile = r?.mobile || "—";
-        const landline = (idx === 0 ? (r?.landline || "—") : "—");
-
-        if (isEmailLike(email)) emails.add(email.trim().toLowerCase());
+        if (isEmailLike(email)) emails.add(email.toLowerCase());
 
         rows.push({
           rid,
+          membershipId,
+          residentNo: String(idx + 1),
           name,
-          email: email || "—",
+          email,
           mobile,
           landline,
           joined: joined ? "Yes" : "No",
@@ -317,18 +322,7 @@
         });
       });
 
-      // If joined but no residents, still include a placeholder row
-      if (joined && residents.length === 0) {
-        rows.push({
-          rid: `${memberId}/—`,
-          name:"—",
-          email:"—",
-          mobile:"—",
-          landline:"—",
-          joined:"Yes",
-          updated: fmtDate(updated)
-        });
-      }
+      // If joined but no residents, include no mail-merge row (per your “self-evident” preference)
     });
 
     return { rows, emails: [...emails].sort() };
@@ -336,51 +330,61 @@
 
   function render(){
     const store = loadStore();
-    const opts = {
-      onlyJoined: document.getElementById("onlyJoined").checked,
-      resident1Only: document.getElementById("resident1Only").checked
-    };
-
+    const opts = { onlyJoined: document.getElementById("onlyJoined").checked };
     const out = buildRows(store, opts);
 
-    // Emails (semicolon-separated)
-    const emailText = out.emails.join("; ");
-    document.getElementById("emailList").value = emailText;
+    // Email list (comma-separated = most universal)
+    document.getElementById("emailList").value = out.emails.join(", ");
 
-    // Stats
     document.getElementById("stats").textContent =
       `${out.emails.length} unique emails • ${out.rows.length} resident rows`;
 
-    // Grid
     const tbody = document.getElementById("gridRows");
     tbody.innerHTML = out.rows.map(r => `
       <tr>
         <td class="idcell">${esc(r.rid)}</td>
-        <td>${esc(r.name)}</td>
-        <td>${esc(r.email)}</td>
-        <td>${esc(r.mobile)}</td>
-        <td>${esc(r.landline)}</td>
+        <td>${esc(r.name || "")}</td>
+        <td>${esc(r.email || "")}</td>
+        <td>${esc(r.mobile || "")}</td>
+        <td>${esc(r.landline || "")}</td>
         <td>${esc(r.joined)}</td>
         <td>${esc(r.updated)}</td>
       </tr>
     `).join("");
   }
 
-  function downloadCSV(){
+  function downloadMailMergeCSV(){
     const store = loadStore();
-    const opts = {
-      onlyJoined: document.getElementById("onlyJoined").checked,
-      resident1Only: document.getElementById("resident1Only").checked
-    };
+    const opts = { onlyJoined: document.getElementById("onlyJoined").checked };
     const out = buildRows(store, opts);
 
-    const headers = ["ResidentID","Name","Email","Mobile","Landline","Joined","Updated"];
+    // Mail-merge friendly: clean columns, blank fields allowed, one row per resident
+    const headers = [
+      "ResidentID",        // e.g. SM55/2
+      "MembershipID",      // e.g. SM55
+      "ResidentNo",        // e.g. 2
+      "Name",
+      "Email",
+      "Mobile",
+      "Landline",
+      "Joined",
+      "Updated"
+    ];
+
     const lines = [headers.join(",")];
 
     out.rows.forEach(r => {
       const vals = [
-        r.rid, r.name, r.email, r.mobile, r.landline, r.joined, r.updated
-      ].map(v => `"${String(v).replaceAll('"','""')}"`);
+        r.rid,
+        r.membershipId,
+        r.residentNo,
+        r.name,
+        r.email,
+        r.mobile,
+        r.landline,
+        r.joined,
+        r.updated
+      ].map(v => `"${String(v ?? "").replaceAll('"','""')}"`);
       lines.push(vals.join(","));
     });
 
@@ -388,14 +392,13 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "sanctuary-members.csv";
+    a.download = "sanctuary-mail-merge.csv";
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   }
 
-  // Admin gate (simple, local only)
   function setAdminUnlocked(state){
     if (state) sessionStorage.setItem(ADMIN_KEY, "1");
     else sessionStorage.removeItem(ADMIN_KEY);
@@ -427,12 +430,10 @@
     }
   };
 
-  document.getElementById("downloadCsv").onclick = downloadCSV;
-
+  document.getElementById("downloadCsv").onclick = downloadMailMergeCSV;
   document.getElementById("onlyJoined").onchange = render;
-  document.getElementById("resident1Only").onchange = render;
 
-  // Auto restore if already unlocked in this tab
+  // Restore if already unlocked in this tab
   setAdminUnlocked(sessionStorage.getItem(ADMIN_KEY) === "1");
 </script>
 

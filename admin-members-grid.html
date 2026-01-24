@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Members Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Session gate (same as your protected pages) -->
+  <script src="access.js"></script>
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background: linear-gradient(180deg, #f2f7fb 0%, #ffffff 70%);
+      color:#222;
+      min-height:100vh;
+    }
+
+    nav{
+      padding:1rem 1.25rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    nav a{
+      text-decoration:none;
+      font-weight:700;
+      color:#003366;
+    }
+
+    main{max-width:1200px; margin:0 auto 2rem; padding:0 1rem;}
+
+    .card{
+      background:#fff;
+      border-radius:14px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.06);
+      padding:1.1rem;
+      margin-top:1rem;
+    }
+
+    h1{margin:0.25rem 0 0.5rem; color:#003366; font-size:1.4rem;}
+    .sub{margin:0 0 0.75rem; color:#555; line-height:1.45;}
+    .muted{color:#666;}
+
+    .gate{
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      background:#fbfdff;
+      padding:0.85rem;
+      margin-top:0.5rem;
+    }
+    .row{
+      display:flex;
+      gap:0.75rem;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      margin-top:0.6rem;
+    }
+    label{display:block; font-size:0.85rem; color:#555; margin-bottom:0.25rem;}
+    input{
+      padding:0.5rem;
+      font-size:1rem;
+      border:1px solid #cfd8e3;
+      border-radius:10px;
+      box-sizing:border-box;
+      width:220px;
+    }
+    button{
+      background:#005ea8;
+      color:#fff;
+      border:none;
+      padding:0.55rem 0.95rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:1rem;
+      font-weight:800;
+    }
+    button.secondary{background:#7f97ad;}
+    button:disabled{opacity:0.45; cursor:default;}
+
+    .tools{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:0.75rem;
+      margin-top:0.75rem;
+    }
+
+    textarea{
+      width:100%;
+      min-height:110px;
+      resize:vertical;
+      padding:0.65rem;
+      border:1px solid #cfd8e3;
+      border-radius:12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:0.92rem;
+      box-sizing:border-box;
+    }
+
+    .opts{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:0.25rem;
+    }
+    .opts label{margin:0; display:flex; gap:0.45rem; align-items:center; font-size:0.92rem; color:#444;}
+
+    .panel{
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+      margin-top:0.9rem;
+    }
+    .panel-head{
+      background:#f5f9ff;
+      border-bottom:1px solid #d9e4f2;
+      padding:0.65rem 0.85rem;
+      font-weight:900;
+      color:#003366;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:0.75rem;
+      flex-wrap:wrap;
+    }
+    .panel-body{ overflow:auto; }
+
+    table{
+      border-collapse:collapse;
+      width:100%;
+      min-width: 980px;
+      background:#fff;
+    }
+    th, td{
+      border-bottom:1px solid #e6eef8;
+      padding:0.55rem 0.65rem;
+      text-align:left;
+      vertical-align:top;
+      font-size:0.95rem;
+      white-space:nowrap;
+    }
+    th{
+      position: sticky;
+      top: 0;
+      background:#ffffff;
+      color:#003366;
+      font-weight:900;
+      border-bottom:1px solid #d9e4f2;
+      z-index:1;
+    }
+    td.idcell{
+      font-weight:900;
+      color:#003366;
+      background:#fbfdff;
+      border-right:1px solid #e6eef8;
+      width:130px;
+    }
+
+    .hidden{display:none;}
+  </style>
+</head>
+
+<body>
+<nav>
+  <a href="index.html">Home</a>
+  <span class="muted">Admin page (not linked)</span>
+</nav>
+
+<main>
+
+  <div class="card">
+    <h1>Admin – Members emails & grid</h1>
+    <p class="sub">
+      This page reads <strong>browser-local</strong> membership data from this device only.
+      It is intended for admin use (e.g. copy/paste a BCC list, export CSV).
+    </p>
+
+    <div class="gate" id="adminGate">
+      <div style="font-weight:900; color:#003366;">Admin access</div>
+      <div class="row">
+        <div>
+          <label>Admin passphrase</label>
+          <input id="adminPass" type="password" autocomplete="off" />
+        </div>
+        <button id="unlockAdmin" type="button">Unlock</button>
+        <button id="lockAdmin" type="button" class="secondary hidden">Lock</button>
+      </div>
+      <p class="muted" style="margin:0.6rem 0 0;">
+        Tip: bookmark this page. It’s not shown in menus.
+      </p>
+    </div>
+
+    <div id="adminArea" class="hidden">
+
+      <div class="tools">
+        <div>
+          <div style="font-weight:900; color:#003366; margin:0.25rem 0 0.35rem;">Copy-ready email list (deduped)</div>
+
+          <div class="opts">
+            <label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label>
+            <label><input type="checkbox" id="resident1Only"> Resident 1 emails only</label>
+          </div>
+
+          <textarea id="emailList" readonly></textarea>
+
+          <div class="row" style="margin-top:0.6rem;">
+            <button id="copyEmails" type="button">Copy emails</button>
+            <button id="downloadCsv" type="button" class="secondary">Download CSV</button>
+            <span class="muted" id="stats"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span>Full grid (one row per resident)</span>
+          <span class="muted">Local data</span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:130px;"></th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Landline</th>
+                <th>Joined</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody id="gridRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const STORAGE_KEY = "sanctuaryMembers";
+  const ADMIN_KEY = "sanctuaryAdminUnlocked";
+  const ADMIN_PASSPHRASE = "SC_ADMIN_2026"; // change this to your own private phrase
+
+  function loadStore(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function esc(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function fmtDate(ms){
+    if (!ms) return "—";
+    try {
+      const d = new Date(ms);
+      return d.toLocaleString();
+    } catch {
+      return "—";
+    }
+  }
+
+  function isEmailLike(s){
+    const v = String(s || "").trim();
+    if (!v) return false;
+    // Simple sanity check (good enough for this stage)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function buildRows(store, opts){
+    const rows = [];
+    const emails = new Set();
+
+    const keys = Object.keys(store).sort();
+
+    keys.forEach(memberId => {
+      const entry = store[memberId] || {};
+      const joined = !!entry.joined;
+      const updated = entry.updated || null;
+      const residents = Array.isArray(entry.residents) ? entry.residents : [];
+
+      if (opts.onlyJoined && !joined) return;
+
+      const list = opts.resident1Only ? residents.slice(0,1) : residents;
+
+      list.forEach((r, idx) => {
+        const rid = `${memberId}/${idx + 1}`;
+        const name = r?.name || "—";
+        const email = r?.email || "";
+        const mobile = r?.mobile || "—";
+        const landline = (idx === 0 ? (r?.landline || "—") : "—");
+
+        if (isEmailLike(email)) emails.add(email.trim().toLowerCase());
+
+        rows.push({
+          rid,
+          name,
+          email: email || "—",
+          mobile,
+          landline,
+          joined: joined ? "Yes" : "No",
+          updated: fmtDate(updated)
+        });
+      });
+
+      // If joined but no residents, still include a placeholder row
+      if (joined && residents.length === 0) {
+        rows.push({
+          rid: `${memberId}/—`,
+          name:"—",
+          email:"—",
+          mobile:"—",
+          landline:"—",
+          joined:"Yes",
+          updated: fmtDate(updated)
+        });
+      }
+    });
+
+    return { rows, emails: [...emails].sort() };
+  }
+
+  function render(){
+    const store = loadStore();
+    const opts = {
+      onlyJoined: document.getElementById("onlyJoined").checked,
+      resident1Only: document.getElementById("resident1Only").checked
+    };
+
+    const out = buildRows(store, opts);
+
+    // Emails (semicolon-separated)
+    const emailText = out.emails.join("; ");
+    document.getElementById("emailList").value = emailText;
+
+    // Stats
+    document.getElementById("stats").textContent =
+      `${out.emails.length} unique emails • ${out.rows.length} resident rows`;
+
+    // Grid
+    const tbody = document.getElementById("gridRows");
+    tbody.innerHTML = out.rows.map(r => `
+      <tr>
+        <td class="idcell">${esc(r.rid)}</td>
+        <td>${esc(r.name)}</td>
+        <td>${esc(r.email)}</td>
+        <td>${esc(r.mobile)}</td>
+        <td>${esc(r.landline)}</td>
+        <td>${esc(r.joined)}</td>
+        <td>${esc(r.updated)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function downloadCSV(){
+    const store = loadStore();
+    const opts = {
+      onlyJoined: document.getElementById("onlyJoined").checked,
+      resident1Only: document.getElementById("resident1Only").checked
+    };
+    const out = buildRows(store, opts);
+
+    const headers = ["ResidentID","Name","Email","Mobile","Landline","Joined","Updated"];
+    const lines = [headers.join(",")];
+
+    out.rows.forEach(r => {
+      const vals = [
+        r.rid, r.name, r.email, r.mobile, r.landline, r.joined, r.updated
+      ].map(v => `"${String(v).replaceAll('"','""')}"`);
+      lines.push(vals.join(","));
+    });
+
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sanctuary-members.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Admin gate (simple, local only)
+  function setAdminUnlocked(state){
+    if (state) sessionStorage.setItem(ADMIN_KEY, "1");
+    else sessionStorage.removeItem(ADMIN_KEY);
+
+    document.getElementById("adminArea").classList.toggle("hidden", !state);
+    document.getElementById("lockAdmin").classList.toggle("hidden", !state);
+
+    if (state) render();
+  }
+
+  document.getElementById("unlockAdmin").onclick = () => {
+    const pass = document.getElementById("adminPass").value;
+    if (pass !== ADMIN_PASSPHRASE) {
+      alert("Incorrect admin passphrase.");
+      return;
+    }
+    setAdminUnlocked(true);
+  };
+
+  document.getElementById("lockAdmin").onclick = () => setAdminUnlocked(false);
+
+  document.getElementById("copyEmails").onclick = async () => {
+    const txt = document.getElementById("emailList").value;
+    try {
+      await navigator.clipboard.writeText(txt);
+      alert("Copied");
+    } catch {
+      alert("Copy failed (browser blocked). You can manually select & copy.");
+    }
+  };
+
+  document.getElementById("downloadCsv").onclick = downloadCSV;
+
+  document.getElementById("onlyJoined").onchange = render;
+  document.getElementById("resident1Only").onchange = render;
+
+  // Auto restore if already unlocked in this tab
+  setAdminUnlocked(sessionStorage.getItem(ADMIN_KEY) === "1");
+</script>
+
+</body>
+</html>

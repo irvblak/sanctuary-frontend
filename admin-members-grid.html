@@ -6,8 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Session gate (same as your protected pages) -->
+  <!-- 🔒 Hub (H) access gate -->
   <script src="access.js"></script>
+
+  <!-- Logout handler (optional; if you already use it elsewhere) -->
+  <script src="logout.js"></script>
 
   <style>
     body{
@@ -20,19 +23,22 @@
 
     nav{
       padding:1rem 1.25rem;
-      display:flex;
-      justify-content:space-between;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
       align-items:center;
-      gap:1rem;
-      flex-wrap:wrap;
+      gap:0.75rem;
     }
     nav a{
       text-decoration:none;
-      font-weight:700;
+      font-weight:800;
       color:#003366;
+      margin:0 0.5rem;
     }
+    .nav-left{justify-self:start;}
+    .nav-center{justify-self:center; color:#667;}
+    .nav-right{justify-self:end;}
 
-    main{max-width:1200px; margin:0 auto 2rem; padding:0 1rem;}
+    main{max-width:1300px; margin:0 auto 2rem; padding:0 1rem;}
 
     .card{
       background:#fff;
@@ -42,7 +48,7 @@
       margin-top:1rem;
     }
 
-    h1{margin:0.25rem 0 0.5rem; color:#003366; font-size:1.4rem;}
+    h1{margin:0.25rem 0 0.5rem; color:#003366; font-size:1.45rem;}
     .sub{margin:0 0 0.75rem; color:#555; line-height:1.45;}
     .muted{color:#666;}
 
@@ -51,8 +57,9 @@
       border-radius:12px;
       background:#fbfdff;
       padding:0.85rem;
-      margin-top:0.5rem;
+      margin-top:0.75rem;
     }
+
     .row{
       display:flex;
       gap:0.75rem;
@@ -60,15 +67,24 @@
       align-items:flex-end;
       margin-top:0.6rem;
     }
-    label{display:block; font-size:0.85rem; color:#555; margin-bottom:0.25rem;}
+
+    label{
+      display:block;
+      font-size:0.85rem;
+      color:#555;
+      margin-bottom:0.25rem;
+    }
+
     input{
       padding:0.5rem;
       font-size:1rem;
       border:1px solid #cfd8e3;
       border-radius:10px;
       box-sizing:border-box;
-      width:240px;
+      width:220px;
     }
+    .pin{ width:140px; }
+
     button{
       background:#005ea8;
       color:#fff;
@@ -77,16 +93,27 @@
       border-radius:10px;
       cursor:pointer;
       font-size:1rem;
-      font-weight:800;
+      font-weight:900;
     }
     button.secondary{background:#7f97ad;}
     button:disabled{opacity:0.45; cursor:default;}
 
-    .tools{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:0.75rem;
-      margin-top:0.75rem;
+    .hidden{display:none;}
+
+    .opts{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:0.35rem;
+    }
+    .opts label{
+      margin:0;
+      display:flex;
+      gap:0.45rem;
+      align-items:center;
+      font-size:0.95rem;
+      color:#444;
     }
 
     textarea{
@@ -100,15 +127,6 @@
       font-size:0.92rem;
       box-sizing:border-box;
     }
-
-    .opts{
-      display:flex;
-      gap:1rem;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:0.25rem;
-    }
-    .opts label{margin:0; display:flex; gap:0.45rem; align-items:center; font-size:0.92rem; color:#444;}
 
     .panel{
       border:1px solid #dbe6f3;
@@ -162,60 +180,71 @@
       width:130px;
     }
 
-    .hidden{display:none;}
+    @media (max-width:720px){
+      nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
+      .nav-left,.nav-center,.nav-right{justify-self:center;}
+    }
   </style>
 </head>
 
 <body>
 <nav>
-  <a href="index.html">Home</a>
-  <span class="muted">Admin page (not linked)</span>
+  <div class="nav-left"><a href="index.html">Home</a></div>
+  <div class="nav-center muted">Admin tools (unlinked)</div>
+  <div class="nav-right">
+    <a href="members-info.html">Hub</a>
+    <a href="#" id="logout-link">Logout</a>
+  </div>
 </nav>
 
 <main>
-
   <div class="card">
     <h1>Admin – Members emails & grid</h1>
     <p class="sub">
-      This page reads <strong>browser-local</strong> membership data from this device only.
-      It is intended for admin use (e.g. copy/paste a BCC list, export mail-merge CSV).
+      This page shows a consolidated view of the same contact details residents enter in <strong>Your Information</strong>.
+      It reads <strong>browser-local</strong> data on this device only.
     </p>
 
-    <div class="gate" id="adminGate">
-      <div style="font-weight:900; color:#003366;">Admin access</div>
+    <!-- PIN gate (reuse YI PIN store) -->
+    <div class="gate" id="gateBox">
+      <div style="font-weight:900; color:#003366;">Unlock with your YI PIN</div>
+      <p class="muted" style="margin:0.35rem 0 0.1rem;">
+        Use your <strong>membership number</strong> (e.g. SM55) and the same <strong>4-digit PIN</strong> you set in Your Information.
+      </p>
+
       <div class="row">
         <div>
-          <label>Admin passphrase</label>
-          <input id="adminPass" type="password" autocomplete="off" />
+          <label>Membership number</label>
+          <input id="adminMemberId" value="SM55" autocomplete="off" />
         </div>
-        <button id="unlockAdmin" type="button">Unlock</button>
-        <button id="lockAdmin" type="button" class="secondary hidden">Lock</button>
+        <div>
+          <label>PIN</label>
+          <input id="adminPin" class="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" />
+        </div>
+
+        <button id="unlockBtn" type="button" disabled>Unlock</button>
+        <button id="lockBtn" type="button" class="secondary hidden">Lock</button>
+
+        <span class="muted" id="gateMsg"></span>
       </div>
-      <p class="muted" style="margin:0.6rem 0 0;">
-        Tip: bookmark this page. It’s not shown in menus.
-      </p>
     </div>
 
+    <!-- Admin area (hidden until unlocked) -->
     <div id="adminArea" class="hidden">
+      <div style="font-weight:900; color:#003366; margin:0.9rem 0 0.35rem;">
+        Copy-ready email list (per resident, deduped)
+      </div>
 
-      <div class="tools">
-        <div>
-          <div style="font-weight:900; color:#003366; margin:0.25rem 0 0.35rem;">
-            Copy-ready email list (per resident, deduped)
-          </div>
+      <div class="opts">
+        <label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label>
+      </div>
 
-          <div class="opts">
-            <label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label>
-          </div>
+      <textarea id="emailList" readonly></textarea>
 
-          <textarea id="emailList" readonly></textarea>
-
-          <div class="row" style="margin-top:0.6rem;">
-            <button id="copyEmails" type="button">Copy emails (comma-separated)</button>
-            <button id="downloadCsv" type="button" class="secondary">Download mail-merge CSV</button>
-            <span class="muted" id="stats"></span>
-          </div>
-        </div>
+      <div class="row" style="margin-top:0.6rem;">
+        <button id="copyEmails" type="button">Copy emails (comma-separated)</button>
+        <button id="downloadCsv" type="button" class="secondary">Download mail-merge CSV</button>
+        <span class="muted" id="stats"></span>
       </div>
 
       <div class="panel">
@@ -240,31 +269,54 @@
           </table>
         </div>
       </div>
-
     </div>
-  </div>
 
+    <p class="muted" style="margin-top:0.85rem;">
+      Note: This is stored in your browser on this device. When you move to a shared members database,
+      this can become a true club-wide admin view.
+    </p>
+  </div>
 </main>
 
 <script>
+  // Must match your YI keys & hashing recipe
   const STORAGE_KEY = "sanctuaryMembers";
-  const ADMIN_KEY = "sanctuaryAdminUnlocked";
+  const PIN_KEY = "sanctuaryPins";
 
-  // 🔐 CHANGE THIS to something private
-  const ADMIN_PASSPHRASE = "SC_ADMIN_2026";
+  // Remember unlocked state for this browser tab only
+  const ADMIN_SESSION_KEY = "sanctuaryAdminUnlocked";
+
+  const adminMemberIdEl = document.getElementById("adminMemberId");
+  const adminPinEl = document.getElementById("adminPin");
+  const unlockBtn = document.getElementById("unlockBtn");
+  const lockBtn = document.getElementById("lockBtn");
+  const gateMsg = document.getElementById("gateMsg");
+
+  function baseId(raw){
+    return String(raw || "").trim().split("/")[0]; // SM55/1 -> SM55
+  }
 
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
   }
 
-  function esc(s){
-    return String(s ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  function loadPins(){
+    try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  // Must match YI exactly
+  async function pinHash(memberId, pin){
+    return sha256Hex(`${memberId}::${pin}::sanctuary`);
   }
 
   function fmtDate(ms){
@@ -279,16 +331,9 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   }
 
-  function splitResidentId(rid){
-    // rid is "SM55/2"
-    const [membership, no] = String(rid || "").split("/");
-    return { membership: membership || "", residentNo: no || "" };
-  }
-
-  function buildRows(store, opts){
+  function buildRows(store, onlyJoined){
     const rows = [];
     const emails = new Set();
-
     const keys = Object.keys(store).sort();
 
     keys.forEach(membershipId => {
@@ -297,9 +342,8 @@
       const updated = entry.updated || null;
       const residents = Array.isArray(entry.residents) ? entry.residents : [];
 
-      if (opts.onlyJoined && !joined) return;
+      if (onlyJoined && !joined) return;
 
-      // Per-resident rows (mail merge wants one row per person)
       residents.forEach((r, idx) => {
         const rid = `${membershipId}/${idx + 1}`;
         const name = String(r?.name || "").trim();
@@ -310,19 +354,11 @@
         if (isEmailLike(email)) emails.add(email.toLowerCase());
 
         rows.push({
-          rid,
-          membershipId,
-          residentNo: String(idx + 1),
-          name,
-          email,
-          mobile,
-          landline,
+          rid, name, email, mobile, landline,
           joined: joined ? "Yes" : "No",
           updated: fmtDate(updated)
         });
       });
-
-      // If joined but no residents, include no mail-merge row (per your “self-evident” preference)
     });
 
     return { rows, emails: [...emails].sort() };
@@ -330,61 +366,38 @@
 
   function render(){
     const store = loadStore();
-    const opts = { onlyJoined: document.getElementById("onlyJoined").checked };
-    const out = buildRows(store, opts);
+    const onlyJoined = document.getElementById("onlyJoined").checked;
+    const out = buildRows(store, onlyJoined);
 
-    // Email list (comma-separated = most universal)
     document.getElementById("emailList").value = out.emails.join(", ");
-
     document.getElementById("stats").textContent =
       `${out.emails.length} unique emails • ${out.rows.length} resident rows`;
 
     const tbody = document.getElementById("gridRows");
     tbody.innerHTML = out.rows.map(r => `
       <tr>
-        <td class="idcell">${esc(r.rid)}</td>
-        <td>${esc(r.name || "")}</td>
-        <td>${esc(r.email || "")}</td>
-        <td>${esc(r.mobile || "")}</td>
-        <td>${esc(r.landline || "")}</td>
-        <td>${esc(r.joined)}</td>
-        <td>${esc(r.updated)}</td>
+        <td class="idcell">${r.rid}</td>
+        <td>${r.name}</td>
+        <td>${r.email}</td>
+        <td>${r.mobile}</td>
+        <td>${r.landline}</td>
+        <td>${r.joined}</td>
+        <td>${r.updated}</td>
       </tr>
     `).join("");
   }
 
   function downloadMailMergeCSV(){
     const store = loadStore();
-    const opts = { onlyJoined: document.getElementById("onlyJoined").checked };
-    const out = buildRows(store, opts);
+    const onlyJoined = document.getElementById("onlyJoined").checked;
+    const out = buildRows(store, onlyJoined);
 
-    // Mail-merge friendly: clean columns, blank fields allowed, one row per resident
-    const headers = [
-      "ResidentID",        // e.g. SM55/2
-      "MembershipID",      // e.g. SM55
-      "ResidentNo",        // e.g. 2
-      "Name",
-      "Email",
-      "Mobile",
-      "Landline",
-      "Joined",
-      "Updated"
-    ];
-
+    const headers = ["ResidentID","Name","Email","Mobile","Landline","Joined","Updated"];
     const lines = [headers.join(",")];
 
     out.rows.forEach(r => {
-      const vals = [
-        r.rid,
-        r.membershipId,
-        r.residentNo,
-        r.name,
-        r.email,
-        r.mobile,
-        r.landline,
-        r.joined,
-        r.updated
-      ].map(v => `"${String(v ?? "").replaceAll('"','""')}"`);
+      const vals = [r.rid,r.name,r.email,r.mobile,r.landline,r.joined,r.updated]
+        .map(v => `"${String(v ?? "").replaceAll('"','""')}"`);
       lines.push(vals.join(","));
     });
 
@@ -400,41 +413,84 @@
   }
 
   function setAdminUnlocked(state){
-    if (state) sessionStorage.setItem(ADMIN_KEY, "1");
-    else sessionStorage.removeItem(ADMIN_KEY);
+    if (state) sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
+    else sessionStorage.removeItem(ADMIN_SESSION_KEY);
 
     document.getElementById("adminArea").classList.toggle("hidden", !state);
-    document.getElementById("lockAdmin").classList.toggle("hidden", !state);
+    lockBtn.classList.toggle("hidden", !state);
+    unlockBtn.classList.toggle("hidden", state);
 
     if (state) render();
   }
 
-  document.getElementById("unlockAdmin").onclick = () => {
-    const pass = document.getElementById("adminPass").value;
-    if (pass !== ADMIN_PASSPHRASE) {
-      alert("Incorrect admin passphrase.");
+  async function handleUnlock(){
+    const memberId = baseId(adminMemberIdEl.value);
+    const pin = String(adminPinEl.value || "").trim();
+
+    if (!memberId) return;
+    if (!onlyDigits4(pin)) { gateMsg.textContent = "Enter a 4-digit PIN."; return; }
+
+    const pins = loadPins();
+    if (!pins[memberId]) {
+      gateMsg.textContent = `No PIN found for ${memberId}. Set it once in Your Information.`;
       return;
     }
-    setAdminUnlocked(true);
-  };
 
-  document.getElementById("lockAdmin").onclick = () => setAdminUnlocked(false);
-
-  document.getElementById("copyEmails").onclick = async () => {
-    const txt = document.getElementById("emailList").value;
-    try {
-      await navigator.clipboard.writeText(txt);
-      alert("Copied");
-    } catch {
-      alert("Copy failed (browser blocked). You can manually select & copy.");
+    const hashed = await pinHash(memberId, pin);
+    if (hashed !== pins[memberId]) {
+      gateMsg.textContent = "Incorrect PIN.";
+      return;
     }
+
+    gateMsg.textContent = "";
+    setAdminUnlocked(true);
+  }
+
+  function refreshUnlockBtn(){
+    const memberId = baseId(adminMemberIdEl.value);
+    unlockBtn.disabled = !memberId;
+  }
+
+  // UI wiring
+  adminMemberIdEl.addEventListener("input", () => {
+    gateMsg.textContent = "";
+    refreshUnlockBtn();
+  });
+
+  unlockBtn.addEventListener("click", handleUnlock);
+
+  lockBtn.addEventListener("click", () => {
+    setAdminUnlocked(false);
+    adminPinEl.value = "";
+    gateMsg.textContent = "";
+  });
+
+  document.getElementById("onlyJoined").addEventListener("change", () => {
+    if (sessionStorage.getItem(ADMIN_SESSION_KEY) === "1") render();
+  });
+
+  document.getElementById("copyEmails").addEventListener("click", async () => {
+    const txt = document.getElementById("emailList").value;
+    try { await navigator.clipboard.writeText(txt); alert("Copied"); }
+    catch { alert("Copy failed (browser blocked). You can manually select & copy."); }
+  });
+
+  document.getElementById("downloadCsv").addEventListener("click", downloadMailMergeCSV);
+
+  // Restore unlocked state for this tab
+  setAdminUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === "1");
+  refreshUnlockBtn();
+
+  // Logout (works even if logout.js isn’t present)
+  document.getElementById("logout-link").onclick = (e) => {
+    e.preventDefault();
+    try { logout(); return; } catch {}
+    // fallback:
+    sessionStorage.removeItem("sanctuaryAccess");
+    sessionStorage.removeItem("sanctuaryAccessTime");
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    location.href = "index.html";
   };
-
-  document.getElementById("downloadCsv").onclick = downloadMailMergeCSV;
-  document.getElementById("onlyJoined").onchange = render;
-
-  // Restore if already unlocked in this tab
-  setAdminUnlocked(sessionStorage.getItem(ADMIN_KEY) === "1");
 </script>
 
 </body>

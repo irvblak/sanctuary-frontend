@@ -8,6 +8,27 @@
   <!-- Session gate -->
   <script src="access.js"></script>
 
+  <!-- 🔒 Must come from Your Information (YI) after PIN check -->
+  <script>
+    const MD_KEY = "sanctuaryMDAccess";
+    const MD_TIME_KEY = "sanctuaryMDAccessTime";
+    const MD_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+    try {
+      const ok = sessionStorage.getItem(MD_KEY) === "1";
+      const t = Number(sessionStorage.getItem(MD_TIME_KEY) || "0");
+      const fresh = ok && t && (Date.now() - t) < MD_TTL_MS;
+
+      if (!fresh) {
+        sessionStorage.removeItem(MD_KEY);
+        sessionStorage.removeItem(MD_TIME_KEY);
+        location.replace("your-info.html");
+      }
+    } catch {
+      location.replace("your-info.html");
+    }
+  </script>
+
   <!-- Logout handler -->
   <script src="logout.js"></script>
 

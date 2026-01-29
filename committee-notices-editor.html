@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Optional: keep members-only via your existing session gate -->
+  <!-- Optional members-session gate -->
   <script src="access.js"></script>
 
   <style>
@@ -143,6 +143,11 @@
       background:#fbfdff;
       color:#003366;
     }
+    .pill.preview{
+      border-color:#ffd7a8;
+      background:#fff3e4;
+      color:#7a3e00;
+    }
 
     .grid{
       display:grid;
@@ -224,8 +229,8 @@
       color:#003366;
     }
     .tag.committee{ border-color:#ffd7a8; background:#fff3e4; color:#7a3e00; }
+    .tag.host{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
     .tag.activity{ border-color:#cce7d0; background:#effaf1; color:#115b2b; }
-    .tag.events{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
 
     .two-col{
       display:grid;
@@ -262,6 +267,8 @@
       margin:0.9rem 0;
     }
 
+    .hide{ display:none !important; }
+
     @media (max-width: 980px){
       .grid{ grid-template-columns: 1fr; }
       .list{ max-height: 360px; }
@@ -288,9 +295,9 @@
 
 <main>
   <div class="card">
-    <h1>Committee — Notices Editor (Preview)</h1>
+    <h1>Committee — Notices Editor <span class="pill preview">PREVIEW</span></h1>
     <p class="subtle">
-      This editor updates the <strong>preview</strong> notice data only. When you are happy, download and publish to live.
+      This editor updates <strong>preview notices</strong> only. Residents won’t see changes until you later publish (we’ll add a safe publish step when you’re ready).
     </p>
 
     <div class="row">
@@ -314,17 +321,17 @@
 
     <div id="editor" style="display:none;">
       <div class="grid">
-        <!-- LEFT: list -->
+        <!-- LEFT -->
         <div class="panel">
           <h2>Notices</h2>
 
           <div class="list-controls">
             <input id="search" type="search" placeholder="Search…" />
-            <select id="filterCat" style="width:150px;">
+            <select id="filterCat" style="width:160px;">
               <option value="all">All</option>
               <option value="committee">Committee</option>
-              <option value="activity">Activity</option>
-              <option value="events">Events</option>
+              <option value="host">Host</option>
+              <option value="activity">Activities</option>
             </select>
           </div>
 
@@ -345,34 +352,47 @@
 
           <div class="actions">
             <div class="actions-left">
-              <button id="downloadPreviewBtn" type="button">Download preview JSON</button>
-              <button id="downloadLiveBtn" type="button" class="secondary">Download LIVE JSON</button>
+              <button id="downloadPreviewBtn" type="button">Download notices-preview.json</button>
             </div>
           </div>
 
           <p class="tiny">
-            <strong>Preview:</strong> upload/commit the downloaded file as <code>notices-preview.json</code>.<br>
-            <strong>Live:</strong> when ready, upload/commit the LIVE download as <code>notices.json</code>.
+            Upload/commit the downloaded file to replace <code>notices-preview.json</code>.<br>
+            The live file <code>notices.json</code> is not touched by this editor.
           </p>
         </div>
 
-        <!-- RIGHT: editor -->
+        <!-- RIGHT -->
         <div class="panel">
           <h2>Edit notice</h2>
 
           <div class="two-col">
             <div class="field">
-              <label>Category</label>
-              <select id="category">
+              <label>Type</label>
+              <select id="type">
                 <option value="committee">Committee</option>
-                <option value="activity">Activity</option>
-                <option value="events">Events</option>
+                <option value="host">Host</option>
+                <option value="activity">Activities</option>
               </select>
             </div>
 
             <div class="field">
               <label>Author (optional)</label>
-              <input id="author" placeholder="Committee / Activities / Events" />
+              <input id="author" placeholder="Committee / Host name / Activities" />
+            </div>
+          </div>
+
+          <div id="hostFields" class="two-col" style="margin-top:0.75rem;">
+            <div class="field">
+              <label>Host membership number (optional)</label>
+              <input id="ownerId" placeholder="e.g. SM12" />
+              <div class="tiny">Future-proofing: later we can restrict Host edits to their own notices.</div>
+            </div>
+
+            <div class="field">
+              <label>Event reference (optional)</label>
+              <input id="eventId" placeholder="e.g. EVT-123 (later)" />
+              <div class="tiny">Future-proofing: later Calendar/ED can link notices to events.</div>
             </div>
           </div>
 
@@ -384,13 +404,12 @@
           <div class="field" style="margin-top:0.75rem;">
             <label>Body (text)</label>
             <textarea id="body" placeholder="Write your notice text here…"></textarea>
-            <div class="tiny">Links like https://example.com become clickable automatically on the notices page.</div>
+            <div class="tiny">Web links (https://…) become clickable automatically on the notices page.</div>
           </div>
 
           <div class="field" style="margin-top:0.75rem;">
             <label>Media URLs (optional) — one per line</label>
             <textarea id="media" placeholder="https://…/image.jpg&#10;https://…/gif.gif"></textarea>
-            <div class="tiny">Use direct image/GIF URLs. (The notices page will display them.)</div>
           </div>
 
           <div class="two-col" style="margin-top:0.75rem;">
@@ -427,7 +446,7 @@
           <div class="divider"></div>
 
           <p class="tiny">
-            Tip: keep notices short and friendly. Use images/GIFs sparingly so it remains readable for everyone.
+            Tip: keep notices short and readable. Images/GIFs are great, but don’t overdo them.
           </p>
         </div>
       </div>
@@ -439,17 +458,16 @@
   /************************************************************
    * CONFIG YOU EDIT
    ************************************************************/
-  // Committee members allowed to edit notices (base membership IDs only).
-  // Example IDs: "SM01", "SC12", "SCH"
+  // Committee members allowed to use this editor (base membership IDs only).
   const COMMITTEE_ALLOWLIST = ["SM01"];  // <-- EDIT THIS LIST
 
   /************************************************************
-   * DATA SOURCES
+   * DATA SOURCE (preview)
    ************************************************************/
-  const PREVIEW_DATA_URL = "notices-preview.json?v=EDITOR_1";
+  const PREVIEW_DATA_URL = "notices-preview.json?v=EDITOR_3";
 
   /************************************************************
-   * STORAGE KEYS (re-using your existing PIN scheme)
+   * STORAGE KEYS (your existing PIN scheme)
    ************************************************************/
   const PIN_KEY = "sanctuaryPins"; // { memberId: sha256(memberId::pin::sanctuary) }
 
@@ -472,12 +490,14 @@
   const newBtn = document.getElementById("newBtn");
   const dupBtn = document.getElementById("dupBtn");
   const delBtn = document.getElementById("delBtn");
-
   const downloadPreviewBtn = document.getElementById("downloadPreviewBtn");
-  const downloadLiveBtn = document.getElementById("downloadLiveBtn");
 
-  const categoryEl = document.getElementById("category");
+  const typeEl = document.getElementById("type");
   const authorEl = document.getElementById("author");
+  const ownerIdEl = document.getElementById("ownerId");
+  const eventIdEl = document.getElementById("eventId");
+  const hostFieldsEl = document.getElementById("hostFields");
+
   const titleEl = document.getElementById("title");
   const bodyEl = document.getElementById("body");
   const mediaEl = document.getElementById("media");
@@ -515,6 +535,20 @@
     return String(raw || "").trim().split("/")[0];
   }
   function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+  function norm(s){ return String(s || "").trim().toLowerCase(); }
+
+  function validType(t){
+    t = norm(t);
+    return ["committee","host","activity"].includes(t);
+  }
+
+  function labelForType(t){
+    t = norm(t);
+    if (t === "committee") return "Committee";
+    if (t === "host") return "Host";
+    if (t === "activity") return "Activities";
+    return "Notice";
+  }
 
   function loadPins(){
     try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; }
@@ -565,16 +599,6 @@
     return d.toISOString();
   }
 
-  function norm(s){ return String(s || "").trim().toLowerCase(); }
-
-  function categoryLabel(cat){
-    cat = norm(cat);
-    if (cat === "committee") return "Committee";
-    if (cat === "activity") return "Activity";
-    if (cat === "events") return "Events";
-    return "Notice";
-  }
-
   function makeId(prefix){
     const t = Date.now().toString(36).toUpperCase();
     const r = Math.random().toString(36).slice(2,7).toUpperCase();
@@ -596,55 +620,6 @@
     });
   }
 
-  function getFiltered(){
-    const q = norm(searchEl.value);
-    const cat = filterCatEl.value;
-
-    return data.notices
-      .filter(n => cat === "all" ? true : norm(n.category) === cat)
-      .filter(n => {
-        if (!q) return true;
-        const hay = `${n.id} ${n.title} ${n.body} ${n.author} ${n.category}`.toLowerCase();
-        return hay.includes(q);
-      });
-  }
-
-  function renderList(){
-    const arr = getFiltered();
-    listEl.innerHTML = "";
-
-    const active = selectedId;
-
-    arr.forEach(n => {
-      const div = document.createElement("div");
-      div.className = "item" + (n.id === active ? " active" : "");
-      const cat = norm(n.category) || "events";
-      const tagClass = (cat === "committee" || cat === "activity" || cat === "events") ? cat : "events";
-      const created = n.createdAt ? new Date(n.createdAt).toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"}) : "No date";
-      const exp = n.expiresAt ? new Date(n.expiresAt).toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"}) : "";
-      const expTxt = exp ? ` • Expires: ${exp}` : "";
-      const pinTxt = n.pinned ? " • Pinned" : "";
-      const expiredTxt = isExpired(n) ? " • EXPIRED" : "";
-
-      div.innerHTML = `
-        <div class="item-top">
-          <div class="item-title">${escapeHtml(n.title || "(Untitled)")}</div>
-          <span class="tag ${tagClass}">${escapeHtml(categoryLabel(cat))}</span>
-        </div>
-        <div class="item-meta">
-          <span>${escapeHtml(created)}${escapeHtml(expTxt)}${escapeHtml(pinTxt)}${escapeHtml(expiredTxt)}</span>
-        </div>
-      `;
-
-      div.onclick = () => selectNotice(n.id);
-      listEl.appendChild(div);
-    });
-
-    countPill.textContent = String(arr.length);
-    dupBtn.disabled = !selectedId;
-    delBtn.disabled = !selectedId;
-  }
-
   function escapeHtml(s){
     return String(s ?? "")
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -662,4 +637,389 @@
     return JSON.parse(JSON.stringify(n || null));
   }
 
-  func
+  function getTypeFromNotice(n){
+    // Backward compatible: prefer type, fall back to category
+    const t = norm(n.type || n.category || "");
+    return validType(t) ? t : "activity";
+  }
+
+  function getFiltered(){
+    const q = norm(searchEl.value);
+    const cat = filterCatEl.value;
+
+    return data.notices
+      .filter(n => cat === "all" ? true : n.type === cat)
+      .filter(n => {
+        if (!q) return true;
+        const hay = `${n.id} ${n.title} ${n.body} ${n.author} ${n.type} ${n.ownerId||""} ${n.eventId||""}`.toLowerCase();
+        return hay.includes(q);
+      });
+  }
+
+  function renderList(){
+    const arr = getFiltered();
+    listEl.innerHTML = "";
+
+    const active = selectedId;
+
+    arr.forEach(n => {
+      const div = document.createElement("div");
+      div.className = "item" + (n.id === active ? " active" : "");
+      const type = n.type || "activity";
+      const tagClass = type;
+
+      const created = n.createdAt ? new Date(n.createdAt).toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"}) : "No date";
+      const exp = n.expiresAt ? new Date(n.expiresAt).toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"}) : "";
+      const expTxt = exp ? ` • Expires: ${exp}` : "";
+      const pinTxt = n.pinned ? " • Pinned" : "";
+      const expiredTxt = isExpired(n) ? " • EXPIRED" : "";
+
+      const hostMeta = (type === "host" && (n.ownerId || n.eventId))
+        ? ` • ${[n.ownerId ? ("Host: " + n.ownerId) : "", n.eventId ? ("Event: " + n.eventId) : ""].filter(Boolean).join(" • ")}`
+        : "";
+
+      div.innerHTML = `
+        <div class="item-top">
+          <div class="item-title">${escapeHtml(n.title || "(Untitled)")}</div>
+          <span class="tag ${tagClass}">${escapeHtml(labelForType(type))}</span>
+        </div>
+        <div class="item-meta">
+          <span>${escapeHtml(created)}${escapeHtml(expTxt)}${escapeHtml(pinTxt)}${escapeHtml(expiredTxt)}${escapeHtml(hostMeta)}</span>
+        </div>
+      `;
+
+      div.onclick = () => selectNotice(n.id);
+      listEl.appendChild(div);
+    });
+
+    countPill.textContent = String(arr.length);
+    dupBtn.disabled = !selectedId;
+    delBtn.disabled = !selectedId;
+  }
+
+  function updateHostFieldsVisibility(){
+    const t = norm(typeEl.value);
+    const show = t === "host";
+    hostFieldsEl.classList.toggle("hide", !show);
+    if (!show){
+      ownerIdEl.value = "";
+      eventIdEl.value = "";
+    }
+  }
+
+  function selectNotice(id){
+    const n = data.notices.find(x => x.id === id);
+    if (!n) return;
+
+    selectedId = id;
+    originalSelectedSnapshot = snapshot(n);
+    setDirty(false);
+
+    typeEl.value = n.type || "activity";
+    authorEl.value = n.author || "";
+
+    ownerIdEl.value = n.ownerId || "";
+    eventIdEl.value = n.eventId || "";
+    updateHostFieldsVisibility();
+
+    titleEl.value = n.title || "";
+    bodyEl.value = n.body || "";
+    mediaEl.value = Array.isArray(n.media) ? n.media.filter(Boolean).join("\n") : "";
+    createdAtEl.value = toLocalDatetimeValue(n.createdAt || "");
+    expiresAtEl.value = toLocalDatetimeValue(n.expiresAt || "");
+    pinnedEl.checked = !!n.pinned;
+
+    renderList();
+  }
+
+  function readForm(){
+    const t = validType(typeEl.value) ? norm(typeEl.value) : "activity";
+    return {
+      type: t,
+      category: t, // back-compat for older consumers
+      author: String(authorEl.value || "").trim(),
+      title: String(titleEl.value || "").trim(),
+      body: String(bodyEl.value || "").trim(),
+      media: String(mediaEl.value || "").split("\n").map(x => x.trim()).filter(Boolean),
+      createdAt: fromLocalDatetimeValue(createdAtEl.value) || nowIso(),
+      expiresAt: fromLocalDatetimeValue(expiresAtEl.value) || "",
+      pinned: !!pinnedEl.checked,
+      ownerId: (t === "host") ? baseId(ownerIdEl.value) : "",
+      eventId: (t === "host") ? String(eventIdEl.value || "").trim() : ""
+    };
+  }
+
+  function applyFormToSelected(){
+    if (!selectedId) return;
+    const n = data.notices.find(x => x.id === selectedId);
+    if (!n) return;
+
+    const f = readForm();
+
+    n.type = f.type;
+    n.category = f.category; // back-compat
+    n.author = f.author;
+    n.title = f.title;
+    n.body = f.body;
+    n.media = f.media;
+    n.createdAt = f.createdAt;
+    n.expiresAt = f.expiresAt;
+    n.pinned = f.pinned;
+    n.ownerId = f.ownerId;
+    n.eventId = f.eventId;
+
+    sortNotices(data.notices);
+    renderList();
+    showOk("Saved changes (in editor). Now download notices-preview.json to publish preview.");
+    setDirty(false);
+  }
+
+  function revertSelected(){
+    if (!selectedId || !originalSelectedSnapshot) return;
+    const idx = data.notices.findIndex(x => x.id === selectedId);
+    if (idx === -1) return;
+
+    data.notices[idx] = snapshot(originalSelectedSnapshot);
+    sortNotices(data.notices);
+    selectNotice(selectedId);
+    showOk("Reverted.");
+  }
+
+  function createNewNotice(){
+    const n = {
+      id: makeId("PREVIEW"),
+      type: "committee",
+      category: "committee", // back-compat
+      title: "",
+      body: "",
+      media: [],
+      author: "",
+      pinned: false,
+      createdAt: nowIso(),
+      expiresAt: "",
+      ownerId: "",
+      eventId: ""
+    };
+    data.notices.unshift(n);
+    sortNotices(data.notices);
+    renderList();
+    selectNotice(n.id);
+    setDirty(true);
+  }
+
+  function duplicateSelected(){
+    if (!selectedId) return;
+    const n = data.notices.find(x => x.id === selectedId);
+    if (!n) return;
+    const copy = snapshot(n);
+    copy.id = makeId("PREVIEW");
+    copy.title = (copy.title ? copy.title + " (copy)" : "Copy");
+    copy.createdAt = nowIso();
+    data.notices.unshift(copy);
+    sortNotices(data.notices);
+    renderList();
+    selectNotice(copy.id);
+    showOk("Duplicated.");
+  }
+
+  function deleteSelected(){
+    if (!selectedId) return;
+    const n = data.notices.find(x => x.id === selectedId);
+    if (!n) return;
+
+    if (!confirm("Delete this notice?")) return;
+
+    data.notices = data.notices.filter(x => x.id !== selectedId);
+    selectedId = "";
+    originalSelectedSnapshot = null;
+
+    // Clear form
+    typeEl.value = "committee";
+    authorEl.value = "";
+    ownerIdEl.value = "";
+    eventIdEl.value = "";
+    updateHostFieldsVisibility();
+
+    titleEl.value = "";
+    bodyEl.value = "";
+    mediaEl.value = "";
+    createdAtEl.value = "";
+    expiresAtEl.value = "";
+    pinnedEl.checked = false;
+
+    renderList();
+    setDirty(false);
+    dupBtn.disabled = true;
+    delBtn.disabled = true;
+    showOk("Deleted.");
+  }
+
+  function buildJson(){
+    // Keep output predictable and backward compatible:
+    // - write BOTH `type` and `category`
+    const clean = {
+      notices: (data.notices || []).map(n => ({
+        id: n.id || "",
+        type: validType(n.type) ? n.type : getTypeFromNotice(n),
+        category: validType(n.category) ? n.category : (validType(n.type) ? n.type : getTypeFromNotice(n)),
+        title: n.title || "",
+        body: n.body || "",
+        media: Array.isArray(n.media) ? n.media.filter(Boolean) : [],
+        author: n.author || "",
+        pinned: !!n.pinned,
+        createdAt: n.createdAt || "",
+        expiresAt: n.expiresAt || "",
+        ownerId: n.ownerId || "",
+        eventId: n.eventId || ""
+      }))
+    };
+    sortNotices(clean.notices);
+    return JSON.stringify(clean, null, 2);
+  }
+
+  function download(filename, text){
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function loadPreviewData(){
+    clearWarn();
+    try{
+      const res = await fetch(PREVIEW_DATA_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load ${PREVIEW_DATA_URL} (${res.status})`);
+      const json = await res.json();
+      const notices = Array.isArray(json.notices) ? json.notices : [];
+
+      data = {
+        notices: notices.map(n => {
+          const t = getTypeFromNotice(n);
+          return {
+            id: n.id || "",
+            type: t,
+            category: t, // keep in sync
+            title: n.title || "",
+            body: n.body || "",
+            media: Array.isArray(n.media) ? n.media : [],
+            author: n.author || "",
+            pinned: !!n.pinned,
+            createdAt: n.createdAt || "",
+            expiresAt: n.expiresAt || "",
+            ownerId: n.ownerId || "",
+            eventId: n.eventId || ""
+          };
+        })
+      };
+
+      sortNotices(data.notices);
+      renderList();
+
+      if (data.notices.length){
+        selectNotice(data.notices[0].id);
+      } else {
+        // sensible default state
+        updateHostFieldsVisibility();
+      }
+    } catch (e){
+      showWarn("Could not load preview notices JSON.\n\n" + String(e && e.message ? e.message : e));
+      data = { notices: [] };
+      renderList();
+      updateHostFieldsVisibility();
+    }
+  }
+
+  function updateUnlockEnabled(){
+    const mid = baseId(memberIdEl.value);
+    const pin = pinEl.value.trim();
+    unlockBtn.disabled = !(mid && onlyDigits4(pin));
+  }
+
+  async function handleUnlock(){
+    clearWarn();
+
+    const memberIdKey = baseId(memberIdEl.value);
+    const pin = pinEl.value.trim();
+
+    if (!memberIdKey) return showWarn("Enter your membership number.");
+    if (!onlyDigits4(pin)) return showWarn("Enter a 4-digit PIN.");
+
+    if (!COMMITTEE_ALLOWLIST.map(baseId).includes(memberIdKey)){
+      return showWarn(
+        "This membership number is not on the Committee allow-list for this editor.\n\n" +
+        "To add a committee member, edit COMMITTEE_ALLOWLIST inside committee-notices-editor.html."
+      );
+    }
+
+    const pins = loadPins();
+    if (!pins[memberIdKey]){
+      return showWarn(
+        "No PIN found for this membership number in THIS browser.\n\n" +
+        "This editor uses the same PIN system as Your Information.\n" +
+        "If you are on a different device/browser, set your PIN in Your Information first (on this device)."
+      );
+    }
+
+    const ok = (await pinHash(memberIdKey, pin)) === pins[memberIdKey];
+    if (!ok) return showWarn("Incorrect PIN.");
+
+    setUnlocked();
+    await loadPreviewData();
+    showOk("Unlocked.");
+  }
+
+  function hookDirty(el){
+    el.addEventListener("input", () => {
+      if (!selectedId) return;
+      setDirty(true);
+    });
+    el.addEventListener("change", () => {
+      if (!selectedId) return;
+      setDirty(true);
+    });
+  }
+
+  // Events
+  memberIdEl.addEventListener("input", updateUnlockEnabled);
+  pinEl.addEventListener("input", updateUnlockEnabled);
+  pinEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !unlockBtn.disabled) handleUnlock();
+  });
+  unlockBtn.addEventListener("click", handleUnlock);
+
+  searchEl.addEventListener("input", renderList);
+  filterCatEl.addEventListener("change", renderList);
+
+  newBtn.addEventListener("click", createNewNotice);
+  dupBtn.addEventListener("click", duplicateSelected);
+  delBtn.addEventListener("click", deleteSelected);
+
+  saveBtn.addEventListener("click", applyFormToSelected);
+  revertBtn.addEventListener("click", revertSelected);
+
+  downloadPreviewBtn.addEventListener("click", () => {
+    const json = buildJson();
+    download("notices-preview.json", json);
+    showOk("Downloaded notices-preview.json");
+  });
+
+  typeEl.addEventListener("change", () => {
+    updateHostFieldsVisibility();
+    if (selectedId) setDirty(true);
+  });
+
+  // Form dirty hooks
+  [typeEl, authorEl, ownerIdEl, eventIdEl, titleEl, bodyEl, mediaEl, createdAtEl, expiresAtEl, pinnedEl].forEach(hookDirty);
+
+  // Default state
+  hostFieldsEl.classList.add("hide"); // only shows for Host
+  setLocked();
+  updateUnlockEnabled();
+</script>
+</body>
+</html>

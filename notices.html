@@ -137,7 +137,6 @@
       overflow:hidden;
     }
 
-    /* subtle “paper” vibe */
     .notice:before{
       content:"";
       position:absolute;
@@ -186,8 +185,8 @@
       color:#003366;
     }
     .tag.committee{ border-color:#ffd7a8; background:#fff3e4; color:#7a3e00; }
+    .tag.host{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
     .tag.activity{ border-color:#cce7d0; background:#effaf1; color:#115b2b; }
-    .tag.events{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
 
     .pin{
       position:absolute;
@@ -279,15 +278,15 @@
   <div class="card">
     <h1>Notices</h1>
     <p class="subtle">
-      Committee, Activity and Events notices — formatted like a noticeboard (images/GIFs supported).
+      Committee, Host and Activities notices — formatted like a noticeboard (images/GIFs supported).
     </p>
 
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Notice categories">
         <div class="tab active" data-cat="all" role="tab" aria-selected="true">All</div>
         <div class="tab" data-cat="committee" role="tab" aria-selected="false">Committee</div>
-        <div class="tab" data-cat="activity" role="tab" aria-selected="false">Activity</div>
-        <div class="tab" data-cat="events" role="tab" aria-selected="false">Events</div>
+        <div class="tab" data-cat="host" role="tab" aria-selected="false">Host</div>
+        <div class="tab" data-cat="activity" role="tab" aria-selected="false">Activities</div>
       </div>
 
       <div class="filters">
@@ -304,7 +303,7 @@
 
 <script>
   // LIVE data source
-  const DATA_URL = "notices.json?v=LIVE_1";
+  const DATA_URL = "notices.json?v=LIVE_2";
 
   const listEl = document.getElementById("list");
   const emptyEl = document.getElementById("empty");
@@ -349,13 +348,21 @@
   function bodyToHtml(text){
     const raw = String(text || "");
     const esc = escapeHtml(raw);
-    // linkify http(s)
     return esc.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
               .replace(/\n/g, "<br>");
   }
 
-  function validCat(cat){
-    return ["committee","activity","events"].includes(cat);
+  function labelForType(t){
+    t = norm(t);
+    if (t === "committee") return "Committee";
+    if (t === "host") return "Host";
+    if (t === "activity") return "Activities";
+    return "Notice";
+  }
+
+  function validType(t){
+    t = norm(t);
+    return ["committee","host","activity"].includes(t);
   }
 
   function isExpired(n){
@@ -363,14 +370,21 @@
     return exp && exp < Date.now();
   }
 
+  function getType(n){
+    // Backward compatible: prefer n.type, fall back to n.category
+    const t = norm(n.type || n.category || "");
+    return validType(t) ? t : "activity";
+  }
+
   function render(){
     const q = norm(searchEl.value);
+
     const filtered = allNotices
       .filter(n => !isExpired(n))
-      .filter(n => activeCat === "all" ? true : n.category === activeCat)
+      .filter(n => activeCat === "all" ? true : n.type === activeCat)
       .filter(n => {
         if (!q) return true;
-        const hay = norm(n.title) + " " + norm(n.body) + " " + norm(n.category);
+        const hay = norm(n.title) + " " + norm(n.body) + " " + norm(n.author) + " " + norm(n.type);
         return hay.includes(q);
       });
 
@@ -383,7 +397,8 @@
       const card = document.createElement("div");
       card.className = "notice";
 
-      const tagClass = validCat(n.category) ? n.category : "events";
+      const type = getType(n);
+      const tagClass = type;
       const dateStr = fmtDate(n.createdAt);
 
       const bodyHtml = (n.bodyHtml && String(n.bodyHtml).trim())
@@ -400,7 +415,7 @@
 
         <div class="notice-top">
           <div>
-            <div class="tag ${tagClass}">${escapeHtml(n.categoryLabel || n.category || "notice")}</div>
+            <div class="tag ${tagClass}">${escapeHtml(labelForType(type))}</div>
             <h3 class="notice-title">${escapeHtml(n.title || "(Untitled notice)")}</h3>
             <div class="meta">
               ${dateStr ? `<span>Posted: ${escapeHtml(dateStr)}</span>` : `<span class="muted">Posted date not set</span>`}
@@ -441,7 +456,8 @@
       const data = await res.json();
 
       const raw = Array.isArray(data.notices) ? data.notices : [];
-      // sort: pinned first, then newest createdAt
+
+      // Sort: pinned first, then newest createdAt
       raw.sort((a,b) => {
         const p = (b.pinned?1:0) - (a.pinned?1:0);
         if (p) return p;
@@ -450,12 +466,7 @@
 
       allNotices = raw.map(n => ({
         id: n.id || "",
-        category: norm(n.category),
-        categoryLabel: n.categoryLabel || (
-          norm(n.category) === "committee" ? "Committee" :
-          norm(n.category) === "activity" ? "Activity" :
-          norm(n.category) === "events" ? "Events" : "Notice"
-        ),
+        type: getType(n),
         title: n.title || "",
         body: n.body || "",
         bodyHtml: n.bodyHtml || "",

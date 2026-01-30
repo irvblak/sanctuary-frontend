@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Optional members-session gate -->
   <script src="access.js"></script>
 
   <style>
@@ -16,17 +15,14 @@
       --brand:#005ea8;
       --bg1:#e8f2ff;
       --bg2:#ffffff;
-      --card:#ffffff;
       --border:#dbe6f3;
-      --shadow:0 10px 25px rgba(0,0,0,0.08);
-      --danger:#b42318;
     }
 
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--ink);
       background: linear-gradient(180deg, var(--bg1) 0%, #f2f7fb 40%, var(--bg2) 100%);
+      color:var(--ink);
       min-height:100vh;
     }
 
@@ -35,23 +31,21 @@
       display:grid;
       grid-template-columns:1fr auto 1fr;
       align-items:center;
-      gap:0.75rem;
     }
     nav a{
       text-decoration:none;
       font-weight:800;
       color:#003366;
       margin:0 0.5rem;
-      white-space:nowrap;
     }
     .nav-left{justify-self:start;}
-    .nav-center{justify-self:center; display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center;}
+    .nav-center{justify-self:center;}
     .nav-right{justify-self:end;}
 
     main{max-width:1100px; margin:0 auto 2rem; padding:0 1rem;}
 
     .card{
-      background:var(--card);
+      background:#fff;
       border-radius:16px;
       box-shadow:0 2px 10px rgba(0,0,0,0.06);
       padding:1.1rem;
@@ -60,24 +54,7 @@
     }
 
     h1{margin:0.2rem 0 0.35rem 0; color:#003366; font-size:1.55rem;}
-    .subtle{color:var(--muted); line-height:1.45; margin:0.35rem 0;}
-
-    .pill{
-      display:inline-block;
-      padding:0.2rem 0.6rem;
-      border-radius:999px;
-      font-weight:900;
-      font-size:0.85rem;
-      border:1px solid #cfd8e3;
-      background:#fbfdff;
-      color:#003366;
-      vertical-align:middle;
-    }
-    .pill.preview{
-      border-color:#ffd7a8;
-      background:#fff3e4;
-      color:#7a3e00;
-    }
+    .subtle{color:var(--muted); line-height:1.45;}
 
     .controls{
       display:flex;
@@ -92,33 +69,16 @@
       border:1px solid #cfd8e3;
       border-radius:12px;
       font-size:1rem;
-      box-sizing:border-box;
-      background:#fff;
-      color:var(--ink);
     }
 
     button{
-      background:var(--brand);
+      background:#7f97ad;
       color:#fff;
       border:none;
       padding:0.55rem 0.95rem;
       border-radius:12px;
       cursor:pointer;
-      font-size:1rem;
       font-weight:900;
-    }
-    button.secondary{background:#7f97ad;}
-    button:disabled{opacity:0.45; cursor:default;}
-
-    .warn{
-      display:none;
-      margin-top:0.75rem;
-      padding:0.85rem;
-      border-radius:14px;
-      border:1px solid #f2b8b8;
-      background:#fff5f5;
-      color:#7a0000;
-      white-space:pre-wrap;
     }
 
     .grid{
@@ -135,307 +95,7 @@
       box-shadow:0 8px 18px rgba(0,0,0,0.06);
       padding:0.95rem;
       position:relative;
-      overflow:hidden;
     }
 
-    .tag{
-      display:inline-block;
-      padding:0.15rem 0.5rem;
-      border-radius:999px;
-      font-weight:900;
-      font-size:0.78rem;
-      border:1px solid #dbe6f3;
-      background:#fbfdff;
-      color:#003366;
-      margin-right:0.45rem;
-    }
-    .tag.committee{ border-color:#ffd7a8; background:#fff3e4; color:#7a3e00; }
-    .tag.host{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
-    .tag.activity{ border-color:#cce7d0; background:#effaf1; color:#115b2b; }
-
-    .pin{
-      position:absolute;
-      top:0.7rem;
-      right:0.7rem;
-      font-size:0.85rem;
-      font-weight:900;
-      padding:0.2rem 0.55rem;
-      border-radius:999px;
-      border:1px solid #ffd7a8;
-      background:#fff3e4;
-      color:#7a3e00;
-    }
-
-    .title{
-      font-weight:1000;
-      color:#142433;
-      font-size:1.05rem;
-      margin:0.35rem 0 0.35rem 0;
-      line-height:1.2;
-    }
-
-    .meta{
-      color:var(--muted);
-      font-size:0.9rem;
-      display:flex;
-      gap:0.5rem;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-bottom:0.65rem;
-    }
-
-    .body{
-      white-space:pre-wrap;
-      line-height:1.45;
-      color:#263443;
-      margin:0;
-    }
-
-    .media{
-      margin-top:0.75rem;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap:0.5rem;
-    }
-
-    .media img{
-      width:100%;
-      height:auto;
-      border-radius:14px;
-      border:1px solid #e6edf5;
-      box-shadow:0 6px 16px rgba(0,0,0,0.06);
-      background:#fff;
-    }
-
-    .empty{
-      margin-top:1rem;
-      padding:1rem;
-      border-radius:16px;
-      border:1px dashed #d6dde6;
-      background:#fbfdff;
-      color:#6b7280;
-    }
-
-    @media (max-width: 720px){
-      nav{ grid-template-columns:1fr; text-align:center; row-gap:0.65rem; }
-      .nav-left,.nav-center,.nav-right{ justify-self:center; }
-    }
-  </style>
-</head>
-
-<body>
-<nav>
-  <div class="nav-left">
-    <a href="index.html">Home</a>
-  </div>
-
-  <div class="nav-center">
-    <a href="members-info.html">Hub</a>
-    <a href="notices.html">Live Notices</a>
-  </div>
-
-  <div class="nav-right">
-    <a href="#" onclick="(window.logout?logout():location.href='index.html'); return false;">Logout</a>
-  </div>
-</nav>
-
-<main>
-  <div class="card">
-    <h1>Notices <span class="pill preview">PREVIEW</span></h1>
-
-    <p class="subtle">
-      These are preview notices stored on the club server. They only go live when Admin publishes them.
-    </p>
-
-    <div class="controls">
-      <input id="search" type="search" placeholder="Search…" style="min-width:220px;" />
-      <select id="filterType" style="width:190px;">
-        <option value="all">All</option>
-        <option value="committee">Committee</option>
-        <option value="host">Host</option>
-        <option value="activity">Activities</option>
-      </select>
-      <button id="refreshBtn" type="button" class="secondary">Refresh</button>
-      <span class="pill" id="countPill">0</span>
-    </div>
-
-    <div id="warn" class="warn"></div>
-
-    <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No preview notices yet.</div>
-  </div>
-</main>
-
-<script>
-  /************************************************************
-   * CONFIG
-   ************************************************************/
-  const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
-  const ENDPOINT = "/api/notices?mode=preview";
-
-  /************************************************************
-   * DOM
-   ************************************************************/
-  const gridEl = document.getElementById("grid");
-  const emptyEl = document.getElementById("empty");
-  const warnEl = document.getElementById("warn");
-  const countPill = document.getElementById("countPill");
-  const searchEl = document.getElementById("search");
-  const filterTypeEl = document.getElementById("filterType");
-  const refreshBtn = document.getElementById("refreshBtn");
-
-  let notices = [];
-
-  function showWarn(msg){
-    warnEl.style.display = "block";
-    warnEl.textContent = msg;
-  }
-  function clearWarn(){
-    warnEl.style.display = "none";
-    warnEl.textContent = "";
-  }
-
-  function esc(s){
-    return String(s ?? "")
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-  }
-
-  function normType(n){
-    const t = (n.type || n.category || "activity").toLowerCase().trim();
-    if (t === "committee" || t === "host" || t === "activity") return t;
-    // anything legacy (e.g. "events") becomes "activity" for display
-    return "activity";
-  }
-
-  function tagLabel(t){
-    if (t === "committee") return "Committee";
-    if (t === "host") return "Host";
-    return "Activities";
-  }
-
-  function fmtDate(iso){
-    try{
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return "";
-      return d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
-    }catch{ return ""; }
-  }
-
-  function linkify(text){
-    // Keep it simple: linkify http(s) URLs
-    const safe = esc(text);
-    return safe.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-  }
-
-  function getFiltered(){
-    const q = (searchEl.value || "").trim().toLowerCase();
-    const ft = filterTypeEl.value;
-
-    return notices.filter(n => {
-      const t = normType(n);
-      if (ft !== "all" && t !== ft) return false;
-      if (!q) return true;
-
-      const hay = `${n.title||""} ${n.body||""} ${n.author||""} ${n.ownerId||""} ${n.eventId||""}`.toLowerCase();
-      return hay.includes(q);
-    });
-  }
-
-  function render(){
-    const arr = getFiltered();
-
-    countPill.textContent = String(arr.length);
-    gridEl.innerHTML = "";
-    emptyEl.style.display = arr.length ? "none" : "block";
-
-    arr.forEach(n => {
-      const t = normType(n);
-      const pinned = !!n.pinned;
-      const author = (n.author || "").trim();
-      const created = fmtDate(n.createdAt || "");
-      const owner = (n.ownerId || "").trim();
-      const eventId = (n.eventId || "").trim();
-
-      const media = Array.isArray(n.media) ? n.media.filter(Boolean) : [];
-
-      const card = document.createElement("div");
-      card.className = "notice";
-
-      card.innerHTML = `
-        ${pinned ? `<div class="pin">Pinned</div>` : ""}
-        <div>
-          <span class="tag ${t}">${tagLabel(t)}</span>
-          ${owner && t === "host" ? `<span class="pill">Owner: ${esc(owner)}</span>` : ""}
-          ${eventId ? `<span class="pill">Event: ${esc(eventId)}</span>` : ""}
-        </div>
-
-        <div class="title">${esc(n.title || "(Untitled)")}</div>
-
-        <div class="meta">
-          ${author ? `<span>By: ${esc(author)}</span>` : ""}
-          ${created ? `<span>•</span><span>${esc(created)}</span>` : ""}
-        </div>
-
-        <p class="body">${linkify(n.body || "")}</p>
-
-        ${media.length ? `
-          <div class="media">
-            ${media.map(url => `<img src="${esc(url)}" alt="Notice media" loading="lazy" />`).join("")}
-          </div>
-        ` : ""}
-      `;
-
-      gridEl.appendChild(card);
-    });
-  }
-
-  async function load(){
-    clearWarn();
-    refreshBtn.disabled = true;
-
-    try{
-      const res = await fetch(API_BASE + ENDPOINT);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      const raw = Array.isArray(data.notices) ? data.notices : [];
-
-      // Pinned first, then newest first
-      raw.sort((a,b) => {
-        const ap = a.pinned ? 1 : 0;
-        const bp = b.pinned ? 1 : 0;
-        if (bp !== ap) return bp - ap;
-        const at = new Date(a.createdAt || 0).getTime() || 0;
-        const bt = new Date(b.createdAt || 0).getTime() || 0;
-        return bt - at;
-      });
-
-      notices = raw;
-      render();
-    } catch (e){
-      showWarn(
-        "Could not load preview notices from the server.\n\n" +
-        "Check that the backend is running and reachable.\n\n" +
-        "Error: " + String(e.message || e)
-      );
-      notices = [];
-      render();
-    } finally {
-      refreshBtn.disabled = false;
-    }
-  }
-
-  searchEl.addEventListener("input", render);
-  filterTypeEl.addEventListener("change", render);
-  refreshBtn.addEventListener("click", load);
-
-  // Initial load
-  load();
-</script>
-
-<!-- Optional -->
-<script src="logout.js"></script>
-
-</body>
-</html>
+    .notice.host{
+      border-left:6px solid #5

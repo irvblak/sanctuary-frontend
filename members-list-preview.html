@@ -2,19 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Members List</title>
+  <title>Notices (Preview)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="logout.js"></script>
+  <!-- Members gate -->
+  <script src="access.js"></script>
 
   <style>
+    :root{
+      --ink:#1f2a37;
+      --muted:#667085;
+      --brand:#005ea8;
+      --bg1:#e8f2ff;
+      --bg2:#ffffff;
+      --border:#dbe6f3;
+    }
+
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
-      color:#222;
+      background: linear-gradient(180deg, var(--bg1) 0%, #f2f7fb 40%, var(--bg2) 100%);
+      color:var(--ink);
       min-height:100vh;
     }
 
@@ -23,141 +32,187 @@
       display:grid;
       grid-template-columns:1fr auto 1fr;
       align-items:center;
+      gap:0.75rem;
     }
     nav a{
       text-decoration:none;
-      font-weight:600;
+      font-weight:800;
       color:#003366;
       margin:0 0.5rem;
+      white-space:nowrap;
     }
     .nav-left{justify-self:start;}
-    .nav-center{justify-self:center; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;}
+    .nav-center{justify-self:center; display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center;}
     .nav-right{justify-self:end;}
 
-    main{max-width:1400px; margin:0 auto 1rem; padding:0 1rem;}
+    main{max-width:1100px; margin:0 auto 2rem; padding:0 1rem;}
 
     .card{
       background:#fff;
-      border-radius:14px;
+      border-radius:16px;
       box-shadow:0 2px 10px rgba(0,0,0,0.06);
       padding:1.1rem;
+      margin-top:0.75rem;
+      border:1px solid rgba(219,230,243,0.7);
     }
 
-    h1{margin:0.25rem 0 0.75rem; color:#003366;}
-    .sub{margin:0 0 1rem; color:#444; line-height:1.4;}
-    .muted{color:#666;}
+    h1{margin:0.2rem 0 0.35rem 0; color:#003366; font-size:1.55rem;}
+    .subtle{color:var(--muted); line-height:1.45; margin:0.35rem 0;}
 
-    /* two-panel layout */
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      align-items:start;
-    }
-
-    .panel{
-      border:1px solid #dbe6f3;
-      border-radius:12px;
-      overflow:hidden;
-      background:#fff;
-    }
-
-    .panel-head{
-      background:#f5f9ff;
-      border-bottom:1px solid #d9e4f2;
-      padding:0.65rem 0.85rem;
-      font-weight:800;
-      color:#003366;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:0.75rem;
-      flex-wrap:wrap;
-    }
-
-    .panel-body{ overflow:auto; }
-
-    table{
-      border-collapse:collapse;
-      width:100%;
-      min-width: 760px;
-      background:#fff;
-    }
-
-    th, td{
-      border-bottom:1px solid #e6eef8;
-      padding:0.55rem 0.65rem;
-      text-align:left;
-      vertical-align:top;
-      font-size:0.95rem;
-      white-space:nowrap;
-    }
-
-    th{
-      position: sticky;
-      top: 0;
-      background:#ffffff;
-      color:#003366;
-      font-weight:800;
-      border-bottom:1px solid #d9e4f2;
-      z-index:1;
-    }
-
-    th.idhead{
-      background:#ffffff;
-      width: 120px;
-    }
-
-    td.idcell{
-      font-weight:800;
-      color:#003366;
-      background:#fbfdff;
-      border-right:1px solid #e6eef8;
-    }
-
-    td.empty{ color:#999; }
-
-    /* --- Expand/collapse for extra residents --- */
-    .toggle{
-      margin-left:0.45rem;
-      padding:0.22rem 0.5rem;
-      border:1px solid #bcd2ea;
-      border-radius:999px;
-      background:#eef6ff;
-      color:#003366;
-      font-weight:800;
-      font-size:0.78rem;
-      cursor:pointer;
-    }
-    .toggle[disabled]{
-      opacity:0.4;
-      cursor:default;
-    }
-
-    tr.extra{ display:none; }
-    tr.extra td{
-      background:#fcfeff;
-    }
-    tr.extra td:first-child{
-      border-right:1px solid #e6eef8;
-      background:#fbfdff;
-    }
-
-    .rid{
+    .pill{
       display:inline-block;
-      font-weight:800;
+      padding:0.2rem 0.6rem;
+      border-radius:999px;
+      font-weight:900;
+      font-size:0.85rem;
+      border:1px solid #cfd8e3;
+      background:#fbfdff;
       color:#003366;
-      margin-right:0.4rem;
+      vertical-align:middle;
+    }
+    .pill.preview{
+      border-color:#ffd7a8;
+      background:#fff3e4;
+      color:#7a3e00;
     }
 
-    @media (max-width: 980px){
-      .split{ grid-template-columns: 1fr; }
-      table{ min-width: 720px; }
+    .controls{
+      display:flex;
+      gap:0.6rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:0.85rem;
+    }
+
+    input, select{
+      padding:0.55rem 0.75rem;
+      border:1px solid #cfd8e3;
+      border-radius:12px;
+      font-size:1rem;
+      background:#fff;
+    }
+
+    button{
+      background:#7f97ad;
+      color:#fff;
+      border:none;
+      padding:0.55rem 0.95rem;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    button:disabled{opacity:0.55; cursor:default;}
+
+    .warn{
+      display:none;
+      margin-top:0.75rem;
+      padding:0.85rem;
+      border-radius:14px;
+      border:1px solid #f2b8b8;
+      background:#fff5f5;
+      color:#7a0000;
+      white-space:pre-wrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+
+    .notice{
+      background:#fff;
+      border:1px solid #e6edf5;
+      border-radius:16px;
+      box-shadow:0 8px 18px rgba(0,0,0,0.06);
+      padding:0.95rem;
+      position:relative;
+    }
+
+    /* Host notices: slightly “poster-like” */
+    .notice.host{
+      border-left:6px solid #5b6cff;
+      background:#f9faff;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:0.15rem 0.5rem;
+      border-radius:999px;
+      font-weight:900;
+      font-size:0.78rem;
+      margin-right:0.4rem;
+      border:1px solid #dbe6f3;
+      background:#fbfdff;
+      color:#003366;
+    }
+    .tag.committee{ border-color:#ffd7a8; background:#fff3e4; color:#7a3e00; }
+    .tag.host{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
+    .tag.activity{ border-color:#cce7d0; background:#effaf1; color:#115b2b; }
+
+    .title{
+      font-weight:900;
+      font-size:1.05rem;
+      margin:0.35rem 0 0.25rem 0;
+      line-height:1.2;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:0.9rem;
+      margin-bottom:0.6rem;
+    }
+
+    /* Default notice text scroll area (~5.8 cm) */
+    .body{
+      max-height:220px;
+      overflow:auto;
+      white-space:pre-wrap;
+      line-height:1.45;
+      padding-right:0.25rem;
+    }
+
+    /* Host notice text scroll area (~9.5 cm) */
+    .notice.host .body{
+      max-height:360px;
+    }
+
+    .media{
+      margin-top:0.75rem;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap:0.5rem;
+      max-height:260px;
+      overflow:auto;
+      padding-right:0.15rem;
+    }
+
+    .notice.host .media{
+      max-height:420px;
+    }
+
+    .media img{
+      width:100%;
+      height:auto;
+      border-radius:14px;
+      border:1px solid #e6edf5;
+      background:#fff;
+      box-shadow:0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .empty{
+      margin-top:1rem;
+      padding:1rem;
+      border-radius:16px;
+      border:1px dashed #d6dde6;
+      background:#fbfdff;
+      color:#6b7280;
     }
 
     @media (max-width: 720px){
-      nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
-      .nav-left,.nav-center,.nav-right{justify-self:center;}
+      nav{ grid-template-columns:1fr; text-align:center; row-gap:0.65rem; }
+      .nav-left,.nav-center,.nav-right{ justify-self:center; }
     }
   </style>
 </head>
@@ -166,216 +221,154 @@
 <nav>
   <div class="nav-left"><a href="index.html">Home</a></div>
   <div class="nav-center">
-    <a href="events-calendar.html">Calendar</a>
     <a href="members-info.html">Hub</a>
-    <a href="members-directory.html">Members Directory</a>
-    <a href="your-info.html">Your Information</a>
+    <span class="pill preview">PREVIEW</span>
   </div>
-  <div class="nav-right"><a href="#" onclick="logout(); return false;">Logout</a></div>
+  <div class="nav-right"><a href="#" onclick="logout();return false;">Logout</a></div>
 </nav>
 
 <main>
   <div class="card">
-    <h1>Members List</h1>
-    <p class="sub">This is a list-style view of the Members Directory.</p>
+    <h1>Notices (Preview)</h1>
+    <p class="subtle">These are preview notices stored on the club server. They only go live when Admin publishes them.</p>
 
-    <div class="split">
-      <!-- LEFT: SCH + SM -->
-      <section class="panel">
-        <div class="panel-head">
-          <span>SCH (clubhouse) &amp; Sanctuary Mews</span>
-        </div>
-        <div class="panel-body">
-          <table>
-            <thead>
-              <tr>
-                <th class="idhead"></th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Landline</th>
-              </tr>
-            </thead>
-            <tbody id="rowsLeft"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- RIGHT: SC -->
-      <section class="panel">
-        <div class="panel-head">
-          <span>Sanctuary Court</span>
-        </div>
-        <div class="panel-body">
-          <table>
-            <thead>
-              <tr>
-                <th class="idhead"></th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Landline</th>
-              </tr>
-            </thead>
-            <tbody id="rowsRight"></tbody>
-          </table>
-        </div>
-      </section>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search…" />
+      <select id="filter">
+        <option value="all">All</option>
+        <option value="committee">Committee</option>
+        <option value="host">Host</option>
+        <option value="activity">Activities</option>
+      </select>
+      <button id="refreshBtn" type="button">Refresh</button>
+      <span class="pill" id="count">0</span>
     </div>
 
-    <p class="sub muted" style="margin-top:0.85rem;">
-      Note: at present this is stored in your browser on this device. When you move to a shared members database,
-      this becomes a true admin view for the whole club.
-    </p>
+    <div id="warn" class="warn"></div>
+
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">No preview notices yet.</div>
   </div>
 </main>
 
 <script>
-  const STORAGE_KEY = "sanctuaryMembers";
+  const API = "https://sanctuary-backend-8iqc.onrender.com/api/notices?mode=preview";
 
-  function loadStore() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
-  }
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const warn = document.getElementById("warn");
+  const searchEl = document.getElementById("search");
+  const filterEl = document.getElementById("filter");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const countEl = document.getElementById("count");
 
-  function esc(s) {
+  let notices = [];
+
+  function esc(s){
     return String(s ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;");
   }
 
-  function pad2(n){ return String(n).padStart(2,"0"); }
-
-  function buildIds(prefix, from, to){
-    const out = [];
-    for(let i=from;i<=to;i++) out.push(prefix + pad2(i));
-    return out;
+  function showWarn(msg){
+    warn.style.display = "block";
+    warn.textContent = msg;
+  }
+  function clearWarn(){
+    warn.style.display = "none";
+    warn.textContent = "";
   }
 
-  function buildLeftIds(){
-    return ["SCH", ...buildIds("SM", 1, 73)];
-  }
-  function buildRightIds(){
-    return buildIds("SC", 1, 43);
-  }
-
-  function getResidents(store, memberId){
-    const residents = store[memberId]?.residents || [];
-    return Array.isArray(residents) ? residents : [];
-  }
-
-  function anyField(r){
-    return r && (r.name || r.email || r.mobile || r.landline);
-  }
-
-  function rowHtml(memberId, ridSuffix, r, isPrimary, showToggle, hasExtras){
-    const name = r?.name || "—";
-    const email = r?.email || "—";
-    const mobile = r?.mobile || "—";
-    const landline = (isPrimary ? (r?.landline || "—") : "—");
-
-    const toggleBtn = showToggle
-      ? `<button class="toggle" type="button" data-toggle="${esc(memberId)}" aria-expanded="false">${hasExtras ? "More ▾" : "More"}</button>`
-      : "";
-
-    return `
-      <tr class="${isPrimary ? "primary" : "extra"}" data-parent="${esc(memberId)}">
-        <td class="idcell">
-          ${esc(memberId)}
-          ${toggleBtn}
-        </td>
-        <td class="${anyField(r) ? "" : "empty"}">
-          <span class="rid">${esc(memberId)}/${esc(ridSuffix)}</span>${esc(name)}
-        </td>
-        <td class="${anyField(r) ? "" : "empty"}">${esc(email)}</td>
-        <td class="${anyField(r) ? "" : "empty"}">${esc(mobile)}</td>
-        <td class="${anyField(r) ? "" : "empty"}">${esc(landline)}</td>
-      </tr>
-    `;
-  }
-
-  function renderTable(tbodyId, ids, store){
-    const tbody = document.getElementById(tbodyId);
-    const rows = [];
-
-    ids.forEach(memberId => {
-      const residents = getResidents(store, memberId).filter(anyField);
-      const hasAny = residents.length > 0;
-
-      if (!hasAny){
-        // show blank primary row (no toggle)
-        rows.push(`
-          <tr>
-            <td class="idcell">${esc(memberId)}</td>
-            <td class="empty">—</td>
-            <td class="empty">—</td>
-            <td class="empty">—</td>
-            <td class="empty">—</td>
-          </tr>
-        `);
-        return;
-      }
-
-      const primary = residents[0];
-      const extras = residents.slice(1);
-      const showToggle = true;
-      const hasExtras = extras.length > 0;
-
-      // primary row
-      rows.push(rowHtml(memberId, 1, primary, true, showToggle, hasExtras));
-
-      // extra rows (hidden by default) — blank ID cell for neatness
-      extras.forEach((r, idx) => {
-        rows.push(`
-          <tr class="extra" data-parent="${esc(memberId)}">
-            <td class="idcell"></td>
-            <td><span class="rid">${esc(memberId)}/${esc(idx + 2)}</span>${esc(r?.name || "—")}</td>
-            <td>${esc(r?.email || "—")}</td>
-            <td>${esc(r?.mobile || "—")}</td>
-            <td>—</td>
-          </tr>
-        `);
-      });
-    });
-
-    tbody.innerHTML = rows.join("");
-  }
-
-  function toggleExtras(memberId, btn){
-    const expanded = btn.getAttribute("aria-expanded") === "true";
-    const now = !expanded;
-
-    btn.setAttribute("aria-expanded", String(now));
-    btn.textContent = now ? "Less ▴" : "More ▾";
-
-    document.querySelectorAll(`tr.extra[data-parent="${CSS.escape(memberId)}"]`)
-      .forEach(tr => tr.style.display = now ? "table-row" : "none");
-  }
-
-  function wireToggles(){
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-toggle]");
-      if (!btn) return;
-      const memberId = btn.getAttribute("data-toggle");
-      // Only toggle if there are extra rows to show
-      const extras = document.querySelectorAll(`tr.extra[data-parent="${CSS.escape(memberId)}"]`);
-      if (!extras.length) return; // nothing to expand
-      toggleExtras(memberId, btn);
-    });
+  function normType(n){
+    const t = (n.type || n.category || "activity").toLowerCase().trim();
+    return (t === "committee" || t === "host" || t === "activity") ? t : "activity";
   }
 
   function render(){
-    const store = loadStore();
-    renderTable("rowsLeft", buildLeftIds(), store);
-    renderTable("rowsRight", buildRightIds(), store);
+    grid.innerHTML = "";
+
+    const q = (searchEl.value || "").trim().toLowerCase();
+    const f = filterEl.value;
+
+    const list = notices.filter(n => {
+      const t = normType(n);
+      if (f !== "all" && t !== f) return false;
+      if (!q) return true;
+      const hay = `${n.title||""} ${n.body||""} ${n.author||""} ${n.ownerId||""} ${n.eventId||""}`.toLowerCase();
+      return hay.includes(q);
+    });
+
+    countEl.textContent = String(list.length);
+    empty.style.display = list.length ? "none" : "block";
+
+    list.forEach(n => {
+      const t = normType(n);
+      const card = document.createElement("div");
+      card.className = "notice" + (t === "host" ? " host" : "");
+
+      const author = (n.author || "").trim();
+      const media = Array.isArray(n.media) ? n.media.filter(Boolean) : [];
+
+      card.innerHTML = `
+        <div>
+          <span class="tag ${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</span>
+          ${t === "host" && n.ownerId ? `<span class="pill">Owner: ${esc(n.ownerId)}</span>` : ``}
+          ${n.eventId ? `<span class="pill">Event: ${esc(n.eventId)}</span>` : ``}
+        </div>
+
+        <div class="title">${esc(n.title || "(Untitled)")}</div>
+
+        <div class="meta">${author ? `By: ${esc(author)}` : ""}</div>
+
+        <div class="body">${esc(n.body || "")}</div>
+
+        ${media.length ? `<div class="media">${media.map(url => `<img src="${esc(url)}" alt="Notice media" loading="lazy">`).join("")}</div>` : ``}
+      `;
+
+      grid.appendChild(card);
+    });
   }
 
-  wireToggles();
-  render();
+  async function load(){
+    clearWarn();
+    refreshBtn.disabled = true;
+
+    try{
+      const res = await fetch(API, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      notices = Array.isArray(data.notices) ? data.notices : [];
+
+      // pinned first, then newest first
+      notices.sort((a,b) => {
+        const ap = a.pinned ? 1 : 0;
+        const bp = b.pinned ? 1 : 0;
+        if (bp !== ap) return bp - ap;
+        const at = new Date(a.createdAt || 0).getTime() || 0;
+        const bt = new Date(b.createdAt || 0).getTime() || 0;
+        return bt - at;
+      });
+
+      render();
+    } catch (e){
+      notices = [];
+      render();
+      showWarn("Could not load preview notices.\n\n" + String(e.message || e));
+    } finally {
+      refreshBtn.disabled = false;
+    }
+  }
+
+  searchEl.addEventListener("input", render);
+  filterEl.addEventListener("change", render);
+  refreshBtn.addEventListener("click", load);
+
+  load();
 </script>
 
+<script src="logout.js"></script>
 </body>
 </html>

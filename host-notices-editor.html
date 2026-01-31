@@ -652,7 +652,7 @@
         });
         showOk(ok2El, "Saved.");
       } else {
-        const resp = await api(`/api/notices/${encodeURIComponent(selectedId)}?mode=preview`, {
+        const resp = await api(`/api/notices${encodeURIComponent(selectedId)}?mode=preview`, {
           method: "PUT",
           body: JSON.stringify({
             type: "host",

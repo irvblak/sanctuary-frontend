@@ -731,7 +731,7 @@
         });
         showOk(ok2El, "Saved new notice.");
       } else {
-        await api(`/api/notices/${encodeURIComponent(selectedId)}?mode=preview`, {
+        await api(`/api/notices${encodeURIComponent(selectedId)}?mode=preview`, {
           method: "PUT",
           body: JSON.stringify(payload)
         });

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Notices (Preview)</title>
+  <title>Notices</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -69,11 +69,6 @@
       background:#fbfdff;
       color:#003366;
       vertical-align:middle;
-    }
-    .pill.preview{
-      border-color:#ffd7a8;
-      background:#fff3e4;
-      color:#7a3e00;
     }
 
     .controls{
@@ -222,15 +217,16 @@
   <div class="nav-left"><a href="index.html">Home</a></div>
   <div class="nav-center">
     <a href="members-info.html">Hub</a>
-    <span class="pill preview">PREVIEW</span>
   </div>
-  <div class="nav-right"><a href="#" onclick="logout();return false;">Logout</a></div>
+  <div class="nav-right">
+    <a href="#" onclick="(window.logout?logout():location.href='index.html'); return false;">Logout</a>
+  </div>
 </nav>
 
 <main>
   <div class="card">
-    <h1>Notices (Preview)</h1>
-    <p class="subtle">These are preview notices stored on the club server. They only go live when Admin publishes them.</p>
+    <h1>Notices</h1>
+    <p class="subtle">Committee, Host and Activities notices.</p>
 
     <div class="controls">
       <input id="search" type="search" placeholder="Search…" />
@@ -247,11 +243,12 @@
     <div id="warn" class="warn"></div>
 
     <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No preview notices yet.</div>
+    <div id="empty" class="empty" style="display:none;">No notices yet.</div>
   </div>
 </main>
 
 <script>
+  // Keep the working backend preview mode exactly as-is (do not change)
   const API = "https://sanctuary-backend-8iqc.onrender.com/api/notices?mode=preview";
 
   const grid = document.getElementById("grid");
@@ -356,20 +353,6 @@
     } catch (e){
       notices = [];
       render();
-      showWarn("Could not load preview notices.\n\n" + String(e.message || e));
+      showWarn("Could not load notices.\n\n" + String(e.message || e));
     } finally {
-      refreshBtn.disabled = false;
-    }
-  }
-
-  searchEl.addEventListener("input", render);
-  filterEl.addEventListener("change", render);
-  refreshBtn.addEventListener("click", load);
-
-  load();
-</script>
-
-<script src="logout.js"></script>
-</body>
-</html>
-
+      refreshBtn.disabl

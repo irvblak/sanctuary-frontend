@@ -194,7 +194,8 @@
 
     <div class="subtle">
       <p>For your privacy only the fields you fill in will be shown in the Members Directory.</p>
-      <p>Your personal membership ID is where you live (e.g. SM55/1, SM55/2 etc).</p>
+      <p>Your membership ID is your property (e.g. SM55, SC03, SCH).</p>
+      <p>You can add up to four residents for each property.</p>
     </div>
 
     <!-- 🔒 Members Directory access from YI -->
@@ -328,8 +329,8 @@
     const div = document.createElement("div");
     div.className = "resident-card";
 
-    const mid = baseId(memberIdEl.value);
-    const header = mid ? `${mid}/${index + 1}` : `Resident ${index + 1}`;
+    // ✅ New rule: property ID is the membership ID; residents are just Resident 1..4
+    const header = `Resident ${index + 1}`;
 
     const landlineRow =
       index === 0

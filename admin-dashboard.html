@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Sanctuary Club</title>
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_1" />
+  <style>
+    .wrap { max-width: 900px; margin: 2.5rem auto; padding: 1.25rem; }
+    .card { background:#fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
+    .row { display:flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
+    a.btn, button.btn { display:inline-block; padding:.7rem 1rem; border-radius: 10px; text-decoration:none; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Admin Dashboard</h1>
+      <p>Authorised access only.</p>
+
+      <div class="row">
+        <a class="btn" href="admin-notices.html">Notices Moderation</a>
+        <a class="btn" href="admin-members.html">Members Admin</a>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </div>
+
+      <p style="margin-top:1rem;">
+        <a href="index.html">Back to Home</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const TOKEN_KEY = "admin_token";
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    if (!token) {
+      // No admin token: send to login
+      window.location.replace("admin-login.html");
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem(TOKEN_KEY);
+      window.location.replace("admin-login.html");
+    });
+  </script>
+</body>
+</html>

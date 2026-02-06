@@ -4,59 +4,110 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Login — Sanctuary Club</title>
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_1" />
+
+  <!-- Use your main site styling if you have it -->
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_2" />
+
   <style>
+    body { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f4f6f8; color: #222; }
     .wrap { max-width: 520px; margin: 4rem auto; padding: 1.25rem; }
     .card { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
+    h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
+    .small { font-size: 14px; opacity: .85; margin: .25rem 0 1rem; }
     label { display:block; margin:.75rem 0 .25rem; font-weight:600; }
-    input { width:100%; padding:.65rem .75rem; border:1px solid #ddd; border-radius:10px; font-size:16px; }
+    input { width:100%; padding:.65rem .75rem; border:1px solid #ddd; border-radius:10px; font-size:16px; box-sizing: border-box; }
     button { margin-top: 1rem; width:100%; padding:.75rem; border:0; border-radius:10px; font-size:16px; cursor:pointer; }
-    .msg { margin-top: .75rem; }
-    .small { font-size: 14px; opacity:.85; margin-top:.75rem; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .msg { margin-top: .75rem; font-size: 15px; }
+    .row { display:flex; gap:.5rem; align-items:center; }
+    .pwWrap { display:flex; gap:.5rem; align-items:center; }
+    .pwWrap input { flex: 1; }
+    .eyeBtn { width: auto; margin-top: 0; padding: .65rem .75rem; border: 1px solid #ddd; background: #f8f8f8; border-radius: 10px; }
+    .links { margin-top: 1rem; font-size: 14px; }
+    .links a { text-decoration: none; }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
       <h1>Admin Login</h1>
       <p class="small">For authorised Sanctuary Club admins only.</p>
 
-      <form id="loginForm">
+      <form id="loginForm" autocomplete="on">
         <label for="username">Username</label>
         <input id="username" autocomplete="username" required />
 
         <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" required />
+        <div class="pwWrap">
+          <input id="password" type="password" autocomplete="current-password" required />
+          <button type="button" id="togglePw" class="eyeBtn" aria-label="Show password">👁</button>
+        </div>
 
-        <button type="submit">Sign in</button>
+        <button type="submit" id="submitBtn">Sign in</button>
       </form>
 
       <div id="msg" class="msg"></div>
 
-      <p class="small">
+      <div class="links">
         <a href="index.html">Back to Home</a>
-      </p>
+      </div>
     </div>
   </div>
 
   <script>
+    // ====== CONFIG ======
     const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
     const TOKEN_KEY = "admin_token";
+    const REDIRECT_AFTER_LOGIN = "admin-dashboard.html"; // change if needed
 
+    // ====== ELEMENTS ======
     const form = document.getElementById("loginForm");
     const msg = document.getElementById("msg");
+    const submitBtn = document.getElementById("submitBtn");
+    const usernameEl = document.getElementById("username");
+    const passwordEl = document.getElementById("password");
+    const togglePw = document.getElementById("togglePw");
 
-    function setMsg(text, ok=false){
+    // ====== HELPERS ======
+    function setMsg(text, ok = false) {
       msg.textContent = text;
       msg.style.color = ok ? "green" : "crimson";
     }
 
+    function setBusy(busy) {
+      submitBtn.disabled = busy;
+      submitBtn.textContent = busy ? "Signing in..." : "Sign in";
+    }
+
+    // If already logged in, go straight to dashboard
+    if (localStorage.getItem(TOKEN_KEY)) {
+      window.location.replace(REDIRECT_AFTER_LOGIN);
+    }
+
+    // Show/hide password toggle
+    togglePw.addEventListener("click", () => {
+      const showing = passwordEl.type === "text";
+      passwordEl.type = showing ? "password" : "text";
+      togglePw.textContent = showing ? "👁" : "🙈";
+      togglePw.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+    });
+
+    // Submit handler
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       setMsg("");
 
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value; // do NOT trim
+      // IMPORTANT: username is trimmed, password is NOT trimmed
+      const username = usernameEl.value.trim();
+      const password = passwordEl.value;
+
+      if (!username || !password) {
+        setMsg("Please enter username and password.");
+        return;
+      }
+
+      setBusy(true);
 
       try {
         const res = await fetch(`${API_BASE}/auth/admin-login`, {
@@ -68,18 +119,23 @@
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok || !data.success) {
+          // Show server message (e.g., throttling countdown)
           setMsg(data.message || `Login failed (HTTP ${res.status})`);
+          setBusy(false);
           return;
         }
 
-        // Store token and go to an admin page
-        localStorage.setItem(TOKEN_KEY, data.token);
-        setMsg("Login successful.", true);
+        // Store token and redirect
+        if (data.token) {
+          localStorage.setItem(TOKEN_KEY, data.token);
+        }
 
-        // redirect wherever your admin landing page is:
-        window.location.href = "admin-dashboard.html";
+        setMsg("Login successful.", true);
+        window.location.replace(REDIRECT_AFTER_LOGIN);
+
       } catch (err) {
         setMsg("Network error. Please try again.");
+        setBusy(false);
       }
     });
   </script>

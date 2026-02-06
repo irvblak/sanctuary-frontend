@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login — Sanctuary Club</title>
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_1" />
+  <style>
+    .wrap { max-width: 520px; margin: 4rem auto; padding: 1.25rem; }
+    .card { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
+    label { display:block; margin:.75rem 0 .25rem; font-weight:600; }
+    input { width:100%; padding:.65rem .75rem; border:1px solid #ddd; border-radius:10px; font-size:16px; }
+    button { margin-top: 1rem; width:100%; padding:.75rem; border:0; border-radius:10px; font-size:16px; cursor:pointer; }
+    .msg { margin-top: .75rem; }
+    .small { font-size: 14px; opacity:.85; margin-top:.75rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Admin Login</h1>
+      <p class="small">For authorised Sanctuary Club admins only.</p>
+
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" autocomplete="username" required />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+
+        <button type="submit">Sign in</button>
+      </form>
+
+      <div id="msg" class="msg"></div>
+
+      <p class="small">
+        <a href="index.html">Back to Home</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+    const TOKEN_KEY = "admin_token";
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
+
+    function setMsg(text, ok=false){
+      msg.textContent = text;
+      msg.style.color = ok ? "green" : "crimson";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setMsg("");
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value; // do NOT trim
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/admin-login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.success) {
+          setMsg(data.message || `Login failed (HTTP ${res.status})`);
+          return;
+        }
+
+        // Store token and go to an admin page
+        localStorage.setItem(TOKEN_KEY, data.token);
+        setMsg("Login successful.", true);
+
+        // redirect wherever your admin landing page is:
+        window.location.href = "admin-dashboard.html";
+      } catch (err) {
+        setMsg("Network error. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

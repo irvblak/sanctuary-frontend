@@ -1,8 +1,10 @@
 (function () {
-  const token = localStorage.getItem("admin_token");
+  const TOKEN_KEY = "admin_token";
+
+  // If no admin token is present, redirect to admin login
+  const token = localStorage.getItem(TOKEN_KEY);
 
   if (!token) {
-    // No admin session → send to login
     window.location.replace("admin-login.html");
   }
 })();

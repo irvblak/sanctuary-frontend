@@ -3,9 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="admin-guard.js"></script>
+
+  <!-- Admin access guard (must be in <head>) -->
+  <script src="admin-guard.js" defer></script>
+
   <title>Admin Dashboard — Sanctuary Club</title>
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_1" />
+
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_2" />
+
   <style>
     .wrap { max-width: 900px; margin: 2.5rem auto; padding: 1.25rem; }
     .card { background:#fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
@@ -13,6 +18,7 @@
     a.btn, button.btn { display:inline-block; padding:.7rem 1rem; border-radius: 10px; text-decoration:none; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
@@ -20,9 +26,11 @@
       <p>Authorised access only.</p>
 
       <div class="row">
-        <a class="btn" href="admin-notices.html">Notices Moderation</a>
-        <a class="btn" href="admin-members.html">Members Admin</a>
-        <button class="btn" id="logoutBtn">Logout</button>
+        <a class="btn" href="admin-notices-moderation.html">Notices Moderation</a>
+        <a class="btn" href="admin-members-grid.html">Members Admin</a>
+        <a class="btn" href="admin-email-export.html">Email Export</a>
+
+        <button class="btn" id="logoutBtn" type="button">Logout</button>
       </div>
 
       <p style="margin-top:1rem;">
@@ -31,19 +39,7 @@
     </div>
   </div>
 
-  <script>
-    const TOKEN_KEY = "admin_token";
-    const token = localStorage.getItem(TOKEN_KEY);
-
-    if (!token) {
-      // No admin token: send to login
-      window.location.replace("admin-login.html");
-    }
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem(TOKEN_KEY);
-      window.location.replace("admin-login.html");
-    });
-  </script>
+  <!-- Logout handler (centralised) -->
+  <script src="admin-logout.js" defer></script>
 </body>
 </html>

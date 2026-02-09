@@ -134,5 +134,45 @@ if (hasValidSession()) {
 logoutLink.style.display = "inline"; 
 } 
 </script> 
+ logoutLink.onclick = e => { 
+e.preventDefault(); 
+sessionStorage.clear(); 
+gate.style.display = "none"; 
+logoutLink.style.display = "none"; 
+}; 
+
+// INIT 
+if (hasValidSession()) { 
+logoutLink.style.display = "inline"; 
+} 
+</script> 
+
+<footer style="
+  padding:16px 22px;
+  font-size:0.85rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#666;
+  border-top:1px solid #e6edf5;
+  margin-top:40px;
+">
+  <span>© Sanctuary Club</span>
+
+  <a href="admin-signin.html"
+     style="
+       text-decoration:none;
+       color:#666;
+       opacity:0.6;
+       font-weight:500;
+     "
+     onmouseover="this.style.opacity='1'"
+     onmouseout="this.style.opacity='0.6'">
+     Admin
+  </a>
+</footer>
+
 </body> 
 </html>
+ 
+

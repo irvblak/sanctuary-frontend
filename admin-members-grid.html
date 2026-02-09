@@ -4,14 +4,10 @@
   <meta charset="UTF-8" />
   <title>Admin – Members Grid</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="admin-guard.js"></script>
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- 🔒 Hub (H) access gate -->
-  <script src="access.js"></script>
-
-  <!-- Logout handler (optional; if you already use it elsewhere) -->
-  <script src="logout.js"></script>
+  <!-- Admin access guard (must be in <head>) -->
+  <script src="admin-guard.js" defer></script>
 
   <style>
     body{
@@ -29,14 +25,19 @@
       align-items:center;
       gap:0.75rem;
     }
-    nav a{
+    nav a, nav button{
       text-decoration:none;
       font-weight:800;
       color:#003366;
       margin:0 0.5rem;
+      background:none;
+      border:none;
+      cursor:pointer;
+      font: inherit;
+      padding:0;
     }
     .nav-left{justify-self:start;}
-    .nav-center{justify-self:center; color:#667;}
+    .nav-center{justify-self:center; color:#667; display:flex; gap:1rem; flex-wrap:wrap;}
     .nav-right{justify-self:end;}
 
     main{max-width:1300px; margin:0 auto 2rem; padding:0 1rem;}
@@ -86,7 +87,7 @@
     }
     .pin{ width:140px; }
 
-    button{
+    button.action{
       background:#005ea8;
       color:#fff;
       border:none;
@@ -96,8 +97,8 @@
       font-size:1rem;
       font-weight:900;
     }
-    button.secondary{background:#7f97ad;}
-    button:disabled{opacity:0.45; cursor:default;}
+    button.action.secondary{background:#7f97ad;}
+    button.action:disabled{opacity:0.45; cursor:default;}
 
     .hidden{display:none;}
 
@@ -190,11 +191,18 @@
 
 <body>
 <nav>
-  <div class="nav-left"><a href="index.html">Home</a></div>
-  <div class="nav-center muted">Admin tools (unlinked)</div>
+  <div class="nav-left">
+    <a href="admin-dashboard.html">Admin</a>
+  </div>
+
+  <div class="nav-center muted">
+    <a href="admin-members-grid.html">Members</a>
+    <a href="admin-notices-moderation.html">Notices</a>
+    <a href="admin-email-export.html">Email Export</a>
+  </div>
+
   <div class="nav-right">
-    <a href="members-info.html">Hub</a>
-    <a href="#" id="logout-link">Logout</a>
+    <button id="logoutBtn" type="button">Logout</button>
   </div>
 </nav>
 
@@ -223,8 +231,8 @@
           <input id="adminPin" class="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" />
         </div>
 
-        <button id="unlockBtn" type="button" disabled>Unlock</button>
-        <button id="lockBtn" type="button" class="secondary hidden">Lock</button>
+        <button id="unlockBtn" class="action" type="button" disabled>Unlock</button>
+        <button id="lockBtn" class="action secondary hidden" type="button">Lock</button>
 
         <span class="muted" id="gateMsg"></span>
       </div>
@@ -243,8 +251,8 @@
       <textarea id="emailList" readonly></textarea>
 
       <div class="row" style="margin-top:0.6rem;">
-        <button id="copyEmails" type="button">Copy emails (comma-separated)</button>
-        <button id="downloadCsv" type="button" class="secondary">Download mail-merge CSV</button>
+        <button id="copyEmails" class="action" type="button">Copy emails (comma-separated)</button>
+        <button id="downloadCsv" class="action secondary" type="button">Download mail-merge CSV</button>
         <span class="muted" id="stats"></span>
       </div>
 
@@ -481,18 +489,9 @@
   // Restore unlocked state for this tab
   setAdminUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === "1");
   refreshUnlockBtn();
-
-  // Logout (works even if logout.js isn’t present)
-  document.getElementById("logout-link").onclick = (e) => {
-    e.preventDefault();
-    try { logout(); return; } catch {}
-    // fallback:
-    sessionStorage.removeItem("sanctuaryAccess");
-    sessionStorage.removeItem("sanctuaryAccessTime");
-    sessionStorage.removeItem(ADMIN_SESSION_KEY);
-    location.href = "index.html";
-  };
 </script>
 
+<!-- Centralised logout -->
+<script src="admin-logout.js" defer></script>
 </body>
 </html>

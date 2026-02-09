@@ -133,19 +133,7 @@ logoutLink.style.display = "none";
 if (hasValidSession()) { 
 logoutLink.style.display = "inline"; 
 } 
-</script> 
- logoutLink.onclick = e => { 
-e.preventDefault(); 
-sessionStorage.clear(); 
-gate.style.display = "none"; 
-logoutLink.style.display = "none"; 
-}; 
-
-// INIT 
-if (hasValidSession()) { 
-logoutLink.style.display = "inline"; 
-} 
-</script> 
+</script>
 
 <footer style="
   padding:16px 22px;
@@ -172,7 +160,5 @@ logoutLink.style.display = "inline";
   </a>
 </footer>
 
-</body> 
+</body>
 </html>
- 
-

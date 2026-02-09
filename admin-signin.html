@@ -9,77 +9,142 @@
   <link rel="stylesheet" href="styles-main.css?v=ADMIN_SIGNIN_1" />
 
   <style>
+    :root{
+      --ink:#1f2a37;
+      --muted:#667085;
+      --brand:#005ea8;
+      --bg1:#e8f2ff;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --border:#dbe6f3;
+      --danger:#b42318;
+    }
+
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: linear-gradient(180deg,#e8f2ff 0%, #f2f7fb 45%, #ffffff 100%);
-      color:#1f2a37;
+      color:var(--ink);
+      background: linear-gradient(180deg, var(--bg1) 0%, #f2f7fb 45%, var(--bg2) 100%);
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 24px;
+      padding:24px;
+      box-sizing:border-box;
     }
+
     .card{
       width:min(520px, 100%);
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 8px 22px rgba(0,0,0,0.08);
-      border:1px solid rgba(219,230,243,0.8);
-      padding: 18px 18px 16px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 10px 26px rgba(0,0,0,0.08);
+      border:1px solid rgba(219,230,243,0.85);
+      padding:18px 18px 16px;
     }
-    h1{ margin:0 0 6px 0; font-size:1.35rem; color:#003366; }
-    p{ margin:0 0 14px 0; color:#667085; line-height:1.45; }
 
-    .row{ display:flex; gap:10px; flex-wrap:wrap; }
-    .field{ flex:1; min-width:160px; }
-    label{ display:block; font-weight:700; font-size:.9rem; margin:0 0 6px; color:#425466; }
+    h1{
+      margin:0 0 6px 0;
+      color:#003366;
+      font-size:1.35rem;
+    }
+
+    .subtle{
+      margin:0 0 14px 0;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+
+    .field{
+      flex:1;
+      min-width:170px;
+    }
+
+    label{
+      display:block;
+      font-weight:800;
+      font-size:.9rem;
+      color:#425466;
+      margin:0 0 6px 0;
+    }
+
     input{
       width:100%;
-      padding:.6rem .7rem;
+      padding:.62rem .72rem;
       border-radius:12px;
       border:1px solid #cfd8e3;
       font-size:1rem;
       box-sizing:border-box;
+      background:#fff;
+      color:var(--ink);
     }
+
+    .pinField{ max-width:160px; }
+
     button{
-      margin-top: 12px;
       width:100%;
-      padding:.7rem .9rem;
+      margin-top:14px;
+      padding:.75rem .9rem;
       border:0;
       border-radius:12px;
-      background:#005ea8;
+      background:var(--brand);
       color:#fff;
       font-weight:900;
       font-size:1rem;
       cursor:pointer;
     }
-    button:disabled{ opacity:.55; cursor:not-allowed; }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
     .msg{
       display:none;
       margin-top:12px;
-      padding: 10px 12px;
+      padding:10px 12px;
       border-radius:12px;
       white-space:pre-wrap;
     }
-    .msg.warn{ background:#fff5f5; border:1px solid #f2b8b8; color:#7a0000; }
-    .msg.ok{ background:#f2fbf4; border:1px solid #bfe5c6; color:#145a2c; }
+
+    .msg.warn{
+      background:#fff5f5;
+      border:1px solid #f2b8b8;
+      color:#7a0000;
+    }
+
     .footer{
-      margin-top: 12px;
+      margin-top:14px;
       display:flex;
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
       font-size:.95rem;
+      color:var(--muted);
+      align-items:center;
     }
-    .footer a{ color:#003366; text-decoration:none; font-weight:800; }
+
+    .footer a{
+      color:#003366;
+      text-decoration:none;
+      font-weight:900;
+      white-space:nowrap;
+    }
   </style>
 </head>
 
 <body>
   <div class="card">
     <h1>Admin sign-in</h1>
-    <p>Enter your membership number and 4-digit PIN to proceed to the Admin Login page.</p>
+    <p class="subtle">
+      Enter your membership number and 4-digit PIN to continue to the Admin Login page.
+    </p>
 
     <div class="row">
       <div class="field">
@@ -87,117 +152,114 @@
         <input id="memberId" placeholder="SM01" autocomplete="off" />
       </div>
 
-      <div class="field" style="max-width:180px;">
+      <div class="field pinField">
         <label for="pin">4-digit PIN</label>
         <input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234" autocomplete="off" />
       </div>
     </div>
 
-    <button id="continueBtn" type="button" disabled>Continue to Admin Login</button>
+    <button id="continueBtn" type="button" disabled>Continue</button>
 
     <div id="warn" class="msg warn"></div>
-    <div id="ok" class="msg ok"></div>
 
     <div class="footer">
       <a href="index.html">← Home</a>
-      <span style="color:#667085;">Not an admin? Use the normal site.</span>
+      <span>Not an admin? Use the normal site.</span>
     </div>
   </div>
 
-<script>
-  const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+  <script>
+    /************************************************************
+     * CONFIG
+     ************************************************************/
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
 
-  const memberIdEl = document.getElementById("memberId");
-  const pinEl = document.getElementById("pin");
-  const continueBtn = document.getElementById("continueBtn");
-  const warnEl = document.getElementById("warn");
-  const okEl = document.getElementById("ok");
+    // Gate flag (session-only, expires with browser close)
+    const GATE_KEY = "adminGateOk";
+    const GATE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
-  const GATE_KEY = "adminGateOk";
-  const GATE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+    /************************************************************
+     * DOM
+     ************************************************************/
+    const memberIdEl = document.getElementById("memberId");
+    const pinEl = document.getElementById("pin");
+    const continueBtn = document.getElementById("continueBtn");
+    const warnEl = document.getElementById("warn");
 
-  function baseId(raw){
-    return String(raw || "").trim().split("/")[0].toUpperCase();
-  }
-  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
-
-  function show(el, msg){
-    el.style.display = "block";
-    el.textContent = msg;
-  }
-  function clear(el){
-    el.style.display = "none";
-    el.textContent = "";
-  }
-
-  function setGateOk(){
-    sessionStorage.setItem(GATE_KEY, String(Date.now()));
-  }
-
-  async function apiLogin(memberId, pin){
-    const res = await fetch(API_BASE + "/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ memberId, pin })
-    });
-
-    let body = null;
-    try { body = await res.json(); } catch {}
-    if (!res.ok){
-      const msg = body && (body.message || body.error) ? (body.message || body.error) : `HTTP ${res.status}`;
-      throw new Error(msg);
+    function baseId(raw){
+      return String(raw || "").trim().split("/")[0].toUpperCase();
     }
-    return body;
-  }
+    function onlyDigits4(s){
+      return /^[0-9]{4}$/.test(String(s || "").trim());
+    }
+    function showWarn(msg){
+      warnEl.style.display = "block";
+      warnEl.textContent = msg;
+    }
+    function clearWarn(){
+      warnEl.style.display = "none";
+      warnEl.textContent = "";
+    }
 
-  async function proceed(){
-    clear(warnEl);
-    clear(okEl);
+    function setGateOk(){
+      // Store the timestamp; admin-login checks freshness
+      sessionStorage.setItem(GATE_KEY, String(Date.now()));
+    }
 
-    const mid = baseId(memberIdEl.value);
-    const pin = pinEl.value.trim();
+    function updateEnabled(){
+      const mid = baseId(memberIdEl.value);
+      const pin = pinEl.value.trim();
+      continueBtn.disabled = !(mid && onlyDigits4(pin));
+    }
 
-    if (!mid) return show(warnEl, "Please enter your membership number.");
-    if (!onlyDigits4(pin)) return show(warnEl, "Please enter your 4-digit PIN.");
+    async function proceed(){
+      clearWarn();
 
-    continueBtn.disabled = true;
+      const mid = baseId(memberIdEl.value);
+      const pin = pinEl.value.trim();
 
-    try{
-      const resp = await apiLogin(mid, pin);
+      if (!mid) return showWarn("Please enter your membership number.");
+      if (!onlyDigits4(pin)) return showWarn("Please enter your 4-digit PIN.");
 
-      // We do NOT store token here. This is only a gate.
-      if (!resp || !resp.success){
-        throw new Error(resp && resp.message ? resp.message : "Login failed.");
-      }
+      continueBtn.disabled = true;
 
-      setGateOk();
-      show(okEl, "OK. Redirecting to Admin Login…");
+      try{
+        const res = await fetch(API_BASE + "/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ memberId: mid, pin })
+        });
 
-      // Small pause so the user sees confirmation
-      setTimeout(() => {
+        let body = null;
+        try { body = await res.json(); } catch {}
+
+        if (!res.ok || !body || body.success !== true){
+          throw new Error((body && (body.message || body.error)) ? (body.message || body.error) : "Access not recognised.");
+        }
+
+        // IMPORTANT: This page does NOT store any token.
+        // It only sets a short-lived session flag to allow reaching admin-login.
+        setGateOk();
+
+        // Optional: if you want an extra-hard TTL check here too:
+        // sessionStorage.setItem("adminGateExp", String(Date.now() + GATE_TTL_MS));
+
         location.href = "admin-login.html";
-      }, 400);
-
-    } catch(e){
-      show(warnEl, "Could not proceed.\n\n" + String(e.message || e));
-      continueBtn.disabled = false;
+      } catch (e){
+        showWarn("Membership details not recognised.");
+        continueBtn.disabled = false;
+      }
     }
-  }
 
-  function updateEnabled(){
-    const mid = baseId(memberIdEl.value);
-    const pin = pinEl.value.trim();
-    continueBtn.disabled = !(mid && onlyDigits4(pin));
-  }
+    memberIdEl.addEventListener("input", updateEnabled);
+    pinEl.addEventListener("input", updateEnabled);
+    pinEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !continueBtn.disabled) proceed();
+    });
+    continueBtn.addEventListener("click", proceed);
 
-  memberIdEl.addEventListener("input", updateEnabled);
-  pinEl.addEventListener("input", updateEnabled);
-  pinEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !continueBtn.disabled) proceed();
-  });
-  continueBtn.addEventListener("click", proceed);
-
-  updateEnabled();
-</script>
+    // Init
+    updateEnabled();
+  </script>
 </body>
 </html>

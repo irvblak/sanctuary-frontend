@@ -6,18 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
 
-  <!-- Gate-check: requires membership PIN screen first -->
+  <!-- Gate-check: requires Admin Sign-in (memberId + PIN) first -->
   <script>
     (function(){
-      const ts = Number(sessionStorage.getItem("adminGateOk") || "0");
-      const ttlMs = 10 * 60 * 1000; // 10 minutes
-      if (!ts || (Date.now() - ts) > ttlMs){
+      const ok = sessionStorage.getItem("adminPrecheckOk") === "1";
+      const t  = Number(sessionStorage.getItem("adminPrecheckTime") || "0");
+      const ttlMs = 30 * 60 * 1000; // 30 minutes (must match admin-signin)
+      if (!ok || !t || (Date.now() - t) > ttlMs){
         location.replace("admin-signin.html");
       }
     })();
   </script>
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_1" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_2" />
 
   <style>
     body{
@@ -178,7 +179,9 @@
       try { body = await res.json(); } catch {}
 
       if (!res.ok || !body || body.success !== true || !body.token){
-        const msg = body && (body.message || body.error) ? (body.message || body.error) : `Login failed (HTTP ${res.status})`;
+        const msg = body && (body.message || body.error)
+          ? (body.message || body.error)
+          : `Login failed (HTTP ${res.status})`;
         throw new Error(msg);
       }
 

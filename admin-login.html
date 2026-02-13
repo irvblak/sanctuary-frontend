@@ -6,19 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
 
-  <!-- Gate-check: requires Admin Sign-in (memberId + PIN) first -->
-  <script>
-    (function(){
-      const ok = sessionStorage.getItem("adminPrecheckOk") === "1";
-      const t  = Number(sessionStorage.getItem("adminPrecheckTime") || "0");
-      const ttlMs = 30 * 60 * 1000; // 30 minutes (must match admin-signin)
-      if (!ok || !t || (Date.now() - t) > ttlMs){
-        location.replace("admin-signin.html");
-      }
-    })();
-  </script>
+  <!-- NOTE:
+       - DO NOT include admin-guard.js on this page.
+       - DO NOT include access.js on this page.
+       - This page performs BOTH checks:
+         1) MemberId + PIN  (via /auth/login)
+         2) Admin username + password (via /auth/admin-login)
+  -->
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_2" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_4" />
 
   <style>
     body{
@@ -34,7 +30,7 @@
       color:#1f2a37;
     }
     .card{
-      width:min(520px, 100%);
+      width:min(560px, 100%);
       background:#fff;
       border-radius:18px;
       box-shadow:0 10px 26px rgba(0,0,0,0.08);
@@ -61,6 +57,11 @@
     }
     .row{ display:flex; gap:10px; flex-wrap:wrap; }
     .field{ flex:1; min-width:220px; }
+    .hint{
+      margin-top:8px;
+      font-size:.9rem;
+      color:#667085;
+    }
 
     button{
       width:100%;
@@ -78,132 +79,183 @@
 
     .msg{
       display:none;
-      margin-top:12px;
+      margin:10px 0 0;
       padding:10px 12px;
       border-radius:12px;
-      white-space:pre-wrap;
+      font-weight:650;
+      font-size:.95rem;
+      line-height:1.35;
+      border:1px solid transparent;
     }
-    .warn{ background:#fff5f5; border:1px solid #f2b8b8; color:#7a0000; }
-    .ok{ background:#f2fbf4; border:1px solid #bfe5c6; color:#145a2c; }
+    .warn{ background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+    .ok{ background:#ecfdf3; border-color:#bbf7d0; color:#166534; }
 
     .footer{
-      margin-top:14px;
       display:flex;
       justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      font-size:.95rem;
-      color:#667085;
       align-items:center;
+      margin-top:12px;
+      font-size:.95rem;
+      color:#6b7280;
     }
     .footer a{
-      color:#003366;
+      color:#005ea8;
       text-decoration:none;
-      font-weight:900;
-      white-space:nowrap;
+      font-weight:700;
+    }
+    .footer a:hover{ text-decoration:underline; }
+    .sep{
+      margin:14px 0 10px;
+      border-top:1px dashed rgba(0,0,0,0.12);
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>Admin Login</h1>
-    <p>Enter your admin username and password.</p>
-
-    <div class="row">
-      <div class="field">
-        <label for="username">Username</label>
-        <input id="username" autocomplete="username" />
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:10px;">
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" />
-      </div>
-    </div>
-
-    <button id="loginBtn" type="button" disabled>Sign in</button>
+    <h1>Admin Access</h1>
+    <p>Step 1: Confirm you’re a resident (Member ID + PIN). Step 2: Sign in with your admin credentials.</p>
 
     <div id="warn" class="msg warn"></div>
     <div id="ok" class="msg ok"></div>
 
+    <form id="form" autocomplete="off">
+      <div class="row">
+        <div class="field">
+          <label for="memberId">Member ID</label>
+          <input id="memberId" name="memberId" inputmode="text" placeholder="e.g. SM55" required />
+        </div>
+        <div class="field">
+          <label for="pin">PIN</label>
+          <input id="pin" name="pin" type="password" placeholder="Your members’ PIN" required />
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="row">
+        <div class="field">
+          <label for="username">Admin username</label>
+          <input id="username" name="username" inputmode="text" placeholder="e.g. primary" required />
+        </div>
+        <div class="field">
+          <label for="password">Admin password</label>
+          <input id="password" name="password" type="password" placeholder="Admin password" required />
+        </div>
+      </div>
+
+      <button id="btn" type="submit">Sign in</button>
+      <div class="hint">Tip: if sign-in fails repeatedly, wait a minute and try again (backend throttles repeated attempts).</div>
+    </form>
+
     <div class="footer">
-      <a href="index.html">← Back</a>
+      <a href="index.html" aria-label="Back to Home">← Back</a>
       <span>Sanctuary Club</span>
     </div>
   </div>
 
-<script>
-  const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
-  const TOKEN_KEY = "adminToken";
+  <script>
+    (function(){
+      const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+      const TOKEN_KEY = "adminToken";   // localStorage
+      const MEMBER_TOKEN_KEY = "token"; // optional; you may already use this for member sessions
 
-  const usernameEl = document.getElementById("username");
-  const passwordEl = document.getElementById("password");
-  const loginBtn = document.getElementById("loginBtn");
-  const warnEl = document.getElementById("warn");
-  const okEl = document.getElementById("ok");
+      const warnEl = document.getElementById("warn");
+      const okEl = document.getElementById("ok");
+      const btn = document.getElementById("btn");
+      const form = document.getElementById("form");
 
-  function show(el, msg){
-    el.style.display = "block";
-    el.textContent = msg;
-  }
-  function clear(el){
-    el.style.display = "none";
-    el.textContent = "";
-  }
-
-  function updateEnabled(){
-    const u = (usernameEl.value || "").trim();
-    const p = (passwordEl.value || "").trim();
-    loginBtn.disabled = !(u && p);
-  }
-
-  async function adminLogin(){
-    clear(warnEl); clear(okEl);
-
-    const username = (usernameEl.value || "").trim();
-    const password = (passwordEl.value || "").trim();
-
-    loginBtn.disabled = true;
-
-    try{
-      const res = await fetch(API_BASE + "/auth/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      let body = null;
-      try { body = await res.json(); } catch {}
-
-      if (!res.ok || !body || body.success !== true || !body.token){
-        const msg = body && (body.message || body.error)
-          ? (body.message || body.error)
-          : `Login failed (HTTP ${res.status})`;
-        throw new Error(msg);
+      function show(el, msg){
+        warnEl.style.display = "none";
+        okEl.style.display = "none";
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = "block";
       }
 
-      localStorage.setItem(TOKEN_KEY, body.token);
+      function setBusy(isBusy){
+        btn.disabled = isBusy;
+        btn.textContent = isBusy ? "Signing in…" : "Sign in";
+      }
 
-      show(okEl, "Signed in. Redirecting…");
-      setTimeout(() => { location.href = "admin-dashboard.html"; }, 250);
+      async function postJson(url, payload){
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        const body = await res.json().catch(() => ({}));
+        return {res, body};
+      }
 
-    } catch(e){
-      show(warnEl, String(e.message || e));
-      loginBtn.disabled = false;
-    }
-  }
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        show(null, "");
+        setBusy(true);
 
-  usernameEl.addEventListener("input", updateEnabled);
-  passwordEl.addEventListener("input", updateEnabled);
-  passwordEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !loginBtn.disabled) adminLogin();
-  });
-  loginBtn.addEventListener("click", adminLogin);
+        const memberId = (document.getElementById("memberId").value || "").trim();
+        const pin      = (document.getElementById("pin").value || "").trim();
+        const username = (document.getElementById("username").value || "").trim();
+        const password = (document.getElementById("password").value || "");
 
-  updateEnabled();
-</script>
+        if (!memberId || !pin || !username || !password){
+          setBusy(false);
+          show(warnEl, "Please complete all fields.");
+          return;
+        }
+
+        try{
+          // 1) Member check (MemberId + PIN)
+          const step1 = await postJson(`${BACKEND}/auth/login`, { memberId, pin });
+          if (!step1.res.ok || !step1.body || step1.body.success !== true){
+            setBusy(false);
+            const msg = (step1.body && step1.body.message) ? step1.body.message : "Member check failed.";
+            show(warnEl, `Member check failed: ${msg}`);
+            return;
+          }
+
+          // Optional: store member token if you want to treat admin pages as also "member authenticated"
+          if (step1.body.token){
+            try { localStorage.setItem(MEMBER_TOKEN_KEY, step1.body.token); } catch(e){}
+          }
+
+          // 2) Admin check (username + password)
+          const step2 = await postJson(`${BACKEND}/auth/admin-login`, { username, password });
+          if (!step2.res.ok || !step2.body || step2.body.success !== true){
+            setBusy(false);
+            const msg = (step2.body && step2.body.message) ? step2.body.message : "Admin login failed.";
+            show(warnEl, `Admin login failed: ${msg}`);
+            return;
+          }
+
+          if (!step2.body.token){
+            setBusy(false);
+            show(warnEl, "Admin login failed: token missing from response.");
+            return;
+          }
+
+          localStorage.setItem(TOKEN_KEY, step2.body.token);
+
+          show(okEl, "Signed in. Redirecting…");
+          setTimeout(() => { location.href = "admin-dashboard.html"; }, 250);
+
+        } catch(err){
+          console.error(err);
+          setBusy(false);
+          show(warnEl, "Network error. Please try again.");
+        }
+      });
+
+      // If already signed in as admin, you may choose to go straight to dashboard.
+      // Comment out if you prefer always entering credentials.
+      try{
+        const existing = localStorage.getItem(TOKEN_KEY);
+        if (existing){
+          // lightweight: just go to dashboard; admin-guard.js will verify token there
+          // setTimeout(() => { location.href = "admin-dashboard.html"; }, 50);
+        }
+      } catch(e){}
+    })();
+  </script>
 </body>
 </html>

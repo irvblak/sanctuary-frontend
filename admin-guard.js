@@ -1,5 +1,4 @@
 <!-- admin-guard.js -->
-<script>
 (function () {
   const TOKEN_KEY = "adminToken"; // ✅ must match admin-login.html
 
@@ -12,4 +11,4 @@
   // Optional: if you ever want to log out, you can clear it:
   // localStorage.removeItem(TOKEN_KEY);
 })();
-</script>
+

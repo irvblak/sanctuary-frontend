@@ -1,8 +1,14 @@
 function logout() {
-  // Clear any stored member/session data
-  localStorage.clear();
-  sessionStorage.clear();
+  // Remove only session-related keys
+  localStorage.removeItem("token");        // member login token
+  localStorage.removeItem("adminToken");   // admin login token (if present)
 
-  // Redirect to homepage
+  // If you store memberId or similar session markers:
+  localStorage.removeItem("memberId");
+
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("adminToken");
+
+  // Do NOT clear all localStorage — preserves saved data
   window.location.href = "index.html";
 }

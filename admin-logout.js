@@ -1,6 +1,6 @@
 (function () {
 
-  const TOKEN_KEY = "admin_token";
+  const TOKEN_KEY = "adminToken";
   const LOGIN_PAGE = "admin-login.html";
 
   const btn = document.getElementById("logoutBtn");

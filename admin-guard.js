@@ -1,10 +1,15 @@
+<!-- admin-guard.js -->
+<script>
 (function () {
-  const TOKEN_KEY = "admin_token";
+  const TOKEN_KEY = "adminToken"; // ✅ must match admin-login.html
 
-  // If no admin token is present, redirect to admin login
   const token = localStorage.getItem(TOKEN_KEY);
-
   if (!token) {
     window.location.replace("admin-login.html");
+    return;
   }
+
+  // Optional: if you ever want to log out, you can clear it:
+  // localStorage.removeItem(TOKEN_KEY);
 })();
+</script>

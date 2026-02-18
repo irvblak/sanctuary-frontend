@@ -5,6 +5,8 @@ function logout() {
 
   // If you store memberId or similar session markers:
   localStorage.removeItem("memberId");
+ // Remove access expiry
+  localStorage.removeItem("sanctuaryAccessUntil");
 
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("adminToken");

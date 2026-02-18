@@ -7,7 +7,7 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- 🔒 Session gate -->
+  <!-- 🔒 Access gate (8 hours) -->
   <script src="access.js"></script>
 
   <style>
@@ -252,15 +252,17 @@
 </main>
 
 <script>
+  // Storage keys (data)
   const STORAGE_KEY = "sanctuaryMembers";
   const PIN_KEY = "sanctuaryPins";
-  const ACCESS_KEY = "sanctuaryAccess";
-  
 
-  // 🔒 Members Directory access token (short-lived)
-  const MD_KEY = "sanctuaryMDAccess";
-  const MD_TIME_KEY = "sanctuaryMDAccessTime";
-  const MD_TTL_MS = 30 * 60 * 1000; // 30 minutes
+  // Access keys (expiry timestamps)
+  const ACCESS_UNTIL_KEY = "sanctuaryAccessUntil";      // 8 hours
+  const MD_UNTIL_KEY     = "sanctuaryMDAccessUntil";    // 30 minutes
+
+  // TTL values
+  const ACCESS_TTL_MS = 8 * 60 * 60 * 1000;             // 8 hours
+  const MD_TTL_MS     = 30 * 60 * 1000;                 // 30 minutes
 
   const memberIdEl = document.getElementById("memberId");
   const residentsEl = document.getElementById("residents");
@@ -278,12 +280,10 @@
   let shownResidents = 1;
   let existingResidents = [];
 
-  // ✅ Normalise any member id typed/pasted (e.g. "SM55/1" -> "SM55")
   function baseId(raw){
     return String(raw || "").trim().split("/")[0];
   }
 
-  // ✅ Read the normalised membership key AND snap the input field to it
   function getKeyAndNormaliseInput(){
     const key = baseId(memberIdEl.value);
     if (memberIdEl.value.trim() !== key) memberIdEl.value = key;
@@ -313,8 +313,8 @@
     const buf = await crypto.subtle.digest("SHA-256", enc);
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
   }
+
   async function pinHash(memberId, pin){
-    // memberId here is ALWAYS normalised (SM55 / SC03 / SCH)
     return sha256Hex(`${memberId}::${pin}::sanctuary`);
   }
 
@@ -329,7 +329,6 @@
     const div = document.createElement("div");
     div.className = "resident-card";
 
-    // ✅ New rule: property ID is the membership ID; residents are just Resident 1..4
     const header = `Resident ${index + 1}`;
 
     const landlineRow =
@@ -379,7 +378,6 @@
       pins[memberIdKey] = await pinHash(memberIdKey, pin);
       savePins(pins);
 
-      // ✅ always reload and render on unlock
       loadExistingFor(memberIdKey);
       shownResidents = Math.min(Math.max(existingResidents.length,1),4);
       setUnlocked(true);
@@ -389,7 +387,6 @@
     if ((await pinHash(memberIdKey, pin)) !== pins[memberIdKey])
       return alert("Incorrect PIN.");
 
-    // ✅ always reload and render on unlock
     loadExistingFor(memberIdKey);
     shownResidents = Math.min(Math.max(existingResidents.length,1),4);
     setUnlocked(true);
@@ -443,7 +440,6 @@
     const pin = mdPinInput.value.trim();
     if (!onlyDigits4(pin)) return alert("Please enter a 4-digit PIN.");
 
-    // ✅ If no PIN exists yet, set it here (so MD access doesn't force "PIN security" usage)
     if (!pins[memberIdKey]) {
       pins[memberIdKey] = await pinHash(memberIdKey, pin);
       savePins(pins);
@@ -452,9 +448,11 @@
       if (!ok) return alert("Incorrect PIN.");
     }
 
-    // ✅ Grant short-lived access to Members Directory
-    sessionStorage.setItem(MD_KEY, "1");
-    sessionStorage.setItem(MD_TIME_KEY, String(Date.now()));
+    // ✅ Grant MD access for 30 minutes (localStorage expiry)
+    localStorage.setItem(MD_UNTIL_KEY, String(Date.now() + MD_TTL_MS));
+
+    // Also refresh site access window (optional but nice)
+    localStorage.setItem(ACCESS_UNTIL_KEY, String(Date.now() + ACCESS_TTL_MS));
 
     goMDBtn.disabled = false;
     location.href = "members-directory.html";
@@ -500,17 +498,18 @@
 
   document.getElementById("logout-link").onclick = e => {
     e.preventDefault();
-    sessionStorage.removeItem(ACCESS_KEY);
-    sessionStorage.removeItem(TIME_KEY);
 
-    // also clear Members Directory access token
-    sessionStorage.removeItem(MD_KEY);
-    sessionStorage.removeItem(MD_TIME_KEY);
+    // Clear access expiries
+    localStorage.removeItem(ACCESS_UNTIL_KEY);
+    localStorage.removeItem(MD_UNTIL_KEY);
 
-    location.href="index.html";
+    // Clear auth tokens if present
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+
+    location.href = "index.html";
   };
 
-  // On first load, ensure the MD buttons reflect current inputs (if any autofill/paste happened)
   updateMDButtonsEnabled();
 </script>
 

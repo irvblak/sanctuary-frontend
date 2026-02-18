@@ -5,23 +5,16 @@
   <title>Members Directory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Session gate -->
+  <!-- Site access gate (8 hours) -->
   <script src="access.js"></script>
 
   <!-- 🔒 Must come from Your Information (YI) after PIN check -->
   <script>
-    const MD_KEY = "sanctuaryMDAccess";
-    const MD_TIME_KEY = "sanctuaryMDAccessTime";
-    const MD_TTL_MS = 30 * 60 * 1000; // 30 minutes
-
+    const MD_UNTIL_KEY = "sanctuaryMDAccessUntil"; // localStorage
     try {
-      const ok = sessionStorage.getItem(MD_KEY) === "1";
-      const t = Number(sessionStorage.getItem(MD_TIME_KEY) || "0");
-      const fresh = ok && t && (Date.now() - t) < MD_TTL_MS;
-
-      if (!fresh) {
-        sessionStorage.removeItem(MD_KEY);
-        sessionStorage.removeItem(MD_TIME_KEY);
+      const until = Number(localStorage.getItem(MD_UNTIL_KEY) || "0");
+      if (!until || Date.now() > until) {
+        localStorage.removeItem(MD_UNTIL_KEY);
         location.replace("your-info.html");
       }
     } catch {
@@ -184,7 +177,6 @@
 </head>
 
 <body>
-
 <nav>
   <div class="nav-left">
     <a href="index.html">Home</a>
@@ -193,7 +185,7 @@
   <div class="nav-center">
     <a href="events-calendar.html">Calendar</a>
     <a href="your-info.html">Your Information</a>
-      </div>
+  </div>
 
   <div class="nav-right">
     <a href="#" onclick="logout(); return false;">Logout</a>
@@ -218,6 +210,5 @@
 
   <div id="member-detail"></div>
 </main>
-
 </body>
 </html>

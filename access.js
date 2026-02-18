@@ -1,15 +1,10 @@
-// access.js
-// ================================
-// Sanctuary Club – Access Guard
-// Trust-based community model
-// All member pages require access gate only
-// ================================
-
+// access.js — 8 hour access window
 (function () {
-  const hasAccess =
-    sessionStorage.getItem("sanctuaryAccess") === "granted";
+  const KEY = "sanctuaryAccessUntil";
+  const until = Number(localStorage.getItem(KEY) || "0");
 
-  if (!hasAccess) {
+  if (!until || Date.now() > until) {
+    localStorage.removeItem(KEY);
     location.replace("index.html");
   }
 })();

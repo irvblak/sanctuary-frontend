@@ -89,50 +89,68 @@ Access to events, information and the members’ directory.
 </p> 
 </div> 
 </div> 
-<script> 
-const ACCESS_CODE = "WXYZ"; 
-const ACCESS_KEY = "sanctuaryAccess"; 
-const TIME_KEY = "sanctuaryAccessTime"; 
-const SESSION_DURATION = 60 * 60 * 1000; 
-const gate = document.getElementById("access-gate"); 
-const logoutLink = document.getElementById("logout-link"); 
-let pendingTarget = null; 
-function hasValidSession() { 
-const granted = sessionStorage.getItem(ACCESS_KEY) === "granted"; 
-const time = Number(sessionStorage.getItem(TIME_KEY)); 
-return granted && Date.now() - time < SESSION_DURATION; 
-} 
-document.querySelectorAll(".hero-button[data-target]").forEach(btn => { 
-btn.onclick = () => { 
-if (hasValidSession()) { 
-location.href = btn.dataset.target; 
-} else { 
-pendingTarget = btn.dataset.target; 
-gate.style.display = "block"; 
-} 
-}; 
-}); 
-document.getElementById("access-submit").onclick = () => { 
-const val = document.getElementById("access-code-input").value.trim(); 
-if (val !== ACCESS_CODE) return; 
-sessionStorage.setItem(ACCESS_KEY, "granted"); 
-sessionStorage.setItem(TIME_KEY, Date.now()); 
-if (pendingTarget) location.href = pendingTarget; 
-}; 
-document.getElementById("access-eye").onclick = () => { 
-const input = document.getElementById("access-code-input"); 
-input.type = input.type === "password" ? "text" : "password"; 
-}; 
-logoutLink.onclick = e => { 
-e.preventDefault(); 
-sessionStorage.clear(); 
-gate.style.display = "none"; 
-logoutLink.style.display = "none"; 
-}; 
-// INIT 
-if (hasValidSession()) { 
-logoutLink.style.display = "inline"; 
-} 
+<script>
+  const ACCESS_CODE = "WXYZ";
+
+  // New 8-hour access model (matches access.js)
+  const ACCESS_UNTIL_KEY = "sanctuaryAccessUntil";
+  const ACCESS_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+
+  const gate = document.getElementById("access-gate");
+  const logoutLink = document.getElementById("logout-link");
+  let pendingTarget = null;
+
+  function hasValidAccess() {
+    const until = Number(localStorage.getItem(ACCESS_UNTIL_KEY) || "0");
+    return until && Date.now() < until;
+  }
+
+  function grantAccess() {
+    localStorage.setItem(ACCESS_UNTIL_KEY, String(Date.now() + ACCESS_TTL_MS));
+  }
+
+  document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
+    btn.onclick = () => {
+      if (hasValidAccess()) {
+        location.href = btn.dataset.target;
+      } else {
+        pendingTarget = btn.dataset.target;
+        gate.style.display = "block";
+      }
+    };
+  });
+
+  document.getElementById("access-submit").onclick = () => {
+    const val = document.getElementById("access-code-input").value.trim();
+    if (val !== ACCESS_CODE) return;
+
+    grantAccess();
+
+    // show logout once access granted
+    logoutLink.style.display = "inline";
+
+    if (pendingTarget) location.href = pendingTarget;
+  };
+
+  document.getElementById("access-eye").onclick = () => {
+    const input = document.getElementById("access-code-input");
+    input.type = input.type === "password" ? "text" : "password";
+  };
+
+  logoutLink.onclick = e => {
+    e.preventDefault();
+
+    // Targeted logout for site access only
+    localStorage.removeItem(ACCESS_UNTIL_KEY);
+
+    gate.style.display = "none";
+    logoutLink.style.display = "none";
+  };
+
+  // INIT
+  if (hasValidAccess()) {
+    logoutLink.style.display = "inline";
+  }
 </script>
 
 <footer style="

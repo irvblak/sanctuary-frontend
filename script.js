@@ -12,9 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!email || !pin) return;
 
-    // ---- Grant access
-    sessionStorage.setItem("sanctuaryAccess", "granted");
-    sessionStorage.setItem("sanctuaryAccessTime", Date.now());
+    // ---- Grant 8-hour access
+localStorage.setItem(
+  "sanctuaryAccessUntil",
+  String(Date.now() + 8 * 60 * 60 * 1000) // 8 hours
+);
 
     // ---- Derive stable memberId from email
     // Non-sensitive, deterministic

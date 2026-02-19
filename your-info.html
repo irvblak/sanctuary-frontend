@@ -295,6 +295,25 @@
     catch { return {}; }
   }
   function saveStore(store){
+// ALSO save to backend (central SQLite)
+(async () => {
+  try {
+    const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+    await fetch(`${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        consent_admin_broadcast: true,
+        residents
+      })
+    });
+  } catch (e) {
+    console.warn("Backend save failed (local save still OK):", e);
+  }
+})();
+
+
+    
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
   }
 

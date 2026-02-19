@@ -9,12 +9,10 @@
   <!-- NOTE:
        - DO NOT include admin-guard.js on this page.
        - DO NOT include access.js on this page.
-       - This page performs BOTH checks:
-         1) MemberId + PIN  (via /auth/login)
-         2) Admin username + password (via /auth/admin-login)
+       - Admin sign-in is admin-credential only.
   -->
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_4" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_5" />
 
   <style>
     body{
@@ -57,11 +55,6 @@
     }
     .row{ display:flex; gap:10px; flex-wrap:wrap; }
     .field{ flex:1; min-width:220px; }
-    .hint{
-      margin-top:8px;
-      font-size:.9rem;
-      color:#667085;
-    }
 
     button{
       width:100%;
@@ -104,35 +97,18 @@
       font-weight:700;
     }
     .footer a:hover{ text-decoration:underline; }
-    .sep{
-      margin:14px 0 10px;
-      border-top:1px dashed rgba(0,0,0,0.12);
-    }
   </style>
 </head>
 
 <body>
   <div class="card">
     <h1>Admin Access</h1>
-    <p>Step 1: Confirm you’re a resident (Member ID + PIN). Step 2: Sign in with your admin credentials.</p>
+    <p>Sign in with your admin username and password.</p>
 
     <div id="warn" class="msg warn"></div>
     <div id="ok" class="msg ok"></div>
 
     <form id="form" autocomplete="off">
-      <div class="row">
-        <div class="field">
-          <label for="memberId">Member ID</label>
-          <input id="memberId" name="memberId" inputmode="text" placeholder="e.g. SM55" required />
-        </div>
-        <div class="field">
-          <label for="pin">PIN</label>
-          <input id="pin" name="pin" type="password" placeholder="Your members’ PIN" required />
-        </div>
-      </div>
-
-      <div class="sep"></div>
-
       <div class="row">
         <div class="field">
           <label for="username">Admin username</label>
@@ -145,7 +121,6 @@
       </div>
 
       <button id="btn" type="submit">Sign in</button>
-      <div class="hint">Tip: if sign-in fails repeatedly, wait a minute and try again (backend throttles repeated attempts).</div>
     </form>
 
     <div class="footer">
@@ -157,8 +132,7 @@
   <script>
     (function(){
       const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
-      const TOKEN_KEY = "adminToken";   // localStorage
-      const MEMBER_TOKEN_KEY = "token"; // optional; you may already use this for member sessions
+      const TOKEN_KEY = "adminToken";
 
       const warnEl = document.getElementById("warn");
       const okEl = document.getElementById("ok");
@@ -193,49 +167,32 @@
         show(null, "");
         setBusy(true);
 
-        const memberId = (document.getElementById("memberId").value || "").trim();
-        const pin      = (document.getElementById("pin").value || "").trim();
         const username = (document.getElementById("username").value || "").trim();
         const password = (document.getElementById("password").value || "");
 
-        if (!memberId || !pin || !username || !password){
+        if (!username || !password){
           setBusy(false);
           show(warnEl, "Please complete all fields.");
           return;
         }
 
         try{
-          // 1) Member check (MemberId + PIN)
-          const step1 = await postJson(`${BACKEND}/auth/login`, { memberId, pin });
-          if (!step1.res.ok || !step1.body || step1.body.success !== true){
-            setBusy(false);
-            const msg = (step1.body && step1.body.message) ? step1.body.message : "Member check failed.";
-            show(warnEl, `Member check failed: ${msg}`);
-            return;
-          }
+          const step = await postJson(`${BACKEND}/auth/admin-login`, { username, password });
 
-          // Optional: store member token if you want to treat admin pages as also "member authenticated"
-          if (step1.body.token){
-            try { localStorage.setItem(MEMBER_TOKEN_KEY, step1.body.token); } catch(e){}
-          }
-
-          // 2) Admin check (username + password)
-          const step2 = await postJson(`${BACKEND}/auth/admin-login`, { username, password });
-          if (!step2.res.ok || !step2.body || step2.body.success !== true){
+          if (!step.res.ok || !step.body || step.body.success !== true){
             setBusy(false);
-            const msg = (step2.body && step2.body.message) ? step2.body.message : "Admin login failed.";
+            const msg = (step.body && step.body.message) ? step.body.message : "Admin login failed.";
             show(warnEl, `Admin login failed: ${msg}`);
             return;
           }
 
-          if (!step2.body.token){
+          if (!step.body.token){
             setBusy(false);
             show(warnEl, "Admin login failed: token missing from response.");
             return;
           }
 
-          localStorage.setItem(TOKEN_KEY, step2.body.token);
-
+          localStorage.setItem(TOKEN_KEY, step.body.token);
           show(okEl, "Signed in. Redirecting…");
           setTimeout(() => { location.href = "admin-dashboard.html"; }, 250);
 
@@ -245,16 +202,6 @@
           show(warnEl, "Network error. Please try again.");
         }
       });
-
-      // If already signed in as admin, you may choose to go straight to dashboard.
-      // Comment out if you prefer always entering credentials.
-      try{
-        const existing = localStorage.getItem(TOKEN_KEY);
-        if (existing){
-          // lightweight: just go to dashboard; admin-guard.js will verify token there
-          // setTimeout(() => { location.href = "admin-dashboard.html"; }, 50);
-        }
-      } catch(e){}
     })();
   </script>
 </body>

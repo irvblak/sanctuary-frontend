@@ -1,33 +1,41 @@
-// logout.js — drop-in replacement
+// logout.js — Sanctuary Club (universal, reliable)
 
 (function () {
-  function doLogout() {
-    // Member session gates (covers current + legacy keys)
-    sessionStorage.removeItem("sanctuaryAccess");
-    sessionStorage.removeItem("sanctuaryAccessTime");
-    sessionStorage.removeItem("sanctuaryAccessExpiresAt");
-    sessionStorage.removeItem("memberSession");
-    sessionStorage.removeItem("memberSessionStart");
-    sessionStorage.removeItem("memberSessionExpiresAt");
-    sessionStorage.removeItem("session");
-    sessionStorage.removeItem("pinVerified");
+  function clearAllSessionKeys() {
+    // Member access gate keys (current + legacy)
+    const ssKeys = [
+      "sanctuaryAccess",
+      "sanctuaryAccessTime",
+      "sanctuaryAccessExpiresAt",
+      "memberSession",
+      "memberSessionStart",
+      "memberSessionExpiresAt",
+      "session",
+      "pinVerified",
 
-    // Members Directory short-lived access
-    sessionStorage.removeItem("sanctuaryMDAccess");
-    sessionStorage.removeItem("sanctuaryMDAccessTime");
-    sessionStorage.removeItem("mdToken");
-    sessionStorage.removeItem("mdTokenExpiresAt");
+      // Members Directory short-lived access
+      "sanctuaryMDAccess",
+      "sanctuaryMDAccessTime",
+      "mdToken",
+      "mdTokenExpiresAt"
+    ];
+
+    ssKeys.forEach(k => sessionStorage.removeItem(k));
 
     // Admin token (if present)
     localStorage.removeItem("adminToken");
+  }
 
-    // Go home
+  function doLogout() {
+    clearAllSessionKeys();
     window.location.href = "index.html";
   }
 
-  // Works with <a id="logout-link">Logout</a> or <button id="logout-link">
+  // Catch clicks on ANY common logout control used across your pages
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("#logout-link");
+    const el = e.target.closest(
+      "#logoutBtn, #logout-link, a[href='#logout'], a[data-action='logout'], button[data-action='logout']"
+    );
     if (!el) return;
     e.preventDefault();
     doLogout();

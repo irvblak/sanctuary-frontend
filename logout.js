@@ -9,6 +9,7 @@
 
   <!-- 🔒 Session gate -->
   <script src="access.js"></script>
+  <script src="logout.js?v=MH_1"></script>
 
   <style>
     body{

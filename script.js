@@ -1,32 +1,70 @@
-// script.js — Member login handler (trust-based)
+// script.js — Sanctuary Club front-page Access Code gate
+// Front page buttons prompt for code once, then go directly to target
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("login-form");
-  if (!form) return;
+(function () {
 
-  form.addEventListener("submit", e => {
-    e.preventDefault();
+  const ACCESS_KEY = "sanctuaryAccess";
+  const TIME_KEY = "sanctuaryAccessTime";
+  const TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 
-    const email = form.email.value.trim().toLowerCase();
-    const pin = form.pin.value.trim();
+  // 🔑 CHANGE THIS to your real front-page Access code
+  const ACCESS_CODE = "WXYZ";
 
-    if (!email || !pin) return;
+  function hasValidAccess() {
+    const v = sessionStorage.getItem(ACCESS_KEY);
+    const t = parseInt(sessionStorage.getItem(TIME_KEY) || "0", 10);
+    if (v !== "granted") return false;
+    if (!t) return false;
+    return (Date.now() - t) < TTL_MS;
+  }
 
-    // ---- Grant 8-hour access
-localStorage.setItem(
-  "sanctuaryAccessUntil",
-  String(Date.now() + 8 * 60 * 60 * 1000) // 8 hours
-);
+  function grantAccess() {
+    sessionStorage.setItem(ACCESS_KEY, "granted");
+    sessionStorage.setItem(TIME_KEY, String(Date.now()));
+  }
 
-    // ---- Derive stable memberId from email
-    // Non-sensitive, deterministic
-    const memberId = email
-      .replace(/[^a-z0-9]/g, "")
-      .slice(0, 12);
+  function askAccessCode() {
+    const entered = (prompt("Enter Sanctuary Club access code:") || "")
+      .trim()
+      .toUpperCase();
 
-    sessionStorage.setItem("memberId", memberId);
+    if (!entered) return false;
 
-    // ---- Redirect to Home
-    window.location.href = "index.html";
+    if (entered !== ACCESS_CODE) {
+      alert("Incorrect access code.");
+      return false;
+    }
+
+    grantAccess();
+    return true;
+  }
+
+  function go(target) {
+    window.location.href = target;
+  }
+
+  // Handles front-page buttons that use data-target
+  document.addEventListener("click", (e) => {
+
+    const btn = e.target.closest(".hero-button");
+    if (!btn) return;
+
+    const target = btn.getAttribute("data-target");
+    if (!target) return;
+
+    // Pages that require access code
+    const needsAccess =
+      target.includes("events-calendar.html") ||
+      target.includes("your-info.html") ||
+      target.includes("members-info.html") ||
+      target.includes("members-directory.html");
+
+    if (!needsAccess) return go(target);
+
+    if (hasValidAccess()) return go(target);
+
+    if (askAccessCode()) return go(target);
+
   });
-});
+
+})();

@@ -82,7 +82,8 @@
   const enterBtn = document.getElementById("enterBtn");
   const msg = document.getElementById("msg");
 
-  function okPin(v){ return /^[0-9]{4}$/.test(v); }
+function okPin(v){ return /^[A-Za-z]{4}$/.test(v); }
+
 
   pinEl.addEventListener("input", () => {
     msg.style.display = "none";

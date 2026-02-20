@@ -92,7 +92,8 @@ function okPin(v){ return /^[A-Za-z]{4}$/.test(v); }
   });
 
   function grantAndGo(){
-    const v = pinEl.value.trim();
+  const v = pinEl.value.trim().toUpperCase();
+  
     if (v !== ACCESS_PIN) {
       msg.style.display = "block";
       return;

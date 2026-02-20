@@ -9,12 +9,14 @@
 
   <!-- 🔒 ACCESS PROTECTION (members-only) -->
   <script>
-    (function () {
-      if (sessionStorage.getItem("sanctuaryAccess") !== "granted") {
-        window.location.replace("index.html");
-      }
-    })();
-  </script>
+  (function () {
+    const v = sessionStorage.getItem("sanctuaryAccess");
+    if (!(v === "granted" || v === "1" || v === "true")) {
+      window.location.replace("index.html");
+    }
+  })();
+</script>
+
 
   <style>
     :root{

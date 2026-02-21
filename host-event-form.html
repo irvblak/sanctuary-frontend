@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Host – Create Event</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🔒 Site access gate (must have sanctuaryAccess granted) -->
+  <script src="access.js?v=AC_1"></script>
+
+  <!-- Logout -->
+  <script src="logout.js?v=LO_3"></script>
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
+      color:#222;
+      min-height:100vh;
+    }
+    nav{
+      padding:1rem 1.25rem;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+    }
+    nav a{ text-decoration:none; font-weight:800; color:#003366; }
+    .nav-left{justify-self:start;}
+    .nav-center{justify-self:center;}
+    .nav-right{justify-self:end; display:flex; gap:1rem; align-items:center;}
+
+    main{ max-width:980px; margin:0 auto 2rem; padding:0 1rem; }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.08);
+      border:1px solid rgba(219,230,243,0.9);
+      padding:1.1rem;
+    }
+    h1{margin:0 0 0.5rem 0; color:#003366; font-size:1.45rem;}
+    .subtle{color:#5d6a77; line-height:1.45; font-size:0.95rem;}
+    .row{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-top:0.9rem;
+      align-items:flex-end;
+    }
+    .field{flex:1; min-width:220px;}
+    label{display:block; font-weight:900; color:#003366; margin-bottom:0.25rem; font-size:0.92rem;}
+    input, select, textarea{
+      width:100%;
+      padding:0.6rem;
+      border:1px solid #cfd8e3;
+      border-radius:12px;
+      font-size:1rem;
+      box-sizing:border-box;
+      background:#fff;
+    }
+    textarea{min-height:110px; resize:vertical;}
+    .mini{max-width:180px; flex:0 0 180px;}
+    .tiny{max-width:140px; flex:0 0 140px;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:0.5rem;
+      padding:0.3rem 0.65rem;
+      border-radius:999px;
+      font-weight:900;
+      background:#e6f1ff;
+      color:#003366;
+      border:1px solid rgba(219,230,243,0.9);
+      margin-top:0.75rem;
+    }
+    button{
+      background:#005ea8;
+      color:#fff;
+      border:none;
+      padding:0.65rem 1rem;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:1rem;
+    }
+    button.secondary{background:#7f97ad;}
+    button.ghost{background:transparent; color:#003366; border:1px solid rgba(219,230,243,0.9);}
+    button:disabled{opacity:0.45; cursor:default;}
+    .divider{height:1px; background:rgba(219,230,243,0.9); margin:1rem 0;}
+    .msg{margin-top:0.8rem; font-weight:900; color:#0b6b00;}
+    .err{margin-top:0.8rem; font-weight:900; color:#b00020;}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:0.8rem;}
+    @media (max-width:820px){ .grid2{grid-template-columns:1fr;} }
+  </style>
+</head>
+
+<body>
+<nav>
+  <div class="nav-left"><a href="index.html">Home</a></div>
+  <div class="nav-center"><a href="events-calendar.html?v=C_1">Calendar</a></div>
+  <div class="nav-right">
+    <a href="members-info.html">Hub</a>
+    <a href="#" id="logout-link">Logout</a>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <h1>Host – Create an Event</h1>
+    <div class="subtle">
+      This creates an event record that appears in the Calendar (C) and Events List (EL).
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- HOST UNLOCK -->
+    <div class="grid2">
+      <div class="field">
+        <label>Host membership number</label>
+        <input id="hostId" placeholder="SM55" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Host PIN (4 digits)</label>
+        <input id="hostPin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="unlockBtn" type="button">Unlock host</button>
+      <span class="subtle">First time? This PIN will be set for you.</span>
+    </div>
+
+    <div id="lockedHint" class="err" style="display:none;">Enter host membership + 4-digit PIN to unlock.</div>
+
+    <div class="divider"></div>
+
+    <!-- EVENT FORM -->
+    <div id="formArea" style="display:none;">
+      <div class="pill">Event Ref: <span id="eventRef">—</span></div>
+
+      <div class="row">
+        <div class="field">
+          <label>Title</label>
+          <input id="title" placeholder="Theatre Trip" />
+        </div>
+        <div class="field mini">
+          <label>Category</label>
+          <select id="category">
+            <option value="social">Social / Clubhouse</option>
+            <option value="trip">Trips / Outings</option>
+            <option value="culture">Cultural</option>
+            <option value="sport">Sport / Active</option>
+            <option value="food">Food events</option>
+            <option value="committee">Committee (usually admin)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field tiny">
+          <label>Date</label>
+          <input id="date" type="date" />
+        </div>
+        <div class="field tiny">
+          <label>Time</label>
+          <input id="time" type="time" />
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input id="where" placeholder="Clubhouse / Chester / etc." />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field tiny">
+          <label>Capacity (optional)</label>
+          <input id="capacity" type="number" min="0" placeholder="e.g. 24" />
+        </div>
+        <div class="field tiny">
+          <label>£ per person (optional)</label>
+          <input id="price" type="number" min="0" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="field mini">
+          <label>Status</label>
+          <select id="status">
+            <option value="proposed">Proposed</option>
+            <option value="open">Open</option>
+            <option value="full">Full</option>
+            <option value="closed">Closed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Description / Notes</label>
+          <textarea id="notes" placeholder="Short description, what to bring, booking notes, etc."></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="saveBtn" type="button">Save event</button>
+        <button id="saveNewBtn" type="button" class="secondary">Save + start next event</button>
+        <button id="resetBtn" type="button" class="ghost">Reset form</button>
+      </div>
+
+      <div id="okMsg" class="msg" style="display:none;"></div>
+      <div id="errMsg" class="err" style="display:none;"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // -------- Storage keys --------
+  const EVENTS_KEY = "sanctuaryEvents";            // array of events used by C/EL
+  const HOST_PIN_KEY = "sanctuaryHostPins";        // { SM55: <sha256 hash> }
+  const HOST_COUNTER_KEY = "sanctuaryHostCounters";// { SM55: 1, SC03: 14 ... }
+
+  // -------- DOM --------
+  const hostIdEl = document.getElementById("hostId");
+  const hostPinEl = document.getElementById("hostPin");
+  const unlockBtn = document.getElementById("unlockBtn");
+
+  const formArea = document.getElementById("formArea");
+  const eventRefEl = document.getElementById("eventRef");
+
+  const titleEl = document.getElementById("title");
+  const categoryEl = document.getElementById("category");
+  const dateEl = document.getElementById("date");
+  const timeEl = document.getElementById("time");
+  const whereEl = document.getElementById("where");
+  const capacityEl = document.getElementById("capacity");
+  const priceEl = document.getElementById("price");
+  const statusEl = document.getElementById("status");
+  const notesEl = document.getElementById("notes");
+
+  const saveBtn = document.getElementById("saveBtn");
+  const saveNewBtn = document.getElementById("saveNewBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const okMsg = document.getElementById("okMsg");
+  const errMsg = document.getElementById("errMsg");
+
+  let unlockedHost = null;
+  let currentRef = null;
+
+  // -------- Helpers --------
+  function baseId(raw){ return String(raw||"").trim().toUpperCase().split("/")[0]; }
+  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+
+  function loadJson(key, fallback){
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+    catch { return fallback; }
+  }
+  function saveJson(key, value){
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+  async function hostPinHash(hostId, pin){
+    return sha256Hex(`${hostId}::${pin}::sanctuary-host`);
+  }
+
+  function nextEventRef(hostId){
+    const counters = loadJson(HOST_COUNTER_KEY, {});
+    const n = (counters[hostId] || 0) + 1;
+    counters[hostId] = n;
+    saveJson(HOST_COUNTER_KEY, counters);
+    return `${hostId}-E${String(n).padStart(3,"0")}`;
+  }
+
+  function clearMsgs(){
+    okMsg.style.display = "none";
+    errMsg.style.display = "none";
+    okMsg.textContent = "";
+    errMsg.textContent = "";
+  }
+  function showOk(t){ clearMsgs(); okMsg.textContent = t; okMsg.style.display="block"; }
+  function showErr(t){ clearMsgs(); errMsg.textContent = t; errMsg.style.display="block"; }
+
+  function resetForm(keepRef){
+    titleEl.value = "";
+    categoryEl.value = "social";
+    dateEl.value = "";
+    timeEl.value = "";
+    whereEl.value = "";
+    capacityEl.value = "";
+    priceEl.value = "";
+    statusEl.value = "proposed";
+    notesEl.value = "";
+    clearMsgs();
+    if (!keepRef) {
+      currentRef = nextEventRef(unlockedHost);
+      eventRefEl.textContent = currentRef;
+    }
+  }
+
+  function getEvents(){
+    return loadJson(EVENTS_KEY, []);
+  }
+  function setEvents(arr){
+    saveJson(EVENTS_KEY, arr);
+  }
+
+  function buildISO(dateStr, timeStr){
+    if (!dateStr || !timeStr) return null;
+    return `${dateStr}T${timeStr}:00`;
+  }
+
+  // -------- Unlock --------
+  unlockBtn.onclick = async () => {
+    clearMsgs();
+    const hostId = baseId(hostIdEl.value);
+    const pin = hostPinEl.value.trim();
+
+    if (!hostId || !onlyDigits4(pin)) {
+      showErr("Enter host membership number and a 4-digit PIN.");
+      return;
+    }
+
+    const pins = loadJson(HOST_PIN_KEY, {});
+    const hash = await hostPinHash(hostId, pin);
+
+    // First time: set PIN
+    if (!pins[hostId]) {
+      pins[hostId] = hash;
+      saveJson(HOST_PIN_KEY, pins);
+    } else {
+      if (pins[hostId] !== hash) {
+        showErr("Incorrect host PIN.");
+        return;
+      }
+    }
+
+    unlockedHost = hostId;
+    formArea.style.display = "block";
+
+    currentRef = nextEventRef(unlockedHost);
+    eventRefEl.textContent = currentRef;
+
+    showOk(`Host unlocked: ${unlockedHost}`);
+  };
+
+  // -------- Save --------
+  function validateEvent(){
+    if (!unlockedHost) return "Unlock host first.";
+    if (!titleEl.value.trim()) return "Title is required.";
+    if (!dateEl.value) return "Date is required.";
+    if (!timeEl.value) return "Time is required.";
+    return null;
+  }
+
+  function buildEvent(){
+    const when = buildISO(dateEl.value, timeEl.value);
+    return {
+      id: currentRef,
+      host: unlockedHost,
+      category: categoryEl.value,
+      title: titleEl.value.trim(),
+      when,
+      where: whereEl.value.trim(),
+      capacity: capacityEl.value ? Number(capacityEl.value) : null,
+      price: priceEl.value ? Number(priceEl.value) : null,
+      status: statusEl.value,
+      notes: notesEl.value.trim(),
+      updatedAt: Date.now(),
+      createdAt: Date.now()
+    };
+  }
+
+  function upsertEvent(ev){
+    const arr = getEvents();
+    const idx = arr.findIndex(x => x.id === ev.id);
+    if (idx >= 0) arr[idx] = { ...arr[idx], ...ev, updatedAt: Date.now() };
+    else arr.push(ev);
+    setEvents(arr);
+  }
+
+  saveBtn.onclick = () => {
+    const err = validateEvent();
+    if (err) return showErr(err);
+
+    const ev = buildEvent();
+    upsertEvent(ev);
+    showOk(`Saved: ${ev.id} (now visible in Calendar & Events List)`);
+  };
+
+  saveNewBtn.onclick = () => {
+    const err = validateEvent();
+    if (err) return showErr(err);
+
+    const ev = buildEvent();
+    upsertEvent(ev);
+    showOk(`Saved: ${ev.id} (start next event)`);
+    resetForm(false);
+  };
+
+  resetBtn.onclick = () => resetForm(true);
+</script>
+
+</body>
+</html>

@@ -1,35 +1,29 @@
-// access.js — Sanctuary Club (8-hour member session gate)
+// access.js — Sanctuary Club member session gate (8 hours)
+// If not in session, bounce to the front page (index.html)
 
 (function () {
   const KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
-  const TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+  const TTL = 8 * 60 * 60 * 1000; // 8 hours
 
-  function hasValidSession() {
+  function validSession() {
     const v = sessionStorage.getItem(KEY);
     const t = parseInt(sessionStorage.getItem(TIME_KEY) || "0", 10);
-    const okValue = (v === "granted" || v === "1" || v === "true");
-    if (!okValue) return false;
+    if (v !== "granted") return false;
     if (!t) return false;
-    return (Date.now() - t) < TTL_MS;
+    return (Date.now() - t) < TTL;
   }
 
-  // Pages allowed without an active member session
+  // Public pages (no session required)
   const PUBLIC = new Set([
     "index.html",
     "about.html",
-    "member-login.html",
     "admin-login.html",
     "admin-signin.html"
   ]);
 
   const page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-
-  // If public page, do nothing
   if (PUBLIC.has(page)) return;
 
-  // Otherwise enforce session
-  if (!hasValidSession()) {
-    location.replace("member-login.html");
-  }
+  if (!validSession()) location.replace("index.html");
 })();

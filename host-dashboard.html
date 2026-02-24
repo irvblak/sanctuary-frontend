@@ -186,16 +186,14 @@
       background: rgba(0,0,0,.02);
     }
 
-    .warn{
-      background: #fff7ed;
-      border:1px solid rgba(234,88,12,.25);
-      color:#9a3412;
+    .note{
+      background: #f0f7ff;
+      border:1px solid rgba(0,94,168,.20);
+      color:#0b3a66;
       border-radius: 14px;
       padding:.75rem .85rem;
       margin-top:.75rem;
     }
-
-    .muted{ color: var(--muted); }
 
     .footer-note{
       margin-top: 1rem;
@@ -203,7 +201,7 @@
       font-size:.92rem;
     }
 
-    .hidden{ display:none !important; }
+    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
   </style>
 </head>
 
@@ -230,32 +228,32 @@
           <p class="sub" id="welcomeLine">Manage events you host — create, edit, and keep things tidy.</p>
         </div>
         <div class="actions">
-          <!-- Point these at whatever pages you already have / intend to create -->
           <a class="btn primary" href="host-event-create.html">+ Create Event</a>
           <a class="btn" href="diary.html">Open Diary</a>
           <a class="btn" href="payments.html">Payments</a>
         </div>
       </div>
 
-      <div class="warn hidden" id="roleWarning">
-        <strong>Access blocked:</strong> this page is for Hosts (or Admins). If you think this is a mistake, sign out and back in.
+      <div class="note" id="roleNote">
+        <strong>Note:</strong> Host roles are not enabled yet in the system. This page is currently protected only by the Members access gate
+        (<code>access.js</code>). We’ll add Host-only security next.
       </div>
     </header>
 
     <section class="grid" id="mainGrid">
       <div class="card">
         <h2>My hosted events</h2>
-        <div class="muted" id="eventsHint">Showing events where you are listed as host (if available).</div>
+        <div class="meta" id="eventsHint">This will show your events when the events endpoint is wired in.</div>
 
         <ul class="list" id="eventsList">
           <li class="item">
-            <p class="title">Loading…</p>
-            <p class="meta">Fetching your events.</p>
+            <p class="title">Events list not wired yet</p>
+            <p class="meta">Next step: confirm the correct backend endpoint for events/diary.</p>
           </li>
         </ul>
 
         <p class="footer-note">
-          If your backend events endpoint isn’t live yet, this list will show a friendly “not available” message (no errors).
+          We’ll connect this once we confirm the exact API endpoint and response shape.
         </p>
       </div>
 
@@ -266,8 +264,8 @@
           <li class="item">
             <div class="top">
               <div>
-                <p class="title">Edit my events</p>
-                <p class="meta">Open the host tools page for editing / cancelling / changing capacity.</p>
+                <p class="title">Manage events</p>
+                <p class="meta">Edit/cancel/change capacity (once those pages exist).</p>
               </div>
               <span class="pill">Host</span>
             </div>
@@ -280,7 +278,7 @@
             <div class="top">
               <div>
                 <p class="title">Attendee list</p>
-                <p class="meta">View who’s coming and export a list (if you’ve built it).</p>
+                <p class="meta">View attendees and export lists (if built).</p>
               </div>
               <span class="pill">Host</span>
             </div>
@@ -294,7 +292,7 @@
             <div class="top">
               <div>
                 <p class="title">Notices</p>
-                <p class="meta">Post a notice (if Hosts are allowed) or request an Admin to publish.</p>
+                <p class="meta">View notices (and later: Host notice drafts).</p>
               </div>
               <span class="pill">Comms</span>
             </div>
@@ -306,198 +304,26 @@
         </ul>
 
         <p class="footer-note">
-          These are just links — keep or remove any you don’t want visible to Hosts.
+          Remove any links you don’t want Hosts to see later.
         </p>
       </div>
     </section>
   </main>
 
   <script>
-    /********************************************************************
-     * HOST DASHBOARD
-     * - Membership gate: handled by access.js
-     * - Role gate: simple localStorage check (Host/Admin)
-     * - Events: tries to fetch; fails gracefully if endpoint not present
-     ********************************************************************/
-
-    // 1) Adjust these if needed
-    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-
-    // If your events endpoint differs, change this one line.
-    // Typical options you may have used/considered:
-    //   "/api/events"
-    //   "/api/diary"
-    //   "/api/diary/events"
-    const EVENTS_ENDPOINT = "/api/events";
-
-    // 2) Small helpers
     const $ = (id) => document.getElementById(id);
 
-    function readSession() {
-      // These keys are guesses based on your patterns — harmless if absent.
-      // Tweak to match your actual storage keys.
-      const role = (localStorage.getItem("sc_role") || localStorage.getItem("role") || "").toLowerCase();
-      const memberCode = localStorage.getItem("sc_member_code") || localStorage.getItem("memberCode") || "";
-      const displayName = localStorage.getItem("sc_member_name") || localStorage.getItem("memberName") || "";
-      const token = localStorage.getItem("sc_token") || localStorage.getItem("token") || "";
-      return { role, memberCode, displayName, token };
-    }
+    $("btnRefresh").addEventListener("click", () => location.reload());
 
-    function isHostOrAdmin(role) {
-      // Accept a few variants to reduce friction during development
-      return role === "host" || role === "admin" || role === "primary" || role === "backup" || role === "treasurer";
-    }
-
-    async function fetchJson(path, token) {
-      const headers = { "Accept": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
-      const res = await fetch(`${BACKEND_URL}${path}`, { headers, mode: "cors" });
-      const text = await res.text();
-
-      let data = null;
-      try { data = text ? JSON.parse(text) : null; } catch { /* ignore */ }
-
-      if (!res.ok) {
-        const msg = (data && (data.message || data.error)) ? (data.message || data.error) : `${res.status} ${res.statusText}`;
-        const err = new Error(msg);
-        err.status = res.status;
-        err.data = data;
-        throw err;
-      }
-      return data;
-    }
-
-    function renderEvents(events, session) {
-      const ul = $("eventsList");
-      ul.innerHTML = "";
-
-      if (!Array.isArray(events) || events.length === 0) {
-        ul.innerHTML = `
-          <li class="item">
-            <p class="title">No hosted events found</p>
-            <p class="meta">If you expect to see events here, it may mean your events endpoint isn’t wired up yet, or events don’t include a host field.</p>
-          </li>
-        `;
-        return;
-      }
-
-      // Filter: keep events where host matches either memberCode or displayName (best-effort).
-      const mine = events.filter(ev => {
-        const host = (ev.host || ev.host_name || ev.hostName || "").toString().toLowerCase();
-        const code = (session.memberCode || "").toString().toLowerCase();
-        const name = (session.displayName || "").toString().toLowerCase();
-        if (!host) return false;
-        return (code && host.includes(code)) || (name && host.includes(name));
-      });
-
-      const list = (mine.length ? mine : events);
-
-      list.slice(0, 30).forEach(ev => {
-        const title = (ev.title || ev.name || "Untitled event").toString();
-        const date = (ev.date || ev.start_date || ev.start || ev.when || "").toString();
-        const time = (ev.time || ev.start_time || "").toString();
-        const where = (ev.location || ev.where || "").toString();
-        const host = (ev.host || ev.host_name || ev.hostName || "").toString();
-        const id = (ev.id || ev.event_id || ev.slug || "").toString();
-
-        const metaBits = [];
-        if (date || time) metaBits.push([date, time].filter(Boolean).join(" "));
-        if (where) metaBits.push(where);
-        if (host) metaBits.push(`Host: ${host}`);
-        const meta = metaBits.length ? metaBits.join(" • ") : "—";
-
-        ul.insertAdjacentHTML("beforeend", `
-          <li class="item">
-            <div class="top">
-              <div>
-                <p class="title">${escapeHtml(title)}</p>
-                <p class="meta">${escapeHtml(meta)}</p>
-              </div>
-              <span class="pill">${id ? escapeHtml(id) : "Event"}</span>
-            </div>
-
-            <div class="actions" style="margin-top:.6rem">
-              <a class="btn" href="host-event-edit.html${id ? `?id=${encodeURIComponent(id)}` : ""}">Edit</a>
-              <a class="btn" href="host-attendees.html${id ? `?id=${encodeURIComponent(id)}` : ""}">Attendees</a>
-            </div>
-          </li>
-        `);
-      });
-
-      if (mine.length === 0) {
-        $("eventsHint").textContent =
-          "Couldn’t match events to you (host field mismatch) — showing recent events instead. Once we standardise the event host field, this will become precise.";
-      } else {
-        $("eventsHint").textContent = `Showing ${mine.length} event(s) hosted by you.`;
-      }
-    }
-
-    function escapeHtml(s) {
-      return String(s)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    async function load() {
-      const session = readSession();
-
-      // Welcome line (best-effort)
-      const who = session.displayName || session.memberCode || "Host";
-      $("welcomeLine").textContent = `Welcome, ${who}. Manage the events you host.`;
-
-      // Role gate (soft-block)
-      if (!isHostOrAdmin(session.role)) {
-        $("roleWarning").classList.remove("hidden");
-        $("mainGrid").classList.add("hidden");
-        return;
-      }
-
-      // Load events (fails gracefully)
-      try {
-        const data = await fetchJson(EVENTS_ENDPOINT, session.token);
-
-        // Accept a few response shapes:
-        // { events: [...] } OR { diary: [...] } OR [...] directly
-        const events =
-          (data && Array.isArray(data.events)) ? data.events :
-          (data && Array.isArray(data.diary)) ? data.diary :
-          (Array.isArray(data)) ? data :
-          [];
-
-        renderEvents(events, session);
-
-      } catch (err) {
-        $("eventsList").innerHTML = `
-          <li class="item">
-            <p class="title">Events list not available (yet)</p>
-            <p class="meta">
-              I tried <code>${escapeHtml(BACKEND_URL + EVENTS_ENDPOINT)}</code> and got:
-              <strong>${escapeHtml(err.message || "Request failed")}</strong>
-            </p>
-            <p class="meta">
-              This is fine if you haven’t created the events endpoint (or it’s named differently).
-              When you tell me your real endpoint path/shape, I’ll wire it in cleanly.
-            </p>
-          </li>
-        `;
-      }
-    }
-
-    // Wire buttons
-    $("btnRefresh").addEventListener("click", () => load());
     $("btnLogout").addEventListener("click", () => {
-      // Uses your existing logout.js if present, otherwise fallback
       if (typeof window.scLogout === "function") return window.scLogout();
       try { localStorage.clear(); } catch {}
       window.location.href = "index.html";
     });
 
-    // Go
-    load();
+    // Friendly welcome line (best-effort)
+    const who = localStorage.getItem("sc_member_name") || localStorage.getItem("memberName") || "";
+    if (who) $("welcomeLine").textContent = `Welcome, ${who}. Manage the events you host.`;
   </script>
 </body>
 </html>

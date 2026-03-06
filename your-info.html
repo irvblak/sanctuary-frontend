@@ -109,7 +109,6 @@
     button.secondary{background:#7f97ad;}
     button:disabled{opacity:0.45; cursor:default;}
 
-    /* small helper */
     .hint-box{
       border:1px solid #dbe6f3;
       border-radius:12px;
@@ -145,6 +144,7 @@
       margin-top:0.35rem;
       color:#555;
     }
+
     .resident-card input{
       padding:0.42rem;
       font-size:0.95rem;
@@ -281,7 +281,7 @@
   let existingResidents = [];
 
   function baseId(raw){
-    return String(raw || "").trim().split("/")[0];
+    return String(raw || "").trim().toUpperCase().split("/")[0];
   }
 
   function getKeyAndNormaliseInput(){
@@ -291,41 +291,32 @@
   }
 
   function loadStore(){
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch {
+      return {};
+    }
   }
+
   function saveStore(store){
-// ALSO save to backend (central SQLite)
-(async () => {
-  try {
-    const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
-    await fetch(`${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        consent_admin_broadcast: true,
-        residents
-      })
-    });
-  } catch (e) {
-    console.warn("Backend save failed (local save still OK):", e);
-  }
-})();
-
-
-    
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
   }
 
   function loadPins(){
-    try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; }
-    catch { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem(PIN_KEY)) || {};
+    } catch {
+      return {};
+    }
   }
+
   function savePins(pins){
     localStorage.setItem(PIN_KEY, JSON.stringify(pins));
   }
 
-  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+  function onlyDigits4(s){
+    return /^[0-9]{4}$/.test(s);
+  }
 
   async function sha256Hex(str){
     const enc = new TextEncoder().encode(str);
@@ -348,15 +339,13 @@
     const div = document.createElement("div");
     div.className = "resident-card";
 
-    const header = `Resident ${index + 1}`;
-
     const landlineRow =
       index === 0
         ? `<label>Landline</label><input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>`
         : `<label>Landline</label><div class="placeholder">—</div>`;
 
     div.innerHTML = `
-      <h3>${header}</h3>
+      <h3>Resident ${index + 1}</h3>
       <label>Name</label>
       <input data-field="name" value="${data.name || ""}" ${unlocked ? "" : "disabled"}>
       <label>Email</label>
@@ -382,7 +371,9 @@
 
   function loadExistingFor(memberIdKey){
     const store = loadStore();
-    existingResidents = store[memberIdKey]?.residents || [];
+    existingResidents = Array.isArray(store[memberIdKey]?.residents)
+      ? store[memberIdKey].residents
+      : [];
   }
 
   async function handleUnlock(){
@@ -391,23 +382,29 @@
 
     const pins = loadPins();
     const pin = pinInput.value.trim();
-    if (!onlyDigits4(pin)) return alert("Please enter a 4-digit PIN.");
+
+    if (!onlyDigits4(pin)) {
+      alert("Please enter a 4-digit PIN.");
+      return;
+    }
 
     if (!pins[memberIdKey]) {
       pins[memberIdKey] = await pinHash(memberIdKey, pin);
       savePins(pins);
 
       loadExistingFor(memberIdKey);
-      shownResidents = Math.min(Math.max(existingResidents.length,1),4);
+      shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
       setUnlocked(true);
       return;
     }
 
-    if ((await pinHash(memberIdKey, pin)) !== pins[memberIdKey])
-      return alert("Incorrect PIN.");
+    if ((await pinHash(memberIdKey, pin)) !== pins[memberIdKey]) {
+      alert("Incorrect PIN.");
+      return;
+    }
 
     loadExistingFor(memberIdKey);
-    shownResidents = Math.min(Math.max(existingResidents.length,1),4);
+    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
     setUnlocked(true);
   }
 
@@ -422,43 +419,37 @@
     if (!unlocked) return;
 
     const memberIdKey = getKeyAndNormaliseInput();
-    if (!memberIdKey) return;
+    if (!memberIdKey) {
+      alert("Please enter your membership number.");
+      return;
+    }
 
     const residents = [...document.querySelectorAll(".resident-card")]
       .map(card => {
         const o = {};
         card.querySelectorAll("input").forEach(i => {
-          if (!i.disabled && i.value.trim()) o[i.dataset.field] = i.value.trim();
+          if (!i.disabled && i.value.trim()) {
+            o[i.dataset.field] = i.value.trim();
+          }
         });
         return o;
       })
       .filter(o => Object.keys(o).length);
 
     const store = loadStore();
-    store[memberIdKey] = { residents, joined:true, updated:Date.now() };
+    store[memberIdKey] = {
+      residents,
+      joined: true,
+      updated: Date.now()
+    };
     saveStore(store);
 
     existingResidents = residents;
-    shownResidents = Math.min(Math.max(residents.length,1),4);
+    shownResidents = Math.min(Math.max(residents.length, 1), 4);
     renderResidents();
+
     alert("Saved");
   };
-// ALSO save to backend (central SQLite)
-(async () => {
-  try {
-    const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
-    await fetch(`${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        consent_admin_broadcast: true,
-        residents
-      })
-    });
-  } catch (e) {
-    console.warn("Backend save failed (local save still OK):", e);
-  }
-})();
 
   // --- Members Directory gate from YI ---
   function updateMDButtonsEnabled(){
@@ -469,24 +460,31 @@
 
   async function openDirectoryIfPinValid(){
     const memberIdKey = getKeyAndNormaliseInput();
-    if (!memberIdKey) return alert("Please enter your membership number first.");
+    if (!memberIdKey) {
+      alert("Please enter your membership number first.");
+      return;
+    }
 
     const pins = loadPins();
     const pin = mdPinInput.value.trim();
-    if (!onlyDigits4(pin)) return alert("Please enter a 4-digit PIN.");
+
+    if (!onlyDigits4(pin)) {
+      alert("Please enter a 4-digit PIN.");
+      return;
+    }
 
     if (!pins[memberIdKey]) {
       pins[memberIdKey] = await pinHash(memberIdKey, pin);
       savePins(pins);
     } else {
       const ok = (await pinHash(memberIdKey, pin)) === pins[memberIdKey];
-      if (!ok) return alert("Incorrect PIN.");
+      if (!ok) {
+        alert("Incorrect PIN.");
+        return;
+      }
     }
 
-    // ✅ Grant MD access for 30 minutes (localStorage expiry)
     localStorage.setItem(MD_UNTIL_KEY, String(Date.now() + MD_TTL_MS));
-
-    // Also refresh site access window (optional but nice)
     localStorage.setItem(ACCESS_UNTIL_KEY, String(Date.now() + ACCESS_TTL_MS));
 
     goMDBtn.disabled = false;
@@ -495,7 +493,9 @@
 
   mdPinInput.addEventListener("input", updateMDButtonsEnabled);
   mdPinInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !mdUnlockBtn.disabled) openDirectoryIfPinValid();
+    if (e.key === "Enter" && !mdUnlockBtn.disabled) {
+      openDirectoryIfPinValid();
+    }
   });
 
   mdUnlockBtn.onclick = openDirectoryIfPinValid;
@@ -511,6 +511,7 @@
     setUnlocked(false);
 
     unlockBtn.disabled = !memberIdKey;
+
     if (!memberIdKey) {
       residentsEl.innerHTML = "";
       goMDBtn.disabled = true;
@@ -521,24 +522,20 @@
     loadExistingFor(memberIdKey);
     updatePinUI(memberIdKey);
 
-    shownResidents = Math.min(Math.max(existingResidents.length,1),4);
+    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
     renderResidents();
 
-    // Reset MD access controls when member id changes
     goMDBtn.disabled = true;
     updateMDButtonsEnabled();
   };
 
   unlockBtn.onclick = handleUnlock;
 
-  document.getElementById("logout-link").onclick = e => {
+  document.getElementById("logout-link").onclick = (e) => {
     e.preventDefault();
 
-    // Clear access expiries
     localStorage.removeItem(ACCESS_UNTIL_KEY);
     localStorage.removeItem(MD_UNTIL_KEY);
-
-    // Clear auth tokens if present
     localStorage.removeItem("token");
     localStorage.removeItem("adminToken");
 

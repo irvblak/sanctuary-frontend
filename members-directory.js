@@ -1,15 +1,37 @@
 // members-directory.js
-// Sanctuary Club – Members Directory (JOINED + DETAILS)
+// Sanctuary Club – Members Directory (backend-first + local fallback)
 
 const STORAGE_KEY = "sanctuaryMembers";
+const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
-// ---------- Load members safely
-function loadMembers() {
+// ---------- Load members safely (local fallback)
+function loadMembersLocal() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
   } catch {
     return {};
   }
+}
+
+// ---------- Load members from backend first
+async function loadMembers() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/members-directory`, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      mode: "cors"
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (res.ok && data && data.success && data.members && typeof data.members === "object") {
+      return data.members;
+    }
+  } catch (err) {
+    console.warn("Members Directory backend load failed; using local fallback.", err);
+  }
+
+  return loadMembersLocal();
 }
 
 // ---------- Helpers
@@ -43,7 +65,6 @@ function hasResidents(data) {
 
 // Backwards-compatibility:
 // If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06.
-// Return a { idForDisplay: "SCH", data: <entry>, sourceId: "SCH01" } shape.
 function resolveSchData(members) {
   const direct = members["SCH"];
   if (direct && (hasResidents(direct) || direct.joined)) {
@@ -74,28 +95,24 @@ function renderGrid(containerId, memberIds, members, detailArea) {
     btn.className = "member-button";
     btn.textContent = id;
 
-    // Special handling for SCH (legacy fallback)
     let data = members[id];
     let displayId = id;
 
     if (id === "SCH") {
       const resolved = resolveSchData(members);
       data = resolved.data;
-      displayId = resolved.idForDisplay; // always "SCH"
+      displayId = resolved.idForDisplay;
     }
 
     const hasRes = hasResidents(data);
     const isJoined = !!(data && data.joined);
 
-    // Highlight if joined OR has residents
     if (hasRes || isJoined) btn.classList.add("has-data");
     else btn.classList.add("inactive");
 
     btn.onclick = () => {
-      // If not joined and no residents, do nothing
       if (!hasRes && !isJoined) return;
 
-      // Toggle close
       if (activeBtn === btn) {
         btn.classList.remove("active");
         detailArea.innerHTML = "";
@@ -108,7 +125,6 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
-      // Joined but no details yet
       if (isJoined && !hasRes) {
         const msg = document.createElement("div");
         msg.style.padding = "0.9rem 1rem";
@@ -121,7 +137,6 @@ function renderGrid(containerId, memberIds, members, detailArea) {
         return;
       }
 
-      // Otherwise show details
       renderMemberDetail(displayId, data, detailArea);
     };
 
@@ -157,11 +172,10 @@ function renderMemberDetail(memberId, data, container) {
 }
 
 // ---------- Init
-document.addEventListener("DOMContentLoaded", () => {
-  const members = loadMembers();
+document.addEventListener("DOMContentLoaded", async () => {
+  const members = await loadMembers();
   const detailArea = document.getElementById("member-detail");
 
-  // SCH first, then SM, then SC
   renderGrid("members-sch", buildSch(), members, detailArea);
   renderGrid("members-mews", buildMews(), members, detailArea);
   renderGrid("members-court", buildCourt(), members, detailArea);

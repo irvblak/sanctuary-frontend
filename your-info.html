@@ -415,7 +415,7 @@
     }
   };
 
-  saveBtn.onclick = () => {
+    saveBtn.onclick = async () => {
     if (!unlocked) return;
 
     const memberIdKey = getKeyAndNormaliseInput();
@@ -444,13 +444,33 @@
     };
     saveStore(store);
 
+    try {
+      const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+
+      const res = await fetch(`${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          consent_admin_broadcast: true,
+          residents
+        })
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data || !data.success) {
+        console.warn("Backend save failed:", data || res.status);
+      }
+    } catch (e) {
+      console.warn("Backend save failed (local save still OK):", e);
+    }
+
     existingResidents = residents;
     shownResidents = Math.min(Math.max(residents.length, 1), 4);
     renderResidents();
 
     alert("Saved");
   };
-
   // --- Members Directory gate from YI ---
   function updateMDButtonsEnabled(){
     const memberIdKey = baseId(memberIdEl.value);

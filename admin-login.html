@@ -12,7 +12,7 @@
        - Admin sign-in is admin-credential only.
   -->
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_5" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_LOGIN_6" />
 
   <style>
     body{
@@ -55,6 +55,36 @@
     }
     .row{ display:flex; gap:10px; flex-wrap:wrap; }
     .field{ flex:1; min-width:220px; }
+
+    .password-wrap{
+      position:relative;
+    }
+    .password-wrap input{
+      padding-right:3rem;
+    }
+    .toggle-eye{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      padding:4px 6px;
+      margin:0;
+      width:auto;
+      color:#5b6b7b;
+      font-size:1.1rem;
+      line-height:1;
+    }
+    .toggle-eye:hover{
+      color:#003366;
+    }
+    .toggle-eye:focus{
+      outline:2px solid #93c5fd;
+      outline-offset:2px;
+      border-radius:8px;
+    }
 
     button{
       width:100%;
@@ -114,9 +144,20 @@
           <label for="username">Admin username</label>
           <input id="username" name="username" inputmode="text" placeholder="e.g. primary" required />
         </div>
+
         <div class="field">
           <label for="password">Admin password</label>
-          <input id="password" name="password" type="password" placeholder="Admin password" required />
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" placeholder="Admin password" required />
+            <button
+              id="togglePassword"
+              class="toggle-eye"
+              type="button"
+              aria-label="Show password"
+              aria-pressed="false"
+              title="Show password"
+            >👁</button>
+          </div>
         </div>
       </div>
 
@@ -138,6 +179,8 @@
       const okEl = document.getElementById("ok");
       const btn = document.getElementById("btn");
       const form = document.getElementById("form");
+      const passwordEl = document.getElementById("password");
+      const togglePasswordBtn = document.getElementById("togglePassword");
 
       function show(el, msg){
         warnEl.style.display = "none";
@@ -152,6 +195,14 @@
         btn.textContent = isBusy ? "Signing in…" : "Sign in";
       }
 
+      function setPasswordVisibility(showPassword){
+        passwordEl.type = showPassword ? "text" : "password";
+        togglePasswordBtn.textContent = showPassword ? "🙈" : "👁";
+        togglePasswordBtn.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+        togglePasswordBtn.setAttribute("title", showPassword ? "Hide password" : "Show password");
+        togglePasswordBtn.setAttribute("aria-pressed", showPassword ? "true" : "false");
+      }
+
       async function postJson(url, payload){
         const res = await fetch(url, {
           method: "POST",
@@ -162,13 +213,18 @@
         return {res, body};
       }
 
+      togglePasswordBtn.addEventListener("click", () => {
+        const showing = passwordEl.type === "text";
+        setPasswordVisibility(!showing);
+      });
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         show(null, "");
         setBusy(true);
 
         const username = (document.getElementById("username").value || "").trim();
-        const password = (document.getElementById("password").value || "");
+        const password = (passwordEl.value || "");
 
         if (!username || !password){
           setBusy(false);
@@ -202,6 +258,8 @@
           show(warnEl, "Network error. Please try again.");
         }
       });
+
+      setPasswordVisibility(false);
     })();
   </script>
 </body>

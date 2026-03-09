@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Host — My Event Notices (Preview)</title>
+  <title>Host — My Event Notices</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -139,11 +139,6 @@
       background:#fbfdff;
       color:#003366;
     }
-    .pill.preview{
-      border-color:#ffd7a8;
-      background:#fff3e4;
-      color:#7a3e00;
-    }
 
     .grid{
       display:grid;
@@ -232,21 +227,20 @@
   </div>
 
   <div class="nav-center">
-    <a href="notices-preview.html">Preview Notices</a>
     <a href="notices.html">Live Notices</a>
   </div>
 
   <div class="nav-right">
-    <a href="#" onclick="(window.logout?logout():location.href='index.html'); return false;">Logout</a>
+    <a href="#" onclick="(window.logout ? logout() : location.href='index.html'); return false;">Logout</a>
   </div>
 </nav>
 
 <main>
   <div class="card">
-    <h1>Host — My Event Notices <span class="pill preview">PREVIEW</span></h1>
+    <h1>Host — My Event Notices <span class="pill">LIVE</span></h1>
     <p class="subtle">
       This page is for Hosts only. You can create, edit and delete <strong>your own</strong> Host notices.
-      (Nothing here goes live until Admin publishes preview notices.)
+      Notices created here go live immediately within your role permissions.
     </p>
 
     <!-- LOGIN -->
@@ -330,7 +324,7 @@
           <div class="row">
             <div class="field" style="width:220px;">
               <label>Event reference (optional)</label>
-              <input id="eventId" placeholder="(later)" disabled />
+              <input id="eventId" placeholder="Optional event link" disabled />
             </div>
 
             <div class="field" style="width:220px;">
@@ -358,15 +352,8 @@
 </main>
 
 <script>
-  /************************************************************
-   * YOU MUST EDIT THIS:(364 edited)
-   ************************************************************/
- const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+  const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
 
-
-  /************************************************************
-   * DOM
-   ************************************************************/
   const memberIdEl = document.getElementById("memberId");
   const pinEl = document.getElementById("pin");
   const loginBtn = document.getElementById("loginBtn");
@@ -394,9 +381,6 @@
   const warn2El = document.getElementById("warn2");
   const ok2El = document.getElementById("ok2");
 
-  /************************************************************
-   * STATE
-   ************************************************************/
   let token = "";
   let myMemberId = "";
   let notices = [];
@@ -407,20 +391,28 @@
   function baseId(raw){
     return String(raw || "").trim().split("/")[0].toUpperCase();
   }
-  function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
+
+  function onlyDigits4(s){
+    return /^[0-9]{4}$/.test(s);
+  }
 
   function showWarn(el, msg){
     el.style.display = "block";
     el.textContent = msg;
   }
+
   function clearWarn(el){
     el.style.display = "none";
     el.textContent = "";
   }
+
   function showOk(el, msg){
     el.style.display = "block";
     el.textContent = msg;
-    setTimeout(() => { el.style.display = "none"; el.textContent = ""; }, 2200);
+    setTimeout(() => {
+      el.style.display = "none";
+      el.textContent = "";
+    }, 2200);
   }
 
   function setLoggedOut(){
@@ -451,7 +443,9 @@
       const d = new Date(iso);
       if (isNaN(d.getTime())) return "";
       return d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
-    }catch{ return ""; }
+    }catch{
+      return "";
+    }
   }
 
   async function api(path, opts = {}){
@@ -459,15 +453,20 @@
       { "Content-Type": "application/json" },
       opts.headers || {}
     );
+
     if (token) headers["Authorization"] = "Bearer " + token;
 
     const res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
     let body = null;
     try { body = await res.json(); } catch {}
+
     if (!res.ok){
-      const msg = (body && (body.message || body.error)) ? (body.message || body.error) : `HTTP ${res.status}`;
+      const msg = (body && (body.message || body.error))
+        ? (body.message || body.error)
+        : `HTTP ${res.status}`;
       throw new Error(msg);
     }
+
     return body;
   }
 
@@ -487,14 +486,16 @@
         body: JSON.stringify({ memberId: mid, pin })
       });
 
-      if (!resp.success || !resp.token) throw new Error(resp.message || "Login failed.");
+      if (!resp.success || !resp.token){
+        throw new Error(resp.message || "Login failed.");
+      }
 
       token = resp.token;
 
-      // Use memberId returned by backend when present (safer)
-      const returnedMid = (resp.member && resp.member.memberId) ? baseId(resp.member.memberId) : mid;
+      const returnedMid = (resp.member && resp.member.memberId)
+        ? baseId(resp.member.memberId)
+        : mid;
 
-      // Basic role check client-side (backend still enforces)
       const roles = (resp.member && resp.member.roles) ? resp.member.roles : [];
       if (!roles.includes("host") && !roles.includes("admin")){
         token = "";
@@ -512,15 +513,17 @@
 
   async function loadMyNotices(){
     clearWarn(warn2El);
+
     try{
-      // We fetch all host notices in preview, then filter by ownerId = me.
-      // (Even if we fetched all, backend won’t allow edits to others.)
-      const resp = await api("/api/notices?mode=preview&type=host", { method: "GET" });
+      const resp = await api("/api/notices?mode=live&type=host", { method: "GET" });
       const raw = Array.isArray(resp.notices) ? resp.notices : [];
       notices = raw.filter(n => baseId(n.ownerId) === baseId(myMemberId));
 
-      // newest first
-      notices.sort((a,b) => (new Date(b.createdAt).getTime() || 0) - (new Date(a.createdAt).getTime() || 0));
+      notices.sort((a, b) => {
+        const aa = new Date(a.createdAt).getTime() || 0;
+        const bb = new Date(b.createdAt).getTime() || 0;
+        return bb - aa;
+      });
 
       renderList();
 
@@ -569,8 +572,11 @@
 
   function escapeHtml(s){
     return String(s ?? "")
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;");
   }
 
   function clearEditor(){
@@ -583,11 +589,13 @@
     eventIdEl.value = "";
     authorEl.value = "";
     deleteBtn.disabled = true;
+    modePill.textContent = "Ready";
   }
 
   function select(id){
     const n = notices.find(x => x.id === id);
     if (!n) return;
+
     selectedId = id;
     selected = n;
     isNew = false;
@@ -637,12 +645,12 @@
 
     try{
       if (isNew){
-        const resp = await api("/api/notices?mode=preview", {
+        await api("/api/notices?mode=live", {
           method: "POST",
           body: JSON.stringify({
             type: "host",
             category: "host",
-            ownerId: myMemberId,   // enforce ownership
+            ownerId: myMemberId,
             title,
             body,
             media,
@@ -652,12 +660,12 @@
         });
         showOk(ok2El, "Saved.");
       } else {
-        const resp = await api(`/api/notices${encodeURIComponent(selectedId)}?mode=preview`, {
+        await api(`/api/notices/${encodeURIComponent(selectedId)}?mode=live`, {
           method: "PUT",
           body: JSON.stringify({
             type: "host",
             category: "host",
-            ownerId: myMemberId,   // keep ownership
+            ownerId: myMemberId,
             title,
             body,
             media,
@@ -681,7 +689,7 @@
     clearWarn(warn2El);
 
     try{
-      await api(`/api/notices/${encodeURIComponent(selectedId)}?mode=preview`, {
+      await api(`/api/notices/${encodeURIComponent(selectedId)}?mode=live`, {
         method: "DELETE"
       });
       showOk(ok2El, "Deleted.");
@@ -697,7 +705,6 @@
     loginBtn.disabled = !(mid && onlyDigits4(pin));
   }
 
-  // Events
   memberIdEl.addEventListener("input", updateLoginEnabled);
   pinEl.addEventListener("input", updateLoginEnabled);
   pinEl.addEventListener("keydown", (e) => {
@@ -710,11 +717,9 @@
   saveBtn.addEventListener("click", save);
   deleteBtn.addEventListener("click", deleteNotice);
 
-  // Init
   setLoggedOut();
   updateLoginEnabled();
 </script>
 
 </body>
 </html>
-

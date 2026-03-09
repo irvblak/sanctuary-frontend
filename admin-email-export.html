@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Admin access guard (must be in <head>) -->
+  <!-- Admin access guard -->
   <script src="admin-guard.js" defer></script>
 
   <!-- Page logic -->
@@ -59,34 +59,15 @@
       display:flex;
       gap:0.75rem;
       flex-wrap:wrap;
-      align-items:flex-end;
-      margin-top:0.75rem;
+      align-items:center;
+      margin-top:1rem;
     }
-
-    .field label{
-      display:block;
-      font-size:0.85rem;
-      color:#555;
-      margin-bottom:0.25rem;
-    }
-
-    input{
-      padding:0.55rem;
-      font-size:1rem;
-      border:1px solid #cfd8e3;
-      border-radius:10px;
-      box-sizing:border-box;
-      width: 100%;
-    }
-    .member-input{width: 160px;}
-    .pin-input{width: 120px;}
-    .search-input{min-width: 260px; flex: 1;}
 
     button.action{
       background:#005ea8;
       color:#fff;
       border:none;
-      padding:0.55rem 0.95rem;
+      padding:0.6rem 1rem;
       border-radius:10px;
       cursor:pointer;
       font-size:1rem;
@@ -112,38 +93,31 @@
       color:#7a0000;
       padding:0.75rem;
       border-radius:12px;
-      margin-top:0.75rem;
+      margin-top:0.9rem;
       display:none;
       white-space:pre-wrap;
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:0.75rem;
-      font-size:0.95rem;
+    .ok{
+      border:1px solid #cfe8cf;
+      background:#f4fff4;
+      color:#1f5c1f;
+      padding:0.75rem;
+      border-radius:12px;
+      margin-top:0.9rem;
+      display:none;
+      white-space:pre-wrap;
     }
-    th, td{
-      border-bottom:1px solid #e6edf5;
-      padding:0.55rem 0.45rem;
-      text-align:left;
-      vertical-align:top;
+
+    ul.notes{
+      margin:0.75rem 0 0 1.2rem;
+      color:#555;
+      line-height:1.5;
     }
-    th{
-      color:#003366;
-      font-size:0.9rem;
-      background:#fbfdff;
-      position:sticky;
-      top:0;
-      z-index:1;
-    }
-    .muted{color:#777; font-size:0.9rem;}
-    .right{white-space:nowrap;}
 
     @media (max-width:720px){
       nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
       .nav-left,.nav-center,.nav-right{justify-self:center;}
-      th{position:static;}
     }
   </style>
 </head>
@@ -168,63 +142,31 @@
 <main>
   <div class="card">
     <h1>Admin — Email Export</h1>
-    <p class="subtle">Admin-only tool to export residents’ emails from this browser’s stored member data.</p>
+    <p class="subtle">
+      Admin-only tool to export authorised residents’ email data from the central club records.
+    </p>
 
     <div class="row">
-      <div class="field" style="width:160px;">
-        <label>Admin membership number</label>
-        <input id="adminMemberId" class="member-input" placeholder="SM01" autocomplete="off" />
-      </div>
+      <span class="pill">ADMIN AUTH REQUIRED</span>
+    </div>
 
-      <div class="field" style="width:120px;">
-        <label>Admin PIN</label>
-        <input id="adminPin" class="pin-input" inputmode="numeric" pattern="[0-9]*"
-               maxlength="4" placeholder="1234" autocomplete="off" />
-      </div>
-
-      <button id="adminUnlockBtn" class="action" type="button" disabled>Unlock Admin</button>
-
-      <span class="pill" id="adminStatus">LOCKED</span>
+    <div class="row">
+      <button id="downloadCsvBtn" class="action" type="button">Download CSV</button>
+      <button id="copyEmailsBtn" class="action secondary" type="button">Copy emails (comma)</button>
+      <button id="copyUniqueBtn" class="action secondary" type="button">Copy unique (lines)</button>
     </div>
 
     <div id="warnBox" class="warn"></div>
+    <div id="okBox" class="ok"></div>
 
-    <div id="tools" style="display:none;">
-      <div class="row">
-        <div class="field" style="flex:1; min-width:260px;">
-          <label>Search (name / member / email)</label>
-          <input id="searchBox" class="search-input" placeholder="Type to filter…" autocomplete="off" />
-        </div>
-
-        <button id="downloadCsvBtn" class="action" type="button">Download CSV</button>
-        <button id="copyEmailsBtn" class="action secondary" type="button">Copy emails (comma)</button>
-        <button id="copyUniqueBtn" class="action secondary" type="button">Copy unique (lines)</button>
-      </div>
-
-      <p class="subtle">
-        <span id="counts" class="muted"></span>
-      </p>
-
-      <div style="overflow:auto; border-radius:12px; border:1px solid #e6edf5;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:90px;">Member</th>
-              <th style="min-width:140px;">Resident</th>
-              <th style="min-width:220px;">Email</th>
-              <th style="min-width:140px;">Mobile</th>
-              <th style="min-width:140px;">Landline</th>
-              <th class="right" style="min-width:140px;">Last updated</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-    </div>
+    <ul class="notes">
+      <li>Exports are generated on demand from backend records.</li>
+      <li>No static email export file is stored on the public website.</li>
+      <li>Current export reflects records authorised for admin broadcast.</li>
+    </ul>
   </div>
 </main>
 
-<!-- Centralised logout -->
 <script src="admin-logout.js" defer></script>
 </body>
 </html>

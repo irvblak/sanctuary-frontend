@@ -6,11 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
 
-  <!-- 🔒 Membership gate (your existing system) -->
-  <script src="access.js"></script>
-
-  <!-- Logout handler (your existing system) -->
-  <script src="logout.js"></script>
+  <script src="access.js?v=AC_1"></script>
+  <script src="logout.js?v=LO_3"></script>
 
   <style>
     :root{
@@ -19,36 +16,52 @@
       --ink:#1f2a37;
       --muted:#6b7280;
       --brand:#005ea8;
+      --brand-dark:#003366;
       --card:#ffffff;
       --border:rgba(0,0,0,.08);
-      --shadow: 0 12px 30px rgba(0,0,0,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.10);
       --radius:18px;
+
+      --ok:#145a2c;
+      --ok-bg:#f2fbf4;
+      --warn:#8a5b00;
+      --warn-bg:#fff8ea;
+      --err:#b00020;
+      --err-bg:#fff2f4;
     }
+
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%);
       color:var(--ink);
     }
 
     nav{
-      padding: 1rem 1.25rem;
+      padding:1rem 1.25rem;
       display:grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns:1fr auto 1fr;
       align-items:center;
       gap:.75rem;
-      max-width: 1100px;
-      margin: 0 auto;
+      max-width:1140px;
+      margin:0 auto;
     }
 
-    .nav-left, .nav-right{ display:flex; gap:.5rem; align-items:center; }
+    .nav-left,.nav-right{
+      display:flex;
+      gap:.5rem;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
     .nav-right{ justify-content:flex-end; }
 
     .brand{
-      font-weight: 700;
+      font-weight:700;
       letter-spacing:.2px;
-      color: var(--brand);
+      color:var(--brand);
       text-align:center;
       white-space:nowrap;
     }
@@ -57,34 +70,34 @@
       appearance:none;
       border:1px solid var(--border);
       background:#fff;
-      color: var(--brand);
-      padding: .55rem .85rem;
-      border-radius: 999px;
+      color:var(--brand);
+      padding:.55rem .85rem;
+      border-radius:999px;
       text-decoration:none;
       font-weight:600;
       cursor:pointer;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      box-shadow:0 8px 18px rgba(0,0,0,.06);
     }
 
     a.btn.primary, button.btn.primary{
-      background: var(--brand);
+      background:var(--brand);
       color:#fff;
-      border-color: rgba(0,0,0,0);
+      border-color:transparent;
     }
 
     main{
-      max-width:1100px;
-      margin: 0 auto;
-      padding: 0 1.25rem 2.5rem;
+      max-width:1140px;
+      margin:0 auto;
+      padding:0 1.25rem 2.5rem;
     }
 
     header.hero{
       margin-top:.5rem;
-      background: linear-gradient(135deg, rgba(0,94,168,.10), rgba(0,94,168,.02));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.25rem 1.1rem;
-      box-shadow: var(--shadow);
+      background:linear-gradient(135deg, rgba(0,94,168,.10), rgba(0,94,168,.02));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:1.25rem 1.25rem 1.1rem;
+      box-shadow:var(--shadow);
     }
 
     .hero-top{
@@ -92,45 +105,21 @@
       flex-wrap:wrap;
       align-items:flex-end;
       justify-content:space-between;
-      gap: 1rem;
+      gap:1rem;
     }
 
     h1{
       margin:0;
-      font-size: 1.5rem;
+      font-size:1.55rem;
       letter-spacing:.2px;
+      color:var(--brand-dark);
     }
 
     .sub{
-      margin:.25rem 0 0;
-      color: var(--muted);
-      font-size: .98rem;
-    }
-
-    .grid{
-      margin-top: 1rem;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    @media (min-width: 880px){
-      .grid{
-        grid-template-columns: 1.2fr .8fr;
-      }
-    }
-
-    .card{
-      background: var(--card);
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 1rem;
-    }
-
-    .card h2{
-      margin:0 0 .75rem;
-      font-size: 1.15rem;
+      margin:.3rem 0 0;
+      color:var(--muted);
+      font-size:.98rem;
+      line-height:1.45;
     }
 
     .actions{
@@ -140,20 +129,87 @@
       margin-top:.25rem;
     }
 
+    .statusRow{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:1rem;
+    }
+
+    .msg{
+      display:none;
+      padding:.78rem .92rem;
+      border-radius:14px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .msg.show{ display:block; }
+
+    .msg.info{
+      background:#eef6ff;
+      color:#0b4d87;
+      border:1px solid rgba(0,94,168,.18);
+    }
+
+    .msg.ok{
+      background:var(--ok-bg);
+      color:var(--ok);
+      border:1px solid rgba(20,90,44,.18);
+    }
+
+    .msg.warn{
+      background:var(--warn-bg);
+      color:var(--warn);
+      border:1px solid rgba(138,91,0,.18);
+    }
+
+    .msg.err{
+      background:var(--err-bg);
+      color:var(--err);
+      border:1px solid rgba(176,0,32,.18);
+    }
+
+    .grid{
+      margin-top:1rem;
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:1rem;
+    }
+
+    @media (max-width:980px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:1rem;
+    }
+
+    .card h2{
+      margin:0 0 .75rem;
+      font-size:1.15rem;
+      color:var(--brand-dark);
+    }
+
     .list{
-      margin: .5rem 0 0;
+      margin:.4rem 0 0;
       padding:0;
       list-style:none;
       display:flex;
       flex-direction:column;
-      gap:.65rem;
+      gap:.7rem;
     }
 
     .item{
       border:1px solid var(--border);
-      border-radius: 14px;
-      padding: .75rem .85rem;
-      background: #fff;
+      border-radius:14px;
+      padding:.8rem .9rem;
+      background:#fff;
     }
 
     .item .top{
@@ -161,18 +217,21 @@
       justify-content:space-between;
       align-items:flex-start;
       gap:.75rem;
+      flex-wrap:wrap;
     }
 
     .title{
-      font-weight:700;
+      font-weight:800;
       margin:0;
+      color:var(--brand-dark);
+      line-height:1.3;
     }
 
     .meta{
-      margin:.25rem 0 0;
-      color: var(--muted);
-      font-size: .95rem;
-      line-height:1.35;
+      margin:.3rem 0 0;
+      color:var(--muted);
+      font-size:.94rem;
+      line-height:1.4;
     }
 
     .pill{
@@ -180,28 +239,96 @@
       padding:.22rem .55rem;
       border-radius:999px;
       border:1px solid var(--border);
-      color: var(--muted);
+      color:var(--muted);
       font-size:.82rem;
       white-space:nowrap;
-      background: rgba(0,0,0,.02);
+      background:rgba(0,0,0,.02);
+      font-weight:700;
     }
 
-    .note{
-      background: #f0f7ff;
-      border:1px solid rgba(0,94,168,.20);
-      color:#0b3a66;
-      border-radius: 14px;
-      padding:.75rem .85rem;
+    .chipRow{
+      display:flex;
+      gap:.45rem;
+      flex-wrap:wrap;
+      margin-top:.55rem;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:.18rem .52rem;
+      border-radius:999px;
+      background:#eef6ff;
+      color:#0b4d87;
+      border:1px solid rgba(0,94,168,.15);
+      font-weight:800;
+      font-size:.82rem;
+      white-space:nowrap;
+    }
+
+    .buttonsRow{
+      display:flex;
+      gap:.55rem;
+      flex-wrap:wrap;
       margin-top:.75rem;
     }
 
+    .section-note{
+      background:#f0f7ff;
+      border:1px solid rgba(0,94,168,.20);
+      color:#0b3a66;
+      border-radius:14px;
+      padding:.75rem .85rem;
+      margin-top:.75rem;
+      line-height:1.45;
+    }
+
     .footer-note{
-      margin-top: 1rem;
-      color: var(--muted);
+      margin-top:1rem;
+      color:var(--muted);
       font-size:.92rem;
     }
 
-    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .summaryGrid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:.7rem;
+      margin-top:.95rem;
+    }
+
+    @media (max-width:900px){
+      .summaryGrid{ grid-template-columns:1fr 1fr; }
+    }
+
+    @media (max-width:560px){
+      .summaryGrid{ grid-template-columns:1fr; }
+    }
+
+    .summaryBox{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:.8rem .9rem;
+      background:#fff;
+    }
+
+    .summaryLabel{
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:.2rem;
+    }
+
+    .summaryValue{
+      font-size:1rem;
+      color:var(--brand-dark);
+      font-weight:900;
+    }
+
+    .empty{
+      color:var(--muted);
+      font-weight:800;
+      padding:.35rem 0;
+    }
   </style>
 </head>
 
@@ -215,8 +342,8 @@
     <div class="brand">Sanctuary Club — Host</div>
 
     <div class="nav-right">
-      <button class="btn" id="btnRefresh">Refresh</button>
-      <button class="btn primary" id="btnLogout">Logout</button>
+      <button class="btn" id="btnRefresh" type="button">Refresh</button>
+      <button class="btn primary" id="btnLogout" type="button">Logout</button>
     </div>
   </nav>
 
@@ -225,35 +352,75 @@
       <div class="hero-top">
         <div>
           <h1>Host Dashboard</h1>
-          <p class="sub" id="welcomeLine">Manage events you host — create, edit, and keep things tidy.</p>
+          <p class="sub" id="welcomeLine">Manage events you host — create, edit, review bookings, and keep notice wording current.</p>
         </div>
+
         <div class="actions">
-          <a class="btn primary" href="host-event-create.html">+ Create Event</a>
-          <a class="btn" href="diary.html">Open Diary</a>
-          <a class="btn" href="payments.html">Payments</a>
+          <a class="btn primary" href="host-event-form.html">+ Create Event</a>
+          <a class="btn" href="host-notices-editor.html">Edit Notices</a>
+          <a class="btn" href="events-calendar.html">Open Calendar</a>
         </div>
       </div>
 
-      <div class="note" id="roleNote">
-        <strong>Note:</strong> Host roles are not enabled yet in the system. This page is currently protected only by the Members access gate
-        (<code>access.js</code>). We’ll add Host-only security next.
+      <div class="summaryGrid">
+        <div class="summaryBox">
+          <div class="summaryLabel">Host member ID</div>
+          <div class="summaryValue" id="summaryHostId">—</div>
+        </div>
+        <div class="summaryBox">
+          <div class="summaryLabel">Hosted events</div>
+          <div class="summaryValue" id="summaryEventCount">0</div>
+        </div>
+        <div class="summaryBox">
+          <div class="summaryLabel">Booked places</div>
+          <div class="summaryValue" id="summaryBookedPlaces">0</div>
+        </div>
+        <div class="summaryBox">
+          <div class="summaryLabel">Gross due</div>
+          <div class="summaryValue" id="summaryGrossDue">£0.00</div>
+        </div>
+      </div>
+
+      <div class="statusRow">
+        <div class="msg info show" id="infoBox">Use your member login to unlock your hosted events.</div>
+        <div class="msg warn" id="warnBox"></div>
+        <div class="msg err" id="errBox"></div>
+        <div class="msg ok" id="okBox"></div>
+      </div>
+
+      <div class="section-note">
+        Hosts control their own events and linked notices. Admin may maintain system integrity, but ordinary event operation stays with the Host.
       </div>
     </header>
 
-    <section class="grid" id="mainGrid">
+    <section class="grid">
       <div class="card">
+        <h2>Unlock hosted events</h2>
+
+        <div class="actions">
+          <input id="memberId" placeholder="Membership number" style="padding:.7rem .8rem;border:1px solid rgba(0,0,0,.08);border-radius:12px;min-width:180px;" />
+          <input id="memberPin" type="password" placeholder="PIN" style="padding:.7rem .8rem;border:1px solid rgba(0,0,0,.08);border-radius:12px;min-width:140px;" />
+          <button class="btn primary" id="btnLogin" type="button">Unlock</button>
+        </div>
+
+        <p class="footer-note">
+          Only members authorised with Host role can use this dashboard normally. Admin may also access it.
+        </p>
+
+        <div class="divider" style="height:1px;background:rgba(0,0,0,.08);margin:1rem 0;"></div>
+
         <h2>My hosted events</h2>
-        <div class="meta" id="eventsHint">This will show your events when the events endpoint is wired in.</div>
+        <div class="meta" id="eventsHint">No events loaded yet.</div>
 
         <ul class="list" id="eventsList">
           <li class="item">
-            <p class="title">Events list not wired yet</p>
-            <p class="meta">Next step: confirm the correct backend endpoint for events/diary.</p>
+            <p class="title">No hosted events loaded</p>
+            <p class="meta">Unlock with your membership number and PIN to load your events.</p>
           </li>
         </ul>
 
         <p class="footer-note">
-          We’ll connect this once we confirm the exact API endpoint and response shape.
+          Each event here links through to the event page, booking records, and notice editing flow.
         </p>
       </div>
 
@@ -264,66 +431,340 @@
           <li class="item">
             <div class="top">
               <div>
-                <p class="title">Manage events</p>
-                <p class="meta">Edit/cancel/change capacity (once those pages exist).</p>
+                <p class="title">Create a new event</p>
+                <p class="meta">Build a new event with notice content, booking settings, prices, and cut-off dates.</p>
               </div>
               <span class="pill">Host</span>
             </div>
-            <div class="actions" style="margin-top:.6rem">
-              <a class="btn" href="host-events-manage.html">Manage Events</a>
+            <div class="buttonsRow">
+              <a class="btn" href="host-event-form.html">Create Event</a>
             </div>
           </li>
 
           <li class="item">
             <div class="top">
               <div>
-                <p class="title">Attendee list</p>
-                <p class="meta">View attendees and export lists (if built).</p>
+                <p class="title">Edit linked notices</p>
+                <p class="meta">Update notice summaries, full wording, and media links for your existing events.</p>
               </div>
-              <span class="pill">Host</span>
+              <span class="pill">Notices</span>
             </div>
-            <div class="actions" style="margin-top:.6rem">
-              <a class="btn" href="host-attendees.html">View Attendees</a>
-              <a class="btn" href="admin-email-export.html">Email Export</a>
+            <div class="buttonsRow">
+              <a class="btn" href="host-notices-editor.html">Edit Notices</a>
             </div>
           </li>
 
           <li class="item">
             <div class="top">
               <div>
-                <p class="title">Notices</p>
-                <p class="meta">View notices (and later: Host notice drafts).</p>
+                <p class="title">Public event views</p>
+                <p class="meta">Open the calendar, events list, or the booking page for a selected event.</p>
               </div>
-              <span class="pill">Comms</span>
+              <span class="pill">Members</span>
             </div>
-            <div class="actions" style="margin-top:.6rem">
-              <a class="btn" href="notices.html">View Notices</a>
-              <a class="btn" href="admin-notices.html">Admin Notices</a>
+            <div class="buttonsRow">
+              <a class="btn" href="events-calendar.html">Calendar</a>
+              <a class="btn" href="events.html">Events List</a>
             </div>
           </li>
         </ul>
 
-        <p class="footer-note">
-          Remove any links you don’t want Hosts to see later.
-        </p>
+        <div class="section-note" style="margin-top:1rem;">
+          Treasurer Wallet + Event Ledger is now part of the backend model. Hosts see finance figures for their own events only. Treasurer and Admin can see all.
+        </div>
       </div>
     </section>
   </main>
 
   <script>
+    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+
     const $ = (id) => document.getElementById(id);
 
-    $("btnRefresh").addEventListener("click", () => location.reload());
+    const infoBox = $("infoBox");
+    const warnBox = $("warnBox");
+    const errBox = $("errBox");
+    const okBox = $("okBox");
 
-    $("btnLogout").addEventListener("click", () => {
-      if (typeof window.scLogout === "function") return window.scLogout();
-      try { localStorage.clear(); } catch {}
+    const memberIdEl = $("memberId");
+    const memberPinEl = $("memberPin");
+    const btnLogin = $("btnLogin");
+    const btnRefresh = $("btnRefresh");
+    const btnLogout = $("btnLogout");
+
+    const welcomeLine = $("welcomeLine");
+    const summaryHostId = $("summaryHostId");
+    const summaryEventCount = $("summaryEventCount");
+    const summaryBookedPlaces = $("summaryBookedPlaces");
+    const summaryGrossDue = $("summaryGrossDue");
+
+    const eventsHint = $("eventsHint");
+    const eventsList = $("eventsList");
+
+    let authToken = "";
+    let currentMemberId = "";
+    let currentHostName = "";
+    let hostedEvents = [];
+
+    function showBox(el, msg){
+      el.textContent = msg;
+      el.classList.add("show");
+    }
+
+    function clearBox(el){
+      el.textContent = "";
+      el.classList.remove("show");
+    }
+
+    function clearMessages(){
+      clearBox(infoBox);
+      clearBox(warnBox);
+      clearBox(errBox);
+      clearBox(okBox);
+    }
+
+    function baseId(raw){
+      return String(raw || "").trim().toUpperCase().split("/")[0];
+    }
+
+    async function getJson(url, options = {}){
+      const res = await fetch(url, options);
+      const text = await res.text();
+      let data = {};
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch{
+        data = {};
+      }
+      if (!res.ok){
+        throw new Error(data.message || `HTTP ${res.status}`);
+      }
+      return data;
+    }
+
+    function money(v){
+      return `£${Number(v || 0).toFixed(2)}`;
+    }
+
+    function fmtDate(dateStr){
+      if (!dateStr) return "—";
+      try{
+        const d = new Date(`${dateStr}T12:00:00`);
+        if (Number.isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString("en-GB", { weekday:"short", day:"2-digit", month:"short", year:"numeric" });
+      }catch{
+        return dateStr;
+      }
+    }
+
+    function trackingFor(ev){
+      return ev.tracking || {};
+    }
+
+    function financeFor(ev){
+      return ev.finance || {};
+    }
+
+    function resetDashboard(){
+      hostedEvents = [];
+      summaryEventCount.textContent = "0";
+      summaryBookedPlaces.textContent = "0";
+      summaryGrossDue.textContent = "£0.00";
+      summaryHostId.textContent = currentMemberId || "—";
+
+      eventsHint.textContent = "No events loaded.";
+      eventsList.innerHTML = `
+        <li class="item">
+          <p class="title">No hosted events loaded</p>
+          <p class="meta">Unlock with your membership number and PIN to load your events.</p>
+        </li>
+      `;
+    }
+
+    function renderDashboard(){
+      summaryHostId.textContent = currentMemberId || "—";
+      summaryEventCount.textContent = String(hostedEvents.length);
+
+      let bookedPlaces = 0;
+      let grossDue = 0;
+
+      hostedEvents.forEach(ev => {
+        const t = trackingFor(ev);
+        const f = financeFor(ev);
+        bookedPlaces += Number(t.total_places_booked || 0);
+        grossDue += Number(f.gross_due || 0);
+      });
+
+      summaryBookedPlaces.textContent = String(bookedPlaces);
+      summaryGrossDue.textContent = money(grossDue);
+
+      if (!hostedEvents.length){
+        eventsHint.textContent = "No hosted events found for this member.";
+        eventsList.innerHTML = `
+          <li class="item">
+            <p class="title">No hosted events found</p>
+            <p class="meta">Create an event first, then return here to manage it.</p>
+          </li>
+        `;
+        return;
+      }
+
+      eventsHint.textContent = `${hostedEvents.length} hosted event${hostedEvents.length === 1 ? "" : "s"} loaded.`;
+
+      eventsList.innerHTML = hostedEvents.map(ev => {
+        const t = trackingFor(ev);
+        const f = financeFor(ev);
+        return `
+          <li class="item">
+            <div class="top">
+              <div>
+                <p class="title">${escapeHtml(ev.event_ref || ev.event_id || "")} — ${escapeHtml(ev.title || "(Untitled)")}</p>
+                <p class="meta">
+                  ${escapeHtml(fmtDate(ev.event_date))}${ev.start_time ? ` · ${escapeHtml(ev.start_time)}` : ""}${ev.location ? ` · ${escapeHtml(ev.location)}` : ""}
+                </p>
+              </div>
+              <span class="pill">${escapeHtml(ev.status || "published")}</span>
+            </div>
+
+            <div class="chipRow">
+              <span class="chip">Booked: ${Number(t.total_places_booked || 0)}</span>
+              <span class="chip">Left: ${Number(t.places_remaining || 0)}</span>
+              <span class="chip">Waitlist: ${Number(t.waitlist_count || 0)}</span>
+              <span class="chip">Interest: ${Number(t.interested_count || 0)}</span>
+              <span class="chip">Gross due: ${money(f.gross_due || 0)}</span>
+            </div>
+
+            <div class="buttonsRow">
+              <a class="btn" href="event-details.html?event_id=${encodeURIComponent(ev.event_id || "")}">Open Event</a>
+              <a class="btn" href="host-notices-editor.html">Edit Notice</a>
+            </div>
+          </li>
+        `;
+      }).join("");
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+    }
+
+    async function unlockHost(){
+      clearMessages();
+      showBox(infoBox, "Unlocking host…");
+
+      const memberId = baseId(memberIdEl.value);
+      const pin = String(memberPinEl.value || "").trim();
+
+      if (!memberId || !pin){
+        clearBox(infoBox);
+        showBox(errBox, "Enter membership number and PIN.");
+        return;
+      }
+
+      btnLogin.disabled = true;
+
+      try{
+        const login = await getJson(`${BACKEND_URL}/auth/login`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body:JSON.stringify({ memberId, pin })
+        });
+
+        const roles = Array.isArray(login.member?.roles) ? login.member.roles : [];
+        if (!roles.includes("host") && !roles.includes("admin")){
+          throw new Error("This member does not currently have Host or Admin role.");
+        }
+
+        authToken = login.token || "";
+        currentMemberId = login.member?.memberId || memberId;
+        currentHostName = login.member?.name || "";
+
+        welcomeLine.textContent = currentHostName
+          ? `Welcome, ${currentHostName}. Manage the events you host.`
+          : `Welcome. Manage the events you host.`;
+
+        await loadHostedEvents();
+
+        clearBox(infoBox);
+        showBox(okBox, `Unlocked as ${currentMemberId}${currentHostName ? ` — ${currentHostName}` : ""}.`);
+      }catch(err){
+        authToken = "";
+        currentMemberId = "";
+        currentHostName = "";
+        welcomeLine.textContent = "Manage events you host — create, edit, review bookings, and keep notice wording current.";
+        resetDashboard();
+
+        clearBox(infoBox);
+        showBox(errBox, err.message || "Could not unlock host.");
+      }finally{
+        btnLogin.disabled = false;
+      }
+    }
+
+    async function loadHostedEvents(){
+      showBox(infoBox, "Loading hosted events…");
+
+      const data = await getJson(`${BACKEND_URL}/api/events?include_finance=true`);
+      const allEvents = Array.isArray(data.events) ? data.events : [];
+
+      hostedEvents = allEvents
+        .filter(ev => baseId(ev.host_member_id) === baseId(currentMemberId))
+        .sort((a, b) => {
+          const ad = new Date(`${a.event_date || ""}T${a.start_time || "00:00"}:00`).getTime() || 0;
+          const bd = new Date(`${b.event_date || ""}T${b.start_time || "00:00"}:00`).getTime() || 0;
+          return ad - bd;
+        });
+
+      renderDashboard();
+      clearBox(infoBox);
+
+      if (!hostedEvents.length){
+        showBox(warnBox, "No hosted events found for this member yet.");
+      }
+    }
+
+    btnRefresh.addEventListener("click", async () => {
+      clearMessages();
+      if (!currentMemberId){
+        showBox(warnBox, "Unlock first to refresh your hosted events.");
+        return;
+      }
+      try{
+        await loadHostedEvents();
+        showBox(okBox, "Dashboard refreshed.");
+      }catch(err){
+        showBox(errBox, err.message || "Refresh failed.");
+      }
+    });
+
+    btnLogin.addEventListener("click", unlockHost);
+
+    memberPinEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter"){
+        unlockHost();
+      }
+    });
+
+    btnLogout.addEventListener("click", () => {
+      if (typeof window.scLogout === "function"){
+        window.scLogout();
+        return;
+      }
+      try{ localStorage.clear(); }catch{}
+      try{ sessionStorage.clear(); }catch{}
       window.location.href = "index.html";
     });
 
-    // Friendly welcome line (best-effort)
+    resetDashboard();
+
     const who = localStorage.getItem("sc_member_name") || localStorage.getItem("memberName") || "";
-    if (who) $("welcomeLine").textContent = `Welcome, ${who}. Manage the events you host.`;
+    if (who){
+      welcomeLine.textContent = `Welcome, ${who}. Manage the events you host.`;
+    }
   </script>
 </body>
 </html>

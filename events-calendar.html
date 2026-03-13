@@ -7,16 +7,8 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- 🔒 ACCESS PROTECTION (members-only) -->
-  <script>
-  (function () {
-    const v = sessionStorage.getItem("sanctuaryAccess");
-    if (!(v === "granted" || v === "1" || v === "true")) {
-      window.location.replace("index.html");
-    }
-  })();
-</script>
-
+  <!-- Members-only access -->
+  <script src="access.js?v=AC_1"></script>
 
   <style>
     :root{
@@ -26,18 +18,23 @@
       --muted:#5d6a77;
       --card:#ffffff;
       --line:#dbe6f3;
+      --brand:#005ea8;
+      --brand-dark:#003366;
+      --radius:16px;
 
-      /* Category colours */
-      --cat-social:#2563eb;   /* blue */
-      --cat-trip:#16a34a;     /* green */
-      --cat-culture:#ca8a04;  /* amber */
-      --cat-sport:#7c3aed;    /* purple */
-      --cat-food:#ea580c;     /* orange */
-      --cat-committee:#111827;/* near-black */
+      --cat-social:#2563eb;
+      --cat-sport:#7c3aed;
+      --cat-games:#0f766e;
+      --cat-fitness:#16a34a;
+      --cat-food:#ea580c;
+      --cat-entertainment:#ca8a04;
+      --cat-meeting:#111827;
+      --cat-external-service:#c026d3;
 
       --pillText:#ffffff;
-      --radius:16px;
     }
+
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
@@ -52,19 +49,57 @@
       display:grid;
       grid-template-columns:1fr auto 1fr;
       align-items:center;
+      gap:.75rem;
+      max-width:1140px;
+      margin:0 auto;
     }
-    nav a{
+
+    .nav-left,.nav-right{
+      display:flex;
+      gap:.6rem;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .nav-right{ justify-content:flex-end; }
+
+    .brand{
+      justify-self:center;
+      font-weight:900;
+      color:var(--brand-dark);
+      letter-spacing:.2px;
+      white-space:nowrap;
+      text-align:center;
+    }
+
+    a.btn, button.btn{
+      appearance:none;
       text-decoration:none;
-      font-weight:700;
-      color:#003366;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--brand-dark);
+      padding:.55rem .85rem;
+      border-radius:999px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.05);
+      font-size:.95rem;
     }
-    .nav-left{justify-self:start;}
-    .nav-center{justify-self:center;}
-    .nav-right{justify-self:end; display:flex; gap:1rem; align-items:center;}
-    .nav-right a{font-weight:700;}
+
+    a.btn.primary, button.btn.primary{
+      background:var(--brand);
+      color:#fff;
+      border-color:transparent;
+    }
+
+    a.btn.ghost, button.btn.ghost{
+      background:transparent;
+    }
+
+    button:disabled{ opacity:.5; cursor:default; }
 
     main{
-      max-width:1100px;
+      max-width:1140px;
       margin:0 auto 2rem;
       padding:0 1rem;
     }
@@ -75,22 +110,30 @@
       box-shadow:0 2px 12px rgba(0,0,0,0.06);
       padding:1rem;
       border:1px solid rgba(219,230,243,0.7);
+      margin-top:.8rem;
     }
 
     .topbar{
       display:flex;
-      gap:0.75rem;
+      gap:.75rem;
       flex-wrap:wrap;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
-      margin-bottom:0.75rem;
+      margin-bottom:.75rem;
     }
 
     h1{
       margin:0;
       font-size:1.35rem;
-      color:#003366;
+      color:var(--brand-dark);
       letter-spacing:0.2px;
+    }
+
+    .subtitle{
+      margin-top:.25rem;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.4;
     }
 
     .controls{
@@ -98,25 +141,8 @@
       gap:0.5rem;
       align-items:center;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
-
-    button{
-      background:#005ea8;
-      color:#fff;
-      border:none;
-      padding:0.5rem 0.8rem;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:0.95rem;
-    }
-    button.secondary{background:#7f97ad;}
-    button.ghost{
-      background:transparent;
-      color:#003366;
-      border:1px solid var(--line);
-    }
-    button:disabled{opacity:0.45; cursor:default;}
 
     .viewToggle{
       display:flex;
@@ -125,27 +151,74 @@
       overflow:hidden;
       background:#fbfdff;
     }
+
     .viewToggle button{
       border-radius:0;
       border:none;
       background:transparent;
-      color:#003366;
+      color:var(--brand-dark);
       padding:0.5rem 0.75rem;
       font-weight:900;
+      cursor:pointer;
     }
+
     .viewToggle button.active{
       background:#e6f1ff;
     }
 
-    .legend{
+    .monthTitle{
+      font-size:1.05rem;
+      font-weight:900;
+      color:var(--brand-dark);
+      margin:.5rem 0 .5rem;
+    }
+
+    .statusRow{
       display:flex;
-      gap:0.6rem 1rem;
+      gap:.75rem;
       flex-wrap:wrap;
       align-items:center;
-      margin:0.75rem 0 0.25rem;
+      margin-bottom:.75rem;
+    }
+
+    .statusBox{
+      display:none;
+      padding:.72rem .88rem;
+      border-radius:14px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .statusBox.show{ display:block; }
+
+    .statusInfo{
+      background:#eef6ff;
+      color:#0b4d87;
+      border:1px solid rgba(0,94,168,.18);
+    }
+
+    .statusWarn{
+      background:#fff8ea;
+      color:#8a5b00;
+      border:1px solid rgba(138,91,0,.18);
+    }
+
+    .statusErr{
+      background:#fff2f4;
+      color:#b00020;
+      border:1px solid rgba(176,0,32,.18);
+    }
+
+    .legend{
+      display:flex;
+      gap:.6rem 1rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:0.75rem 0 0.35rem;
       color:var(--muted);
       font-size:0.92rem;
     }
+
     .legendItem{
       display:flex;
       gap:0.5rem;
@@ -153,27 +226,22 @@
       user-select:none;
       cursor:pointer;
     }
+
     .swatch{
-      width:14px; height:14px;
+      width:14px;
+      height:14px;
       border-radius:4px;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
     }
-    .legendItem.off{opacity:0.35;}
+
+    .legendItem.off{ opacity:0.35; }
+
     .legendHelp{
       margin-left:auto;
       font-weight:700;
-      color:#003366;
+      color:var(--brand-dark);
       opacity:0.85;
-      cursor:pointer;
       user-select:none;
-    }
-
-    /* Calendar grid */
-    .monthTitle{
-      font-size:1.05rem;
-      font-weight:900;
-      color:#003366;
-      margin:0.5rem 0 0.5rem;
     }
 
     .dow{
@@ -186,7 +254,8 @@
       font-size:0.88rem;
       letter-spacing:0.2px;
     }
-    .dow div{padding:0 0.35rem;}
+
+    .dow div{ padding:0 0.35rem; }
 
     .grid{
       display:grid;
@@ -198,15 +267,20 @@
       border:1px solid var(--line);
       border-radius:14px;
       background:#ffffff;
-      min-height:110px;
+      min-height:120px;
       padding:0.5rem 0.45rem 0.55rem;
-      box-sizing:border-box;
       position:relative;
     }
+
     .day.out{
       background:#fbfdff;
       opacity:0.55;
     }
+
+    .day.today{
+      box-shadow:0 0 0 2px rgba(0,94,168,.18) inset;
+    }
+
     .dayHeader{
       display:flex;
       align-items:baseline;
@@ -214,10 +288,12 @@
       gap:0.5rem;
       margin-bottom:0.35rem;
     }
+
     .dayNum{
       font-weight:900;
-      color:#003366;
+      color:var(--brand-dark);
     }
+
     .dayBadge{
       font-size:0.78rem;
       color:var(--muted);
@@ -235,7 +311,7 @@
       align-items:center;
       gap:0.45rem;
       border-radius:999px;
-      padding:0.22rem 0.5rem;
+      padding:0.24rem 0.52rem;
       color:var(--pillText);
       font-weight:900;
       font-size:0.82rem;
@@ -246,25 +322,26 @@
       cursor:pointer;
       user-select:none;
     }
+
     .pill small{
       font-weight:900;
-      opacity:0.95;
+      opacity:0.96;
     }
+
     .pill span{
       font-weight:800;
-      opacity:0.95;
+      opacity:0.97;
     }
 
     .more{
       margin-top:0.1rem;
       font-size:0.82rem;
-      color:#003366;
+      color:var(--brand-dark);
       font-weight:900;
       cursor:pointer;
       user-select:none;
     }
 
-    /* List view */
     .list{
       margin-top:0.5rem;
       border-top:1px solid rgba(219,230,243,0.8);
@@ -273,35 +350,45 @@
       flex-direction:column;
       gap:0.6rem;
     }
+
     .row{
       display:grid;
-      grid-template-columns: 140px 1fr;
+      grid-template-columns: 150px 1fr;
       gap:0.75rem;
       padding:0.75rem;
       border:1px solid var(--line);
       border-radius:14px;
       background:#fbfdff;
+      cursor:pointer;
     }
+
+    .row:hover{
+      box-shadow:0 2px 14px rgba(0,0,0,.05);
+    }
+
     .rowLeft{
-      color:#003366;
+      color:var(--brand-dark);
       font-weight:900;
       display:flex;
       flex-direction:column;
       gap:0.25rem;
     }
+
     .rowRight{
       display:flex;
       flex-direction:column;
-      gap:0.25rem;
+      gap:0.35rem;
     }
+
     .rowTitle{
       display:flex;
       gap:0.55rem;
       align-items:center;
       flex-wrap:wrap;
       font-weight:900;
-      color:#003366;
+      color:var(--brand-dark);
     }
+
     .chip{
       display:inline-flex;
       align-items:center;
@@ -312,13 +399,19 @@
       font-weight:900;
       font-size:0.82rem;
     }
+
     .rowMeta{
       color:var(--muted);
       font-size:0.92rem;
       line-height:1.35;
     }
 
-    /* Modal */
+    .empty{
+      color:var(--muted);
+      font-weight:800;
+      padding:0.75rem;
+    }
+
     .modalWrap{
       position:fixed;
       inset:0;
@@ -329,14 +422,16 @@
       padding:1rem;
       z-index:9999;
     }
+
     .modal{
-      width:min(860px, 100%);
+      width:min(920px, 100%);
       background:#fff;
       border-radius:18px;
       border:1px solid rgba(219,230,243,0.9);
       box-shadow:0 12px 40px rgba(0,0,0,0.25);
       overflow:hidden;
     }
+
     .modalHead{
       padding:0.9rem 1rem;
       display:flex;
@@ -346,484 +441,701 @@
       border-bottom:1px solid rgba(219,230,243,0.9);
       background:#fbfdff;
     }
+
     .modalTitle{
       display:flex;
       flex-direction:column;
-      gap:0.15rem;
+      gap:0.18rem;
       min-width:0;
     }
+
     .modalTitle strong{
       font-size:1.05rem;
-      color:#003366;
+      color:var(--brand-dark);
       font-weight:950;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
+
     .modalTitle span{
       color:var(--muted);
       font-weight:800;
       font-size:0.92rem;
     }
-    .modalBody{padding:1rem;}
-    .modalBody p{
-      margin:0.45rem 0;
+
+    .modalBody{
+      padding:1rem;
+      display:grid;
+      gap:1rem;
+    }
+
+    .modalSection{
+      border:1px solid rgba(219,230,243,0.9);
+      border-radius:14px;
+      padding:.9rem;
+      background:#fff;
+    }
+
+    .modalSection h3{
+      margin:0 0 .55rem;
+      color:var(--brand-dark);
+      font-size:1rem;
+    }
+
+    .modalSection p{
+      margin:.42rem 0;
       color:#27323d;
       line-height:1.5;
     }
+
+    .bookingPrompt{
+      background:#eef6ff;
+      border:1px solid rgba(0,94,168,.16);
+      color:#0b4d87;
+      font-weight:900;
+      border-radius:14px;
+      padding:.8rem .9rem;
+    }
+
+    .modalActions{
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      margin-top:.2rem;
+    }
+
     .modalClose{
       background:transparent;
       border:1px solid var(--line);
-      color:#003366;
+      color:var(--brand-dark);
       font-weight:950;
       padding:0.45rem 0.7rem;
       border-radius:12px;
       cursor:pointer;
     }
 
-    @media (max-width:820px){
-      .row{grid-template-columns: 1fr;}
-      .day{min-height:95px;}
+    .noteText{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
     }
+
+    @media (max-width:900px){
+      .row{ grid-template-columns: 1fr; }
+      .day{ min-height:100px; }
+    }
+
     @media (max-width:720px){
-      nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
-      .nav-left,.nav-center,.nav-right{justify-self:center;}
-      .legendHelp{margin-left:0;}
+      nav{
+        grid-template-columns:1fr;
+        row-gap:0.65rem;
+        text-align:center;
+      }
+      .nav-left,.nav-center,.nav-right{ justify-self:center; }
+      .legendHelp{ margin-left:0; }
+      .dow{ font-size:.8rem; }
     }
   </style>
 </head>
 
 <body>
-<nav>
-  <div class="nav-left"><a href="index.html">Home</a></div>
-  <div class="nav-center"><a href="events-calendar.html?v=C_2">Calendar</a></div>
-  <div class="nav-right">
-    <a href="members-info.html">Hub</a>
-    <a href="#" id="logout-link">Logout</a>
-  </div>
-</nav>
+  <nav>
+    <div class="nav-left">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="members-hub.html">Members Hub</a>
+    </div>
 
-<main>
-  <div class="card">
-    <div class="topbar">
-      <div>
-        <h1>Calendar & Events List</h1>
-        <div class="monthTitle" id="monthTitle"></div>
-      </div>
+    <div class="brand">Sanctuary Club — Calendar</div>
 
-      <div class="controls">
-        <button class="ghost" id="prevBtn" type="button">◀</button>
-        <button class="ghost" id="todayBtn" type="button">Today</button>
-        <button class="ghost" id="nextBtn" type="button">▶</button>
+    <div class="nav-right">
+      <a class="btn" href="events.html">Events List</a>
+      <a class="btn primary" href="host-event-form.html">Create Event</a>
+    </div>
+  </nav>
 
-        <div class="viewToggle" role="tablist" aria-label="View toggle">
-          <button id="calViewBtn" class="active" type="button">Calendar</button>
-          <button id="listViewBtn" type="button">List</button>
+  <main>
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>Calendar & Events List</h1>
+          <div class="subtitle">
+            Click an event to register interest or make a booking.
+          </div>
+          <div class="monthTitle" id="monthTitle"></div>
         </div>
-      </div>
-    </div>
 
-    <div class="legend" id="legend">
-      <!-- filled by JS -->
-      <div class="legendHelp" id="legendHelp" title="Click a category to hide/show it">Filter categories</div>
-    </div>
+        <div class="controls">
+          <button class="btn ghost" id="prevBtn" type="button">◀</button>
+          <button class="btn ghost" id="todayBtn" type="button">Today</button>
+          <button class="btn ghost" id="nextBtn" type="button">▶</button>
 
-    <div id="calendarView">
-      <div class="dow">
-        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-      </div>
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <div id="listView" style="display:none;">
-      <div class="list" id="list"></div>
-    </div>
-  </div>
-</main>
-
-<!-- Modal -->
-<div class="modalWrap" id="modalWrap" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="Event details">
-    <div class="modalHead">
-      <div class="modalTitle">
-        <strong id="mTitle">Event</strong>
-        <span id="mMeta">Meta</span>
-      </div>
-      <button class="modalClose" id="mClose" type="button">Close</button>
-    </div>
-    <div class="modalBody" id="mBody"></div>
-  </div>
-</div>
-
-<!-- Load your normal logout.js (you said logout is now working across the site) -->
-<script src="logout.js?v=LO_2"></script>
-
-<script>
-  // ------------------------------------------------------------
-  // DEMO DATA
-  // Replace this later with a backend fetch (e.g. /api/events)
-  // ------------------------------------------------------------
-  const EVENTS = [
-    {
-      id: "SM55-E001",
-      category: "culture",
-      title: "Theatre Trip (Matinee)",
-      when: "2026-03-12T14:00:00",
-      where: "Chester – Storyhouse",
-      notes: "Expression of interest first. Coach if numbers warrant."
-    },
-    {
-      id: "SC03-E014",
-      category: "social",
-      title: "Nosh in the Clubhouse",
-      when: "2026-03-06T19:00:00",
-      where: "Clubhouse",
-      notes: "Bring a plate. Drinks on honour system."
-    },
-    {
-      id: "SM12-E008",
-      category: "trip",
-      title: "Garden Centre & Lunch",
-      when: "2026-03-20T10:30:00",
-      where: "Blue Diamond",
-      notes: "Car share possible. Let host know if you can drive."
-    },
-    {
-      id: "SC09-E003",
-      category: "food",
-      title: "Portuguese Evening",
-      when: "2026-03-27T19:30:00",
-      where: "Clubhouse",
-      notes: "Small contribution for ingredients (details in notice)."
-    },
-    {
-      id: "SC01-E010",
-      category: "committee",
-      title: "Committee Meeting",
-      when: "2026-03-03T18:00:00",
-      where: "Clubhouse",
-      notes: "Agenda posted separately."
-    },
-    {
-      id: "SM07-E005",
-      category: "sport",
-      title: "Walk: River Loop",
-      when: "2026-03-09T10:00:00",
-      where: "Meet at main gate",
-      notes: "Easy pace. Weather dependent."
-    }
-  ];
-
-  const CATS = [
-    { key:"social",   label:"Social / Clubhouse", colorVar:"--cat-social" },
-    { key:"trip",     label:"Trips / Outings",     colorVar:"--cat-trip" },
-    { key:"culture",  label:"Cultural",           colorVar:"--cat-culture" },
-    { key:"sport",    label:"Sport / Active",     colorVar:"--cat-sport" },
-    { key:"food",     label:"Food events",        colorVar:"--cat-food" },
-    { key:"committee",label:"Committee",          colorVar:"--cat-committee" }
-  ];
-
-  // Filter state (all on by default)
-  const catOn = Object.fromEntries(CATS.map(c => [c.key, true]));
-
-  // View state
-  let current = new Date(); // today
-  current.setHours(12,0,0,0);
-  let viewMode = "calendar"; // or "list"
-
-  // Helpers
-  function pad2(n){ return String(n).padStart(2,"0"); }
-  function ymd(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
-
-  function parseISO(iso){
-    // ISO without Z treated as local time, which is fine for community events.
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return null;
-    return d;
-  }
-
-  function monthName(d){
-    return d.toLocaleString("en-GB", { month:"long", year:"numeric" });
-  }
-
-  function timeHM(d){
-    return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-  }
-
-  function catColor(catKey){
-    const cat = CATS.find(c => c.key === catKey);
-    if (!cat) return "#005ea8";
-    const v = getComputedStyle(document.documentElement).getPropertyValue(cat.colorVar).trim();
-    return v || "#005ea8";
-  }
-
-  function filteredEvents(){
-    return EVENTS
-      .filter(e => catOn[e.category] !== false)
-      .map(e => ({...e, dateObj: parseISO(e.when)}))
-      .filter(e => e.dateObj);
-  }
-
-  function eventsByDayInMonth(year, monthIndex){
-    const by = {};
-    for (const e of filteredEvents()){
-      if (e.dateObj.getFullYear() === year && e.dateObj.getMonth() === monthIndex){
-        const key = ymd(e.dateObj);
-        (by[key] ||= []).push(e);
-      }
-    }
-    // sort each day by time
-    Object.values(by).forEach(arr => arr.sort((a,b)=>a.dateObj-b.dateObj));
-    return by;
-  }
-
-  function mondayFirstIndex(jsDay){
-    // JS: 0 Sun .. 6 Sat -> Monday first (0..6)
-    return (jsDay + 6) % 7;
-  }
-
-  // DOM
-  const monthTitleEl = document.getElementById("monthTitle");
-  const gridEl = document.getElementById("grid");
-  const listEl = document.getElementById("list");
-  const legendEl = document.getElementById("legend");
-
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const todayBtn = document.getElementById("todayBtn");
-
-  const calViewBtn = document.getElementById("calViewBtn");
-  const listViewBtn = document.getElementById("listViewBtn");
-  const calendarView = document.getElementById("calendarView");
-  const listView = document.getElementById("listView");
-
-  // Modal
-  const modalWrap = document.getElementById("modalWrap");
-  const mTitle = document.getElementById("mTitle");
-  const mMeta = document.getElementById("mMeta");
-  const mBody = document.getElementById("mBody");
-  const mClose = document.getElementById("mClose");
-
-  function openModal(ev){
-    mTitle.textContent = `${ev.id} — ${ev.title}`;
-    const d = ev.dateObj;
-    const dateStr = d.toLocaleDateString("en-GB", { weekday:"long", day:"2-digit", month:"long", year:"numeric" });
-    mMeta.textContent = `${dateStr} · ${timeHM(d)} · ${ev.where || "Location TBC"} · ${CATS.find(c=>c.key===ev.category)?.label || ev.category}`;
-    mBody.innerHTML = `
-      <p><strong>Category:</strong> ${CATS.find(c=>c.key===ev.category)?.label || ev.category}</p>
-      <p><strong>Where:</strong> ${ev.where || "TBC"}</p>
-      <p><strong>Notes:</strong> ${ev.notes ? ev.notes : "Details in the notice."}</p>
-      <p style="margin-top:0.9rem;color:#5d6a77;font-weight:800;">
-        (Later this modal can link to the full Notice page and “Interested in / Booking”.)
-      </p>
-    `;
-    modalWrap.style.display = "flex";
-    modalWrap.setAttribute("aria-hidden","false");
-  }
-  function closeModal(){
-    modalWrap.style.display = "none";
-    modalWrap.setAttribute("aria-hidden","true");
-  }
-  mClose.onclick = closeModal;
-  modalWrap.addEventListener("click", (e) => { if (e.target === modalWrap) closeModal(); });
-  document.addEventListener("keydown",(e)=>{ if (e.key === "Escape") closeModal(); });
-
-  // Legend build
-  function renderLegend(){
-    // Remove existing items except help
-    [...legendEl.querySelectorAll(".legendItem")].forEach(n => n.remove());
-
-    for (const c of CATS){
-      const item = document.createElement("div");
-      item.className = "legendItem" + (catOn[c.key] ? "" : " off");
-      item.title = "Click to toggle";
-      item.innerHTML = `<div class="swatch"></div><div>${c.label}</div>`;
-      item.querySelector(".swatch").style.background = catColor(c.key);
-      item.onclick = () => {
-        catOn[c.key] = !catOn[c.key];
-        renderLegend();
-        render();
-      };
-      legendEl.insertBefore(item, document.getElementById("legendHelp"));
-    }
-  }
-
-  // Calendar render
-  function renderCalendar(){
-    const year = current.getFullYear();
-    const month = current.getMonth();
-
-    monthTitleEl.textContent = monthName(current);
-    gridEl.innerHTML = "";
-
-    const first = new Date(year, month, 1, 12,0,0,0);
-    const last = new Date(year, month+1, 0, 12,0,0,0);
-
-    const firstIndex = mondayFirstIndex(first.getDay()); // 0..6
-    const daysInMonth = last.getDate();
-
-    // Determine start date to show (backfill from previous month)
-    const start = new Date(year, month, 1 - firstIndex, 12,0,0,0);
-
-    const byDay = eventsByDayInMonth(year, month);
-
-    for (let cell = 0; cell < 42; cell++){
-      const d = new Date(start);
-      d.setDate(start.getDate() + cell);
-
-      const inMonth = (d.getMonth() === month);
-      const dayKey = ymd(d);
-
-      const day = document.createElement("div");
-      day.className = "day" + (inMonth ? "" : " out");
-
-      const header = document.createElement("div");
-      header.className = "dayHeader";
-      header.innerHTML = `
-        <div class="dayNum">${d.getDate()}</div>
-        <div class="dayBadge">${inMonth ? "" : d.toLocaleString("en-GB",{month:"short"})}</div>
-      `;
-      day.appendChild(header);
-
-      const eventsWrap = document.createElement("div");
-      eventsWrap.className = "events";
-
-      if (inMonth){
-        const evs = (byDay[dayKey] || []);
-        // show up to 3 pills, then "+n more"
-        const show = evs.slice(0,3);
-        for (const ev of show){
-          const pill = document.createElement("div");
-          pill.className = "pill";
-          pill.style.background = catColor(ev.category);
-
-          // Month view: keep it compact. Show time + ref + short title.
-          const t = timeHM(ev.dateObj);
-          pill.innerHTML = `<small>${t}</small><span>${ev.id}</span> <span style="font-weight:800;opacity:0.92;">— ${ev.title}</span>`;
-          pill.title = `${ev.id} — ${ev.title}`;
-          pill.onclick = () => openModal(ev);
-          eventsWrap.appendChild(pill);
-        }
-
-        if (evs.length > 3){
-          const more = document.createElement("div");
-          more.className = "more";
-          more.textContent = `+${evs.length - 3} more`;
-          more.onclick = () => {
-            // switch to list view filtered to this month, and scroll to day
-            setView("list");
-            setTimeout(()=>scrollToDay(dayKey), 50);
-          };
-          eventsWrap.appendChild(more);
-        }
-      }
-
-      day.appendChild(eventsWrap);
-      gridEl.appendChild(day);
-    }
-  }
-
-  // List render
-  function renderList(){
-    const year = current.getFullYear();
-    const month = current.getMonth();
-
-    monthTitleEl.textContent = monthName(current);
-
-    // Get events for this month, sorted
-    const monthEvents = filteredEvents()
-      .filter(e => e.dateObj.getFullYear() === year && e.dateObj.getMonth() === month)
-      .sort((a,b)=>a.dateObj-b.dateObj);
-
-    listEl.innerHTML = "";
-
-    if (!monthEvents.length){
-      listEl.innerHTML = `<div style="color:#5d6a77;font-weight:800;padding:0.75rem;">No events match your filters for this month.</div>`;
-      return;
-    }
-
-    for (const ev of monthEvents){
-      const d = ev.dateObj;
-      const leftDate = d.toLocaleDateString("en-GB",{weekday:"short", day:"2-digit", month:"short"});
-      const leftTime = timeHM(d);
-
-      const row = document.createElement("div");
-      row.className = "row";
-      row.dataset.dayKey = ymd(d);
-
-      const chip = `<span class="chip" style="background:${catColor(ev.category)}">${ev.id}</span>`;
-      const catLabel = CATS.find(c=>c.key===ev.category)?.label || ev.category;
-
-      row.innerHTML = `
-        <div class="rowLeft">
-          <div>${leftDate}</div>
-          <div style="opacity:0.85">${leftTime}</div>
-        </div>
-        <div class="rowRight">
-          <div class="rowTitle">${chip}<span>${ev.title}</span></div>
-          <div class="rowMeta">
-            <div><strong>Where:</strong> ${ev.where || "TBC"}</div>
-            <div><strong>Type:</strong> ${catLabel}</div>
+          <div class="viewToggle" role="tablist" aria-label="View toggle">
+            <button id="calViewBtn" class="active" type="button">Calendar</button>
+            <button id="listViewBtn" type="button">List</button>
           </div>
         </div>
+      </div>
+
+      <div class="statusRow">
+        <div class="statusBox statusInfo show" id="infoBox">Loading events…</div>
+        <div class="statusBox statusWarn" id="warnBox"></div>
+        <div class="statusBox statusErr" id="errBox"></div>
+      </div>
+
+      <div class="legend" id="legend">
+        <div class="legendHelp">Filter categories</div>
+      </div>
+
+      <div id="calendarView">
+        <div class="dow">
+          <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <div id="listView" style="display:none;">
+        <div class="list" id="list"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modalWrap" id="modalWrap" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Event details">
+      <div class="modalHead">
+        <div class="modalTitle">
+          <strong id="mTitle">Event</strong>
+          <span id="mMeta">Meta</span>
+        </div>
+        <button class="modalClose" id="mClose" type="button">Close</button>
+      </div>
+      <div class="modalBody" id="mBody"></div>
+    </div>
+  </div>
+
+  <script src="logout.js?v=LO_2"></script>
+
+  <script>
+    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const CATEGORY_DEFS = [
+      { key: "social", label: "Social", colorVar: "--cat-social" },
+      { key: "sport", label: "Sport", colorVar: "--cat-sport" },
+      { key: "games", label: "Games", colorVar: "--cat-games" },
+      { key: "fitness", label: "Fitness", colorVar: "--cat-fitness" },
+      { key: "food", label: "Food", colorVar: "--cat-food" },
+      { key: "entertainment", label: "Entertainment", colorVar: "--cat-entertainment" },
+      { key: "meeting", label: "Meeting", colorVar: "--cat-meeting" },
+      { key: "external-service", label: "External Service", colorVar: "--cat-external-service" }
+    ];
+
+    const catOn = Object.fromEntries(CATEGORY_DEFS.map(c => [c.key, true]));
+
+    let EVENTS = [];
+    let current = new Date();
+    current = new Date(current.getFullYear(), current.getMonth(), 1, 12, 0, 0, 0);
+    let viewMode = "calendar";
+
+    const monthTitleEl = document.getElementById("monthTitle");
+    const gridEl = document.getElementById("grid");
+    const listEl = document.getElementById("list");
+    const legendEl = document.getElementById("legend");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const todayBtn = document.getElementById("todayBtn");
+
+    const calViewBtn = document.getElementById("calViewBtn");
+    const listViewBtn = document.getElementById("listViewBtn");
+    const calendarView = document.getElementById("calendarView");
+    const listView = document.getElementById("listView");
+
+    const infoBox = document.getElementById("infoBox");
+    const warnBox = document.getElementById("warnBox");
+    const errBox = document.getElementById("errBox");
+
+    const modalWrap = document.getElementById("modalWrap");
+    const mTitle = document.getElementById("mTitle");
+    const mMeta = document.getElementById("mMeta");
+    const mBody = document.getElementById("mBody");
+    const mClose = document.getElementById("mClose");
+
+    function pad2(n){
+      return String(n).padStart(2, "0");
+    }
+
+    function ymd(d){
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    }
+
+    function parseDateAndTime(eventDate, startTime){
+      if (!eventDate) return null;
+      const time = startTime || "00:00";
+      const d = new Date(`${eventDate}T${time}:00`);
+      if (Number.isNaN(d.getTime())) return null;
+      return d;
+    }
+
+    function parseBackendIso(iso){
+      if (!iso) return null;
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return null;
+      return d;
+    }
+
+    function monthName(d){
+      return d.toLocaleString("en-GB", { month:"long", year:"numeric" });
+    }
+
+    function timeHM(d){
+      return d.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" });
+    }
+
+    function dateDisplay(d){
+      return d.toLocaleDateString("en-GB", {
+        weekday:"long", day:"2-digit", month:"long", year:"numeric"
+      });
+    }
+
+    function categoryDef(key){
+      return CATEGORY_DEFS.find(c => c.key === key) || null;
+    }
+
+    function categoryColor(key){
+      const def = categoryDef(key);
+      if (!def) return "#005ea8";
+      const v = getComputedStyle(document.documentElement).getPropertyValue(def.colorVar).trim();
+      return v || "#005ea8";
+    }
+
+    function toCategoryKey(rawKey, rawLabel){
+      const key = String(rawKey || "").trim().toLowerCase();
+      const label = String(rawLabel || "").trim().toLowerCase();
+
+      if (key === "external service" || key === "external_service" || key === "external-service") return "external-service";
+      if (label === "external service") return "external-service";
+
+      const map = {
+        social: "social",
+        sport: "sport",
+        games: "games",
+        fitness: "fitness",
+        food: "food",
+        entertainment: "entertainment",
+        meeting: "meeting"
+      };
+
+      if (map[key]) return map[key];
+      if (map[label]) return map[label];
+
+      return key || label || "social";
+    }
+
+    function showInfo(msg){
+      infoBox.textContent = msg;
+      infoBox.classList.add("show");
+    }
+
+    function clearInfo(){
+      infoBox.textContent = "";
+      infoBox.classList.remove("show");
+    }
+
+    function showWarn(msg){
+      warnBox.textContent = msg;
+      warnBox.classList.add("show");
+    }
+
+    function clearWarn(){
+      warnBox.textContent = "";
+      warnBox.classList.remove("show");
+    }
+
+    function showErr(msg){
+      errBox.textContent = msg;
+      errBox.classList.add("show");
+    }
+
+    function clearErr(){
+      errBox.textContent = "";
+      errBox.classList.remove("show");
+    }
+
+    async function getJson(url, options = {}){
+      const res = await fetch(url, options);
+      const text = await res.text();
+      let data = {};
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch{
+        data = {};
+      }
+      if (!res.ok){
+        throw new Error(data.message || `HTTP ${res.status}`);
+      }
+      return data;
+    }
+
+    function normalisedEvents(){
+      return EVENTS
+        .map(ev => {
+          const dateObj = parseDateAndTime(ev.event_date, ev.start_time);
+          if (!dateObj) return null;
+
+          const bookingOpen = ev.member_booking_open === true;
+          const guestOpen = ev.guest_booking_open === true;
+
+          return {
+            raw: ev,
+            id: ev.event_ref || ev.event_id || "",
+            backendId: ev.event_id || "",
+            title: ev.title || "Untitled event",
+            category: toCategoryKey(ev.category_key, ev.category_label),
+            categoryLabel: ev.category_label || ev.category_key || "",
+            dateObj,
+            where: ev.location || "",
+            notes: ev.notice_summary || ev.description || ev.notice_body || "",
+            fullBody: ev.notice_body || ev.description || "",
+            hostName: ev.host_name || "",
+            status: ev.status || "",
+            endTime: ev.end_time || "",
+            tracking: ev.tracking || {},
+            bookingOpen,
+            guestOpen,
+            cancellationOpen: ev.cancellation_open === true,
+            refundWindowOpen: ev.refund_window_open === true,
+            noticeId: ev.notice_id || "",
+            priceMember: Number(ev.price_member || 0),
+            priceGuest: Number(ev.price_guest || 0),
+            capacityTotal: Number(ev.capacity_total || 0),
+            memberBookingOpensAt: parseBackendIso(ev.members_booking_open_at),
+            guestBookingOpensAt: parseBackendIso(ev.guests_booking_open_at),
+            bookingCloseAt: parseBackendIso(ev.booking_close_at)
+          };
+        })
+        .filter(Boolean)
+        .filter(ev => catOn[ev.category] !== false)
+        .sort((a, b) => a.dateObj - b.dateObj);
+    }
+
+    function eventsByDayInMonth(year, monthIndex){
+      const by = {};
+      for (const e of normalisedEvents()){
+        if (e.dateObj.getFullYear() === year && e.dateObj.getMonth() === monthIndex){
+          const key = ymd(e.dateObj);
+          (by[key] ||= []).push(e);
+        }
+      }
+      Object.values(by).forEach(arr => arr.sort((a, b) => a.dateObj - b.dateObj));
+      return by;
+    }
+
+    function mondayFirstIndex(jsDay){
+      return (jsDay + 6) % 7;
+    }
+
+    function renderLegend(){
+      [...legendEl.querySelectorAll(".legendItem")].forEach(n => n.remove());
+
+      for (const c of CATEGORY_DEFS){
+        const item = document.createElement("div");
+        item.className = "legendItem" + (catOn[c.key] ? "" : " off");
+        item.title = "Click to toggle";
+        item.innerHTML = `<div class="swatch"></div><div>${c.label}</div>`;
+        item.querySelector(".swatch").style.background = categoryColor(c.key);
+        item.onclick = () => {
+          catOn[c.key] = !catOn[c.key];
+          renderLegend();
+          render();
+        };
+        legendEl.insertBefore(item, legendEl.querySelector(".legendHelp"));
+      }
+    }
+
+    function renderCalendar(){
+      const year = current.getFullYear();
+      const month = current.getMonth();
+
+      monthTitleEl.textContent = monthName(current);
+      gridEl.innerHTML = "";
+
+      const first = new Date(year, month, 1, 12, 0, 0, 0);
+      const last = new Date(year, month + 1, 0, 12, 0, 0, 0);
+
+      const firstIndex = mondayFirstIndex(first.getDay());
+      const start = new Date(year, month, 1 - firstIndex, 12, 0, 0, 0);
+      const byDay = eventsByDayInMonth(year, month);
+      const todayKey = ymd(new Date());
+
+      for (let cell = 0; cell < 42; cell++){
+        const d = new Date(start);
+        d.setDate(start.getDate() + cell);
+
+        const inMonth = d.getMonth() === month;
+        const dayKey = ymd(d);
+
+        const day = document.createElement("div");
+        day.className = "day" + (inMonth ? "" : " out") + (dayKey === todayKey ? " today" : "");
+
+        const header = document.createElement("div");
+        header.className = "dayHeader";
+        header.innerHTML = `
+          <div class="dayNum">${d.getDate()}</div>
+          <div class="dayBadge">${inMonth ? "" : d.toLocaleString("en-GB", { month:"short" })}</div>
+        `;
+        day.appendChild(header);
+
+        const eventsWrap = document.createElement("div");
+        eventsWrap.className = "events";
+
+        if (inMonth){
+          const evs = byDay[dayKey] || [];
+          const show = evs.slice(0, 3);
+
+          for (const ev of show){
+            const pill = document.createElement("div");
+            pill.className = "pill";
+            pill.style.background = categoryColor(ev.category);
+
+            const t = timeHM(ev.dateObj);
+            pill.innerHTML = `<small>${t}</small><span>${ev.id}</span> <span style="font-weight:800;opacity:0.92;">— ${ev.title}</span>`;
+            pill.title = `${ev.id} — ${ev.title}`;
+            pill.onclick = () => openModal(ev);
+            eventsWrap.appendChild(pill);
+          }
+
+          if (evs.length > 3){
+            const more = document.createElement("div");
+            more.className = "more";
+            more.textContent = `+${evs.length - 3} more`;
+            more.onclick = () => {
+              setView("list");
+              setTimeout(() => scrollToDay(dayKey), 50);
+            };
+            eventsWrap.appendChild(more);
+          }
+        }
+
+        day.appendChild(eventsWrap);
+        gridEl.appendChild(day);
+      }
+    }
+
+    function renderList(){
+      const year = current.getFullYear();
+      const month = current.getMonth();
+
+      monthTitleEl.textContent = monthName(current);
+
+      const monthEvents = normalisedEvents()
+        .filter(e => e.dateObj.getFullYear() === year && e.dateObj.getMonth() === month);
+
+      listEl.innerHTML = "";
+
+      if (!monthEvents.length){
+        listEl.innerHTML = `<div class="empty">No events match your filters for this month.</div>`;
+        return;
+      }
+
+      for (const ev of monthEvents){
+        const d = ev.dateObj;
+        const leftDate = d.toLocaleDateString("en-GB", { weekday:"short", day:"2-digit", month:"short" });
+        const leftTime = timeHM(d);
+
+        const row = document.createElement("div");
+        row.className = "row";
+        row.dataset.dayKey = ymd(d);
+
+        const chip = `<span class="chip" style="background:${categoryColor(ev.category)}">${ev.id}</span>`;
+
+        row.innerHTML = `
+          <div class="rowLeft">
+            <div>${leftDate}</div>
+            <div style="opacity:0.85">${leftTime}</div>
+          </div>
+          <div class="rowRight">
+            <div class="rowTitle">${chip}<span>${ev.title}</span></div>
+            <div class="rowMeta">
+              <div><strong>Where:</strong> ${ev.where || "TBC"}</div>
+              <div><strong>Type:</strong> ${ev.categoryLabel || ev.category}</div>
+              <div><strong>Host:</strong> ${ev.hostName || "Host"}</div>
+            </div>
+          </div>
+        `;
+
+        row.onclick = () => openModal(ev);
+        listEl.appendChild(row);
+      }
+    }
+
+    function scrollToDay(dayKey){
+      const el = listEl.querySelector(`[data-day-key="${dayKey}"]`);
+      if (!el) return;
+      el.scrollIntoView({ behavior:"smooth", block:"start" });
+      el.style.boxShadow = "0 0 0 3px rgba(0,94,168,0.25)";
+      setTimeout(() => { el.style.boxShadow = ""; }, 1200);
+    }
+
+    function setView(mode){
+      viewMode = mode;
+      if (mode === "calendar"){
+        calViewBtn.classList.add("active");
+        listViewBtn.classList.remove("active");
+        calendarView.style.display = "";
+        listView.style.display = "none";
+      } else {
+        listViewBtn.classList.add("active");
+        calViewBtn.classList.remove("active");
+        calendarView.style.display = "none";
+        listView.style.display = "";
+      }
+      render();
+    }
+
+    function bookingWindowText(ev){
+      const parts = [];
+      if (ev.bookingOpen){
+        parts.push("Members may book now.");
+      } else if (ev.memberBookingOpensAt) {
+        parts.push(`Member booking opens ${dateDisplay(ev.memberBookingOpensAt)} at ${timeHM(ev.memberBookingOpensAt)}.`);
+      } else {
+        parts.push("Member booking is not open yet.");
+      }
+
+      if (ev.guestOpen){
+        parts.push("Guests may now be included.");
+      } else if (ev.guestBookingOpensAt) {
+        parts.push(`Guest booking opens ${dateDisplay(ev.guestBookingOpensAt)} at ${timeHM(ev.guestBookingOpensAt)}.`);
+      } else {
+        parts.push("Guests are not yet open.");
+      }
+
+      if (ev.bookingCloseAt){
+        parts.push(`Booking closes ${dateDisplay(ev.bookingCloseAt)} at ${timeHM(ev.bookingCloseAt)}.`);
+      }
+
+      return parts.join(" ");
+    }
+
+    function openModal(ev){
+      mTitle.textContent = `${ev.id} — ${ev.title}`;
+
+      const d = ev.dateObj;
+      const metaBits = [
+        dateDisplay(d),
+        timeHM(d),
+        ev.endTime ? `to ${ev.endTime}` : "",
+        ev.where || "Location TBC",
+        ev.categoryLabel || ev.category
+      ].filter(Boolean);
+
+      mMeta.textContent = metaBits.join(" · ");
+
+      const tracked = ev.tracking || {};
+      const bookingStatusText = bookingWindowText(ev);
+
+      mBody.innerHTML = `
+        <div class="bookingPrompt">Click an event to register interest or make a booking.</div>
+
+        <div class="modalSection">
+          <h3>Event details</h3>
+          <p><strong>Reference:</strong> ${ev.id}</p>
+          <p><strong>Host:</strong> ${ev.hostName || "Host"}</p>
+          <p><strong>Where:</strong> ${ev.where || "TBC"}</p>
+          <p><strong>Description:</strong> ${ev.fullBody || ev.notes || "Details will appear here as hosts add them."}</p>
+        </div>
+
+        <div class="modalSection">
+          <h3>Booking & numbers</h3>
+          <p><strong>Status:</strong> ${ev.status || "published"}</p>
+          <p><strong>Total capacity:</strong> ${Number(ev.capacityTotal || 0)}</p>
+          <p><strong>Booked places:</strong> ${Number(tracked.total_places_booked || 0)}</p>
+          <p><strong>Places remaining:</strong> ${Number(tracked.places_remaining || 0)}</p>
+          <p><strong>Waitlist records:</strong> ${Number(tracked.waitlist_count || 0)}</p>
+          <p><strong>Interest records:</strong> ${Number(tracked.interested_count || 0)}</p>
+          <p class="noteText">${bookingStatusText}</p>
+        </div>
+
+        <div class="modalSection">
+          <h3>Charges</h3>
+          <p><strong>Member price:</strong> £${Number(ev.priceMember || 0).toFixed(2)}</p>
+          <p><strong>Guest price:</strong> £${Number(ev.priceGuest || 0).toFixed(2)}</p>
+          <p class="noteText">The booking form will handle member lookup, interest, booking, guest allowances, waiting list, and cancellation rules.</p>
+        </div>
+
+        <div class="modalActions">
+          <a class="btn primary" href="event-details.html?event_id=${encodeURIComponent(ev.backendId)}">Open event</a>
+          <a class="btn" href="events.html">Open events list</a>
+        </div>
       `;
 
-      row.onclick = () => openModal(ev);
-      listEl.appendChild(row);
+      modalWrap.style.display = "flex";
+      modalWrap.setAttribute("aria-hidden", "false");
     }
-  }
 
-  function scrollToDay(dayKey){
-    const el = listEl.querySelector(`[data-day-key="${dayKey}"]`);
-    if (!el) return;
-    el.scrollIntoView({behavior:"smooth", block:"start"});
-    el.style.boxShadow = "0 0 0 3px rgba(0,94,168,0.25)";
-    setTimeout(()=>{ el.style.boxShadow = ""; }, 1200);
-  }
-
-  function setView(mode){
-    viewMode = mode;
-    if (mode === "calendar"){
-      calViewBtn.classList.add("active");
-      listViewBtn.classList.remove("active");
-      calendarView.style.display = "";
-      listView.style.display = "none";
-    } else {
-      listViewBtn.classList.add("active");
-      calViewBtn.classList.remove("active");
-      calendarView.style.display = "none";
-      listView.style.display = "";
+    function closeModal(){
+      modalWrap.style.display = "none";
+      modalWrap.setAttribute("aria-hidden", "true");
     }
-    render();
-  }
 
-  function render(){
+    function render(){
+      renderLegend();
+      if (viewMode === "calendar") renderCalendar();
+      else renderList();
+    }
+
+    async function loadEvents(){
+      clearWarn();
+      clearErr();
+      showInfo("Loading events…");
+
+      try{
+        const data = await getJson(`${BACKEND_URL}/api/events`);
+        EVENTS = Array.isArray(data.events) ? data.events : [];
+        showInfo(`${EVENTS.length} event${EVENTS.length === 1 ? "" : "s"} loaded.`);
+        render();
+
+        if (!EVENTS.length){
+          showWarn("There are no events yet.");
+        }
+      }catch(err){
+        EVENTS = [];
+        render();
+        clearInfo();
+        showErr(err.message || "Could not load events.");
+      }
+    }
+
+    prevBtn.onclick = () => {
+      current = new Date(current.getFullYear(), current.getMonth() - 1, 1, 12, 0, 0, 0);
+      render();
+    };
+
+    nextBtn.onclick = () => {
+      current = new Date(current.getFullYear(), current.getMonth() + 1, 1, 12, 0, 0, 0);
+      render();
+    };
+
+    todayBtn.onclick = () => {
+      const t = new Date();
+      current = new Date(t.getFullYear(), t.getMonth(), 1, 12, 0, 0, 0);
+      render();
+    };
+
+    calViewBtn.onclick = () => setView("calendar");
+    listViewBtn.onclick = () => setView("list");
+
+    mClose.onclick = closeModal;
+    modalWrap.addEventListener("click", (e) => {
+      if (e.target === modalWrap) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
     renderLegend();
-    if (viewMode === "calendar") renderCalendar();
-    else renderList();
-  }
-
-  // Controls
-  prevBtn.onclick = () => {
-    current = new Date(current.getFullYear(), current.getMonth()-1, 1, 12,0,0,0);
     render();
-  };
-  nextBtn.onclick = () => {
-    current = new Date(current.getFullYear(), current.getMonth()+1, 1, 12,0,0,0);
-    render();
-  };
-  todayBtn.onclick = () => {
-    const t = new Date();
-    current = new Date(t.getFullYear(), t.getMonth(), 1, 12,0,0,0);
-    render();
-  };
-  calViewBtn.onclick = () => setView("calendar");
-  listViewBtn.onclick = () => setView("list");
-
-  // Boot
-  current = new Date(current.getFullYear(), current.getMonth(), 1, 12,0,0,0);
-  renderLegend();
-  render();
-</script>
+    loadEvents();
+  </script>
 </body>
 </html>

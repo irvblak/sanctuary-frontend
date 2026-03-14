@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
 
-  <script src="access.js?v=AC_1"></script>
+  <script src="admin-guard.js"></script>
   <script src="logout.js?v=LO_3"></script>
 
   <style>
@@ -217,6 +217,34 @@
       color:#415161;
     }
 
+    .password-wrap{
+      position:relative;
+    }
+
+    .password-wrap input{
+      padding-right:3rem;
+    }
+
+    .eye-btn{
+      position:absolute;
+      right:.5rem;
+      top:50%;
+      transform:translateY(-50%);
+      width:2.2rem;
+      height:2.2rem;
+      border:1px solid #cfd8e3;
+      border-radius:10px;
+      background:#fff;
+      color:var(--brand-dark);
+      font-size:1rem;
+      line-height:1;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,.04);
+    }
+
     .pill{
       display:inline-block;
       padding:.22rem .62rem;
@@ -384,7 +412,7 @@
       </div>
 
       <div class="statusRow">
-        <div class="msg info show" id="infoBox">Log in as Admin to load members.</div>
+        <div class="msg info show" id="infoBox">Checking Admin session…</div>
         <div class="msg warn" id="warnBox"></div>
         <div class="msg err" id="errBox"></div>
         <div class="msg ok" id="okBox"></div>
@@ -402,7 +430,10 @@
 
             <div class="field small">
               <label for="adminPassword">Admin password</label>
-              <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password" />
+              <div class="password-wrap">
+                <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password" />
+                <button type="button" class="eye-btn" id="togglePassword" aria-label="Show password" title="Show password">👁</button>
+              </div>
             </div>
           </div>
 
@@ -411,7 +442,7 @@
               <button class="btn primary" id="btnLogin" type="button">Log in</button>
             </div>
             <div class="actions-right">
-              <span class="pill" id="adminStatusPill">LOGGED OUT</span>
+              <span class="pill" id="adminStatusPill">CHECKING SESSION</span>
             </div>
           </div>
 
@@ -427,7 +458,7 @@
           </div>
 
           <div class="list" id="membersList">
-            <div class="empty">Log in as Admin to load members.</div>
+            <div class="empty">Loading members…</div>
           </div>
         </div>
 
@@ -516,6 +547,7 @@
 
   <script>
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+    const TOKEN_KEY = "adminToken";
 
     const $ = (id) => document.getElementById(id);
 
@@ -526,6 +558,7 @@
 
     const adminUsernameEl = $("adminUsername");
     const adminPasswordEl = $("adminPassword");
+    const togglePasswordEl = $("togglePassword");
     const btnLogin = $("btnLogin");
     const btnRefresh = $("btnRefresh");
     const btnLogout = $("btnLogout");
@@ -626,6 +659,10 @@
       resetSelection();
     }
 
+    function setAdminLoggedIn(){
+      adminStatusPill.textContent = "LOGGED IN";
+    }
+
     function applyFilter(){
       const q = String(memberSearchEl.value || "").trim().toLowerCase();
 
@@ -719,6 +756,7 @@
         });
 
         adminToken = login.token || "";
+        localStorage.setItem(TOKEN_KEY, adminToken);
         adminStatusPill.textContent = `LOGGED IN (${login.admin?.username || username})`;
 
         await loadMembers();
@@ -727,6 +765,7 @@
         showBox(okBox, "Admin logged in.");
       }catch(err){
         setAdminLoggedOut();
+        localStorage.removeItem(TOKEN_KEY);
         clearBox(infoBox);
         showBox(errBox, err.message || "Admin login failed.");
       }finally{
@@ -803,6 +842,36 @@
       }
     }
 
+    async function initFromStoredToken(){
+      const stored = localStorage.getItem(TOKEN_KEY);
+      if (!stored){
+        setAdminLoggedOut();
+        clearBox(infoBox);
+        showBox(warnBox, "Admin session not found. Log in to continue.");
+        return;
+      }
+
+      adminToken = stored;
+      setAdminLoggedIn();
+
+      try{
+        await loadMembers();
+        showBox(okBox, "Admin session recognised.");
+      }catch(err){
+        setAdminLoggedOut();
+        localStorage.removeItem(TOKEN_KEY);
+        showBox(errBox, err.message || "Stored admin session could not be used.");
+      }
+    }
+
+    togglePasswordEl.addEventListener("click", () => {
+      const hidden = adminPasswordEl.type === "password";
+      adminPasswordEl.type = hidden ? "text" : "password";
+      togglePasswordEl.textContent = hidden ? "🙈" : "👁";
+      togglePasswordEl.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+      togglePasswordEl.title = hidden ? "Hide password" : "Show password";
+    });
+
     btnLogin.addEventListener("click", adminLogin);
 
     adminPasswordEl.addEventListener("keydown", (e) => {
@@ -829,6 +898,7 @@
     btnSaveRoles.addEventListener("click", saveRoles);
 
     btnLogout.addEventListener("click", () => {
+      localStorage.removeItem(TOKEN_KEY);
       if (typeof window.scLogout === "function"){
         window.scLogout();
         return;
@@ -838,7 +908,8 @@
       window.location.href = "index.html";
     });
 
-    setAdminLoggedOut();
+    resetSelection();
+    initFromStoredToken();
   </script>
 </body>
 </html>

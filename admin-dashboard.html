@@ -9,13 +9,115 @@
 
   <title>Admin Dashboard — Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_2" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_3" />
 
   <style>
-    .wrap { max-width: 900px; margin: 2.5rem auto; padding: 1.25rem; }
-    .card { background:#fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 22px rgba(0,0,0,.08); }
-    .row { display:flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
-    a.btn, button.btn { display:inline-block; padding:.7rem 1rem; border-radius: 10px; text-decoration:none; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
+      color:#222;
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:960px;
+      margin:2.25rem auto;
+      padding:0 1rem 2rem;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:1.25rem;
+      box-shadow:0 8px 22px rgba(0,0,0,.08);
+      border:1px solid #dbe6f3;
+    }
+
+    h1{
+      margin:0 0 .4rem 0;
+      color:#003366;
+      font-size:1.7rem;
+    }
+
+    .intro{
+      margin:0 0 1.15rem 0;
+      color:#5b6875;
+      line-height:1.45;
+    }
+
+    .admin-list{
+      display:flex;
+      flex-direction:column;
+      gap:.85rem;
+      margin-top:1rem;
+    }
+
+    .admin-item{
+      display:grid;
+      grid-template-columns:220px 1fr;
+      gap:1rem;
+      align-items:center;
+      padding:.95rem;
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      background:#fbfdff;
+    }
+
+    .admin-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      padding:.75rem .95rem;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:800;
+      color:#fff;
+      background:#005ea8;
+      box-sizing:border-box;
+    }
+
+    .desc{
+      color:#334455;
+      line-height:1.38;
+    }
+
+    .footer-row{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      margin-top:1.2rem;
+      align-items:center;
+    }
+
+    .plain-btn{
+      display:inline-block;
+      padding:.72rem 1rem;
+      border-radius:10px;
+      text-decoration:none;
+      border:1px solid #d6dde6;
+      background:#f8f8f8;
+      color:#22384d;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .home-link{
+      color:#005ea8;
+      font-weight:600;
+      text-decoration:none;
+    }
+
+    .home-link:hover{
+      text-decoration:underline;
+    }
+
+    @media (max-width:720px){
+      .admin-item{
+        grid-template-columns:1fr;
+      }
+    }
   </style>
 </head>
 
@@ -23,19 +125,42 @@
   <div class="wrap">
     <div class="card">
       <h1>Admin Dashboard</h1>
-      <p>Authorised access only.</p>
+      <p class="intro">Authorised access only. Use the links below to manage roles, member records, notices and exports.</p>
 
-      <div class="row">
-        <a class="btn" href="admin-notices-moderation.html">Notices Moderation</a>
-        <a class="btn" href="admin-members-grid.html">Members Admin</a>
-        <a class="btn" href="admin-email-export.html">Email Export</a>
+      <div class="admin-list">
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-role-manager.html">Member Roles</a>
+          <div class="desc">
+            Grant or remove approved roles such as Host, Committee, Treasurer and Admin.
+          </div>
+        </div>
 
-        <button class="btn" id="logoutBtn" type="button">Logout</button>
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-members-grid.html">Members Admin</a>
+          <div class="desc">
+            View the member/admin grid and check resident information held for administration purposes.
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-email-export.html">Email Export</a>
+          <div class="desc">
+            Export member email information for authorised club administration.
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-notices-moderation.html">Notices Moderation</a>
+          <div class="desc">
+            Administrative notices oversight and related maintenance tools.
+          </div>
+        </div>
       </div>
 
-      <p style="margin-top:1rem;">
-        <a href="index.html">Back to Home</a>
-      </p>
+      <div class="footer-row">
+        <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
+        <a class="home-link" href="index.html">Back to Home</a>
+      </div>
     </div>
   </div>
 

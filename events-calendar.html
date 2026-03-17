@@ -32,6 +32,9 @@
       --cat-external-service:#c026d3;
 
       --pillText:#ffffff;
+      --past-bg:#e5e7eb;
+      --past-text:#374151;
+      --past-border:#cbd5e1;
     }
 
     *{ box-sizing:border-box; }
@@ -67,7 +70,7 @@
       justify-self:center;
       font-weight:900;
       color:var(--brand-dark);
-      letter-spacing:.2px;
+      letter-spacing:0.2px;
       white-space:nowrap;
       text-align:center;
     }
@@ -311,26 +314,49 @@
       align-items:center;
       gap:0.45rem;
       border-radius:999px;
-      padding:0.24rem 0.52rem;
+      padding:0.30rem 0.58rem;
       color:var(--pillText);
       font-weight:900;
       font-size:0.82rem;
-      line-height:1.1;
+      line-height:1.15;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
       cursor:pointer;
       user-select:none;
+      text-decoration:none;
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      box-shadow:0 2px 8px rgba(0,0,0,.10);
+    }
+
+    .pill:hover{
+      transform:translateY(-1px);
+      box-shadow:0 6px 14px rgba(0,0,0,.14);
+    }
+
+    .pill:focus{
+      outline:2px solid rgba(0,94,168,.35);
+      outline-offset:2px;
     }
 
     .pill small{
       font-weight:900;
-      opacity:0.96;
+      opacity:0.98;
+      flex:0 0 auto;
     }
 
     .pill span{
       font-weight:800;
-      opacity:0.97;
+      opacity:0.98;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .pill.past{
+      background:var(--past-bg) !important;
+      color:var(--past-text) !important;
+      box-shadow:none;
+      border:1px solid var(--past-border);
     }
 
     .more{
@@ -360,10 +386,24 @@
       border-radius:14px;
       background:#fbfdff;
       cursor:pointer;
+      text-decoration:none;
+      color:inherit;
+      transition:transform .12s ease, box-shadow .12s ease;
     }
 
     .row:hover{
       box-shadow:0 2px 14px rgba(0,0,0,.05);
+      transform:translateY(-1px);
+    }
+
+    .row:focus{
+      outline:2px solid rgba(0,94,168,.25);
+      outline-offset:2px;
+    }
+
+    .row.past{
+      background:#f3f4f6;
+      border-color:var(--past-border);
     }
 
     .rowLeft{
@@ -372,6 +412,10 @@
       display:flex;
       flex-direction:column;
       gap:0.25rem;
+    }
+
+    .row.past .rowLeft{
+      color:var(--past-text);
     }
 
     .rowRight{
@@ -389,6 +433,10 @@
       color:var(--brand-dark);
     }
 
+    .row.past .rowTitle{
+      color:var(--past-text);
+    }
+
     .chip{
       display:inline-flex;
       align-items:center;
@@ -400,10 +448,20 @@
       font-size:0.82rem;
     }
 
+    .chip.past{
+      background:var(--past-bg) !important;
+      color:var(--past-text) !important;
+      border:1px solid var(--past-border);
+    }
+
     .rowMeta{
       color:var(--muted);
       font-size:0.92rem;
       line-height:1.35;
+    }
+
+    .row.past .rowMeta{
+      color:#6b7280;
     }
 
     .empty{
@@ -412,113 +470,17 @@
       padding:0.75rem;
     }
 
-    .modalWrap{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.35);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:1rem;
-      z-index:9999;
-    }
-
-    .modal{
-      width:min(920px, 100%);
-      background:#fff;
-      border-radius:18px;
-      border:1px solid rgba(219,230,243,0.9);
-      box-shadow:0 12px 40px rgba(0,0,0,0.25);
-      overflow:hidden;
-    }
-
-    .modalHead{
-      padding:0.9rem 1rem;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:0.75rem;
-      border-bottom:1px solid rgba(219,230,243,0.9);
-      background:#fbfdff;
-    }
-
-    .modalTitle{
-      display:flex;
-      flex-direction:column;
-      gap:0.18rem;
-      min-width:0;
-    }
-
-    .modalTitle strong{
-      font-size:1.05rem;
-      color:var(--brand-dark);
-      font-weight:950;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .modalTitle span{
-      color:var(--muted);
-      font-weight:800;
-      font-size:0.92rem;
-    }
-
-    .modalBody{
-      padding:1rem;
-      display:grid;
-      gap:1rem;
-    }
-
-    .modalSection{
-      border:1px solid rgba(219,230,243,0.9);
-      border-radius:14px;
-      padding:.9rem;
-      background:#fff;
-    }
-
-    .modalSection h3{
-      margin:0 0 .55rem;
-      color:var(--brand-dark);
-      font-size:1rem;
-    }
-
-    .modalSection p{
-      margin:.42rem 0;
-      color:#27323d;
-      line-height:1.5;
-    }
-
-    .bookingPrompt{
-      background:#eef6ff;
-      border:1px solid rgba(0,94,168,.16);
-      color:#0b4d87;
+    .pastHint{
+      display:inline-block;
+      margin-left:.5rem;
+      padding:.15rem .48rem;
+      border-radius:999px;
+      font-size:.76rem;
       font-weight:900;
-      border-radius:14px;
-      padding:.8rem .9rem;
-    }
-
-    .modalActions{
-      display:flex;
-      gap:.7rem;
-      flex-wrap:wrap;
-      margin-top:.2rem;
-    }
-
-    .modalClose{
-      background:transparent;
-      border:1px solid var(--line);
-      color:var(--brand-dark);
-      font-weight:950;
-      padding:0.45rem 0.7rem;
-      border-radius:12px;
-      cursor:pointer;
-    }
-
-    .noteText{
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.45;
+      color:var(--past-text);
+      background:#eef2f7;
+      border:1px solid var(--past-border);
+      vertical-align:middle;
     }
 
     @media (max-width:900px){
@@ -543,7 +505,7 @@
   <nav>
     <div class="nav-left">
       <a class="btn" href="index.html">Home</a>
-      <a class="btn" href="members-hub.html">Members Hub</a>
+      <a class="btn" href="members-info.html">Members Hub</a>
     </div>
 
     <div class="brand">Sanctuary Club — Calendar</div>
@@ -560,7 +522,7 @@
         <div>
           <h1>Calendar & Events List</h1>
           <div class="subtitle">
-            Click an event to register interest or make a booking.
+            Click an event for more info, to register interest or make a booking.
           </div>
           <div class="monthTitle" id="monthTitle"></div>
         </div>
@@ -599,19 +561,6 @@
       </div>
     </div>
   </main>
-
-  <div class="modalWrap" id="modalWrap" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Event details">
-      <div class="modalHead">
-        <div class="modalTitle">
-          <strong id="mTitle">Event</strong>
-          <span id="mMeta">Meta</span>
-        </div>
-        <button class="modalClose" id="mClose" type="button">Close</button>
-      </div>
-      <div class="modalBody" id="mBody"></div>
-    </div>
-  </div>
 
   <script src="logout.js?v=LO_2"></script>
 
@@ -654,12 +603,6 @@
     const warnBox = document.getElementById("warnBox");
     const errBox = document.getElementById("errBox");
 
-    const modalWrap = document.getElementById("modalWrap");
-    const mTitle = document.getElementById("mTitle");
-    const mMeta = document.getElementById("mMeta");
-    const mBody = document.getElementById("mBody");
-    const mClose = document.getElementById("mClose");
-
     function pad2(n){
       return String(n).padStart(2, "0");
     }
@@ -689,12 +632,6 @@
 
     function timeHM(d){
       return d.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" });
-    }
-
-    function dateDisplay(d){
-      return d.toLocaleDateString("en-GB", {
-        weekday:"long", day:"2-digit", month:"long", year:"numeric"
-      });
     }
 
     function categoryDef(key){
@@ -776,14 +713,26 @@
       return data;
     }
 
+    function startOfToday(){
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function isPastEvent(ev){
+      const dayOnly = new Date(ev.dateObj.getFullYear(), ev.dateObj.getMonth(), ev.dateObj.getDate(), 0, 0, 0, 0);
+      return dayOnly < startOfToday();
+    }
+
+    function eventHref(ev){
+      return `event-details.html?event_id=${encodeURIComponent(ev.backendId)}`;
+    }
+
     function normalisedEvents(){
       return EVENTS
         .map(ev => {
           const dateObj = parseDateAndTime(ev.event_date, ev.start_time);
           if (!dateObj) return null;
-
-          const bookingOpen = ev.member_booking_open === true;
-          const guestOpen = ev.guest_booking_open === true;
 
           return {
             raw: ev,
@@ -794,23 +743,9 @@
             categoryLabel: ev.category_label || ev.category_key || "",
             dateObj,
             where: ev.location || "",
-            notes: ev.notice_summary || ev.description || ev.notice_body || "",
-            fullBody: ev.notice_body || ev.description || "",
             hostName: ev.host_name || "",
             status: ev.status || "",
-            endTime: ev.end_time || "",
-            tracking: ev.tracking || {},
-            bookingOpen,
-            guestOpen,
-            cancellationOpen: ev.cancellation_open === true,
-            refundWindowOpen: ev.refund_window_open === true,
-            noticeId: ev.notice_id || "",
-            priceMember: Number(ev.price_member || 0),
-            priceGuest: Number(ev.price_guest || 0),
-            capacityTotal: Number(ev.capacity_total || 0),
-            memberBookingOpensAt: parseBackendIso(ev.members_booking_open_at),
-            guestBookingOpensAt: parseBackendIso(ev.guests_booking_open_at),
-            bookingCloseAt: parseBackendIso(ev.booking_close_at)
+            endTime: ev.end_time || ""
           };
         })
         .filter(Boolean)
@@ -860,8 +795,6 @@
       gridEl.innerHTML = "";
 
       const first = new Date(year, month, 1, 12, 0, 0, 0);
-      const last = new Date(year, month + 1, 0, 12, 0, 0, 0);
-
       const firstIndex = mondayFirstIndex(first.getDay());
       const start = new Date(year, month, 1 - firstIndex, 12, 0, 0, 0);
       const byDay = eventsByDayInMonth(year, month);
@@ -893,14 +826,14 @@
           const show = evs.slice(0, 3);
 
           for (const ev of show){
-            const pill = document.createElement("div");
-            pill.className = "pill";
-            pill.style.background = categoryColor(ev.category);
+            const pill = document.createElement("a");
+            pill.className = "pill" + (isPastEvent(ev) ? " past" : "");
+            pill.style.background = isPastEvent(ev) ? "" : categoryColor(ev.category);
+            pill.href = eventHref(ev);
+            pill.title = `${ev.id} — ${ev.title}`;
 
             const t = timeHM(ev.dateObj);
-            pill.innerHTML = `<small>${t}</small><span>${ev.id}</span> <span style="font-weight:800;opacity:0.92;">— ${ev.title}</span>`;
-            pill.title = `${ev.id} — ${ev.title}`;
-            pill.onclick = () => openModal(ev);
+            pill.innerHTML = `<small>${t}</small><span>${ev.id}</span><span style="font-weight:800;opacity:0.92;">— ${ev.title}</span>`;
             eventsWrap.appendChild(pill);
           }
 
@@ -941,12 +874,14 @@
         const d = ev.dateObj;
         const leftDate = d.toLocaleDateString("en-GB", { weekday:"short", day:"2-digit", month:"short" });
         const leftTime = timeHM(d);
+        const past = isPastEvent(ev);
 
-        const row = document.createElement("div");
-        row.className = "row";
+        const row = document.createElement("a");
+        row.className = "row" + (past ? " past" : "");
         row.dataset.dayKey = ymd(d);
+        row.href = eventHref(ev);
 
-        const chip = `<span class="chip" style="background:${categoryColor(ev.category)}">${ev.id}</span>`;
+        const chip = `<span class="chip${past ? " past" : ""}" style="background:${past ? "var(--past-bg)" : categoryColor(ev.category)}">${ev.id}</span>`;
 
         row.innerHTML = `
           <div class="rowLeft">
@@ -954,7 +889,7 @@
             <div style="opacity:0.85">${leftTime}</div>
           </div>
           <div class="rowRight">
-            <div class="rowTitle">${chip}<span>${ev.title}</span></div>
+            <div class="rowTitle">${chip}<span>${ev.title}${past ? `<span class="pastHint">Past</span>` : ""}</span></div>
             <div class="rowMeta">
               <div><strong>Where:</strong> ${ev.where || "TBC"}</div>
               <div><strong>Type:</strong> ${ev.categoryLabel || ev.category}</div>
@@ -963,7 +898,6 @@
           </div>
         `;
 
-        row.onclick = () => openModal(ev);
         listEl.appendChild(row);
       }
     }
@@ -990,92 +924,6 @@
         listView.style.display = "";
       }
       render();
-    }
-
-    function bookingWindowText(ev){
-      const parts = [];
-      if (ev.bookingOpen){
-        parts.push("Members may book now.");
-      } else if (ev.memberBookingOpensAt) {
-        parts.push(`Member booking opens ${dateDisplay(ev.memberBookingOpensAt)} at ${timeHM(ev.memberBookingOpensAt)}.`);
-      } else {
-        parts.push("Member booking is not open yet.");
-      }
-
-      if (ev.guestOpen){
-        parts.push("Guests may now be included.");
-      } else if (ev.guestBookingOpensAt) {
-        parts.push(`Guest booking opens ${dateDisplay(ev.guestBookingOpensAt)} at ${timeHM(ev.guestBookingOpensAt)}.`);
-      } else {
-        parts.push("Guests are not yet open.");
-      }
-
-      if (ev.bookingCloseAt){
-        parts.push(`Booking closes ${dateDisplay(ev.bookingCloseAt)} at ${timeHM(ev.bookingCloseAt)}.`);
-      }
-
-      return parts.join(" ");
-    }
-
-    function openModal(ev){
-      mTitle.textContent = `${ev.id} — ${ev.title}`;
-
-      const d = ev.dateObj;
-      const metaBits = [
-        dateDisplay(d),
-        timeHM(d),
-        ev.endTime ? `to ${ev.endTime}` : "",
-        ev.where || "Location TBC",
-        ev.categoryLabel || ev.category
-      ].filter(Boolean);
-
-      mMeta.textContent = metaBits.join(" · ");
-
-      const tracked = ev.tracking || {};
-      const bookingStatusText = bookingWindowText(ev);
-
-      mBody.innerHTML = `
-        <div class="bookingPrompt">Click an event to register interest or make a booking.</div>
-
-        <div class="modalSection">
-          <h3>Event details</h3>
-          <p><strong>Reference:</strong> ${ev.id}</p>
-          <p><strong>Host:</strong> ${ev.hostName || "Host"}</p>
-          <p><strong>Where:</strong> ${ev.where || "TBC"}</p>
-          <p><strong>Description:</strong> ${ev.fullBody || ev.notes || "Details will appear here as hosts add them."}</p>
-        </div>
-
-        <div class="modalSection">
-          <h3>Booking & numbers</h3>
-          <p><strong>Status:</strong> ${ev.status || "published"}</p>
-          <p><strong>Total capacity:</strong> ${Number(ev.capacityTotal || 0)}</p>
-          <p><strong>Booked places:</strong> ${Number(tracked.total_places_booked || 0)}</p>
-          <p><strong>Places remaining:</strong> ${Number(tracked.places_remaining || 0)}</p>
-          <p><strong>Waitlist records:</strong> ${Number(tracked.waitlist_count || 0)}</p>
-          <p><strong>Interest records:</strong> ${Number(tracked.interested_count || 0)}</p>
-          <p class="noteText">${bookingStatusText}</p>
-        </div>
-
-        <div class="modalSection">
-          <h3>Charges</h3>
-          <p><strong>Member price:</strong> £${Number(ev.priceMember || 0).toFixed(2)}</p>
-          <p><strong>Guest price:</strong> £${Number(ev.priceGuest || 0).toFixed(2)}</p>
-          <p class="noteText">The booking form will handle member lookup, interest, booking, guest allowances, waiting list, and cancellation rules.</p>
-        </div>
-
-        <div class="modalActions">
-          <a class="btn primary" href="event-details.html?event_id=${encodeURIComponent(ev.backendId)}">Open event</a>
-          <a class="btn" href="events.html">Open events list</a>
-        </div>
-      `;
-
-      modalWrap.style.display = "flex";
-      modalWrap.setAttribute("aria-hidden", "false");
-    }
-
-    function closeModal(){
-      modalWrap.style.display = "none";
-      modalWrap.setAttribute("aria-hidden", "true");
     }
 
     function render(){
@@ -1124,14 +972,6 @@
 
     calViewBtn.onclick = () => setView("calendar");
     listViewBtn.onclick = () => setView("list");
-
-    mClose.onclick = closeModal;
-    modalWrap.addEventListener("click", (e) => {
-      if (e.target === modalWrap) closeModal();
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
 
     renderLegend();
     render();

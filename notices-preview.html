@@ -8,16 +8,26 @@
 
   <!-- Members gate -->
   <script src="access.js"></script>
+  <script src="logout.js?v=LO_3"></script>
 
   <style>
     :root{
       --ink:#1f2a37;
       --muted:#667085;
       --brand:#005ea8;
+      --brand-dark:#003366;
       --bg1:#e8f2ff;
       --bg2:#ffffff;
       --border:#dbe6f3;
+
+      --cat-events:#5b6cff;
+      --cat-committee:#d97706;
+      --cat-activities:#16a34a;
+      --cat-services:#c026d3;
+      --cat-all:#005ea8;
     }
+
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
@@ -33,19 +43,26 @@
       grid-template-columns:1fr auto 1fr;
       align-items:center;
       gap:0.75rem;
+      max-width:1100px;
+      margin:0 auto;
     }
+
     nav a{
       text-decoration:none;
       font-weight:800;
       color:#003366;
-      margin:0 0.5rem;
       white-space:nowrap;
     }
+
     .nav-left{justify-self:start;}
-    .nav-center{justify-self:center; display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center;}
+    .nav-center{justify-self:center;}
     .nav-right{justify-self:end;}
 
-    main{max-width:1100px; margin:0 auto 2rem; padding:0 1rem;}
+    main{
+      max-width:1100px;
+      margin:0 auto 2rem;
+      padding:0 1rem;
+    }
 
     .card{
       background:#fff;
@@ -56,8 +73,17 @@
       border:1px solid rgba(219,230,243,0.7);
     }
 
-    h1{margin:0.2rem 0 0.35rem 0; color:#003366; font-size:1.55rem;}
-    .subtle{color:var(--muted); line-height:1.45; margin:0.35rem 0;}
+    h1{
+      margin:0.2rem 0 0.35rem 0;
+      color:#003366;
+      font-size:1.55rem;
+    }
+
+    .subtle{
+      color:var(--muted);
+      line-height:1.45;
+      margin:0.35rem 0;
+    }
 
     .pill{
       display:inline-block;
@@ -76,37 +102,76 @@
       gap:0.6rem;
       flex-wrap:wrap;
       align-items:center;
-      margin-top:0.85rem;
+      margin-top:0.9rem;
     }
 
-    input, select{
-      padding:0.55rem 0.75rem;
+    input[type="search"]{
+      padding:0.58rem 0.78rem;
       border:1px solid #cfd8e3;
       border-radius:12px;
       font-size:1rem;
       background:#fff;
+      min-width:220px;
+      flex:1 1 260px;
     }
 
     button{
       background:#7f97ad;
       color:#fff;
       border:none;
-      padding:0.55rem 0.95rem;
+      padding:0.58rem 0.98rem;
       border-radius:12px;
       cursor:pointer;
       font-weight:900;
+      font-size:0.96rem;
     }
-    button:disabled{opacity:0.55; cursor:default;}
+
+    button:disabled{
+      opacity:0.55;
+      cursor:default;
+    }
+
+    .categoryRow{
+      display:flex;
+      gap:0.55rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:0.95rem;
+    }
+
+    .catBtn{
+      border:1px solid #d6e2f0;
+      background:#fff;
+      color:#23415f;
+      padding:0.52rem 0.82rem;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
+      transition:all .12s ease;
+    }
+
+    .catBtn.active{
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .catBtn[data-filter="all"].active{ background:var(--cat-all); }
+    .catBtn[data-filter="events"].active{ background:var(--cat-events); }
+    .catBtn[data-filter="committee"].active{ background:var(--cat-committee); }
+    .catBtn[data-filter="activities"].active{ background:var(--cat-activities); }
+    .catBtn[data-filter="services"].active{ background:var(--cat-services); }
 
     .warn{
       display:none;
-      margin-top:0.75rem;
+      margin-top:0.85rem;
       padding:0.85rem;
       border-radius:14px;
       border:1px solid #f2b8b8;
       background:#fff5f5;
       color:#7a0000;
       white-space:pre-wrap;
+      line-height:1.45;
     }
 
     .grid{
@@ -125,10 +190,24 @@
       position:relative;
     }
 
-    /* Host notices: slightly “poster-like” */
-    .notice.host{
-      border-left:6px solid #5b6cff;
+    .notice.events{
+      border-left:6px solid var(--cat-events);
       background:#f9faff;
+    }
+
+    .notice.committee{
+      border-left:6px solid var(--cat-committee);
+      background:#fffaf4;
+    }
+
+    .notice.activities{
+      border-left:6px solid var(--cat-activities);
+      background:#f7fcf8;
+    }
+
+    .notice.services{
+      border-left:6px solid var(--cat-services);
+      background:#fff8fe;
     }
 
     .tag{
@@ -142,35 +221,56 @@
       background:#fbfdff;
       color:#003366;
     }
-    .tag.committee{ border-color:#ffd7a8; background:#fff3e4; color:#7a3e00; }
-    .tag.host{ border-color:#d6ddff; background:#f2f4ff; color:#1f2f8a; }
-    .tag.activity{ border-color:#cce7d0; background:#effaf1; color:#115b2b; }
+
+    .tag.events{
+      border-color:#d6ddff;
+      background:#f2f4ff;
+      color:#1f2f8a;
+    }
+
+    .tag.committee{
+      border-color:#ffd7a8;
+      background:#fff3e4;
+      color:#7a3e00;
+    }
+
+    .tag.activities{
+      border-color:#cce7d0;
+      background:#effaf1;
+      color:#115b2b;
+    }
+
+    .tag.services{
+      border-color:#f0c8ef;
+      background:#fff1ff;
+      color:#8a117d;
+    }
 
     .title{
       font-weight:900;
       font-size:1.05rem;
-      margin:0.35rem 0 0.25rem 0;
+      margin:0.42rem 0 0.25rem 0;
       line-height:1.2;
+      color:#1f2a37;
     }
 
     .meta{
       color:var(--muted);
       font-size:0.9rem;
       margin-bottom:0.6rem;
+      line-height:1.4;
     }
 
-    /* Default notice text scroll area (~5.8 cm) */
     .body{
-      max-height:220px;
+      max-height:240px;
       overflow:auto;
       white-space:pre-wrap;
       line-height:1.45;
       padding-right:0.25rem;
     }
 
-    /* Host notice text scroll area (~9.5 cm) */
-    .notice.host .body{
-      max-height:360px;
+    .notice.events .body{
+      max-height:340px;
     }
 
     .media{
@@ -183,7 +283,7 @@
       padding-right:0.15rem;
     }
 
-    .notice.host .media{
+    .notice.events .media{
       max-height:420px;
     }
 
@@ -203,11 +303,29 @@
       border:1px dashed #d6dde6;
       background:#fbfdff;
       color:#6b7280;
+      font-weight:800;
+    }
+
+    .topRightNote{
+      margin-left:auto;
+      color:#5d6a77;
+      font-size:0.92rem;
+      font-weight:800;
     }
 
     @media (max-width: 720px){
-      nav{ grid-template-columns:1fr; text-align:center; row-gap:0.65rem; }
-      .nav-left,.nav-center,.nav-right{ justify-self:center; }
+      nav{
+        grid-template-columns:1fr;
+        text-align:center;
+        row-gap:0.65rem;
+      }
+      .nav-left,.nav-center,.nav-right{
+        justify-self:center;
+      }
+      .topRightNote{
+        margin-left:0;
+        width:100%;
+      }
     }
   </style>
 </head>
@@ -215,51 +333,53 @@
 <body>
 <nav>
   <div class="nav-left"><a href="index.html">Home</a></div>
-  <div class="nav-center">
-    <a href="members-info.html">Hub</a>
-  </div>
+  <div class="nav-center"><a href="members-info.html">Members Hub</a></div>
   <div class="nav-right">
-    <a href="#" onclick="(window.logout?logout():location.href='index.html'); return false;">Logout</a>
+    <a href="#" onclick="(window.scLogout ? window.scLogout() : location.href='index.html'); return false;">Logout</a>
   </div>
 </nav>
 
 <main>
   <div class="card">
     <h1>Notices</h1>
-    <p class="subtle">Committee, Host and Activities notices.</p>
+    <p class="subtle">Events, Committee, Activities and Services notices.</p>
 
     <div class="controls">
-      <input id="search" type="search" placeholder="Search…" />
-      <select id="filter">
-        <option value="all">All</option>
-        <option value="committee">Committee</option>
-        <option value="host">Host</option>
-        <option value="activity">Activities</option>
-      </select>
+      <input id="search" type="search" placeholder="Search notices…" />
       <button id="refreshBtn" type="button">Refresh</button>
       <span class="pill" id="count">0</span>
+      <span class="topRightNote">Open a notice from the list below</span>
+    </div>
+
+    <div class="categoryRow" id="categoryRow">
+      <button class="catBtn active" data-filter="all" type="button">All</button>
+      <button class="catBtn" data-filter="events" type="button">Events</button>
+      <button class="catBtn" data-filter="committee" type="button">Committee</button>
+      <button class="catBtn" data-filter="activities" type="button">Activities</button>
+      <button class="catBtn" data-filter="services" type="button">Services</button>
     </div>
 
     <div id="warn" class="warn"></div>
 
     <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No notices yet.</div>
+    <div id="empty" class="empty" style="display:none;">No notices found.</div>
   </div>
 </main>
 
 <script>
-  // Keep the working backend preview mode exactly as-is (do not change)
+  // Keep the working backend preview mode exactly as-is
   const API = "https://sanctuary-backend-8iqc.onrender.com/api/notices?mode=preview";
 
   const grid = document.getElementById("grid");
   const empty = document.getElementById("empty");
   const warn = document.getElementById("warn");
   const searchEl = document.getElementById("search");
-  const filterEl = document.getElementById("filter");
   const refreshBtn = document.getElementById("refreshBtn");
   const countEl = document.getElementById("count");
+  const categoryRow = document.getElementById("categoryRow");
 
   let notices = [];
+  let currentFilter = "all";
 
   function esc(s){
     return String(s ?? "")
@@ -274,26 +394,49 @@
     warn.style.display = "block";
     warn.textContent = msg;
   }
+
   function clearWarn(){
     warn.style.display = "none";
     warn.textContent = "";
   }
 
-  function normType(n){
-    const t = (n.type || n.category || "activity").toLowerCase().trim();
-    return (t === "committee" || t === "host" || t === "activity") ? t : "activity";
+  function normaliseType(n){
+    const raw = String(n.type || n.category || "activities").toLowerCase().trim();
+
+    if (raw === "host" || raw === "event" || raw === "events") return "events";
+    if (raw === "committee") return "committee";
+    if (raw === "activity" || raw === "activities") return "activities";
+    if (raw === "service" || raw === "services" || raw === "external-service" || raw === "external service") return "services";
+
+    return "activities";
+  }
+
+  function labelForType(t){
+    if (t === "events") return "Events";
+    if (t === "committee") return "Committee";
+    if (t === "activities") return "Activities";
+    if (t === "services") return "Services";
+    return "Notice";
+  }
+
+  function setActiveFilter(filter){
+    currentFilter = filter;
+    [...categoryRow.querySelectorAll(".catBtn")].forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.filter === filter);
+    });
+    render();
   }
 
   function render(){
     grid.innerHTML = "";
 
     const q = (searchEl.value || "").trim().toLowerCase();
-    const f = filterEl.value;
 
     const list = notices.filter(n => {
-      const t = normType(n);
-      if (f !== "all" && t !== f) return false;
+      const t = normaliseType(n);
+      if (currentFilter !== "all" && t !== currentFilter) return false;
       if (!q) return true;
+
       const hay = `${n.title||""} ${n.body||""} ${n.author||""} ${n.ownerId||""} ${n.eventId||""}`.toLowerCase();
       return hay.includes(q);
     });
@@ -302,23 +445,26 @@
     empty.style.display = list.length ? "none" : "block";
 
     list.forEach(n => {
-      const t = normType(n);
+      const t = normaliseType(n);
       const card = document.createElement("div");
-      card.className = "notice" + (t === "host" ? " host" : "");
+      card.className = `notice ${t}`;
 
       const author = (n.author || "").trim();
       const media = Array.isArray(n.media) ? n.media.filter(Boolean) : [];
 
       card.innerHTML = `
         <div>
-          <span class="tag ${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</span>
-          ${t === "host" && n.ownerId ? `<span class="pill">Owner: ${esc(n.ownerId)}</span>` : ``}
-          ${n.eventId ? `<span class="pill">Event: ${esc(n.eventId)}</span>` : ``}
+          <span class="tag ${t}">${labelForType(t)}</span>
+          ${t === "events" && n.ownerId ? `<span class="pill">Host: ${esc(n.ownerId)}</span>` : ``}
+          ${n.eventId ? `<span class="pill">Ref: ${esc(n.eventId)}</span>` : ``}
         </div>
 
         <div class="title">${esc(n.title || "(Untitled)")}</div>
 
-        <div class="meta">${author ? `By: ${esc(author)}` : ""}</div>
+        <div class="meta">
+          ${author ? `By: ${esc(author)}` : ""}
+          ${n.createdAt ? `${author ? " · " : ""}${esc(new Date(n.createdAt).toLocaleString("en-GB"))}` : ""}
+        </div>
 
         <div class="body">${esc(n.body || "")}</div>
 
@@ -337,13 +483,14 @@
       const res = await fetch(API, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+
       notices = Array.isArray(data.notices) ? data.notices : [];
 
-      // pinned first, then newest first
-      notices.sort((a,b) => {
+      notices.sort((a, b) => {
         const ap = a.pinned ? 1 : 0;
         const bp = b.pinned ? 1 : 0;
         if (bp !== ap) return bp - ap;
+
         const at = new Date(a.createdAt || 0).getTime() || 0;
         const bt = new Date(b.createdAt || 0).getTime() || 0;
         return bt - at;
@@ -355,4 +502,20 @@
       render();
       showWarn("Could not load notices.\n\n" + String(e.message || e));
     } finally {
-      refreshBtn.disabl
+      refreshBtn.disabled = false;
+    }
+  }
+
+  categoryRow.addEventListener("click", (e) => {
+    const btn = e.target.closest(".catBtn");
+    if (!btn) return;
+    setActiveFilter(btn.dataset.filter);
+  });
+
+  searchEl.addEventListener("input", render);
+  refreshBtn.addEventListener("click", load);
+
+  load();
+</script>
+</body>
+</html>

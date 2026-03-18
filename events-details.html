@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Event Details – The Sanctuary Club</title>
+  <title>Event Information – The Sanctuary Club</title>
   <meta name="robots" content="noindex, nofollow" />
 
   <script src="access.js?v=AC_1"></script>
@@ -380,10 +380,10 @@
       <a class="btn" href="events-calendar.html">Calendar</a>
     </div>
 
-    <div class="brand">Sanctuary Club — Event Details</div>
+    <div class="brand">Sanctuary Club — Event Information</div>
 
     <div class="nav-right">
-      <a class="btn" href="members-hub.html">Members Hub</a>
+      <a class="btn" href="members-info.html">Members Hub</a>
       <button class="btn primary" id="logoutBtn" type="button">Logout</button>
     </div>
   </nav>
@@ -411,18 +411,18 @@
       <div class="layout">
         <div>
           <div class="section">
-            <h2>Event details</h2>
+            <h2>Event summary</h2>
             <div class="detailGrid" id="detailsGrid"></div>
           </div>
 
           <div class="section">
-            <h2>Notice</h2>
+            <h2>Host notice</h2>
             <div id="noticeBodyWrap" class="empty">No notice details available.</div>
             <div id="noticeMediaWrap" class="mediaList"></div>
           </div>
 
           <div class="section">
-            <h2>Booking & numbers</h2>
+            <h2>Booking & availability</h2>
             <div class="detailGrid" id="trackingGrid"></div>
             <div class="inlineBadges" id="timingBadges"></div>
             <p class="noteText" id="bookingWindowText"></p>
@@ -743,14 +743,14 @@
         makeDetailBox("Date", dateDisplay(eventDateObj)),
         makeDetailBox("Time", `${timeDisplay(eventDateObj)}${eventData.end_time ? ` to ${eventData.end_time}` : ""}`),
         makeDetailBox("Location", eventData.location || "TBC"),
-        makeDetailBox("Status", eventData.status || "published"),
         makeDetailBox("Category", categoryLabel || "—"),
-        makeDetailBox("Notice ID", eventData.notice_id || "—")
+        makeDetailBox("Member price", money(eventData.price_member)),
+        makeDetailBox("Guest price", money(eventData.price_guest))
       ].join("");
 
       noticeBodyWrap.innerHTML = `
         <p><strong>Summary:</strong> ${eventData.notice_summary || "—"}</p>
-        <p><strong>Body:</strong> ${eventData.notice_body || eventData.description || "No further notice wording yet."}</p>
+        <p><strong>Notice:</strong> ${eventData.notice_body || eventData.description || "No further notice wording yet."}</p>
       `;
 
       noticeMediaWrap.innerHTML = "";
@@ -772,7 +772,7 @@
         makeDetailBox("Places remaining", Number(tracking.places_remaining || 0)),
         makeDetailBox("Waitlist records", Number(tracking.waitlist_count || 0)),
         makeDetailBox("Interest records", Number(tracking.interested_count || 0)),
-        makeDetailBox("Booked records", Number(tracking.booked_count || 0))
+        makeDetailBox("Status", eventData.status || "published")
       ].join("");
 
       timingBadges.innerHTML = `

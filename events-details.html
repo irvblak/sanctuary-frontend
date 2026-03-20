@@ -142,6 +142,7 @@
       font-weight:900;
       font-size:.84rem;
       white-space:nowrap;
+      margin-bottom:.45rem;
     }
 
     .statusRow{
@@ -180,16 +181,6 @@
       border:1px solid rgba(176,0,32,.18);
     }
 
-    .layout{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:1rem;
-    }
-
-    @media (max-width:920px){
-      .layout{ grid-template-columns:1fr; }
-    }
-
     .section{
       border:1px solid rgba(219,230,243,0.9);
       border-radius:14px;
@@ -206,7 +197,7 @@
 
     .section p{
       margin:.45rem 0;
-      line-height:1.5;
+      line-height:1.55;
     }
 
     .detailGrid{
@@ -215,7 +206,7 @@
       gap:.8rem;
     }
 
-    @media (max-width:700px){
+    @media (max-width:760px){
       .detailGrid{ grid-template-columns:1fr; }
     }
 
@@ -238,6 +229,82 @@
       font-weight:900;
       line-height:1.35;
       word-break:break-word;
+    }
+
+    .noticeSummary{
+      margin-bottom:.8rem;
+      padding:.85rem .95rem;
+      border-radius:14px;
+      background:#f7fbff;
+      border:1px solid rgba(0,94,168,.12);
+      color:#23415f;
+      line-height:1.5;
+      font-weight:700;
+    }
+
+    .noticeBody{
+      white-space:pre-wrap;
+      line-height:1.6;
+      color:#21303d;
+    }
+
+    .mediaList{
+      display:grid;
+      gap:.55rem;
+      margin-top:.85rem;
+    }
+
+    .mediaList a{
+      color:var(--brand);
+      font-weight:800;
+      text-decoration:none;
+      word-break:break-all;
+    }
+
+    .inlineBadges{
+      display:flex;
+      gap:.45rem;
+      flex-wrap:wrap;
+      margin-top:.25rem;
+    }
+
+    .miniBadge{
+      display:inline-flex;
+      align-items:center;
+      padding:.18rem .5rem;
+      border-radius:999px;
+      background:#eef6ff;
+      color:#0b4d87;
+      border:1px solid rgba(0,94,168,.15);
+      font-weight:800;
+      font-size:.82rem;
+      white-space:nowrap;
+    }
+
+    .actionPanel{
+      display:flex;
+      gap:.8rem;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding:.95rem;
+      border-radius:14px;
+      background:linear-gradient(180deg, #eef6ff 0%, #f7fbff 100%);
+      border:1px solid rgba(0,94,168,.16);
+    }
+
+    .actionPanelText{
+      color:#0b4d87;
+      line-height:1.5;
+      font-weight:800;
+    }
+
+    .bookingSection{
+      display:none;
+    }
+
+    .bookingSection.show{
+      display:block;
     }
 
     .bookingPrompt{
@@ -329,39 +396,6 @@
       border:1px solid rgba(176,0,32,.18);
     }
 
-    .mediaList{
-      display:grid;
-      gap:.55rem;
-      margin-top:.4rem;
-    }
-
-    .mediaList a{
-      color:var(--brand);
-      font-weight:800;
-      text-decoration:none;
-      word-break:break-all;
-    }
-
-    .inlineBadges{
-      display:flex;
-      gap:.45rem;
-      flex-wrap:wrap;
-      margin-top:.25rem;
-    }
-
-    .miniBadge{
-      display:inline-flex;
-      align-items:center;
-      padding:.18rem .5rem;
-      border-radius:999px;
-      background:#eef6ff;
-      color:#0b4d87;
-      border:1px solid rgba(0,94,168,.15);
-      font-weight:800;
-      font-size:.82rem;
-      white-space:nowrap;
-    }
-
     .empty{
       color:var(--muted);
       font-weight:800;
@@ -408,117 +442,125 @@
         </div>
       </div>
 
-      <div class="layout">
-        <div>
-          <div class="section">
-            <h2>Event summary</h2>
-            <div class="detailGrid" id="detailsGrid"></div>
+      <div class="section">
+        <h2>Event summary</h2>
+        <div class="detailGrid" id="detailsGrid"></div>
+      </div>
+
+      <div class="section">
+        <h2>Host notice</h2>
+        <div id="noticeSummaryWrap" class="noticeSummary" style="display:none;"></div>
+        <div id="noticeBodyWrap" class="noticeBody empty">No notice details available.</div>
+        <div id="noticeMediaWrap" class="mediaList"></div>
+      </div>
+
+      <div class="section">
+        <h2>Availability</h2>
+        <div class="detailGrid" id="trackingGrid"></div>
+        <div class="inlineBadges" id="timingBadges"></div>
+        <p class="noteText" id="bookingWindowText"></p>
+      </div>
+
+      <div class="section">
+        <div class="actionPanel">
+          <div class="actionPanelText">
+            To register interest or make a booking, open the booking section below.
           </div>
-
-          <div class="section">
-            <h2>Host notice</h2>
-            <div id="noticeBodyWrap" class="empty">No notice details available.</div>
-            <div id="noticeMediaWrap" class="mediaList"></div>
-          </div>
-
-          <div class="section">
-            <h2>Booking & availability</h2>
-            <div class="detailGrid" id="trackingGrid"></div>
-            <div class="inlineBadges" id="timingBadges"></div>
-            <p class="noteText" id="bookingWindowText"></p>
-          </div>
-        </div>
-
-        <div>
-          <div class="section">
-            <div class="bookingPrompt">Register interest or make a booking here.</div>
-
-            <form class="bookingForm" id="bookingForm">
-              <div class="grid2">
-                <div>
-                  <label for="memberId">Membership number</label>
-                  <input id="memberId" placeholder="SM55" autocomplete="off" />
-                </div>
-                <div>
-                  <label for="memberPin">PIN</label>
-                  <input id="memberPin" type="password" placeholder="Your PIN" autocomplete="current-password" />
-                </div>
-              </div>
-
-              <div class="actions">
-                <button class="btn" id="lookupBtn" type="button">Member lookup</button>
-              </div>
-
-              <div class="grid2">
-                <div>
-                  <label for="memberName">Member name</label>
-                  <input id="memberName" readonly />
-                </div>
-                <div>
-                  <label for="memberEmail">Email</label>
-                  <input id="memberEmail" readonly />
-                </div>
-              </div>
-
-              <div class="grid2">
-                <div>
-                  <label for="memberMobile">Mobile</label>
-                  <input id="memberMobile" readonly />
-                </div>
-                <div>
-                  <label for="mode">Action</label>
-                  <select id="mode">
-                    <option value="book">Make booking</option>
-                    <option value="interest">Register interest</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="grid2">
-                <div>
-                  <label for="placesTotal">Total places</label>
-                  <input id="placesTotal" type="number" min="1" step="1" value="1" />
-                </div>
-                <div>
-                  <label for="guestPlaces">Guest places</label>
-                  <input id="guestPlaces" type="number" min="0" step="1" value="0" />
-                </div>
-              </div>
-
-              <div>
-                <label for="guestNames">Guest names</label>
-                <textarea id="guestNames" placeholder="One guest name per line, if any."></textarea>
-              </div>
-
-              <div>
-                <label for="bookingNotes">Notes</label>
-                <textarea id="bookingNotes" placeholder="Optional booking note for the host."></textarea>
-              </div>
-
-              <div class="actions">
-                <button class="btn primary" id="bookBtn" type="submit">Submit</button>
-                <button class="btn" id="cancelBtn" type="button" disabled>Cancel my booking</button>
-              </div>
-
-              <div class="noteText" id="bookingHint">
-                Member lookup uses your membership number and PIN. Where available, your details are auto-filled from Your Information.
-              </div>
-
-              <div class="bookingResult bookingOk" id="bookingOk"></div>
-              <div class="bookingResult bookingErr" id="bookingErr"></div>
-            </form>
-          </div>
-
-          <div class="section">
-            <h2>Charges</h2>
-            <div class="detailGrid" id="chargesGrid"></div>
-          </div>
-
-          <div class="section">
-            <h2>Your current record</h2>
-            <div id="currentBookingWrap" class="empty">No current booking or interest record loaded.</div>
+          <div class="actions" style="margin-top:0;">
+            <button class="btn primary" id="openBookingBtn" type="button">Book / Register Interest</button>
+            <button class="btn" id="hideBookingBtn" type="button" style="display:none;">Hide Booking</button>
           </div>
         </div>
+      </div>
+
+      <div class="section bookingSection" id="bookingSection">
+        <h2>Booking form</h2>
+        <div class="bookingPrompt">Register interest or make a booking here.</div>
+
+        <form class="bookingForm" id="bookingForm">
+          <div class="grid2">
+            <div>
+              <label for="memberId">Membership number</label>
+              <input id="memberId" placeholder="SM55" autocomplete="off" />
+            </div>
+            <div>
+              <label for="memberPin">PIN</label>
+              <input id="memberPin" type="password" placeholder="Your PIN" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="lookupBtn" type="button">Member lookup</button>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <label for="memberName">Member name</label>
+              <input id="memberName" readonly />
+            </div>
+            <div>
+              <label for="memberEmail">Email</label>
+              <input id="memberEmail" readonly />
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <label for="memberMobile">Mobile</label>
+              <input id="memberMobile" readonly />
+            </div>
+            <div>
+              <label for="mode">Action</label>
+              <select id="mode">
+                <option value="book">Make booking</option>
+                <option value="interest">Register interest</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <label for="placesTotal">Total places</label>
+              <input id="placesTotal" type="number" min="1" step="1" value="1" />
+            </div>
+            <div>
+              <label for="guestPlaces">Guest places</label>
+              <input id="guestPlaces" type="number" min="0" step="1" value="0" />
+            </div>
+          </div>
+
+          <div>
+            <label for="guestNames">Guest names</label>
+            <textarea id="guestNames" placeholder="One guest name per line, if any."></textarea>
+          </div>
+
+          <div>
+            <label for="bookingNotes">Notes</label>
+            <textarea id="bookingNotes" placeholder="Optional booking note for the host."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="bookBtn" type="submit">Submit</button>
+            <button class="btn" id="cancelBtn" type="button" disabled>Cancel my booking</button>
+          </div>
+
+          <div class="noteText" id="bookingHint">
+            Member lookup uses your membership number and PIN. Where available, your details are auto-filled from Your Information.
+          </div>
+
+          <div class="bookingResult bookingOk" id="bookingOk"></div>
+          <div class="bookingResult bookingErr" id="bookingErr"></div>
+        </form>
+      </div>
+
+      <div class="section">
+        <h2>Charges</h2>
+        <div class="detailGrid" id="chargesGrid"></div>
+      </div>
+
+      <div class="section">
+        <h2>Your current record</h2>
+        <div id="currentBookingWrap" class="empty">No current booking or interest record loaded.</div>
       </div>
     </div>
   </main>
@@ -554,6 +596,7 @@
     const eventSubtleEl = document.getElementById("eventSubtle");
 
     const detailsGrid = document.getElementById("detailsGrid");
+    const noticeSummaryWrap = document.getElementById("noticeSummaryWrap");
     const noticeBodyWrap = document.getElementById("noticeBodyWrap");
     const noticeMediaWrap = document.getElementById("noticeMediaWrap");
     const trackingGrid = document.getElementById("trackingGrid");
@@ -561,6 +604,10 @@
     const bookingWindowText = document.getElementById("bookingWindowText");
     const chargesGrid = document.getElementById("chargesGrid");
     const currentBookingWrap = document.getElementById("currentBookingWrap");
+
+    const bookingSection = document.getElementById("bookingSection");
+    const openBookingBtn = document.getElementById("openBookingBtn");
+    const hideBookingBtn = document.getElementById("hideBookingBtn");
 
     const bookingForm = document.getElementById("bookingForm");
     const memberIdEl = document.getElementById("memberId");
@@ -629,6 +676,19 @@
       bookingOk.textContent = "";
       bookingErr.classList.remove("show");
       bookingErr.textContent = "";
+    }
+
+    function showBookingSection(){
+      bookingSection.classList.add("show");
+      hideBookingBtn.style.display = "";
+      openBookingBtn.style.display = "none";
+      bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function hideBookingSection(){
+      bookingSection.classList.remove("show");
+      hideBookingBtn.style.display = "none";
+      openBookingBtn.style.display = "";
     }
 
     function parseDateAndTime(eventDate, startTime){
@@ -748,10 +808,23 @@
         makeDetailBox("Guest price", money(eventData.price_guest))
       ].join("");
 
-      noticeBodyWrap.innerHTML = `
-        <p><strong>Summary:</strong> ${eventData.notice_summary || "—"}</p>
-        <p><strong>Notice:</strong> ${eventData.notice_body || eventData.description || "No further notice wording yet."}</p>
-      `;
+      const summary = String(eventData.notice_summary || "").trim();
+      if (summary){
+        noticeSummaryWrap.style.display = "";
+        noticeSummaryWrap.textContent = summary;
+      } else {
+        noticeSummaryWrap.style.display = "none";
+        noticeSummaryWrap.textContent = "";
+      }
+
+      const fullNotice = String(eventData.notice_body || eventData.description || "").trim();
+      if (fullNotice){
+        noticeBodyWrap.className = "noticeBody";
+        noticeBodyWrap.textContent = fullNotice;
+      } else {
+        noticeBodyWrap.className = "noticeBody empty";
+        noticeBodyWrap.textContent = "No further notice wording yet.";
+      }
 
       noticeMediaWrap.innerHTML = "";
       const media = Array.isArray(eventData.notice_media) ? eventData.notice_media : [];
@@ -1018,6 +1091,9 @@
       try{ sessionStorage.clear(); }catch{}
       window.location.href = "index.html";
     });
+
+    openBookingBtn.addEventListener("click", showBookingSection);
+    hideBookingBtn.addEventListener("click", hideBookingSection);
 
     lookupBtn.addEventListener("click", memberLookup);
     bookingForm.addEventListener("submit", submitBooking);

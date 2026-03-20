@@ -89,11 +89,6 @@
       border-color:transparent;
     }
 
-    button:disabled{
-      opacity:.5;
-      cursor:default;
-    }
-
     main{
       max-width:1180px;
       margin:0 auto 2rem;
@@ -197,7 +192,7 @@
 
     .section p{
       margin:.45rem 0;
-      line-height:1.55;
+      line-height:1.6;
     }
 
     .detailGrid{
@@ -232,29 +227,45 @@
     }
 
     .noticeSummary{
-      margin-bottom:.8rem;
-      padding:.85rem .95rem;
+      margin-bottom:.9rem;
+      padding:.9rem 1rem;
       border-radius:14px;
       background:#f7fbff;
       border:1px solid rgba(0,94,168,.12);
       color:#23415f;
-      line-height:1.5;
-      font-weight:700;
+      line-height:1.55;
+      font-weight:800;
     }
 
     .noticeBody{
       white-space:pre-wrap;
-      line-height:1.6;
+      line-height:1.7;
       color:#21303d;
+      font-size:1rem;
     }
 
     .mediaList{
       display:grid;
-      gap:.55rem;
-      margin-top:.85rem;
+      gap:.7rem;
+      margin-top:.9rem;
     }
 
-    .mediaList a{
+    .mediaBox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+      padding:.75rem;
+    }
+
+    .mediaBox img{
+      display:block;
+      max-width:100%;
+      height:auto;
+      border-radius:12px;
+      margin:0 auto;
+    }
+
+    .mediaBox a{
       color:var(--brand);
       font-weight:800;
       text-decoration:none;
@@ -299,110 +310,14 @@
       font-weight:800;
     }
 
-    .bookingSection{
-      display:none;
-    }
-
-    .bookingSection.show{
-      display:block;
-    }
-
-    .bookingPrompt{
-      background:#eef6ff;
-      border:1px solid rgba(0,94,168,.16);
-      color:#0b4d87;
-      font-weight:900;
-      border-radius:14px;
-      padding:.85rem .95rem;
-      margin-bottom:1rem;
-    }
-
-    .bookingForm{
-      display:grid;
-      gap:.85rem;
-    }
-
-    .grid2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:.85rem;
-    }
-
-    @media (max-width:700px){
-      .grid2{ grid-template-columns:1fr; }
-    }
-
-    label{
-      display:block;
-      font-weight:900;
-      color:var(--brand-dark);
-      margin-bottom:.28rem;
-      font-size:.93rem;
-    }
-
-    input, textarea, select{
-      width:100%;
-      padding:.72rem .75rem;
-      border:1px solid #cfd8e3;
-      border-radius:13px;
-      font-size:1rem;
-      background:#fff;
-      color:var(--ink);
-    }
-
-    textarea{
-      min-height:105px;
-      resize:vertical;
-    }
-
-    input[readonly]{
-      background:#f5f8fc;
-      color:#415161;
-    }
-
-    .actions{
-      display:flex;
-      gap:.7rem;
-      flex-wrap:wrap;
-      margin-top:.25rem;
-    }
-
-    .noteText{
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.45;
-    }
-
-    .bookingResult{
-      display:none;
-      margin-top:.8rem;
-      padding:.82rem .9rem;
-      border-radius:14px;
-      font-weight:800;
-      line-height:1.45;
-    }
-
-    .bookingResult.show{ display:block; }
-
-    .bookingOk{
-      background:#eef9eb;
-      color:#0b6b00;
-      border:1px solid rgba(11,107,0,.18);
-    }
-
-    .bookingErr{
-      background:#fff2f4;
-      color:#b00020;
-      border:1px solid rgba(176,0,32,.18);
-    }
-
     .empty{
       color:var(--muted);
       font-weight:800;
     }
 
     .small{
-      font-size:.9rem;
+      font-size:.92rem;
+      color:var(--muted);
     }
   </style>
 </head>
@@ -458,109 +373,23 @@
         <h2>Availability</h2>
         <div class="detailGrid" id="trackingGrid"></div>
         <div class="inlineBadges" id="timingBadges"></div>
-        <p class="noteText" id="bookingWindowText"></p>
+        <p class="small" id="bookingWindowText"></p>
       </div>
 
       <div class="section">
         <div class="actionPanel">
           <div class="actionPanelText">
-            To register interest or make a booking, open the booking section below.
+            To proceed, open the booking page below.
           </div>
           <div class="actions" style="margin-top:0;">
-            <button class="btn primary" id="openBookingBtn" type="button">Book / Register Interest</button>
-            <button class="btn" id="hideBookingBtn" type="button" style="display:none;">Hide Booking</button>
+            <a class="btn primary" id="bookingLink" href="#">Book or register your interest</a>
           </div>
         </div>
-      </div>
-
-      <div class="section bookingSection" id="bookingSection">
-        <h2>Booking form</h2>
-        <div class="bookingPrompt">Register interest or make a booking here.</div>
-
-        <form class="bookingForm" id="bookingForm">
-          <div class="grid2">
-            <div>
-              <label for="memberId">Membership number</label>
-              <input id="memberId" placeholder="SM55" autocomplete="off" />
-            </div>
-            <div>
-              <label for="memberPin">PIN</label>
-              <input id="memberPin" type="password" placeholder="Your PIN" autocomplete="current-password" />
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn" id="lookupBtn" type="button">Member lookup</button>
-          </div>
-
-          <div class="grid2">
-            <div>
-              <label for="memberName">Member name</label>
-              <input id="memberName" readonly />
-            </div>
-            <div>
-              <label for="memberEmail">Email</label>
-              <input id="memberEmail" readonly />
-            </div>
-          </div>
-
-          <div class="grid2">
-            <div>
-              <label for="memberMobile">Mobile</label>
-              <input id="memberMobile" readonly />
-            </div>
-            <div>
-              <label for="mode">Action</label>
-              <select id="mode">
-                <option value="book">Make booking</option>
-                <option value="interest">Register interest</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid2">
-            <div>
-              <label for="placesTotal">Total places</label>
-              <input id="placesTotal" type="number" min="1" step="1" value="1" />
-            </div>
-            <div>
-              <label for="guestPlaces">Guest places</label>
-              <input id="guestPlaces" type="number" min="0" step="1" value="0" />
-            </div>
-          </div>
-
-          <div>
-            <label for="guestNames">Guest names</label>
-            <textarea id="guestNames" placeholder="One guest name per line, if any."></textarea>
-          </div>
-
-          <div>
-            <label for="bookingNotes">Notes</label>
-            <textarea id="bookingNotes" placeholder="Optional booking note for the host."></textarea>
-          </div>
-
-          <div class="actions">
-            <button class="btn primary" id="bookBtn" type="submit">Submit</button>
-            <button class="btn" id="cancelBtn" type="button" disabled>Cancel my booking</button>
-          </div>
-
-          <div class="noteText" id="bookingHint">
-            Member lookup uses your membership number and PIN. Where available, your details are auto-filled from Your Information.
-          </div>
-
-          <div class="bookingResult bookingOk" id="bookingOk"></div>
-          <div class="bookingResult bookingErr" id="bookingErr"></div>
-        </form>
       </div>
 
       <div class="section">
         <h2>Charges</h2>
         <div class="detailGrid" id="chargesGrid"></div>
-      </div>
-
-      <div class="section">
-        <h2>Your current record</h2>
-        <div id="currentBookingWrap" class="empty">No current booking or interest record loaded.</div>
       </div>
     </div>
   </main>
@@ -583,9 +412,6 @@
     const EVENT_ID = (params.get("event_id") || "").trim();
 
     let eventData = null;
-    let authToken = "";
-    let currentMemberId = "";
-    let currentBooking = null;
 
     const infoBox = document.getElementById("infoBox");
     const warnBox = document.getElementById("warnBox");
@@ -603,28 +429,7 @@
     const timingBadges = document.getElementById("timingBadges");
     const bookingWindowText = document.getElementById("bookingWindowText");
     const chargesGrid = document.getElementById("chargesGrid");
-    const currentBookingWrap = document.getElementById("currentBookingWrap");
-
-    const bookingSection = document.getElementById("bookingSection");
-    const openBookingBtn = document.getElementById("openBookingBtn");
-    const hideBookingBtn = document.getElementById("hideBookingBtn");
-
-    const bookingForm = document.getElementById("bookingForm");
-    const memberIdEl = document.getElementById("memberId");
-    const memberPinEl = document.getElementById("memberPin");
-    const memberNameEl = document.getElementById("memberName");
-    const memberEmailEl = document.getElementById("memberEmail");
-    const memberMobileEl = document.getElementById("memberMobile");
-    const modeEl = document.getElementById("mode");
-    const placesTotalEl = document.getElementById("placesTotal");
-    const guestPlacesEl = document.getElementById("guestPlaces");
-    const guestNamesEl = document.getElementById("guestNames");
-    const bookingNotesEl = document.getElementById("bookingNotes");
-    const lookupBtn = document.getElementById("lookupBtn");
-    const bookBtn = document.getElementById("bookBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const bookingOk = document.getElementById("bookingOk");
-    const bookingErr = document.getElementById("bookingErr");
+    const bookingLink = document.getElementById("bookingLink");
     const logoutBtn = document.getElementById("logoutBtn");
 
     function showInfo(msg){
@@ -655,40 +460,6 @@
     function clearErr(){
       errBox.textContent = "";
       errBox.classList.remove("show");
-    }
-
-    function showBookingOk(msg){
-      bookingOk.textContent = msg;
-      bookingOk.classList.add("show");
-      bookingErr.classList.remove("show");
-      bookingErr.textContent = "";
-    }
-
-    function showBookingErr(msg){
-      bookingErr.textContent = msg;
-      bookingErr.classList.add("show");
-      bookingOk.classList.remove("show");
-      bookingOk.textContent = "";
-    }
-
-    function clearBookingMessages(){
-      bookingOk.classList.remove("show");
-      bookingOk.textContent = "";
-      bookingErr.classList.remove("show");
-      bookingErr.textContent = "";
-    }
-
-    function showBookingSection(){
-      bookingSection.classList.add("show");
-      hideBookingBtn.style.display = "";
-      openBookingBtn.style.display = "none";
-      bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function hideBookingSection(){
-      bookingSection.classList.remove("show");
-      hideBookingBtn.style.display = "none";
-      openBookingBtn.style.display = "";
     }
 
     function parseDateAndTime(eventDate, startTime){
@@ -763,11 +534,13 @@
       `;
     }
 
-    function splitLines(text){
-      return String(text || "")
-        .split(/\r?\n/)
-        .map(s => s.trim())
-        .filter(Boolean);
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
     }
 
     async function getJson(url, options = {}){
@@ -830,12 +603,23 @@
       const media = Array.isArray(eventData.notice_media) ? eventData.notice_media : [];
       if (media.length){
         media.forEach((url) => {
-          const a = document.createElement("a");
-          a.href = url;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.textContent = url;
-          noticeMediaWrap.appendChild(a);
+          const lower = String(url).toLowerCase();
+          const box = document.createElement("div");
+          box.className = "mediaBox";
+
+          if (/\.(gif|png|jpe?g|webp|svg)$/i.test(lower)) {
+            box.innerHTML = `
+              <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+                <img src="${escapeHtml(url)}" alt="Notice media" loading="lazy" />
+              </a>
+            `;
+          } else {
+            box.innerHTML = `
+              <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>
+            `;
+          }
+
+          noticeMediaWrap.appendChild(box);
         });
       }
 
@@ -883,30 +667,8 @@
         makeDetailBox("Guest price", money(eventData.price_guest)),
         makeDetailBox("Max places per member", Number(eventData.max_places_per_member || 0))
       ].join("");
-    }
 
-    function renderCurrentBooking(){
-      if (!currentBooking){
-        currentBookingWrap.className = "empty";
-        currentBookingWrap.innerHTML = "No current booking or interest record loaded.";
-        cancelBtn.disabled = true;
-        return;
-      }
-
-      currentBookingWrap.className = "";
-      currentBookingWrap.innerHTML = `
-        <div class="detailGrid">
-          ${makeDetailBox("Status", currentBooking.status || "—")}
-          ${makeDetailBox("Total places", Number(currentBooking.places_total || 0))}
-          ${makeDetailBox("Guest places", Number(currentBooking.guest_places || 0))}
-          ${makeDetailBox("Member places", Number(currentBooking.member_places || 0))}
-          ${makeDetailBox("Amount due", money(currentBooking.amount_due))}
-          ${makeDetailBox("Payment status", currentBooking.payment_status || "—")}
-        </div>
-        <p class="small" style="margin-top:.8rem;"><strong>Booking ID:</strong> ${currentBooking.booking_id || "—"}</p>
-      `;
-
-      cancelBtn.disabled = !(currentBooking.booking_id && ["booked", "waitlist", "interested"].includes(String(currentBooking.status || "").toLowerCase()));
+      bookingLink.href = `event-booking.html?event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
     }
 
     async function loadEvent(){
@@ -934,154 +696,6 @@
       }
     }
 
-    async function memberLookup(){
-      clearBookingMessages();
-
-      const memberId = String(memberIdEl.value || "").trim().toUpperCase();
-      const pin = String(memberPinEl.value || "").trim();
-
-      if (!memberId || !pin){
-        showBookingErr("Enter membership number and PIN first.");
-        return;
-      }
-
-      lookupBtn.disabled = true;
-
-      try{
-        const login = await getJson(`${BACKEND_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ memberId, pin })
-        });
-
-        authToken = login.token || "";
-        currentMemberId = login.member?.memberId || memberId;
-
-        let profile = null;
-        try{
-          const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
-          profile = p.member || null;
-        }catch{
-        }
-
-        memberNameEl.value = profile?.primary_name || login.member?.name || "";
-        memberEmailEl.value = profile?.primary_email || login.member?.email || "";
-        memberMobileEl.value = profile?.primary_mobile || "";
-
-        showBookingOk(`Member lookup successful for ${currentMemberId}.`);
-
-      }catch(err){
-        authToken = "";
-        currentMemberId = "";
-        memberNameEl.value = "";
-        memberEmailEl.value = "";
-        memberMobileEl.value = "";
-        currentBooking = null;
-        renderCurrentBooking();
-        showBookingErr(err.message || "Lookup failed.");
-      }finally{
-        lookupBtn.disabled = false;
-      }
-    }
-
-    function validateBookingForm(){
-      if (!eventData) return "Event not loaded.";
-      if (!authToken || !currentMemberId) return "Please do member lookup first.";
-
-      const total = Number(placesTotalEl.value || 0);
-      const guests = Number(guestPlacesEl.value || 0);
-
-      if (Number.isNaN(total) || total < 1) return "Total places must be at least 1.";
-      if (Number.isNaN(guests) || guests < 0) return "Guest places cannot be negative.";
-      if (guests > total) return "Guest places cannot exceed total places.";
-
-      return "";
-    }
-
-    async function submitBooking(e){
-      e.preventDefault();
-      clearBookingMessages();
-
-      const problem = validateBookingForm();
-      if (problem){
-        showBookingErr(problem);
-        return;
-      }
-
-      bookBtn.disabled = true;
-
-      try{
-        const payload = {
-          member_id: currentMemberId,
-          member_name: memberNameEl.value.trim(),
-          member_email: memberEmailEl.value.trim(),
-          member_mobile: memberMobileEl.value.trim(),
-          mode: modeEl.value,
-          places_total: Number(placesTotalEl.value || 1),
-          guest_places: Number(guestPlacesEl.value || 0),
-          guest_names: splitLines(guestNamesEl.value),
-          notes: bookingNotesEl.value.trim()
-        };
-
-        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
-          body: JSON.stringify(payload)
-        });
-
-        currentBooking = result.booking || null;
-        renderCurrentBooking();
-        showBookingOk(result.message || "Booking submitted.");
-
-        await loadEvent();
-      }catch(err){
-        showBookingErr(err.message || "Could not submit booking.");
-      }finally{
-        bookBtn.disabled = false;
-      }
-    }
-
-    async function cancelBooking(){
-      clearBookingMessages();
-
-      if (!currentBooking || !currentBooking.booking_id){
-        showBookingErr("No active booking record is loaded.");
-        return;
-      }
-      if (!authToken){
-        showBookingErr("Please do member lookup first.");
-        return;
-      }
-
-      cancelBtn.disabled = true;
-
-      try{
-        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
-          body: JSON.stringify({
-            booking_id: currentBooking.booking_id
-          })
-        });
-
-        currentBooking = result.booking || null;
-        renderCurrentBooking();
-        showBookingOk(result.message || "Booking cancelled.");
-
-        await loadEvent();
-      }catch(err){
-        showBookingErr(err.message || "Could not cancel booking.");
-      }finally{
-        cancelBtn.disabled = false;
-      }
-    }
-
     logoutBtn.addEventListener("click", () => {
       if (typeof window.scLogout === "function"){
         window.scLogout();
@@ -1092,14 +706,6 @@
       window.location.href = "index.html";
     });
 
-    openBookingBtn.addEventListener("click", showBookingSection);
-    hideBookingBtn.addEventListener("click", hideBookingSection);
-
-    lookupBtn.addEventListener("click", memberLookup);
-    bookingForm.addEventListener("submit", submitBooking);
-    cancelBtn.addEventListener("click", cancelBooking);
-
-    renderCurrentBooking();
     loadEvent();
   </script>
 </body>

@@ -147,28 +147,6 @@
       justify-content:flex-end;
     }
 
-    .viewToggle{
-      display:flex;
-      border:1px solid var(--line);
-      border-radius:12px;
-      overflow:hidden;
-      background:#fbfdff;
-    }
-
-    .viewToggle button{
-      border-radius:0;
-      border:none;
-      background:transparent;
-      color:var(--brand-dark);
-      padding:0.5rem 0.75rem;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .viewToggle button.active{
-      background:#e6f1ff;
-    }
-
     .monthTitle{
       font-size:1.05rem;
       font-weight:900;
@@ -368,123 +346,13 @@
       user-select:none;
     }
 
-    .list{
-      margin-top:0.5rem;
-      border-top:1px solid rgba(219,230,243,0.8);
-      padding-top:0.75rem;
-      display:flex;
-      flex-direction:column;
-      gap:0.6rem;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns: 150px 1fr;
-      gap:0.75rem;
-      padding:0.75rem;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fbfdff;
-      cursor:pointer;
-      text-decoration:none;
-      color:inherit;
-      transition:transform .12s ease, box-shadow .12s ease;
-    }
-
-    .row:hover{
-      box-shadow:0 2px 14px rgba(0,0,0,.05);
-      transform:translateY(-1px);
-    }
-
-    .row:focus{
-      outline:2px solid rgba(0,94,168,.25);
-      outline-offset:2px;
-    }
-
-    .row.past{
-      background:#f3f4f6;
-      border-color:var(--past-border);
-    }
-
-    .rowLeft{
-      color:var(--brand-dark);
-      font-weight:900;
-      display:flex;
-      flex-direction:column;
-      gap:0.25rem;
-    }
-
-    .row.past .rowLeft{
-      color:var(--past-text);
-    }
-
-    .rowRight{
-      display:flex;
-      flex-direction:column;
-      gap:0.35rem;
-    }
-
-    .rowTitle{
-      display:flex;
-      gap:0.55rem;
-      align-items:center;
-      flex-wrap:wrap;
-      font-weight:900;
-      color:var(--brand-dark);
-    }
-
-    .row.past .rowTitle{
-      color:var(--past-text);
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:0.45rem;
-      padding:0.18rem 0.55rem;
-      border-radius:999px;
-      color:#fff;
-      font-weight:900;
-      font-size:0.82rem;
-    }
-
-    .chip.past{
-      background:var(--past-bg) !important;
-      color:var(--past-text) !important;
-      border:1px solid var(--past-border);
-    }
-
-    .rowMeta{
-      color:var(--muted);
-      font-size:0.92rem;
-      line-height:1.35;
-    }
-
-    .row.past .rowMeta{
-      color:#6b7280;
-    }
-
     .empty{
       color:var(--muted);
       font-weight:800;
       padding:0.75rem;
     }
 
-    .pastHint{
-      display:inline-block;
-      margin-left:.5rem;
-      padding:.15rem .48rem;
-      border-radius:999px;
-      font-size:.76rem;
-      font-weight:900;
-      color:var(--past-text);
-      background:#eef2f7;
-      border:1px solid var(--past-border);
-      vertical-align:middle;
-    }
-
     @media (max-width:900px){
-      .row{ grid-template-columns: 1fr; }
       .day{ min-height:100px; }
     }
 
@@ -520,9 +388,9 @@
     <div class="card">
       <div class="topbar">
         <div>
-          <h1>Calendar & Events List</h1>
+          <h1>Calendar</h1>
           <div class="subtitle">
-            Click an event for more info, to register interest or make a booking.
+            Click an event pill to open its notice and information page.
           </div>
           <div class="monthTitle" id="monthTitle"></div>
         </div>
@@ -531,11 +399,6 @@
           <button class="btn ghost" id="prevBtn" type="button">◀</button>
           <button class="btn ghost" id="todayBtn" type="button">Today</button>
           <button class="btn ghost" id="nextBtn" type="button">▶</button>
-
-          <div class="viewToggle" role="tablist" aria-label="View toggle">
-            <button id="calViewBtn" class="active" type="button">Calendar</button>
-            <button id="listViewBtn" type="button">List</button>
-          </div>
         </div>
       </div>
 
@@ -549,16 +412,10 @@
         <div class="legendHelp">Filter categories</div>
       </div>
 
-      <div id="calendarView">
-        <div class="dow">
-          <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-        </div>
-        <div class="grid" id="grid"></div>
+      <div class="dow">
+        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
       </div>
-
-      <div id="listView" style="display:none;">
-        <div class="list" id="list"></div>
-      </div>
+      <div class="grid" id="grid"></div>
     </div>
   </main>
 
@@ -583,21 +440,14 @@
     let EVENTS = [];
     let current = new Date();
     current = new Date(current.getFullYear(), current.getMonth(), 1, 12, 0, 0, 0);
-    let viewMode = "calendar";
 
     const monthTitleEl = document.getElementById("monthTitle");
     const gridEl = document.getElementById("grid");
-    const listEl = document.getElementById("list");
     const legendEl = document.getElementById("legend");
 
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const todayBtn = document.getElementById("todayBtn");
-
-    const calViewBtn = document.getElementById("calViewBtn");
-    const listViewBtn = document.getElementById("listViewBtn");
-    const calendarView = document.getElementById("calendarView");
-    const listView = document.getElementById("listView");
 
     const infoBox = document.getElementById("infoBox");
     const warnBox = document.getElementById("warnBox");
@@ -615,13 +465,6 @@
       if (!eventDate) return null;
       const time = startTime || "00:00";
       const d = new Date(`${eventDate}T${time}:00`);
-      if (Number.isNaN(d.getTime())) return null;
-      return d;
-    }
-
-    function parseBackendIso(iso){
-      if (!iso) return null;
-      const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return null;
       return d;
     }
@@ -725,7 +568,7 @@
     }
 
     function eventHref(ev){
-      return `event-details.html?event_id=${encodeURIComponent(ev.backendId)}`;
+      return `events-details.html?event_id=${encodeURIComponent(ev.backendId)}`;
     }
 
     function normalisedEvents(){
@@ -781,7 +624,7 @@
         item.onclick = () => {
           catOn[c.key] = !catOn[c.key];
           renderLegend();
-          render();
+          renderCalendar();
         };
         legendEl.insertBefore(item, legendEl.querySelector(".legendHelp"));
       }
@@ -842,8 +685,7 @@
             more.className = "more";
             more.textContent = `+${evs.length - 3} more`;
             more.onclick = () => {
-              setView("list");
-              setTimeout(() => scrollToDay(dayKey), 50);
+              window.location.href = "events.html";
             };
             eventsWrap.appendChild(more);
           }
@@ -852,84 +694,6 @@
         day.appendChild(eventsWrap);
         gridEl.appendChild(day);
       }
-    }
-
-    function renderList(){
-      const year = current.getFullYear();
-      const month = current.getMonth();
-
-      monthTitleEl.textContent = monthName(current);
-
-      const monthEvents = normalisedEvents()
-        .filter(e => e.dateObj.getFullYear() === year && e.dateObj.getMonth() === month);
-
-      listEl.innerHTML = "";
-
-      if (!monthEvents.length){
-        listEl.innerHTML = `<div class="empty">No events match your filters for this month.</div>`;
-        return;
-      }
-
-      for (const ev of monthEvents){
-        const d = ev.dateObj;
-        const leftDate = d.toLocaleDateString("en-GB", { weekday:"short", day:"2-digit", month:"short" });
-        const leftTime = timeHM(d);
-        const past = isPastEvent(ev);
-
-        const row = document.createElement("a");
-        row.className = "row" + (past ? " past" : "");
-        row.dataset.dayKey = ymd(d);
-        row.href = eventHref(ev);
-
-        const chip = `<span class="chip${past ? " past" : ""}" style="background:${past ? "var(--past-bg)" : categoryColor(ev.category)}">${ev.id}</span>`;
-
-        row.innerHTML = `
-          <div class="rowLeft">
-            <div>${leftDate}</div>
-            <div style="opacity:0.85">${leftTime}</div>
-          </div>
-          <div class="rowRight">
-            <div class="rowTitle">${chip}<span>${ev.title}${past ? `<span class="pastHint">Past</span>` : ""}</span></div>
-            <div class="rowMeta">
-              <div><strong>Where:</strong> ${ev.where || "TBC"}</div>
-              <div><strong>Type:</strong> ${ev.categoryLabel || ev.category}</div>
-              <div><strong>Host:</strong> ${ev.hostName || "Host"}</div>
-            </div>
-          </div>
-        `;
-
-        listEl.appendChild(row);
-      }
-    }
-
-    function scrollToDay(dayKey){
-      const el = listEl.querySelector(`[data-day-key="${dayKey}"]`);
-      if (!el) return;
-      el.scrollIntoView({ behavior:"smooth", block:"start" });
-      el.style.boxShadow = "0 0 0 3px rgba(0,94,168,0.25)";
-      setTimeout(() => { el.style.boxShadow = ""; }, 1200);
-    }
-
-    function setView(mode){
-      viewMode = mode;
-      if (mode === "calendar"){
-        calViewBtn.classList.add("active");
-        listViewBtn.classList.remove("active");
-        calendarView.style.display = "";
-        listView.style.display = "none";
-      } else {
-        listViewBtn.classList.add("active");
-        calViewBtn.classList.remove("active");
-        calendarView.style.display = "none";
-        listView.style.display = "";
-      }
-      render();
-    }
-
-    function render(){
-      renderLegend();
-      if (viewMode === "calendar") renderCalendar();
-      else renderList();
     }
 
     async function loadEvents(){
@@ -941,14 +705,16 @@
         const data = await getJson(`${BACKEND_URL}/api/events`);
         EVENTS = Array.isArray(data.events) ? data.events : [];
         showInfo(`${EVENTS.length} event${EVENTS.length === 1 ? "" : "s"} loaded.`);
-        render();
+        renderLegend();
+        renderCalendar();
 
         if (!EVENTS.length){
           showWarn("There are no events yet.");
         }
       }catch(err){
         EVENTS = [];
-        render();
+        renderLegend();
+        renderCalendar();
         clearInfo();
         showErr(err.message || "Could not load events.");
       }
@@ -956,25 +722,22 @@
 
     prevBtn.onclick = () => {
       current = new Date(current.getFullYear(), current.getMonth() - 1, 1, 12, 0, 0, 0);
-      render();
+      renderCalendar();
     };
 
     nextBtn.onclick = () => {
       current = new Date(current.getFullYear(), current.getMonth() + 1, 1, 12, 0, 0, 0);
-      render();
+      renderCalendar();
     };
 
     todayBtn.onclick = () => {
       const t = new Date();
       current = new Date(t.getFullYear(), t.getMonth(), 1, 12, 0, 0, 0);
-      render();
+      renderCalendar();
     };
 
-    calViewBtn.onclick = () => setView("calendar");
-    listViewBtn.onclick = () => setView("list");
-
     renderLegend();
-    render();
+    renderCalendar();
     loadEvents();
   </script>
 </body>

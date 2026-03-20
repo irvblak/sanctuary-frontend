@@ -2,711 +2,667 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Event Information – The Sanctuary Club</title>
+  <title>Host Notice | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
-  <script src="logout.js?v=LO_3"></script>
+  <!-- Member access gate -->
+  <script src="access.js"></script>
 
   <style>
     :root{
-      --bg1:#d9ecff;
-      --bg2:#f2f7fb;
-      --ink:#1b2733;
-      --muted:#5d6a77;
+      --bg1:#eef6ff;
+      --bg2:#f9fbfe;
       --card:#ffffff;
-      --line:#dbe6f3;
-      --brand:#005ea8;
-      --brand-dark:#003366;
-      --radius:16px;
-
-      --cat-social:#2563eb;
-      --cat-sport:#7c3aed;
-      --cat-games:#0f766e;
-      --cat-fitness:#16a34a;
-      --cat-food:#ea580c;
-      --cat-entertainment:#ca8a04;
-      --cat-meeting:#111827;
-      --cat-external-service:#c026d3;
+      --text:#1f2937;
+      --muted:#667085;
+      --line:#d8e3ee;
+      --brand:#0f4c81;
+      --brand-2:#1d6ca8;
+      --soft:#e8f2fb;
+      --shadow:0 12px 28px rgba(15,76,129,0.08);
+      --radius:20px;
     }
 
     *{ box-sizing:border-box; }
 
-    body{
+    html,body{
       margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 45%, #ffffff 100%);
-      color:var(--ink);
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 44%, #ffffff 100%);
+      min-height:100%;
+    }
+
+    body{
       min-height:100vh;
     }
 
-    nav{
-      padding:1rem 1.25rem;
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      align-items:center;
-      gap:.75rem;
-      max-width:1180px;
-      margin:0 auto;
-    }
-
-    .nav-left,.nav-right{
-      display:flex;
-      gap:.6rem;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .nav-right{ justify-content:flex-end; }
-
-    .brand{
-      justify-self:center;
-      font-weight:900;
-      color:var(--brand-dark);
-      letter-spacing:.2px;
-      white-space:nowrap;
-      text-align:center;
-    }
-
-    a.btn, button.btn{
-      appearance:none;
+    a{
+      color:inherit;
       text-decoration:none;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--brand-dark);
-      padding:.55rem .85rem;
+    }
+
+    .page{
+      max-width:1020px;
+      margin:0 auto;
+      padding:20px 16px 48px;
+    }
+
+    .topbar{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .crumbs{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:0.96rem;
+    }
+
+    .crumbs a{
+      color:var(--brand);
+      font-weight:700;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--brand);
+      font-weight:700;
+      font-size:0.95rem;
+    }
+
+    .status{
+      margin:0 0 14px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #deebf5;
+      background:#f7fbff;
+      color:#466074;
+      font-size:0.95rem;
+    }
+
+    .hidden{ display:none !important; }
+
+    .hero{
+      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.98));
+      border:1px solid rgba(15,76,129,0.10);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:18px;
+    }
+
+    .hero-media-wrap{
+      background:#edf4fa;
+    }
+
+    .hero-media{
+      width:100%;
+      display:block;
+      object-fit:cover;
+      max-height:420px;
+      background:#edf4fa;
+    }
+
+    .hero-inner{
+      padding:22px 18px 20px;
+    }
+
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 11px;
       border-radius:999px;
+      font-size:0.82rem;
       font-weight:800;
-      cursor:pointer;
-      box-shadow:0 6px 16px rgba(0,0,0,.05);
-      font-size:.95rem;
+      letter-spacing:0.01em;
     }
 
-    a.btn.primary, button.btn.primary{
-      background:var(--brand);
-      color:#fff;
-      border-color:transparent;
+    .badge.notice{
+      background:#e8f2fb;
+      color:#0f4c81;
     }
 
-    main{
-      max-width:1180px;
-      margin:0 auto 2rem;
-      padding:0 1rem;
+    .badge.category{
+      background:#eefaf3;
+      color:#117a46;
+    }
+
+    .title{
+      margin:0 0 10px;
+      font-size:clamp(1.8rem, 3vw, 2.4rem);
+      line-height:1.15;
+      color:var(--brand);
+    }
+
+    .summary{
+      margin:0;
+      max-width:780px;
+      color:#334155;
+      font-size:1.04rem;
+      line-height:1.6;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0, 2fr) minmax(280px, 1fr);
+      gap:18px;
+      align-items:start;
     }
 
     .card{
       background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:0 2px 12px rgba(0,0,0,0.06);
-      padding:1rem;
-      border:1px solid rgba(219,230,243,0.7);
-      margin-top:.8rem;
-    }
-
-    .hero{
-      display:flex;
-      gap:1rem;
-      flex-wrap:wrap;
-      align-items:flex-start;
-      justify-content:space-between;
-      margin-bottom:.9rem;
-    }
-
-    h1{
-      margin:0;
-      font-size:1.55rem;
-      color:var(--brand-dark);
-      line-height:1.2;
-    }
-
-    .subtle{
-      color:var(--muted);
-      line-height:1.45;
-      font-size:.96rem;
-      margin-top:.3rem;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.45rem;
-      padding:.22rem .6rem;
-      border-radius:999px;
-      color:#fff;
-      font-weight:900;
-      font-size:.84rem;
-      white-space:nowrap;
-      margin-bottom:.45rem;
-    }
-
-    .statusRow{
-      display:flex;
-      gap:.75rem;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-bottom:.75rem;
-    }
-
-    .statusBox{
-      display:none;
-      padding:.72rem .88rem;
-      border-radius:14px;
-      font-weight:800;
-      line-height:1.4;
-    }
-
-    .statusBox.show{ display:block; }
-
-    .statusInfo{
-      background:#eef6ff;
-      color:#0b4d87;
-      border:1px solid rgba(0,94,168,.18);
-    }
-
-    .statusWarn{
-      background:#fff8ea;
-      color:#8a5b00;
-      border:1px solid rgba(138,91,0,.18);
-    }
-
-    .statusErr{
-      background:#fff2f4;
-      color:#b00020;
-      border:1px solid rgba(176,0,32,.18);
-    }
-
-    .section{
-      border:1px solid rgba(219,230,243,0.9);
-      border-radius:14px;
-      padding:.95rem;
-      background:#fff;
-      margin-bottom:1rem;
-    }
-
-    .section h2{
-      margin:0 0 .65rem;
-      color:var(--brand-dark);
-      font-size:1.08rem;
-    }
-
-    .section p{
-      margin:.45rem 0;
-      line-height:1.6;
-    }
-
-    .detailGrid{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:.8rem;
-    }
-
-    @media (max-width:760px){
-      .detailGrid{ grid-template-columns:1fr; }
-    }
-
-    .detailBox{
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:.8rem .85rem;
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-inner{
+      padding:18px;
+    }
+
+    .card h2{
+      margin:0 0 12px;
+      color:var(--brand);
+      font-size:1.2rem;
+    }
+
+    .details-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+
+    .detail{
+      padding:12px 13px;
+      border:1px solid #e4edf5;
+      border-radius:16px;
       background:#fbfdff;
     }
 
-    .detailLabel{
+    .detail-label{
+      margin:0 0 4px;
       color:var(--muted);
-      font-size:.84rem;
-      font-weight:800;
-      margin-bottom:.2rem;
+      font-size:0.85rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.03em;
     }
 
-    .detailValue{
-      color:var(--brand-dark);
-      font-weight:900;
-      line-height:1.35;
-      word-break:break-word;
+    .detail-value{
+      margin:0;
+      color:#213547;
+      font-size:1rem;
+      line-height:1.45;
+      font-weight:600;
     }
 
-    .noticeSummary{
-      margin-bottom:.9rem;
-      padding:.9rem 1rem;
-      border-radius:14px;
-      background:#f7fbff;
-      border:1px solid rgba(0,94,168,.12);
-      color:#23415f;
-      line-height:1.55;
-      font-weight:800;
-    }
-
-    .noticeBody{
-      white-space:pre-wrap;
+    .notice-body{
+      color:#2b3d4f;
       line-height:1.7;
-      color:#21303d;
       font-size:1rem;
     }
 
-    .mediaList{
-      display:grid;
-      gap:.7rem;
-      margin-top:.9rem;
+    .notice-body p{
+      margin:0 0 1em;
     }
 
-    .mediaBox{
-      border:1px solid var(--line);
+    .notice-body p:last-child{
+      margin-bottom:0;
+    }
+
+    .sidebar-stack{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .cta-box{
+      background:linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    }
+
+    .cta-box p{
+      margin:0 0 14px;
+      color:#425569;
+      line-height:1.55;
+    }
+
+    .cta-button{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      width:100%;
+      min-height:48px;
+      padding:12px 16px;
+      border:none;
+      border-radius:14px;
+      background:var(--brand);
+      color:#fff;
+      font-weight:800;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(15,76,129,0.18);
+    }
+
+    .cta-button:hover{
+      background:var(--brand-2);
+    }
+
+    .meta-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .meta-item{
+      padding:11px 12px;
+      border:1px solid #e4edf5;
       border-radius:14px;
       background:#fbfdff;
-      padding:.75rem;
     }
 
-    .mediaBox img{
+    .meta-item strong{
       display:block;
-      max-width:100%;
-      height:auto;
-      border-radius:12px;
-      margin:0 auto;
+      margin-bottom:4px;
+      color:#284a6b;
+      font-size:0.9rem;
     }
 
-    .mediaBox a{
-      color:var(--brand);
-      font-weight:800;
-      text-decoration:none;
-      word-break:break-all;
+    .meta-item span{
+      color:#44586d;
+      line-height:1.45;
+      font-size:0.96rem;
     }
 
-    .inlineBadges{
+    .helper-links{
       display:flex;
-      gap:.45rem;
-      flex-wrap:wrap;
-      margin-top:.25rem;
+      flex-direction:column;
+      gap:10px;
+      margin-top:14px;
     }
 
-    .miniBadge{
+    .helper-link{
       display:inline-flex;
       align-items:center;
-      padding:.18rem .5rem;
-      border-radius:999px;
-      background:#eef6ff;
-      color:#0b4d87;
-      border:1px solid rgba(0,94,168,.15);
-      font-weight:800;
-      font-size:.82rem;
-      white-space:nowrap;
+      gap:8px;
+      color:var(--brand);
+      font-weight:700;
+      font-size:0.95rem;
     }
 
-    .actionPanel{
-      display:flex;
-      gap:.8rem;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      padding:.95rem;
-      border-radius:14px;
-      background:linear-gradient(180deg, #eef6ff 0%, #f7fbff 100%);
-      border:1px solid rgba(0,94,168,.16);
+    .empty-state{
+      padding:18px;
+      border:1px dashed #c8d9e7;
+      border-radius:16px;
+      background:#fbfdff;
+      color:#526474;
+      line-height:1.55;
     }
 
-    .actionPanelText{
-      color:#0b4d87;
-      line-height:1.5;
-      font-weight:800;
+    @media (max-width: 860px){
+      .layout{
+        grid-template-columns:1fr;
+      }
     }
 
-    .empty{
-      color:var(--muted);
-      font-weight:800;
-    }
+    @media (max-width: 640px){
+      .page{
+        padding:16px 12px 34px;
+      }
 
-    .small{
-      font-size:.92rem;
-      color:var(--muted);
+      .hero-inner,
+      .card-inner{
+        padding:16px 14px;
+      }
+
+      .details-grid{
+        grid-template-columns:1fr;
+      }
     }
   </style>
 </head>
-
 <body>
-  <nav>
-    <div class="nav-left">
-      <a class="btn" href="events.html">← Events List</a>
-      <a class="btn" href="events-calendar.html">Calendar</a>
+  <div class="page">
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="events.html">Events Diary</a>
+        <span>›</span>
+        <span>Host Notice</span>
+      </div>
+
+      <a class="back-link" href="events.html">← Back to Events Diary</a>
     </div>
 
-    <div class="brand">Sanctuary Club — Event Information</div>
+    <div id="status" class="status">Loading host notice...</div>
 
-    <div class="nav-right">
-      <a class="btn" href="members-info.html">Members Hub</a>
-      <button class="btn primary" id="logoutBtn" type="button">Logout</button>
-    </div>
-  </nav>
-
-  <main>
-    <div class="statusRow">
-      <div class="statusBox statusInfo show" id="infoBox">Loading event…</div>
-      <div class="statusBox statusWarn" id="warnBox"></div>
-      <div class="statusBox statusErr" id="errBox"></div>
-    </div>
-
-    <div class="card">
-      <div class="hero">
-        <div>
-          <div id="heroChipWrap"></div>
-          <h1 id="eventTitle">Event</h1>
-          <div class="subtle" id="eventSubtle">Details loading…</div>
+    <main id="app" class="hidden">
+      <section class="hero card">
+        <div id="heroMediaWrap" class="hero-media-wrap hidden">
+          <img id="heroMedia" class="hero-media" src="" alt="" />
         </div>
-        <div class="actions">
-          <a class="btn" href="events-calendar.html">Calendar</a>
-          <a class="btn" href="events.html">Events List</a>
-        </div>
-      </div>
 
-      <div class="section">
-        <h2>Event summary</h2>
-        <div class="detailGrid" id="detailsGrid"></div>
-      </div>
-
-      <div class="section">
-        <h2>Host notice</h2>
-        <div id="noticeSummaryWrap" class="noticeSummary" style="display:none;"></div>
-        <div id="noticeBodyWrap" class="noticeBody empty">No notice details available.</div>
-        <div id="noticeMediaWrap" class="mediaList"></div>
-      </div>
-
-      <div class="section">
-        <h2>Availability</h2>
-        <div class="detailGrid" id="trackingGrid"></div>
-        <div class="inlineBadges" id="timingBadges"></div>
-        <p class="small" id="bookingWindowText"></p>
-      </div>
-
-      <div class="section">
-        <div class="actionPanel">
-          <div class="actionPanelText">
-            To proceed, open the booking page below.
+        <div class="hero-inner">
+          <div class="badge-row">
+            <span class="badge notice">Host Notice</span>
+            <span id="categoryBadge" class="badge category hidden"></span>
           </div>
-          <div class="actions" style="margin-top:0;">
-            <a class="btn primary" id="bookingLink" href="#">Book or register your interest</a>
-          </div>
-        </div>
-      </div>
 
-      <div class="section">
-        <h2>Charges</h2>
-        <div class="detailGrid" id="chargesGrid"></div>
+          <h1 id="title" class="title">Event</h1>
+          <p id="summary" class="summary"></p>
+        </div>
+      </section>
+
+      <div class="layout">
+        <section class="card">
+          <div class="card-inner">
+            <h2>Event information</h2>
+
+            <div class="details-grid" id="detailsGrid">
+              <div class="detail">
+                <p class="detail-label">Date</p>
+                <p class="detail-value" id="dateValue">—</p>
+              </div>
+              <div class="detail">
+                <p class="detail-label">Time</p>
+                <p class="detail-value" id="timeValue">—</p>
+              </div>
+              <div class="detail">
+                <p class="detail-label">Location</p>
+                <p class="detail-value" id="locationValue">—</p>
+              </div>
+              <div class="detail">
+                <p class="detail-label">Availability</p>
+                <p class="detail-value" id="availabilityValue">Please enquire</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar-stack">
+          <section class="card cta-box">
+            <div class="card-inner">
+              <h2>Booking</h2>
+              <p>
+                To attend, or to register your interest, continue to the booking form.
+              </p>
+              <button id="bookingBtn" class="cta-button" type="button">
+                Book or register your interest
+              </button>
+
+              <div class="helper-links">
+                <a class="helper-link" href="events.html">← Return to Events Diary</a>
+                <a class="helper-link" href="events-calendar.html">View Calendar</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-inner">
+              <h2>At a glance</h2>
+              <div class="meta-list">
+                <div class="meta-item">
+                  <strong>Host notice</strong>
+                  <span>Further information from the organiser about this event.</span>
+                </div>
+                <div class="meta-item">
+                  <strong>Booking route</strong>
+                  <span>Booking and expressions of interest are handled through the event form.</span>
+                </div>
+                <div class="meta-item">
+                  <strong>Members</strong>
+                  <span>Member details are completed through member lookup on the booking page.</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <section class="card" style="grid-column:1 / -1;">
+          <div class="card-inner">
+            <h2>Notice</h2>
+            <div id="body" class="notice-body"></div>
+          </div>
+        </section>
       </div>
-    </div>
-  </main>
+    </main>
+
+    <div id="errorBox" class="empty-state hidden"></div>
+  </div>
 
   <script>
-    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-
-    const CATEGORY_DEFS = [
-      { key: "social", label: "Social", colorVar: "--cat-social" },
-      { key: "sport", label: "Sport", colorVar: "--cat-sport" },
-      { key: "games", label: "Games", colorVar: "--cat-games" },
-      { key: "fitness", label: "Fitness", colorVar: "--cat-fitness" },
-      { key: "food", label: "Food", colorVar: "--cat-food" },
-      { key: "entertainment", label: "Entertainment", colorVar: "--cat-entertainment" },
-      { key: "meeting", label: "Meeting", colorVar: "--cat-meeting" },
-      { key: "external-service", label: "External Service", colorVar: "--cat-external-service" }
-    ];
-
-    const params = new URLSearchParams(window.location.search);
-    const EVENT_ID = (params.get("event_id") || "").trim();
-
-    let eventData = null;
-
-    const infoBox = document.getElementById("infoBox");
-    const warnBox = document.getElementById("warnBox");
-    const errBox = document.getElementById("errBox");
-
-    const heroChipWrap = document.getElementById("heroChipWrap");
-    const eventTitleEl = document.getElementById("eventTitle");
-    const eventSubtleEl = document.getElementById("eventSubtle");
-
-    const detailsGrid = document.getElementById("detailsGrid");
-    const noticeSummaryWrap = document.getElementById("noticeSummaryWrap");
-    const noticeBodyWrap = document.getElementById("noticeBodyWrap");
-    const noticeMediaWrap = document.getElementById("noticeMediaWrap");
-    const trackingGrid = document.getElementById("trackingGrid");
-    const timingBadges = document.getElementById("timingBadges");
-    const bookingWindowText = document.getElementById("bookingWindowText");
-    const chargesGrid = document.getElementById("chargesGrid");
-    const bookingLink = document.getElementById("bookingLink");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    function showInfo(msg){
-      infoBox.textContent = msg;
-      infoBox.classList.add("show");
-    }
-
-    function clearInfo(){
-      infoBox.textContent = "";
-      infoBox.classList.remove("show");
-    }
-
-    function showWarn(msg){
-      warnBox.textContent = msg;
-      warnBox.classList.add("show");
-    }
-
-    function clearWarn(){
-      warnBox.textContent = "";
-      warnBox.classList.remove("show");
-    }
-
-    function showErr(msg){
-      errBox.textContent = msg;
-      errBox.classList.add("show");
-    }
-
-    function clearErr(){
-      errBox.textContent = "";
-      errBox.classList.remove("show");
-    }
-
-    function parseDateAndTime(eventDate, startTime){
-      if (!eventDate) return null;
-      const time = startTime || "00:00";
-      const d = new Date(`${eventDate}T${time}:00`);
-      if (Number.isNaN(d.getTime())) return null;
-      return d;
-    }
-
-    function parseIso(iso){
-      if (!iso) return null;
-      const d = new Date(iso);
-      if (Number.isNaN(d.getTime())) return null;
-      return d;
-    }
-
-    function dateDisplay(d){
-      if (!d) return "—";
-      return d.toLocaleDateString("en-GB", {
-        weekday:"long",
-        day:"2-digit",
-        month:"long",
-        year:"numeric"
-      });
-    }
-
-    function timeDisplay(d){
-      if (!d) return "—";
-      return d.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" });
-    }
-
-    function money(v){
-      return `£${Number(v || 0).toFixed(2)}`;
-    }
-
-    function categoryColor(key){
-      const def = CATEGORY_DEFS.find(c => c.key === key);
-      if (!def) return "#005ea8";
-      const v = getComputedStyle(document.documentElement).getPropertyValue(def.colorVar).trim();
-      return v || "#005ea8";
-    }
-
-    function toCategoryKey(rawKey, rawLabel){
-      const key = String(rawKey || "").trim().toLowerCase();
-      const label = String(rawLabel || "").trim().toLowerCase();
-
-      if (key === "external service" || key === "external_service" || key === "external-service") return "external-service";
-      if (label === "external service") return "external-service";
-
-      const map = {
-        social: "social",
-        sport: "sport",
-        games: "games",
-        fitness: "fitness",
-        food: "food",
-        entertainment: "entertainment",
-        meeting: "meeting"
+    (function(){
+      const CONFIG = {
+        BACKEND_URL:
+          (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
+          "https://sanctuary-backend-8iqc.onrender.com"
       };
 
-      if (map[key]) return map[key];
-      if (map[label]) return map[label];
-      return key || label || "social";
-    }
+      const statusEl = document.getElementById("status");
+      const appEl = document.getElementById("app");
+      const errorBox = document.getElementById("errorBox");
 
-    function makeDetailBox(label, value){
-      return `
-        <div class="detailBox">
-          <div class="detailLabel">${label}</div>
-          <div class="detailValue">${value || "—"}</div>
-        </div>
-      `;
-    }
+      const heroMediaWrap = document.getElementById("heroMediaWrap");
+      const heroMedia = document.getElementById("heroMedia");
+      const categoryBadge = document.getElementById("categoryBadge");
 
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
-    }
+      const titleEl = document.getElementById("title");
+      const summaryEl = document.getElementById("summary");
+      const bodyEl = document.getElementById("body");
 
-    async function getJson(url, options = {}){
-      const res = await fetch(url, options);
-      const text = await res.text();
-      let data = {};
-      try{
-        data = text ? JSON.parse(text) : {};
-      }catch{
-        data = {};
-      }
-      if (!res.ok){
-        throw new Error(data.message || `HTTP ${res.status}`);
-      }
-      return data;
-    }
+      const dateValueEl = document.getElementById("dateValue");
+      const timeValueEl = document.getElementById("timeValue");
+      const locationValueEl = document.getElementById("locationValue");
+      const availabilityValueEl = document.getElementById("availabilityValue");
 
-    function renderEvent(){
-      if (!eventData) return;
+      const bookingBtn = document.getElementById("bookingBtn");
 
-      const eventDateObj = parseDateAndTime(eventData.event_date, eventData.start_time);
-      const categoryKey = toCategoryKey(eventData.category_key, eventData.category_label);
-      const categoryLabel = eventData.category_label || eventData.category_key || "";
-      const tracking = eventData.tracking || {};
-
-      heroChipWrap.innerHTML = `<span class="chip" style="background:${categoryColor(categoryKey)}">${categoryLabel || "Event"}</span>`;
-      eventTitleEl.textContent = `${eventData.event_ref || eventData.event_id || "Event"} — ${eventData.title || "Untitled event"}`;
-      eventSubtleEl.textContent = `${dateDisplay(eventDateObj)} · ${timeDisplay(eventDateObj)}${eventData.end_time ? ` to ${eventData.end_time}` : ""} · ${eventData.location || "Location TBC"}`;
-
-      detailsGrid.innerHTML = [
-        makeDetailBox("Reference", eventData.event_ref || eventData.event_id || "—"),
-        makeDetailBox("Host", eventData.host_name || "Host"),
-        makeDetailBox("Date", dateDisplay(eventDateObj)),
-        makeDetailBox("Time", `${timeDisplay(eventDateObj)}${eventData.end_time ? ` to ${eventData.end_time}` : ""}`),
-        makeDetailBox("Location", eventData.location || "TBC"),
-        makeDetailBox("Category", categoryLabel || "—"),
-        makeDetailBox("Member price", money(eventData.price_member)),
-        makeDetailBox("Guest price", money(eventData.price_guest))
-      ].join("");
-
-      const summary = String(eventData.notice_summary || "").trim();
-      if (summary){
-        noticeSummaryWrap.style.display = "";
-        noticeSummaryWrap.textContent = summary;
-      } else {
-        noticeSummaryWrap.style.display = "none";
-        noticeSummaryWrap.textContent = "";
+      function getQueryParam(name){
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name) || "";
       }
 
-      const fullNotice = String(eventData.notice_body || eventData.description || "").trim();
-      if (fullNotice){
-        noticeBodyWrap.className = "noticeBody";
-        noticeBodyWrap.textContent = fullNotice;
-      } else {
-        noticeBodyWrap.className = "noticeBody empty";
-        noticeBodyWrap.textContent = "No further notice wording yet.";
+      function escapeHtml(value){
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
       }
 
-      noticeMediaWrap.innerHTML = "";
-      const media = Array.isArray(eventData.notice_media) ? eventData.notice_media : [];
-      if (media.length){
-        media.forEach((url) => {
-          const lower = String(url).toLowerCase();
-          const box = document.createElement("div");
-          box.className = "mediaBox";
+      function nl2p(text){
+        const cleaned = String(text || "").trim();
+        if(!cleaned) return "<p>Further details will be added shortly.</p>";
 
-          if (/\.(gif|png|jpe?g|webp|svg)$/i.test(lower)) {
-            box.innerHTML = `
-              <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
-                <img src="${escapeHtml(url)}" alt="Notice media" loading="lazy" />
-              </a>
-            `;
-          } else {
-            box.innerHTML = `
-              <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>
-            `;
+        const safe = escapeHtml(cleaned);
+        return safe
+          .split(/\n{2,}/)
+          .map(block => `<p>${block.replace(/\n/g, "<br>")}</p>`)
+          .join("");
+      }
+
+      function maybeHtmlContent(value){
+        const raw = String(value || "").trim();
+        if(!raw) return "";
+
+        const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
+        if(looksLikeHtml) return raw;
+        return nl2p(raw);
+      }
+
+      function normalisePayload(payload){
+        if(payload && typeof payload === "object" && payload.event) return payload.event;
+        return payload;
+      }
+
+      function getField(obj, names, fallback=""){
+        for(const name of names){
+          if(obj && obj[name] !== undefined && obj[name] !== null && obj[name] !== ""){
+            return obj[name];
+          }
+        }
+        return fallback;
+      }
+
+      function formatDate(value){
+        if(!value) return "To be confirmed";
+        try{
+          const d = new Date(value);
+          if(!Number.isNaN(d.getTime())){
+            return d.toLocaleDateString("en-GB", {
+              weekday:"long",
+              day:"numeric",
+              month:"long",
+              year:"numeric"
+            });
+          }
+        }catch{}
+        return String(value);
+      }
+
+      function formatTime(value, dateTimeValue){
+        if(value) return String(value);
+
+        if(dateTimeValue){
+          try{
+            const d = new Date(dateTimeValue);
+            if(!Number.isNaN(d.getTime())){
+              return d.toLocaleTimeString("en-GB", {
+                hour:"2-digit",
+                minute:"2-digit"
+              });
+            }
+          }catch{}
+        }
+        return "To be confirmed";
+      }
+
+      function getAvailabilityText(evt){
+        const remaining = getField(evt, ["remaining_spaces", "spaces_remaining", "remaining"]);
+        const capacity = getField(evt, ["capacity", "max_places", "max_attendees"]);
+        const bookingMode = getField(evt, ["booking_mode", "response_mode"]);
+
+        if(typeof remaining === "number"){
+          if(remaining <= 0) return "Currently full / waitlist or interest only";
+          if(typeof capacity === "number"){
+            return `${remaining} place${remaining === 1 ? "" : "s"} remaining`;
+          }
+          return `${remaining} place${remaining === 1 ? "" : "s"} remaining`;
+        }
+
+        if(String(bookingMode || "").toLowerCase().includes("interest")){
+          return "Register interest";
+        }
+
+        return "See booking form";
+      }
+
+      async function loadEvent(){
+        const eventId = getQueryParam("event_id");
+
+        if(!eventId){
+          showError("No event reference was provided.");
+          return;
+        }
+
+        bookingBtn.addEventListener("click", () => {
+          window.location.href = `event-booking.html?event_id=${encodeURIComponent(eventId)}`;
+        });
+
+        try{
+          const res = await fetch(`${CONFIG.BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
+            method:"GET",
+            headers:{ "Accept":"application/json" }
+          });
+
+          if(!res.ok){
+            throw new Error(`HTTP ${res.status}`);
           }
 
-          noticeMediaWrap.appendChild(box);
-        });
-      }
+          const payload = await res.json();
+          const evt = normalisePayload(payload);
 
-      trackingGrid.innerHTML = [
-        makeDetailBox("Total capacity", Number(eventData.capacity_total || 0)),
-        makeDetailBox("Booked places", Number(tracking.total_places_booked || 0)),
-        makeDetailBox("Places remaining", Number(tracking.places_remaining || 0)),
-        makeDetailBox("Waitlist records", Number(tracking.waitlist_count || 0)),
-        makeDetailBox("Interest records", Number(tracking.interested_count || 0)),
-        makeDetailBox("Status", eventData.status || "published")
-      ].join("");
-
-      timingBadges.innerHTML = `
-        <span class="miniBadge">${eventData.member_booking_open ? "Members may book now" : "Member booking not yet open"}</span>
-        <span class="miniBadge">${eventData.guest_booking_open ? "Guests permitted now" : "Guests not yet open"}</span>
-        <span class="miniBadge">${eventData.cancellation_open ? "Cancellation window open" : "Cancellation window closed"}</span>
-        <span class="miniBadge">${eventData.refund_window_open ? "Refund window open" : "Refund window closed"}</span>
-      `;
-
-      const lines = [];
-      if (eventData.members_booking_open_at){
-        const d = parseIso(eventData.members_booking_open_at);
-        if (d) lines.push(`Member booking opens ${dateDisplay(d)} at ${timeDisplay(d)}.`);
-      }
-      if (eventData.guests_booking_open_at){
-        const d = parseIso(eventData.guests_booking_open_at);
-        if (d) lines.push(`Guest booking opens ${dateDisplay(d)} at ${timeDisplay(d)}.`);
-      }
-      if (eventData.booking_close_at){
-        const d = parseIso(eventData.booking_close_at);
-        if (d) lines.push(`Booking closes ${dateDisplay(d)} at ${timeDisplay(d)}.`);
-      }
-      if (eventData.cancellation_cutoff_at){
-        const d = parseIso(eventData.cancellation_cutoff_at);
-        if (d) lines.push(`Cancellation cut-off is ${dateDisplay(d)} at ${timeDisplay(d)}.`);
-      }
-      if (eventData.refund_cutoff_at){
-        const d = parseIso(eventData.refund_cutoff_at);
-        if (d) lines.push(`Refund cut-off is ${dateDisplay(d)} at ${timeDisplay(d)}.`);
-      }
-      bookingWindowText.textContent = lines.join(" ") || "Booking timing will appear here.";
-
-      chargesGrid.innerHTML = [
-        makeDetailBox("Member price", money(eventData.price_member)),
-        makeDetailBox("Guest price", money(eventData.price_guest)),
-        makeDetailBox("Max places per member", Number(eventData.max_places_per_member || 0))
-      ].join("");
-
-      bookingLink.href = `event-booking.html?event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
-    }
-
-    async function loadEvent(){
-      clearWarn();
-      clearErr();
-      showInfo("Loading event…");
-
-      if (!EVENT_ID){
-        clearInfo();
-        showErr("No event_id supplied in the link.");
-        return;
-      }
-
-      try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
-        eventData = data.event || null;
-        if (!eventData){
-          throw new Error("Event not found.");
+          renderEvent(evt, eventId);
+        }catch(err){
+          console.error("Failed to load event notice:", err);
+          showError("Sorry, this host notice could not be loaded just now.");
         }
-        renderEvent();
-        showInfo("Event loaded.");
-      }catch(err){
-        clearInfo();
-        showErr(err.message || "Could not load event.");
       }
-    }
 
-    logoutBtn.addEventListener("click", () => {
-      if (typeof window.scLogout === "function"){
-        window.scLogout();
-        return;
+      function renderEvent(evt, eventId){
+        const title = getField(evt, ["title", "event_title", "name"], "Event");
+        const summary = getField(evt, ["notice_summary", "summary", "short_description"], "");
+        const body = getField(evt, ["notice_body", "description", "body", "details"], "");
+        const media = getField(evt, ["notice_media", "image", "image_url", "media"], "");
+        const category = getField(evt, ["category", "event_category", "type"], "");
+        const dateRaw = getField(evt, ["date", "event_date", "start_date"], "");
+        const dateTimeRaw = getField(evt, ["start_datetime", "start"], "");
+        const timeRaw = getField(evt, ["time", "start_time", "event_time"], "");
+        const location = getField(evt, ["location", "venue", "place"], "To be confirmed");
+
+        document.title = `${title} | Host Notice | Sanctuary Club`;
+
+        titleEl.textContent = title;
+        summaryEl.textContent = summary || "Please open this host notice for full details of the event.";
+
+        bodyEl.innerHTML = maybeHtmlContent(body || summary || "Further details will be added shortly.");
+
+        dateValueEl.textContent = formatDate(dateRaw || dateTimeRaw);
+        timeValueEl.textContent = formatTime(timeRaw, dateTimeRaw);
+        locationValueEl.textContent = location;
+        availabilityValueEl.textContent = getAvailabilityText(evt);
+
+        if(category){
+          categoryBadge.textContent = String(category);
+          categoryBadge.classList.remove("hidden");
+        }
+
+        const mediaUrl = Array.isArray(media) ? (media[0] || "") : media;
+        if(mediaUrl){
+          heroMedia.src = mediaUrl;
+          heroMedia.alt = title;
+          heroMediaWrap.classList.remove("hidden");
+        }
+
+        statusEl.classList.add("hidden");
+        appEl.classList.remove("hidden");
+        errorBox.classList.add("hidden");
+
+        bookingBtn.onclick = function(){
+          window.location.href = `event-booking.html?event_id=${encodeURIComponent(eventId)}`;
+        };
       }
-      try{ localStorage.clear(); }catch{}
-      try{ sessionStorage.clear(); }catch{}
-      window.location.href = "index.html";
-    });
 
-    loadEvent();
+      function showError(message){
+        statusEl.classList.add("hidden");
+        appEl.classList.add("hidden");
+        errorBox.textContent = message;
+        errorBox.classList.remove("hidden");
+      }
+
+      loadEvent();
+    })();
   </script>
 </body>
 </html>

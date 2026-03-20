@@ -687,7 +687,7 @@
       }
       try{ localStorage.clear(); }catch{}
       try{ sessionStorage.clear(); }catch{}
-      window.location.href = "index.html";
+    window.location.href = `events-details.html?event_id=${event.event_id}`;  
     });
 
     renderFilters();

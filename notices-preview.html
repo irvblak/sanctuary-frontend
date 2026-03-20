@@ -2,520 +2,668 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Notices</title>
+  <title>Notices | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Members gate -->
+  <!-- Member access gate -->
   <script src="access.js"></script>
-  <script src="logout.js?v=LO_3"></script>
 
   <style>
     :root{
-      --ink:#1f2a37;
-      --muted:#667085;
-      --brand:#005ea8;
-      --brand-dark:#003366;
-      --bg1:#e8f2ff;
-      --bg2:#ffffff;
-      --border:#dbe6f3;
-
-      --cat-events:#5b6cff;
-      --cat-committee:#d97706;
-      --cat-activities:#16a34a;
-      --cat-services:#c026d3;
-      --cat-all:#005ea8;
+      --bg1:#eef6ff;
+      --bg2:#f8fbff;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#dbe5ef;
+      --brand:#0f4c81;
+      --brand-2:#1f6aa5;
+      --brand-soft:#e8f2fb;
+      --shadow:0 10px 24px rgba(15,76,129,0.08);
+      --radius:18px;
     }
 
     *{ box-sizing:border-box; }
 
-    body{
+    html,body{
       margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: linear-gradient(180deg, var(--bg1) 0%, #f2f7fb 40%, var(--bg2) 100%);
-      color:var(--ink);
-      min-height:100vh;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 42%, #ffffff 100%);
+      min-height:100%;
     }
 
-    nav{
-      padding:1rem 1.25rem;
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      align-items:center;
-      gap:0.75rem;
-      max-width:1100px;
+    a{ color:inherit; text-decoration:none; }
+
+    .page{
+      max-width:1080px;
       margin:0 auto;
+      padding:20px 16px 48px;
     }
 
-    nav a{
-      text-decoration:none;
-      font-weight:800;
-      color:#003366;
-      white-space:nowrap;
+    .topbar{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
     }
 
-    .nav-left{justify-self:start;}
-    .nav-center{justify-self:center;}
-    .nav-right{justify-self:end;}
-
-    main{
-      max-width:1100px;
-      margin:0 auto 2rem;
-      padding:0 1rem;
-    }
-
-    .card{
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.06);
-      padding:1.1rem;
-      margin-top:0.75rem;
-      border:1px solid rgba(219,230,243,0.7);
-    }
-
-    h1{
-      margin:0.2rem 0 0.35rem 0;
-      color:#003366;
-      font-size:1.55rem;
-    }
-
-    .subtle{
+    .crumbs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      font-size:0.95rem;
       color:var(--muted);
-      line-height:1.45;
-      margin:0.35rem 0;
     }
 
-    .pill{
-      display:inline-block;
-      padding:0.2rem 0.6rem;
-      border-radius:999px;
-      font-weight:900;
-      font-size:0.85rem;
-      border:1px solid #cfd8e3;
-      background:#fbfdff;
-      color:#003366;
-      vertical-align:middle;
+    .crumbs a{
+      color:var(--brand);
+      font-weight:600;
     }
 
-    .controls{
+    .hero{
+      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.95));
+      border:1px solid rgba(15,76,129,0.10);
+      border-radius:24px;
+      padding:22px 18px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(1.7rem, 2.5vw, 2.3rem);
+      line-height:1.15;
+      color:var(--brand);
+    }
+
+    .hero p{
+      margin:0;
+      max-width:760px;
+      color:#334155;
+      line-height:1.55;
+    }
+
+    .category-bar{
       display:flex;
-      gap:0.6rem;
       flex-wrap:wrap;
-      align-items:center;
-      margin-top:0.9rem;
+      gap:10px;
+      margin:18px 0 14px;
     }
 
-    input[type="search"]{
-      padding:0.58rem 0.78rem;
-      border:1px solid #cfd8e3;
-      border-radius:12px;
-      font-size:1rem;
+    .category-btn{
+      appearance:none;
+      border:1px solid #bfd4e6;
       background:#fff;
-      min-width:220px;
-      flex:1 1 260px;
+      color:var(--brand);
+      padding:10px 16px;
+      border-radius:999px;
+      font-size:0.98rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
     }
 
-    button{
-      background:#7f97ad;
+    .category-btn:hover{
+      transform:translateY(-1px);
+      border-color:#9abbd9;
+      box-shadow:0 8px 18px rgba(15,76,129,0.08);
+    }
+
+    .category-btn.active{
+      background:var(--brand);
       color:#fff;
-      border:none;
-      padding:0.58rem 0.98rem;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:900;
+      border-color:var(--brand);
+      box-shadow:0 10px 20px rgba(15,76,129,0.18);
+    }
+
+    .panel{
+      background:rgba(255,255,255,0.85);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .panel-head{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .panel-head h2{
+      margin:0;
+      font-size:1.25rem;
+      color:var(--brand);
+    }
+
+    .panel-head .sub{
+      color:var(--muted);
       font-size:0.96rem;
-    }
-
-    button:disabled{
-      opacity:0.55;
-      cursor:default;
-    }
-
-    .categoryRow{
-      display:flex;
-      gap:0.55rem;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:0.95rem;
-    }
-
-    .catBtn{
-      border:1px solid #d6e2f0;
-      background:#fff;
-      color:#23415f;
-      padding:0.52rem 0.82rem;
-      border-radius:999px;
-      font-weight:900;
-      cursor:pointer;
-      transition:all .12s ease;
-    }
-
-    .catBtn.active{
-      color:#fff;
-      border-color:transparent;
-      box-shadow:0 8px 18px rgba(0,0,0,0.08);
-    }
-
-    .catBtn[data-filter="all"].active{ background:var(--cat-all); }
-    .catBtn[data-filter="events"].active{ background:var(--cat-events); }
-    .catBtn[data-filter="committee"].active{ background:var(--cat-committee); }
-    .catBtn[data-filter="activities"].active{ background:var(--cat-activities); }
-    .catBtn[data-filter="services"].active{ background:var(--cat-services); }
-
-    .warn{
-      display:none;
-      margin-top:0.85rem;
-      padding:0.85rem;
-      border-radius:14px;
-      border:1px solid #f2b8b8;
-      background:#fff5f5;
-      color:#7a0000;
-      white-space:pre-wrap;
       line-height:1.45;
+    }
+
+    .status{
+      margin:6px 0 2px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#f6f9fc;
+      border:1px solid #e4edf5;
+      color:#44556a;
+      font-size:0.95rem;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap:1rem;
-      margin-top:1rem;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      gap:16px;
+      margin-top:14px;
     }
 
-    .notice{
-      background:#fff;
-      border:1px solid #e6edf5;
-      border-radius:16px;
-      box-shadow:0 8px 18px rgba(0,0,0,0.06);
-      padding:0.95rem;
-      position:relative;
+    .notice-card{
+      display:flex;
+      flex-direction:column;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 8px 18px rgba(15,76,129,0.06);
+      min-height:100%;
     }
 
-    .notice.events{
-      border-left:6px solid var(--cat-events);
-      background:#f9faff;
+    .notice-media{
+      width:100%;
+      aspect-ratio:16 / 9;
+      object-fit:cover;
+      display:block;
+      background:#eef4f8;
     }
 
-    .notice.committee{
-      border-left:6px solid var(--cat-committee);
-      background:#fffaf4;
+    .notice-content{
+      padding:15px 15px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
     }
 
-    .notice.activities{
-      border-left:6px solid var(--cat-activities);
-      background:#f7fcf8;
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
     }
 
-    .notice.services{
-      border-left:6px solid var(--cat-services);
-      background:#fff8fe;
-    }
-
-    .tag{
-      display:inline-block;
-      padding:0.15rem 0.5rem;
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
       border-radius:999px;
-      font-weight:900;
-      font-size:0.78rem;
-      margin-right:0.4rem;
-      border:1px solid #dbe6f3;
-      background:#fbfdff;
-      color:#003366;
+      padding:5px 10px;
+      font-size:0.8rem;
+      font-weight:700;
+      letter-spacing:0.01em;
     }
 
-    .tag.events{
-      border-color:#d6ddff;
-      background:#f2f4ff;
-      color:#1f2f8a;
-    }
-
-    .tag.committee{
-      border-color:#ffd7a8;
-      background:#fff3e4;
-      color:#7a3e00;
-    }
-
-    .tag.activities{
-      border-color:#cce7d0;
-      background:#effaf1;
-      color:#115b2b;
-    }
-
-    .tag.services{
-      border-color:#f0c8ef;
-      background:#fff1ff;
-      color:#8a117d;
-    }
-
-    .title{
-      font-weight:900;
-      font-size:1.05rem;
-      margin:0.42rem 0 0.25rem 0;
-      line-height:1.2;
-      color:#1f2a37;
-    }
+    .badge.events{ background:#e7f1fb; color:#0f4c81; }
+    .badge.committee{ background:#f3e8ff; color:#6b21a8; }
+    .badge.activities{ background:#ecfdf5; color:#047857; }
+    .badge.services{ background:#fff7ed; color:#c2410c; }
 
     .meta{
       color:var(--muted);
-      font-size:0.9rem;
-      margin-bottom:0.6rem;
-      line-height:1.4;
-    }
-
-    .body{
-      max-height:240px;
-      overflow:auto;
-      white-space:pre-wrap;
+      font-size:0.92rem;
       line-height:1.45;
-      padding-right:0.25rem;
     }
 
-    .notice.events .body{
-      max-height:340px;
+    .notice-title{
+      margin:0;
+      font-size:1.12rem;
+      line-height:1.3;
+      color:#123b62;
     }
 
-    .media{
-      margin-top:0.75rem;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap:0.5rem;
-      max-height:260px;
-      overflow:auto;
-      padding-right:0.15rem;
+    .notice-summary{
+      margin:0;
+      color:#334155;
+      line-height:1.52;
+      font-size:0.97rem;
     }
 
-    .notice.events .media{
-      max-height:420px;
+    .notice-footer{
+      margin-top:auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding-top:4px;
     }
 
-    .media img{
-      width:100%;
-      height:auto;
-      border-radius:14px;
-      border:1px solid #e6edf5;
-      background:#fff;
-      box-shadow:0 6px 16px rgba(0,0,0,0.06);
+    .more-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--brand);
+      font-weight:700;
+      font-size:0.95rem;
     }
 
     .empty{
-      margin-top:1rem;
-      padding:1rem;
-      border-radius:16px;
-      border:1px dashed #d6dde6;
+      padding:18px;
+      border:1px dashed #c7d7e6;
       background:#fbfdff;
-      color:#6b7280;
-      font-weight:800;
+      border-radius:16px;
+      color:#526274;
+      line-height:1.55;
+      margin-top:10px;
     }
 
-    .topRightNote{
-      margin-left:auto;
-      color:#5d6a77;
-      font-size:0.92rem;
-      font-weight:800;
+    .hidden{ display:none !important; }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:0.9rem;
+      line-height:1.45;
     }
 
-    @media (max-width: 720px){
-      nav{
-        grid-template-columns:1fr;
-        text-align:center;
-        row-gap:0.65rem;
-      }
-      .nav-left,.nav-center,.nav-right{
-        justify-self:center;
-      }
-      .topRightNote{
-        margin-left:0;
-        width:100%;
-      }
+    @media (max-width:640px){
+      .page{ padding:16px 12px 36px; }
+      .hero{ padding:18px 14px; }
+      .panel{ padding:14px; }
+      .notice-content{ padding:14px; }
     }
   </style>
 </head>
-
 <body>
-<nav>
-  <div class="nav-left"><a href="index.html">Home</a></div>
-  <div class="nav-center"><a href="members-info.html">Members Hub</a></div>
-  <div class="nav-right">
-    <a href="#" onclick="(window.scLogout ? window.scLogout() : location.href='index.html'); return false;">Logout</a>
-  </div>
-</nav>
-
-<main>
-  <div class="card">
-    <h1>Notices</h1>
-    <p class="subtle">Events, Committee, Activities and Services notices.</p>
-
-    <div class="controls">
-      <input id="search" type="search" placeholder="Search notices…" />
-      <button id="refreshBtn" type="button">Refresh</button>
-      <span class="pill" id="count">0</span>
-      <span class="topRightNote">Open a notice from the list below</span>
+  <div class="page">
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="members-hub.html">Members Hub</a>
+        <span>›</span>
+        <span>Notices</span>
+      </div>
+      <div class="crumbs">
+        <a href="events.html">Events Diary</a>
+      </div>
     </div>
 
-    <div class="categoryRow" id="categoryRow">
-      <button class="catBtn active" data-filter="all" type="button">All</button>
-      <button class="catBtn" data-filter="events" type="button">Events</button>
-      <button class="catBtn" data-filter="committee" type="button">Committee</button>
-      <button class="catBtn" data-filter="activities" type="button">Activities</button>
-      <button class="catBtn" data-filter="services" type="button">Services</button>
+    <section class="hero">
+      <h1>Club Notices</h1>
+      <p>
+        Browse the latest updates from around the Club. Event notices open to the full event page,
+        where members can view details and go through to booking or register interest.
+      </p>
+    </section>
+
+    <div class="category-bar" id="categoryBar">
+      <button class="category-btn active" data-category="events" type="button">Events</button>
+      <button class="category-btn" data-category="committee" type="button">Committee</button>
+      <button class="category-btn" data-category="activities" type="button">Activities</button>
+      <button class="category-btn" data-category="services" type="button">Services</button>
     </div>
 
-    <div id="warn" class="warn"></div>
-
-    <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No notices found.</div>
-  </div>
-</main>
-
-<script>
-  // Keep the working backend preview mode exactly as-is
-  const API = "https://sanctuary-backend-8iqc.onrender.com/api/notices?mode=preview";
-
-  const grid = document.getElementById("grid");
-  const empty = document.getElementById("empty");
-  const warn = document.getElementById("warn");
-  const searchEl = document.getElementById("search");
-  const refreshBtn = document.getElementById("refreshBtn");
-  const countEl = document.getElementById("count");
-  const categoryRow = document.getElementById("categoryRow");
-
-  let notices = [];
-  let currentFilter = "all";
-
-  function esc(s){
-    return String(s ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#39;");
-  }
-
-  function showWarn(msg){
-    warn.style.display = "block";
-    warn.textContent = msg;
-  }
-
-  function clearWarn(){
-    warn.style.display = "none";
-    warn.textContent = "";
-  }
-
-  function normaliseType(n){
-    const raw = String(n.type || n.category || "activities").toLowerCase().trim();
-
-    if (raw === "host" || raw === "event" || raw === "events") return "events";
-    if (raw === "committee") return "committee";
-    if (raw === "activity" || raw === "activities") return "activities";
-    if (raw === "service" || raw === "services" || raw === "external-service" || raw === "external service") return "services";
-
-    return "activities";
-  }
-
-  function labelForType(t){
-    if (t === "events") return "Events";
-    if (t === "committee") return "Committee";
-    if (t === "activities") return "Activities";
-    if (t === "services") return "Services";
-    return "Notice";
-  }
-
-  function setActiveFilter(filter){
-    currentFilter = filter;
-    [...categoryRow.querySelectorAll(".catBtn")].forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.filter === filter);
-    });
-    render();
-  }
-
-  function render(){
-    grid.innerHTML = "";
-
-    const q = (searchEl.value || "").trim().toLowerCase();
-
-    const list = notices.filter(n => {
-      const t = normaliseType(n);
-      if (currentFilter !== "all" && t !== currentFilter) return false;
-      if (!q) return true;
-
-      const hay = `${n.title||""} ${n.body||""} ${n.author||""} ${n.ownerId||""} ${n.eventId||""}`.toLowerCase();
-      return hay.includes(q);
-    });
-
-    countEl.textContent = String(list.length);
-    empty.style.display = list.length ? "none" : "block";
-
-    list.forEach(n => {
-      const t = normaliseType(n);
-      const card = document.createElement("div");
-      card.className = `notice ${t}`;
-
-      const author = (n.author || "").trim();
-      const media = Array.isArray(n.media) ? n.media.filter(Boolean) : [];
-
-      card.innerHTML = `
+    <section class="panel">
+      <div class="panel-head">
         <div>
-          <span class="tag ${t}">${labelForType(t)}</span>
-          ${t === "events" && n.ownerId ? `<span class="pill">Host: ${esc(n.ownerId)}</span>` : ``}
-          ${n.eventId ? `<span class="pill">Ref: ${esc(n.eventId)}</span>` : ``}
+          <h2 id="panelTitle">Event Notices</h2>
+          <div class="sub" id="panelSub">
+            Notices linked directly to event records.
+          </div>
         </div>
+      </div>
 
-        <div class="title">${esc(n.title || "(Untitled)")}</div>
+      <div id="status" class="status hidden"></div>
+      <div id="content"></div>
 
-        <div class="meta">
-          ${author ? `By: ${esc(author)}` : ""}
-          ${n.createdAt ? `${author ? " · " : ""}${esc(new Date(n.createdAt).toLocaleString("en-GB"))}` : ""}
-        </div>
+      <div class="footer-note">
+        Event notices are drawn from the live event records. Committee, Activities and Services can be
+        wired to their own notice sources next.
+      </div>
+    </section>
+  </div>
 
-        <div class="body">${esc(n.body || "")}</div>
+  <script>
+    (function(){
+      const CONFIG = {
+        BACKEND_URL:
+          (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
+          "https://sanctuary-backend-8iqc.onrender.com"
+      };
 
-        ${media.length ? `<div class="media">${media.map(url => `<img src="${esc(url)}" alt="Notice media" loading="lazy">`).join("")}</div>` : ``}
-      `;
+      const panelTitle = document.getElementById("panelTitle");
+      const panelSub = document.getElementById("panelSub");
+      const content = document.getElementById("content");
+      const statusBox = document.getElementById("status");
+      const categoryBar = document.getElementById("categoryBar");
 
-      grid.appendChild(card);
-    });
-  }
+      const staticNotices = {
+        committee: [],
+        activities: [],
+        services: []
+      };
 
-  async function load(){
-    clearWarn();
-    refreshBtn.disabled = true;
+      const categoryMeta = {
+        events: {
+          title: "Event Notices",
+          sub: "Notices linked directly to event records."
+        },
+        committee: {
+          title: "Committee Notices",
+          sub: "Updates from the Committee."
+        },
+        activities: {
+          title: "Activities Notices",
+          sub: "General activity-related updates."
+        },
+        services: {
+          title: "Services Notices",
+          sub: "Updates from providers and services."
+        }
+      };
 
-    try{
-      const res = await fetch(API, { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      function setStatus(message){
+        if(!message){
+          statusBox.textContent = "";
+          statusBox.classList.add("hidden");
+          return;
+        }
+        statusBox.textContent = message;
+        statusBox.classList.remove("hidden");
+      }
 
-      notices = Array.isArray(data.notices) ? data.notices : [];
+      function escapeHtml(value){
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
 
-      notices.sort((a, b) => {
-        const ap = a.pinned ? 1 : 0;
-        const bp = b.pinned ? 1 : 0;
-        if (bp !== ap) return bp - ap;
+      function stripHtml(value){
+        const div = document.createElement("div");
+        div.innerHTML = value || "";
+        return (div.textContent || div.innerText || "").trim();
+      }
 
-        const at = new Date(a.createdAt || 0).getTime() || 0;
-        const bt = new Date(b.createdAt || 0).getTime() || 0;
-        return bt - at;
+      function truncate(text, max){
+        const t = String(text || "").trim();
+        if(t.length <= max) return t;
+        return t.slice(0, max).trimEnd() + "…";
+      }
+
+      function normaliseArray(payload){
+        if(Array.isArray(payload)) return payload;
+        if(Array.isArray(payload?.events)) return payload.events;
+        if(Array.isArray(payload?.items)) return payload.items;
+        if(Array.isArray(payload?.data)) return payload.data;
+        return [];
+      }
+
+      function getEventId(evt){
+        return evt.event_id || evt.id || evt.eventId || "";
+      }
+
+      function getTitle(evt){
+        return (
+          evt.title ||
+          evt.event_title ||
+          evt.name ||
+          evt.event_name ||
+          "Untitled event"
+        );
+      }
+
+      function getLocation(evt){
+        return evt.location || evt.venue || evt.place || "";
+      }
+
+      function getDateValue(evt){
+        return (
+          evt.start_datetime ||
+          evt.start ||
+          evt.date ||
+          evt.event_date ||
+          evt.start_date ||
+          ""
+        );
+      }
+
+      function getTimeValue(evt){
+        return evt.time || evt.start_time || evt.event_time || "";
+      }
+
+      function getSummary(evt){
+        return (
+          evt.notice_summary ||
+          evt.summary ||
+          evt.short_description ||
+          ""
+        );
+      }
+
+      function getBody(evt){
+        return (
+          evt.notice_body ||
+          evt.description ||
+          evt.body ||
+          evt.details ||
+          ""
+        );
+      }
+
+      function getMedia(evt){
+        const media = evt.notice_media || evt.media || evt.image || evt.image_url || "";
+        if(Array.isArray(media)) return media[0] || "";
+        return media;
+      }
+
+      function hasUsableNotice(evt){
+        return Boolean(
+          getSummary(evt) ||
+          getBody(evt) ||
+          getMedia(evt) ||
+          getTitle(evt)
+        );
+      }
+
+      function formatDateTime(dateValue, timeValue){
+        if(!dateValue && !timeValue) return "";
+
+        try{
+          if(dateValue){
+            const raw = String(dateValue).trim();
+
+            if(raw.includes("T")){
+              const d = new Date(raw);
+              if(!Number.isNaN(d.getTime())){
+                return d.toLocaleString("en-GB", {
+                  weekday:"short",
+                  day:"numeric",
+                  month:"short",
+                  year:"numeric",
+                  hour:"2-digit",
+                  minute:"2-digit"
+                });
+              }
+            }
+
+            const d = new Date(raw);
+            if(!Number.isNaN(d.getTime())){
+              const datePart = d.toLocaleDateString("en-GB", {
+                weekday:"short",
+                day:"numeric",
+                month:"short",
+                year:"numeric"
+              });
+              return timeValue ? `${datePart} · ${timeValue}` : datePart;
+            }
+          }
+        }catch{}
+
+        return [dateValue, timeValue].filter(Boolean).join(" · ");
+      }
+
+      function sortEvents(events){
+        return [...events].sort((a, b) => {
+          const aRaw = getDateValue(a);
+          const bRaw = getDateValue(b);
+          const aTs = Date.parse(aRaw);
+          const bTs = Date.parse(bRaw);
+
+          if(Number.isNaN(aTs) && Number.isNaN(bTs)) return 0;
+          if(Number.isNaN(aTs)) return 1;
+          if(Number.isNaN(bTs)) return -1;
+
+          return aTs - bTs;
+        });
+      }
+
+      function renderEmpty(message){
+        content.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
+      }
+
+      function renderStaticCategory(category){
+        const items = staticNotices[category] || [];
+        if(!items.length){
+          renderEmpty("No notices have been published in this category yet.");
+          return;
+        }
+
+        content.innerHTML = `
+          <div class="grid">
+            ${items.map(item => `
+              <article class="notice-card">
+                ${item.media ? `<img class="notice-media" src="${escapeHtml(item.media)}" alt="">` : ""}
+                <div class="notice-content">
+                  <div class="badge-row">
+                    <span class="badge ${escapeHtml(category)}">${escapeHtml(capitalise(category))}</span>
+                  </div>
+                  <h3 class="notice-title">${escapeHtml(item.title || "Notice")}</h3>
+                  <p class="notice-summary">${escapeHtml(item.summary || "")}</p>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderEventCards(events){
+        const usable = sortEvents(events).filter(evt => getEventId(evt) && hasUsableNotice(evt));
+
+        if(!usable.length){
+          renderEmpty("There are no event notices to show at the moment.");
+          return;
+        }
+
+        content.innerHTML = `
+          <div class="grid">
+            ${usable.map(evt => {
+              const eventId = getEventId(evt);
+              const title = getTitle(evt);
+              const summary = truncate(getSummary(evt) || stripHtml(getBody(evt)), 180) || "Open for full event details.";
+              const media = getMedia(evt);
+              const location = getLocation(evt);
+              const whenText = formatDateTime(getDateValue(evt), getTimeValue(evt));
+              const href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
+
+              return `
+                <article class="notice-card">
+                  ${media ? `<a href="${href}"><img class="notice-media" src="${escapeHtml(media)}" alt="${escapeHtml(title)}"></a>` : ""}
+                  <div class="notice-content">
+                    <div class="badge-row">
+                      <span class="badge events">Event</span>
+                    </div>
+
+                    <h3 class="notice-title">
+                      <a href="${href}">${escapeHtml(title)}</a>
+                    </h3>
+
+                    <div class="meta">
+                      ${whenText ? `<div>${escapeHtml(whenText)}</div>` : ""}
+                      ${location ? `<div>${escapeHtml(location)}</div>` : ""}
+                    </div>
+
+                    <p class="notice-summary">${escapeHtml(summary)}</p>
+
+                    <div class="notice-footer">
+                      <a class="more-link" href="${href}">Open event notice →</a>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      async function loadEventsCategory(){
+        setStatus("Loading event notices...");
+        content.innerHTML = "";
+
+        try{
+          const res = await fetch(`${CONFIG.BACKEND_URL}/api/events`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+          });
+
+          if(!res.ok){
+            throw new Error(`HTTP ${res.status}`);
+          }
+
+          const payload = await res.json();
+          const events = normaliseArray(payload);
+
+          renderEventCards(events);
+          setStatus("");
+        }catch(err){
+          console.error("Failed to load event notices:", err);
+          renderEmpty("Sorry, event notices could not be loaded just now.");
+          setStatus("Could not load live event notices from the backend.");
+        }
+      }
+
+      function capitalise(value){
+        return String(value || "").charAt(0).toUpperCase() + String(value || "").slice(1);
+      }
+
+      async function setCategory(category){
+        document.querySelectorAll(".category-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.category === category);
+        });
+
+        const meta = categoryMeta[category] || { title: "Notices", sub: "" };
+        panelTitle.textContent = meta.title;
+        panelSub.textContent = meta.sub;
+
+        if(category === "events"){
+          await loadEventsCategory();
+          return;
+        }
+
+        setStatus("");
+        renderStaticCategory(category);
+      }
+
+      categoryBar.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".category-btn");
+        if(!btn) return;
+        const category = btn.dataset.category;
+        await setCategory(category);
       });
 
-      render();
-    } catch (e){
-      notices = [];
-      render();
-      showWarn("Could not load notices.\n\n" + String(e.message || e));
-    } finally {
-      refreshBtn.disabled = false;
-    }
-  }
-
-  categoryRow.addEventListener("click", (e) => {
-    const btn = e.target.closest(".catBtn");
-    if (!btn) return;
-    setActiveFilter(btn.dataset.filter);
-  });
-
-  searchEl.addEventListener("input", render);
-  refreshBtn.addEventListener("click", load);
-
-  load();
-</script>
+      setCategory("events");
+    })();
+  </script>
 </body>
 </html>

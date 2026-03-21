@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <!-- Member access gate -->
-  <script src="access.js"></script>
+  <script src="access.js?v=AC_1"></script>
 
   <style>
     :root{
@@ -20,8 +20,13 @@
       --brand:#0f4c81;
       --brand-2:#1d6ca8;
       --soft:#e8f2fb;
+      --soft-2:#f7fbff;
       --shadow:0 12px 28px rgba(15,76,129,0.08);
       --radius:20px;
+      --ok:#166534;
+      --ok-bg:#eefbf3;
+      --warn:#8a5b00;
+      --warn-bg:#fff9ed;
     }
 
     *{ box-sizing:border-box; }
@@ -31,8 +36,7 @@
       padding:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--text);
-      background:
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 44%, #ffffff 100%);
+      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 44%, #ffffff 100%);
       min-height:100%;
     }
 
@@ -46,7 +50,7 @@
     }
 
     .page{
-      max-width:1020px;
+      max-width:1080px;
       margin:0 auto;
       padding:20px 16px 48px;
     }
@@ -74,6 +78,13 @@
       font-weight:700;
     }
 
+    .back-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 16px;
+      align-items:center;
+    }
+
     .back-link{
       display:inline-flex;
       align-items:center;
@@ -91,6 +102,7 @@
       background:#f7fbff;
       color:#466074;
       font-size:0.95rem;
+      line-height:1.45;
     }
 
     .hidden{ display:none !important; }
@@ -106,18 +118,19 @@
 
     .hero-media-wrap{
       background:#edf4fa;
+      border-bottom:1px solid rgba(15,76,129,0.08);
     }
 
     .hero-media{
       width:100%;
       display:block;
       object-fit:cover;
-      max-height:420px;
+      max-height:460px;
       background:#edf4fa;
     }
 
     .hero-inner{
-      padding:22px 18px 20px;
+      padding:24px 20px 22px;
     }
 
     .badge-row{
@@ -148,26 +161,38 @@
       color:#117a46;
     }
 
+    .badge.host{
+      background:#fff7ed;
+      color:#b45309;
+    }
+
     .title{
       margin:0 0 10px;
-      font-size:clamp(1.8rem, 3vw, 2.4rem);
-      line-height:1.15;
+      font-size:clamp(1.9rem, 3vw, 2.55rem);
+      line-height:1.12;
       color:var(--brand);
     }
 
     .summary{
       margin:0;
-      max-width:780px;
+      max-width:860px;
       color:#334155;
-      font-size:1.04rem;
-      line-height:1.6;
+      font-size:1.06rem;
+      line-height:1.62;
+      white-space:pre-wrap;
     }
 
     .layout{
       display:grid;
-      grid-template-columns:minmax(0, 2fr) minmax(280px, 1fr);
+      grid-template-columns:minmax(0, 1.8fr) minmax(290px, 0.95fr);
       gap:18px;
       align-items:start;
+    }
+
+    .stack{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
     }
 
     .card{
@@ -188,6 +213,26 @@
       font-size:1.2rem;
     }
 
+    .lead-note{
+      color:#425569;
+      line-height:1.55;
+      margin:0;
+    }
+
+    .notice-body{
+      color:#2b3d4f;
+      line-height:1.72;
+      font-size:1rem;
+    }
+
+    .notice-body p{
+      margin:0 0 1em;
+    }
+
+    .notice-body p:last-child{
+      margin-bottom:0;
+    }
+
     .details-grid{
       display:grid;
       grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -204,7 +249,7 @@
     .detail-label{
       margin:0 0 4px;
       color:var(--muted);
-      font-size:0.85rem;
+      font-size:0.84rem;
       font-weight:700;
       text-transform:uppercase;
       letter-spacing:0.03em;
@@ -216,33 +261,14 @@
       font-size:1rem;
       line-height:1.45;
       font-weight:600;
+      white-space:pre-wrap;
     }
 
-    .notice-body{
-      color:#2b3d4f;
-      line-height:1.7;
-      font-size:1rem;
-    }
-
-    .notice-body p{
-      margin:0 0 1em;
-    }
-
-    .notice-body p:last-child{
-      margin-bottom:0;
-    }
-
-    .sidebar-stack{
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    .cta-box{
+    .cta-card{
       background:linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
     }
 
-    .cta-box p{
+    .cta-card p{
       margin:0 0 14px;
       color:#425569;
       line-height:1.55;
@@ -253,14 +279,14 @@
       justify-content:center;
       align-items:center;
       width:100%;
-      min-height:48px;
-      padding:12px 16px;
+      min-height:54px;
+      padding:14px 18px;
       border:none;
-      border-radius:14px;
+      border-radius:16px;
       background:var(--brand);
       color:#fff;
-      font-weight:800;
-      font-size:1rem;
+      font-weight:900;
+      font-size:1.03rem;
       cursor:pointer;
       box-shadow:0 10px 20px rgba(15,76,129,0.18);
     }
@@ -269,46 +295,37 @@
       background:var(--brand-2);
     }
 
-    .meta-list{
+    .mini-note{
+      margin-top:12px;
+      font-size:0.92rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .glance-list{
       display:flex;
       flex-direction:column;
       gap:10px;
     }
 
-    .meta-item{
+    .glance-item{
       padding:11px 12px;
       border:1px solid #e4edf5;
       border-radius:14px;
       background:#fbfdff;
     }
 
-    .meta-item strong{
+    .glance-item strong{
       display:block;
       margin-bottom:4px;
       color:#284a6b;
       font-size:0.9rem;
     }
 
-    .meta-item span{
+    .glance-item span{
       color:#44586d;
       line-height:1.45;
       font-size:0.96rem;
-    }
-
-    .helper-links{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .helper-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--brand);
-      font-weight:700;
-      font-size:0.95rem;
     }
 
     .empty-state{
@@ -320,7 +337,28 @@
       line-height:1.55;
     }
 
-    @media (max-width: 860px){
+    .soft-box{
+      padding:14px 15px;
+      border-radius:16px;
+      background:var(--soft-2);
+      border:1px solid #e3edf6;
+      color:#3b4d60;
+      line-height:1.55;
+    }
+
+    .booking-note{
+      background:var(--warn-bg);
+      color:var(--warn);
+      border:1px solid rgba(138,91,0,0.16);
+    }
+
+    .availability-open{
+      background:var(--ok-bg);
+      color:var(--ok);
+      border:1px solid rgba(22,101,52,0.16);
+    }
+
+    @media (max-width: 900px){
       .layout{
         grid-template-columns:1fr;
       }
@@ -346,15 +384,20 @@
   <div class="page">
     <div class="topbar">
       <div class="crumbs">
-        <a href="events.html">Events Diary</a>
+        <a href="members-info.html">Members Hub</a>
+        <span>›</span>
+        <a href="notices-preview.html">Notices</a>
         <span>›</span>
         <span>Host Notice</span>
       </div>
 
-      <a class="back-link" href="events.html">← Back to Events Diary</a>
+      <div class="back-links">
+        <a class="back-link" href="events-calendar.html">← Calendar</a>
+        <a class="back-link" href="events.html">Events Diary</a>
+      </div>
     </div>
 
-    <div id="status" class="status">Loading host notice...</div>
+    <div id="status" class="status">Loading Host Notice...</div>
 
     <main id="app" class="hidden">
       <section class="hero card">
@@ -366,6 +409,7 @@
           <div class="badge-row">
             <span class="badge notice">Host Notice</span>
             <span id="categoryBadge" class="badge category hidden"></span>
+            <span id="hostBadge" class="badge host hidden"></span>
           </div>
 
           <h1 id="title" class="title">Event</h1>
@@ -374,45 +418,60 @@
       </section>
 
       <div class="layout">
-        <section class="card">
-          <div class="card-inner">
-            <h2>Event information</h2>
+        <div class="stack">
+          <section class="card">
+            <div class="card-inner">
+              <h2>The Notice</h2>
+              <div id="body" class="notice-body"></div>
+            </div>
+          </section>
 
-            <div class="details-grid" id="detailsGrid">
-              <div class="detail">
-                <p class="detail-label">Date</p>
-                <p class="detail-value" id="dateValue">—</p>
-              </div>
-              <div class="detail">
-                <p class="detail-label">Time</p>
-                <p class="detail-value" id="timeValue">—</p>
-              </div>
-              <div class="detail">
-                <p class="detail-label">Location</p>
-                <p class="detail-value" id="locationValue">—</p>
-              </div>
-              <div class="detail">
-                <p class="detail-label">Availability</p>
-                <p class="detail-value" id="availabilityValue">Please enquire</p>
+          <section class="card">
+            <div class="card-inner">
+              <h2>Event details</h2>
+              <div class="details-grid">
+                <div class="detail">
+                  <p class="detail-label">Date</p>
+                  <p class="detail-value" id="dateValue">—</p>
+                </div>
+                <div class="detail">
+                  <p class="detail-label">Time</p>
+                  <p class="detail-value" id="timeValue">—</p>
+                </div>
+                <div class="detail">
+                  <p class="detail-label">Location</p>
+                  <p class="detail-value" id="locationValue">—</p>
+                </div>
+                <div class="detail">
+                  <p class="detail-label">Availability</p>
+                  <p class="detail-value" id="availabilityValue">Please enquire</p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <aside class="sidebar-stack">
-          <section class="card cta-box">
+          <section id="bookingNotesCard" class="card hidden">
             <div class="card-inner">
-              <h2>Booking</h2>
+              <h2>Booking notes</h2>
+              <div id="bookingNotes" class="soft-box booking-note"></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="stack">
+          <section class="card cta-card">
+            <div class="card-inner">
+              <h2>Book or register your interest</h2>
               <p>
-                To attend, or to register your interest, continue to the booking form.
+                Once you have read the Host Notice, continue to the booking form to book a place or register your interest.
               </p>
+
               <button id="bookingBtn" class="cta-button" type="button">
-                Book or register your interest
+                Go to booking form
               </button>
 
-              <div class="helper-links">
-                <a class="helper-link" href="events.html">← Return to Events Diary</a>
-                <a class="helper-link" href="events-calendar.html">View Calendar</a>
+              <div class="mini-note">
+                Member details are completed on the booking page through member lookup.
               </div>
             </div>
           </section>
@@ -420,30 +479,30 @@
           <section class="card">
             <div class="card-inner">
               <h2>At a glance</h2>
-              <div class="meta-list">
-                <div class="meta-item">
-                  <strong>Host notice</strong>
-                  <span>Further information from the organiser about this event.</span>
+              <div class="glance-list">
+                <div class="glance-item">
+                  <strong>What this page is</strong>
+                  <span>This is the full Host Notice for the event.</span>
                 </div>
-                <div class="meta-item">
-                  <strong>Booking route</strong>
-                  <span>Booking and expressions of interest are handled through the event form.</span>
+                <div class="glance-item">
+                  <strong>Read first, act second</strong>
+                  <span>Members can read the invitation and practical details here before deciding whether to book.</span>
                 </div>
-                <div class="meta-item">
-                  <strong>Members</strong>
-                  <span>Member details are completed through member lookup on the booking page.</span>
+                <div class="glance-item">
+                  <strong>Booking step</strong>
+                  <span>The booking form is a separate step so the reading flow stays clear and uncluttered.</span>
                 </div>
               </div>
             </div>
           </section>
-        </aside>
 
-        <section class="card" style="grid-column:1 / -1;">
-          <div class="card-inner">
-            <h2>Notice</h2>
-            <div id="body" class="notice-body"></div>
-          </div>
-        </section>
+          <section id="availabilityCard" class="card hidden">
+            <div class="card-inner">
+              <h2>Availability</h2>
+              <div id="availabilityBox" class="soft-box availability-open"></div>
+            </div>
+          </section>
+        </aside>
       </div>
     </main>
 
@@ -465,6 +524,7 @@
       const heroMediaWrap = document.getElementById("heroMediaWrap");
       const heroMedia = document.getElementById("heroMedia");
       const categoryBadge = document.getElementById("categoryBadge");
+      const hostBadge = document.getElementById("hostBadge");
 
       const titleEl = document.getElementById("title");
       const summaryEl = document.getElementById("summary");
@@ -476,6 +536,12 @@
       const availabilityValueEl = document.getElementById("availabilityValue");
 
       const bookingBtn = document.getElementById("bookingBtn");
+
+      const bookingNotesCard = document.getElementById("bookingNotesCard");
+      const bookingNotesEl = document.getElementById("bookingNotes");
+
+      const availabilityCard = document.getElementById("availabilityCard");
+      const availabilityBox = document.getElementById("availabilityBox");
 
       function getQueryParam(name){
         const params = new URLSearchParams(window.location.search);
@@ -566,9 +632,13 @@
         if(typeof remaining === "number"){
           if(remaining <= 0) return "Currently full / waitlist or interest only";
           if(typeof capacity === "number"){
-            return `${remaining} place${remaining === 1 ? "" : "s"} remaining`;
+            return `${remaining} place${remaining === 1 ? "" : "s"} remaining out of ${capacity}`;
           }
           return `${remaining} place${remaining === 1 ? "" : "s"} remaining`;
+        }
+
+        if(typeof capacity === "number"){
+          return `${capacity} place${capacity === 1 ? "" : "s"} available`;
         }
 
         if(String(bookingMode || "").toLowerCase().includes("interest")){
@@ -605,8 +675,8 @@
 
           renderEvent(evt, eventId);
         }catch(err){
-          console.error("Failed to load event notice:", err);
-          showError("Sorry, this host notice could not be loaded just now.");
+          console.error("Failed to load Host Notice:", err);
+          showError("Sorry, this Host Notice could not be loaded just now.");
         }
       }
 
@@ -615,27 +685,50 @@
         const summary = getField(evt, ["notice_summary", "summary", "short_description"], "");
         const body = getField(evt, ["notice_body", "description", "body", "details"], "");
         const media = getField(evt, ["notice_media", "image", "image_url", "media"], "");
-        const category = getField(evt, ["category", "event_category", "type"], "");
-        const dateRaw = getField(evt, ["date", "event_date", "start_date"], "");
+        const category = getField(evt, ["category_label", "category", "event_category", "type"], "");
+        const hostName = getField(evt, ["host_name", "host", "organiser_name"], "");
+        const dateRaw = getField(evt, ["event_date", "date", "start_date"], "");
         const dateTimeRaw = getField(evt, ["start_datetime", "start"], "");
-        const timeRaw = getField(evt, ["time", "start_time", "event_time"], "");
+        const timeRaw = getField(evt, ["start_time", "time", "event_time"], "");
+        const endTimeRaw = getField(evt, ["end_time"]);
         const location = getField(evt, ["location", "venue", "place"], "To be confirmed");
+        const bookingNotes = getField(evt, ["booking_notes"], "");
 
         document.title = `${title} | Host Notice | Sanctuary Club`;
 
         titleEl.textContent = title;
-        summaryEl.textContent = summary || "Please open this host notice for full details of the event.";
+        summaryEl.textContent = summary || "Please read the full Host Notice below for details of this event.";
 
-        bodyEl.innerHTML = maybeHtmlContent(body || summary || "Further details will be added shortly.");
+        bodyEl.innerHTML = maybeHtmlContent(
+          body || summary || "Further details will be added shortly."
+        );
 
         dateValueEl.textContent = formatDate(dateRaw || dateTimeRaw);
-        timeValueEl.textContent = formatTime(timeRaw, dateTimeRaw);
+
+        const startText = formatTime(timeRaw, dateTimeRaw);
+        const timeText = endTimeRaw ? `${startText} – ${endTimeRaw}` : startText;
+        timeValueEl.textContent = timeText;
+
         locationValueEl.textContent = location;
-        availabilityValueEl.textContent = getAvailabilityText(evt);
+
+        const availabilityText = getAvailabilityText(evt);
+        availabilityValueEl.textContent = availabilityText;
+        availabilityBox.textContent = availabilityText;
+        availabilityCard.classList.remove("hidden");
 
         if(category){
           categoryBadge.textContent = String(category);
           categoryBadge.classList.remove("hidden");
+        }
+
+        if(hostName){
+          hostBadge.textContent = `Host: ${hostName}`;
+          hostBadge.classList.remove("hidden");
+        }
+
+        if(bookingNotes){
+          bookingNotesEl.textContent = bookingNotes;
+          bookingNotesCard.classList.remove("hidden");
         }
 
         const mediaUrl = Array.isArray(media) ? (media[0] || "") : media;

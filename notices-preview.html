@@ -6,40 +6,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Member access gate -->
-  <script src="access.js"></script>
+  <!-- Members-only access -->
+  <script src="access.js?v=AC_1"></script>
 
   <style>
     :root{
-      --bg1:#eef6ff;
+      --bg1:#eaf4ff;
       --bg2:#f8fbff;
       --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --line:#dbe5ef;
+      --ink:#1f2937;
+      --muted:#667085;
+      --line:#dbe6f0;
       --brand:#0f4c81;
-      --brand-2:#1f6aa5;
-      --brand-soft:#e8f2fb;
-      --shadow:0 10px 24px rgba(15,76,129,0.08);
-      --radius:18px;
+      --brand2:#1d6ca8;
+      --soft:#e8f2fb;
+      --shadow:0 12px 28px rgba(15,76,129,0.08);
+      --radius:20px;
+
+      --events:#0f4c81;
+      --committee:#7c3aed;
+      --activities:#0f766e;
+      --services:#c2410c;
     }
 
     *{ box-sizing:border-box; }
 
-    html,body{
+    html, body{
       margin:0;
       padding:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 42%, #ffffff 100%);
+      color:var(--ink);
+      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 42%, #ffffff 100%);
       min-height:100%;
     }
 
-    a{ color:inherit; text-decoration:none; }
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
 
     .page{
-      max-width:1080px;
+      max-width:1120px;
       margin:0 auto;
       padding:20px 16px 48px;
     }
@@ -47,8 +54,8 @@
     .topbar{
       display:flex;
       flex-wrap:wrap;
-      align-items:center;
       justify-content:space-between;
+      align-items:center;
       gap:12px;
       margin-bottom:18px;
     }
@@ -58,77 +65,89 @@
       flex-wrap:wrap;
       gap:8px;
       align-items:center;
-      font-size:0.95rem;
       color:var(--muted);
+      font-size:0.96rem;
     }
 
     .crumbs a{
       color:var(--brand);
-      font-weight:600;
+      font-weight:700;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--brand);
+      font-weight:700;
+      font-size:0.95rem;
     }
 
     .hero{
-      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.95));
-      border:1px solid rgba(15,76,129,0.10);
+      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.98));
+      border:1px solid rgba(15,76,129,0.12);
       border-radius:24px;
-      padding:22px 18px;
       box-shadow:var(--shadow);
+      padding:22px 18px;
       margin-bottom:18px;
     }
 
     .hero h1{
       margin:0 0 8px;
-      font-size:clamp(1.7rem, 2.5vw, 2.3rem);
-      line-height:1.15;
+      font-size:clamp(1.8rem, 3vw, 2.35rem);
+      line-height:1.12;
       color:var(--brand);
     }
 
     .hero p{
       margin:0;
-      max-width:760px;
+      max-width:820px;
       color:#334155;
-      line-height:1.55;
+      line-height:1.58;
     }
 
-    .category-bar{
+    .toolbar{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin:18px 0 14px;
+      margin-bottom:18px;
     }
 
-    .category-btn{
+    .cat-btn{
       appearance:none;
-      border:1px solid #bfd4e6;
+      border:1px solid #c9dced;
       background:#fff;
       color:var(--brand);
-      padding:10px 16px;
       border-radius:999px;
-      font-size:0.98rem;
-      font-weight:700;
+      padding:10px 16px;
+      font:inherit;
+      font-weight:800;
       cursor:pointer;
-      transition:transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      box-shadow:0 6px 16px rgba(0,0,0,.05);
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
     }
 
-    .category-btn:hover{
+    .cat-btn:hover{
       transform:translateY(-1px);
-      border-color:#9abbd9;
-      box-shadow:0 8px 18px rgba(15,76,129,0.08);
+      box-shadow:0 10px 20px rgba(15,76,129,0.10);
     }
 
-    .category-btn.active{
+    .cat-btn.active{
       background:var(--brand);
       color:#fff;
-      border-color:var(--brand);
-      box-shadow:0 10px 20px rgba(15,76,129,0.18);
+      border-color:transparent;
     }
 
     .panel{
-      background:rgba(255,255,255,0.85);
+      background:var(--card);
       border:1px solid var(--line);
       border-radius:22px;
-      padding:16px;
       box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel-inner{
+      padding:18px;
     }
 
     .panel-head{
@@ -136,60 +155,82 @@
       flex-wrap:wrap;
       justify-content:space-between;
       align-items:flex-start;
-      gap:10px;
-      margin-bottom:14px;
+      gap:12px;
+      margin-bottom:16px;
     }
 
     .panel-head h2{
-      margin:0;
-      font-size:1.25rem;
+      margin:0 0 6px;
       color:var(--brand);
+      font-size:1.25rem;
     }
 
-    .panel-head .sub{
+    .panel-sub{
       color:var(--muted);
-      font-size:0.96rem;
-      line-height:1.45;
+      line-height:1.5;
     }
 
     .status{
-      margin:6px 0 2px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:#f6f9fc;
-      border:1px solid #e4edf5;
-      color:#44556a;
-      font-size:0.95rem;
+      display:none;
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:700;
+      line-height:1.45;
     }
 
-    .grid{
+    .status.show{ display:block; }
+
+    .status.info{
+      background:#eef6ff;
+      border:1px solid rgba(15,76,129,.14);
+      color:#0b4d87;
+    }
+
+    .status.warn{
+      background:#fff9ed;
+      border:1px solid rgba(138,91,0,.18);
+      color:#8a5b00;
+    }
+
+    .status.err{
+      background:#fff4f4;
+      border:1px solid rgba(180,35,24,.18);
+      color:#b42318;
+    }
+
+    .cards{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
       gap:16px;
-      margin-top:14px;
     }
 
     .notice-card{
-      display:flex;
-      flex-direction:column;
-      background:var(--card);
+      background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
       overflow:hidden;
       box-shadow:0 8px 18px rgba(15,76,129,0.06);
+      display:flex;
+      flex-direction:column;
       min-height:100%;
     }
 
-    .notice-media{
-      width:100%;
-      aspect-ratio:16 / 9;
-      object-fit:cover;
+    .notice-card.media-top .notice-media{
       display:block;
-      background:#eef4f8;
     }
 
-    .notice-content{
-      padding:15px 15px 14px;
+    .notice-media{
+      display:none;
+      width:100%;
+      height:190px;
+      object-fit:cover;
+      background:#eef4f8;
+      border-bottom:1px solid var(--line);
+    }
+
+    .notice-body{
+      padding:16px;
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -206,81 +247,75 @@
     .badge{
       display:inline-flex;
       align-items:center;
-      gap:6px;
+      padding:6px 10px;
       border-radius:999px;
-      padding:5px 10px;
       font-size:0.8rem;
-      font-weight:700;
+      font-weight:800;
       letter-spacing:0.01em;
     }
 
-    .badge.events{ background:#e7f1fb; color:#0f4c81; }
-    .badge.committee{ background:#f3e8ff; color:#6b21a8; }
-    .badge.activities{ background:#ecfdf5; color:#047857; }
-    .badge.services{ background:#fff7ed; color:#c2410c; }
+    .badge.events{ background:#e8f2fb; color:var(--events); }
+    .badge.committee{ background:#f3e8ff; color:var(--committee); }
+    .badge.activities{ background:#e8faf6; color:var(--activities); }
+    .badge.services{ background:#fff1e9; color:var(--services); }
 
-    .meta{
+    .when{
       color:var(--muted);
-      font-size:0.92rem;
+      font-size:0.93rem;
       line-height:1.45;
     }
 
-    .notice-title{
+    .title{
       margin:0;
-      font-size:1.12rem;
+      font-size:1.1rem;
       line-height:1.3;
       color:#123b62;
     }
 
-    .notice-summary{
+    .summary{
       margin:0;
       color:#334155;
-      line-height:1.52;
+      line-height:1.55;
       font-size:0.97rem;
+      white-space:pre-wrap;
     }
 
-    .notice-footer{
+    .card-footer{
       margin-top:auto;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
       padding-top:4px;
     }
 
-    .more-link{
+    .open-link{
       display:inline-flex;
       align-items:center;
       gap:8px;
       color:var(--brand);
-      font-weight:700;
+      font-weight:800;
       font-size:0.95rem;
     }
 
     .empty{
       padding:18px;
-      border:1px dashed #c7d7e6;
-      background:#fbfdff;
+      border:1px dashed #c8d9e7;
       border-radius:16px;
-      color:#526274;
+      background:#fbfdff;
+      color:#526474;
       line-height:1.55;
-      margin-top:10px;
     }
 
-    .hidden{ display:none !important; }
-
-    .footer-note{
-      margin-top:18px;
-      color:var(--muted);
-      font-size:0.9rem;
-      line-height:1.45;
+    .hidden{
+      display:none !important;
     }
 
-    @media (max-width:640px){
-      .page{ padding:16px 12px 36px; }
-      .hero{ padding:18px 14px; }
-      .panel{ padding:14px; }
-      .notice-content{ padding:14px; }
+    @media (max-width:680px){
+      .page{
+        padding:16px 12px 36px;
+      }
+
+      .hero,
+      .panel-inner{
+        padding:16px 14px;
+      }
     }
   </style>
 </head>
@@ -288,97 +323,87 @@
   <div class="page">
     <div class="topbar">
       <div class="crumbs">
-        <a href="members-hub.html">Members Hub</a>
+        <a href="members-info.html">Members Hub</a>
         <span>›</span>
         <span>Notices</span>
       </div>
-      <div class="crumbs">
-        <a href="events.html">Events Diary</a>
-      </div>
+
+      <a class="back-link" href="members-info.html">← Back to Members Hub</a>
     </div>
 
     <section class="hero">
       <h1>Club Notices</h1>
       <p>
-        Browse the latest updates from around the Club. Event notices open to the full event page,
-        where members can view details and go through to booking or register interest.
+        Browse notices from Events, Committee, Activities and Services.
+        Event notices open to the Host Notice page, where members can then continue to booking or register interest.
       </p>
     </section>
 
-    <div class="category-bar" id="categoryBar">
-      <button class="category-btn active" data-category="events" type="button">Events</button>
-      <button class="category-btn" data-category="committee" type="button">Committee</button>
-      <button class="category-btn" data-category="activities" type="button">Activities</button>
-      <button class="category-btn" data-category="services" type="button">Services</button>
+    <div class="toolbar" id="categoryToolbar">
+      <button class="cat-btn active" type="button" data-category="events">Events</button>
+      <button class="cat-btn" type="button" data-category="committee">Committee</button>
+      <button class="cat-btn" type="button" data-category="activities">Activities</button>
+      <button class="cat-btn" type="button" data-category="services">Services</button>
     </div>
 
     <section class="panel">
-      <div class="panel-head">
-        <div>
-          <h2 id="panelTitle">Event Notices</h2>
-          <div class="sub" id="panelSub">
-            Notices linked directly to event records.
+      <div class="panel-inner">
+        <div class="panel-head">
+          <div>
+            <h2 id="panelTitle">Event Notices</h2>
+            <div class="panel-sub" id="panelSub">
+              Notices drawn directly from live event records.
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="status" class="status hidden"></div>
-      <div id="content"></div>
-
-      <div class="footer-note">
-        Event notices are drawn from the live event records. Committee, Activities and Services can be
-        wired to their own notice sources next.
+        <div id="statusBox" class="status info"></div>
+        <div id="content"></div>
       </div>
     </section>
   </div>
 
   <script>
     (function(){
-      const CONFIG = {
-        BACKEND_URL:
-          (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
-          "https://sanctuary-backend-8iqc.onrender.com"
-      };
+      const BACKEND_URL =
+        (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
+        "https://sanctuary-backend-8iqc.onrender.com";
 
+      const toolbar = document.getElementById("categoryToolbar");
       const panelTitle = document.getElementById("panelTitle");
       const panelSub = document.getElementById("panelSub");
       const content = document.getElementById("content");
-      const statusBox = document.getElementById("status");
-      const categoryBar = document.getElementById("categoryBar");
+      const statusBox = document.getElementById("statusBox");
 
-      const staticNotices = {
-        committee: [],
-        activities: [],
-        services: []
-      };
+      let currentCategory = "events";
 
-      const categoryMeta = {
+      const CATEGORY_META = {
         events: {
           title: "Event Notices",
-          sub: "Notices linked directly to event records."
+          sub: "Notices drawn directly from live event records."
         },
         committee: {
           title: "Committee Notices",
-          sub: "Updates from the Committee."
+          sub: "Committee notices will appear here."
         },
         activities: {
           title: "Activities Notices",
-          sub: "General activity-related updates."
+          sub: "General activities notices will appear here."
         },
         services: {
           title: "Services Notices",
-          sub: "Updates from providers and services."
+          sub: "Service-related notices will appear here."
         }
       };
 
-      function setStatus(message){
+      function setStatus(kind, message){
         if(!message){
+          statusBox.className = "status";
           statusBox.textContent = "";
-          statusBox.classList.add("hidden");
           return;
         }
+        statusBox.className = `status show ${kind}`;
         statusBox.textContent = message;
-        statusBox.classList.remove("hidden");
       }
 
       function escapeHtml(value){
@@ -396,13 +421,13 @@
         return (div.textContent || div.innerText || "").trim();
       }
 
-      function truncate(text, max){
-        const t = String(text || "").trim();
-        if(t.length <= max) return t;
-        return t.slice(0, max).trimEnd() + "…";
+      function truncate(text, maxLen){
+        const s = String(text || "").trim();
+        if(s.length <= maxLen) return s;
+        return s.slice(0, maxLen).trimEnd() + "…";
       }
 
-      function normaliseArray(payload){
+      function asArray(payload){
         if(Array.isArray(payload)) return payload;
         if(Array.isArray(payload?.events)) return payload.events;
         if(Array.isArray(payload?.items)) return payload.items;
@@ -410,116 +435,70 @@
         return [];
       }
 
-      function getEventId(evt){
-        return evt.event_id || evt.id || evt.eventId || "";
+      function getField(obj, names, fallback=""){
+        for(const name of names){
+          if(obj && obj[name] !== undefined && obj[name] !== null && obj[name] !== ""){
+            return obj[name];
+          }
+        }
+        return fallback;
       }
 
-      function getTitle(evt){
-        return (
-          evt.title ||
-          evt.event_title ||
-          evt.name ||
-          evt.event_name ||
-          "Untitled event"
-        );
+      function formatDate(dateStr){
+        if(!dateStr) return "";
+        try{
+          const d = new Date(dateStr);
+          if(!Number.isNaN(d.getTime())){
+            return d.toLocaleDateString("en-GB", {
+              weekday:"short",
+              day:"numeric",
+              month:"short",
+              year:"numeric"
+            });
+          }
+        }catch{}
+        return String(dateStr);
       }
 
-      function getLocation(evt){
-        return evt.location || evt.venue || evt.place || "";
+      function formatWhen(ev){
+        const dateVal = getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
+        const timeVal = getField(ev, ["start_time", "time", "event_time"]);
+        const formattedDate = formatDate(dateVal);
+        return [formattedDate, timeVal].filter(Boolean).join(" · ");
       }
 
-      function getDateValue(evt){
-        return (
-          evt.start_datetime ||
-          evt.start ||
-          evt.date ||
-          evt.event_date ||
-          evt.start_date ||
-          ""
-        );
+      function getEventId(ev){
+        return getField(ev, ["event_id", "id"]);
       }
 
-      function getTimeValue(evt){
-        return evt.time || evt.start_time || evt.event_time || "";
+      function getSummary(ev){
+        return getField(ev, ["notice_summary", "summary", "short_description"]);
       }
 
-      function getSummary(evt){
-        return (
-          evt.notice_summary ||
-          evt.summary ||
-          evt.short_description ||
-          ""
-        );
+      function getBody(ev){
+        return getField(ev, ["notice_body", "description", "body", "details"]);
       }
 
-      function getBody(evt){
-        return (
-          evt.notice_body ||
-          evt.description ||
-          evt.body ||
-          evt.details ||
-          ""
-        );
-      }
-
-      function getMedia(evt){
-        const media = evt.notice_media || evt.media || evt.image || evt.image_url || "";
+      function getMedia(ev){
+        const media = getField(ev, ["notice_media", "image_url", "image", "media"]);
         if(Array.isArray(media)) return media[0] || "";
         return media;
       }
 
-      function hasUsableNotice(evt){
-        return Boolean(
-          getSummary(evt) ||
-          getBody(evt) ||
-          getMedia(evt) ||
-          getTitle(evt)
-        );
+      function getTitle(ev){
+        return getField(ev, ["title", "event_title", "name"], "Untitled event");
       }
 
-      function formatDateTime(dateValue, timeValue){
-        if(!dateValue && !timeValue) return "";
-
-        try{
-          if(dateValue){
-            const raw = String(dateValue).trim();
-
-            if(raw.includes("T")){
-              const d = new Date(raw);
-              if(!Number.isNaN(d.getTime())){
-                return d.toLocaleString("en-GB", {
-                  weekday:"short",
-                  day:"numeric",
-                  month:"short",
-                  year:"numeric",
-                  hour:"2-digit",
-                  minute:"2-digit"
-                });
-              }
-            }
-
-            const d = new Date(raw);
-            if(!Number.isNaN(d.getTime())){
-              const datePart = d.toLocaleDateString("en-GB", {
-                weekday:"short",
-                day:"numeric",
-                month:"short",
-                year:"numeric"
-              });
-              return timeValue ? `${datePart} · ${timeValue}` : datePart;
-            }
-          }
-        }catch{}
-
-        return [dateValue, timeValue].filter(Boolean).join(" · ");
+      function getLocation(ev){
+        return getField(ev, ["location", "venue", "place"]);
       }
 
       function sortEvents(events){
         return [...events].sort((a, b) => {
-          const aRaw = getDateValue(a);
-          const bRaw = getDateValue(b);
-          const aTs = Date.parse(aRaw);
-          const bTs = Date.parse(bRaw);
+          const aVal = getField(a, ["event_date", "date", "start_date", "start_datetime", "start"]);
+          const bVal = getField(b, ["event_date", "date", "start_date", "start_datetime", "start"]);
+          const aTs = Date.parse(aVal);
+          const bTs = Date.parse(bVal);
 
           if(Number.isNaN(aTs) && Number.isNaN(bTs)) return 0;
           if(Number.isNaN(aTs)) return 1;
@@ -533,33 +512,17 @@
         content.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
       }
 
-      function renderStaticCategory(category){
-        const items = staticNotices[category] || [];
-        if(!items.length){
-          renderEmpty("No notices have been published in this category yet.");
-          return;
-        }
-
-        content.innerHTML = `
-          <div class="grid">
-            ${items.map(item => `
-              <article class="notice-card">
-                ${item.media ? `<img class="notice-media" src="${escapeHtml(item.media)}" alt="">` : ""}
-                <div class="notice-content">
-                  <div class="badge-row">
-                    <span class="badge ${escapeHtml(category)}">${escapeHtml(capitalise(category))}</span>
-                  </div>
-                  <h3 class="notice-title">${escapeHtml(item.title || "Notice")}</h3>
-                  <p class="notice-summary">${escapeHtml(item.summary || "")}</p>
-                </div>
-              </article>
-            `).join("")}
-          </div>
-        `;
+      function renderPlaceholder(category){
+        const messages = {
+          committee: "No Committee notices have been published yet.",
+          activities: "No Activities notices have been published yet.",
+          services: "No Services notices have been published yet."
+        };
+        renderEmpty(messages[category] || "No notices are available in this category yet.");
       }
 
-      function renderEventCards(events){
-        const usable = sortEvents(events).filter(evt => getEventId(evt) && hasUsableNotice(evt));
+      function renderEvents(events){
+        const usable = sortEvents(events).filter(ev => getEventId(ev));
 
         if(!usable.length){
           renderEmpty("There are no event notices to show at the moment.");
@@ -567,37 +530,42 @@
         }
 
         content.innerHTML = `
-          <div class="grid">
-            ${usable.map(evt => {
-              const eventId = getEventId(evt);
-              const title = getTitle(evt);
-              const summary = truncate(getSummary(evt) || stripHtml(getBody(evt)), 180) || "Open for full event details.";
-              const media = getMedia(evt);
-              const location = getLocation(evt);
-              const whenText = formatDateTime(getDateValue(evt), getTimeValue(evt));
+          <div class="cards">
+            ${usable.map(ev => {
+              const eventId = getEventId(ev);
+              const title = getTitle(ev);
+              const summary = truncate(
+                getSummary(ev) || stripHtml(getBody(ev)) || "Open the Host Notice for full details.",
+                220
+              );
+              const media = getMedia(ev);
+              const whenText = formatWhen(ev);
+              const location = getLocation(ev);
               const href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
 
               return `
-                <article class="notice-card">
+                <article class="notice-card${media ? " media-top" : ""}">
                   ${media ? `<a href="${href}"><img class="notice-media" src="${escapeHtml(media)}" alt="${escapeHtml(title)}"></a>` : ""}
-                  <div class="notice-content">
+                  <div class="notice-body">
                     <div class="badge-row">
                       <span class="badge events">Event</span>
                     </div>
 
-                    <h3 class="notice-title">
+                    ${whenText || location ? `
+                      <div class="when">
+                        ${whenText ? `<div>${escapeHtml(whenText)}</div>` : ""}
+                        ${location ? `<div>${escapeHtml(location)}</div>` : ""}
+                      </div>
+                    ` : ""}
+
+                    <h3 class="title">
                       <a href="${href}">${escapeHtml(title)}</a>
                     </h3>
 
-                    <div class="meta">
-                      ${whenText ? `<div>${escapeHtml(whenText)}</div>` : ""}
-                      ${location ? `<div>${escapeHtml(location)}</div>` : ""}
-                    </div>
+                    <p class="summary">${escapeHtml(summary)}</p>
 
-                    <p class="notice-summary">${escapeHtml(summary)}</p>
-
-                    <div class="notice-footer">
-                      <a class="more-link" href="${href}">Open event notice →</a>
+                    <div class="card-footer">
+                      <a class="open-link" href="${href}">Open Host Notice →</a>
                     </div>
                   </div>
                 </article>
@@ -607,62 +575,67 @@
         `;
       }
 
-      async function loadEventsCategory(){
-        setStatus("Loading event notices...");
-        content.innerHTML = "";
+      async function getJson(url){
+        const res = await fetch(url, {
+          headers: { "Accept": "application/json" }
+        });
 
+        const text = await res.text();
+        let data = {};
         try{
-          const res = await fetch(`${CONFIG.BACKEND_URL}/api/events`, {
-            method: "GET",
-            headers: { "Accept": "application/json" }
-          });
-
-          if(!res.ok){
-            throw new Error(`HTTP ${res.status}`);
-          }
-
-          const payload = await res.json();
-          const events = normaliseArray(payload);
-
-          renderEventCards(events);
-          setStatus("");
-        }catch(err){
-          console.error("Failed to load event notices:", err);
-          renderEmpty("Sorry, event notices could not be loaded just now.");
-          setStatus("Could not load live event notices from the backend.");
+          data = text ? JSON.parse(text) : {};
+        }catch{
+          data = {};
         }
+
+        if(!res.ok){
+          throw new Error(data.message || `HTTP ${res.status}`);
+        }
+
+        return data;
       }
 
-      function capitalise(value){
-        return String(value || "").charAt(0).toUpperCase() + String(value || "").slice(1);
-      }
+      async function loadCategory(category){
+        currentCategory = category;
 
-      async function setCategory(category){
-        document.querySelectorAll(".category-btn").forEach(btn => {
+        [...toolbar.querySelectorAll(".cat-btn")].forEach(btn => {
           btn.classList.toggle("active", btn.dataset.category === category);
         });
 
-        const meta = categoryMeta[category] || { title: "Notices", sub: "" };
+        const meta = CATEGORY_META[category];
         panelTitle.textContent = meta.title;
         panelSub.textContent = meta.sub;
 
-        if(category === "events"){
-          await loadEventsCategory();
+        if(category !== "events"){
+          setStatus("", "");
+          renderPlaceholder(category);
           return;
         }
 
-        setStatus("");
-        renderStaticCategory(category);
+        setStatus("info", "Loading event notices...");
+        content.innerHTML = "";
+
+        try{
+          const data = await getJson(`${BACKEND_URL}/api/events`);
+          const events = asArray(data);
+          setStatus("", "");
+          renderEvents(events);
+        }catch(err){
+          console.error(err);
+          renderEmpty("Sorry, event notices could not be loaded just now.");
+          setStatus("err", err.message || "Could not load event notices.");
+        }
       }
 
-      categoryBar.addEventListener("click", async (e) => {
-        const btn = e.target.closest(".category-btn");
+      toolbar.addEventListener("click", (e) => {
+        const btn = e.target.closest(".cat-btn");
         if(!btn) return;
         const category = btn.dataset.category;
-        await setCategory(category);
+        if(category === currentCategory) return;
+        loadCategory(category);
       });
 
-      setCategory("events");
+      loadCategory("events");
     })();
   </script>
 </body>

@@ -674,6 +674,16 @@
         "external-service": "External Service"
       };
 
+      function getAuthToken(){
+        return (
+          sessionStorage.getItem("adminToken") ||
+          localStorage.getItem("adminToken") ||
+          sessionStorage.getItem("token") ||
+          localStorage.getItem("token") ||
+          ""
+        ).trim();
+      }
+
       function showStatus(kind, message){
         statusBox.className = `status show ${kind}`;
         statusBox.textContent = message;
@@ -757,12 +767,14 @@
         if(!eventDateEl.value) return "Please choose a date.";
         if(!startTimeEl.value.trim()) return "Please choose a start time.";
         if(!locationEl.value.trim()) return "Please add a location.";
+        if(!hostMemberIdEl.value.trim()) return "Please add the host membership number.";
         return "";
       }
 
       function buildPayload(){
         const capacityRaw = capacityEl.value.trim();
         const capacity = capacityRaw === "" ? null : Number(capacityRaw);
+        const mediaUrl = noticeMediaEl.value.trim();
 
         return {
           title: titleEl.value.trim(),
@@ -776,20 +788,27 @@
           host_member_id: hostMemberIdEl.value.trim(),
           capacity: Number.isFinite(capacity) ? capacity : null,
           booking_mode: bookingModeEl.value,
-          publish_live: !!publishLiveEl.checked,
-          show_in_calendar: !!showInCalendarEl.checked,
+          status: publishLiveEl.checked ? "published" : "draft",
+          notice_published: !!publishLiveEl.checked,
           notice_summary: noticeSummaryEl.value.trim(),
-          notice_media: noticeMediaEl.value.trim(),
-          notice_body: noticeBodyEl.value.trim()
+          notice_body: noticeBodyEl.value.trim(),
+          notice_media: mediaUrl ? [mediaUrl] : [],
+          show_in_calendar: !!showInCalendarEl.checked
         };
       }
 
       async function postJson(url, data){
+        const token = getAuthToken();
+        if(!token){
+          throw new Error("Missing admin token. Please log in again.");
+        }
+
         const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(data)
         });

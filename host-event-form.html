@@ -675,14 +675,8 @@
       };
 
       function getAuthToken(){
-        return (
-          sessionStorage.getItem("adminToken") ||
-          localStorage.getItem("adminToken") ||
-          sessionStorage.getItem("token") ||
-          localStorage.getItem("token") ||
-          ""
-        ).trim();
-      }
+  return (localStorage.getItem("adminToken") || "").trim();
+}
 
       function showStatus(kind, message){
         statusBox.className = `status show ${kind}`;

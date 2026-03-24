@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <script src="access.js?v=AC_1"></script>
-  
+
   <style>
     :root{
       --bg1:#eef6ff;
@@ -160,6 +160,51 @@
       margin:18px 0;
     }
 
+    .auth-panel{
+      margin-bottom:18px;
+    }
+
+    .auth-box{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .auth-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .auth-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 14px;
+      border:1px solid #dbe6f0;
+      border-radius:14px;
+      background:#fbfdff;
+    }
+
+    .auth-pill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#e8f2fb;
+      color:var(--brand);
+      font-size:0.82rem;
+      font-weight:800;
+    }
+
+    .mini-note{
+      color:var(--muted);
+      font-size:0.9rem;
+      line-height:1.45;
+    }
+
     .form-grid{
       display:grid;
       grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -191,6 +236,7 @@
     }
 
     input[type="text"],
+    input[type="password"],
     input[type="date"],
     input[type="time"],
     input[type="number"],
@@ -417,7 +463,8 @@
         padding:16px 14px;
       }
 
-      .form-grid{
+      .form-grid,
+      .auth-row{
         grid-template-columns:1fr;
       }
 
@@ -447,6 +494,41 @@
         Enter the event details, add the title and image you want shown on the Host Notice page,
         then write the notice in your own words.
       </p>
+    </section>
+
+    <section class="card auth-panel">
+      <div class="card-inner">
+        <div id="authStatusBox" class="status"></div>
+
+        <div class="auth-box">
+          <div class="auth-meta">
+            <div>
+              <div class="auth-pill" id="authModeLabel">Host / Admin access</div>
+              <div class="mini-note" id="authSummary">
+                Sign in as a host with membership number and PIN, or continue with an existing admin login.
+              </div>
+            </div>
+            <button id="signOutBtn" class="btn secondary hidden" type="button">Sign out of host access</button>
+          </div>
+
+          <form id="hostLoginForm" class="hidden" novalidate>
+            <div class="auth-row">
+              <div class="field">
+                <label for="login_member_id">Membership number</label>
+                <input id="login_member_id" type="text" maxlength="30" placeholder="e.g. SM55" />
+              </div>
+              <div class="field">
+                <label for="login_pin">PIN</label>
+                <input id="login_pin" type="password" maxlength="10" placeholder="Your PIN" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="hostLoginBtn" class="btn primary" type="submit">Sign in as host</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
 
     <div class="layout">
@@ -507,7 +589,7 @@
 
               <div class="field">
                 <label for="host_member_id">Host membership number</label>
-                <input id="host_member_id" name="host_member_id" type="text" maxlength="30" placeholder="e.g. M023" />
+                <input id="host_member_id" name="host_member_id" type="text" maxlength="30" placeholder="e.g. SM55" />
               </div>
 
               <div class="field">
@@ -631,10 +713,23 @@
         (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
         "https://sanctuary-backend-8iqc.onrender.com";
 
+      const HOST_TOKEN_KEY = "hostToken";
+      const HOST_MEMBER_KEY = "hostMember";
+      const ADMIN_TOKEN_KEY = "adminToken";
+
       const form = document.getElementById("eventForm");
       const submitBtn = document.getElementById("submitBtn");
       const resetBtn = document.getElementById("resetBtn");
       const statusBox = document.getElementById("statusBox");
+
+      const hostLoginForm = document.getElementById("hostLoginForm");
+      const hostLoginBtn = document.getElementById("hostLoginBtn");
+      const loginMemberIdEl = document.getElementById("login_member_id");
+      const loginPinEl = document.getElementById("login_pin");
+      const authStatusBox = document.getElementById("authStatusBox");
+      const authSummary = document.getElementById("authSummary");
+      const authModeLabel = document.getElementById("authModeLabel");
+      const signOutBtn = document.getElementById("signOutBtn");
 
       const titleEl = document.getElementById("title");
       const categoryKeyEl = document.getElementById("category_key");
@@ -674,10 +769,6 @@
         "external-service": "External Service"
       };
 
-      function getAuthToken(){
-  return (localStorage.getItem("adminToken") || "").trim();
-}
-
       function showStatus(kind, message){
         statusBox.className = `status show ${kind}`;
         statusBox.textContent = message;
@@ -686,6 +777,16 @@
       function clearStatus(){
         statusBox.className = "status";
         statusBox.textContent = "";
+      }
+
+      function showAuthStatus(kind, message){
+        authStatusBox.className = `status show ${kind}`;
+        authStatusBox.textContent = message;
+      }
+
+      function clearAuthStatus(){
+        authStatusBox.className = "status";
+        authStatusBox.textContent = "";
       }
 
       function safeText(value, fallback){
@@ -711,6 +812,73 @@
         const n = Number(raw);
         if(!Number.isFinite(n)) return "See booking form";
         return `${n} place${n === 1 ? "" : "s"}`;
+      }
+
+      function getAdminToken(){
+        return (localStorage.getItem(ADMIN_TOKEN_KEY) || "").trim();
+      }
+
+      function getHostToken(){
+        return (localStorage.getItem(HOST_TOKEN_KEY) || "").trim();
+      }
+
+      function getAuthToken(){
+        return getHostToken() || getAdminToken();
+      }
+
+      function getHostMember(){
+        try{
+          const raw = localStorage.getItem(HOST_MEMBER_KEY);
+          return raw ? JSON.parse(raw) : null;
+        }catch{
+          return null;
+        }
+      }
+
+      function setHostSession(token, member){
+        localStorage.setItem(HOST_TOKEN_KEY, token);
+        localStorage.setItem(HOST_MEMBER_KEY, JSON.stringify(member || {}));
+      }
+
+      function clearHostSession(){
+        localStorage.removeItem(HOST_TOKEN_KEY);
+        localStorage.removeItem(HOST_MEMBER_KEY);
+      }
+
+      function refreshAccessUi(){
+        const adminToken = getAdminToken();
+        const hostToken = getHostToken();
+        const hostMember = getHostMember();
+
+        if(adminToken){
+          hostLoginForm.classList.add("hidden");
+          signOutBtn.classList.add("hidden");
+          authModeLabel.textContent = "Admin access active";
+          authSummary.textContent = "You are using an existing admin login.";
+          clearAuthStatus();
+          return;
+        }
+
+        if(hostToken && hostMember){
+          hostLoginForm.classList.add("hidden");
+          signOutBtn.classList.remove("hidden");
+          authModeLabel.textContent = "Host access active";
+          authSummary.textContent = `Signed in as ${hostMember.name || hostMember.memberId || "host"}${hostMember.memberId ? ` (${hostMember.memberId})` : ""}.`;
+
+          if(!hostMemberIdEl.value.trim() && hostMember.memberId){
+            hostMemberIdEl.value = hostMember.memberId;
+          }
+          if(!hostNameEl.value.trim() && hostMember.name){
+            hostNameEl.value = hostMember.name;
+          }
+          updatePreview();
+          return;
+        }
+
+        hostLoginForm.classList.remove("hidden");
+        signOutBtn.classList.add("hidden");
+        authModeLabel.textContent = "Host / Admin access";
+        authSummary.textContent = "Sign in as a host with membership number and PIN, or continue with an existing admin login.";
       }
 
       function updatePreview(){
@@ -756,6 +924,7 @@
       }
 
       function validateForm(){
+        if(!getAuthToken()) return "Please sign in as host or admin first.";
         if(!titleEl.value.trim()) return "Please add an event title.";
         if(!categoryKeyEl.value) return "Please choose a category.";
         if(!eventDateEl.value) return "Please choose a date.";
@@ -794,7 +963,7 @@
       async function postJson(url, data){
         const token = getAuthToken();
         if(!token){
-          throw new Error("Missing admin token. Please log in again.");
+          throw new Error("Please sign in as host or admin first.");
         }
 
         const res = await fetch(url, {
@@ -821,6 +990,89 @@
 
         return json;
       }
+
+      async function hostLogin(memberId, pin){
+        const res = await fetch(`${BACKEND_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            memberId,
+            pin
+          })
+        });
+
+        const text = await res.text();
+        let json = {};
+        try{
+          json = text ? JSON.parse(text) : {};
+        }catch{
+          json = {};
+        }
+
+        if(!res.ok){
+          throw new Error(json.message || `HTTP ${res.status}`);
+        }
+
+        return json;
+      }
+
+      hostLoginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearAuthStatus();
+
+        const memberId = loginMemberIdEl.value.trim();
+        const pin = loginPinEl.value.trim();
+
+        if(!memberId || !pin){
+          showAuthStatus("warn", "Please enter membership number and PIN.");
+          return;
+        }
+
+        hostLoginBtn.disabled = true;
+        hostLoginBtn.textContent = "Signing in…";
+
+        try{
+          const result = await hostLogin(memberId, pin);
+          const member = result.member || {};
+          const roles = member.roles || [];
+
+          if(!roles.includes("host") && !roles.includes("admin")){
+            throw new Error("Host or admin role required.");
+          }
+
+          setHostSession(result.token, {
+            name: member.name || "",
+            memberId: member.memberId || memberId,
+            roles
+          });
+
+          if(!hostMemberIdEl.value.trim()){
+            hostMemberIdEl.value = member.memberId || memberId;
+          }
+          if(!hostNameEl.value.trim()){
+            hostNameEl.value = member.name || "";
+          }
+
+          showAuthStatus("ok", "Host sign-in successful.");
+          refreshAccessUi();
+          updatePreview();
+        }catch(err){
+          console.error(err);
+          showAuthStatus("err", err.message || "Could not sign in as host.");
+        }finally{
+          hostLoginBtn.disabled = false;
+          hostLoginBtn.textContent = "Sign in as host";
+        }
+      });
+
+      signOutBtn.addEventListener("click", () => {
+        clearHostSession();
+        clearAuthStatus();
+        refreshAccessUi();
+      });
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -865,6 +1117,7 @@
         form.reset();
         clearStatus();
         updatePreview();
+        refreshAccessUi();
       });
 
       [
@@ -886,6 +1139,7 @@
         el.addEventListener("change", updatePreview);
       });
 
+      refreshAccessUi();
       updatePreview();
     })();
   </script>

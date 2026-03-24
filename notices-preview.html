@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Notices | Sanctuary Club</title>
+  <title>Club Notices and News | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Members-only access -->
   <script src="access.js?v=AC_1"></script>
 
   <style>
@@ -19,14 +18,13 @@
       --line:#dbe6f0;
       --brand:#0f4c81;
       --brand2:#1d6ca8;
-      --soft:#e8f2fb;
       --shadow:0 12px 28px rgba(15,76,129,0.08);
-      --radius:20px;
 
       --events:#0f4c81;
       --committee:#7c3aed;
       --activities:#0f766e;
       --services:#c2410c;
+      --news:#b45309;
     }
 
     *{ box-sizing:border-box; }
@@ -101,7 +99,7 @@
 
     .hero p{
       margin:0;
-      max-width:820px;
+      max-width:860px;
       color:#334155;
       line-height:1.58;
     }
@@ -187,12 +185,6 @@
       color:#0b4d87;
     }
 
-    .status.warn{
-      background:#fff9ed;
-      border:1px solid rgba(138,91,0,.18);
-      color:#8a5b00;
-    }
-
     .status.err{
       background:#fff4f4;
       border:1px solid rgba(180,35,24,.18);
@@ -258,6 +250,7 @@
     .badge.committee{ background:#f3e8ff; color:var(--committee); }
     .badge.activities{ background:#e8faf6; color:var(--activities); }
     .badge.services{ background:#fff1e9; color:var(--services); }
+    .badge.news{ background:#fff7e8; color:var(--news); }
 
     .when{
       color:var(--muted);
@@ -303,10 +296,6 @@
       line-height:1.55;
     }
 
-    .hidden{
-      display:none !important;
-    }
-
     @media (max-width:680px){
       .page{
         padding:16px 12px 36px;
@@ -325,17 +314,16 @@
       <div class="crumbs">
         <a href="members-info.html">Members Hub</a>
         <span>›</span>
-        <span>Notices</span>
+        <span>Club Notices and News</span>
       </div>
 
       <a class="back-link" href="members-info.html">← Back to Members Hub</a>
     </div>
 
     <section class="hero">
-      <h1>Club Notices</h1>
+      <h1>Club Notices and News</h1>
       <p>
-        Browse notices from Events, Committee, Activities and Services.
-        Event notices open to the Host Notice page, where members can then continue to booking or register interest.
+        Browse event notices, Club information and future News items. Event notices open to the Host Notice page, where members can then continue to booking or register interest.
       </p>
     </section>
 
@@ -344,6 +332,7 @@
       <button class="cat-btn" type="button" data-category="committee">Committee</button>
       <button class="cat-btn" type="button" data-category="activities">Activities</button>
       <button class="cat-btn" type="button" data-category="services">Services</button>
+      <button class="cat-btn" type="button" data-category="news">News</button>
     </div>
 
     <section class="panel">
@@ -387,12 +376,16 @@
           sub: "Committee notices will appear here."
         },
         activities: {
-          title: "Activities Notices",
-          sub: "General activities notices will appear here."
+          title: "Activities",
+          sub: "Activity-related items will appear here."
         },
         services: {
-          title: "Services Notices",
-          sub: "Service-related notices will appear here."
+          title: "Services",
+          sub: "Service-related items will appear here."
+        },
+        news: {
+          title: "News",
+          sub: "Sanctuary News can be introduced here later."
         }
       };
 
@@ -515,10 +508,11 @@
       function renderPlaceholder(category){
         const messages = {
           committee: "No Committee notices have been published yet.",
-          activities: "No Activities notices have been published yet.",
-          services: "No Services notices have been published yet."
+          activities: "No Activity items have been published yet.",
+          services: "No Service items have been published yet.",
+          news: "No News items have been published yet."
         };
-        renderEmpty(messages[category] || "No notices are available in this category yet.");
+        renderEmpty(messages[category] || "No items are available in this category yet.");
       }
 
       function renderEvents(events){

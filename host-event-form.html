@@ -48,6 +48,8 @@
       text-decoration:none;
     }
 
+    .hidden{ display:none !important; }
+
     .page{
       max-width:1180px;
       margin:0 auto;
@@ -482,15 +484,15 @@
         <span>›</span>
         <a href="events-calendar.html">Calendar</a>
         <span>›</span>
-        <span>Create Event</span>
+        <span id="crumbCurrent">Create Event</span>
       </div>
 
       <a class="back-link" href="events-calendar.html">← Back to Calendar</a>
     </div>
 
     <section class="hero">
-      <h1>Create an event and its Host Notice</h1>
-      <p>
+      <h1 id="pageHeading">Create an event and its Host Notice</h1>
+      <p id="pageIntro">
         Enter the event details, add the title and image you want shown on the Host Notice page,
         then write the notice in your own words.
       </p>
@@ -537,7 +539,7 @@
           <div id="statusBox" class="status"></div>
 
           <form id="eventForm" novalidate>
-            <h2>Event details</h2>
+            <h2 id="detailsHeading">Event details</h2>
             <p class="intro">Add the practical details of the event here.</p>
 
             <div class="form-grid">
@@ -664,7 +666,7 @@
           </div>
 
           <div class="poster-head">
-            <span class="poster-badge">Host Notice preview</span>
+            <span class="poster-badge" id="previewBadge">Host Notice preview</span>
             <h2 id="previewTitle" class="poster-title">Your event title will appear here</h2>
             <p id="previewSummary" class="poster-summary">Your short introduction will appear here.</p>
           </div>
@@ -717,6 +719,12 @@
       const HOST_MEMBER_KEY = "hostMember";
       const ADMIN_TOKEN_KEY = "adminToken";
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventIdFromUrl = (urlParams.get("event_id") || "").trim();
+      const isEditMode = !!eventIdFromUrl;
+
+      let loadedEventSnapshot = null;
+
       const form = document.getElementById("eventForm");
       const submitBtn = document.getElementById("submitBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -730,6 +738,12 @@
       const authSummary = document.getElementById("authSummary");
       const authModeLabel = document.getElementById("authModeLabel");
       const signOutBtn = document.getElementById("signOutBtn");
+
+      const crumbCurrent = document.getElementById("crumbCurrent");
+      const pageHeading = document.getElementById("pageHeading");
+      const pageIntro = document.getElementById("pageIntro");
+      const detailsHeading = document.getElementById("detailsHeading");
+      const previewBadge = document.getElementById("previewBadge");
 
       const titleEl = document.getElementById("title");
       const categoryKeyEl = document.getElementById("category_key");
@@ -794,6 +808,49 @@
         return t || fallback;
       }
 
+      function firstNonEmpty(){
+        for(const value of arguments){
+          if(value === undefined || value === null) continue;
+          const text = String(value).trim();
+          if(text !== "") return text;
+        }
+        return "";
+      }
+
+      function firstNumber(){
+        for(const value of arguments){
+          if(value === undefined || value === null || value === "") continue;
+          const n = Number(value);
+          if(Number.isFinite(n)) return n;
+        }
+        return null;
+      }
+
+      function firstBoolean(defaultValue){
+        for(let i = 1; i < arguments.length; i++){
+          const value = arguments[i];
+          if(typeof value === "boolean") return value;
+          if(value === 1 || value === "1" || value === "true") return true;
+          if(value === 0 || value === "0" || value === "false") return false;
+        }
+        return defaultValue;
+      }
+
+      function normaliseMedia(value){
+        if(Array.isArray(value)){
+          return value
+            .map(item => String(item || "").trim())
+            .filter(Boolean);
+        }
+
+        if(typeof value === "string"){
+          const trimmed = value.trim();
+          return trimmed ? [trimmed] : [];
+        }
+
+        return [];
+      }
+
       function formatDate(dateStr){
         if(!dateStr) return "Not yet set";
         const d = new Date(`${dateStr}T12:00:00`);
@@ -845,6 +902,28 @@
         localStorage.removeItem(HOST_MEMBER_KEY);
       }
 
+      function setPageModeText(){
+        if(isEditMode){
+          document.title = "Edit Event | Sanctuary Club";
+          crumbCurrent.textContent = "Edit Event";
+          pageHeading.textContent = "Edit event and Host Notice";
+          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and save your changes.";
+          detailsHeading.textContent = "Event details";
+          submitBtn.textContent = "Save changes";
+          resetBtn.textContent = "Reset changes";
+          previewBadge.textContent = "Host Notice preview";
+        }else{
+          document.title = "Create Event | Sanctuary Club";
+          crumbCurrent.textContent = "Create Event";
+          pageHeading.textContent = "Create an event and its Host Notice";
+          pageIntro.textContent = "Enter the event details, add the title and image you want shown on the Host Notice page, then write the notice in your own words.";
+          detailsHeading.textContent = "Event details";
+          submitBtn.textContent = "Publish event and Host Notice";
+          resetBtn.textContent = "Clear form";
+          previewBadge.textContent = "Host Notice preview";
+        }
+      }
+
       function refreshAccessUi(){
         const adminToken = getAdminToken();
         const hostToken = getHostToken();
@@ -853,8 +932,10 @@
         if(adminToken){
           hostLoginForm.classList.add("hidden");
           signOutBtn.classList.add("hidden");
-          authModeLabel.textContent = "Admin access active";
-          authSummary.textContent = "You are using an existing admin login.";
+          authModeLabel.textContent = isEditMode ? "Admin edit access active" : "Admin access active";
+          authSummary.textContent = isEditMode
+            ? "You are using an existing admin login to edit this event."
+            : "You are using an existing admin login.";
           clearAuthStatus();
           return;
         }
@@ -862,7 +943,7 @@
         if(hostToken && hostMember){
           hostLoginForm.classList.add("hidden");
           signOutBtn.classList.remove("hidden");
-          authModeLabel.textContent = "Host access active";
+          authModeLabel.textContent = isEditMode ? "Host edit access active" : "Host access active";
           authSummary.textContent = `Signed in as ${hostMember.name || hostMember.memberId || "host"}${hostMember.memberId ? ` (${hostMember.memberId})` : ""}.`;
 
           if(!hostMemberIdEl.value.trim() && hostMember.memberId){
@@ -877,8 +958,10 @@
 
         hostLoginForm.classList.remove("hidden");
         signOutBtn.classList.add("hidden");
-        authModeLabel.textContent = "Host / Admin access";
-        authSummary.textContent = "Sign in as a host with membership number and PIN, or continue with an existing admin login.";
+        authModeLabel.textContent = isEditMode ? "Host / Admin edit access" : "Host / Admin access";
+        authSummary.textContent = isEditMode
+          ? "Sign in as a host with membership number and PIN, or continue with an existing admin login, to edit this event."
+          : "Sign in as a host with membership number and PIN, or continue with an existing admin login.";
       }
 
       function updatePreview(){
@@ -950,6 +1033,7 @@
           host_name: hostNameEl.value.trim(),
           host_member_id: hostMemberIdEl.value.trim(),
           capacity: Number.isFinite(capacity) ? capacity : null,
+          capacity_total: Number.isFinite(capacity) ? capacity : null,
           booking_mode: bookingModeEl.value,
           status: publishLiveEl.checked ? "published" : "draft",
           notice_published: !!publishLiveEl.checked,
@@ -960,23 +1044,10 @@
         };
       }
 
-      async function postJson(url, data){
-        const token = getAuthToken();
-        if(!token){
-          throw new Error("Please sign in as host or admin first.");
-        }
-
-        const res = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(data)
-        });
-
+      async function requestJson(url, options){
+        const res = await fetch(url, options);
         const text = await res.text();
+
         let json = {};
         try{
           json = text ? JSON.parse(text) : {};
@@ -985,14 +1056,40 @@
         }
 
         if(!res.ok){
-          throw new Error(json.message || `HTTP ${res.status}`);
+          throw new Error(json.message || json.error || `HTTP ${res.status}`);
         }
 
         return json;
       }
 
+      async function getJson(url){
+        return requestJson(url, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+      }
+
+      async function sendAuthedJson(url, method, data){
+        const token = getAuthToken();
+        if(!token){
+          throw new Error("Please sign in as host or admin first.");
+        }
+
+        return requestJson(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+      }
+
       async function hostLogin(memberId, pin){
-        const res = await fetch(`${BACKEND_URL}/auth/login`, {
+        return requestJson(`${BACKEND_URL}/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1003,20 +1100,117 @@
             pin
           })
         });
+      }
 
-        const text = await res.text();
-        let json = {};
+      function extractEventPayload(responseJson){
+        if(!responseJson || typeof responseJson !== "object"){
+          return {};
+        }
+
+        if(responseJson.event && typeof responseJson.event === "object"){
+          return responseJson.event;
+        }
+
+        if(responseJson.data && typeof responseJson.data === "object"){
+          return responseJson.data;
+        }
+
+        return responseJson;
+      }
+
+      function applyEventToForm(eventData){
+        const mediaList = normaliseMedia(
+          eventData.notice_media || eventData.media || eventData.noticeMedia
+        );
+
+        titleEl.value = firstNonEmpty(eventData.title);
+        categoryKeyEl.value = firstNonEmpty(eventData.category_key, eventData.category);
+        eventDateEl.value = firstNonEmpty(eventData.event_date, eventData.date);
+        startTimeEl.value = firstNonEmpty(eventData.start_time);
+        endTimeEl.value = firstNonEmpty(eventData.end_time);
+        locationEl.value = firstNonEmpty(eventData.location);
+        hostNameEl.value = firstNonEmpty(eventData.host_name, eventData.host);
+        hostMemberIdEl.value = firstNonEmpty(eventData.host_member_id, eventData.member_id);
+        const cap = firstNumber(eventData.capacity, eventData.capacity_total, eventData.places);
+        capacityEl.value = cap === null ? "" : String(cap);
+        bookingModeEl.value = firstNonEmpty(eventData.booking_mode, "booking_or_interest") || "booking_or_interest";
+        noticeSummaryEl.value = firstNonEmpty(eventData.notice_summary, eventData.summary, eventData.introduction);
+        noticeMediaEl.value = mediaList[0] || "";
+        noticeBodyEl.value = firstNonEmpty(eventData.notice_body, eventData.body, eventData.notice);
+
+        publishLiveEl.checked = firstBoolean(true, eventData.notice_published, eventData.published, eventData.status === "published");
+        showInCalendarEl.checked = firstBoolean(true, eventData.show_in_calendar, eventData.calendar_visible, eventData.listed);
+
+        updatePreview();
+      }
+
+      function captureFormSnapshot(){
+        return {
+          title: titleEl.value,
+          category_key: categoryKeyEl.value,
+          event_date: eventDateEl.value,
+          start_time: startTimeEl.value,
+          end_time: endTimeEl.value,
+          location: locationEl.value,
+          host_name: hostNameEl.value,
+          host_member_id: hostMemberIdEl.value,
+          capacity: capacityEl.value,
+          booking_mode: bookingModeEl.value,
+          notice_summary: noticeSummaryEl.value,
+          notice_media: noticeMediaEl.value,
+          notice_body: noticeBodyEl.value,
+          publish_live: publishLiveEl.checked,
+          show_in_calendar: showInCalendarEl.checked
+        };
+      }
+
+      function applySnapshot(snapshot){
+        if(!snapshot) return;
+
+        titleEl.value = snapshot.title || "";
+        categoryKeyEl.value = snapshot.category_key || "";
+        eventDateEl.value = snapshot.event_date || "";
+        startTimeEl.value = snapshot.start_time || "";
+        endTimeEl.value = snapshot.end_time || "";
+        locationEl.value = snapshot.location || "";
+        hostNameEl.value = snapshot.host_name || "";
+        hostMemberIdEl.value = snapshot.host_member_id || "";
+        capacityEl.value = snapshot.capacity || "";
+        bookingModeEl.value = snapshot.booking_mode || "booking";
+        noticeSummaryEl.value = snapshot.notice_summary || "";
+        noticeMediaEl.value = snapshot.notice_media || "";
+        noticeBodyEl.value = snapshot.notice_body || "";
+        publishLiveEl.checked = !!snapshot.publish_live;
+        showInCalendarEl.checked = !!snapshot.show_in_calendar;
+
+        updatePreview();
+      }
+
+      async function loadEventForEdit(){
+        if(!isEditMode) return;
+
+        showStatus("warn", "Loading event details…");
+        submitBtn.disabled = true;
+        resetBtn.disabled = true;
+
         try{
-          json = text ? JSON.parse(text) : {};
-        }catch{
-          json = {};
-        }
+          const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(eventIdFromUrl)}`);
+          const eventData = extractEventPayload(result);
 
-        if(!res.ok){
-          throw new Error(json.message || `HTTP ${res.status}`);
-        }
+          if(!eventData || typeof eventData !== "object" || Object.keys(eventData).length === 0){
+            throw new Error("Event details could not be loaded.");
+          }
 
-        return json;
+          applyEventToForm(eventData);
+          loadedEventSnapshot = captureFormSnapshot();
+          clearStatus();
+        }catch(err){
+          console.error(err);
+          showStatus("err", err.message || "The event could not be loaded.");
+        }finally{
+          submitBtn.disabled = false;
+          resetBtn.disabled = false;
+        }
       }
 
       hostLoginForm.addEventListener("submit", async (e) => {
@@ -1085,39 +1279,63 @@
         }
 
         submitBtn.disabled = true;
-        submitBtn.textContent = "Publishing…";
+        submitBtn.textContent = isEditMode ? "Saving…" : "Publishing…";
 
         try{
-          const result = await postJson(`${BACKEND_URL}/api/events`, buildPayload());
+          const payload = buildPayload();
+          const result = isEditMode
+            ? await sendAuthedJson(`${BACKEND_URL}/api/events/${encodeURIComponent(eventIdFromUrl)}`, "PUT", payload)
+            : await sendAuthedJson(`${BACKEND_URL}/api/events`, "POST", payload);
 
+          const returnedEvent = extractEventPayload(result);
           const eventId =
-            result.event_id ||
-            result.id ||
-            (result.event && (result.event.event_id || result.event.id)) ||
-            "";
+            firstNonEmpty(
+              result.event_id,
+              result.id,
+              returnedEvent.event_id,
+              returnedEvent.id,
+              eventIdFromUrl
+            );
+
+          if(isEditMode){
+            loadedEventSnapshot = captureFormSnapshot();
+          }
 
           if(eventId){
-            showStatus("ok", `Event published successfully. Event reference: ${eventId}`);
+            showStatus("ok", isEditMode
+              ? `Changes saved successfully. Event reference: ${eventId}`
+              : `Event published successfully. Event reference: ${eventId}`
+            );
+
             setTimeout(() => {
               window.location.href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
             }, 700);
           }else{
-            showStatus("ok", "Event published successfully.");
+            showStatus("ok", isEditMode
+              ? "Changes saved successfully."
+              : "Event published successfully."
+            );
           }
         }catch(err){
           console.error(err);
-          showStatus("err", err.message || "The event could not be published.");
+          showStatus("err", err.message || (isEditMode ? "The event could not be updated." : "The event could not be published."));
         }finally{
           submitBtn.disabled = false;
-          submitBtn.textContent = "Publish event and Host Notice";
+          submitBtn.textContent = isEditMode ? "Save changes" : "Publish event and Host Notice";
         }
       });
 
       resetBtn.addEventListener("click", () => {
-        form.reset();
         clearStatus();
-        updatePreview();
-        refreshAccessUi();
+
+        if(isEditMode && loadedEventSnapshot){
+          applySnapshot(loadedEventSnapshot);
+          showStatus("ok", "Form reset to the loaded event details.");
+        }else{
+          form.reset();
+          updatePreview();
+          refreshAccessUi();
+        }
       });
 
       [
@@ -1139,8 +1357,10 @@
         el.addEventListener("change", updatePreview);
       });
 
+      setPageModeText();
       refreshAccessUi();
       updatePreview();
+      loadEventForEdit();
     })();
   </script>
 </body>

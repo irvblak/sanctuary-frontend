@@ -111,6 +111,38 @@
       margin-bottom:0.55rem;
     }
 
+    .status{
+      display:none;
+      margin-top:0.8rem;
+      padding:0.75rem 0.9rem;
+      border-radius:10px;
+      font-size:0.95rem;
+      font-weight:700;
+      line-height:1.45;
+    }
+
+    .status.show{ display:block; }
+    .status.info{
+      background:#eef6ff;
+      border:1px solid rgba(0,94,168,.16);
+      color:#0b4d87;
+    }
+    .status.warn{
+      background:#fff8ea;
+      border:1px solid rgba(138,91,0,.18);
+      color:#8a5b00;
+    }
+    .status.err{
+      background:#fff2f4;
+      border:1px solid rgba(176,0,32,.18);
+      color:#b00020;
+    }
+    .status.ok{
+      background:#eefbf3;
+      border:1px solid rgba(22,101,52,.16);
+      color:#166534;
+    }
+
     button{
       background:#005ea8;
       color:#fff;
@@ -238,6 +270,8 @@
         <button id="unlockBtn" type="button" disabled>Enter or change your contact info</button>
         <button id="goMDBtn" type="button" class="secondary" disabled>Open Members Directory</button>
       </div>
+
+      <div id="statusBox" class="status info"></div>
     </div>
 
     <div class="residents" id="residents"></div>
@@ -250,6 +284,8 @@
 </main>
 
 <script>
+  const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+
   // Storage keys (data)
   const STORAGE_KEY = "sanctuaryMembers";
   const PIN_KEY = "sanctuaryPins";
@@ -269,10 +305,22 @@
   const addResidentBtn = document.getElementById("addResidentBtn");
   const saveBtn = document.getElementById("saveBtn");
   const goMDBtn = document.getElementById("goMDBtn");
+  const statusBox = document.getElementById("statusBox");
 
   let unlocked = false;
   let shownResidents = 1;
   let existingResidents = [];
+  let latestLookupId = 0;
+
+  function setStatus(kind, message){
+    if (!message){
+      statusBox.className = "status";
+      statusBox.textContent = "";
+      return;
+    }
+    statusBox.className = `status show ${kind}`;
+    statusBox.textContent = message;
+  }
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];
@@ -335,20 +383,28 @@
 
     const landlineRow =
       index === 0
-        ? `<label>Landline</label><input data-field="landline" value="${data.landline || ""}" ${unlocked ? "" : "disabled"}>`
+        ? `<label>Landline</label><input data-field="landline" value="${escapeAttr(data.landline || "")}" ${unlocked ? "" : "disabled"}>`
         : `<label>Landline</label><div class="placeholder">—</div>`;
 
     div.innerHTML = `
       <h3>Resident ${index + 1}</h3>
       <label>Name</label>
-      <input data-field="name" value="${data.name || ""}" ${unlocked ? "" : "disabled"}>
+      <input data-field="name" value="${escapeAttr(data.name || "")}" ${unlocked ? "" : "disabled"}>
       <label>Email</label>
-      <input data-field="email" value="${data.email || ""}" ${unlocked ? "" : "disabled"}>
+      <input data-field="email" value="${escapeAttr(data.email || "")}" ${unlocked ? "" : "disabled"}>
       <label>Mobile</label>
-      <input data-field="mobile" value="${data.mobile || ""}" ${unlocked ? "" : "disabled"}>
+      <input data-field="mobile" value="${escapeAttr(data.mobile || "")}" ${unlocked ? "" : "disabled"}>
       ${landlineRow}
     `;
     return div;
+  }
+
+  function escapeAttr(value){
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   function renderResidents(){
@@ -373,11 +429,96 @@
     goMDBtn.disabled = !(memberIdKey && pinOK);
   }
 
-  function loadExistingFor(memberIdKey){
+  function loadExistingLocal(memberIdKey){
     const store = loadStore();
-    existingResidents = Array.isArray(store[memberIdKey]?.residents)
+    const residents = Array.isArray(store[memberIdKey]?.residents)
       ? store[memberIdKey].residents
       : [];
+    return residents;
+  }
+
+  function normaliseResidentsFromBackend(data){
+    if (!data || typeof data !== "object") return [];
+
+    const directResidents = Array.isArray(data.residents) ? data.residents : null;
+    if (directResidents) return directResidents;
+
+    const eventStyleMember = data.member && typeof data.member === "object" ? data.member : null;
+    if (eventStyleMember && Array.isArray(eventStyleMember.residents)) {
+      return eventStyleMember.residents;
+    }
+
+    if (Array.isArray(data.data?.residents)) {
+      return data.data.residents;
+    }
+
+    if (Array.isArray(data.profile?.residents)) {
+      return data.profile.residents;
+    }
+
+    return [];
+  }
+
+  async function fetchExistingFromBackend(memberIdKey){
+    const urls = [
+      `${BACKEND}/api/member-profile/${encodeURIComponent(memberIdKey)}`,
+      `${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`
+    ];
+
+    for (const url of urls){
+      try{
+        const res = await fetch(url, { headers: { "Accept": "application/json" } });
+        if (!res.ok) continue;
+        const data = await res.json().catch(() => null);
+        const residents = normaliseResidentsFromBackend(data);
+        if (Array.isArray(residents) && residents.length){
+          return residents;
+        }
+      }catch{
+        // try next endpoint
+      }
+    }
+
+    return [];
+  }
+
+  async function loadExistingFor(memberIdKey){
+    const lookupId = ++latestLookupId;
+
+    const localResidents = loadExistingLocal(memberIdKey);
+    existingResidents = localResidents;
+    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+    renderResidents();
+
+    setStatus("info", "Looking up saved information...");
+
+    const backendResidents = await fetchExistingFromBackend(memberIdKey);
+
+    if (lookupId !== latestLookupId) return;
+
+    if (backendResidents.length){
+      existingResidents = backendResidents;
+      shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+      renderResidents();
+
+      const store = loadStore();
+      store[memberIdKey] = {
+        residents: backendResidents,
+        joined: true,
+        updated: Date.now()
+      };
+      saveStore(store);
+
+      setStatus("ok", "Existing information loaded.");
+      return;
+    }
+
+    if (localResidents.length){
+      setStatus("ok", "Existing information loaded.");
+      return;
+    }
+
+    setStatus("warn", "No saved information found yet for this membership number.");
   }
 
   async function validateOrSetPin(memberIdKey, pin){
@@ -409,9 +550,10 @@
       return;
     }
 
-    loadExistingFor(memberIdKey);
+    await loadExistingFor(memberIdKey);
     shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
     setUnlocked(true);
+    setStatus("ok", "Contact information unlocked.");
   }
 
   async function openDirectoryIfPinValid(){
@@ -477,8 +619,6 @@
     saveStore(store);
 
     try {
-      const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
-
       const res = await fetch(`${BACKEND}/api/members/${encodeURIComponent(memberIdKey)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -501,10 +641,11 @@
     shownResidents = Math.min(Math.max(residents.length, 1), 4);
     renderResidents();
 
+    setStatus("ok", "Saved.");
     alert("Saved");
   };
 
-  memberIdEl.oninput = () => {
+  memberIdEl.oninput = async () => {
     const memberIdKey = getKeyAndNormaliseInput();
 
     existingResidents = [];
@@ -512,17 +653,14 @@
 
     if (!memberIdKey) {
       residentsEl.innerHTML = "";
+      setStatus("", "");
       updateButtonsEnabled();
       return;
     }
 
-    loadExistingFor(memberIdKey);
     updatePinUI(memberIdKey);
-
-    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
-    renderResidents();
-
     updateButtonsEnabled();
+    await loadExistingFor(memberIdKey);
   };
 
   pinInput.addEventListener("input", updateButtonsEnabled);
@@ -543,6 +681,8 @@
     localStorage.removeItem(MD_UNTIL_KEY);
     localStorage.removeItem("token");
     localStorage.removeItem("adminToken");
+    localStorage.removeItem("hostToken");
+    localStorage.removeItem("hostMember");
 
     location.href = "index.html";
   };

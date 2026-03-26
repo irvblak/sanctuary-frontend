@@ -409,6 +409,9 @@
 
   function renderResidents(){
     residentsEl.innerHTML = "";
+
+    if (!unlocked) return;
+
     for (let i = 0; i < shownResidents; i++){
       residentsEl.appendChild(makeResidentCard(i, existingResidents[i] || {}));
     }
@@ -486,12 +489,6 @@
     const lookupId = ++latestLookupId;
 
     const localResidents = loadExistingLocal(memberIdKey);
-    existingResidents = localResidents;
-    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
-    renderResidents();
-
-    setStatus("info", "Looking up saved information...");
-
     const backendResidents = await fetchExistingFromBackend(memberIdKey);
 
     if (lookupId !== latestLookupId) return;
@@ -499,7 +496,6 @@
     if (backendResidents.length){
       existingResidents = backendResidents;
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
-      renderResidents();
 
       const store = loadStore();
       store[memberIdKey] = {
@@ -509,15 +505,22 @@
       };
       saveStore(store);
 
+      renderResidents();
       setStatus("ok", "Existing information loaded.");
       return;
     }
 
     if (localResidents.length){
+      existingResidents = localResidents;
+      shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
+      renderResidents();
       setStatus("ok", "Existing information loaded.");
       return;
     }
 
+    existingResidents = [];
+    shownResidents = 1;
+    renderResidents();
     setStatus("warn", "No saved information found yet for this membership number.");
   }
 
@@ -531,6 +534,13 @@
     }
 
     return (await pinHash(memberIdKey, pin)) === pins[memberIdKey];
+  }
+
+  function clearVisibleResidentInfo(){
+    existingResidents = [];
+    shownResidents = 1;
+    setUnlocked(false);
+    residentsEl.innerHTML = "";
   }
 
   async function handleUnlock(){
@@ -550,9 +560,9 @@
       return;
     }
 
-    await loadExistingFor(memberIdKey);
-    shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
     setUnlocked(true);
+    setStatus("info", "Loading saved information...");
+    await loadExistingFor(memberIdKey);
     setStatus("ok", "Contact information unlocked.");
   }
 
@@ -645,14 +655,12 @@
     alert("Saved");
   };
 
-  memberIdEl.oninput = async () => {
+  memberIdEl.oninput = () => {
     const memberIdKey = getKeyAndNormaliseInput();
 
-    existingResidents = [];
-    setUnlocked(false);
+    clearVisibleResidentInfo();
 
     if (!memberIdKey) {
-      residentsEl.innerHTML = "";
       setStatus("", "");
       updateButtonsEnabled();
       return;
@@ -660,7 +668,7 @@
 
     updatePinUI(memberIdKey);
     updateButtonsEnabled();
-    await loadExistingFor(memberIdKey);
+    setStatus("info", "Enter your 4-digit PIN to view or change your information, or to open the Members Directory.");
   };
 
   pinInput.addEventListener("input", updateButtonsEnabled);

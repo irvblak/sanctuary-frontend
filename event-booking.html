@@ -859,10 +859,27 @@
 
         let profile = null;
         try{
-          const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
-          profile = p.member || null;
-        }catch{
-        }
+  const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
+  profile = p.member || p.profile || p.data || p || null;
+}catch{
+  profile = null;
+}
+const residents = Array.isArray(profile?.residents) ? profile.residents : [];
+
+const completedResidents = residents.filter(r => {
+  if (!r || typeof r !== "object") return false;
+
+  return [
+    r.name,
+    r.email,
+    r.mobile,
+    r.landline
+  ].some(v => String(v || "").trim() !== "");
+});
+
+const householdMaxPlaces = Math.max(completedResidents.length, 1);
+
+        
 
         memberNameEl.value = profile?.primary_name || login.member?.name || "";
         memberEmailEl.value = profile?.primary_email || login.member?.email || "";

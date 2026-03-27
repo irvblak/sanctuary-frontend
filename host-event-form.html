@@ -623,12 +623,13 @@
               <div class="field full">
                 <label for="notice_media">Image, poster or logo</label>
                 <input id="notice_media" name="notice_media" type="url" maxlength="1000" placeholder="https://example.com/image.jpg" />
-                <div class="hint">Paste a web link to an image you want shown at the top of the notice.</div>
+                <div class="hint">Paste a direct web link to an image you want shown at the top of the notice.</div>
               </div>
 
               <div class="field full">
                 <label for="notice_body">Full Host Notice</label>
                 <textarea id="notice_body" name="notice_body" maxlength="8000" placeholder="Write the Notice here in your own words."></textarea>
+                <div class="hint">Please paste ordinary notice text only, not page code or a whole document.</div>
               </div>
             </div>
 
@@ -836,19 +837,70 @@
         return defaultValue;
       }
 
-      function normaliseMedia(value){
+      function looksLikeDirectImageUrl(value){
+        const text = String(value || "").trim();
+        if(!text) return false;
+
+        if(!/^https?:\/\//i.test(text)) return false;
+
+        const lower = text.toLowerCase();
+
+        if(
+          lower.includes("google.com/search") ||
+          lower.includes("bing.com/search") ||
+          lower.includes("duckduckgo.com/?q=") ||
+          lower.includes("yahoo.com/search") ||
+          lower.includes("/search?") ||
+          lower.includes("maps.google") ||
+          lower.includes("youtube.com") ||
+          lower.includes("youtu.be")
+        ){
+          return false;
+        }
+
+        return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(text);
+      }
+
+      function cleanMediaUrl(value){
         if(Array.isArray(value)){
-          return value
-            .map(item => String(item || "").trim())
-            .filter(Boolean);
+          for(const item of value){
+            const cleaned = cleanMediaUrl(item);
+            if(cleaned) return cleaned;
+          }
+          return "";
         }
 
-        if(typeof value === "string"){
-          const trimmed = value.trim();
-          return trimmed ? [trimmed] : [];
-        }
+        const text = String(value || "").trim();
+        if(!text) return "";
 
-        return [];
+        const match = text.match(/https?:\/\/\S+/i);
+        const url = match ? match[0] : "";
+        if(!url) return "";
+
+        return looksLikeDirectImageUrl(url) ? url : "";
+      }
+
+      function containsBlockedNoticeBodyContent(value){
+        const text = String(value || "");
+        if(!text.trim()) return false;
+
+        return (
+          /<!doctype html/i.test(text) ||
+          /<html[\s>]/i.test(text) ||
+          /<head[\s>]/i.test(text) ||
+          /<body[\s>]/i.test(text) ||
+          /<meta[\s>]/i.test(text) ||
+          /<style[\s>]/i.test(text) ||
+          /<script[\s>]/i.test(text) ||
+          /<\/html>/i.test(text) ||
+          /<\/body>/i.test(text)
+        );
+      }
+
+      function cleanPlainNoticeText(value){
+        return String(value || "")
+          .replace(/\r\n/g, "\n")
+          .trim();
       }
 
       function formatDate(dateStr){
@@ -993,7 +1045,7 @@
           "Your full Host Notice will appear here."
         );
 
-        const mediaUrl = noticeMediaEl.value.trim();
+        const mediaUrl = cleanMediaUrl(noticeMediaEl.value);
         if(mediaUrl){
           previewImage.src = mediaUrl;
           previewImage.style.display = "block";
@@ -1014,13 +1066,24 @@
         if(!startTimeEl.value.trim()) return "Please choose a start time.";
         if(!locationEl.value.trim()) return "Please add a location.";
         if(!hostMemberIdEl.value.trim()) return "Please add the host membership number.";
+
+        const mediaUrl = noticeMediaEl.value.trim();
+        if(mediaUrl && !cleanMediaUrl(mediaUrl)){
+          return "Please use a direct image link ending in .jpg, .jpeg, .png, .gif, .webp or .svg.";
+        }
+
+        if(containsBlockedNoticeBodyContent(noticeBodyEl.value)){
+          return "Please remove page code from the Full Host Notice box and leave ordinary notice text only.";
+        }
+
         return "";
       }
 
       function buildPayload(){
         const capacityRaw = capacityEl.value.trim();
         const capacity = capacityRaw === "" ? null : Number(capacityRaw);
-        const mediaUrl = noticeMediaEl.value.trim();
+        const mediaUrl = cleanMediaUrl(noticeMediaEl.value);
+        const noticeBody = cleanPlainNoticeText(noticeBodyEl.value);
 
         return {
           title: titleEl.value.trim(),
@@ -1038,7 +1101,7 @@
           status: publishLiveEl.checked ? "published" : "draft",
           notice_published: !!publishLiveEl.checked,
           notice_summary: noticeSummaryEl.value.trim(),
-          notice_body: noticeBodyEl.value.trim(),
+          notice_body: noticeBody,
           notice_media: mediaUrl ? [mediaUrl] : [],
           show_in_calendar: !!showInCalendarEl.checked
         };
@@ -1119,7 +1182,7 @@
       }
 
       function applyEventToForm(eventData){
-        const mediaList = normaliseMedia(
+        const mediaUrl = cleanMediaUrl(
           eventData.notice_media || eventData.media || eventData.noticeMedia
         );
 
@@ -1131,12 +1194,14 @@
         locationEl.value = firstNonEmpty(eventData.location);
         hostNameEl.value = firstNonEmpty(eventData.host_name, eventData.host);
         hostMemberIdEl.value = firstNonEmpty(eventData.host_member_id, eventData.member_id);
+
         const cap = firstNumber(eventData.capacity, eventData.capacity_total, eventData.places);
         capacityEl.value = cap === null ? "" : String(cap);
+
         bookingModeEl.value = firstNonEmpty(eventData.booking_mode, "booking_or_interest") || "booking_or_interest";
         noticeSummaryEl.value = firstNonEmpty(eventData.notice_summary, eventData.summary, eventData.introduction);
-        noticeMediaEl.value = mediaList[0] || "";
-        noticeBodyEl.value = firstNonEmpty(eventData.notice_body, eventData.body, eventData.notice);
+        noticeMediaEl.value = mediaUrl || "";
+        noticeBodyEl.value = cleanPlainNoticeText(firstNonEmpty(eventData.notice_body, eventData.body, eventData.notice));
 
         publishLiveEl.checked = firstBoolean(true, eventData.notice_published, eventData.published, eventData.status === "published");
         showInCalendarEl.checked = firstBoolean(true, eventData.show_in_calendar, eventData.calendar_visible, eventData.listed);

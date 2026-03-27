@@ -467,15 +467,36 @@
       }
 
       function normalisePayload(payload){
-        if(payload && typeof payload === "object" && payload.event) return payload.event;
-        return payload;
+        if(payload && typeof payload === "object"){
+          if(payload.event && typeof payload.event === "object") return payload.event;
+          if(payload.data && typeof payload.data === "object") return payload.data;
+        }
+        return payload || {};
+      }
+
+      function isScalarUsable(value){
+        if(value === undefined || value === null) return false;
+        if(Array.isArray(value)) return value.length > 0;
+        if(typeof value === "object") return false;
+        return String(value).trim() !== "";
       }
 
       function getField(obj, names, fallback=""){
         for(const name of names){
-          if(obj && obj[name] !== undefined && obj[name] !== null && obj[name] !== ""){
+          if(obj && isScalarUsable(obj[name])){
             return obj[name];
           }
+        }
+        return fallback;
+      }
+
+      function getNumberField(obj, names, fallback=null){
+        for(const name of names){
+          if(!obj) continue;
+          const value = obj[name];
+          if(value === undefined || value === null || value === "") continue;
+          const n = Number(value);
+          if(Number.isFinite(n)) return n;
         }
         return fallback;
       }
@@ -483,7 +504,7 @@
       function formatDate(value){
         if(!value) return "To be confirmed";
         try{
-          const d = new Date(value);
+          const d = new Date(String(value));
           if(!Number.isNaN(d.getTime())){
             return d.toLocaleDateString("en-GB", {
               weekday:"long",
@@ -497,19 +518,22 @@
       }
 
       function formatTime(value, dateTimeValue, endTimeValue){
-        if(value){
-          return endTimeValue ? `${value} – ${endTimeValue}` : String(value);
+        const startText = String(value || "").trim();
+        const endText = String(endTimeValue || "").trim();
+
+        if(startText){
+          return endText ? `${startText} – ${endText}` : startText;
         }
 
         if(dateTimeValue){
           try{
-            const d = new Date(dateTimeValue);
+            const d = new Date(String(dateTimeValue));
             if(!Number.isNaN(d.getTime())){
               const t = d.toLocaleTimeString("en-GB", {
                 hour:"2-digit",
                 minute:"2-digit"
               });
-              return endTimeValue ? `${t} – ${endTimeValue}` : t;
+              return endText ? `${t} – ${endText}` : t;
             }
           }catch{}
         }
@@ -518,11 +542,11 @@
       }
 
       function getAvailabilityText(evt){
-        const remaining = getField(evt, ["remaining_spaces", "spaces_remaining", "remaining"]);
-        const capacity = getField(evt, ["capacity", "max_places", "max_attendees"]);
+        const remaining = getNumberField(evt, ["remaining_spaces", "spaces_remaining", "remaining"]);
+        const capacity = getNumberField(evt, ["capacity", "capacity_total", "max_places", "max_attendees"]);
         const bookingMode = String(getField(evt, ["booking_mode", "response_mode"], "")).toLowerCase();
 
-        if(typeof remaining === "number"){
+        if(remaining !== null){
           if(remaining <= 0){
             return bookingMode.includes("interest")
               ? "Register interest only"
@@ -531,7 +555,7 @@
           return `${remaining} place${remaining === 1 ? "" : "s"} remaining`;
         }
 
-        if(typeof capacity === "number"){
+        if(capacity !== null){
           return `${capacity} place${capacity === 1 ? "" : "s"}`;
         }
 
@@ -543,6 +567,51 @@
 
       function setText(el, value, fallback){
         el.textContent = String(value || "").trim() || fallback;
+      }
+
+      function normaliseMedia(value){
+        const candidates = [];
+
+        if(Array.isArray(value)){
+          for(const item of value){
+            candidates.push(String(item || "").trim());
+          }
+        }else if(typeof value === "string"){
+          candidates.push(value.trim());
+        }
+
+        for(const raw of candidates){
+          if(!raw) continue;
+          const match = raw.match(/https?:\/\/\S+/i);
+          const url = match ? match[0] : "";
+          if(!url) continue;
+
+          if(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || /image/i.test(url)){
+            return url;
+          }
+
+          return url;
+        }
+
+        return "";
+      }
+
+      function cleanSummaryText(value){
+        const text = String(value || "").trim();
+        if(!text) return "";
+
+        const squashed = text.replace(/\s+/g, " ").trim().toLowerCase();
+
+        if(
+          squashed === "4-digit pin 1234" ||
+          squashed === "4 digit pin 1234" ||
+          squashed.includes("4-digit pin") ||
+          squashed.includes("4 digit pin")
+        ){
+          return "";
+        }
+
+        return text;
       }
 
       async function loadEvent(){
@@ -579,9 +648,9 @@
 
       function renderEvent(evt, eventId){
         const title = getField(evt, ["title", "event_title", "name"], "Event");
-        const summary = getField(evt, ["notice_summary", "summary", "short_description"], "");
+        const summary = cleanSummaryText(getField(evt, ["notice_summary", "summary", "short_description"], ""));
         const body = getField(evt, ["notice_body", "description", "body", "details"], "");
-        const media = getField(evt, ["notice_media", "image", "image_url", "media"], "");
+        const media = normaliseMedia(getField(evt, ["notice_media", "image", "image_url", "media"], ""));
         const category = getField(evt, ["category_label", "category", "event_category", "type"], "");
         const dateRaw = getField(evt, ["event_date", "date", "start_date"], "");
         const dateTimeRaw = getField(evt, ["start_datetime", "start"], "");
@@ -595,9 +664,8 @@
 
         titleEl.textContent = title;
 
-        const summaryText = String(summary || "").trim();
-        if(summaryText){
-          summaryEl.textContent = summaryText;
+        if(summary){
+          summaryEl.textContent = summary;
           summaryEl.classList.remove("hidden");
         }else{
           summaryEl.textContent = "";
@@ -626,9 +694,8 @@
           categoryBadge.classList.add("hidden");
         }
 
-        const mediaUrl = Array.isArray(media) ? (media[0] || "") : media;
-        if(mediaUrl){
-          posterImage.src = mediaUrl;
+        if(media){
+          posterImage.src = media;
           posterImage.alt = title;
           posterImageWrap.classList.remove("hidden");
         }else{

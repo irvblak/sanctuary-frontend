@@ -35,6 +35,8 @@
       --past-bg:#e5e7eb;
       --past-text:#374151;
       --past-border:#cbd5e1;
+      --past-day-bg:#f3f4f6;
+      --past-day-line:#d1d5db;
     }
 
     *{ box-sizing:border-box; }
@@ -262,6 +264,11 @@
       box-shadow:0 0 0 2px rgba(0,94,168,.18) inset;
     }
 
+    .day.has-past-events{
+      background:var(--past-day-bg);
+      border-color:var(--past-day-line);
+    }
+
     .dayHeader{
       display:flex;
       align-items:baseline;
@@ -461,12 +468,52 @@
       return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
     }
 
-    function parseDateAndTime(eventDate, startTime){
-      if (!eventDate) return null;
-      const time = startTime || "00:00";
-      const d = new Date(`${eventDate}T${time}:00`);
-      if (Number.isNaN(d.getTime())) return null;
+    function parseYMD(dateStr){
+      const text = String(dateStr || "").trim();
+      const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!match) return null;
+
+      const year = Number(match[1]);
+      const monthIndex = Number(match[2]) - 1;
+      const day = Number(match[3]);
+
+      const d = new Date(year, monthIndex, day, 12, 0, 0, 0);
+      if(
+        d.getFullYear() !== year ||
+        d.getMonth() !== monthIndex ||
+        d.getDate() !== day
+      ){
+        return null;
+      }
+
       return d;
+    }
+
+    function parseDateAndTime(eventDate, startTime){
+      const baseDate = parseYMD(eventDate);
+      if(!baseDate) return null;
+
+      const timeText = String(startTime || "").trim();
+      const timeMatch = timeText.match(/^(\d{1,2}):(\d{2})$/);
+
+      if(!timeMatch){
+        return new Date(
+          baseDate.getFullYear(),
+          baseDate.getMonth(),
+          baseDate.getDate(),
+          12, 0, 0, 0
+        );
+      }
+
+      const hours = Number(timeMatch[1]);
+      const minutes = Number(timeMatch[2]);
+
+      return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        hours, minutes, 0, 0
+      );
     }
 
     function monthName(d){
@@ -667,6 +714,10 @@
         if (inMonth){
           const evs = byDay[dayKey] || [];
           const show = evs.slice(0, 3);
+
+          if (evs.some(isPastEvent)){
+            day.classList.add("has-past-events");
+          }
 
           for (const ev of show){
             const pill = document.createElement("a");

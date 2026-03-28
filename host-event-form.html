@@ -242,7 +242,6 @@
     input[type="date"],
     input[type="time"],
     input[type="number"],
-    input[type="url"],
     select,
     textarea{
       width:100%;
@@ -493,8 +492,7 @@
     <section class="hero">
       <h1 id="pageHeading">Create an event and its Host Notice</h1>
       <p id="pageIntro">
-        Enter the event details, add the title and image you want shown on the Host Notice page,
-        then write the notice in your own words.
+        Enter the event details and write the notice in your own words. A prepared banner image will be added automatically according to the category you choose.
       </p>
     </section>
 
@@ -621,13 +619,16 @@
               </div>
 
               <div class="field full">
-  <label for="notice_media">Image, poster or logo</label>
-  <input id="notice_media" name="notice_media" type="url" maxlength="1000" placeholder="https://example.com/image.jpg" />
-  <div class="hint">
-    Paste a direct link to an image file only. It must link to the image itself, not to a search page, website page, video, or document.
-    Suitable links usually end in .jpg, .jpeg, .png, .gif, .webp or .svg.
-  </div>
-</div>
+                <label>Notice header image</label>
+                <div class="checkbox-row">
+                  <div class="mini-note">
+                    A prepared banner image will be added automatically according to the category you choose.
+                  </div>
+                </div>
+                <div class="hint">
+                  Social, Games, Food, Fitness and other categories each use their own banner image.
+                </div>
+              </div>
 
               <div class="field full">
                 <label for="notice_body">Full Host Notice</label>
@@ -760,7 +761,6 @@
       const capacityEl = document.getElementById("capacity");
       const bookingModeEl = document.getElementById("booking_mode");
       const noticeSummaryEl = document.getElementById("notice_summary");
-      const noticeMediaEl = document.getElementById("notice_media");
       const noticeBodyEl = document.getElementById("notice_body");
       const publishLiveEl = document.getElementById("publish_live");
       const showInCalendarEl = document.getElementById("show_in_calendar");
@@ -786,6 +786,22 @@
         meeting: "Meeting",
         "external-service": "External Service"
       };
+
+      const CATEGORY_BANNERS = {
+        social: "images/banners/social.jpg",
+        sport: "images/banners/sport.jpg",
+        games: "images/banners/games.jpg",
+        fitness: "images/banners/fitness.jpg",
+        food: "images/banners/food.jpg",
+        entertainment: "images/banners/entertainment.jpg",
+        meeting: "images/banners/meeting.jpg",
+        "external-service": "images/banners/external-service.jpg"
+      };
+
+      function getAutoBannerUrl(categoryKey){
+        const key = String(categoryKey || "").trim().toLowerCase();
+        return CATEGORY_BANNERS[key] || "images/banners/generic.jpg";
+      }
 
       function showStatus(kind, message){
         statusBox.className = `status show ${kind}`;
@@ -840,30 +856,6 @@
         return defaultValue;
       }
 
-      function looksLikeDirectImageUrl(value){
-        const text = String(value || "").trim();
-        if(!text) return false;
-
-        if(!/^https?:\/\//i.test(text)) return false;
-
-        const lower = text.toLowerCase();
-
-        if(
-          lower.includes("google.com/search") ||
-          lower.includes("bing.com/search") ||
-          lower.includes("duckduckgo.com/?q=") ||
-          lower.includes("yahoo.com/search") ||
-          lower.includes("/search?") ||
-          lower.includes("maps.google") ||
-          lower.includes("youtube.com") ||
-          lower.includes("youtu.be")
-        ){
-          return false;
-        }
-
-        return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(text);
-      }
-
       function cleanMediaUrl(value){
         if(Array.isArray(value)){
           for(const item of value){
@@ -876,11 +868,8 @@
         const text = String(value || "").trim();
         if(!text) return "";
 
-        const match = text.match(/https?:\/\/\S+/i);
-        const url = match ? match[0] : "";
-        if(!url) return "";
-
-        return looksLikeDirectImageUrl(url) ? url : "";
+        const match = text.match(/https?:\/\/\S+|images\/banners\/[^\s]+/i);
+        return match ? match[0] : "";
       }
 
       function containsBlockedNoticeBodyContent(value){
@@ -962,7 +951,7 @@
           document.title = "Edit Event | Sanctuary Club";
           crumbCurrent.textContent = "Edit Event";
           pageHeading.textContent = "Edit event and Host Notice";
-          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and save your changes.";
+          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and save your changes. The category selected will automatically determine the banner image.";
           detailsHeading.textContent = "Event details";
           submitBtn.textContent = "Save changes";
           resetBtn.textContent = "Reset changes";
@@ -971,7 +960,7 @@
           document.title = "Create Event | Sanctuary Club";
           crumbCurrent.textContent = "Create Event";
           pageHeading.textContent = "Create an event and its Host Notice";
-          pageIntro.textContent = "Enter the event details, add the title and image you want shown on the Host Notice page, then write the notice in your own words.";
+          pageIntro.textContent = "Enter the event details and write the notice in your own words. A prepared banner image will be added automatically according to the category you choose.";
           detailsHeading.textContent = "Event details";
           submitBtn.textContent = "Publish event and Host Notice";
           resetBtn.textContent = "Clear form";
@@ -1048,7 +1037,7 @@
           "Your full Host Notice will appear here."
         );
 
-        const mediaUrl = cleanMediaUrl(noticeMediaEl.value);
+        const mediaUrl = getAutoBannerUrl(categoryKeyEl.value);
         if(mediaUrl){
           previewImage.src = mediaUrl;
           previewImage.style.display = "block";
@@ -1070,11 +1059,6 @@
         if(!locationEl.value.trim()) return "Please add a location.";
         if(!hostMemberIdEl.value.trim()) return "Please add the host membership number.";
 
-        const mediaUrl = noticeMediaEl.value.trim();
-        if(mediaUrl && !cleanMediaUrl(mediaUrl)){
-          return "Please use a direct image link ending in .jpg, .jpeg, .png, .gif, .webp or .svg.";
-        }
-
         if(containsBlockedNoticeBodyContent(noticeBodyEl.value)){
           return "Please remove page code from the Full Host Notice box and leave ordinary notice text only.";
         }
@@ -1085,7 +1069,7 @@
       function buildPayload(){
         const capacityRaw = capacityEl.value.trim();
         const capacity = capacityRaw === "" ? null : Number(capacityRaw);
-        const mediaUrl = cleanMediaUrl(noticeMediaEl.value);
+        const mediaUrl = getAutoBannerUrl(categoryKeyEl.value);
         const noticeBody = cleanPlainNoticeText(noticeBodyEl.value);
 
         return {
@@ -1185,10 +1169,6 @@
       }
 
       function applyEventToForm(eventData){
-        const mediaUrl = cleanMediaUrl(
-          eventData.notice_media || eventData.media || eventData.noticeMedia
-        );
-
         titleEl.value = firstNonEmpty(eventData.title);
         categoryKeyEl.value = firstNonEmpty(eventData.category_key, eventData.category);
         eventDateEl.value = firstNonEmpty(eventData.event_date, eventData.date);
@@ -1203,7 +1183,6 @@
 
         bookingModeEl.value = firstNonEmpty(eventData.booking_mode, "booking_or_interest") || "booking_or_interest";
         noticeSummaryEl.value = firstNonEmpty(eventData.notice_summary, eventData.summary, eventData.introduction);
-        noticeMediaEl.value = mediaUrl || "";
         noticeBodyEl.value = cleanPlainNoticeText(firstNonEmpty(eventData.notice_body, eventData.body, eventData.notice));
 
         publishLiveEl.checked = firstBoolean(true, eventData.notice_published, eventData.published, eventData.status === "published");
@@ -1225,7 +1204,6 @@
           capacity: capacityEl.value,
           booking_mode: bookingModeEl.value,
           notice_summary: noticeSummaryEl.value,
-          notice_media: noticeMediaEl.value,
           notice_body: noticeBodyEl.value,
           publish_live: publishLiveEl.checked,
           show_in_calendar: showInCalendarEl.checked
@@ -1246,7 +1224,6 @@
         capacityEl.value = snapshot.capacity || "";
         bookingModeEl.value = snapshot.booking_mode || "booking";
         noticeSummaryEl.value = snapshot.notice_summary || "";
-        noticeMediaEl.value = snapshot.notice_media || "";
         noticeBodyEl.value = snapshot.notice_body || "";
         publishLiveEl.checked = !!snapshot.publish_live;
         showInCalendarEl.checked = !!snapshot.show_in_calendar;
@@ -1418,7 +1395,6 @@
         capacityEl,
         bookingModeEl,
         noticeSummaryEl,
-        noticeMediaEl,
         noticeBodyEl
       ].forEach(el => {
         el.addEventListener("input", updatePreview);

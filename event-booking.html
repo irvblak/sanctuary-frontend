@@ -865,21 +865,35 @@ try{
   profile = null;
 }
 
-// Household size from YI residents
-const residents = Array.isArray(profile?.residents) ? profile.residents : [];
+// Household size from backend profile, with local YI fallback
+let backendResidents = Array.isArray(profile?.residents) ? profile.residents : [];
 
-const completedResidents = residents.filter(r => {
-  if (!r || typeof r !== "object") return false;
+let localResidents = [];
+try{
+  const localStore = JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
+  localResidents = Array.isArray(localStore?.[currentMemberId]?.residents)
+    ? localStore[currentMemberId].residents
+    : [];
+}catch{
+  localResidents = [];
+}
 
-  return [
-    r.name,
-    r.email,
-    r.mobile,
-    r.landline
-  ].some(v => String(v || "").trim() !== "");
-});
+function completedResidentCount(list){
+  return (Array.isArray(list) ? list : []).filter(r => {
+    if (!r || typeof r !== "object") return false;
 
-const householdMaxPlaces = Math.max(completedResidents.length, 1);
+    return [
+      r.name,
+      r.email,
+      r.mobile,
+      r.landline
+    ].some(v => String(v || "").trim() !== "");
+  }).length;
+}
+
+const backendCount = completedResidentCount(backendResidents);
+const localCount = completedResidentCount(localResidents);
+const householdMaxPlaces = Math.max(backendCount, localCount, 1);
 
 // Autofill member contact details
 const firstResident = residents[0] || {};

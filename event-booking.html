@@ -855,90 +855,94 @@
         });
 
         authToken = login.token || "";
-currentMemberId = login.member?.memberId || memberId;
+        currentMemberId = (login.member?.memberId || memberId).trim().toUpperCase();
 
-let profile = null;
-try{
-  const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
-  profile = p.member || p.profile || p.data || p || null;
-}catch{
-  profile = null;
-}
+        let profile = null;
+        try{
+          const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
+          profile = p.member || p.profile || p.data || p || null;
+        }catch{
+          profile = null;
+        }
 
-// Household size from backend profile, with local YI fallback
-let backendResidents = Array.isArray(profile?.residents) ? profile.residents : [];
+        const backendResidents = Array.isArray(profile?.residents) ? profile.residents : [];
 
-let localResidents = [];
-try{
-  const localStore = JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
-  localResidents = Array.isArray(localStore?.[currentMemberId]?.residents)
-    ? localStore[currentMemberId].residents
-    : [];
-}catch{
-  localResidents = [];
-}
+        let localResidents = [];
+        try{
+          const localStore = JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
+          localResidents = Array.isArray(localStore?.[currentMemberId]?.residents)
+            ? localStore[currentMemberId].residents
+            : [];
+        }catch{
+          localResidents = [];
+        }
 
-function completedResidentCount(list){
-  return (Array.isArray(list) ? list : []).filter(r => {
-    if (!r || typeof r !== "object") return false;
+        function completedResidentCount(list){
+          return (Array.isArray(list) ? list : []).filter(r => {
+            if (!r || typeof r !== "object") return false;
+            return [
+              r.name,
+              r.email,
+              r.mobile,
+              r.landline
+            ].some(v => String(v || "").trim() !== "");
+          }).length;
+        }
 
-    return [
-      r.name,
-      r.email,
-      r.mobile,
-      r.landline
-    ].some(v => String(v || "").trim() !== "");
-  }).length;
-}
+        const backendCount = completedResidentCount(backendResidents);
+        const localCount = completedResidentCount(localResidents);
+        const householdMaxPlaces = Math.max(backendCount, localCount, 1);
 
-const backendCount = completedResidentCount(backendResidents);
-const localCount = completedResidentCount(localResidents);
-const householdMaxPlaces = Math.max(backendCount, localCount, 1);
+        const residentSource = backendResidents.length ? backendResidents : localResidents;
+        const firstResident = residentSource[0] || {};
+        const loginMember = login.member || {};
 
-// Autofill member contact details
-const firstResident = residents[0] || {};
-const loginMember = login.member || {};
+        memberNameEl.value = String(
+          profile?.primary_name ||
+          loginMember.name ||
+          profile?.name ||
+          firstResident.name ||
+          ""
+        ).trim();
 
-memberNameEl.value = String(
-  profile?.primary_name ||
-  loginMember.name ||
-  profile?.name ||
-  firstResident.name ||
-  ""
-).trim();
+        memberEmailEl.value = String(
+          profile?.primary_email ||
+          loginMember.email ||
+          profile?.email ||
+          firstResident.email ||
+          ""
+        ).trim();
 
-memberEmailEl.value = String(
-  profile?.primary_email ||
-  loginMember.email ||
-  profile?.email ||
-  firstResident.email ||
-  ""
-).trim();
+        memberMobileEl.value = String(
+          profile?.primary_mobile ||
+          loginMember.mobile ||
+          profile?.mobile ||
+          firstResident.mobile ||
+          ""
+        ).trim();
 
-memberMobileEl.value = String(
-  profile?.primary_mobile ||
-  loginMember.mobile ||
-  profile?.mobile ||
-  firstResident.mobile ||
-  ""
-).trim();
+        placesTotalEl.max = String(householdMaxPlaces);
 
-// Apply household limit to places input
-if (typeof placesTotalEl !== "undefined" && placesTotalEl) {
-  placesTotalEl.max = householdMaxPlaces;
+        if (!placesTotalEl.value || Number(placesTotalEl.value) < 1) {
+          placesTotalEl.value = "1";
+        }
 
-  if (!placesTotalEl.value || Number(placesTotalEl.value) < 1) {
-    placesTotalEl.value = 1;
-  }
+        if (Number(placesTotalEl.value) > householdMaxPlaces) {
+          placesTotalEl.value = String(householdMaxPlaces);
+        }
 
-  if (Number(placesTotalEl.value) > householdMaxPlaces) {
-    placesTotalEl.value = householdMaxPlaces;
-  }
-}
+        currentBooking = null;
+        renderCurrentBooking();
 
-showBookingOk(
-  `Member lookup successful for ${currentMemberId}. You can book up to ${householdMaxPlaces} place${householdMaxPlaces === 1 ? "" : "s"} based on your household.`
-);
+        showBookingOk(
+          `Member lookup successful for ${currentMemberId}. You can book up to ${householdMaxPlaces} place${householdMaxPlaces === 1 ? "" : "s"} based on your household.`
+        );
+      }catch(err){
+        authToken = "";
+        currentMemberId = "";
+        currentBooking = null;
+        renderCurrentBooking();
+        showBookingErr(err.message || "Member lookup failed.");
       }finally{
         lookupBtn.disabled = false;
       }
@@ -950,10 +954,12 @@ showBookingOk(
 
       const total = Number(placesTotalEl.value || 0);
       const guests = Number(guestPlacesEl.value || 0);
+      const maxPlaces = Number(placesTotalEl.max || 1);
 
       if (Number.isNaN(total) || total < 1) return "Total places must be at least 1.";
       if (Number.isNaN(guests) || guests < 0) return "Guest places cannot be negative.";
       if (guests > total) return "Guest places cannot exceed total places.";
+      if (total > maxPlaces) return `Total places cannot exceed ${maxPlaces}.`;
 
       return "";
     }

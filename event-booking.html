@@ -855,15 +855,45 @@
         });
 
         authToken = login.token || "";
-        currentMemberId = login.member?.memberId || memberId;
+currentMemberId = login.member?.memberId || memberId;
 
-        let profile = null;
-        try{
+let profile = null;
+try{
   const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
   profile = p.member || p.profile || p.data || p || null;
 }catch{
   profile = null;
 }
+
+// 👇 Determine household-based booking limit
+const residents = Array.isArray(profile?.residents) ? profile.residents : [];
+
+const completedResidents = residents.filter(r => {
+  if (!r || typeof r !== "object") return false;
+
+  return [
+    r.name,
+    r.email,
+    r.mobile,
+    r.landline
+  ].some(v => String(v || "").trim() !== "");
+});
+
+const householdMaxPlaces = Math.max(completedResidents.length, 1);
+
+// 👇 Apply limit to your booking input (you are using placesTotalEl)
+if (typeof placesTotalEl !== "undefined" && placesTotalEl) {
+  placesTotalEl.max = householdMaxPlaces;
+
+  if (Number(placesTotalEl.value || 0) > householdMaxPlaces) {
+    placesTotalEl.value = householdMaxPlaces;
+  }
+}
+
+// 👇 Simple user feedback (safe version)
+alert(
+  `You can book up to ${householdMaxPlaces} place${householdMaxPlaces === 1 ? "" : "s"} for this event based on your household.`
+);
 const residents = Array.isArray(profile?.residents) ? profile.residents : [];
 
 const completedResidents = residents.filter(r => {

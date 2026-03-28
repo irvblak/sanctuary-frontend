@@ -582,7 +582,21 @@
 
         for(const raw of candidates){
           if(!raw) continue;
-          const match = raw.match(/https?:\/\/\S+/i);
+
+          const directValue = raw.trim();
+
+          if(
+            /^(https?:\/\/\S+)$/i.test(directValue) ||
+            /^images\/banners\/[^\s]+$/i.test(directValue) ||
+            /^\.\.\/images\/banners\/[^\s]+$/i.test(directValue) ||
+            /^\/images\/banners\/[^\s]+$/i.test(directValue)
+          ){
+            if(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(directValue) || /image/i.test(directValue)){
+              return directValue;
+            }
+          }
+
+          const match = directValue.match(/https?:\/\/\S+/i);
           const url = match ? match[0] : "";
           if(!url) continue;
 

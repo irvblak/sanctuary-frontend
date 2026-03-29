@@ -492,7 +492,7 @@
     <section class="hero">
       <h1 id="pageHeading">Create an event and its Host Notice</h1>
       <p id="pageIntro">
-        Enter the event details and write the notice in your own words. A prepared banner image will be added automatically according to the category you choose.
+        Enter the event details and write the notice in your own words. You can choose a prepared banner according to the category, or leave it on the default setting.
       </p>
     </section>
 
@@ -618,15 +618,36 @@
                 <textarea id="notice_summary" name="notice_summary" rows="3" maxlength="400" placeholder="One or two inviting sentences for the top of the Host Notice."></textarea>
               </div>
 
-              <div class="field full">
-                <label>Notice header image</label>
-                <div class="checkbox-row">
-                  <div class="mini-note">
-                    A prepared banner image will be added automatically according to the category you choose.
-                  </div>
-                </div>
+              <div class="field">
+                <label for="banner_choice">Notice header image</label>
+                <select id="banner_choice" name="banner_choice">
+                  <option value="">Use category default banner</option>
+                </select>
                 <div class="hint">
-                  Social, Games, Food, Fitness and other categories each use their own banner image.
+                  Choose a prepared banner for this category, or leave it on the default setting.
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="banner_custom">Custom banner path (optional)</label>
+                <input
+                  id="banner_custom"
+                  name="banner_custom"
+                  type="text"
+                  maxlength="240"
+                  placeholder="e.g. images/banners/social-evening.jpg"
+                />
+                <div class="hint">
+                  Leave blank unless you want to override the dropdown. Use a relative path in <strong>images/banners/</strong>.
+                </div>
+              </div>
+
+              <div class="field full">
+                <label>Banner guidance</label>
+                <div class="checkbox-row">
+                  <div class="mini-note" id="bannerGuideText">
+                    Select a prepared banner, or leave the category default in place. If the chosen file is not yet present in images/banners, the preview will simply fall back to the placeholder until the file is added.
+                  </div>
                 </div>
               </div>
 
@@ -765,6 +786,9 @@
       const publishLiveEl = document.getElementById("publish_live");
       const showInCalendarEl = document.getElementById("show_in_calendar");
 
+      const bannerChoiceEl = document.getElementById("banner_choice");
+      const bannerCustomEl = document.getElementById("banner_custom");
+
       const previewImage = document.getElementById("previewImage");
       const previewPlaceholder = document.getElementById("previewPlaceholder");
       const previewTitle = document.getElementById("previewTitle");
@@ -795,12 +819,71 @@
         food: "images/banners/food.jpg",
         entertainment: "images/banners/entertainment.jpg",
         meeting: "images/banners/meeting.jpg",
-        "external-service": "images/banners/external-service.jpg"
+        "external-service": "images/banners/external.jpg"
+      };
+
+      const BANNER_LIBRARY = {
+        social: [
+          { value: "images/banners/social.jpg", label: "Social — default" },
+          { value: "images/banners/social-warm.jpg", label: "Social — warm" },
+          { value: "images/banners/social-tea.jpg", label: "Social — tea" },
+          { value: "images/banners/social-evening.jpg", label: "Social — evening" },
+          { value: "images/banners/social-gathering.jpg", label: "Social — gathering" }
+        ],
+        sport: [
+          { value: "images/banners/sport.jpg", label: "Sport — default" },
+          { value: "images/banners/sport-bowls.jpg", label: "Sport — bowls" },
+          { value: "images/banners/sport-walking.jpg", label: "Sport — walking" },
+          { value: "images/banners/sport-tabletennis.jpg", label: "Sport — table tennis" },
+          { value: "images/banners/sport-outdoor.jpg", label: "Sport — outdoor" }
+        ],
+        games: [
+          { value: "images/banners/games.jpg", label: "Games — default" },
+          { value: "images/banners/games-cards.jpg", label: "Games — cards" },
+          { value: "images/banners/games-board.jpg", label: "Games — board" },
+          { value: "images/banners/games-quiz.jpg", label: "Games — quiz" },
+          { value: "images/banners/games-social.jpg", label: "Games — social" }
+        ],
+        fitness: [
+          { value: "images/banners/fitness.jpg", label: "Fitness — default" },
+          { value: "images/banners/fitness-gentle.jpg", label: "Fitness — gentle" },
+          { value: "images/banners/fitness-yoga.jpg", label: "Fitness — yoga" },
+          { value: "images/banners/fitness-stretch.jpg", label: "Fitness — stretch" },
+          { value: "images/banners/fitness-wellbeing.jpg", label: "Fitness — wellbeing" }
+        ],
+        food: [
+          { value: "images/banners/food.jpg", label: "Food — default" },
+          { value: "images/banners/food-table.jpg", label: "Food — table" },
+          { value: "images/banners/food-tea.jpg", label: "Food — tea" },
+          { value: "images/banners/food-light.jpg", label: "Food — light meal" },
+          { value: "images/banners/food-wine.jpg", label: "Food — wine" }
+        ],
+        entertainment: [
+          { value: "images/banners/entertainment.jpg", label: "Entertainment — default" },
+          { value: "images/banners/entertainment-movie.jpg", label: "Entertainment — movie" },
+          { value: "images/banners/entertainment-music.jpg", label: "Entertainment — music" },
+          { value: "images/banners/entertainment-light.jpg", label: "Entertainment — light" },
+          { value: "images/banners/entertainment-ambient.jpg", label: "Entertainment — ambient" }
+        ],
+        meeting: [
+          { value: "images/banners/meeting.jpg", label: "Meeting — default" },
+          { value: "images/banners/meeting-table.jpg", label: "Meeting — table" },
+          { value: "images/banners/meeting-room.jpg", label: "Meeting — room" },
+          { value: "images/banners/meeting-docs.jpg", label: "Meeting — papers" },
+          { value: "images/banners/meeting-neutral.jpg", label: "Meeting — neutral" }
+        ],
+        "external-service": [
+          { value: "images/banners/external.jpg", label: "External Service — default" },
+          { value: "images/banners/external-clean.jpg", label: "External Service — clean" },
+          { value: "images/banners/external-wellness.jpg", label: "External Service — wellness" },
+          { value: "images/banners/external-support.jpg", label: "External Service — support" },
+          { value: "images/banners/external-neutral.jpg", label: "External Service — neutral" }
+        ]
       };
 
       function getAutoBannerUrl(categoryKey){
         const key = String(categoryKey || "").trim().toLowerCase();
-        return CATEGORY_BANNERS[key] || "images/banners/generic.jpg";
+        return CATEGORY_BANNERS[key] || "";
       }
 
       function showStatus(kind, message){
@@ -895,6 +978,14 @@
           .trim();
       }
 
+      function cleanBannerPath(value){
+        const text = String(value || "").trim();
+        if(!text) return "";
+
+        const cleaned = cleanMediaUrl(text);
+        return cleaned || text;
+      }
+
       function formatDate(dateStr){
         if(!dateStr) return "Not yet set";
         const d = new Date(`${dateStr}T12:00:00`);
@@ -951,7 +1042,7 @@
           document.title = "Edit Event | Sanctuary Club";
           crumbCurrent.textContent = "Edit Event";
           pageHeading.textContent = "Edit event and Host Notice";
-          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and save your changes. The category selected will automatically determine the banner image.";
+          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and adjust the banner choice if required.";
           detailsHeading.textContent = "Event details";
           submitBtn.textContent = "Save changes";
           resetBtn.textContent = "Reset changes";
@@ -960,7 +1051,7 @@
           document.title = "Create Event | Sanctuary Club";
           crumbCurrent.textContent = "Create Event";
           pageHeading.textContent = "Create an event and its Host Notice";
-          pageIntro.textContent = "Enter the event details and write the notice in your own words. A prepared banner image will be added automatically according to the category you choose.";
+          pageIntro.textContent = "Enter the event details and write the notice in your own words. You can choose a prepared banner according to the category, or leave it on the default setting.";
           detailsHeading.textContent = "Event details";
           submitBtn.textContent = "Publish event and Host Notice";
           resetBtn.textContent = "Clear form";
@@ -1008,6 +1099,72 @@
           : "Sign in as a host with membership number and PIN, or continue with an existing admin login.";
       }
 
+      function populateBannerChoices(categoryKey, preferredValue){
+        const key = String(categoryKey || "").trim().toLowerCase();
+        const options = Array.isArray(BANNER_LIBRARY[key]) ? BANNER_LIBRARY[key] : [];
+        const defaultValue = getAutoBannerUrl(key);
+
+        bannerChoiceEl.innerHTML = "";
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = defaultValue
+          ? "Use category default banner"
+          : "Select category first";
+        bannerChoiceEl.appendChild(defaultOption);
+
+        options.forEach(option => {
+          const el = document.createElement("option");
+          el.value = option.value;
+          el.textContent = option.label;
+          bannerChoiceEl.appendChild(el);
+        });
+
+        const chosen = cleanBannerPath(preferredValue);
+
+        if(chosen && options.some(option => option.value === chosen)){
+          bannerChoiceEl.value = chosen;
+        }else{
+          bannerChoiceEl.value = "";
+        }
+      }
+
+      function resolveBannerUrl(){
+        const custom = cleanBannerPath(bannerCustomEl.value);
+        if(custom) return custom;
+
+        const chosen = cleanBannerPath(bannerChoiceEl.value);
+        if(chosen) return chosen;
+
+        return getAutoBannerUrl(categoryKeyEl.value);
+      }
+
+      function applyPreviewImageState(mediaUrl){
+        const finalUrl = cleanBannerPath(mediaUrl);
+
+        if(!finalUrl){
+          previewImage.removeAttribute("src");
+          previewImage.style.display = "none";
+          previewPlaceholder.style.display = "flex";
+          previewPlaceholder.textContent = safeText(titleEl.value, "Host Notice preview");
+          return;
+        }
+
+        previewImage.onload = function(){
+          previewImage.style.display = "block";
+          previewPlaceholder.style.display = "none";
+        };
+
+        previewImage.onerror = function(){
+          previewImage.removeAttribute("src");
+          previewImage.style.display = "none";
+          previewPlaceholder.style.display = "flex";
+          previewPlaceholder.textContent = "Banner preview unavailable until that image file is present.";
+        };
+
+        previewImage.src = finalUrl;
+      }
+
       function updatePreview(){
         previewTitle.textContent = safeText(titleEl.value, "Your event title will appear here");
         previewSummary.textContent = safeText(
@@ -1037,17 +1194,7 @@
           "Your full Host Notice will appear here."
         );
 
-        const mediaUrl = getAutoBannerUrl(categoryKeyEl.value);
-        if(mediaUrl){
-          previewImage.src = mediaUrl;
-          previewImage.style.display = "block";
-          previewPlaceholder.style.display = "none";
-        }else{
-          previewImage.removeAttribute("src");
-          previewImage.style.display = "none";
-          previewPlaceholder.style.display = "flex";
-          previewPlaceholder.textContent = safeText(titleEl.value, "Host Notice preview");
-        }
+        applyPreviewImageState(resolveBannerUrl());
       }
 
       function validateForm(){
@@ -1069,7 +1216,7 @@
       function buildPayload(){
         const capacityRaw = capacityEl.value.trim();
         const capacity = capacityRaw === "" ? null : Number(capacityRaw);
-        const mediaUrl = getAutoBannerUrl(categoryKeyEl.value);
+        const mediaUrl = resolveBannerUrl();
         const noticeBody = cleanPlainNoticeText(noticeBodyEl.value);
 
         return {
@@ -1168,6 +1315,28 @@
         return responseJson;
       }
 
+      function applyExistingBannerToFields(existingMediaUrl, categoryKey){
+        const cleaned = cleanBannerPath(existingMediaUrl);
+        populateBannerChoices(categoryKey, cleaned);
+
+        if(!cleaned || cleaned === getAutoBannerUrl(categoryKey)){
+          bannerChoiceEl.value = "";
+          bannerCustomEl.value = "";
+          return;
+        }
+
+        const allowedOptions = Array.isArray(BANNER_LIBRARY[categoryKey]) ? BANNER_LIBRARY[categoryKey] : [];
+        const isListed = allowedOptions.some(option => option.value === cleaned);
+
+        if(isListed){
+          bannerChoiceEl.value = cleaned;
+          bannerCustomEl.value = "";
+        } else {
+          bannerChoiceEl.value = "";
+          bannerCustomEl.value = cleaned;
+        }
+      }
+
       function applyEventToForm(eventData){
         titleEl.value = firstNonEmpty(eventData.title);
         categoryKeyEl.value = firstNonEmpty(eventData.category_key, eventData.category);
@@ -1188,6 +1357,17 @@
         publishLiveEl.checked = firstBoolean(true, eventData.notice_published, eventData.published, eventData.status === "published");
         showInCalendarEl.checked = firstBoolean(true, eventData.show_in_calendar, eventData.calendar_visible, eventData.listed);
 
+        const existingMediaUrl = cleanMediaUrl(
+          firstNonEmpty(
+            eventData.notice_media,
+            eventData.media,
+            eventData.notice_image,
+            eventData.notice_banner,
+            eventData.banner
+          )
+        );
+
+        applyExistingBannerToFields(existingMediaUrl, categoryKeyEl.value);
         updatePreview();
       }
 
@@ -1205,6 +1385,8 @@
           booking_mode: bookingModeEl.value,
           notice_summary: noticeSummaryEl.value,
           notice_body: noticeBodyEl.value,
+          banner_choice: bannerChoiceEl.value,
+          banner_custom: bannerCustomEl.value,
           publish_live: publishLiveEl.checked,
           show_in_calendar: showInCalendarEl.checked
         };
@@ -1227,6 +1409,10 @@
         noticeBodyEl.value = snapshot.notice_body || "";
         publishLiveEl.checked = !!snapshot.publish_live;
         showInCalendarEl.checked = !!snapshot.show_in_calendar;
+
+        populateBannerChoices(categoryKeyEl.value, snapshot.banner_choice || "");
+        bannerChoiceEl.value = snapshot.banner_choice || "";
+        bannerCustomEl.value = snapshot.banner_custom || "";
 
         updatePreview();
       }
@@ -1352,7 +1538,7 @@
               : `Event published successfully. Event reference: ${eventId}`
             );
 
-                        setTimeout(() => {
+            setTimeout(() => {
               window.location.href = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventId)}`;
             }, 700);
           }else{
@@ -1378,9 +1564,24 @@
           showStatus("ok", "Form reset to the loaded event details.");
         }else{
           form.reset();
+          populateBannerChoices("", "");
+          bannerCustomEl.value = "";
           updatePreview();
           refreshAccessUi();
         }
+      });
+
+      categoryKeyEl.addEventListener("change", () => {
+        const currentCustom = cleanBannerPath(bannerCustomEl.value);
+        const currentChosen = cleanBannerPath(bannerChoiceEl.value);
+
+        populateBannerChoices(categoryKeyEl.value, currentChosen);
+
+        if(currentCustom){
+          bannerCustomEl.value = currentCustom;
+        }
+
+        updatePreview();
       });
 
       [
@@ -1395,13 +1596,16 @@
         capacityEl,
         bookingModeEl,
         noticeSummaryEl,
-        noticeBodyEl
+        noticeBodyEl,
+        bannerChoiceEl,
+        bannerCustomEl
       ].forEach(el => {
         el.addEventListener("input", updatePreview);
         el.addEventListener("change", updatePreview);
       });
 
       setPageModeText();
+      populateBannerChoices(categoryKeyEl.value, "");
       refreshAccessUi();
       updatePreview();
       loadEventForEdit();

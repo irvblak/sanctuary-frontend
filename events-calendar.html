@@ -7,7 +7,6 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Members-only access -->
   <script src="access.js?v=AC_1"></script>
 
   <style>
@@ -443,6 +442,7 @@
     ];
 
     const catOn = Object.fromEntries(CATEGORY_DEFS.map(c => [c.key, true]));
+    const expandedDays = new Set();
 
     let EVENTS = [];
     let current = new Date();
@@ -639,6 +639,7 @@
           };
         })
         .filter(Boolean)
+        .filter(ev => !!ev.backendId)
         .filter(ev => catOn[ev.category] !== false)
         .sort((a, b) => a.dateObj - b.dateObj);
     }
@@ -713,7 +714,8 @@
 
         if (inMonth){
           const evs = byDay[dayKey] || [];
-          const show = evs.slice(0, 3);
+          const isExpanded = expandedDays.has(dayKey);
+          const show = isExpanded ? evs : evs.slice(0, 3);
 
           if (evs.some(isPastEvent)){
             day.classList.add("has-past-events");
@@ -731,14 +733,26 @@
             eventsWrap.appendChild(pill);
           }
 
-          if (evs.length > 3){
+          if (evs.length > 3 && !isExpanded){
             const more = document.createElement("div");
             more.className = "more";
             more.textContent = `+${evs.length - 3} more`;
             more.onclick = () => {
-              window.location.href = "events.html";
+              expandedDays.add(dayKey);
+              renderCalendar();
             };
             eventsWrap.appendChild(more);
+          }
+
+          if (evs.length > 3 && isExpanded){
+            const less = document.createElement("div");
+            less.className = "more";
+            less.textContent = "Show less";
+            less.onclick = () => {
+              expandedDays.delete(dayKey);
+              renderCalendar();
+            };
+            eventsWrap.appendChild(less);
           }
         }
 

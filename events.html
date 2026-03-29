@@ -338,7 +338,7 @@
         <div>
           <h1>Events Diary – List View</h1>
           <div class="subtitle">
-            All upcoming Sanctuary Club events in date order. 
+            All upcoming Sanctuary Club events in date order.
           </div>
         </div>
 
@@ -375,7 +375,7 @@
       </div>
 
       <div class="footNote">
-        The host’s freehand notice/information page is the intended destination for More Info. Until that page is fully wired, this button continues to use the current event details route.
+        More Info opens the Host Notice page for that event.
       </div>
     </div>
   </main>
@@ -404,12 +404,52 @@
     const errBox = document.getElementById("errBox");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    function parseDateAndTime(eventDate, startTime){
-      if (!eventDate) return null;
-      const time = startTime || "00:00";
-      const d = new Date(`${eventDate}T${time}:00`);
-      if (Number.isNaN(d.getTime())) return null;
+    function parseYMD(dateStr){
+      const text = String(dateStr || "").trim();
+      const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!match) return null;
+
+      const year = Number(match[1]);
+      const monthIndex = Number(match[2]) - 1;
+      const day = Number(match[3]);
+
+      const d = new Date(year, monthIndex, day, 12, 0, 0, 0);
+      if(
+        d.getFullYear() !== year ||
+        d.getMonth() !== monthIndex ||
+        d.getDate() !== day
+      ){
+        return null;
+      }
+
       return d;
+    }
+
+    function parseDateAndTime(eventDate, startTime){
+      const baseDate = parseYMD(eventDate);
+      if(!baseDate) return null;
+
+      const timeText = String(startTime || "").trim();
+      const timeMatch = timeText.match(/^(\d{1,2}):(\d{2})$/);
+
+      if(!timeMatch){
+        return new Date(
+          baseDate.getFullYear(),
+          baseDate.getMonth(),
+          baseDate.getDate(),
+          12, 0, 0, 0
+        );
+      }
+
+      const hours = Number(timeMatch[1]);
+      const minutes = Number(timeMatch[2]);
+
+      return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        hours, minutes, 0, 0
+      );
     }
 
     function parseBackendIso(iso){
@@ -539,7 +579,6 @@
             status: ev.status || "",
             endTime: ev.end_time || "",
             tracking: ev.tracking || {},
-            noticeId: ev.notice_id || "",
             priceMember: Number(ev.price_member || 0),
             priceGuest: Number(ev.price_guest || 0),
             capacityTotal: Number(ev.capacity_total || 0),
@@ -553,6 +592,7 @@
           };
         })
         .filter(Boolean)
+        .filter(ev => !!ev.backendId)
         .filter(ev => catOn[ev.category] !== false)
         .sort((a, b) => a.dateObj - b.dateObj);
     }
@@ -687,7 +727,7 @@
       }
       try{ localStorage.clear(); }catch{}
       try{ sessionStorage.clear(); }catch{}
-    window.location.href = `events-details.html?event_id=${event.event_id}`;  
+      window.location.href = "index.html";
     });
 
     renderFilters();

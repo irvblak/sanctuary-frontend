@@ -1352,8 +1352,8 @@
               : `Event published successfully. Event reference: ${eventId}`
             );
 
-            setTimeout(() => {
-              window.location.href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
+                        setTimeout(() => {
+              window.location.href = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventId)}`;
             }, 700);
           }else{
             showStatus("ok", isEditMode

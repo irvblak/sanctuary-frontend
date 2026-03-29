@@ -112,6 +112,14 @@
       background:#edf4fa;
     }
 
+    .poster-overlay{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      mix-blend-mode:multiply;
+      background:rgba(0,0,0,0.15);
+    }
+
     .poster-main{
       padding:24px 22px 24px;
       background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,251,255,0.98));
@@ -343,6 +351,7 @@
       <section class="poster">
         <div id="posterImageWrap" class="poster-image-wrap hidden">
           <img id="posterImage" class="poster-image" src="" alt="" />
+          <div id="posterOverlay" class="poster-overlay"></div>
         </div>
 
         <div class="poster-main">
@@ -414,12 +423,24 @@
           "https://sanctuary-backend-8iqc.onrender.com"
       };
 
+      const CATEGORY_COLOURS = {
+        social: "#2563eb",
+        sport: "#7c3aed",
+        games: "#0f766e",
+        fitness: "#16a34a",
+        food: "#ea580c",
+        entertainment: "#ca8a04",
+        meeting: "#111827",
+        "external-service": "#c026d3"
+      };
+
       const statusEl = document.getElementById("status");
       const appEl = document.getElementById("app");
       const errorBox = document.getElementById("errorBox");
 
       const posterImageWrap = document.getElementById("posterImageWrap");
       const posterImage = document.getElementById("posterImage");
+      const posterOverlay = document.getElementById("posterOverlay");
       const categoryBadge = document.getElementById("categoryBadge");
 
       const titleEl = document.getElementById("title");
@@ -583,6 +604,25 @@
         el.textContent = String(value || "").trim() || fallback;
       }
 
+      function hexToRgba(hex, alpha){
+        const clean = String(hex || "").replace("#", "");
+        if(clean.length !== 6) return `rgba(0,0,0,${alpha})`;
+        const bigint = parseInt(clean, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      function toCategoryKey(raw){
+        const text = String(raw || "").trim().toLowerCase();
+        if(!text) return "";
+        if(text === "external service" || text === "external_service" || text === "external-service"){
+          return "external-service";
+        }
+        return text.replace(/\s+/g, "-");
+      }
+
       function normaliseMedia(value){
         const candidates = [];
 
@@ -668,6 +708,7 @@
         const body = getField(evt, ["notice_body", "body", "description", "details"], "");
         const media = normaliseMedia(getField(evt, ["notice_media", "image", "image_url", "media"], ""));
         const category = getField(evt, ["category_label", "category", "event_category", "type"], "");
+        const categoryKey = toCategoryKey(category || evt.category_key || evt.category_label);
         const dateRaw = getField(evt, ["event_date", "date", "start_date"], "");
         const dateTimeRaw = getField(evt, ["start_datetime", "start"], "");
         const timeRaw = getField(evt, ["start_time", "time", "event_time"], "");
@@ -710,13 +751,29 @@
           categoryBadge.classList.add("hidden");
         }
 
+        if(posterOverlay){
+          const overlayColour = CATEGORY_COLOURS[categoryKey] || "#0f4c81";
+          posterOverlay.style.background = hexToRgba(overlayColour, 0.16);
+        }
+
+        posterImageWrap.classList.add("hidden");
+        posterImage.onload = null;
+        posterImage.onerror = null;
+        posterImage.removeAttribute("src");
+
         if(media){
-          posterImage.src = media;
           posterImage.alt = title;
-          posterImageWrap.classList.remove("hidden");
-        }else{
-          posterImage.removeAttribute("src");
-          posterImageWrap.classList.add("hidden");
+
+          posterImage.onload = function(){
+            posterImageWrap.classList.remove("hidden");
+          };
+
+          posterImage.onerror = function(){
+            posterImageWrap.classList.add("hidden");
+            posterImage.removeAttribute("src");
+          };
+
+          posterImage.src = media;
         }
 
         statusEl.classList.add("hidden");

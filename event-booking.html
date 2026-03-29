@@ -780,7 +780,7 @@
         makeDetailBox("Max places per member", Number(eventData.max_places_per_member || 0))
       ].join("");
 
-      const noticeHref = `events-details.html?event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
+            const noticeHref = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
       backToNoticeLink.href = noticeHref;
       topNoticeLink.href = noticeHref;
     }

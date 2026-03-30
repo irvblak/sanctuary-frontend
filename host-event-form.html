@@ -981,7 +981,6 @@
       function cleanBannerPath(value){
         const text = String(value || "").trim();
         if(!text) return "";
-
         const cleaned = cleanMediaUrl(text);
         return cleaned || text;
       }
@@ -1108,9 +1107,7 @@
 
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
-        defaultOption.textContent = defaultValue
-          ? "Use category default banner"
-          : "Select category first";
+        defaultOption.textContent = defaultValue ? "Use category default banner" : "Select category first";
         bannerChoiceEl.appendChild(defaultOption);
 
         options.forEach(option => {
@@ -1121,7 +1118,6 @@
         });
 
         const chosen = cleanBannerPath(preferredValue);
-
         if(chosen && options.some(option => option.value === chosen)){
           bannerChoiceEl.value = chosen;
         }else{
@@ -1141,6 +1137,9 @@
 
       function applyPreviewImageState(mediaUrl){
         const finalUrl = cleanBannerPath(mediaUrl);
+
+        previewImage.onload = null;
+        previewImage.onerror = null;
 
         if(!finalUrl){
           previewImage.removeAttribute("src");
@@ -1331,7 +1330,7 @@
         if(isListed){
           bannerChoiceEl.value = cleaned;
           bannerCustomEl.value = "";
-        } else {
+        }else{
           bannerChoiceEl.value = "";
           bannerCustomEl.value = cleaned;
         }

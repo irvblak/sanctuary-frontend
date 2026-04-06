@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create Event | Sanctuary Club</title>
+  <title>Host an Event | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -10,1604 +10,1128 @@
 
   <style>
     :root{
-      --bg1:#eef6ff;
-      --bg2:#f8fbff;
+      --bg1:#eef6fb;
+      --bg2:#f8fbfd;
       --card:#ffffff;
       --ink:#1f2937;
-      --muted:#667085;
-      --line:#d9e5f0;
-      --brand:#0f4c81;
-      --brand2:#1d6ca8;
-      --soft:#e8f2fb;
-      --ok-bg:#eefbf3;
-      --ok-bd:#b7e4c7;
-      --ok-tx:#166534;
-      --err-bg:#fff4f4;
-      --err-bd:#efc2c2;
-      --err-tx:#b42318;
-      --warn-bg:#fff9ed;
-      --warn-bd:#efd9a7;
-      --warn-tx:#8a5b00;
-      --shadow:0 12px 28px rgba(15,76,129,0.08);
-      --radius:20px;
+      --muted:#6b7280;
+      --line:#d9e4ec;
+      --blue:#2563eb;
+      --blue-2:#1d4ed8;
+      --blue-soft:#eff6ff;
+      --green:#15803d;
+      --green-soft:#ecfdf3;
+      --red:#b91c1c;
+      --red-soft:#fef2f2;
+      --amber:#b45309;
+      --amber-soft:#fffbeb;
+      --shadow:0 10px 28px rgba(15,23,42,.08);
+      --radius:22px;
     }
 
     *{ box-sizing:border-box; }
 
-    html,body{
+    body{
       margin:0;
-      padding:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
-      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 42%, #ffffff 100%);
-      min-height:100%;
+      background:
+        radial-gradient(circle at top, #ffffff 0%, var(--bg2) 38%, var(--bg1) 100%);
+      min-height:100vh;
     }
 
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
-
-    .hidden{ display:none !important; }
-
-    .page{
-      max-width:1180px;
+    .wrap{
+      max-width:1040px;
       margin:0 auto;
-      padding:20px 16px 48px;
+      padding:20px 14px 42px;
     }
 
     .topbar{
       display:flex;
-      flex-wrap:wrap;
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      margin-bottom:18px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
     }
 
     .crumbs{
       display:flex;
-      flex-wrap:wrap;
-      gap:8px;
       align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:.95rem;
       color:var(--muted);
-      font-size:0.96rem;
     }
 
     .crumbs a{
-      color:var(--brand);
-      font-weight:700;
+      color:var(--blue);
+      text-decoration:none;
+      font-weight:600;
     }
 
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--brand);
-      font-weight:700;
-      font-size:0.95rem;
-    }
+    .crumbs a:hover{ text-decoration:underline; }
 
-    .hero{
-      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.98));
-      border:1px solid rgba(15,76,129,0.12);
-      border-radius:24px;
+    .shell{
+      background:rgba(255,255,255,.86);
+      backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.7);
       box-shadow:var(--shadow);
-      padding:22px 18px;
-      margin-bottom:18px;
+      border-radius:28px;
+      overflow:hidden;
     }
 
-    .hero h1{
-      margin:0 0 8px;
-      font-size:clamp(1.8rem, 3vw, 2.35rem);
-      line-height:1.12;
-      color:var(--brand);
+    .head{
+      padding:22px 20px 14px;
+      border-bottom:1px solid #edf2f7;
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(250,252,255,.92));
     }
 
-    .hero p{
+    .eyebrow{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-size:.8rem;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+      border:1px solid #dbeafe;
+    }
+
+    h1{
       margin:0;
-      max-width:820px;
-      color:#334155;
-      line-height:1.58;
+      font-size:clamp(1.65rem, 2.8vw, 2.35rem);
+      line-height:1.15;
+      letter-spacing:-0.02em;
     }
 
-    .layout{
+    .sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      line-height:1.55;
+      max-width:68ch;
+    }
+
+    .body{
+      padding:20px;
+    }
+
+    .form-grid{
       display:grid;
-      grid-template-columns:minmax(0, 1.45fr) minmax(320px, 0.95fr);
+      grid-template-columns:1.1fr .9fr;
       gap:18px;
-      align-items:start;
     }
 
     .card{
       background:var(--card);
       border:1px solid var(--line);
-      border-radius:22px;
+      border-radius:24px;
       box-shadow:var(--shadow);
-      overflow:hidden;
+      padding:18px 16px;
     }
 
-    .card-inner{
-      padding:18px;
-    }
-
-    .card h2{
-      margin:0 0 12px;
-      color:var(--brand);
-      font-size:1.2rem;
-    }
-
-    .intro{
+    .section-title{
       margin:0 0 14px;
-      color:#425569;
-      line-height:1.55;
-    }
-
-    .status{
-      display:none;
-      margin-bottom:14px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:700;
-      line-height:1.45;
-    }
-
-    .status.show{ display:block; }
-    .status.ok{ background:var(--ok-bg); border:1px solid var(--ok-bd); color:var(--ok-tx); }
-    .status.err{ background:var(--err-bg); border:1px solid var(--err-bd); color:var(--err-tx); }
-    .status.warn{ background:var(--warn-bg); border:1px solid var(--warn-bd); color:var(--warn-tx); }
-
-    .section-rule{
-      height:1px;
-      background:linear-gradient(90deg, transparent, #d9e5f0 12%, #d9e5f0 88%, transparent);
-      margin:18px 0;
-    }
-
-    .auth-panel{
-      margin-bottom:18px;
-    }
-
-    .auth-box{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    .auth-row{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:14px;
-    }
-
-    .auth-meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      padding:12px 14px;
-      border:1px solid #dbe6f0;
-      border-radius:14px;
-      background:#fbfdff;
-    }
-
-    .auth-pill{
-      display:inline-flex;
-      align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#e8f2fb;
-      color:var(--brand);
-      font-size:0.82rem;
-      font-weight:800;
-    }
-
-    .mini-note{
-      color:var(--muted);
-      font-size:0.9rem;
-      line-height:1.45;
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:14px;
+      font-size:1.08rem;
+      line-height:1.3;
     }
 
     .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:0;
+      margin-bottom:14px;
     }
 
-    .field.full{
-      grid-column:1 / -1;
+    .field:last-child{
+      margin-bottom:0;
     }
 
     label{
-      font-weight:800;
-      color:#274663;
-      font-size:0.95rem;
+      display:block;
+      margin:0 0 7px;
+      font-size:.96rem;
+      font-weight:700;
+      color:var(--ink);
     }
 
-    .hint{
+    .helper{
+      margin:6px 0 0;
+      font-size:.92rem;
       color:var(--muted);
-      font-size:0.88rem;
-      line-height:1.4;
-      margin-top:-2px;
+      line-height:1.5;
+    }
+
+    .helper a{
+      color:var(--blue);
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    .helper a:hover{
+      text-decoration:underline;
     }
 
     input[type="text"],
-    input[type="password"],
-    input[type="date"],
-    input[type="time"],
+    input[type="url"],
+    input[type="datetime-local"],
     input[type="number"],
     select,
     textarea{
       width:100%;
-      border:1px solid #cddceb;
-      background:#fff;
-      color:var(--ink);
-      border-radius:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
       padding:12px 13px;
       font:inherit;
+      color:var(--ink);
+      background:#fff;
       outline:none;
-      transition:border-color .12s ease, box-shadow .12s ease;
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    input[type="datetime-local"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus{
+      border-color:#93c5fd;
+      box-shadow:0 0 0 4px rgba(59,130,246,.12);
     }
 
     textarea{
+      min-height:150px;
       resize:vertical;
-      min-height:120px;
-    }
-
-    #notice_body{
-      min-height:280px;
       line-height:1.6;
     }
 
-    input:focus,
-    select:focus,
-    textarea:focus{
-      border-color:#7fb1db;
-      box-shadow:0 0 0 4px rgba(15,76,129,0.10);
+    .notice-body-box{
+      min-height:280px;
     }
 
-    .checkbox-row{
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .three{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    .tick{
       display:flex;
-      flex-wrap:wrap;
-      gap:14px;
       align-items:flex-start;
-      padding:12px 13px;
-      border:1px solid #dbe6f0;
-      border-radius:14px;
-      background:#fbfdff;
-    }
-
-    .checkbox-item{
-      display:flex;
       gap:10px;
-      align-items:flex-start;
-      color:#334155;
-      line-height:1.45;
+      padding:12px 13px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      margin-bottom:10px;
     }
 
-    .checkbox-item input{
-      margin-top:2px;
-      transform:scale(1.05);
+    .tick:last-child{
+      margin-bottom:0;
+    }
+
+    .tick input{
+      margin-top:3px;
+      transform:scale(1.1);
+    }
+
+    .tick-text{
+      line-height:1.45;
+      font-size:.95rem;
+    }
+
+    .tick-text strong{
+      display:block;
+      margin-bottom:2px;
+    }
+
+    .preview-box{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      padding:16px 14px;
+      min-height:200px;
+    }
+
+    .preview-title-art{
+      display:none;
+      margin:0 0 10px;
+      text-align:left;
+    }
+
+    .preview-title-art img{
+      display:block;
+      max-width:100%;
+      max-height:120px;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+    }
+
+    .preview-title{
+      margin:0 0 10px;
+      font-size:1.55rem;
+      line-height:1.15;
+      word-break:break-word;
+    }
+
+    .preview-summary{
+      margin:0 0 12px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .preview-inline-wrap{
+      display:none;
+      text-align:center;
+      margin:0 0 14px;
+    }
+
+    .preview-inline-wrap img{
+      display:block;
+      margin:0 auto;
+      max-width:min(100%, 340px);
+      max-height:220px;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      border-radius:16px;
+      border:1px solid #e5edf5;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(15,23,42,.08);
+    }
+
+    .preview-copy{
+      white-space:pre-wrap;
+      line-height:1.7;
+      color:#1f2937;
+      word-break:break-word;
+    }
+
+    .placeholder{
+      color:var(--muted);
+      font-style:italic;
+    }
+
+    .status{
+      margin-bottom:14px;
+      border-radius:18px;
+      padding:13px 15px;
+      line-height:1.55;
+      border:1px solid transparent;
+    }
+
+    .status.error{
+      background:var(--red-soft);
+      border-color:#fecaca;
+      color:#991b1b;
+    }
+
+    .status.success{
+      background:var(--green-soft);
+      border-color:#bbf7d0;
+      color:#166534;
+    }
+
+    .status.info{
+      background:#f8fafc;
+      border-color:#e2e8f0;
+      color:#334155;
     }
 
     .actions{
       display:flex;
+      gap:10px;
       flex-wrap:wrap;
-      gap:12px;
       margin-top:18px;
     }
 
     .btn{
       appearance:none;
       border:none;
-      border-radius:14px;
+      border-radius:999px;
+      min-height:46px;
       padding:12px 18px;
       font:inherit;
-      font-weight:800;
-      cursor:pointer;
-      min-height:48px;
-    }
-
-    .btn.primary{
-      background:var(--brand);
-      color:#fff;
-      box-shadow:0 10px 20px rgba(15,76,129,0.18);
-    }
-
-    .btn.primary:hover{
-      background:var(--brand2);
-    }
-
-    .btn.secondary{
-      background:#fff;
-      color:var(--brand);
-      border:1px solid #c9dced;
-    }
-
-    .btn:disabled{
-      opacity:.65;
-      cursor:default;
-    }
-
-    .side-stack{
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    .poster-preview{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    .poster-image-wrap{
-      background:#edf4fa;
-      min-height:180px;
-      border-bottom:1px solid var(--line);
-    }
-
-    .poster-image{
-      width:100%;
-      max-height:300px;
-      object-fit:cover;
-      display:none;
-      background:#edf4fa;
-    }
-
-    .poster-placeholder{
-      min-height:180px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:20px;
-      color:#5c7084;
       font-weight:700;
-      background:linear-gradient(135deg, rgba(15,76,129,0.12), rgba(255,255,255,0.98));
-    }
-
-    .poster-head{
-      padding:18px 16px 14px;
-      background:linear-gradient(135deg, rgba(15,76,129,0.08), rgba(255,255,255,0.98));
-    }
-
-    .poster-badge{
+      cursor:pointer;
+      text-decoration:none;
       display:inline-flex;
       align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#e8f2fb;
-      color:var(--brand);
-      font-size:0.82rem;
-      font-weight:800;
-      margin-bottom:10px;
+      justify-content:center;
+      transition:transform .06s ease, opacity .2s ease;
     }
 
-    .poster-title{
-      margin:0 0 8px;
-      font-size:1.65rem;
-      line-height:1.15;
-      color:var(--brand);
-      word-break:break-word;
+    .btn:hover{ transform:translateY(-1px); }
+    .btn:active{ transform:translateY(0); }
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--blue), var(--blue-2));
+      color:#fff;
+      box-shadow:0 8px 18px rgba(37,99,235,.18);
     }
 
-    .poster-summary{
-      margin:0;
-      color:#334155;
-      line-height:1.55;
-      white-space:pre-wrap;
+    .btn-secondary{
+      background:#fff;
+      color:var(--ink);
+      border:1px solid var(--line);
     }
 
-    .poster-facts{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      padding:14px 16px;
-      border-top:1px solid var(--line);
-    }
-
-    .fact{
-      padding:10px 12px;
-      border:1px solid #e1ebf3;
-      border-radius:14px;
-      background:#fbfdff;
-    }
-
-    .fact strong{
-      display:block;
-      margin-bottom:4px;
-      font-size:0.88rem;
-      color:#284a6b;
-    }
-
-    .fact span{
-      color:#44586d;
-      line-height:1.4;
-      white-space:pre-wrap;
-    }
-
-    .poster-body{
-      padding:14px 16px 18px;
-      color:#2b3d4f;
-      line-height:1.68;
-      white-space:pre-wrap;
-    }
-
-    .small{
-      font-size:0.88rem;
+    .mini-note{
+      margin-top:10px;
       color:var(--muted);
-      line-height:1.45;
+      font-size:.92rem;
+      line-height:1.5;
     }
 
-    @media (max-width: 920px){
-      .layout{
+    .hidden{
+      display:none !important;
+    }
+
+    @media (max-width:920px){
+      .form-grid{
         grid-template-columns:1fr;
       }
     }
 
-    @media (max-width: 700px){
-      .page{
-        padding:16px 12px 36px;
-      }
-
-      .hero,
-      .card-inner{
-        padding:16px 14px;
-      }
-
-      .form-grid,
-      .auth-row{
+    @media (max-width:700px){
+      .two,
+      .three{
         grid-template-columns:1fr;
       }
+    }
 
-      .poster-title{
-        font-size:1.45rem;
+    @media (max-width:560px){
+      .wrap{
+        padding:14px 10px 30px;
+      }
+
+      .head,
+      .body{
+        padding-left:14px;
+        padding-right:14px;
+      }
+
+      .actions{
+        flex-direction:column;
+      }
+
+      .btn{
+        width:100%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="wrap">
     <div class="topbar">
       <div class="crumbs">
         <a href="members-info.html">Members Hub</a>
         <span>›</span>
-        <a href="events-calendar.html">Calendar</a>
+        <a href="events.html">Events List</a>
         <span>›</span>
-        <span id="crumbCurrent">Create Event</span>
+        <span id="crumbCurrent">Host an Event</span>
       </div>
-
-      <a class="back-link" href="events-calendar.html">← Back to Calendar</a>
     </div>
 
-    <section class="hero">
-      <h1 id="pageHeading">Create an event and its Host Notice</h1>
-      <p id="pageIntro">
-        Enter the event details and write the notice in your own words. You can choose a prepared banner according to the category, or leave it on the default setting.
-      </p>
-    </section>
-
-    <section class="card auth-panel">
-      <div class="card-inner">
-        <div id="authStatusBox" class="status"></div>
-
-        <div class="auth-box">
-          <div class="auth-meta">
-            <div>
-              <div class="auth-pill" id="authModeLabel">Host / Admin access</div>
-              <div class="mini-note" id="authSummary">
-                Sign in as a host with membership number and PIN, or continue with an existing admin login.
-              </div>
-            </div>
-            <button id="signOutBtn" class="btn secondary hidden" type="button">Sign out of host access</button>
-          </div>
-
-          <form id="hostLoginForm" class="hidden" novalidate>
-            <div class="auth-row">
-              <div class="field">
-                <label for="login_member_id">Membership number</label>
-                <input id="login_member_id" type="text" maxlength="30" placeholder="e.g. SM55" />
-              </div>
-              <div class="field">
-                <label for="login_pin">PIN</label>
-                <input id="login_pin" type="password" maxlength="10" placeholder="Your PIN" />
-              </div>
-            </div>
-
-            <div class="actions">
-              <button id="hostLoginBtn" class="btn primary" type="submit">Sign in as host</button>
-            </div>
-          </form>
-        </div>
+    <div class="shell">
+      <div class="head">
+        <div class="eyebrow" id="modeBadge">Host form</div>
+        <h1 id="pageTitle">Create Event Notice</h1>
+        <p class="sub">
+          Create or edit a notice in a calm, standardised format. You may type a title, add optional title art, include an optional image within the body area, and write the notice text freely.
+        </p>
       </div>
-    </section>
 
-    <div class="layout">
-      <section class="card">
-        <div class="card-inner">
-          <div id="statusBox" class="status"></div>
+      <div class="body">
+        <div id="statusArea"></div>
 
-          <form id="eventForm" novalidate>
-            <h2 id="detailsHeading">Event details</h2>
-            <p class="intro">Add the practical details of the event here.</p>
+        <form id="eventForm" novalidate>
+          <div class="form-grid">
+            <div class="card">
+              <h2 class="section-title">Notice content</h2>
 
-            <div class="form-grid">
-              <div class="field full">
+              <div class="field">
                 <label for="title">Event title</label>
-                <input id="title" name="title" type="text" maxlength="140" placeholder="e.g. Wednesday Quiz Night" required />
-                <div class="hint">This full title will appear on the Host Notice page.</div>
+                <input type="text" id="title" name="title" maxlength="160" placeholder="Type the event title" />
+                <div class="helper">
+                  Type a title or choose from the library.
+                  <a id="titleLibraryLink" href="title-library.html" target="_blank" rel="noopener">Open title/image library</a>
+                </div>
               </div>
 
               <div class="field">
-                <label for="category_key">Category</label>
-                <select id="category_key" name="category_key" required>
-                  <option value="">Select category</option>
-                  <option value="social">Social</option>
-                  <option value="sport">Sport</option>
-                  <option value="games">Games</option>
-                  <option value="fitness">Fitness</option>
-                  <option value="food">Food</option>
-                  <option value="entertainment">Entertainment</option>
-                  <option value="meeting">Meeting</option>
-                  <option value="external-service">External Service</option>
+                <label for="titleGraphicUrl">Title graphic URL (optional)</label>
+                <input type="url" id="titleGraphicUrl" name="titleGraphicUrl" placeholder="e.g. images/titles/curry-night.svg" />
+                <div class="helper">
+                  Leave blank if using a normal typed title only.
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="summary">Short summary (optional)</label>
+                <input type="text" id="summary" name="summary" maxlength="220" placeholder="A short line beneath the title if wanted" />
+              </div>
+
+              <div class="field">
+                <label for="inlineImageUrl">Notice image URL (optional)</label>
+                <input type="url" id="inlineImageUrl" name="inlineImageUrl" placeholder="e.g. images/banners/sport-bowls.jpg" />
+                <div class="helper">
+                  This image appears top centre within the notice body area.
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="noticeBody">Notice text</label>
+                <textarea id="noticeBody" name="noticeBody" class="notice-body-box" placeholder="Type the notice here. You can write freely."></textarea>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 class="section-title">Preview</h2>
+
+              <div class="preview-box">
+                <div id="previewTitleArt" class="preview-title-art">
+                  <img id="previewTitleArtImg" alt="Title art preview" />
+                </div>
+
+                <h3 id="previewTitle" class="preview-title">Event title</h3>
+
+                <p id="previewSummary" class="preview-summary hidden"></p>
+
+                <div id="previewInlineWrap" class="preview-inline-wrap">
+                  <img id="previewInlineImg" alt="Notice image preview" />
+                </div>
+
+                <div id="previewCopy" class="preview-copy placeholder">Notice text preview appears here.</div>
+              </div>
+
+              <div class="mini-note">
+                This is a simple visual guide only. The saved notice will use the site’s normal notice layout.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-top:18px;">
+            <div class="card">
+              <h2 class="section-title">Event details</h2>
+
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                  <option value="Social">Social</option>
+                  <option value="Sport">Sport</option>
+                  <option value="Games">Games</option>
+                  <option value="Fitness">Fitness</option>
+                  <option value="Food">Food</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Meeting">Meeting</option>
+                  <option value="External Service">External Service</option>
                 </select>
               </div>
 
-              <div class="field">
-                <label for="event_date">Date</label>
-                <input id="event_date" name="event_date" type="date" required />
-              </div>
+              <div class="two">
+                <div class="field">
+                  <label for="startDateTime">Start date and time</label>
+                  <input type="datetime-local" id="startDateTime" name="startDateTime" />
+                </div>
 
-              <div class="field">
-                <label for="start_time">Start time</label>
-                <input id="start_time" name="start_time" type="time" required />
-              </div>
-
-              <div class="field">
-                <label for="end_time">Finish time</label>
-                <input id="end_time" name="end_time" type="time" />
-              </div>
-
-              <div class="field full">
-                <label for="location">Location</label>
-                <input id="location" name="location" type="text" maxlength="120" placeholder="e.g. Clubhouse lounge" required />
-              </div>
-
-              <div class="field">
-                <label for="host_name">Host name</label>
-                <input id="host_name" name="host_name" type="text" maxlength="80" placeholder="e.g. Margaret" />
-              </div>
-
-              <div class="field">
-                <label for="host_member_id">Host membership number</label>
-                <input id="host_member_id" name="host_member_id" type="text" maxlength="30" placeholder="e.g. SM55" />
-              </div>
-
-              <div class="field">
-                <label for="capacity">Availability / number of places</label>
-                <input id="capacity" name="capacity" type="number" min="0" step="1" placeholder="Leave blank if not limited" />
-              </div>
-
-              <div class="field">
-                <label for="booking_mode">How members should respond</label>
-                <select id="booking_mode" name="booking_mode">
-                  <option value="booking">Book</option>
-                  <option value="interest">Register interest</option>
-                  <option value="booking_or_interest">Book or register interest</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="section-rule"></div>
-
-            <h2>The Notice</h2>
-            <p class="intro">This is the part members will read.</p>
-
-            <div class="form-grid">
-              <div class="field full">
-                <label for="notice_summary">Short introduction</label>
-                <textarea id="notice_summary" name="notice_summary" rows="3" maxlength="400" placeholder="One or two inviting sentences for the top of the Host Notice."></textarea>
-              </div>
-
-              <div class="field">
-                <label for="banner_choice">Notice header image</label>
-                <select id="banner_choice" name="banner_choice">
-                  <option value="">Use category default banner</option>
-                </select>
-                <div class="hint">
-                  Choose a prepared banner for this category, or leave it on the default setting.
+                <div class="field">
+                  <label for="endDateTime">End date and time (optional)</label>
+                  <input type="datetime-local" id="endDateTime" name="endDateTime" />
                 </div>
               </div>
 
-              <div class="field">
-                <label for="banner_custom">Custom banner path (optional)</label>
-                <input
-                  id="banner_custom"
-                  name="banner_custom"
-                  type="text"
-                  maxlength="240"
-                  placeholder="e.g. images/banners/social-evening.jpg"
-                />
-                <div class="hint">
-                  Leave blank unless you want to override the dropdown. Use a relative path in <strong>images/banners/</strong>.
+              <div class="two">
+                <div class="field">
+                  <label for="location">Location</label>
+                  <input type="text" id="location" name="location" maxlength="160" placeholder="e.g. Clubhouse lounge" />
+                </div>
+
+                <div class="field">
+                  <label for="hostName">Host name</label>
+                  <input type="text" id="hostName" name="hostName" maxlength="120" placeholder="Host / organiser name" />
                 </div>
               </div>
 
-              <div class="field full">
-                <label>Banner guidance</label>
-                <div class="checkbox-row">
-                  <div class="mini-note" id="bannerGuideText">
-                    Select a prepared banner, or leave the category default in place. If the chosen file is not yet present in images/banners, the preview will simply fall back to the placeholder until the file is added.
-                  </div>
+              <div class="three">
+                <div class="field">
+                  <label for="placesTotal">Places offered</label>
+                  <input type="number" id="placesTotal" name="placesTotal" min="0" step="1" placeholder="e.g. 20" />
                 </div>
-              </div>
 
-              <div class="field full">
-                <label for="notice_body">Full Host Notice</label>
-                <textarea id="notice_body" name="notice_body" maxlength="8000" placeholder="Write the Notice here in your own words."></textarea>
-                <div class="hint">Please paste ordinary notice text only, not page code or a whole document.</div>
-              </div>
-            </div>
+                <div class="field">
+                  <label for="bookingMode">Booking mode</label>
+                  <select id="bookingMode" name="bookingMode">
+                    <option value="booking_or_interest">Book or interest</option>
+                    <option value="booking">Booking only</option>
+                    <option value="interest">Interest only</option>
+                  </select>
+                </div>
 
-            <div class="section-rule"></div>
-
-            <h2>Publish</h2>
-            <div class="form-grid">
-              <div class="field full">
-                <div class="checkbox-row">
-                  <label class="checkbox-item">
-                    <input id="publish_live" name="publish_live" type="checkbox" checked />
-                    <span>Publish live immediately</span>
-                  </label>
-                  <label class="checkbox-item">
-                    <input id="show_in_calendar" name="show_in_calendar" type="checkbox" checked />
-                    <span>Show in Calendar and Events List</span>
-                  </label>
+                <div class="field">
+                  <label for="priceInfo">Money / price note (optional)</label>
+                  <input type="text" id="priceInfo" name="priceInfo" maxlength="120" placeholder="e.g. £8 per person" />
                 </div>
               </div>
             </div>
 
-            <div class="actions">
-              <button id="submitBtn" class="btn primary" type="submit">Publish event and Host Notice</button>
-              <button id="resetBtn" class="btn secondary" type="button">Clear form</button>
-            </div>
-          </form>
-        </div>
-      </section>
+            <div class="card">
+              <h2 class="section-title">Publication</h2>
 
-      <aside class="side-stack">
-        <section class="poster-preview">
-          <div class="poster-image-wrap">
-            <img id="previewImage" class="poster-image" alt="Poster preview image" />
-            <div id="previewPlaceholder" class="poster-placeholder">Host Notice preview</div>
-          </div>
+              <label class="tick">
+                <input type="checkbox" id="publishLive" name="publishLive" checked />
+                <span class="tick-text">
+                  <strong>Publish live immediately</strong>
+                  Make the notice live as soon as it is saved.
+                </span>
+              </label>
 
-          <div class="poster-head">
-            <span class="poster-badge" id="previewBadge">Host Notice preview</span>
-            <h2 id="previewTitle" class="poster-title">Your event title will appear here</h2>
-            <p id="previewSummary" class="poster-summary">Your short introduction will appear here.</p>
-          </div>
+              <label class="tick">
+                <input type="checkbox" id="showInCalendar" name="showInCalendar" checked />
+                <span class="tick-text">
+                  <strong>Show in Calendar</strong>
+                  Display this notice in the Calendar.
+                </span>
+              </label>
 
-          <div class="poster-facts">
-            <div class="fact">
-              <strong>Date</strong>
-              <span id="previewDate">Not yet set</span>
-            </div>
-            <div class="fact">
-              <strong>Time</strong>
-              <span id="previewTime">Not yet set</span>
-            </div>
-            <div class="fact">
-              <strong>Location</strong>
-              <span id="previewLocation">Not yet set</span>
-            </div>
-            <div class="fact">
-              <strong>Host</strong>
-              <span id="previewHost">Not yet set</span>
-            </div>
-            <div class="fact">
-              <strong>Availability</strong>
-              <span id="previewAvailability">See booking form</span>
+              <label class="tick">
+                <input type="checkbox" id="showInEventsList" name="showInEventsList" checked />
+                <span class="tick-text">
+                  <strong>Show in Events List</strong>
+                  Display this notice in the Events List.
+                </span>
+              </label>
+
+              <label class="tick">
+                <input type="checkbox" id="allowBookingPage" name="allowBookingPage" checked />
+                <span class="tick-text">
+                  <strong>Use booking / response page</strong>
+                  Leave this on for the normal booking or interest page flow.
+                </span>
+              </label>
+
+              <div class="mini-note">
+                For simpler notices that do not really require booking, we can later grey out or simplify not-applicable response options without changing the notice framework.
+              </div>
             </div>
           </div>
 
-          <div id="previewBody" class="poster-body">Your full Host Notice will appear here.</div>
-        </section>
-
-        <section class="card">
-          <div class="card-inner">
-            <h2>How members will see it</h2>
-            <p class="small">
-              Calendar pill / Events List / Notices page → Host Notice → Booking form.
-            </p>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Save notice</button>
+            <a class="btn btn-secondary" href="members-info.html">Cancel</a>
+            <a class="btn btn-secondary hidden" id="viewNoticeBtn" href="events-details.html">View current notice</a>
           </div>
-        </section>
-      </aside>
+        </form>
+      </div>
     </div>
   </div>
 
   <script>
-    (function(){
-      const BACKEND_URL =
-        (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
-        "https://sanctuary-backend-8iqc.onrender.com";
+    (function () {
+      const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+      const qs = new URLSearchParams(window.location.search);
+      const eventId = (qs.get("event_id") || "").trim();
+      const isEdit = !!eventId;
 
-      const HOST_TOKEN_KEY = "hostToken";
-      const HOST_MEMBER_KEY = "hostMember";
-      const ADMIN_TOKEN_KEY = "adminToken";
+      let originalEvent = null;
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const eventIdFromUrl = (urlParams.get("event_id") || "").trim();
-      const isEditMode = !!eventIdFromUrl;
+      const els = {
+        modeBadge: document.getElementById("modeBadge"),
+        pageTitle: document.getElementById("pageTitle"),
+        crumbCurrent: document.getElementById("crumbCurrent"),
+        statusArea: document.getElementById("statusArea"),
+        form: document.getElementById("eventForm"),
+        saveBtn: document.getElementById("saveBtn"),
+        viewNoticeBtn: document.getElementById("viewNoticeBtn"),
 
-      let loadedEventSnapshot = null;
+        title: document.getElementById("title"),
+        titleGraphicUrl: document.getElementById("titleGraphicUrl"),
+        summary: document.getElementById("summary"),
+        inlineImageUrl: document.getElementById("inlineImageUrl"),
+        noticeBody: document.getElementById("noticeBody"),
 
-      const form = document.getElementById("eventForm");
-      const submitBtn = document.getElementById("submitBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const statusBox = document.getElementById("statusBox");
+        category: document.getElementById("category"),
+        startDateTime: document.getElementById("startDateTime"),
+        endDateTime: document.getElementById("endDateTime"),
+        location: document.getElementById("location"),
+        hostName: document.getElementById("hostName"),
+        placesTotal: document.getElementById("placesTotal"),
+        bookingMode: document.getElementById("bookingMode"),
+        priceInfo: document.getElementById("priceInfo"),
 
-      const hostLoginForm = document.getElementById("hostLoginForm");
-      const hostLoginBtn = document.getElementById("hostLoginBtn");
-      const loginMemberIdEl = document.getElementById("login_member_id");
-      const loginPinEl = document.getElementById("login_pin");
-      const authStatusBox = document.getElementById("authStatusBox");
-      const authSummary = document.getElementById("authSummary");
-      const authModeLabel = document.getElementById("authModeLabel");
-      const signOutBtn = document.getElementById("signOutBtn");
+        publishLive: document.getElementById("publishLive"),
+        showInCalendar: document.getElementById("showInCalendar"),
+        showInEventsList: document.getElementById("showInEventsList"),
+        allowBookingPage: document.getElementById("allowBookingPage"),
 
-      const crumbCurrent = document.getElementById("crumbCurrent");
-      const pageHeading = document.getElementById("pageHeading");
-      const pageIntro = document.getElementById("pageIntro");
-      const detailsHeading = document.getElementById("detailsHeading");
-      const previewBadge = document.getElementById("previewBadge");
+        previewTitleArt: document.getElementById("previewTitleArt"),
+        previewTitleArtImg: document.getElementById("previewTitleArtImg"),
+        previewTitle: document.getElementById("previewTitle"),
+        previewSummary: document.getElementById("previewSummary"),
+        previewInlineWrap: document.getElementById("previewInlineWrap"),
+        previewInlineImg: document.getElementById("previewInlineImg"),
+        previewCopy: document.getElementById("previewCopy"),
 
-      const titleEl = document.getElementById("title");
-      const categoryKeyEl = document.getElementById("category_key");
-      const eventDateEl = document.getElementById("event_date");
-      const startTimeEl = document.getElementById("start_time");
-      const endTimeEl = document.getElementById("end_time");
-      const locationEl = document.getElementById("location");
-      const hostNameEl = document.getElementById("host_name");
-      const hostMemberIdEl = document.getElementById("host_member_id");
-      const capacityEl = document.getElementById("capacity");
-      const bookingModeEl = document.getElementById("booking_mode");
-      const noticeSummaryEl = document.getElementById("notice_summary");
-      const noticeBodyEl = document.getElementById("notice_body");
-      const publishLiveEl = document.getElementById("publish_live");
-      const showInCalendarEl = document.getElementById("show_in_calendar");
-
-      const bannerChoiceEl = document.getElementById("banner_choice");
-      const bannerCustomEl = document.getElementById("banner_custom");
-
-      const previewImage = document.getElementById("previewImage");
-      const previewPlaceholder = document.getElementById("previewPlaceholder");
-      const previewTitle = document.getElementById("previewTitle");
-      const previewSummary = document.getElementById("previewSummary");
-      const previewDate = document.getElementById("previewDate");
-      const previewTime = document.getElementById("previewTime");
-      const previewLocation = document.getElementById("previewLocation");
-      const previewHost = document.getElementById("previewHost");
-      const previewAvailability = document.getElementById("previewAvailability");
-      const previewBody = document.getElementById("previewBody");
-
-      const categoryLabels = {
-        social: "Social",
-        sport: "Sport",
-        games: "Games",
-        fitness: "Fitness",
-        food: "Food",
-        entertainment: "Entertainment",
-        meeting: "Meeting",
-        "external-service": "External Service"
+        titleLibraryLink: document.getElementById("titleLibraryLink")
       };
 
-      const CATEGORY_BANNERS = {
-        social: "images/banners/social.jpg",
-        sport: "images/banners/sport.jpg",
-        games: "images/banners/games.jpg",
-        fitness: "images/banners/fitness.jpg",
-        food: "images/banners/food.jpg",
-        entertainment: "images/banners/entertainment.jpg",
-        meeting: "images/banners/meeting.jpg",
-        "external-service": "images/banners/external.jpg"
-      };
-
-      const BANNER_LIBRARY = {
-        social: [
-          { value: "images/banners/social.jpg", label: "Social — default" },
-          { value: "images/banners/social-warm.jpg", label: "Social — warm" },
-          { value: "images/banners/social-tea.jpg", label: "Social — tea" },
-          { value: "images/banners/social-evening.jpg", label: "Social — evening" },
-          { value: "images/banners/social-gathering.jpg", label: "Social — gathering" }
-        ],
-        sport: [
-          { value: "images/banners/sport.jpg", label: "Sport — default" },
-          { value: "images/banners/sport-bowls.jpg", label: "Sport — bowls" },
-          { value: "images/banners/sport-walking.jpg", label: "Sport — walking" },
-          { value: "images/banners/sport-tabletennis.jpg", label: "Sport — table tennis" },
-          { value: "images/banners/sport-outdoor.jpg", label: "Sport — outdoor" }
-        ],
-        games: [
-          { value: "images/banners/games.jpg", label: "Games — default" },
-          { value: "images/banners/games-cards.jpg", label: "Games — cards" },
-          { value: "images/banners/games-board.jpg", label: "Games — board" },
-          { value: "images/banners/games-quiz.jpg", label: "Games — quiz" },
-          { value: "images/banners/games-social.jpg", label: "Games — social" }
-        ],
-        fitness: [
-          { value: "images/banners/fitness.jpg", label: "Fitness — default" },
-          { value: "images/banners/fitness-gentle.jpg", label: "Fitness — gentle" },
-          { value: "images/banners/fitness-yoga.jpg", label: "Fitness — yoga" },
-          { value: "images/banners/fitness-stretch.jpg", label: "Fitness — stretch" },
-          { value: "images/banners/fitness-wellbeing.jpg", label: "Fitness — wellbeing" }
-        ],
-        food: [
-          { value: "images/banners/food.jpg", label: "Food — default" },
-          { value: "images/banners/food-table.jpg", label: "Food — table" },
-          { value: "images/banners/food-tea.jpg", label: "Food — tea" },
-          { value: "images/banners/food-light.jpg", label: "Food — light meal" },
-          { value: "images/banners/food-wine.jpg", label: "Food — wine" }
-        ],
-        entertainment: [
-          { value: "images/banners/entertainment.jpg", label: "Entertainment — default" },
-          { value: "images/banners/entertainment-movie.jpg", label: "Entertainment — movie" },
-          { value: "images/banners/entertainment-music.jpg", label: "Entertainment — music" },
-          { value: "images/banners/entertainment-light.jpg", label: "Entertainment — light" },
-          { value: "images/banners/entertainment-ambient.jpg", label: "Entertainment — ambient" }
-        ],
-        meeting: [
-          { value: "images/banners/meeting.jpg", label: "Meeting — default" },
-          { value: "images/banners/meeting-table.jpg", label: "Meeting — table" },
-          { value: "images/banners/meeting-room.jpg", label: "Meeting — room" },
-          { value: "images/banners/meeting-docs.jpg", label: "Meeting — papers" },
-          { value: "images/banners/meeting-neutral.jpg", label: "Meeting — neutral" }
-        ],
-        "external-service": [
-          { value: "images/banners/external.jpg", label: "External Service — default" },
-          { value: "images/banners/external-clean.jpg", label: "External Service — clean" },
-          { value: "images/banners/external-wellness.jpg", label: "External Service — wellness" },
-          { value: "images/banners/external-support.jpg", label: "External Service — support" },
-          { value: "images/banners/external-neutral.jpg", label: "External Service — neutral" }
-        ]
-      };
-
-      function getAutoBannerUrl(categoryKey){
-        const key = String(categoryKey || "").trim().toLowerCase();
-        return CATEGORY_BANNERS[key] || "";
+      function escapeHtml(value){
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
       }
 
-      function showStatus(kind, message){
-        statusBox.className = `status show ${kind}`;
-        statusBox.textContent = message;
+      function firstDefined(){
+        for (const v of arguments){
+          if (v !== undefined && v !== null && v !== "") return v;
+        }
+        return "";
+      }
+
+      function toLocalInputValue(value){
+        if (!value) return "";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return "";
+        const pad = n => String(n).padStart(2, "0");
+        const year = d.getFullYear();
+        const month = pad(d.getMonth() + 1);
+        const day = pad(d.getDate());
+        const hours = pad(d.getHours());
+        const mins = pad(d.getMinutes());
+        return `${year}-${month}-${day}T${hours}:${mins}`;
+      }
+
+      function showStatus(text, type){
+        els.statusArea.innerHTML = `<div class="status ${type || "info"}">${escapeHtml(text)}</div>`;
       }
 
       function clearStatus(){
-        statusBox.className = "status";
-        statusBox.textContent = "";
-      }
-
-      function showAuthStatus(kind, message){
-        authStatusBox.className = `status show ${kind}`;
-        authStatusBox.textContent = message;
-      }
-
-      function clearAuthStatus(){
-        authStatusBox.className = "status";
-        authStatusBox.textContent = "";
-      }
-
-      function safeText(value, fallback){
-        const t = String(value || "").trim();
-        return t || fallback;
-      }
-
-      function firstNonEmpty(){
-        for(const value of arguments){
-          if(value === undefined || value === null) continue;
-          const text = String(value).trim();
-          if(text !== "") return text;
-        }
-        return "";
-      }
-
-      function firstNumber(){
-        for(const value of arguments){
-          if(value === undefined || value === null || value === "") continue;
-          const n = Number(value);
-          if(Number.isFinite(n)) return n;
-        }
-        return null;
-      }
-
-      function firstBoolean(defaultValue){
-        for(let i = 1; i < arguments.length; i++){
-          const value = arguments[i];
-          if(typeof value === "boolean") return value;
-          if(value === 1 || value === "1" || value === "true") return true;
-          if(value === 0 || value === "0" || value === "false") return false;
-        }
-        return defaultValue;
-      }
-
-      function cleanMediaUrl(value){
-        if(Array.isArray(value)){
-          for(const item of value){
-            const cleaned = cleanMediaUrl(item);
-            if(cleaned) return cleaned;
-          }
-          return "";
-        }
-
-        const text = String(value || "").trim();
-        if(!text) return "";
-
-        const match = text.match(/https?:\/\/\S+|images\/banners\/[^\s]+/i);
-        return match ? match[0] : "";
-      }
-
-      function containsBlockedNoticeBodyContent(value){
-        const text = String(value || "");
-        if(!text.trim()) return false;
-
-        return (
-          /<!doctype html/i.test(text) ||
-          /<html[\s>]/i.test(text) ||
-          /<head[\s>]/i.test(text) ||
-          /<body[\s>]/i.test(text) ||
-          /<meta[\s>]/i.test(text) ||
-          /<style[\s>]/i.test(text) ||
-          /<script[\s>]/i.test(text) ||
-          /<\/html>/i.test(text) ||
-          /<\/body>/i.test(text)
-        );
-      }
-
-      function cleanPlainNoticeText(value){
-        return String(value || "")
-          .replace(/\r\n/g, "\n")
-          .trim();
-      }
-
-      function cleanBannerPath(value){
-        const text = String(value || "").trim();
-        if(!text) return "";
-        const cleaned = cleanMediaUrl(text);
-        return cleaned || text;
-      }
-
-      function formatDate(dateStr){
-        if(!dateStr) return "Not yet set";
-        const d = new Date(`${dateStr}T12:00:00`);
-        if(Number.isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString("en-GB", {
-          weekday:"long",
-          day:"numeric",
-          month:"long",
-          year:"numeric"
-        });
-      }
-
-      function formatAvailability(){
-        const raw = capacityEl.value.trim();
-        if(raw === "") return "See booking form";
-        const n = Number(raw);
-        if(!Number.isFinite(n)) return "See booking form";
-        return `${n} place${n === 1 ? "" : "s"}`;
-      }
-
-      function getAdminToken(){
-        return (localStorage.getItem(ADMIN_TOKEN_KEY) || "").trim();
-      }
-
-      function getHostToken(){
-        return (localStorage.getItem(HOST_TOKEN_KEY) || "").trim();
+        els.statusArea.innerHTML = "";
       }
 
       function getAuthToken(){
-        return getHostToken() || getAdminToken();
-      }
+        const candidates = [
+          "adminToken",
+          "authToken",
+          "memberToken",
+          "sanctuaryToken",
+          "hostToken",
+          "serviceToken"
+        ];
 
-      function getHostMember(){
-        try{
-          const raw = localStorage.getItem(HOST_MEMBER_KEY);
-          return raw ? JSON.parse(raw) : null;
-        }catch{
-          return null;
+        for (const key of candidates){
+          const value = localStorage.getItem(key);
+          if (value && String(value).trim()) return String(value).trim();
         }
-      }
-
-      function setHostSession(token, member){
-        localStorage.setItem(HOST_TOKEN_KEY, token);
-        localStorage.setItem(HOST_MEMBER_KEY, JSON.stringify(member || {}));
-      }
-
-      function clearHostSession(){
-        localStorage.removeItem(HOST_TOKEN_KEY);
-        localStorage.removeItem(HOST_MEMBER_KEY);
-      }
-
-      function setPageModeText(){
-        if(isEditMode){
-          document.title = "Edit Event | Sanctuary Club";
-          crumbCurrent.textContent = "Edit Event";
-          pageHeading.textContent = "Edit event and Host Notice";
-          pageIntro.textContent = "You can amend the practical details, update the Host Notice, and adjust the banner choice if required.";
-          detailsHeading.textContent = "Event details";
-          submitBtn.textContent = "Save changes";
-          resetBtn.textContent = "Reset changes";
-          previewBadge.textContent = "Host Notice preview";
-        }else{
-          document.title = "Create Event | Sanctuary Club";
-          crumbCurrent.textContent = "Create Event";
-          pageHeading.textContent = "Create an event and its Host Notice";
-          pageIntro.textContent = "Enter the event details and write the notice in your own words. You can choose a prepared banner according to the category, or leave it on the default setting.";
-          detailsHeading.textContent = "Event details";
-          submitBtn.textContent = "Publish event and Host Notice";
-          resetBtn.textContent = "Clear form";
-          previewBadge.textContent = "Host Notice preview";
-        }
-      }
-
-      function refreshAccessUi(){
-        const adminToken = getAdminToken();
-        const hostToken = getHostToken();
-        const hostMember = getHostMember();
-
-        if(adminToken){
-          hostLoginForm.classList.add("hidden");
-          signOutBtn.classList.add("hidden");
-          authModeLabel.textContent = isEditMode ? "Admin edit access active" : "Admin access active";
-          authSummary.textContent = isEditMode
-            ? "You are using an existing admin login to edit this event."
-            : "You are using an existing admin login.";
-          clearAuthStatus();
-          return;
-        }
-
-        if(hostToken && hostMember){
-          hostLoginForm.classList.add("hidden");
-          signOutBtn.classList.remove("hidden");
-          authModeLabel.textContent = isEditMode ? "Host edit access active" : "Host access active";
-          authSummary.textContent = `Signed in as ${hostMember.name || hostMember.memberId || "host"}${hostMember.memberId ? ` (${hostMember.memberId})` : ""}.`;
-
-          if(!hostMemberIdEl.value.trim() && hostMember.memberId){
-            hostMemberIdEl.value = hostMember.memberId;
-          }
-          if(!hostNameEl.value.trim() && hostMember.name){
-            hostNameEl.value = hostMember.name;
-          }
-          updatePreview();
-          return;
-        }
-
-        hostLoginForm.classList.remove("hidden");
-        signOutBtn.classList.add("hidden");
-        authModeLabel.textContent = isEditMode ? "Host / Admin edit access" : "Host / Admin access";
-        authSummary.textContent = isEditMode
-          ? "Sign in as a host with membership number and PIN, or continue with an existing admin login, to edit this event."
-          : "Sign in as a host with membership number and PIN, or continue with an existing admin login.";
-      }
-
-      function populateBannerChoices(categoryKey, preferredValue){
-        const key = String(categoryKey || "").trim().toLowerCase();
-        const options = Array.isArray(BANNER_LIBRARY[key]) ? BANNER_LIBRARY[key] : [];
-        const defaultValue = getAutoBannerUrl(key);
-
-        bannerChoiceEl.innerHTML = "";
-
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = defaultValue ? "Use category default banner" : "Select category first";
-        bannerChoiceEl.appendChild(defaultOption);
-
-        options.forEach(option => {
-          const el = document.createElement("option");
-          el.value = option.value;
-          el.textContent = option.label;
-          bannerChoiceEl.appendChild(el);
-        });
-
-        const chosen = cleanBannerPath(preferredValue);
-        if(chosen && options.some(option => option.value === chosen)){
-          bannerChoiceEl.value = chosen;
-        }else{
-          bannerChoiceEl.value = "";
-        }
-      }
-
-      function resolveBannerUrl(){
-        const custom = cleanBannerPath(bannerCustomEl.value);
-        if(custom) return custom;
-
-        const chosen = cleanBannerPath(bannerChoiceEl.value);
-        if(chosen) return chosen;
-
-        return getAutoBannerUrl(categoryKeyEl.value);
-      }
-
-      function applyPreviewImageState(mediaUrl){
-        const finalUrl = cleanBannerPath(mediaUrl);
-
-        previewImage.onload = null;
-        previewImage.onerror = null;
-
-        if(!finalUrl){
-          previewImage.removeAttribute("src");
-          previewImage.style.display = "none";
-          previewPlaceholder.style.display = "flex";
-          previewPlaceholder.textContent = safeText(titleEl.value, "Host Notice preview");
-          return;
-        }
-
-        previewImage.onload = function(){
-          previewImage.style.display = "block";
-          previewPlaceholder.style.display = "none";
-        };
-
-        previewImage.onerror = function(){
-          previewImage.removeAttribute("src");
-          previewImage.style.display = "none";
-          previewPlaceholder.style.display = "flex";
-          previewPlaceholder.textContent = "Banner preview unavailable until that image file is present.";
-        };
-
-        previewImage.src = finalUrl;
-      }
-
-      function updatePreview(){
-        previewTitle.textContent = safeText(titleEl.value, "Your event title will appear here");
-        previewSummary.textContent = safeText(
-          noticeSummaryEl.value,
-          "Your short introduction will appear here."
-        );
-
-        previewDate.textContent = formatDate(eventDateEl.value);
-
-        const start = startTimeEl.value.trim();
-        const end = endTimeEl.value.trim();
-        previewTime.textContent = start ? (end ? `${start} – ${end}` : start) : "Not yet set";
-
-        previewLocation.textContent = safeText(locationEl.value, "Not yet set");
-
-        const hostName = hostNameEl.value.trim();
-        const hostMemberId = hostMemberIdEl.value.trim();
-        previewHost.textContent =
-          hostName || hostMemberId
-            ? [hostName, hostMemberId ? `(${hostMemberId})` : ""].filter(Boolean).join(" ")
-            : "Not yet set";
-
-        previewAvailability.textContent = formatAvailability();
-
-        previewBody.textContent = safeText(
-          noticeBodyEl.value,
-          "Your full Host Notice will appear here."
-        );
-
-        applyPreviewImageState(resolveBannerUrl());
-      }
-
-      function validateForm(){
-        if(!getAuthToken()) return "Please sign in as host or admin first.";
-        if(!titleEl.value.trim()) return "Please add an event title.";
-        if(!categoryKeyEl.value) return "Please choose a category.";
-        if(!eventDateEl.value) return "Please choose a date.";
-        if(!startTimeEl.value.trim()) return "Please choose a start time.";
-        if(!locationEl.value.trim()) return "Please add a location.";
-        if(!hostMemberIdEl.value.trim()) return "Please add the host membership number.";
-
-        if(containsBlockedNoticeBodyContent(noticeBodyEl.value)){
-          return "Please remove page code from the Full Host Notice box and leave ordinary notice text only.";
-        }
-
         return "";
       }
 
-      function buildPayload(){
-        const capacityRaw = capacityEl.value.trim();
-        const capacity = capacityRaw === "" ? null : Number(capacityRaw);
-        const mediaUrl = resolveBannerUrl();
-        const noticeBody = cleanPlainNoticeText(noticeBodyEl.value);
-
-        return {
-          title: titleEl.value.trim(),
-          category_key: categoryKeyEl.value,
-          category_label: categoryLabels[categoryKeyEl.value] || "",
-          event_date: eventDateEl.value,
-          start_time: startTimeEl.value.trim(),
-          end_time: endTimeEl.value.trim(),
-          location: locationEl.value.trim(),
-          host_name: hostNameEl.value.trim(),
-          host_member_id: hostMemberIdEl.value.trim(),
-          capacity: Number.isFinite(capacity) ? capacity : null,
-          capacity_total: Number.isFinite(capacity) ? capacity : null,
-          booking_mode: bookingModeEl.value,
-          status: publishLiveEl.checked ? "published" : "draft",
-          notice_published: !!publishLiveEl.checked,
-          notice_summary: noticeSummaryEl.value.trim(),
-          notice_body: noticeBody,
-          notice_media: mediaUrl ? [mediaUrl] : [],
-          show_in_calendar: !!showInCalendarEl.checked
-        };
-      }
-
-      async function requestJson(url, options){
-        const res = await fetch(url, options);
-        const text = await res.text();
-
-        let json = {};
-        try{
-          json = text ? JSON.parse(text) : {};
-        }catch{
-          json = {};
-        }
-
-        if(!res.ok){
-          throw new Error(json.message || json.error || `HTTP ${res.status}`);
-        }
-
-        return json;
-      }
-
-      async function getJson(url){
-        return requestJson(url, {
-          method: "GET",
-          headers: {
-            "Accept": "application/json"
-          }
-        });
-      }
-
-      async function sendAuthedJson(url, method, data){
-        const token = getAuthToken();
-        if(!token){
-          throw new Error("Please sign in as host or admin first.");
-        }
-
-        return requestJson(url, {
-          method,
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(data)
-        });
-      }
-
-      async function hostLogin(memberId, pin){
-        return requestJson(`${BACKEND_URL}/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            memberId,
-            pin
-          })
-        });
-      }
-
-      function extractEventPayload(responseJson){
-        if(!responseJson || typeof responseJson !== "object"){
-          return {};
-        }
-
-        if(responseJson.event && typeof responseJson.event === "object"){
-          return responseJson.event;
-        }
-
-        if(responseJson.data && typeof responseJson.data === "object"){
-          return responseJson.data;
-        }
-
-        return responseJson;
-      }
-
-      function applyExistingBannerToFields(existingMediaUrl, categoryKey){
-        const cleaned = cleanBannerPath(existingMediaUrl);
-        populateBannerChoices(categoryKey, cleaned);
-
-        if(!cleaned || cleaned === getAutoBannerUrl(categoryKey)){
-          bannerChoiceEl.value = "";
-          bannerCustomEl.value = "";
+      function setPreviewImage(img, wrap, src){
+        const clean = String(src || "").trim();
+        if (!clean){
+          wrap.classList.add("hidden");
           return;
         }
 
-        const allowedOptions = Array.isArray(BANNER_LIBRARY[categoryKey]) ? BANNER_LIBRARY[categoryKey] : [];
-        const isListed = allowedOptions.some(option => option.value === cleaned);
+        img.onload = function(){
+          wrap.classList.remove("hidden");
+        };
 
-        if(isListed){
-          bannerChoiceEl.value = cleaned;
-          bannerCustomEl.value = "";
-        }else{
-          bannerChoiceEl.value = "";
-          bannerCustomEl.value = cleaned;
+        img.onerror = function(){
+          wrap.classList.add("hidden");
+        };
+
+        img.src = clean;
+      }
+
+      function updatePreview(){
+        const title = els.title.value.trim() || "Event title";
+        const summary = els.summary.value.trim();
+        const body = els.noticeBody.value.trim();
+        const titleGraphicUrl = els.titleGraphicUrl.value.trim();
+        const inlineImageUrl = els.inlineImageUrl.value.trim();
+
+        els.previewTitle.textContent = title;
+
+        if (summary){
+          els.previewSummary.textContent = summary;
+          els.previewSummary.classList.remove("hidden");
+        } else {
+          els.previewSummary.textContent = "";
+          els.previewSummary.classList.add("hidden");
+        }
+
+        if (body){
+          els.previewCopy.classList.remove("placeholder");
+          els.previewCopy.textContent = body;
+        } else {
+          els.previewCopy.classList.add("placeholder");
+          els.previewCopy.textContent = "Notice text preview appears here.";
+        }
+
+        setPreviewImage(els.previewTitleArtImg, els.previewTitleArt, titleGraphicUrl);
+        setPreviewImage(els.previewInlineImg, els.previewInlineWrap, inlineImageUrl);
+      }
+
+      function setModeText(){
+        if (isEdit){
+          els.modeBadge.textContent = "Edit mode";
+          els.pageTitle.textContent = "Edit Event Notice";
+          els.crumbCurrent.textContent = "Edit Event Notice";
+          els.saveBtn.textContent = "Save changes";
+          els.viewNoticeBtn.classList.remove("hidden");
+          els.viewNoticeBtn.href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
+        } else {
+          els.modeBadge.textContent = "Create mode";
+          els.pageTitle.textContent = "Create Event Notice";
+          els.crumbCurrent.textContent = "Host an Event";
         }
       }
 
-      function applyEventToForm(eventData){
-        titleEl.value = firstNonEmpty(eventData.title);
-        categoryKeyEl.value = firstNonEmpty(eventData.category_key, eventData.category);
-        eventDateEl.value = firstNonEmpty(eventData.event_date, eventData.date);
-        startTimeEl.value = firstNonEmpty(eventData.start_time);
-        endTimeEl.value = firstNonEmpty(eventData.end_time);
-        locationEl.value = firstNonEmpty(eventData.location);
-        hostNameEl.value = firstNonEmpty(eventData.host_name, eventData.host);
-        hostMemberIdEl.value = firstNonEmpty(eventData.host_member_id, eventData.member_id);
+      function applyEventToForm(raw){
+        const event = (raw && typeof raw === "object" && raw.event && typeof raw.event === "object")
+          ? raw.event
+          : (raw || {});
 
-        const cap = firstNumber(eventData.capacity, eventData.capacity_total, eventData.places);
-        capacityEl.value = cap === null ? "" : String(cap);
+        originalEvent = event;
 
-        bookingModeEl.value = firstNonEmpty(eventData.booking_mode, "booking_or_interest") || "booking_or_interest";
-        noticeSummaryEl.value = firstNonEmpty(eventData.notice_summary, eventData.summary, eventData.introduction);
-        noticeBodyEl.value = cleanPlainNoticeText(firstNonEmpty(eventData.notice_body, eventData.body, eventData.notice));
-
-        publishLiveEl.checked = firstBoolean(true, eventData.notice_published, eventData.published, eventData.status === "published");
-        showInCalendarEl.checked = firstBoolean(true, eventData.show_in_calendar, eventData.calendar_visible, eventData.listed);
-
-        const existingMediaUrl = cleanMediaUrl(
-          firstNonEmpty(
-            eventData.notice_media,
-            eventData.media,
-            eventData.notice_image,
-            eventData.notice_banner,
-            eventData.banner
-          )
+        els.title.value = firstDefined(event.title, event.event_title, event.name, "");
+        els.titleGraphicUrl.value = firstDefined(
+          event.title_graphic_url,
+          event.titleGraphicUrl,
+          event.title_image_url,
+          event.titleImageUrl,
+          event.title_art_url,
+          event.titleArtUrl,
+          event.notice_title_graphic,
+          event.noticeTitleGraphic,
+          ""
+        );
+        els.summary.value = firstDefined(event.summary, event.short_description, event.excerpt, event.subtitle, "");
+        els.inlineImageUrl.value = firstDefined(
+          event.notice_image_url,
+          event.noticeImageUrl,
+          event.image_url,
+          event.imageUrl,
+          event.poster_image_url,
+          event.posterImageUrl,
+          event.inline_image_url,
+          event.inlineImageUrl,
+          ""
+        );
+        els.noticeBody.value = firstDefined(
+          event.notice_body,
+          event.notice_text,
+          event.description,
+          event.details,
+          event.body,
+          ""
         );
 
-        applyExistingBannerToFields(existingMediaUrl, categoryKeyEl.value);
+        els.category.value = firstDefined(event.category, "Social");
+        els.startDateTime.value = toLocalInputValue(firstDefined(
+          event.start,
+          event.start_at,
+          event.start_datetime,
+          event.start_date,
+          event.date,
+          ""
+        ));
+        els.endDateTime.value = toLocalInputValue(firstDefined(
+          event.end,
+          event.end_at,
+          event.end_datetime,
+          event.end_date,
+          ""
+        ));
+        els.location.value = firstDefined(event.location, event.venue, event.place, "");
+        els.hostName.value = firstDefined(
+          event.host_name,
+          event.organiser_name,
+          event.organizer_name,
+          event.created_by_name,
+          ""
+        );
+        els.placesTotal.value = firstDefined(
+          event.places_total,
+          event.capacity,
+          event.max_places,
+          event.places,
+          ""
+        );
+        els.bookingMode.value = firstDefined(
+          event.booking_mode,
+          event.response_mode,
+          event.attendance_mode,
+          "booking_or_interest"
+        );
+        els.priceInfo.value = firstDefined(
+          event.price_info,
+          event.money_note,
+          event.fee_text,
+          event.cost_text,
+          ""
+        );
+
+        const publishLive = firstDefined(
+          event.publish_live,
+          event.publish_immediately,
+          event.publish_live_immediately,
+          true
+        );
+        const showInCalendar = firstDefined(
+          event.show_in_calendar,
+          event.calendar_visible,
+          event.show_in_calendar_and_list,
+          true
+        );
+        const showInEventsList = firstDefined(
+          event.show_in_events_list,
+          event.events_list_visible,
+          event.list_visible,
+          true
+        );
+        const allowBookingPage = firstDefined(
+          event.allow_booking_page,
+          event.booking_page_enabled,
+          true
+        );
+
+        els.publishLive.checked = !(publishLive === false || publishLive === "false" || publishLive === 0 || publishLive === "0");
+        els.showInCalendar.checked = !(showInCalendar === false || showInCalendar === "false" || showInCalendar === 0 || showInCalendar === "0");
+        els.showInEventsList.checked = !(showInEventsList === false || showInEventsList === "false" || showInEventsList === 0 || showInEventsList === "0");
+        els.allowBookingPage.checked = !(allowBookingPage === false || allowBookingPage === "false" || allowBookingPage === 0 || allowBookingPage === "0");
+
         updatePreview();
       }
 
-      function captureFormSnapshot(){
-        return {
-          title: titleEl.value,
-          category_key: categoryKeyEl.value,
-          event_date: eventDateEl.value,
-          start_time: startTimeEl.value,
-          end_time: endTimeEl.value,
-          location: locationEl.value,
-          host_name: hostNameEl.value,
-          host_member_id: hostMemberIdEl.value,
-          capacity: capacityEl.value,
-          booking_mode: bookingModeEl.value,
-          notice_summary: noticeSummaryEl.value,
-          notice_body: noticeBodyEl.value,
-          banner_choice: bannerChoiceEl.value,
-          banner_custom: bannerCustomEl.value,
-          publish_live: publishLiveEl.checked,
-          show_in_calendar: showInCalendarEl.checked
-        };
-      }
+      function buildPayload(){
+        const title = els.title.value.trim();
+        const start = els.startDateTime.value.trim();
 
-      function applySnapshot(snapshot){
-        if(!snapshot) return;
-
-        titleEl.value = snapshot.title || "";
-        categoryKeyEl.value = snapshot.category_key || "";
-        eventDateEl.value = snapshot.event_date || "";
-        startTimeEl.value = snapshot.start_time || "";
-        endTimeEl.value = snapshot.end_time || "";
-        locationEl.value = snapshot.location || "";
-        hostNameEl.value = snapshot.host_name || "";
-        hostMemberIdEl.value = snapshot.host_member_id || "";
-        capacityEl.value = snapshot.capacity || "";
-        bookingModeEl.value = snapshot.booking_mode || "booking";
-        noticeSummaryEl.value = snapshot.notice_summary || "";
-        noticeBodyEl.value = snapshot.notice_body || "";
-        publishLiveEl.checked = !!snapshot.publish_live;
-        showInCalendarEl.checked = !!snapshot.show_in_calendar;
-
-        populateBannerChoices(categoryKeyEl.value, snapshot.banner_choice || "");
-        bannerChoiceEl.value = snapshot.banner_choice || "";
-        bannerCustomEl.value = snapshot.banner_custom || "";
-
-        updatePreview();
-      }
-
-      async function loadEventForEdit(){
-        if(!isEditMode) return;
-
-        showStatus("warn", "Loading event details…");
-        submitBtn.disabled = true;
-        resetBtn.disabled = true;
-
-        try{
-          const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(eventIdFromUrl)}`);
-          const eventData = extractEventPayload(result);
-
-          if(!eventData || typeof eventData !== "object" || Object.keys(eventData).length === 0){
-            throw new Error("Event details could not be loaded.");
-          }
-
-          applyEventToForm(eventData);
-          loadedEventSnapshot = captureFormSnapshot();
-          clearStatus();
-        }catch(err){
-          console.error(err);
-          showStatus("err", err.message || "The event could not be loaded.");
-        }finally{
-          submitBtn.disabled = false;
-          resetBtn.disabled = false;
+        if (!title){
+          throw new Error("Please enter an event title.");
         }
-      }
-
-      hostLoginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        clearAuthStatus();
-
-        const memberId = loginMemberIdEl.value.trim();
-        const pin = loginPinEl.value.trim();
-
-        if(!memberId || !pin){
-          showAuthStatus("warn", "Please enter membership number and PIN.");
-          return;
+        if (!start){
+          throw new Error("Please enter a start date and time.");
         }
 
-        hostLoginBtn.disabled = true;
-        hostLoginBtn.textContent = "Signing in…";
+        const titleGraphicUrl = els.titleGraphicUrl.value.trim();
+        const summary = els.summary.value.trim();
+        const inlineImageUrl = els.inlineImageUrl.value.trim();
+        const noticeBody = els.noticeBody.value.trim();
+        const category = els.category.value;
+        const end = els.endDateTime.value.trim();
+        const location = els.location.value.trim();
+        const hostName = els.hostName.value.trim();
+        const placesTotalRaw = els.placesTotal.value.trim();
+        const bookingMode = els.bookingMode.value;
+        const priceInfo = els.priceInfo.value.trim();
 
+        const placesTotal = placesTotalRaw === "" ? null : Number(placesTotalRaw);
+
+        const base = Object.assign({}, originalEvent || {});
+
+        const payload = Object.assign(base, {
+          title: title,
+          event_title: title,
+
+          title_graphic_url: titleGraphicUrl,
+          titleGraphicUrl: titleGraphicUrl,
+
+          summary: summary,
+          short_description: summary,
+
+          notice_image_url: inlineImageUrl,
+          noticeImageUrl: inlineImageUrl,
+          image_url: inlineImageUrl,
+
+          notice_body: noticeBody,
+          notice_text: noticeBody,
+          description: noticeBody,
+          details: noticeBody,
+
+          category: category,
+
+          start: start,
+          start_datetime: start,
+          start_date: start,
+
+          end: end,
+          end_datetime: end,
+          end_date: end,
+
+          location: location,
+          venue: location,
+
+          host_name: hostName,
+          organiser_name: hostName,
+          organizer_name: hostName,
+
+          places_total: placesTotal,
+          capacity: placesTotal,
+          max_places: placesTotal,
+
+          booking_mode: bookingMode,
+          response_mode: bookingMode,
+
+          price_info: priceInfo,
+          money_note: priceInfo,
+
+          publish_live: els.publishLive.checked,
+          publish_immediately: els.publishLive.checked,
+          publish_live_immediately: els.publishLive.checked,
+
+          show_in_calendar: els.showInCalendar.checked,
+          calendar_visible: els.showInCalendar.checked,
+
+          show_in_events_list: els.showInEventsList.checked,
+          events_list_visible: els.showInEventsList.checked,
+          list_visible: els.showInEventsList.checked,
+
+          allow_booking_page: els.allowBookingPage.checked,
+          booking_page_enabled: els.allowBookingPage.checked
+        });
+
+        return payload;
+      }
+
+      async function fetchEventForEdit(){
         try{
-          const result = await hostLogin(memberId, pin);
-          const member = result.member || {};
-          const roles = member.roles || [];
-
-          if(!roles.includes("host") && !roles.includes("admin")){
-            throw new Error("Host or admin role required.");
-          }
-
-          setHostSession(result.token, {
-            name: member.name || "",
-            memberId: member.memberId || memberId,
-            roles
+          const res = await fetch(`${API_BASE}/api/events/${encodeURIComponent(eventId)}`, {
+            method: "GET",
+            headers: {
+              "Accept": "application/json"
+            }
           });
 
-          if(!hostMemberIdEl.value.trim()){
-            hostMemberIdEl.value = member.memberId || memberId;
-          }
-          if(!hostNameEl.value.trim()){
-            hostNameEl.value = member.name || "";
+          let data = null;
+          try{
+            data = await res.json();
+          }catch(_e){
+            data = null;
           }
 
-          showAuthStatus("ok", "Host sign-in successful.");
-          refreshAccessUi();
-          updatePreview();
+          if (!res.ok){
+            const msg = data && (data.message || data.error)
+              ? (data.message || data.error)
+              : `Unable to load event (${res.status}).`;
+            throw new Error(msg);
+          }
+
+          applyEventToForm(data || {});
         }catch(err){
-          console.error(err);
-          showAuthStatus("err", err.message || "Could not sign in as host.");
-        }finally{
-          hostLoginBtn.disabled = false;
-          hostLoginBtn.textContent = "Sign in as host";
+          showStatus(err && err.message ? err.message : "Unable to load event for editing.", "error");
         }
-      });
+      }
 
-      signOutBtn.addEventListener("click", () => {
-        clearHostSession();
-        clearAuthStatus();
-        refreshAccessUi();
-      });
-
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+      async function submitForm(ev){
+        ev.preventDefault();
         clearStatus();
 
-        const problem = validateForm();
-        if(problem){
-          showStatus("warn", problem);
+        let payload;
+        try{
+          payload = buildPayload();
+        }catch(err){
+          showStatus(err && err.message ? err.message : "Please check the form.", "error");
           return;
         }
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = isEditMode ? "Saving…" : "Publishing…";
+        const token = getAuthToken();
+        if (!token){
+          showStatus("No sign-in token was found in this browser. Please sign in again before saving.", "error");
+          return;
+        }
+
+        els.saveBtn.disabled = true;
+        els.saveBtn.textContent = isEdit ? "Saving..." : "Creating...";
 
         try{
-          const payload = buildPayload();
-          const result = isEditMode
-            ? await sendAuthedJson(`${BACKEND_URL}/api/events/${encodeURIComponent(eventIdFromUrl)}`, "PUT", payload)
-            : await sendAuthedJson(`${BACKEND_URL}/api/events`, "POST", payload);
+          const url = isEdit
+            ? `${API_BASE}/api/events/${encodeURIComponent(eventId)}`
+            : `${API_BASE}/api/events`;
 
-          const returnedEvent = extractEventPayload(result);
-          const eventId =
-            firstNonEmpty(
-              result.event_id,
-              result.id,
-              returnedEvent.event_id,
-              returnedEvent.id,
-              eventIdFromUrl
-            );
+          const method = isEdit ? "PUT" : "POST";
 
-          if(isEditMode){
-            loadedEventSnapshot = captureFormSnapshot();
+          const res = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+
+          let data = null;
+          try{
+            data = await res.json();
+          }catch(_e){
+            data = null;
           }
 
-          if(eventId){
-            showStatus("ok", isEditMode
-              ? `Changes saved successfully. Event reference: ${eventId}`
-              : `Event published successfully. Event reference: ${eventId}`
-            );
-
-            setTimeout(() => {
-              window.location.href = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventId)}`;
-            }, 700);
-          }else{
-            showStatus("ok", isEditMode
-              ? "Changes saved successfully."
-              : "Event published successfully."
-            );
+          if (!res.ok){
+            const msg = data && (data.message || data.error)
+              ? (data.message || data.error)
+              : `Save failed (${res.status}).`;
+            throw new Error(msg);
           }
+
+          const returnedEvent = data && data.event && typeof data.event === "object" ? data.event : (data || {});
+          const savedEventId = firstDefined(
+            returnedEvent.event_id,
+            returnedEvent.id,
+            returnedEvent.eventId,
+            eventId
+          );
+
+          if (!savedEventId){
+            showStatus("Saved, but no event ID was returned. Please check the Events List.", "success");
+            els.saveBtn.disabled = false;
+            els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
+            return;
+          }
+
+          window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
         }catch(err){
-          console.error(err);
-          showStatus("err", err.message || (isEditMode ? "The event could not be updated." : "The event could not be published."));
-        }finally{
-          submitBtn.disabled = false;
-          submitBtn.textContent = isEditMode ? "Save changes" : "Publish event and Host Notice";
+          showStatus(err && err.message ? err.message : "Unable to save the notice.", "error");
+          els.saveBtn.disabled = false;
+          els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
         }
-      });
+      }
 
-      resetBtn.addEventListener("click", () => {
-        clearStatus();
-
-        if(isEditMode && loadedEventSnapshot){
-          applySnapshot(loadedEventSnapshot);
-          showStatus("ok", "Form reset to the loaded event details.");
-        }else{
-          form.reset();
-          populateBannerChoices("", "");
-          bannerCustomEl.value = "";
-          updatePreview();
-          refreshAccessUi();
-        }
-      });
-
-      categoryKeyEl.addEventListener("change", () => {
-        const currentCustom = cleanBannerPath(bannerCustomEl.value);
-        const currentChosen = cleanBannerPath(bannerChoiceEl.value);
-
-        populateBannerChoices(categoryKeyEl.value, currentChosen);
-
-        if(currentCustom){
-          bannerCustomEl.value = currentCustom;
-        }
-
+      function init(){
+        setModeText();
         updatePreview();
-      });
 
-      [
-        titleEl,
-        categoryKeyEl,
-        eventDateEl,
-        startTimeEl,
-        endTimeEl,
-        locationEl,
-        hostNameEl,
-        hostMemberIdEl,
-        capacityEl,
-        bookingModeEl,
-        noticeSummaryEl,
-        noticeBodyEl,
-        bannerChoiceEl,
-        bannerCustomEl
-      ].forEach(el => {
-        el.addEventListener("input", updatePreview);
-        el.addEventListener("change", updatePreview);
-      });
+        [
+          els.title,
+          els.titleGraphicUrl,
+          els.summary,
+          els.inlineImageUrl,
+          els.noticeBody
+        ].forEach(el => {
+          el.addEventListener("input", updatePreview);
+        });
 
-      setPageModeText();
-      populateBannerChoices(categoryKeyEl.value, "");
-      refreshAccessUi();
-      updatePreview();
-      loadEventForEdit();
+        els.form.addEventListener("submit", submitForm);
+
+        if (isEdit){
+          fetchEventForEdit();
+        }
+      }
+
+      init();
     })();
   </script>
 </body>

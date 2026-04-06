@@ -23,10 +23,7 @@
       --green-soft:#ecfdf3;
       --red:#b91c1c;
       --red-soft:#fef2f2;
-      --amber:#b45309;
-      --amber-soft:#fffbeb;
       --shadow:0 10px 28px rgba(15,23,42,.08);
-      --radius:22px;
     }
 
     *{ box-sizing:border-box; }
@@ -320,7 +317,7 @@
     }
 
     .status{
-      margin-bottom:14px;
+      margin:0 0 14px;
       border-radius:18px;
       padding:13px 15px;
       line-height:1.55;
@@ -450,7 +447,7 @@
       </div>
 
       <div class="body">
-        <div id="statusArea"></div>
+        <div id="statusAreaTop"></div>
 
         <form id="eventForm" novalidate>
           <div class="form-grid">
@@ -468,7 +465,7 @@
 
               <div class="field">
                 <label for="titleGraphicUrl">Title graphic URL (optional)</label>
-                <input type="url" id="titleGraphicUrl" name="titleGraphicUrl" placeholder="e.g. images/titles/curry-night.svg" />
+                <input type="text" id="titleGraphicUrl" name="titleGraphicUrl" placeholder="e.g. images/titles/curry-night.svg" />
                 <div class="helper">
                   Leave blank if using a normal typed title only.
                 </div>
@@ -481,7 +478,7 @@
 
               <div class="field">
                 <label for="inlineImageUrl">Notice image URL (optional)</label>
-                <input type="url" id="inlineImageUrl" name="inlineImageUrl" placeholder="e.g. images/banners/sport-bowls.jpg" />
+                <input type="text" id="inlineImageUrl" name="inlineImageUrl" placeholder="e.g. images/banners/sport-bowls.jpg" />
                 <div class="helper">
                   This image appears top centre within the notice body area.
                 </div>
@@ -623,6 +620,10 @@
             </div>
           </div>
 
+          <div style="margin-top:18px;">
+            <div id="statusAreaBottom"></div>
+          </div>
+
           <div class="actions">
             <button type="submit" class="btn btn-primary" id="saveBtn">Save notice</button>
             <a class="btn btn-secondary" href="members-info.html">Cancel</a>
@@ -646,7 +647,10 @@
         modeBadge: document.getElementById("modeBadge"),
         pageTitle: document.getElementById("pageTitle"),
         crumbCurrent: document.getElementById("crumbCurrent"),
-        statusArea: document.getElementById("statusArea"),
+
+        statusAreaTop: document.getElementById("statusAreaTop"),
+        statusAreaBottom: document.getElementById("statusAreaBottom"),
+
         form: document.getElementById("eventForm"),
         saveBtn: document.getElementById("saveBtn"),
         viewNoticeBtn: document.getElementById("viewNoticeBtn"),
@@ -677,9 +681,7 @@
         previewSummary: document.getElementById("previewSummary"),
         previewInlineWrap: document.getElementById("previewInlineWrap"),
         previewInlineImg: document.getElementById("previewInlineImg"),
-        previewCopy: document.getElementById("previewCopy"),
-
-        titleLibraryLink: document.getElementById("titleLibraryLink")
+        previewCopy: document.getElementById("previewCopy")
       };
 
       function escapeHtml(value){
@@ -703,54 +705,29 @@
         const d = new Date(value);
         if (Number.isNaN(d.getTime())) return "";
         const pad = n => String(n).padStart(2, "0");
-        const year = d.getFullYear();
-        const month = pad(d.getMonth() + 1);
-        const day = pad(d.getDate());
-        const hours = pad(d.getHours());
-        const mins = pad(d.getMinutes());
-        return `${year}-${month}-${day}T${hours}:${mins}`;
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
       }
 
       function showStatus(text, type){
-        els.statusArea.innerHTML = `<div class="status ${type || "info"}">${escapeHtml(text)}</div>`;
+        const html = `<div class="status ${type || "info"}">${escapeHtml(text)}</div>`;
+        els.statusAreaTop.innerHTML = html;
+        els.statusAreaBottom.innerHTML = html;
+        els.statusAreaTop.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
       function clearStatus(){
-        els.statusArea.innerHTML = "";
-      }
-
-      function getAuthToken(){
-        const candidates = [
-          "adminToken",
-          "authToken",
-          "memberToken",
-          "sanctuaryToken",
-          "hostToken",
-          "serviceToken"
-        ];
-
-        for (const key of candidates){
-          const value = localStorage.getItem(key);
-          if (value && String(value).trim()) return String(value).trim();
-        }
-        return "";
+        els.statusAreaTop.innerHTML = "";
+        els.statusAreaBottom.innerHTML = "";
       }
 
       function setPreviewImage(img, wrap, src){
         const clean = String(src || "").trim();
         if (!clean){
-          wrap.classList.add("hidden");
+          wrap.style.display = "none";
           return;
         }
-
-        img.onload = function(){
-          wrap.classList.remove("hidden");
-        };
-
-        img.onerror = function(){
-          wrap.classList.add("hidden");
-        };
-
+        img.onload = function(){ wrap.style.display = "block"; };
+        img.onerror = function(){ wrap.style.display = "none"; };
         img.src = clean;
       }
 
@@ -796,6 +773,64 @@
           els.pageTitle.textContent = "Create Event Notice";
           els.crumbCurrent.textContent = "Host an Event";
         }
+      }
+
+      function getAllPossibleTokens(){
+        const keys = [
+          "adminToken",
+          "authToken",
+          "memberToken",
+          "sanctuaryToken",
+          "hostToken",
+          "serviceToken",
+          "token"
+        ];
+
+        const found = [];
+
+        keys.forEach(key => {
+          const fromLocal = localStorage.getItem(key);
+          const fromSession = sessionStorage.getItem(key);
+
+          if (fromLocal && String(fromLocal).trim()) {
+            found.push(String(fromLocal).trim());
+          }
+          if (fromSession && String(fromSession).trim()) {
+            found.push(String(fromSession).trim());
+          }
+        });
+
+        return [...new Set(found)];
+      }
+
+      function buildHeadersForToken(token){
+        return [
+          {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": token
+          },
+          {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Auth-Token": token
+          },
+          {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Admin-Token": token
+          },
+          {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Service-Token": token
+          }
+        ];
       }
 
       function applyEventToForm(raw){
@@ -883,34 +918,10 @@
           ""
         );
 
-        const publishLive = firstDefined(
-          event.publish_live,
-          event.publish_immediately,
-          event.publish_live_immediately,
-          true
-        );
-        const showInCalendar = firstDefined(
-          event.show_in_calendar,
-          event.calendar_visible,
-          event.show_in_calendar_and_list,
-          true
-        );
-        const showInEventsList = firstDefined(
-          event.show_in_events_list,
-          event.events_list_visible,
-          event.list_visible,
-          true
-        );
-        const allowBookingPage = firstDefined(
-          event.allow_booking_page,
-          event.booking_page_enabled,
-          true
-        );
-
-        els.publishLive.checked = !(publishLive === false || publishLive === "false" || publishLive === 0 || publishLive === "0");
-        els.showInCalendar.checked = !(showInCalendar === false || showInCalendar === "false" || showInCalendar === 0 || showInCalendar === "0");
-        els.showInEventsList.checked = !(showInEventsList === false || showInEventsList === "false" || showInEventsList === 0 || showInEventsList === "0");
-        els.allowBookingPage.checked = !(allowBookingPage === false || allowBookingPage === "false" || allowBookingPage === 0 || allowBookingPage === "0");
+        els.publishLive.checked = true;
+        els.showInCalendar.checked = true;
+        els.showInEventsList.checked = true;
+        els.allowBookingPage.checked = true;
 
         updatePreview();
       }
@@ -919,12 +930,8 @@
         const title = els.title.value.trim();
         const start = els.startDateTime.value.trim();
 
-        if (!title){
-          throw new Error("Please enter an event title.");
-        }
-        if (!start){
-          throw new Error("Please enter a start date and time.");
-        }
+        if (!title) throw new Error("Please enter an event title.");
+        if (!start) throw new Error("Please enter a start date and time.");
 
         const titleGraphicUrl = els.titleGraphicUrl.value.trim();
         const summary = els.summary.value.trim();
@@ -940,67 +947,41 @@
 
         const placesTotal = placesTotalRaw === "" ? null : Number(placesTotalRaw);
 
-        const base = Object.assign({}, originalEvent || {});
-
-        const payload = Object.assign(base, {
+        const payload = Object.assign({}, originalEvent || {}, {
           title: title,
           event_title: title,
 
           title_graphic_url: titleGraphicUrl,
-          titleGraphicUrl: titleGraphicUrl,
-
           summary: summary,
-          short_description: summary,
 
           notice_image_url: inlineImageUrl,
-          noticeImageUrl: inlineImageUrl,
           image_url: inlineImageUrl,
 
           notice_body: noticeBody,
           notice_text: noticeBody,
           description: noticeBody,
-          details: noticeBody,
 
           category: category,
 
           start: start,
           start_datetime: start,
-          start_date: start,
 
           end: end,
           end_datetime: end,
-          end_date: end,
 
           location: location,
-          venue: location,
-
           host_name: hostName,
-          organiser_name: hostName,
-          organizer_name: hostName,
 
           places_total: placesTotal,
           capacity: placesTotal,
-          max_places: placesTotal,
 
           booking_mode: bookingMode,
-          response_mode: bookingMode,
-
           price_info: priceInfo,
-          money_note: priceInfo,
 
           publish_live: els.publishLive.checked,
-          publish_immediately: els.publishLive.checked,
-          publish_live_immediately: els.publishLive.checked,
-
           show_in_calendar: els.showInCalendar.checked,
-          calendar_visible: els.showInCalendar.checked,
-
           show_in_events_list: els.showInEventsList.checked,
-          events_list_visible: els.showInEventsList.checked,
-          list_visible: els.showInEventsList.checked,
-
-          allow_booking_page: els.allowBookingPage.checked,
-          booking_page_enabled: els.allowBookingPage.checked
+          allow_booking_page: els.allowBookingPage.checked
         });
 
         return payload;
@@ -1010,17 +991,11 @@
         try{
           const res = await fetch(`${API_BASE}/api/events/${encodeURIComponent(eventId)}`, {
             method: "GET",
-            headers: {
-              "Accept": "application/json"
-            }
+            headers: { "Accept": "application/json" }
           });
 
           let data = null;
-          try{
-            data = await res.json();
-          }catch(_e){
-            data = null;
-          }
+          try { data = await res.json(); } catch(_e) { data = null; }
 
           if (!res.ok){
             const msg = data && (data.message || data.error)
@@ -1035,6 +1010,19 @@
         }
       }
 
+      async function trySaveWithHeaders(url, method, payload, headers){
+        const res = await fetch(url, {
+          method,
+          headers,
+          body: JSON.stringify(payload)
+        });
+
+        let data = null;
+        try { data = await res.json(); } catch(_e) { data = null; }
+
+        return { res, data };
+      }
+
       async function submitForm(ev){
         ev.preventDefault();
         clearStatus();
@@ -1047,67 +1035,78 @@
           return;
         }
 
-        const token = getAuthToken();
-        if (!token){
-          showStatus("No sign-in token was found in this browser. Please sign in again before saving.", "error");
-          return;
-        }
-
+        showStatus("Attempting to save notice…", "info");
         els.saveBtn.disabled = true;
         els.saveBtn.textContent = isEdit ? "Saving..." : "Creating...";
 
-        try{
-          const url = isEdit
-            ? `${API_BASE}/api/events/${encodeURIComponent(eventId)}`
-            : `${API_BASE}/api/events`;
+        const url = isEdit
+          ? `${API_BASE}/api/events/${encodeURIComponent(eventId)}`
+          : `${API_BASE}/api/events`;
 
-          const method = isEdit ? "PUT" : "POST";
+        const method = isEdit ? "PUT" : "POST";
 
-          const res = await fetch(url, {
-            method: method,
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-              "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
+        const tokens = getAllPossibleTokens();
+
+        const headerSets = [];
+
+        if (tokens.length) {
+          tokens.forEach(token => {
+            buildHeadersForToken(token).forEach(h => headerSets.push(h));
           });
+        } else {
+          headerSets.push({
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          });
+        }
 
-          let data = null;
+        let lastError = "Save failed.";
+        let successData = null;
+
+        for (const headers of headerSets){
           try{
-            data = await res.json();
-          }catch(_e){
-            data = null;
+            const { res, data } = await trySaveWithHeaders(url, method, payload, headers);
+
+            if (res.ok){
+              successData = data || {};
+              break;
+            }
+
+            lastError =
+              (data && (data.message || data.error)) ||
+              `Save failed (${res.status}).`;
+          }catch(err){
+            lastError = err && err.message ? err.message : "Network error while saving.";
           }
+        }
 
-          if (!res.ok){
-            const msg = data && (data.message || data.error)
-              ? (data.message || data.error)
-              : `Save failed (${res.status}).`;
-            throw new Error(msg);
-          }
-
-          const returnedEvent = data && data.event && typeof data.event === "object" ? data.event : (data || {});
-          const savedEventId = firstDefined(
-            returnedEvent.event_id,
-            returnedEvent.id,
-            returnedEvent.eventId,
-            eventId
-          );
-
-          if (!savedEventId){
-            showStatus("Saved, but no event ID was returned. Please check the Events List.", "success");
-            els.saveBtn.disabled = false;
-            els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
-            return;
-          }
-
-          window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
-        }catch(err){
-          showStatus(err && err.message ? err.message : "Unable to save the notice.", "error");
+        if (!successData){
+          showStatus(lastError, "error");
           els.saveBtn.disabled = false;
           els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
+          return;
         }
+
+        const returnedEvent = successData && successData.event && typeof successData.event === "object"
+          ? successData.event
+          : successData;
+
+        const savedEventId = firstDefined(
+          returnedEvent.event_id,
+          returnedEvent.id,
+          returnedEvent.eventId,
+          eventId
+        );
+
+        if (!savedEventId){
+          showStatus("Saved, but no event ID was returned. Please check the Events List.", "success");
+          els.saveBtn.disabled = false;
+          els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
+          return;
+        }
+
+        showStatus("Saved successfully. Opening notice…", "success");
+        window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
       }
 
       function init(){

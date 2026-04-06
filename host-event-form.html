@@ -2,1172 +2,1437 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Host an Event | Sanctuary Club</title>
+  <title>Create Event Notice | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
+  <!-- Resident access gate -->
   <script src="access.js?v=AC_1"></script>
 
   <style>
     :root{
-      --bg1:#eef6fb;
-      --bg2:#f8fbfd;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --line:#d9e4ec;
-      --blue:#2563eb;
-      --blue-2:#1d4ed8;
-      --blue-soft:#eff6ff;
-      --green:#15803d;
-      --green-soft:#ecfdf3;
-      --red:#b91c1c;
-      --red-soft:#fef2f2;
-      --shadow:0 10px 28px rgba(15,23,42,.08);
+      --bg1:#eef6ff;
+      --bg2:#f8fbff;
+      --ink:#18324a;
+      --muted:#5d7387;
+      --line:#d6e3f0;
+      --panel:#ffffff;
+      --panel-soft:#f5f9fd;
+      --accent:#245d8b;
+      --accent-2:#2f7ab4;
+      --ok:#196a43;
+      --ok-bg:#ecf9f1;
+      --warn:#8a5a00;
+      --warn-bg:#fff6e6;
+      --err:#a12626;
+      --err-bg:#fff1f1;
+      --shadow:0 12px 34px rgba(20,60,90,.10);
+      --radius:18px;
     }
 
     *{ box-sizing:border-box; }
 
-    body{
+    html,body{
       margin:0;
+      padding:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(circle at top, #ffffff 0%, var(--bg2) 38%, var(--bg1) 100%);
-      min-height:100vh;
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 38%,#fff 100%);
+      min-height:100%;
     }
 
-    .wrap{
-      max-width:1040px;
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    a:hover{
+      text-decoration:underline;
+    }
+
+    .page{
+      max-width:1120px;
       margin:0 auto;
-      padding:20px 14px 42px;
+      padding:18px 16px 42px;
     }
 
     .topbar{
       display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
       margin-bottom:16px;
     }
 
     .crumbs{
       display:flex;
-      align-items:center;
-      gap:10px;
       flex-wrap:wrap;
-      font-size:.95rem;
+      gap:8px;
+      align-items:center;
       color:var(--muted);
+      font-size:.95rem;
     }
 
     .crumbs a{
-      color:var(--blue);
-      text-decoration:none;
       font-weight:600;
     }
 
-    .crumbs a:hover{ text-decoration:underline; }
-
-    .shell{
-      background:rgba(255,255,255,.86);
-      backdrop-filter:blur(6px);
-      border:1px solid rgba(255,255,255,.7);
+    .heading{
+      background:rgba(255,255,255,.7);
+      border:1px solid rgba(214,227,240,.95);
+      border-radius:24px;
       box-shadow:var(--shadow);
-      border-radius:28px;
+      padding:22px 20px 18px;
+      backdrop-filter:blur(4px);
+      margin-bottom:18px;
+    }
+
+    .heading h1{
+      margin:0 0 8px;
+      font-size:1.75rem;
+      line-height:1.2;
+      letter-spacing:.2px;
+    }
+
+    .heading p{
+      margin:0;
+      color:var(--muted);
+      max-width:80ch;
+    }
+
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#f1f7fc;
+      border:1px solid var(--line);
+      color:var(--accent);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:.92rem;
+      font-weight:700;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap:18px;
+      align-items:start;
+    }
+
+    @media (max-width: 980px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
 
-    .head{
-      padding:22px 20px 14px;
-      border-bottom:1px solid #edf2f7;
-      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(250,252,255,.92));
+    .panel-head{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fbfdff 0%,#f3f8fc 100%);
     }
 
-    .eyebrow{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:999px;
-      background:var(--blue-soft);
-      color:var(--blue);
-      font-size:.8rem;
-      font-weight:700;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      margin-bottom:10px;
-      border:1px solid #dbeafe;
-    }
-
-    h1{
+    .panel-head h2{
       margin:0;
-      font-size:clamp(1.65rem, 2.8vw, 2.35rem);
-      line-height:1.15;
-      letter-spacing:-0.02em;
-    }
-
-    .sub{
-      margin:10px 0 0;
-      color:var(--muted);
-      line-height:1.55;
-      max-width:68ch;
-    }
-
-    .body{
-      padding:20px;
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:18px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:18px 16px;
-    }
-
-    .section-title{
-      margin:0 0 10px;
       font-size:1.08rem;
       line-height:1.3;
     }
 
-    .section-note{
-      margin:0 0 14px;
+    .panel-head p{
+      margin:6px 0 0;
       color:var(--muted);
-      line-height:1.55;
       font-size:.95rem;
     }
 
-    .field{
-      margin-bottom:14px;
+    .panel-body{
+      padding:18px;
     }
 
-    .field:last-child{
-      margin-bottom:0;
+    .stack{
+      display:grid;
+      gap:14px;
+    }
+
+    .row{
+      display:grid;
+      gap:14px;
+      grid-template-columns:1fr 1fr;
+    }
+
+    .row-3{
+      display:grid;
+      gap:14px;
+      grid-template-columns:1fr 1fr 1fr;
+    }
+
+    @media (max-width: 760px){
+      .row,
+      .row-3{
+        grid-template-columns:1fr;
+      }
     }
 
     label{
       display:block;
-      margin:0 0 7px;
-      font-size:.96rem;
       font-weight:700;
+      margin-bottom:7px;
       color:var(--ink);
     }
 
-    .helper{
-      margin:6px 0 0;
-      font-size:.92rem;
+    .help{
+      margin-top:6px;
       color:var(--muted);
-      line-height:1.5;
-    }
-
-    .helper a{
-      color:var(--blue);
-      text-decoration:none;
-      font-weight:600;
-    }
-
-    .helper a:hover{
-      text-decoration:underline;
+      font-size:.92rem;
+      line-height:1.45;
     }
 
     input[type="text"],
-    input[type="datetime-local"],
+    input[type="url"],
+    input[type="date"],
+    input[type="time"],
     input[type="number"],
+    input[type="password"],
     select,
     textarea{
       width:100%;
-      border:1px solid var(--line);
-      border-radius:16px;
       padding:12px 13px;
-      font:inherit;
-      color:var(--ink);
+      border:1px solid #c8d9e8;
+      border-radius:12px;
       background:#fff;
+      color:var(--ink);
+      font:inherit;
       outline:none;
-      transition:border-color .15s ease, box-shadow .15s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="datetime-local"]:focus,
-    input[type="number"]:focus,
-    select:focus,
-    textarea:focus{
-      border-color:#93c5fd;
-      box-shadow:0 0 0 4px rgba(59,130,246,.12);
+      transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
     }
 
     textarea{
-      min-height:150px;
+      min-height:160px;
       resize:vertical;
-      line-height:1.6;
+      line-height:1.5;
     }
 
-    .notice-body-box{
-      min-height:280px;
+    input:focus,
+    select:focus,
+    textarea:focus{
+      border-color:#78a9d2;
+      box-shadow:0 0 0 4px rgba(70,125,173,.12);
     }
 
-    .two{
+    input[readonly]{
+      background:#f6fafc;
+      color:#4e667c;
+    }
+
+    .field{
+      min-width:0;
+    }
+
+    .radio-card-group{
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+      gap:10px;
     }
 
-    .three{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:12px;
-    }
-
-    .tick{
+    .radio-card{
       display:flex;
       align-items:flex-start;
       gap:10px;
       padding:12px 13px;
+      background:var(--panel-soft);
       border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      margin-bottom:10px;
+      border-radius:14px;
     }
 
-    .tick:last-child{
-      margin-bottom:0;
-    }
-
-    .tick input{
+    .radio-card input{
       margin-top:3px;
-      transform:scale(1.1);
+      transform:scale(1.06);
     }
 
-    .tick-text{
-      line-height:1.45;
+    .radio-card strong{
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .radio-card span{
+      color:var(--muted);
+      font-size:.93rem;
+      line-height:1.4;
+    }
+
+    .msg{
+      display:none;
+      padding:12px 13px;
+      border-radius:14px;
       font-size:.95rem;
-    }
-
-    .tick-text strong{
-      display:block;
-      margin-bottom:2px;
-    }
-
-    .choice-shell{
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:14px;
-      background:linear-gradient(180deg, #fcfdff 0%, #f7fbff 100%);
-      margin-bottom:14px;
-    }
-
-    .choice-box{
-      border:1px solid #dbe5ee;
-      border-radius:18px;
-      padding:14px;
-      background:#fff;
-    }
-
-    .choice-sep{
-      text-align:center;
-      font-weight:800;
-      letter-spacing:.08em;
-      color:var(--muted);
-      margin:10px 0;
-    }
-
-    .choice-title{
-      margin:0 0 10px;
-      font-size:.98rem;
-      font-weight:800;
-      color:#0f172a;
-    }
-
-    .preview-box{
-      border:1px solid var(--line);
-      border-radius:20px;
-      background:linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-      padding:16px 14px;
-      min-height:200px;
-    }
-
-    .preview-title-art{
-      display:none;
-      margin:0 0 10px;
-      text-align:left;
-    }
-
-    .preview-title-art img{
-      display:block;
-      max-width:100%;
-      max-height:120px;
-      width:auto;
-      height:auto;
-      object-fit:contain;
-    }
-
-    .preview-title{
-      margin:0 0 10px;
-      font-size:1.55rem;
-      line-height:1.15;
-      word-break:break-word;
-    }
-
-    .preview-inline-wrap{
-      display:none;
-      text-align:center;
-      margin:0 0 14px;
-    }
-
-    .preview-inline-wrap img{
-      display:block;
-      margin:0 auto;
-      max-width:min(100%, 340px);
-      max-height:220px;
-      width:auto;
-      height:auto;
-      object-fit:contain;
-      border-radius:16px;
-      border:1px solid #e5edf5;
-      background:#fff;
-      box-shadow:0 8px 20px rgba(15,23,42,.08);
-    }
-
-    .preview-copy{
-      white-space:pre-wrap;
-      line-height:1.7;
-      color:#1f2937;
-      word-break:break-word;
-    }
-
-    .placeholder{
-      color:var(--muted);
-      font-style:italic;
-    }
-
-    .status{
-      margin:0 0 14px;
-      border-radius:18px;
-      padding:13px 15px;
-      line-height:1.55;
+      line-height:1.45;
       border:1px solid transparent;
     }
 
-    .status.error{
-      background:var(--red-soft);
-      border-color:#fecaca;
-      color:#991b1b;
+    .msg.show{ display:block; }
+
+    .msg.ok{
+      background:var(--ok-bg);
+      color:var(--ok);
+      border-color:#bfe4cf;
     }
 
-    .status.success{
-      background:var(--green-soft);
-      border-color:#bbf7d0;
-      color:#166534;
+    .msg.warn{
+      background:var(--warn-bg);
+      color:var(--warn);
+      border-color:#f0d699;
     }
 
-    .status.info{
-      background:#f8fafc;
-      border-color:#e2e8f0;
-      color:#334155;
+    .msg.err{
+      background:var(--err-bg);
+      color:var(--err);
+      border-color:#f0c2c2;
     }
 
     .actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top:18px;
+      align-items:center;
     }
 
-    .btn{
+    button{
       appearance:none;
       border:none;
       border-radius:999px;
-      min-height:46px;
       padding:12px 18px;
       font:inherit;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transition:transform .06s ease, opacity .2s ease;
+      transition:transform .05s ease, opacity .15s ease, background .15s ease, color .15s ease;
     }
 
-    .btn:hover{ transform:translateY(-1px); }
-    .btn:active{ transform:translateY(0); }
+    button:active{
+      transform:translateY(1px);
+    }
 
     .btn-primary{
-      background:linear-gradient(135deg, var(--blue), var(--blue-2));
+      background:linear-gradient(180deg,var(--accent-2),var(--accent));
       color:#fff;
-      box-shadow:0 8px 18px rgba(37,99,235,.18);
+      box-shadow:0 10px 20px rgba(36,93,139,.18);
     }
 
     .btn-secondary{
-      background:#fff;
-      color:var(--ink);
+      background:#edf5fb;
+      color:var(--accent);
       border:1px solid var(--line);
     }
 
-    .mini-note{
-      margin-top:10px;
+    .btn-soft{
+      background:#f7fafc;
+      color:#4f677d;
+      border:1px solid var(--line);
+    }
+
+    button[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .locked-cover{
+      border:1px dashed #c5d6e4;
+      background:linear-gradient(180deg,#fbfdff 0%,#f5f9fd 100%);
+      border-radius:18px;
+      padding:18px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .mini-grid{
+      display:grid;
+      gap:10px;
+      grid-template-columns:1fr 1fr;
+    }
+
+    @media (max-width: 520px){
+      .mini-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .host-card{
+      display:grid;
+      gap:10px;
+      background:#f6fafc;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .host-line{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .host-line strong{
+      min-width:112px;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .divider{
+      height:1px;
+      background:linear-gradient(90deg,transparent, var(--line), transparent);
+      margin:6px 0;
+    }
+
+    .preview-shell{
+      position:sticky;
+      top:14px;
+    }
+
+    @media (max-width: 980px){
+      .preview-shell{
+        position:static;
+      }
+    }
+
+    .preview-card{
+      background:linear-gradient(180deg,#ffffff 0%,#fcfdff 100%);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .preview-top{
+      padding:22px 20px 10px;
+      text-align:center;
+    }
+
+    .preview-title-text{
+      margin:0;
+      font-size:1.9rem;
+      line-height:1.18;
+      color:#17314a;
+      word-wrap:break-word;
+    }
+
+    .preview-title-graphic{
+      display:none;
+      max-width:100%;
+      max-height:150px;
+      width:auto;
+      height:auto;
+      margin:0 auto;
+      object-fit:contain;
+    }
+
+    .preview-meta{
+      display:grid;
+      gap:8px;
+      padding:10px 20px 0;
+    }
+
+    .preview-meta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 14px;
+      align-items:flex-start;
+      color:#31506b;
+      font-size:.96rem;
+      line-height:1.45;
+    }
+
+    .preview-meta-row strong{
+      color:#17314a;
+    }
+
+    .preview-host{
+      margin:16px 20px 0;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#f4f9fd;
+      border:1px solid var(--line);
+      color:#31506b;
+      line-height:1.5;
+    }
+
+    .preview-body-image-wrap{
+      padding:18px 20px 0;
+      text-align:center;
+    }
+
+    .preview-body-image{
+      display:none;
+      max-width:100%;
+      max-height:280px;
+      width:auto;
+      height:auto;
+      border-radius:16px;
+      object-fit:contain;
+      box-shadow:0 8px 22px rgba(26,59,92,.10);
+    }
+
+    .preview-body{
+      padding:18px 20px 24px;
+      line-height:1.68;
+      color:#22384d;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      min-height:180px;
+    }
+
+    .preview-placeholder{
+      color:#71879a;
+      font-style:italic;
+    }
+
+    .footer-note{
+      margin-top:16px;
       color:var(--muted);
       font-size:.92rem;
       line-height:1.5;
     }
 
+    .small{
+      font-size:.9rem;
+    }
+
     .hidden{
       display:none !important;
-    }
-
-    @media (max-width:920px){
-      .form-grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width:700px){
-      .two,
-      .three{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width:560px){
-      .wrap{
-        padding:14px 10px 30px;
-      }
-
-      .head,
-      .body{
-        padding-left:14px;
-        padding-right:14px;
-      }
-
-      .actions{
-        flex-direction:column;
-      }
-
-      .btn{
-        width:100%;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="page">
     <div class="topbar">
       <div class="crumbs">
+        <a href="index.html">Home</a>
+        <span>•</span>
         <a href="members-info.html">Members Hub</a>
-        <span>›</span>
-        <a href="events.html">Events List</a>
-        <span>›</span>
-        <span id="crumbCurrent">Host an Event</span>
+        <span>•</span>
+        <span id="crumbCurrent">Create Event Notice</span>
+      </div>
+      <div class="actions">
+        <a class="badge" href="events.html">Events List</a>
+        <a class="badge" href="events-calendar.html">Events Calendar</a>
       </div>
     </div>
 
-    <div class="shell">
-      <div class="head">
-        <div class="eyebrow" id="modeBadge">Host form</div>
-        <h1 id="pageTitle">Create Event Notice</h1>
-        <p class="sub">
-          Create or edit a notice in a calm, standardised format.
-        </p>
+    <section class="heading">
+      <h1 id="pageTitle">Create Event Notice</h1>
+      <p id="pageIntro">
+        This page has two stages. First, the host identifies with membership number and PIN. Once verified, the Event Notice form unlocks and the verified host details are carried through into the notice.
+      </p>
+      <div class="badge-row">
+        <span class="badge">Stage 1: Verify host identity</span>
+        <span class="badge">Stage 2: Create or edit the notice</span>
       </div>
+    </section>
 
-      <div class="body">
-        <div id="statusAreaTop"></div>
+    <div class="layout">
+      <main class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Stage 1 — Host identification</h2>
+            <p>
+              The form remains locked until verification succeeds. Host identity is taken from existing member data, not typed in freely here.
+            </p>
+          </div>
+          <div class="panel-body stack">
+            <div id="verifyMsg" class="msg"></div>
 
-        <form id="eventForm" novalidate>
-          <div class="form-grid">
-            <div class="card">
-              <h2 class="section-title">Notice content</h2>
-              <p class="section-note">Type your Event title or choose from the library.</p>
-
-              <div class="choice-shell">
-                <div class="choice-box">
-                  <div class="choice-title">Type your title</div>
-                  <div class="field" style="margin-bottom:0;">
-                    <label for="title">Event title</label>
-                    <input type="text" id="title" name="title" maxlength="160" placeholder="Type the event title" />
-                  </div>
-                </div>
-
-                <div class="choice-sep">OR</div>
-
-                <div class="choice-box">
-                  <div class="choice-title">
-                    <a id="titleLibraryLink" href="title-library.html" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Choose a graphic title</a>
-                  </div>
-                  <div class="field" style="margin-bottom:0;">
-                    <label for="titleGraphicChoice">Selected graphic title</label>
-                    <input type="text" id="titleGraphicChoice" name="titleGraphicChoice" placeholder="Chosen library item appears here" />
-                    <div class="helper">
-                      Open the library above and place your chosen graphic title here for now.
-                    </div>
-                  </div>
-                </div>
+            <div class="row">
+              <div class="field">
+                <label for="memberId">Membership number</label>
+                <input id="memberId" type="text" placeholder="e.g. SM55" autocomplete="username" />
+                <div class="help">Enter the same membership number used in Your Information.</div>
               </div>
 
               <div class="field">
-                <label for="inlineImageChoice">Choose a notice image (optional)</label>
-                <input type="text" id="inlineImageChoice" name="inlineImageChoice" placeholder="Chosen library item appears here" />
-                <div class="helper">
-                  <a id="imageLibraryLink" href="image-library.html" target="_blank" rel="noopener">Open image library</a>.
-                  This image appears top centre within the notice body area.
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="noticeBody">Notice text</label>
-                <textarea id="noticeBody" name="noticeBody" class="notice-body-box" placeholder="Type the notice here. You can write freely."></textarea>
+                <label for="memberPin">PIN</label>
+                <input id="memberPin" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" autocomplete="current-password" />
+                <div class="help">This is checked against your saved member record in this browser.</div>
               </div>
             </div>
 
-            <div class="card">
-              <h2 class="section-title">Preview</h2>
+            <div class="actions">
+              <button id="verifyBtn" class="btn-primary" type="button">Verify host</button>
+              <button id="clearVerifyBtn" class="btn-soft" type="button">Clear</button>
+            </div>
 
-              <div class="preview-box">
-                <div id="previewTitleArt" class="preview-title-art">
-                  <img id="previewTitleArtImg" alt="Title art preview" />
-                </div>
-
-                <h3 id="previewTitle" class="preview-title">Event title</h3>
-
-                <div id="previewInlineWrap" class="preview-inline-wrap">
-                  <img id="previewInlineImg" alt="Notice image preview" />
-                </div>
-
-                <div id="previewCopy" class="preview-copy placeholder">Notice text preview appears here.</div>
-              </div>
-
-              <div class="mini-note">
-                Preview shows either the typed title or the chosen graphic title, not both.
-              </div>
+            <div id="verifiedHostCard" class="host-card hidden">
+              <div class="host-line"><strong>Status</strong><span>Verified host</span></div>
+              <div class="host-line"><strong>Name</strong><span id="verifiedHostName">—</span></div>
+              <div class="host-line"><strong>Member no.</strong><span id="verifiedHostMemberId">—</span></div>
+              <div class="host-line"><strong>Source</strong><span class="muted">Existing member information already saved in this browser</span></div>
             </div>
           </div>
+        </section>
 
-          <div class="form-grid" style="margin-top:18px;">
-            <div class="card">
-              <h2 class="section-title">Event details</h2>
+        <section class="panel" id="formPanel">
+          <div class="panel-head">
+            <h2>Stage 2 — Event Notice form</h2>
+            <p>
+              Once host verification succeeds, the notice form unlocks below.
+            </p>
+          </div>
 
-              <div class="field">
-                <label for="category">Category</label>
-                <select id="category" name="category">
-                  <option value="Social">Social</option>
-                  <option value="Sport">Sport</option>
-                  <option value="Games">Games</option>
-                  <option value="Fitness">Fitness</option>
-                  <option value="Food">Food</option>
-                  <option value="Entertainment">Entertainment</option>
-                  <option value="Meeting">Meeting</option>
-                  <option value="External Service">External Service</option>
-                </select>
+          <div class="panel-body">
+            <div id="lockedCover" class="locked-cover">
+              <strong>The form is currently locked.</strong><br />
+              Please complete Stage 1 first. After successful host verification, the notice form will open and the verified host details will be inserted automatically.
+            </div>
+
+            <form id="eventForm" class="stack hidden" novalidate>
+              <div id="submitMsg" class="msg"></div>
+
+              <div class="host-card">
+                <div class="host-line"><strong>Verified host</strong><span id="formHostName">—</span></div>
+                <div class="host-line"><strong>Membership no.</strong><span id="formHostMemberId">—</span></div>
               </div>
 
-              <div class="two">
-                <div class="field">
-                  <label for="startDateTime">Start date and time</label>
-                  <input type="datetime-local" id="startDateTime" name="startDateTime" />
-                </div>
+              <div class="divider"></div>
 
+              <div class="row">
                 <div class="field">
-                  <label for="endDateTime">End date and time (optional)</label>
-                  <input type="datetime-local" id="endDateTime" name="endDateTime" />
-                </div>
-              </div>
-
-              <div class="two">
-                <div class="field">
-                  <label for="location">Location</label>
-                  <input type="text" id="location" name="location" maxlength="160" placeholder="e.g. Clubhouse lounge" />
-                </div>
-
-                <div class="field">
-                  <label for="hostName">Host name</label>
-                  <input type="text" id="hostName" name="hostName" maxlength="120" placeholder="Host / organiser name" />
-                </div>
-              </div>
-
-              <div class="three">
-                <div class="field">
-                  <label for="placesTotal">Places offered</label>
-                  <input type="number" id="placesTotal" name="placesTotal" min="0" step="1" placeholder="e.g. 20" />
-                </div>
-
-                <div class="field">
-                  <label for="bookingMode">Booking mode</label>
-                  <select id="bookingMode" name="bookingMode">
-                    <option value="booking_or_interest">Book or interest</option>
-                    <option value="booking">Booking only</option>
-                    <option value="interest">Interest only</option>
+                  <label for="category">Category</label>
+                  <select id="category" required>
+                    <option value="">Choose a category</option>
+                    <option value="Social">Social</option>
+                    <option value="Sport">Sport</option>
+                    <option value="Games">Games</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Food">Food</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Meeting">Meeting</option>
+                    <option value="External Service">External Service</option>
                   </select>
                 </div>
 
                 <div class="field">
-                  <label for="priceInfo">Money / price note (optional)</label>
-                  <input type="text" id="priceInfo" name="priceInfo" maxlength="120" placeholder="e.g. £8 per person" />
+                  <label for="location">Location</label>
+                  <input id="location" type="text" placeholder="Where will it take place?" />
                 </div>
               </div>
-            </div>
 
-            <div class="card">
-              <h2 class="section-title">Publication</h2>
+              <div class="row-3">
+                <div class="field">
+                  <label for="eventDate">Date</label>
+                  <input id="eventDate" type="date" required />
+                </div>
 
-              <label class="tick">
-                <input type="checkbox" id="publishLive" name="publishLive" checked />
-                <span class="tick-text">
-                  <strong>Publish live immediately</strong>
-                  Make the notice live as soon as it is saved.
-                </span>
-              </label>
+                <div class="field">
+                  <label for="startTime">Start time</label>
+                  <input id="startTime" type="time" required />
+                </div>
 
-              <label class="tick">
-                <input type="checkbox" id="showInCalendar" name="showInCalendar" checked />
-                <span class="tick-text">
-                  <strong>Show in Calendar</strong>
-                  Display this notice in the Calendar.
-                </span>
-              </label>
+                <div class="field">
+                  <label for="endTime">End time</label>
+                  <input id="endTime" type="time" />
+                </div>
+              </div>
 
-              <label class="tick">
-                <input type="checkbox" id="showInEventsList" name="showInEventsList" checked />
-                <span class="tick-text">
-                  <strong>Show in Events List</strong>
-                  Display this notice in the Events List.
-                </span>
-              </label>
+              <div class="row">
+                <div class="field">
+                  <label for="placesTotal">Number of places</label>
+                  <input id="placesTotal" type="number" min="1" step="1" value="1" />
+                </div>
 
-              <label class="tick">
-                <input type="checkbox" id="allowBookingPage" name="allowBookingPage" checked />
-                <span class="tick-text">
-                  <strong>Use booking / response page</strong>
-                  Leave this on for the normal booking or interest page flow.
-                </span>
-              </label>
+                <div class="field">
+                  <label for="bookingMode">Booking option</label>
+                  <select id="bookingMode">
+                    <option value="booking">Booking</option>
+                    <option value="interest">Register interest</option>
+                    <option value="booking_or_interest">Booking or register interest</option>
+                  </select>
+                </div>
+              </div>
 
-              <div class="mini-note">
-                For simpler notices that do not really require booking, we can later grey out or simplify not-applicable response options without changing the notice framework.
+              <div class="divider"></div>
+
+              <div class="field">
+                <label>Event title</label>
+                <div class="help" style="margin-bottom:10px;">
+                  Type a title or choose from the library.
+                  <a href="images/" target="_blank" rel="noopener">Open library</a>
+                </div>
+
+                <div class="radio-card-group">
+                  <label class="radio-card">
+                    <input type="radio" name="titleMode" value="typed" checked />
+                    <span>
+                      <strong>Type your title</strong>
+                      <span>Use a normal written title for the notice.</span>
+                    </span>
+                  </label>
+
+                  <label class="radio-card">
+                    <input type="radio" name="titleMode" value="graphic" />
+                    <span>
+                      <strong>Choose a graphic title</strong>
+                      <span>Use a prepared title image from your library instead of typed text.</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div id="typedTitleWrap" class="field">
+                <label for="typedTitle">Typed title</label>
+                <input id="typedTitle" type="text" placeholder="Type the event title" />
+              </div>
+
+              <div id="graphicTitleWrap" class="field hidden">
+                <label for="graphicTitleUrl">Graphic title image link</label>
+                <input id="graphicTitleUrl" type="url" placeholder="Paste the graphic title image link" />
+                <div class="help">
+                  Use the full path to a graphic title image already uploaded to the site, for example:
+                  <span class="small">https://sanctuary-club.uk/images/...</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="bodyImageUrl">Optional notice image</label>
+                <input id="bodyImageUrl" type="url" placeholder="Paste an optional image link for the notice body" />
+                <div class="help">
+                  This image appears within the body of the finished notice. Leave blank if not wanted.
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="summary">Short summary</label>
+                <textarea id="summary" placeholder="A brief introduction or short summary for lists and previews"></textarea>
+              </div>
+
+              <div class="field">
+                <label for="bodyText">Notice text</label>
+                <textarea id="bodyText" placeholder="Type the full notice text here"></textarea>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="publishLive">Publish live immediately</label>
+                  <select id="publishLive">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="showInLists">Show in Calendar and Events List</label>
+                  <select id="showInLists">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="saveBtn" class="btn-primary" type="submit">Save Event Notice</button>
+                <button id="previewBtn" class="btn-secondary" type="button">Refresh preview</button>
+                <button id="resetBtn" class="btn-soft" type="button">Reset form</button>
+              </div>
+
+              <div class="footer-note">
+                This page is designed so that the finished notice shows either a typed title or a graphic title — not both together.
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <aside class="preview-shell">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Live preview</h2>
+            <p>
+              This gives the general look of the notice while you work.
+            </p>
+          </div>
+          <div class="panel-body">
+            <div class="preview-card">
+              <div class="preview-top">
+                <h3 id="previewTitleText" class="preview-title-text">Your event title will appear here</h3>
+                <img id="previewTitleGraphic" class="preview-title-graphic" alt="Graphic title preview" />
+              </div>
+
+              <div class="preview-meta">
+                <div class="preview-meta-row"><strong>Category:</strong> <span id="previewCategory">—</span></div>
+                <div class="preview-meta-row"><strong>When:</strong> <span id="previewWhen">—</span></div>
+                <div class="preview-meta-row"><strong>Where:</strong> <span id="previewLocation">—</span></div>
+                <div class="preview-meta-row"><strong>Booking:</strong> <span id="previewBookingMode">—</span></div>
+              </div>
+
+              <div class="preview-host">
+                <strong>Hosted by:</strong>
+                <span id="previewHostText">Verified host details will appear here after identification.</span>
+              </div>
+
+              <div class="preview-body-image-wrap">
+                <img id="previewBodyImage" class="preview-body-image" alt="Notice image preview" />
+              </div>
+
+              <div id="previewBody" class="preview-body">
+                <span class="preview-placeholder">Your notice text will appear here.</span>
               </div>
             </div>
-          </div>
 
-          <div style="margin-top:18px;">
-            <div id="statusAreaBottom"></div>
+            <div class="footer-note">
+              The exact finished display page can be refined separately afterwards, but the title logic and host logic here are already aligned with the agreed design.
+            </div>
           </div>
-
-          <div class="actions">
-            <button type="submit" class="btn btn-primary" id="saveBtn">Save notice</button>
-            <a class="btn btn-secondary" href="members-info.html">Cancel</a>
-            <a class="btn btn-secondary hidden" id="viewNoticeBtn" href="events-details.html">View current notice</a>
-          </div>
-        </form>
-      </div>
+        </section>
+      </aside>
     </div>
   </div>
 
   <script>
-    (function () {
-      const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
-      const qs = new URLSearchParams(window.location.search);
-      const eventId = (qs.get("event_id") || "").trim();
-      const isEdit = !!eventId;
+    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+    const STORAGE_KEY = "sanctuaryMembers";
+    const PIN_KEY = "sanctuaryPins";
 
-      let originalEvent = null;
+    const qs = new URLSearchParams(window.location.search);
+    const eventId = (qs.get("event_id") || "").trim();
+    const isEditMode = !!eventId;
 
-      const els = {
-        modeBadge: document.getElementById("modeBadge"),
-        pageTitle: document.getElementById("pageTitle"),
-        crumbCurrent: document.getElementById("crumbCurrent"),
+    const state = {
+      verified: false,
+      verifiedMemberId: "",
+      verifiedHostName: "",
+      verifiedMemberRecord: null,
+      loadedEvent: null,
+      adminOverride: false
+    };
 
-        statusAreaTop: document.getElementById("statusAreaTop"),
-        statusAreaBottom: document.getElementById("statusAreaBottom"),
+    const els = {
+      pageTitle: document.getElementById("pageTitle"),
+      pageIntro: document.getElementById("pageIntro"),
+      crumbCurrent: document.getElementById("crumbCurrent"),
 
-        form: document.getElementById("eventForm"),
-        saveBtn: document.getElementById("saveBtn"),
-        viewNoticeBtn: document.getElementById("viewNoticeBtn"),
+      memberId: document.getElementById("memberId"),
+      memberPin: document.getElementById("memberPin"),
+      verifyBtn: document.getElementById("verifyBtn"),
+      clearVerifyBtn: document.getElementById("clearVerifyBtn"),
+      verifyMsg: document.getElementById("verifyMsg"),
+      verifiedHostCard: document.getElementById("verifiedHostCard"),
+      verifiedHostName: document.getElementById("verifiedHostName"),
+      verifiedHostMemberId: document.getElementById("verifiedHostMemberId"),
 
-        title: document.getElementById("title"),
-        titleGraphicChoice: document.getElementById("titleGraphicChoice"),
-        inlineImageChoice: document.getElementById("inlineImageChoice"),
-        noticeBody: document.getElementById("noticeBody"),
+      lockedCover: document.getElementById("lockedCover"),
+      eventForm: document.getElementById("eventForm"),
+      submitMsg: document.getElementById("submitMsg"),
 
-        category: document.getElementById("category"),
-        startDateTime: document.getElementById("startDateTime"),
-        endDateTime: document.getElementById("endDateTime"),
-        location: document.getElementById("location"),
-        hostName: document.getElementById("hostName"),
-        placesTotal: document.getElementById("placesTotal"),
-        bookingMode: document.getElementById("bookingMode"),
-        priceInfo: document.getElementById("priceInfo"),
+      formHostName: document.getElementById("formHostName"),
+      formHostMemberId: document.getElementById("formHostMemberId"),
 
-        publishLive: document.getElementById("publishLive"),
-        showInCalendar: document.getElementById("showInCalendar"),
-        showInEventsList: document.getElementById("showInEventsList"),
-        allowBookingPage: document.getElementById("allowBookingPage"),
+      category: document.getElementById("category"),
+      location: document.getElementById("location"),
+      eventDate: document.getElementById("eventDate"),
+      startTime: document.getElementById("startTime"),
+      endTime: document.getElementById("endTime"),
+      placesTotal: document.getElementById("placesTotal"),
+      bookingMode: document.getElementById("bookingMode"),
 
-        previewTitleArt: document.getElementById("previewTitleArt"),
-        previewTitleArtImg: document.getElementById("previewTitleArtImg"),
-        previewTitle: document.getElementById("previewTitle"),
-        previewInlineWrap: document.getElementById("previewInlineWrap"),
-        previewInlineImg: document.getElementById("previewInlineImg"),
-        previewCopy: document.getElementById("previewCopy")
+      typedTitle: document.getElementById("typedTitle"),
+      graphicTitleUrl: document.getElementById("graphicTitleUrl"),
+      bodyImageUrl: document.getElementById("bodyImageUrl"),
+      summary: document.getElementById("summary"),
+      bodyText: document.getElementById("bodyText"),
+      publishLive: document.getElementById("publishLive"),
+      showInLists: document.getElementById("showInLists"),
+
+      typedTitleWrap: document.getElementById("typedTitleWrap"),
+      graphicTitleWrap: document.getElementById("graphicTitleWrap"),
+
+      saveBtn: document.getElementById("saveBtn"),
+      previewBtn: document.getElementById("previewBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+
+      previewTitleText: document.getElementById("previewTitleText"),
+      previewTitleGraphic: document.getElementById("previewTitleGraphic"),
+      previewCategory: document.getElementById("previewCategory"),
+      previewWhen: document.getElementById("previewWhen"),
+      previewLocation: document.getElementById("previewLocation"),
+      previewBookingMode: document.getElementById("previewBookingMode"),
+      previewHostText: document.getElementById("previewHostText"),
+      previewBodyImage: document.getElementById("previewBodyImage"),
+      previewBody: document.getElementById("previewBody")
+    };
+
+    if (isEditMode) {
+      els.pageTitle.textContent = "Edit Event Notice";
+      els.crumbCurrent.textContent = "Edit Event Notice";
+      els.pageIntro.textContent =
+        "This page has two stages. First, the host identifies with membership number and PIN. Once verified, the existing event may be edited only if the verified host matches the saved event, unless an admin token is present.";
+      els.saveBtn.textContent = "Save Changes";
+    }
+
+    function showMsg(node, type, text) {
+      node.className = "msg show " + type;
+      node.textContent = text;
+    }
+
+    function clearMsg(node) {
+      node.className = "msg";
+      node.textContent = "";
+    }
+
+    function normalizeMemberId(value) {
+      return String(value || "").trim().toUpperCase();
+    }
+
+    function safeJsonParse(raw, fallback) {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return fallback;
+      }
+    }
+
+    function readMembersStore() {
+      const parsed = safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
+      return parsed && typeof parsed === "object" ? parsed : {};
+    }
+
+    function readPinsStore() {
+      const parsed = safeJsonParse(localStorage.getItem(PIN_KEY), {});
+      return parsed && typeof parsed === "object" ? parsed : {};
+    }
+
+    function getMemberRecord(memberId) {
+      const store = readMembersStore();
+      if (store[memberId]) return store[memberId];
+
+      const keys = Object.keys(store);
+      for (const key of keys) {
+        if (normalizeMemberId(key) === memberId) return store[key];
+      }
+      return null;
+    }
+
+    function pickHostName(memberId, record) {
+      if (!record || typeof record !== "object") return memberId;
+
+      const direct =
+        record.displayName ||
+        record.member_name ||
+        record.memberName ||
+        record.name ||
+        record.full_name ||
+        record.fullName ||
+        record.primary_name ||
+        record.primaryName;
+
+      if (direct && String(direct).trim()) return String(direct).trim();
+
+      const residents = Array.isArray(record.residents) ? record.residents : [];
+      for (const r of residents) {
+        if (r && typeof r === "object" && r.name && String(r.name).trim()) {
+          return String(r.name).trim();
+        }
+      }
+
+      return memberId;
+    }
+
+    async function sha256Hex(text) {
+      const encoded = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function verifyHost() {
+      clearMsg(els.verifyMsg);
+      clearMsg(els.submitMsg);
+
+      const memberId = normalizeMemberId(els.memberId.value);
+      const pin = String(els.memberPin.value || "").trim();
+
+      if (!memberId) {
+        showMsg(els.verifyMsg, "err", "Please enter a membership number.");
+        return;
+      }
+
+      if (!/^\d{4}$/.test(pin)) {
+        showMsg(els.verifyMsg, "err", "Please enter the 4-digit PIN.");
+        return;
+      }
+
+      const memberRecord = getMemberRecord(memberId);
+      if (!memberRecord) {
+        showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
+        lockForm();
+        return;
+      }
+
+      const pinStore = readPinsStore();
+      const storedHash = pinStore[memberId] || pinStore[els.memberId.value] || null;
+
+      if (!storedHash) {
+        showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
+        lockForm();
+        return;
+      }
+
+      const candidate = await sha256Hex(`${memberId}::${pin}::sanctuary`);
+      if (candidate !== String(storedHash)) {
+        showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
+        lockForm();
+        return;
+      }
+
+      state.verified = true;
+      state.verifiedMemberId = memberId;
+      state.verifiedMemberRecord = memberRecord;
+      state.verifiedHostName = pickHostName(memberId, memberRecord);
+      state.adminOverride = !!getAdminToken();
+
+      els.verifiedHostName.textContent = state.verifiedHostName;
+      els.verifiedHostMemberId.textContent = state.verifiedMemberId;
+      els.formHostName.textContent = state.verifiedHostName;
+      els.formHostMemberId.textContent = state.verifiedMemberId;
+      els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+      els.verifiedHostCard.classList.remove("hidden");
+
+      unlockForm();
+      showMsg(els.verifyMsg, "ok", "Host verification successful. The form is now unlocked.");
+
+      if (isEditMode) {
+        await loadExistingEventForEdit();
+      } else {
+        renderPreview();
+      }
+    }
+
+    function lockForm() {
+      state.verified = false;
+      state.verifiedMemberId = "";
+      state.verifiedHostName = "";
+      state.verifiedMemberRecord = null;
+      state.loadedEvent = null;
+      state.adminOverride = false;
+
+      els.verifiedHostCard.classList.add("hidden");
+      els.lockedCover.classList.remove("hidden");
+      els.eventForm.classList.add("hidden");
+      els.formHostName.textContent = "—";
+      els.formHostMemberId.textContent = "—";
+      els.previewHostText.textContent = "Verified host details will appear here after identification.";
+    }
+
+    function unlockForm() {
+      els.lockedCover.classList.add("hidden");
+      els.eventForm.classList.remove("hidden");
+    }
+
+    function clearVerificationInputs() {
+      els.memberId.value = "";
+      els.memberPin.value = "";
+      clearMsg(els.verifyMsg);
+      clearMsg(els.submitMsg);
+      lockForm();
+    }
+
+    function getSelectedTitleMode() {
+      const selected = document.querySelector('input[name="titleMode"]:checked');
+      return selected ? selected.value : "typed";
+    }
+
+    function syncTitleModeUI() {
+      const mode = getSelectedTitleMode();
+      const typed = mode === "typed";
+      els.typedTitleWrap.classList.toggle("hidden", !typed);
+      els.graphicTitleWrap.classList.toggle("hidden", typed);
+      renderPreview();
+    }
+
+    function readAuthToken() {
+      const candidates = [
+        localStorage.getItem("memberToken"),
+        localStorage.getItem("sanctuaryToken"),
+        localStorage.getItem("authToken"),
+        sessionStorage.getItem("memberToken"),
+        sessionStorage.getItem("sanctuaryToken"),
+        sessionStorage.getItem("authToken")
+      ].filter(Boolean);
+
+      return candidates[0] || "";
+    }
+
+    function getAdminToken() {
+      return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken") || "";
+    }
+
+    function authHeaders() {
+      const adminToken = getAdminToken();
+      const memberToken = readAuthToken();
+      const token = adminToken || memberToken;
+
+      const headers = {
+        "Content-Type": "application/json"
       };
 
-      function escapeHtml(value){
-        return String(value == null ? "" : value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
       }
 
-      function firstDefined(){
-        for (const v of arguments){
-          if (v !== undefined && v !== null && v !== "") return v;
+      return headers;
+    }
+
+    function formatDateTimeForPreview() {
+      const d = els.eventDate.value;
+      const st = els.startTime.value;
+      const et = els.endTime.value;
+
+      if (!d && !st && !et) return "—";
+
+      const parts = [];
+      if (d) {
+        const dt = new Date(`${d}T12:00:00`);
+        if (!isNaN(dt.getTime())) {
+          parts.push(dt.toLocaleDateString(undefined, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          }));
+        } else {
+          parts.push(d);
         }
-        return "";
       }
 
-      function toLocalInputValue(value){
-        if (!value) return "";
-        const d = new Date(value);
-        if (Number.isNaN(d.getTime())) return "";
-        const pad = n => String(n).padStart(2, "0");
-        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      if (st && et) {
+        parts.push(`${st} to ${et}`);
+      } else if (st) {
+        parts.push(st);
       }
 
-      function showStatus(text, type){
-        const html = `<div class="status ${type || "info"}">${escapeHtml(text)}</div>`;
-        els.statusAreaTop.innerHTML = html;
-        els.statusAreaBottom.innerHTML = html;
-        els.statusAreaTop.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      return parts.join(" • ") || "—";
+    }
+
+    function renderPreview() {
+      const mode = getSelectedTitleMode();
+      const typedTitle = (els.typedTitle.value || "").trim();
+      const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
+      const bodyImageUrl = (els.bodyImageUrl.value || "").trim();
+      const bodyText = (els.bodyText.value || "").trim();
+
+      if (mode === "graphic" && graphicTitleUrl) {
+        els.previewTitleText.style.display = "none";
+        els.previewTitleGraphic.style.display = "block";
+        els.previewTitleGraphic.src = graphicTitleUrl;
+      } else {
+        els.previewTitleGraphic.style.display = "none";
+        els.previewTitleGraphic.removeAttribute("src");
+        els.previewTitleText.style.display = "block";
+        els.previewTitleText.textContent = typedTitle || "Your event title will appear here";
       }
 
-      function clearStatus(){
-        els.statusAreaTop.innerHTML = "";
-        els.statusAreaBottom.innerHTML = "";
+      els.previewCategory.textContent = els.category.value || "—";
+      els.previewWhen.textContent = formatDateTimeForPreview();
+      els.previewLocation.textContent = (els.location.value || "").trim() || "—";
+      els.previewBookingMode.textContent = els.bookingMode.options[els.bookingMode.selectedIndex]?.text || "—";
+
+      if (state.verified && state.verifiedHostName && state.verifiedMemberId) {
+        els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+      } else {
+        els.previewHostText.textContent = "Verified host details will appear here after identification.";
       }
 
-      function humaniseFileName(path){
-        const clean = String(path || "").trim();
-        if (!clean) return "";
-        const last = clean.split("/").pop() || clean;
-        const withoutExt = last.replace(/\.[^.]+$/, "");
-        return withoutExt
-          .replace(/[-_]+/g, " ")
-          .replace(/\s+/g, " ")
-          .trim()
-          .replace(/\b\w/g, c => c.toUpperCase());
+      if (bodyImageUrl) {
+        els.previewBodyImage.style.display = "inline-block";
+        els.previewBodyImage.src = bodyImageUrl;
+      } else {
+        els.previewBodyImage.style.display = "none";
+        els.previewBodyImage.removeAttribute("src");
       }
 
-      function setPreviewImage(img, wrap, src){
-        const clean = String(src || "").trim();
-        if (!clean){
-          wrap.style.display = "none";
-          img.removeAttribute("src");
+      if (bodyText) {
+        els.previewBody.innerHTML = "";
+        els.previewBody.textContent = bodyText;
+      } else {
+        els.previewBody.innerHTML = '<span class="preview-placeholder">Your notice text will appear here.</span>';
+      }
+    }
+
+    function buildPayload() {
+      const mode = getSelectedTitleMode();
+
+      return {
+        category: els.category.value || "",
+        location: (els.location.value || "").trim(),
+        event_date: els.eventDate.value || "",
+        start_time: els.startTime.value || "",
+        end_time: els.endTime.value || "",
+        places_total: Number(els.placesTotal.value || 0),
+        booking_mode: els.bookingMode.value || "booking",
+
+        host_member_id: state.verifiedMemberId,
+        host_name: state.verifiedHostName,
+
+        title_mode: mode,
+        title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
+        title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
+
+        notice_image_url: (els.bodyImageUrl.value || "").trim(),
+        summary: (els.summary.value || "").trim(),
+        body: (els.bodyText.value || "").trim(),
+
+        publish_live_immediately: els.publishLive.value === "true",
+        show_in_calendar_and_list: els.showInLists.value === "true"
+      };
+    }
+
+    function validatePayload(payload) {
+      if (!state.verified) return "Please verify the host first.";
+      if (!payload.category) return "Please choose a category.";
+      if (!payload.event_date) return "Please choose a date.";
+      if (!payload.start_time) return "Please choose a start time.";
+      if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";
+
+      if (payload.title_mode === "typed") {
+        if (!payload.title) return "Please type the event title.";
+      } else if (payload.title_mode === "graphic") {
+        if (!payload.title_graphic_url) return "Please provide the graphic title image link.";
+      } else {
+        return "Please choose whether the title is typed or graphic.";
+      }
+
+      if (!payload.body && !payload.summary) {
+        return "Please add at least a short summary or some notice text.";
+      }
+
+      return "";
+    }
+
+    function fillFormFromEvent(ev) {
+      const titleMode = ev.title_mode === "graphic" ? "graphic" : "typed";
+      const radio = document.querySelector(`input[name="titleMode"][value="${titleMode}"]`);
+      if (radio) radio.checked = true;
+
+      els.category.value = ev.category || "";
+      els.location.value = ev.location || "";
+      els.eventDate.value = ev.event_date || ev.date || "";
+      els.startTime.value = ev.start_time || "";
+      els.endTime.value = ev.end_time || "";
+      els.placesTotal.value = Number(ev.places_total || ev.capacity || 1);
+      els.bookingMode.value = ev.booking_mode || "booking";
+
+      els.typedTitle.value = ev.title || "";
+      els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
+      els.bodyImageUrl.value = ev.notice_image_url || ev.image_url || "";
+      els.summary.value = ev.summary || ev.description || "";
+      els.bodyText.value = ev.body || ev.notice_text || ev.details || "";
+
+      if (typeof ev.publish_live_immediately === "boolean") {
+        els.publishLive.value = String(ev.publish_live_immediately);
+      }
+      if (typeof ev.show_in_calendar_and_list === "boolean") {
+        els.showInLists.value = String(ev.show_in_calendar_and_list);
+      }
+
+      syncTitleModeUI();
+      renderPreview();
+    }
+
+    function eventBelongsToVerifiedHost(ev) {
+      const candidateIds = [
+        ev.host_member_id,
+        ev.hostMemberId,
+        ev.member_id,
+        ev.memberId,
+        ev.created_by_member_id
+      ]
+      .map(v => normalizeMemberId(v))
+      .filter(Boolean);
+
+      return candidateIds.includes(state.verifiedMemberId);
+    }
+
+    async function loadExistingEventForEdit() {
+      clearMsg(els.submitMsg);
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!res.ok) {
+          showMsg(els.submitMsg, "err", "The existing event could not be loaded for editing.");
           return;
         }
-        img.onload = function(){ wrap.style.display = "block"; };
-        img.onerror = function(){ wrap.style.display = "none"; };
-        img.src = clean;
-      }
 
-      function updatePreview(){
-        const typedTitle = els.title.value.trim();
-        const chosenGraphic = els.titleGraphicChoice.value.trim();
-        const chosenImage = els.inlineImageChoice.value.trim();
-        const body = els.noticeBody.value.trim();
+        const data = await res.json();
+        const ev = data && typeof data === "object" && data.event ? data.event : data;
+        state.loadedEvent = ev;
 
-        if (chosenGraphic){
-          setPreviewImage(els.previewTitleArtImg, els.previewTitleArt, chosenGraphic);
-          els.previewTitle.style.display = "none";
-          els.previewTitle.textContent = humaniseFileName(chosenGraphic) || "Event title";
-        } else {
-          els.previewTitleArt.style.display = "none";
-          els.previewTitle.style.display = "block";
-          els.previewTitle.textContent = typedTitle || "Event title";
+        const allowed = eventBelongsToVerifiedHost(ev) || !!getAdminToken();
+        if (!allowed) {
+          els.eventForm.classList.add("hidden");
+          els.lockedCover.classList.remove("hidden");
+          els.lockedCover.innerHTML =
+            "<strong>Edit access blocked.</strong><br />The verified host does not appear to match the host saved on this event. Only the original verified host or an admin may edit it.";
+          showMsg(els.submitMsg, "err", "This event is not editable under the host identity just verified.");
+          return;
         }
 
-        setPreviewImage(els.previewInlineImg, els.previewInlineWrap, chosenImage);
+        fillFormFromEvent(ev);
 
-        if (body){
-          els.previewCopy.classList.remove("placeholder");
-          els.previewCopy.textContent = body;
-        } else {
-          els.previewCopy.classList.add("placeholder");
-          els.previewCopy.textContent = "Notice text preview appears here.";
+        if (getAdminToken() && !eventBelongsToVerifiedHost(ev)) {
+          showMsg(els.submitMsg, "warn", "Admin token detected. Edit access has been allowed even though the verified host does not appear to match the saved event.");
         }
+      } catch (err) {
+        console.error(err);
+        showMsg(els.submitMsg, "err", "There was a problem loading the existing event.");
+      }
+    }
+
+    async function saveEvent(e) {
+      e.preventDefault();
+      clearMsg(els.submitMsg);
+
+      const payload = buildPayload();
+      const validation = validatePayload(payload);
+      if (validation) {
+        showMsg(els.submitMsg, "err", validation);
+        return;
       }
 
-      function setModeText(){
-        if (isEdit){
-          els.modeBadge.textContent = "Edit mode";
-          els.pageTitle.textContent = "Edit Event Notice";
-          els.crumbCurrent.textContent = "Edit Event Notice";
-          els.saveBtn.textContent = "Save changes";
-          els.viewNoticeBtn.classList.remove("hidden");
-          els.viewNoticeBtn.href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
-        } else {
-          els.modeBadge.textContent = "Create mode";
-          els.pageTitle.textContent = "Create Event Notice";
-          els.crumbCurrent.textContent = "Host an Event";
-        }
-      }
+      els.saveBtn.disabled = true;
+      els.saveBtn.textContent = isEditMode ? "Saving..." : "Saving...";
 
-      function getAllPossibleTokens(){
-        const keys = [
-          "adminToken",
-          "authToken",
-          "memberToken",
-          "sanctuaryToken",
-          "hostToken",
-          "serviceToken",
-          "token"
-        ];
+      try {
+        const url = isEditMode
+          ? `${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`
+          : `${BACKEND_URL}/api/events`;
 
-        const found = [];
+        const method = isEditMode ? "PUT" : "POST";
 
-        keys.forEach(key => {
-          const fromLocal = localStorage.getItem(key);
-          const fromSession = sessionStorage.getItem(key);
-
-          if (fromLocal && String(fromLocal).trim()) found.push(String(fromLocal).trim());
-          if (fromSession && String(fromSession).trim()) found.push(String(fromSession).trim());
-        });
-
-        return [...new Set(found)];
-      }
-
-      function buildHeadersForToken(token){
-        return [
-          {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": token
-          },
-          {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "X-Auth-Token": token
-          },
-          {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "X-Admin-Token": token
-          },
-          {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "X-Service-Token": token
-          }
-        ];
-      }
-
-      function applyEventToForm(raw){
-        const event = (raw && typeof raw === "object" && raw.event && typeof raw.event === "object")
-          ? raw.event
-          : (raw || {});
-
-        originalEvent = event;
-
-        els.title.value = firstDefined(event.title, event.event_title, event.name, "");
-        els.titleGraphicChoice.value = firstDefined(
-          event.title_graphic_url,
-          event.titleGraphicUrl,
-          event.title_image_url,
-          event.titleImageUrl,
-          event.title_art_url,
-          event.titleArtUrl,
-          event.notice_title_graphic,
-          event.noticeTitleGraphic,
-          ""
-        );
-        els.inlineImageChoice.value = firstDefined(
-          event.notice_image_url,
-          event.noticeImageUrl,
-          event.image_url,
-          event.imageUrl,
-          event.poster_image_url,
-          event.posterImageUrl,
-          event.inline_image_url,
-          event.inlineImageUrl,
-          ""
-        );
-        els.noticeBody.value = firstDefined(
-          event.notice_body,
-          event.notice_text,
-          event.description,
-          event.details,
-          event.body,
-          ""
-        );
-
-        els.category.value = firstDefined(event.category, "Social");
-        els.startDateTime.value = toLocalInputValue(firstDefined(
-          event.start,
-          event.start_at,
-          event.start_datetime,
-          event.start_date,
-          event.date,
-          ""
-        ));
-        els.endDateTime.value = toLocalInputValue(firstDefined(
-          event.end,
-          event.end_at,
-          event.end_datetime,
-          event.end_date,
-          ""
-        ));
-        els.location.value = firstDefined(event.location, event.venue, event.place, "");
-        els.hostName.value = firstDefined(
-          event.host_name,
-          event.organiser_name,
-          event.organizer_name,
-          event.created_by_name,
-          ""
-        );
-        els.placesTotal.value = firstDefined(
-          event.places_total,
-          event.capacity,
-          event.max_places,
-          event.places,
-          ""
-        );
-        els.bookingMode.value = firstDefined(
-          event.booking_mode,
-          event.response_mode,
-          event.attendance_mode,
-          "booking_or_interest"
-        );
-        els.priceInfo.value = firstDefined(
-          event.price_info,
-          event.money_note,
-          event.fee_text,
-          event.cost_text,
-          ""
-        );
-
-        els.publishLive.checked = true;
-        els.showInCalendar.checked = true;
-        els.showInEventsList.checked = true;
-        els.allowBookingPage.checked = true;
-
-        updatePreview();
-      }
-
-      function buildPayload(){
-        const typedTitle = els.title.value.trim();
-        const chosenGraphic = els.titleGraphicChoice.value.trim();
-        const chosenImage = els.inlineImageChoice.value.trim();
-        const noticeBody = els.noticeBody.value.trim();
-        const start = els.startDateTime.value.trim();
-
-        if (!typedTitle && !chosenGraphic){
-          throw new Error("Please either type a title or choose a graphic title.");
-        }
-        if (!start){
-          throw new Error("Please enter a start date and time.");
-        }
-
-        const storedTitle = typedTitle || humaniseFileName(chosenGraphic) || "Event Notice";
-        const category = els.category.value;
-        const end = els.endDateTime.value.trim();
-        const location = els.location.value.trim();
-        const hostName = els.hostName.value.trim();
-        const placesTotalRaw = els.placesTotal.value.trim();
-        const bookingMode = els.bookingMode.value;
-        const priceInfo = els.priceInfo.value.trim();
-        const placesTotal = placesTotalRaw === "" ? null : Number(placesTotalRaw);
-
-        return Object.assign({}, originalEvent || {}, {
-          title: storedTitle,
-          event_title: storedTitle,
-
-          title_graphic_url: chosenGraphic,
-          titleGraphicUrl: chosenGraphic,
-
-          notice_image_url: chosenImage,
-          noticeImageUrl: chosenImage,
-          image_url: chosenImage,
-
-          notice_body: noticeBody,
-          notice_text: noticeBody,
-          description: noticeBody,
-
-          category: category,
-
-          start: start,
-          start_datetime: start,
-
-          end: end,
-          end_datetime: end,
-
-          location: location,
-          host_name: hostName,
-
-          places_total: placesTotal,
-          capacity: placesTotal,
-
-          booking_mode: bookingMode,
-          price_info: priceInfo,
-
-          publish_live: els.publishLive.checked,
-          show_in_calendar: els.showInCalendar.checked,
-          show_in_events_list: els.showInEventsList.checked,
-          allow_booking_page: els.allowBookingPage.checked
-        });
-      }
-
-      async function fetchEventForEdit(){
-        try{
-          const res = await fetch(`${API_BASE}/api/events/${encodeURIComponent(eventId)}`, {
-            method: "GET",
-            headers: { "Accept": "application/json" }
-          });
-
-          let data = null;
-          try { data = await res.json(); } catch(_e) { data = null; }
-
-          if (!res.ok){
-            const msg = data && (data.message || data.error)
-              ? (data.message || data.error)
-              : `Unable to load event (${res.status}).`;
-            throw new Error(msg);
-          }
-
-          applyEventToForm(data || {});
-        }catch(err){
-          showStatus(err && err.message ? err.message : "Unable to load event for editing.", "error");
-        }
-      }
-
-      async function trySaveWithHeaders(url, method, payload, headers){
         const res = await fetch(url, {
           method,
-          headers,
+          headers: authHeaders(),
           body: JSON.stringify(payload)
         });
 
         let data = null;
-        try { data = await res.json(); } catch(_e) { data = null; }
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
 
-        return { res, data };
-      }
-
-      async function submitForm(ev){
-        ev.preventDefault();
-        clearStatus();
-
-        let payload;
-        try{
-          payload = buildPayload();
-        }catch(err){
-          showStatus(err && err.message ? err.message : "Please check the form.", "error");
+        if (!res.ok) {
+          const message =
+            (data && (data.message || data.error)) ||
+            "The event could not be saved. This may mean the page needs the same token key your current member login flow is already using.";
+          showMsg(els.submitMsg, "err", message);
           return;
         }
 
-        showStatus("Attempting to save notice…", "info");
-        els.saveBtn.disabled = true;
-        els.saveBtn.textContent = isEdit ? "Saving..." : "Creating...";
+        const savedEvent =
+          (data && data.event) ||
+          data ||
+          {};
 
-        const url = isEdit
-          ? `${API_BASE}/api/events/${encodeURIComponent(eventId)}`
-          : `${API_BASE}/api/events`;
+        const savedEventId = savedEvent.event_id || savedEvent.id || eventId || "";
 
-        const method = isEdit ? "PUT" : "POST";
-
-        const tokens = getAllPossibleTokens();
-        const headerSets = [];
-
-        if (tokens.length) {
-          tokens.forEach(token => {
-            buildHeadersForToken(token).forEach(h => headerSets.push(h));
-          });
-        } else {
-          headerSets.push({
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          });
-        }
-
-        let lastError = "Save failed.";
-        let successData = null;
-
-        for (const headers of headerSets){
-          try{
-            const { res, data } = await trySaveWithHeaders(url, method, payload, headers);
-
-            if (res.ok){
-              successData = data || {};
-              break;
-            }
-
-            lastError =
-              (data && (data.message || data.error)) ||
-              `Save failed (${res.status}).`;
-          }catch(err){
-            lastError = err && err.message ? err.message : "Network error while saving.";
-          }
-        }
-
-        if (!successData){
-          showStatus(lastError, "error");
-          els.saveBtn.disabled = false;
-          els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
-          return;
-        }
-
-        const returnedEvent = successData && successData.event && typeof successData.event === "object"
-          ? successData.event
-          : successData;
-
-        const savedEventId = firstDefined(
-          returnedEvent.event_id,
-          returnedEvent.id,
-          returnedEvent.eventId,
-          eventId
+        showMsg(
+          els.submitMsg,
+          "ok",
+          isEditMode
+            ? "Event notice updated successfully."
+            : "Event notice created successfully."
         );
 
-        if (!savedEventId){
-          showStatus("Saved, but no event ID was returned. Please check the Events List.", "success");
-          els.saveBtn.disabled = false;
-          els.saveBtn.textContent = isEdit ? "Save changes" : "Save notice";
-          return;
+        if (!isEditMode && savedEventId) {
+          setTimeout(() => {
+            window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
+          }, 700);
         }
-
-        showStatus("Saved successfully. Opening notice…", "success");
-        window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
+      } catch (err) {
+        console.error(err);
+        showMsg(els.submitMsg, "err", "There was a network or server problem while saving the event.");
+      } finally {
+        els.saveBtn.disabled = false;
+        els.saveBtn.textContent = isEditMode ? "Save Changes" : "Save Event Notice";
       }
+    }
 
-      function init(){
-        setModeText();
-        updatePreview();
+    function resetFormKeepHost() {
+      clearMsg(els.submitMsg);
 
-        [
-          els.title,
-          els.titleGraphicChoice,
-          els.inlineImageChoice,
-          els.noticeBody
-        ].forEach(el => {
-          el.addEventListener("input", updatePreview);
-        });
+      els.category.value = "";
+      els.location.value = "";
+      els.eventDate.value = "";
+      els.startTime.value = "";
+      els.endTime.value = "";
+      els.placesTotal.value = 1;
+      els.bookingMode.value = "booking";
 
-        els.form.addEventListener("submit", submitForm);
+      const typedRadio = document.querySelector('input[name="titleMode"][value="typed"]');
+      if (typedRadio) typedRadio.checked = true;
 
-        if (isEdit){
-          fetchEventForEdit();
-        }
-      }
+      els.typedTitle.value = "";
+      els.graphicTitleUrl.value = "";
+      els.bodyImageUrl.value = "";
+      els.summary.value = "";
+      els.bodyText.value = "";
+      els.publishLive.value = "true";
+      els.showInLists.value = "true";
 
-      init();
-    })();
+      syncTitleModeUI();
+      renderPreview();
+    }
+
+    function bindPreviewInputs() {
+      [
+        els.category,
+        els.location,
+        els.eventDate,
+        els.startTime,
+        els.endTime,
+        els.bookingMode,
+        els.typedTitle,
+        els.graphicTitleUrl,
+        els.bodyImageUrl,
+        els.bodyText
+      ].forEach(node => {
+        node.addEventListener("input", renderPreview);
+        node.addEventListener("change", renderPreview);
+      });
+
+      document.querySelectorAll('input[name="titleMode"]').forEach(radio => {
+        radio.addEventListener("change", syncTitleModeUI);
+      });
+    }
+
+    els.verifyBtn.addEventListener("click", verifyHost);
+    els.clearVerifyBtn.addEventListener("click", clearVerificationInputs);
+    els.previewBtn.addEventListener("click", renderPreview);
+    els.resetBtn.addEventListener("click", resetFormKeepHost);
+    els.eventForm.addEventListener("submit", saveEvent);
+
+    bindPreviewInputs();
+    syncTitleModeUI();
+    renderPreview();
+    lockForm();
   </script>
 </body>
 </html>

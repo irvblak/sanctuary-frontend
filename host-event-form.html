@@ -1420,10 +1420,10 @@ function normaliseCategory(value) {
  function buildPayload() {
   const mode = getSelectedTitleMode();
   const categoryLabel = String(els.category.value || "").trim();
-  const category = normaliseCategory(categoryLabel);
+  const categoryKey = categoryLabel.toLowerCase().replace(/\s+/g, "_");
 
   return {
-    category,
+    category_key: categoryKey,
     category_label: categoryLabel,
 
     location: (els.location.value || "").trim(),
@@ -1447,8 +1447,7 @@ function normaliseCategory(value) {
     publish_live_immediately: els.publishLive.value === "true",
     show_in_calendar_and_list: els.showInLists.value === "true"
   };
-}   
- 
+}
   function validatePayload(payload) {
     if (!state.verified) return "Please verify the host first.";
     if (!normaliseCategory(payload.category)) return "Please choose a valid category.";

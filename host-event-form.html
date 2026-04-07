@@ -1384,38 +1384,53 @@
       els.previewBody.innerHTML = '<span class="preview-placeholder">Your notice text will appear here.</span>';
     }
   }
+function normaliseCategory(value) {
+  const raw = String(value || "").trim();
 
-  function buildPayload() {
-    const mode = getSelectedTitleMode();
+  const allowed = [
+    "Social",
+    "Sport",
+    "Games",
+    "Fitness",
+    "Food",
+    "Entertainment",
+    "Meeting",
+    "External Service"
+  ];
 
-    return {
-      category: els.category.value || "",
-      location: (els.location.value || "").trim(),
-      event_date: els.eventDate.value || "",
-      start_time: els.startTime.value || "",
-      end_time: els.endTime.value || "",
-      places_total: Number(els.placesTotal.value || 0),
-      booking_mode: els.bookingMode.value || "booking",
+  return allowed.includes(raw) ? raw : "";
+}
+ function buildPayload() {
+  const mode = getSelectedTitleMode();
+  const category = normaliseCategory(els.category.value);
 
-      host_member_id: state.verifiedMemberId,
-      host_name: state.verifiedHostName,
+  return {
+    category,
+    location: (els.location.value || "").trim(),
+    event_date: els.eventDate.value || "",
+    start_time: els.startTime.value || "",
+    end_time: els.endTime.value || "",
+    places_total: Number(els.placesTotal.value || 0),
+    booking_mode: els.bookingMode.value || "booking",
 
-      title_mode: mode,
-      title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
-      title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
+    host_member_id: state.verifiedMemberId,
+    host_name: state.verifiedHostName,
 
-      notice_image_url: (els.bodyImageUrl.value || "").trim(),
-      summary: (els.summary.value || "").trim(),
-      body: (els.bodyText.value || "").trim(),
+    title_mode: mode,
+    title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
+    title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
 
-      publish_live_immediately: els.publishLive.value === "true",
-      show_in_calendar_and_list: els.showInLists.value === "true"
-    };
-  }
+    notice_image_url: (els.bodyImageUrl.value || "").trim(),
+    summary: (els.summary.value || "").trim(),
+    body: (els.bodyText.value || "").trim(),
 
+    publish_live_immediately: els.publishLive.value === "true",
+    show_in_calendar_and_list: els.showInLists.value === "true"
+  };
+} 
   function validatePayload(payload) {
     if (!state.verified) return "Please verify the host first.";
-    if (!payload.category) return "Please choose a category.";
+    if (!normaliseCategory(payload.category)) return "Please choose a valid category.";
     if (!payload.event_date) return "Please choose a date.";
     if (!payload.start_time) return "Please choose a start time.";
     if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";

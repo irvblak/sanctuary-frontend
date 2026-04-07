@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Resident access gate -->
   <script src="access.js?v=AC_1"></script>
 
   <style>
@@ -123,15 +122,13 @@
 
     .layout{
       display:grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);
       gap:18px;
       align-items:start;
     }
 
-    @media (max-width: 980px){
-      .layout{
-        grid-template-columns:1fr;
-      }
+    @media (max-width:980px){
+      .layout{ grid-template-columns:1fr; }
     }
 
     .panel{
@@ -160,9 +157,7 @@
       font-size:.95rem;
     }
 
-    .panel-body{
-      padding:18px;
-    }
+    .panel-body{ padding:18px; }
 
     .stack{
       display:grid;
@@ -181,11 +176,8 @@
       grid-template-columns:1fr 1fr 1fr;
     }
 
-    @media (max-width: 760px){
-      .row,
-      .row-3{
-        grid-template-columns:1fr;
-      }
+    @media (max-width:760px){
+      .row, .row-3{ grid-template-columns:1fr; }
     }
 
     label{
@@ -239,9 +231,7 @@
       color:#4e667c;
     }
 
-    .field{
-      min-width:0;
-    }
+    .field{ min-width:0; }
 
     .radio-card-group{
       display:grid;
@@ -321,9 +311,7 @@
       transition:transform .05s ease, opacity .15s ease, background .15s ease, color .15s ease;
     }
 
-    button:active{
-      transform:translateY(1px);
-    }
+    button:active{ transform:translateY(1px); }
 
     .btn-primary{
       background:linear-gradient(180deg,var(--accent-2),var(--accent));
@@ -358,18 +346,6 @@
       line-height:1.55;
     }
 
-    .mini-grid{
-      display:grid;
-      gap:10px;
-      grid-template-columns:1fr 1fr;
-    }
-
-    @media (max-width: 520px){
-      .mini-grid{
-        grid-template-columns:1fr;
-      }
-    }
-
     .host-card{
       display:grid;
       gap:10px;
@@ -386,13 +362,9 @@
       align-items:center;
     }
 
-    .host-line strong{
-      min-width:112px;
-    }
+    .host-line strong{ min-width:112px; }
 
-    .muted{
-      color:var(--muted);
-    }
+    .muted{ color:var(--muted); }
 
     .divider{
       height:1px;
@@ -405,10 +377,8 @@
       top:14px;
     }
 
-    @media (max-width: 980px){
-      .preview-shell{
-        position:static;
-      }
+    @media (max-width:980px){
+      .preview-shell{ position:static; }
     }
 
     .preview-card{
@@ -458,9 +428,7 @@
       line-height:1.45;
     }
 
-    .preview-meta-row strong{
-      color:#17314a;
-    }
+    .preview-meta-row strong{ color:#17314a; }
 
     .preview-host{
       margin:16px 20px 0;
@@ -509,13 +477,8 @@
       line-height:1.5;
     }
 
-    .small{
-      font-size:.9rem;
-    }
-
-    .hidden{
-      display:none !important;
-    }
+    .small{ font-size:.9rem; }
+    .hidden{ display:none !important; }
   </style>
 </head>
 <body>
@@ -567,7 +530,7 @@
               <div class="field">
                 <label for="memberPin">PIN</label>
                 <input id="memberPin" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" autocomplete="current-password" />
-                <div class="help">This is checked against your saved member record in this browser.</div>
+                <div class="help">This is checked against your saved member record in this browser, and then confirmed with the backend for event saving.</div>
               </div>
             </div>
 
@@ -588,9 +551,7 @@
         <section class="panel" id="formPanel">
           <div class="panel-head">
             <h2>Stage 2 — Event Notice form</h2>
-            <p>
-              Once host verification succeeds, the notice form unlocks below.
-            </p>
+            <p>Once host verification succeeds, the notice form unlocks below.</p>
           </div>
 
           <div class="panel-body">
@@ -760,9 +721,7 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Live preview</h2>
-            <p>
-              This gives the general look of the notice while you work.
-            </p>
+            <p>This gives the general look of the notice while you work.</p>
           </div>
           <div class="panel-body">
             <div class="preview-card">
@@ -805,6 +764,7 @@
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
     const STORAGE_KEY = "sanctuaryMembers";
     const PIN_KEY = "sanctuaryPins";
+    const HOST_FORM_TOKEN_KEY = "sanctuaryHostEventToken";
 
     const qs = new URLSearchParams(window.location.search);
     const eventId = (qs.get("event_id") || "").trim();
@@ -816,7 +776,8 @@
       verifiedHostName: "",
       verifiedMemberRecord: null,
       loadedEvent: null,
-      adminOverride: false
+      adminOverride: false,
+      memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || ""
     };
 
     const els = {
@@ -892,10 +853,6 @@
       node.textContent = "";
     }
 
-    function normalizeMemberId(value) {
-      return String(value || "").trim().toUpperCase();
-    }
-
     function safeJsonParse(raw, fallback) {
       try {
         return JSON.parse(raw);
@@ -904,25 +861,143 @@
       }
     }
 
+    function canonicalMemberId(value) {
+      return String(value || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, "")
+        .replace(/[^A-Z0-9/]/g, "");
+    }
+
+    function softCanonicalMemberId(value) {
+      return canonicalMemberId(value).replace(/\//g, "");
+    }
+
+    function memberIdsMatch(a, b) {
+      if (!a || !b) return false;
+      const ca = canonicalMemberId(a);
+      const cb = canonicalMemberId(b);
+      if (ca && cb && ca === cb) return true;
+      return softCanonicalMemberId(a) === softCanonicalMemberId(b);
+    }
+
     function readMembersStore() {
-      const parsed = safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
-      return parsed && typeof parsed === "object" ? parsed : {};
+      return safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
     }
 
     function readPinsStore() {
-      const parsed = safeJsonParse(localStorage.getItem(PIN_KEY), {});
-      return parsed && typeof parsed === "object" ? parsed : {};
+      return safeJsonParse(localStorage.getItem(PIN_KEY), {});
     }
 
-    function getMemberRecord(memberId) {
-      const store = readMembersStore();
-      if (store[memberId]) return store[memberId];
+    function candidateMemberIdsFromRecord(record, fallbackKey) {
+      const ids = [];
+      if (fallbackKey) ids.push(fallbackKey);
 
-      const keys = Object.keys(store);
-      for (const key of keys) {
-        if (normalizeMemberId(key) === memberId) return store[key];
+      if (record && typeof record === "object") {
+        [
+          "memberId",
+          "member_id",
+          "membershipNumber",
+          "membership_number",
+          "membershipNo",
+          "membership_no",
+          "id",
+          "member",
+          "memberNumber",
+          "member_number",
+          "property_member_id",
+          "membership",
+          "properties"
+        ].forEach(key => {
+          const value = record[key];
+          if (Array.isArray(value)) {
+            value.forEach(v => ids.push(v));
+          } else if (value) {
+            ids.push(value);
+          }
+        });
+
+        if (record.profile && typeof record.profile === "object") {
+          [
+            "memberId",
+            "member_id",
+            "membershipNumber",
+            "membership_number",
+            "membershipNo",
+            "membership_no",
+            "id"
+          ].forEach(key => {
+            if (record.profile[key]) ids.push(record.profile[key]);
+          });
+        }
       }
+
+      return ids.filter(Boolean);
+    }
+
+    function findMemberRecord(memberIdRaw) {
+      const store = readMembersStore();
+      const target = canonicalMemberId(memberIdRaw);
+      if (!target) return null;
+
+      if (Array.isArray(store)) {
+        for (const item of store) {
+          const ids = candidateMemberIdsFromRecord(item, "");
+          if (ids.some(id => memberIdsMatch(id, target))) {
+            return { key: "", record: item };
+          }
+        }
+      }
+
+      if (store && typeof store === "object") {
+        for (const [key, value] of Object.entries(store)) {
+          if (memberIdsMatch(key, target)) {
+            return { key, record: value };
+          }
+          const ids = candidateMemberIdsFromRecord(value, key);
+          if (ids.some(id => memberIdsMatch(id, target))) {
+            return { key, record: value };
+          }
+        }
+      }
+
       return null;
+    }
+
+    function findStoredPinHash(memberIdRaw) {
+      const pinStore = readPinsStore();
+      const target = canonicalMemberId(memberIdRaw);
+      if (!target || !pinStore) return "";
+
+      if (Array.isArray(pinStore)) {
+        for (const item of pinStore) {
+          if (!item || typeof item !== "object") continue;
+          const ids = candidateMemberIdsFromRecord(item, "");
+          const hash = item.hash || item.pinHash || item.pin_hash || item.value || item.pin;
+          if (hash && ids.some(id => memberIdsMatch(id, target))) {
+            return String(hash);
+          }
+        }
+      }
+
+      if (pinStore && typeof pinStore === "object") {
+        for (const [key, value] of Object.entries(pinStore)) {
+          if (typeof value === "string") {
+            if (memberIdsMatch(key, target)) return value;
+            continue;
+          }
+
+          if (value && typeof value === "object") {
+            const ids = candidateMemberIdsFromRecord(value, key);
+            const hash = value.hash || value.pinHash || value.pin_hash || value.value || value.pin;
+            if (hash && ids.some(id => memberIdsMatch(id, target))) {
+              return String(hash);
+            }
+          }
+        }
+      }
+
+      return "";
     }
 
     function pickHostName(memberId, record) {
@@ -936,9 +1011,25 @@
         record.full_name ||
         record.fullName ||
         record.primary_name ||
-        record.primaryName;
+        record.primaryName ||
+        record.host_name ||
+        record.hostName;
 
       if (direct && String(direct).trim()) return String(direct).trim();
+
+      if (record.profile && typeof record.profile === "object") {
+        const profileName =
+          record.profile.displayName ||
+          record.profile.member_name ||
+          record.profile.memberName ||
+          record.profile.name ||
+          record.profile.full_name ||
+          record.profile.fullName;
+
+        if (profileName && String(profileName).trim()) {
+          return String(profileName).trim();
+        }
+      }
 
       const residents = Array.isArray(record.residents) ? record.residents : [];
       for (const r of residents) {
@@ -957,67 +1048,82 @@
       return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    async function verifyHost() {
-      clearMsg(els.verifyMsg);
-      clearMsg(els.submitMsg);
+    function getAdminToken() {
+      return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken") || "";
+    }
 
-      const memberId = normalizeMemberId(els.memberId.value);
-      const pin = String(els.memberPin.value || "").trim();
+    function readGenericMemberToken() {
+      const candidates = [
+        state.memberToken,
+        sessionStorage.getItem(HOST_FORM_TOKEN_KEY),
+        localStorage.getItem("memberToken"),
+        sessionStorage.getItem("memberToken"),
+        localStorage.getItem("sanctuaryToken"),
+        sessionStorage.getItem("sanctuaryToken"),
+        localStorage.getItem("authToken"),
+        sessionStorage.getItem("authToken")
+      ].filter(Boolean);
 
-      if (!memberId) {
-        showMsg(els.verifyMsg, "err", "Please enter a membership number.");
-        return;
+      return candidates[0] || "";
+    }
+
+    function authHeaders() {
+      const adminToken = getAdminToken();
+      const memberToken = readGenericMemberToken();
+      const token = memberToken || adminToken;
+
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      return headers;
+    }
+
+    async function attemptBackendLogin(memberId, pin) {
+      const attempts = [
+        { member_id: memberId, pin },
+        { memberId: memberId, pin },
+        { membership_number: memberId, pin },
+        { membershipNumber: memberId, pin }
+      ];
+
+      let lastMessage = "";
+
+      for (const payload of attempts) {
+        try {
+          const res = await fetch(`${BACKEND_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          let data = null;
+          try {
+            data = await res.json();
+          } catch {
+            data = null;
+          }
+
+          if (!res.ok) {
+            lastMessage = (data && (data.message || data.error)) || `Login failed (${res.status}).`;
+            continue;
+          }
+
+          const token =
+            (data && (data.token || data.access_token || data.auth_token)) ||
+            "";
+
+          if (token) {
+            state.memberToken = token;
+            sessionStorage.setItem(HOST_FORM_TOKEN_KEY, token);
+            return { ok: true, token, data };
+          }
+
+          lastMessage = "Backend login succeeded but no token was returned.";
+        } catch (err) {
+          lastMessage = "Could not reach the backend login service.";
+        }
       }
 
-      if (!/^\d{4}$/.test(pin)) {
-        showMsg(els.verifyMsg, "err", "Please enter the 4-digit PIN.");
-        return;
-      }
-
-      const memberRecord = getMemberRecord(memberId);
-      if (!memberRecord) {
-        showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
-        lockForm();
-        return;
-      }
-
-      const pinStore = readPinsStore();
-      const storedHash = pinStore[memberId] || pinStore[els.memberId.value] || null;
-
-      if (!storedHash) {
-        showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
-        lockForm();
-        return;
-      }
-
-      const candidate = await sha256Hex(`${memberId}::${pin}::sanctuary`);
-      if (candidate !== String(storedHash)) {
-        showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
-        lockForm();
-        return;
-      }
-
-      state.verified = true;
-      state.verifiedMemberId = memberId;
-      state.verifiedMemberRecord = memberRecord;
-      state.verifiedHostName = pickHostName(memberId, memberRecord);
-      state.adminOverride = !!getAdminToken();
-
-      els.verifiedHostName.textContent = state.verifiedHostName;
-      els.verifiedHostMemberId.textContent = state.verifiedMemberId;
-      els.formHostName.textContent = state.verifiedHostName;
-      els.formHostMemberId.textContent = state.verifiedMemberId;
-      els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
-      els.verifiedHostCard.classList.remove("hidden");
-
-      unlockForm();
-      showMsg(els.verifyMsg, "ok", "Host verification successful. The form is now unlocked.");
-
-      if (isEditMode) {
-        await loadExistingEventForEdit();
-      } else {
-        renderPreview();
-      }
+      return { ok: false, message: lastMessage || "Backend login failed." };
     }
 
     function lockForm() {
@@ -1027,6 +1133,8 @@
       state.verifiedMemberRecord = null;
       state.loadedEvent = null;
       state.adminOverride = false;
+      state.memberToken = "";
+      sessionStorage.removeItem(HOST_FORM_TOKEN_KEY);
 
       els.verifiedHostCard.classList.add("hidden");
       els.lockedCover.classList.remove("hidden");
@@ -1049,6 +1157,92 @@
       lockForm();
     }
 
+    async function verifyHost() {
+      clearMsg(els.verifyMsg);
+      clearMsg(els.submitMsg);
+
+      const inputMemberId = String(els.memberId.value || "").trim();
+      const pin = String(els.memberPin.value || "").trim();
+
+      if (!inputMemberId) {
+        showMsg(els.verifyMsg, "err", "Please enter a membership number.");
+        return;
+      }
+
+      if (!/^\d{4}$/.test(pin)) {
+        showMsg(els.verifyMsg, "err", "Please enter the 4-digit PIN.");
+        return;
+      }
+
+      const memberHit = findMemberRecord(inputMemberId);
+      if (!memberHit || !memberHit.record) {
+        showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
+        lockForm();
+        return;
+      }
+
+      const storedHash = findStoredPinHash(inputMemberId);
+      if (!storedHash) {
+        showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
+        lockForm();
+        return;
+      }
+
+      const canonicalId = canonicalMemberId(inputMemberId);
+      const candidateA = await sha256Hex(`${canonicalId}::${pin}::sanctuary`);
+      const candidateB = await sha256Hex(`${inputMemberId.trim().toUpperCase()}::${pin}::sanctuary`);
+      const candidateC = await sha256Hex(`${inputMemberId.trim()}::${pin}::sanctuary`);
+      const ok = [candidateA, candidateB, candidateC].includes(String(storedHash));
+
+      if (!ok) {
+        showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
+        lockForm();
+        return;
+      }
+
+      const displayMemberId =
+        candidateMemberIdsFromRecord(memberHit.record, memberHit.key).find(Boolean) ||
+        inputMemberId.trim().toUpperCase();
+
+      const backendLogin = await attemptBackendLogin(displayMemberId, pin);
+      if (!backendLogin.ok && !getAdminToken()) {
+        lockForm();
+        showMsg(
+          els.verifyMsg,
+          "err",
+          backendLogin.message || "Host was recognised locally, but backend login failed so event saving is not authorised."
+        );
+        return;
+      }
+
+      state.verified = true;
+      state.verifiedMemberId = displayMemberId;
+      state.verifiedMemberRecord = memberHit.record;
+      state.verifiedHostName = pickHostName(displayMemberId, memberHit.record);
+      state.adminOverride = !!getAdminToken();
+
+      els.verifiedHostName.textContent = state.verifiedHostName;
+      els.verifiedHostMemberId.textContent = state.verifiedMemberId;
+      els.formHostName.textContent = state.verifiedHostName;
+      els.formHostMemberId.textContent = state.verifiedMemberId;
+      els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+      els.verifiedHostCard.classList.remove("hidden");
+
+      unlockForm();
+
+      if (backendLogin.ok) {
+        showMsg(els.verifyMsg, "ok", "Host verification successful. Backend login also succeeded, and the form is now unlocked.");
+      } else {
+        showMsg(els.verifyMsg, "warn", "Local verification succeeded and admin token detected. The form is unlocked under admin authority.");
+      }
+
+      if (isEditMode) {
+        await loadExistingEventForEdit();
+      } else {
+        renderPreview();
+      }
+    }
+
     function getSelectedTitleMode() {
       const selected = document.querySelector('input[name="titleMode"]:checked');
       return selected ? selected.value : "typed";
@@ -1060,39 +1254,6 @@
       els.typedTitleWrap.classList.toggle("hidden", !typed);
       els.graphicTitleWrap.classList.toggle("hidden", typed);
       renderPreview();
-    }
-
-    function readAuthToken() {
-      const candidates = [
-        localStorage.getItem("memberToken"),
-        localStorage.getItem("sanctuaryToken"),
-        localStorage.getItem("authToken"),
-        sessionStorage.getItem("memberToken"),
-        sessionStorage.getItem("sanctuaryToken"),
-        sessionStorage.getItem("authToken")
-      ].filter(Boolean);
-
-      return candidates[0] || "";
-    }
-
-    function getAdminToken() {
-      return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken") || "";
-    }
-
-    function authHeaders() {
-      const adminToken = getAdminToken();
-      const memberToken = readAuthToken();
-      const token = adminToken || memberToken;
-
-      const headers = {
-        "Content-Type": "application/json"
-      };
-
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      return headers;
     }
 
     function formatDateTimeForPreview() {
@@ -1117,11 +1278,8 @@
         }
       }
 
-      if (st && et) {
-        parts.push(`${st} to ${et}`);
-      } else if (st) {
-        parts.push(st);
-      }
+      if (st && et) parts.push(`${st} to ${et}`);
+      else if (st) parts.push(st);
 
       return parts.join(" • ") || "—";
     }
@@ -1258,11 +1416,9 @@
         ev.member_id,
         ev.memberId,
         ev.created_by_member_id
-      ]
-      .map(v => normalizeMemberId(v))
-      .filter(Boolean);
+      ].filter(Boolean);
 
-      return candidateIds.includes(state.verifiedMemberId);
+      return candidateIds.some(id => memberIdsMatch(id, state.verifiedMemberId));
     }
 
     async function loadExistingEventForEdit() {
@@ -1299,7 +1455,6 @@
           showMsg(els.submitMsg, "warn", "Admin token detected. Edit access has been allowed even though the verified host does not appear to match the saved event.");
         }
       } catch (err) {
-        console.error(err);
         showMsg(els.submitMsg, "err", "There was a problem loading the existing event.");
       }
     }
@@ -1315,8 +1470,15 @@
         return;
       }
 
+      const memberToken = readGenericMemberToken();
+      const adminToken = getAdminToken();
+      if (!memberToken && !adminToken) {
+        showMsg(els.submitMsg, "err", "Host verification succeeded locally, but no backend login token is available for saving.");
+        return;
+      }
+
       els.saveBtn.disabled = true;
-      els.saveBtn.textContent = isEditMode ? "Saving..." : "Saving...";
+      els.saveBtn.textContent = "Saving...";
 
       try {
         const url = isEditMode
@@ -1341,24 +1503,18 @@
         if (!res.ok) {
           const message =
             (data && (data.message || data.error)) ||
-            "The event could not be saved. This may mean the page needs the same token key your current member login flow is already using.";
+            (res.status === 401 ? "The backend did not accept the login token for saving." : `The event could not be saved (${res.status}).`);
           showMsg(els.submitMsg, "err", message);
           return;
         }
 
-        const savedEvent =
-          (data && data.event) ||
-          data ||
-          {};
-
+        const savedEvent = (data && data.event) || data || {};
         const savedEventId = savedEvent.event_id || savedEvent.id || eventId || "";
 
         showMsg(
           els.submitMsg,
           "ok",
-          isEditMode
-            ? "Event notice updated successfully."
-            : "Event notice created successfully."
+          isEditMode ? "Event notice updated successfully." : "Event notice created successfully."
         );
 
         if (!isEditMode && savedEventId) {
@@ -1367,7 +1523,6 @@
           }, 700);
         }
       } catch (err) {
-        console.error(err);
         showMsg(els.submitMsg, "err", "There was a network or server problem while saving the event.");
       } finally {
         els.saveBtn.disabled = false;

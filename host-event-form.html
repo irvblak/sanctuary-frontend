@@ -761,139 +761,160 @@
   </div>
 
   <script>
-    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-    const STORAGE_KEY = "sanctuaryMembers";
-    const PIN_KEY = "sanctuaryPins";
-    const HOST_FORM_TOKEN_KEY = "sanctuaryHostEventToken";
+  const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+  const STORAGE_KEY = "sanctuaryMembers";
+  const PIN_KEY = "sanctuaryPins";
+  const HOST_FORM_TOKEN_KEY = "sanctuaryHostEventToken";
 
-    const qs = new URLSearchParams(window.location.search);
-    const eventId = (qs.get("event_id") || "").trim();
-    const isEditMode = !!eventId;
+  const qs = new URLSearchParams(window.location.search);
+  const eventId = (qs.get("event_id") || "").trim();
+  const isEditMode = !!eventId;
 
-    const state = {
-      verified: false,
-      verifiedMemberId: "",
-      verifiedHostName: "",
-      verifiedMemberRecord: null,
-      loadedEvent: null,
-      adminOverride: false,
-      memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || ""
-    };
+  const state = {
+    verified: false,
+    verifiedMemberId: "",
+    verifiedHostName: "",
+    verifiedMemberRecord: null,
+    loadedEvent: null,
+    adminOverride: false,
+    memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || ""
+  };
 
-    const els = {
-      pageTitle: document.getElementById("pageTitle"),
-      pageIntro: document.getElementById("pageIntro"),
-      crumbCurrent: document.getElementById("crumbCurrent"),
+  const els = {
+    pageTitle: document.getElementById("pageTitle"),
+    pageIntro: document.getElementById("pageIntro"),
+    crumbCurrent: document.getElementById("crumbCurrent"),
 
-      memberId: document.getElementById("memberId"),
-      memberPin: document.getElementById("memberPin"),
-      verifyBtn: document.getElementById("verifyBtn"),
-      clearVerifyBtn: document.getElementById("clearVerifyBtn"),
-      verifyMsg: document.getElementById("verifyMsg"),
-      verifiedHostCard: document.getElementById("verifiedHostCard"),
-      verifiedHostName: document.getElementById("verifiedHostName"),
-      verifiedHostMemberId: document.getElementById("verifiedHostMemberId"),
+    memberId: document.getElementById("memberId"),
+    memberPin: document.getElementById("memberPin"),
+    verifyBtn: document.getElementById("verifyBtn"),
+    clearVerifyBtn: document.getElementById("clearVerifyBtn"),
+    verifyMsg: document.getElementById("verifyMsg"),
+    verifiedHostCard: document.getElementById("verifiedHostCard"),
+    verifiedHostName: document.getElementById("verifiedHostName"),
+    verifiedHostMemberId: document.getElementById("verifiedHostMemberId"),
 
-      lockedCover: document.getElementById("lockedCover"),
-      eventForm: document.getElementById("eventForm"),
-      submitMsg: document.getElementById("submitMsg"),
+    lockedCover: document.getElementById("lockedCover"),
+    eventForm: document.getElementById("eventForm"),
+    submitMsg: document.getElementById("submitMsg"),
 
-      formHostName: document.getElementById("formHostName"),
-      formHostMemberId: document.getElementById("formHostMemberId"),
+    formHostName: document.getElementById("formHostName"),
+    formHostMemberId: document.getElementById("formHostMemberId"),
 
-      category: document.getElementById("category"),
-      location: document.getElementById("location"),
-      eventDate: document.getElementById("eventDate"),
-      startTime: document.getElementById("startTime"),
-      endTime: document.getElementById("endTime"),
-      placesTotal: document.getElementById("placesTotal"),
-      bookingMode: document.getElementById("bookingMode"),
+    category: document.getElementById("category"),
+    location: document.getElementById("location"),
+    eventDate: document.getElementById("eventDate"),
+    startTime: document.getElementById("startTime"),
+    endTime: document.getElementById("endTime"),
+    placesTotal: document.getElementById("placesTotal"),
+    bookingMode: document.getElementById("bookingMode"),
 
-      typedTitle: document.getElementById("typedTitle"),
-      graphicTitleUrl: document.getElementById("graphicTitleUrl"),
-      bodyImageUrl: document.getElementById("bodyImageUrl"),
-      summary: document.getElementById("summary"),
-      bodyText: document.getElementById("bodyText"),
-      publishLive: document.getElementById("publishLive"),
-      showInLists: document.getElementById("showInLists"),
+    typedTitle: document.getElementById("typedTitle"),
+    graphicTitleUrl: document.getElementById("graphicTitleUrl"),
+    bodyImageUrl: document.getElementById("bodyImageUrl"),
+    summary: document.getElementById("summary"),
+    bodyText: document.getElementById("bodyText"),
+    publishLive: document.getElementById("publishLive"),
+    showInLists: document.getElementById("showInLists"),
 
-      typedTitleWrap: document.getElementById("typedTitleWrap"),
-      graphicTitleWrap: document.getElementById("graphicTitleWrap"),
+    typedTitleWrap: document.getElementById("typedTitleWrap"),
+    graphicTitleWrap: document.getElementById("graphicTitleWrap"),
 
-      saveBtn: document.getElementById("saveBtn"),
-      previewBtn: document.getElementById("previewBtn"),
-      resetBtn: document.getElementById("resetBtn"),
+    saveBtn: document.getElementById("saveBtn"),
+    previewBtn: document.getElementById("previewBtn"),
+    resetBtn: document.getElementById("resetBtn"),
 
-      previewTitleText: document.getElementById("previewTitleText"),
-      previewTitleGraphic: document.getElementById("previewTitleGraphic"),
-      previewCategory: document.getElementById("previewCategory"),
-      previewWhen: document.getElementById("previewWhen"),
-      previewLocation: document.getElementById("previewLocation"),
-      previewBookingMode: document.getElementById("previewBookingMode"),
-      previewHostText: document.getElementById("previewHostText"),
-      previewBodyImage: document.getElementById("previewBodyImage"),
-      previewBody: document.getElementById("previewBody")
-    };
+    previewTitleText: document.getElementById("previewTitleText"),
+    previewTitleGraphic: document.getElementById("previewTitleGraphic"),
+    previewCategory: document.getElementById("previewCategory"),
+    previewWhen: document.getElementById("previewWhen"),
+    previewLocation: document.getElementById("previewLocation"),
+    previewBookingMode: document.getElementById("previewBookingMode"),
+    previewHostText: document.getElementById("previewHostText"),
+    previewBodyImage: document.getElementById("previewBodyImage"),
+    previewBody: document.getElementById("previewBody")
+  };
 
-    if (isEditMode) {
-      els.pageTitle.textContent = "Edit Event Notice";
-      els.crumbCurrent.textContent = "Edit Event Notice";
-      els.pageIntro.textContent =
-        "This page has two stages. First, the host identifies with membership number and PIN. Once verified, the existing event may be edited only if the verified host matches the saved event, unless an admin token is present.";
-      els.saveBtn.textContent = "Save Changes";
+  if (isEditMode) {
+    els.pageTitle.textContent = "Edit Event Notice";
+    els.crumbCurrent.textContent = "Edit Event Notice";
+    els.pageIntro.textContent =
+      "This page has two stages. First, the host identifies with membership number and PIN. Once verified, the existing event may be edited only if the verified host matches the saved event, unless an admin token is present.";
+    els.saveBtn.textContent = "Save Changes";
+  }
+
+  function showMsg(node, type, text) {
+    node.className = "msg show " + type;
+    node.textContent = text;
+  }
+
+  function clearMsg(node) {
+    node.className = "msg";
+    node.textContent = "";
+  }
+
+  function safeJsonParse(raw, fallback) {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return fallback;
     }
+  }
 
-    function showMsg(node, type, text) {
-      node.className = "msg show " + type;
-      node.textContent = text;
-    }
+  function canonicalMemberId(value) {
+    return String(value || "")
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, "")
+      .replace(/[^A-Z0-9/]/g, "");
+  }
 
-    function clearMsg(node) {
-      node.className = "msg";
-      node.textContent = "";
-    }
+  function softCanonicalMemberId(value) {
+    return canonicalMemberId(value).replace(/\//g, "");
+  }
 
-    function safeJsonParse(raw, fallback) {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return fallback;
-      }
-    }
+  function memberIdsMatch(a, b) {
+    if (!a || !b) return false;
+    const ca = canonicalMemberId(a);
+    const cb = canonicalMemberId(b);
+    if (ca && cb && ca === cb) return true;
+    return softCanonicalMemberId(a) === softCanonicalMemberId(b);
+  }
 
-    function canonicalMemberId(value) {
-      return String(value || "")
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "")
-        .replace(/[^A-Z0-9/]/g, "");
-    }
+  function readMembersStore() {
+    const parsed = safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
+    return parsed;
+  }
 
-    function softCanonicalMemberId(value) {
-      return canonicalMemberId(value).replace(/\//g, "");
-    }
+  function readPinsStore() {
+    const parsed = safeJsonParse(localStorage.getItem(PIN_KEY), {});
+    return parsed;
+  }
 
-    function memberIdsMatch(a, b) {
-      if (!a || !b) return false;
-      const ca = canonicalMemberId(a);
-      const cb = canonicalMemberId(b);
-      if (ca && cb && ca === cb) return true;
-      return softCanonicalMemberId(a) === softCanonicalMemberId(b);
-    }
+  function candidateMemberIdsFromRecord(record, fallbackKey) {
+    const ids = [];
 
-    function readMembersStore() {
-      return safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
-    }
+    if (fallbackKey) ids.push(fallbackKey);
 
-    function readPinsStore() {
-      return safeJsonParse(localStorage.getItem(PIN_KEY), {});
-    }
+    if (record && typeof record === "object") {
+      [
+        "memberId",
+        "member_id",
+        "membershipNumber",
+        "membership_number",
+        "membershipNo",
+        "membership_no",
+        "id",
+        "member",
+        "memberNumber",
+        "member_number",
+        "property_member_id",
+        "membership"
+      ].forEach(key => {
+        if (record[key]) ids.push(record[key]);
+      });
 
-    function candidateMemberIdsFromRecord(record, fallbackKey) {
-      const ids = [];
-      if (fallbackKey) ids.push(fallbackKey);
-
-      if (record && typeof record === "object") {
+      if (record.profile && typeof record.profile === "object") {
         [
           "memberId",
           "member_id",
@@ -901,595 +922,185 @@
           "membership_number",
           "membershipNo",
           "membership_no",
-          "id",
-          "member",
-          "memberNumber",
-          "member_number",
-          "property_member_id",
-          "membership",
-          "properties"
+          "id"
         ].forEach(key => {
-          const value = record[key];
-          if (Array.isArray(value)) {
-            value.forEach(v => ids.push(v));
-          } else if (value) {
-            ids.push(value);
-          }
+          if (record.profile[key]) ids.push(record.profile[key]);
         });
-
-        if (record.profile && typeof record.profile === "object") {
-          [
-            "memberId",
-            "member_id",
-            "membershipNumber",
-            "membership_number",
-            "membershipNo",
-            "membership_no",
-            "id"
-          ].forEach(key => {
-            if (record.profile[key]) ids.push(record.profile[key]);
-          });
-        }
       }
-
-      return ids.filter(Boolean);
     }
 
-    function findMemberRecord(memberIdRaw) {
-      const store = readMembersStore();
-      const target = canonicalMemberId(memberIdRaw);
-      if (!target) return null;
+    return ids.filter(Boolean);
+  }
 
-      if (Array.isArray(store)) {
-        for (const item of store) {
-          const ids = candidateMemberIdsFromRecord(item, "");
-          if (ids.some(id => memberIdsMatch(id, target))) {
-            return { key: "", record: item };
-          }
+  function findMemberRecord(memberIdRaw) {
+    const store = readMembersStore();
+    const target = canonicalMemberId(memberIdRaw);
+
+    if (!target) return null;
+
+    if (Array.isArray(store)) {
+      for (const item of store) {
+        const ids = candidateMemberIdsFromRecord(item, "");
+        if (ids.some(id => memberIdsMatch(id, target))) {
+          return { key: "", record: item };
         }
       }
+    }
 
-      if (store && typeof store === "object") {
-        for (const [key, value] of Object.entries(store)) {
-          if (memberIdsMatch(key, target)) {
-            return { key, record: value };
-          }
+    if (store && typeof store === "object") {
+      for (const [key, value] of Object.entries(store)) {
+        if (memberIdsMatch(key, target)) {
+          return { key, record: value };
+        }
+
+        const ids = candidateMemberIdsFromRecord(value, key);
+        if (ids.some(id => memberIdsMatch(id, target))) {
+          return { key, record: value };
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function findStoredPinHash(memberIdRaw) {
+    const pinStore = readPinsStore();
+    const target = canonicalMemberId(memberIdRaw);
+
+    if (!target || !pinStore) return "";
+
+    if (Array.isArray(pinStore)) {
+      for (const item of pinStore) {
+        if (!item || typeof item !== "object") continue;
+
+        const ids = candidateMemberIdsFromRecord(item, "");
+        const hash = item.hash || item.pinHash || item.pin_hash || item.value || item.pin;
+
+        if (hash && ids.some(id => memberIdsMatch(id, target))) {
+          return String(hash);
+        }
+      }
+    }
+
+    if (pinStore && typeof pinStore === "object") {
+      for (const [key, value] of Object.entries(pinStore)) {
+        if (typeof value === "string") {
+          if (memberIdsMatch(key, target)) return value;
+          continue;
+        }
+
+        if (value && typeof value === "object") {
           const ids = candidateMemberIdsFromRecord(value, key);
-          if (ids.some(id => memberIdsMatch(id, target))) {
-            return { key, record: value };
-          }
-        }
-      }
+          const hash = value.hash || value.pinHash || value.pin_hash || value.value || value.pin;
 
-      return null;
-    }
-
-    function findStoredPinHash(memberIdRaw) {
-      const pinStore = readPinsStore();
-      const target = canonicalMemberId(memberIdRaw);
-      if (!target || !pinStore) return "";
-
-      if (Array.isArray(pinStore)) {
-        for (const item of pinStore) {
-          if (!item || typeof item !== "object") continue;
-          const ids = candidateMemberIdsFromRecord(item, "");
-          const hash = item.hash || item.pinHash || item.pin_hash || item.value || item.pin;
           if (hash && ids.some(id => memberIdsMatch(id, target))) {
             return String(hash);
           }
         }
       }
-
-      if (pinStore && typeof pinStore === "object") {
-        for (const [key, value] of Object.entries(pinStore)) {
-          if (typeof value === "string") {
-            if (memberIdsMatch(key, target)) return value;
-            continue;
-          }
-
-          if (value && typeof value === "object") {
-            const ids = candidateMemberIdsFromRecord(value, key);
-            const hash = value.hash || value.pinHash || value.pin_hash || value.value || value.pin;
-            if (hash && ids.some(id => memberIdsMatch(id, target))) {
-              return String(hash);
-            }
-          }
-        }
-      }
-
-      return "";
     }
 
-    function pickHostName(memberId, record) {
-      if (!record || typeof record !== "object") return memberId;
+    return "";
+  }
 
-      const direct =
-        record.displayName ||
-        record.member_name ||
-        record.memberName ||
-        record.name ||
-        record.full_name ||
-        record.fullName ||
-        record.primary_name ||
-        record.primaryName ||
-        record.host_name ||
-        record.hostName;
+  function pickHostName(memberId, record) {
+    if (!record || typeof record !== "object") return memberId;
 
-      if (direct && String(direct).trim()) return String(direct).trim();
+    const direct =
+      record.displayName ||
+      record.member_name ||
+      record.memberName ||
+      record.name ||
+      record.full_name ||
+      record.fullName ||
+      record.primary_name ||
+      record.primaryName ||
+      record.host_name ||
+      record.hostName;
 
-      if (record.profile && typeof record.profile === "object") {
-        const profileName =
-          record.profile.displayName ||
-          record.profile.member_name ||
-          record.profile.memberName ||
-          record.profile.name ||
-          record.profile.full_name ||
-          record.profile.fullName;
+    if (direct && String(direct).trim()) return String(direct).trim();
 
-        if (profileName && String(profileName).trim()) {
-          return String(profileName).trim();
-        }
-      }
+    if (record.profile && typeof record.profile === "object") {
+      const profileName =
+        record.profile.displayName ||
+        record.profile.member_name ||
+        record.profile.memberName ||
+        record.profile.name ||
+        record.profile.full_name ||
+        record.profile.fullName;
 
-      const residents = Array.isArray(record.residents) ? record.residents : [];
-      for (const r of residents) {
-        if (r && typeof r === "object" && r.name && String(r.name).trim()) {
-          return String(r.name).trim();
-        }
-      }
-
-      return memberId;
-    }
-
-    async function sha256Hex(text) {
-      const encoded = new TextEncoder().encode(text);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    function getAdminToken() {
-      return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken") || "";
-    }
-
-    function readGenericMemberToken() {
-      const candidates = [
-        state.memberToken,
-        sessionStorage.getItem(HOST_FORM_TOKEN_KEY),
-        localStorage.getItem("memberToken"),
-        sessionStorage.getItem("memberToken"),
-        localStorage.getItem("sanctuaryToken"),
-        sessionStorage.getItem("sanctuaryToken"),
-        localStorage.getItem("authToken"),
-        sessionStorage.getItem("authToken")
-      ].filter(Boolean);
-
-      return candidates[0] || "";
-    }
-
-    function authHeaders() {
-      const adminToken = getAdminToken();
-      const memberToken = readGenericMemberToken();
-      const token = memberToken || adminToken;
-
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      return headers;
-    }
-
-    async function attemptBackendLogin(memberId, pin) {
-      const attempts = [
-        { member_id: memberId, pin },
-        { memberId: memberId, pin },
-        { membership_number: memberId, pin },
-        { membershipNumber: memberId, pin }
-      ];
-
-      let lastMessage = "";
-
-      for (const payload of attempts) {
-        try {
-          const res = await fetch(`${BACKEND_URL}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-
-          let data = null;
-          try {
-            data = await res.json();
-          } catch {
-            data = null;
-          }
-
-          if (!res.ok) {
-            lastMessage = (data && (data.message || data.error)) || `Login failed (${res.status}).`;
-            continue;
-          }
-
-          const token =
-            (data && (data.token || data.access_token || data.auth_token)) ||
-            "";
-
-          if (token) {
-            state.memberToken = token;
-            sessionStorage.setItem(HOST_FORM_TOKEN_KEY, token);
-            return { ok: true, token, data };
-          }
-
-          lastMessage = "Backend login succeeded but no token was returned.";
-        } catch (err) {
-          lastMessage = "Could not reach the backend login service.";
-        }
-      }
-
-      return { ok: false, message: lastMessage || "Backend login failed." };
-    }
-
-    function lockForm() {
-      state.verified = false;
-      state.verifiedMemberId = "";
-      state.verifiedHostName = "";
-      state.verifiedMemberRecord = null;
-      state.loadedEvent = null;
-      state.adminOverride = false;
-      state.memberToken = "";
-      sessionStorage.removeItem(HOST_FORM_TOKEN_KEY);
-
-      els.verifiedHostCard.classList.add("hidden");
-      els.lockedCover.classList.remove("hidden");
-      els.eventForm.classList.add("hidden");
-      els.formHostName.textContent = "—";
-      els.formHostMemberId.textContent = "—";
-      els.previewHostText.textContent = "Verified host details will appear here after identification.";
-    }
-
-    function unlockForm() {
-      els.lockedCover.classList.add("hidden");
-      els.eventForm.classList.remove("hidden");
-    }
-
-    function clearVerificationInputs() {
-      els.memberId.value = "";
-      els.memberPin.value = "";
-      clearMsg(els.verifyMsg);
-      clearMsg(els.submitMsg);
-      lockForm();
-    }
-
-    async function verifyHost() {
-      clearMsg(els.verifyMsg);
-      clearMsg(els.submitMsg);
-
-      const inputMemberId = String(els.memberId.value || "").trim();
-      const pin = String(els.memberPin.value || "").trim();
-
-      if (!inputMemberId) {
-        showMsg(els.verifyMsg, "err", "Please enter a membership number.");
-        return;
-      }
-
-      if (!/^\d{4}$/.test(pin)) {
-        showMsg(els.verifyMsg, "err", "Please enter the 4-digit PIN.");
-        return;
-      }
-
-      const memberHit = findMemberRecord(inputMemberId);
-      if (!memberHit || !memberHit.record) {
-        showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
-        lockForm();
-        return;
-      }
-
-      const storedHash = findStoredPinHash(inputMemberId);
-      if (!storedHash) {
-        showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
-        lockForm();
-        return;
-      }
-
-      const canonicalId = canonicalMemberId(inputMemberId);
-      const candidateA = await sha256Hex(`${canonicalId}::${pin}::sanctuary`);
-      const candidateB = await sha256Hex(`${inputMemberId.trim().toUpperCase()}::${pin}::sanctuary`);
-      const candidateC = await sha256Hex(`${inputMemberId.trim()}::${pin}::sanctuary`);
-      const ok = [candidateA, candidateB, candidateC].includes(String(storedHash));
-
-      if (!ok) {
-        showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
-        lockForm();
-        return;
-      }
-
-      const displayMemberId =
-        candidateMemberIdsFromRecord(memberHit.record, memberHit.key).find(Boolean) ||
-        inputMemberId.trim().toUpperCase();
-
-      const backendLogin = await attemptBackendLogin(displayMemberId, pin);
-      if (!backendLogin.ok && !getAdminToken()) {
-        lockForm();
-        showMsg(
-          els.verifyMsg,
-          "err",
-          backendLogin.message || "Host was recognised locally, but backend login failed so event saving is not authorised."
-        );
-        return;
-      }
-
-      state.verified = true;
-      state.verifiedMemberId = displayMemberId;
-      state.verifiedMemberRecord = memberHit.record;
-      state.verifiedHostName = pickHostName(displayMemberId, memberHit.record);
-      state.adminOverride = !!getAdminToken();
-
-      els.verifiedHostName.textContent = state.verifiedHostName;
-      els.verifiedHostMemberId.textContent = state.verifiedMemberId;
-      els.formHostName.textContent = state.verifiedHostName;
-      els.formHostMemberId.textContent = state.verifiedMemberId;
-      els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
-      els.verifiedHostCard.classList.remove("hidden");
-
-      unlockForm();
-
-      if (backendLogin.ok) {
-        showMsg(els.verifyMsg, "ok", "Host verification successful. Backend login also succeeded, and the form is now unlocked.");
-      } else {
-        showMsg(els.verifyMsg, "warn", "Local verification succeeded and admin token detected. The form is unlocked under admin authority.");
-      }
-
-      if (isEditMode) {
-        await loadExistingEventForEdit();
-      } else {
-        renderPreview();
+      if (profileName && String(profileName).trim()) {
+        return String(profileName).trim();
       }
     }
 
-    function getSelectedTitleMode() {
-      const selected = document.querySelector('input[name="titleMode"]:checked');
-      return selected ? selected.value : "typed";
-    }
-
-    function syncTitleModeUI() {
-      const mode = getSelectedTitleMode();
-      const typed = mode === "typed";
-      els.typedTitleWrap.classList.toggle("hidden", !typed);
-      els.graphicTitleWrap.classList.toggle("hidden", typed);
-      renderPreview();
-    }
-
-    function formatDateTimeForPreview() {
-      const d = els.eventDate.value;
-      const st = els.startTime.value;
-      const et = els.endTime.value;
-
-      if (!d && !st && !et) return "—";
-
-      const parts = [];
-      if (d) {
-        const dt = new Date(`${d}T12:00:00`);
-        if (!isNaN(dt.getTime())) {
-          parts.push(dt.toLocaleDateString(undefined, {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }));
-        } else {
-          parts.push(d);
-        }
-      }
-
-      if (st && et) parts.push(`${st} to ${et}`);
-      else if (st) parts.push(st);
-
-      return parts.join(" • ") || "—";
-    }
-
-    function renderPreview() {
-      const mode = getSelectedTitleMode();
-      const typedTitle = (els.typedTitle.value || "").trim();
-      const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
-      const bodyImageUrl = (els.bodyImageUrl.value || "").trim();
-      const bodyText = (els.bodyText.value || "").trim();
-
-      if (mode === "graphic" && graphicTitleUrl) {
-        els.previewTitleText.style.display = "none";
-        els.previewTitleGraphic.style.display = "block";
-        els.previewTitleGraphic.src = graphicTitleUrl;
-      } else {
-        els.previewTitleGraphic.style.display = "none";
-        els.previewTitleGraphic.removeAttribute("src");
-        els.previewTitleText.style.display = "block";
-        els.previewTitleText.textContent = typedTitle || "Your event title will appear here";
-      }
-
-      els.previewCategory.textContent = els.category.value || "—";
-      els.previewWhen.textContent = formatDateTimeForPreview();
-      els.previewLocation.textContent = (els.location.value || "").trim() || "—";
-      els.previewBookingMode.textContent = els.bookingMode.options[els.bookingMode.selectedIndex]?.text || "—";
-
-      if (state.verified && state.verifiedHostName && state.verifiedMemberId) {
-        els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
-      } else {
-        els.previewHostText.textContent = "Verified host details will appear here after identification.";
-      }
-
-      if (bodyImageUrl) {
-        els.previewBodyImage.style.display = "inline-block";
-        els.previewBodyImage.src = bodyImageUrl;
-      } else {
-        els.previewBodyImage.style.display = "none";
-        els.previewBodyImage.removeAttribute("src");
-      }
-
-      if (bodyText) {
-        els.previewBody.innerHTML = "";
-        els.previewBody.textContent = bodyText;
-      } else {
-        els.previewBody.innerHTML = '<span class="preview-placeholder">Your notice text will appear here.</span>';
+    const residents = Array.isArray(record.residents) ? record.residents : [];
+    for (const r of residents) {
+      if (r && typeof r === "object" && r.name && String(r.name).trim()) {
+        return String(r.name).trim();
       }
     }
 
-    function buildPayload() {
-      const mode = getSelectedTitleMode();
+    return memberId;
+  }
 
-      return {
-        category: els.category.value || "",
-        location: (els.location.value || "").trim(),
-        event_date: els.eventDate.value || "",
-        start_time: els.startTime.value || "",
-        end_time: els.endTime.value || "",
-        places_total: Number(els.placesTotal.value || 0),
-        booking_mode: els.bookingMode.value || "booking",
+  async function sha256Hex(text) {
+    const encoded = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
 
-        host_member_id: state.verifiedMemberId,
-        host_name: state.verifiedHostName,
+  function getAdminToken() {
+    return localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken") || "";
+  }
 
-        title_mode: mode,
-        title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
-        title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
+  function readGenericMemberToken() {
+    const candidates = [
+      state.memberToken,
+      sessionStorage.getItem(HOST_FORM_TOKEN_KEY),
+      localStorage.getItem("memberToken"),
+      sessionStorage.getItem("memberToken"),
+      localStorage.getItem("sanctuaryToken"),
+      sessionStorage.getItem("sanctuaryToken"),
+      localStorage.getItem("authToken"),
+      sessionStorage.getItem("authToken")
+    ].filter(Boolean);
 
-        notice_image_url: (els.bodyImageUrl.value || "").trim(),
-        summary: (els.summary.value || "").trim(),
-        body: (els.bodyText.value || "").trim(),
+    return candidates[0] || "";
+  }
 
-        publish_live_immediately: els.publishLive.value === "true",
-        show_in_calendar_and_list: els.showInLists.value === "true"
-      };
+  function authHeaders() {
+    const adminToken = getAdminToken();
+    const memberToken = readGenericMemberToken();
+    const token = memberToken || adminToken;
+
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
-    function validatePayload(payload) {
-      if (!state.verified) return "Please verify the host first.";
-      if (!payload.category) return "Please choose a category.";
-      if (!payload.event_date) return "Please choose a date.";
-      if (!payload.start_time) return "Please choose a start time.";
-      if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";
+    return headers;
+  }
 
-      if (payload.title_mode === "typed") {
-        if (!payload.title) return "Please type the event title.";
-      } else if (payload.title_mode === "graphic") {
-        if (!payload.title_graphic_url) return "Please provide the graphic title image link.";
-      } else {
-        return "Please choose whether the title is typed or graphic.";
-      }
+  async function attemptBackendLogin(memberId, pin) {
+    const attempts = [
+      { member_id: memberId, pin },
+      { memberId: memberId, pin },
+      { membership_number: memberId, pin },
+      { membershipNumber: memberId, pin }
+    ];
 
-      if (!payload.body && !payload.summary) {
-        return "Please add at least a short summary or some notice text.";
-      }
+    let lastMessage = "";
 
-      return "";
-    }
-
-    function fillFormFromEvent(ev) {
-      const titleMode = ev.title_mode === "graphic" ? "graphic" : "typed";
-      const radio = document.querySelector(`input[name="titleMode"][value="${titleMode}"]`);
-      if (radio) radio.checked = true;
-
-      els.category.value = ev.category || "";
-      els.location.value = ev.location || "";
-      els.eventDate.value = ev.event_date || ev.date || "";
-      els.startTime.value = ev.start_time || "";
-      els.endTime.value = ev.end_time || "";
-      els.placesTotal.value = Number(ev.places_total || ev.capacity || 1);
-      els.bookingMode.value = ev.booking_mode || "booking";
-
-      els.typedTitle.value = ev.title || "";
-      els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
-      els.bodyImageUrl.value = ev.notice_image_url || ev.image_url || "";
-      els.summary.value = ev.summary || ev.description || "";
-      els.bodyText.value = ev.body || ev.notice_text || ev.details || "";
-
-      if (typeof ev.publish_live_immediately === "boolean") {
-        els.publishLive.value = String(ev.publish_live_immediately);
-      }
-      if (typeof ev.show_in_calendar_and_list === "boolean") {
-        els.showInLists.value = String(ev.show_in_calendar_and_list);
-      }
-
-      syncTitleModeUI();
-      renderPreview();
-    }
-
-    function eventBelongsToVerifiedHost(ev) {
-      const candidateIds = [
-        ev.host_member_id,
-        ev.hostMemberId,
-        ev.member_id,
-        ev.memberId,
-        ev.created_by_member_id
-      ].filter(Boolean);
-
-      return candidateIds.some(id => memberIdsMatch(id, state.verifiedMemberId));
-    }
-
-    async function loadExistingEventForEdit() {
-      clearMsg(els.submitMsg);
-
+    for (const payload of attempts) {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
-          method: "GET",
-          headers: { "Accept": "application/json" }
-        });
-
-        if (!res.ok) {
-          showMsg(els.submitMsg, "err", "The existing event could not be loaded for editing.");
-          return;
-        }
-
-        const data = await res.json();
-        const ev = data && typeof data === "object" && data.event ? data.event : data;
-        state.loadedEvent = ev;
-
-        const allowed = eventBelongsToVerifiedHost(ev) || !!getAdminToken();
-        if (!allowed) {
-          els.eventForm.classList.add("hidden");
-          els.lockedCover.classList.remove("hidden");
-          els.lockedCover.innerHTML =
-            "<strong>Edit access blocked.</strong><br />The verified host does not appear to match the host saved on this event. Only the original verified host or an admin may edit it.";
-          showMsg(els.submitMsg, "err", "This event is not editable under the host identity just verified.");
-          return;
-        }
-
-        fillFormFromEvent(ev);
-
-        if (getAdminToken() && !eventBelongsToVerifiedHost(ev)) {
-          showMsg(els.submitMsg, "warn", "Admin token detected. Edit access has been allowed even though the verified host does not appear to match the saved event.");
-        }
-      } catch (err) {
-        showMsg(els.submitMsg, "err", "There was a problem loading the existing event.");
-      }
-    }
-
-    async function saveEvent(e) {
-      e.preventDefault();
-      clearMsg(els.submitMsg);
-
-      const payload = buildPayload();
-      const validation = validatePayload(payload);
-      if (validation) {
-        showMsg(els.submitMsg, "err", validation);
-        return;
-      }
-
-      const memberToken = readGenericMemberToken();
-      const adminToken = getAdminToken();
-      if (!memberToken && !adminToken) {
-        showMsg(els.submitMsg, "err", "Host verification succeeded locally, but no backend login token is available for saving.");
-        return;
-      }
-
-      els.saveBtn.disabled = true;
-      els.saveBtn.textContent = "Saving...";
-
-      try {
-        const url = isEditMode
-          ? `${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`
-          : `${BACKEND_URL}/api/events`;
-
-        const method = isEditMode ? "PUT" : "POST";
-
-        const res = await fetch(url, {
-          method,
-          headers: authHeaders(),
+        const res = await fetch(`${BACKEND_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
@@ -1501,93 +1112,502 @@
         }
 
         if (!res.ok) {
-          const message =
-            (data && (data.message || data.error)) ||
-            (res.status === 401 ? "The backend did not accept the login token for saving." : `The event could not be saved (${res.status}).`);
-          showMsg(els.submitMsg, "err", message);
-          return;
+          lastMessage = (data && (data.message || data.error)) || `Login failed (${res.status}).`;
+          continue;
         }
 
-        const savedEvent = (data && data.event) || data || {};
-        const savedEventId = savedEvent.event_id || savedEvent.id || eventId || "";
+        const token =
+          (data && (data.token || data.access_token || data.auth_token)) ||
+          "";
 
-        showMsg(
-          els.submitMsg,
-          "ok",
-          isEditMode ? "Event notice updated successfully." : "Event notice created successfully."
-        );
-
-        if (!isEditMode && savedEventId) {
-          setTimeout(() => {
-            window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
-          }, 700);
+        if (token) {
+          state.memberToken = token;
+          sessionStorage.setItem(HOST_FORM_TOKEN_KEY, token);
+          return { ok: true, token, data };
         }
+
+        lastMessage = "Backend login succeeded but no token was returned.";
       } catch (err) {
-        showMsg(els.submitMsg, "err", "There was a network or server problem while saving the event.");
-      } finally {
-        els.saveBtn.disabled = false;
-        els.saveBtn.textContent = isEditMode ? "Save Changes" : "Save Event Notice";
+        lastMessage = "Could not reach the backend login service.";
       }
     }
 
-    function resetFormKeepHost() {
-      clearMsg(els.submitMsg);
+    return { ok: false, message: lastMessage || "Backend login failed." };
+  }
 
-      els.category.value = "";
-      els.location.value = "";
-      els.eventDate.value = "";
-      els.startTime.value = "";
-      els.endTime.value = "";
-      els.placesTotal.value = 1;
-      els.bookingMode.value = "booking";
+  function lockForm() {
+    state.verified = false;
+    state.verifiedMemberId = "";
+    state.verifiedHostName = "";
+    state.verifiedMemberRecord = null;
+    state.loadedEvent = null;
+    state.adminOverride = false;
+    state.memberToken = "";
+    sessionStorage.removeItem(HOST_FORM_TOKEN_KEY);
 
-      const typedRadio = document.querySelector('input[name="titleMode"][value="typed"]');
-      if (typedRadio) typedRadio.checked = true;
+    els.verifiedHostCard.classList.add("hidden");
+    els.lockedCover.classList.remove("hidden");
+    els.eventForm.classList.add("hidden");
+    els.formHostName.textContent = "—";
+    els.formHostMemberId.textContent = "—";
+    els.previewHostText.textContent = "Verified host details will appear here after identification.";
+  }
 
-      els.typedTitle.value = "";
-      els.graphicTitleUrl.value = "";
-      els.bodyImageUrl.value = "";
-      els.summary.value = "";
-      els.bodyText.value = "";
-      els.publishLive.value = "true";
-      els.showInLists.value = "true";
+  function unlockForm() {
+    els.lockedCover.classList.add("hidden");
+    els.eventForm.classList.remove("hidden");
+  }
 
-      syncTitleModeUI();
+  function clearVerificationInputs() {
+    els.memberId.value = "";
+    els.memberPin.value = "";
+    clearMsg(els.verifyMsg);
+    clearMsg(els.submitMsg);
+    lockForm();
+  }
+
+  async function verifyHost() {
+    clearMsg(els.verifyMsg);
+    clearMsg(els.submitMsg);
+
+    const inputMemberId = String(els.memberId.value || "").trim();
+    const pin = String(els.memberPin.value || "").trim();
+
+    if (!inputMemberId) {
+      showMsg(els.verifyMsg, "err", "Please enter a membership number.");
+      return;
+    }
+
+    if (!/^\d{4}$/.test(pin)) {
+      showMsg(els.verifyMsg, "err", "Please enter the 4-digit PIN.");
+      return;
+    }
+
+    const memberHit = findMemberRecord(inputMemberId);
+    if (!memberHit || !memberHit.record) {
+      showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
+      lockForm();
+      return;
+    }
+
+    const storedHash = findStoredPinHash(inputMemberId);
+    if (!storedHash) {
+      showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
+      lockForm();
+      return;
+    }
+
+    const canonicalId = canonicalMemberId(inputMemberId);
+    const candidateA = await sha256Hex(`${canonicalId}::${pin}::sanctuary`);
+    const candidateB = await sha256Hex(`${inputMemberId.trim().toUpperCase()}::${pin}::sanctuary`);
+    const candidateC = await sha256Hex(`${inputMemberId.trim()}::${pin}::sanctuary`);
+
+    const ok = [candidateA, candidateB, candidateC].includes(String(storedHash));
+
+    if (!ok) {
+      showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
+      lockForm();
+      return;
+    }
+
+    const displayMemberId =
+      candidateMemberIdsFromRecord(memberHit.record, memberHit.key).find(Boolean) ||
+      inputMemberId.trim().toUpperCase();
+
+    const backendLogin = await attemptBackendLogin(displayMemberId, pin);
+    if (!backendLogin.ok && !getAdminToken()) {
+      lockForm();
+      showMsg(
+        els.verifyMsg,
+        "err",
+        backendLogin.message || "Host was recognised locally, but backend login failed so event saving is not authorised."
+      );
+      return;
+    }
+
+    state.verified = true;
+    state.verifiedMemberId = displayMemberId;
+    state.verifiedMemberRecord = memberHit.record;
+    state.verifiedHostName = pickHostName(displayMemberId, memberHit.record);
+    state.adminOverride = !!getAdminToken();
+
+    els.verifiedHostName.textContent = state.verifiedHostName;
+    els.verifiedHostMemberId.textContent = state.verifiedMemberId;
+    els.formHostName.textContent = state.verifiedHostName;
+    els.formHostMemberId.textContent = state.verifiedMemberId;
+    els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+    els.verifiedHostCard.classList.remove("hidden");
+
+    unlockForm();
+
+    if (backendLogin.ok) {
+      showMsg(els.verifyMsg, "ok", "Host verification successful. Backend login also succeeded, and the form is now unlocked.");
+    } else {
+      showMsg(els.verifyMsg, "warn", "Local verification succeeded and admin token detected. The form is unlocked under admin authority.");
+    }
+
+    if (isEditMode) {
+      await loadExistingEventForEdit();
+    } else {
       renderPreview();
     }
+  }
 
-    function bindPreviewInputs() {
-      [
-        els.category,
-        els.location,
-        els.eventDate,
-        els.startTime,
-        els.endTime,
-        els.bookingMode,
-        els.typedTitle,
-        els.graphicTitleUrl,
-        els.bodyImageUrl,
-        els.bodyText
-      ].forEach(node => {
-        node.addEventListener("input", renderPreview);
-        node.addEventListener("change", renderPreview);
-      });
+  function getSelectedTitleMode() {
+    const selected = document.querySelector('input[name="titleMode"]:checked');
+    return selected ? selected.value : "typed";
+  }
 
-      document.querySelectorAll('input[name="titleMode"]').forEach(radio => {
-        radio.addEventListener("change", syncTitleModeUI);
-      });
+  function syncTitleModeUI() {
+    const mode = getSelectedTitleMode();
+    const typed = mode === "typed";
+    els.typedTitleWrap.classList.toggle("hidden", !typed);
+    els.graphicTitleWrap.classList.toggle("hidden", typed);
+    renderPreview();
+  }
+
+  function formatDateTimeForPreview() {
+    const d = els.eventDate.value;
+    const st = els.startTime.value;
+    const et = els.endTime.value;
+
+    if (!d && !st && !et) return "—";
+
+    const parts = [];
+    if (d) {
+      const dt = new Date(`${d}T12:00:00`);
+      if (!isNaN(dt.getTime())) {
+        parts.push(dt.toLocaleDateString(undefined, {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }));
+      } else {
+        parts.push(d);
+      }
     }
 
-    els.verifyBtn.addEventListener("click", verifyHost);
-    els.clearVerifyBtn.addEventListener("click", clearVerificationInputs);
-    els.previewBtn.addEventListener("click", renderPreview);
-    els.resetBtn.addEventListener("click", resetFormKeepHost);
-    els.eventForm.addEventListener("submit", saveEvent);
+    if (st && et) {
+      parts.push(`${st} to ${et}`);
+    } else if (st) {
+      parts.push(st);
+    }
 
-    bindPreviewInputs();
+    return parts.join(" • ") || "—";
+  }
+
+  function renderPreview() {
+    const mode = getSelectedTitleMode();
+    const typedTitle = (els.typedTitle.value || "").trim();
+    const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
+    const bodyImageUrl = (els.bodyImageUrl.value || "").trim();
+    const bodyText = (els.bodyText.value || "").trim();
+
+    if (mode === "graphic" && graphicTitleUrl) {
+      els.previewTitleText.style.display = "none";
+      els.previewTitleGraphic.style.display = "block";
+      els.previewTitleGraphic.src = graphicTitleUrl;
+    } else {
+      els.previewTitleGraphic.style.display = "none";
+      els.previewTitleGraphic.removeAttribute("src");
+      els.previewTitleText.style.display = "block";
+      els.previewTitleText.textContent = typedTitle || "Your event title will appear here";
+    }
+
+    els.previewCategory.textContent = els.category.value || "—";
+    els.previewWhen.textContent = formatDateTimeForPreview();
+    els.previewLocation.textContent = (els.location.value || "").trim() || "—";
+    els.previewBookingMode.textContent = els.bookingMode.options[els.bookingMode.selectedIndex]?.text || "—";
+
+    if (state.verified && state.verifiedHostName && state.verifiedMemberId) {
+      els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+    } else {
+      els.previewHostText.textContent = "Verified host details will appear here after identification.";
+    }
+
+    if (bodyImageUrl) {
+      els.previewBodyImage.style.display = "inline-block";
+      els.previewBodyImage.src = bodyImageUrl;
+    } else {
+      els.previewBodyImage.style.display = "none";
+      els.previewBodyImage.removeAttribute("src");
+    }
+
+    if (bodyText) {
+      els.previewBody.innerHTML = "";
+      els.previewBody.textContent = bodyText;
+    } else {
+      els.previewBody.innerHTML = '<span class="preview-placeholder">Your notice text will appear here.</span>';
+    }
+  }
+
+  function buildPayload() {
+    const mode = getSelectedTitleMode();
+
+    return {
+      category: els.category.value || "",
+      location: (els.location.value || "").trim(),
+      event_date: els.eventDate.value || "",
+      start_time: els.startTime.value || "",
+      end_time: els.endTime.value || "",
+      places_total: Number(els.placesTotal.value || 0),
+      booking_mode: els.bookingMode.value || "booking",
+
+      host_member_id: state.verifiedMemberId,
+      host_name: state.verifiedHostName,
+
+      title_mode: mode,
+      title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
+      title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
+
+      notice_image_url: (els.bodyImageUrl.value || "").trim(),
+      summary: (els.summary.value || "").trim(),
+      body: (els.bodyText.value || "").trim(),
+
+      publish_live_immediately: els.publishLive.value === "true",
+      show_in_calendar_and_list: els.showInLists.value === "true"
+    };
+  }
+
+  function validatePayload(payload) {
+    if (!state.verified) return "Please verify the host first.";
+    if (!payload.category) return "Please choose a category.";
+    if (!payload.event_date) return "Please choose a date.";
+    if (!payload.start_time) return "Please choose a start time.";
+    if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";
+
+    if (payload.title_mode === "typed") {
+      if (!payload.title) return "Please type the event title.";
+    } else if (payload.title_mode === "graphic") {
+      if (!payload.title_graphic_url) return "Please provide the graphic title image link.";
+    } else {
+      return "Please choose whether the title is typed or graphic.";
+    }
+
+    if (!payload.body && !payload.summary) {
+      return "Please add at least a short summary or some notice text.";
+    }
+
+    return "";
+  }
+
+  function fillFormFromEvent(ev) {
+    const titleMode = ev.title_mode === "graphic" ? "graphic" : "typed";
+    const radio = document.querySelector(`input[name="titleMode"][value="${titleMode}"]`);
+    if (radio) radio.checked = true;
+
+    els.category.value = ev.category || "";
+    els.location.value = ev.location || "";
+    els.eventDate.value = ev.event_date || ev.date || "";
+    els.startTime.value = ev.start_time || "";
+    els.endTime.value = ev.end_time || "";
+    els.placesTotal.value = Number(ev.places_total || ev.capacity || 1);
+    els.bookingMode.value = ev.booking_mode || "booking";
+
+    els.typedTitle.value = ev.title || "";
+    els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
+    els.bodyImageUrl.value = ev.notice_image_url || ev.image_url || "";
+    els.summary.value = ev.summary || ev.description || "";
+    els.bodyText.value = ev.body || ev.notice_text || ev.details || "";
+
+    if (typeof ev.publish_live_immediately === "boolean") {
+      els.publishLive.value = String(ev.publish_live_immediately);
+    }
+    if (typeof ev.show_in_calendar_and_list === "boolean") {
+      els.showInLists.value = String(ev.show_in_calendar_and_list);
+    }
+
     syncTitleModeUI();
     renderPreview();
-    lockForm();
-  </script>
-</body>
-</html>
+  }
+
+  function eventBelongsToVerifiedHost(ev) {
+    const candidateIds = [
+      ev.host_member_id,
+      ev.hostMemberId,
+      ev.member_id,
+      ev.memberId,
+      ev.created_by_member_id
+    ].filter(Boolean);
+
+    return candidateIds.some(id => memberIdsMatch(id, state.verifiedMemberId));
+  }
+
+  async function loadExistingEventForEdit() {
+    clearMsg(els.submitMsg);
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+
+      if (!res.ok) {
+        showMsg(els.submitMsg, "err", "The existing event could not be loaded for editing.");
+        return;
+      }
+
+      const data = await res.json();
+      const ev = data && typeof data === "object" && data.event ? data.event : data;
+      state.loadedEvent = ev;
+
+      const allowed = eventBelongsToVerifiedHost(ev) || !!getAdminToken();
+      if (!allowed) {
+        els.eventForm.classList.add("hidden");
+        els.lockedCover.classList.remove("hidden");
+        els.lockedCover.innerHTML =
+          "<strong>Edit access blocked.</strong><br />The verified host does not appear to match the host saved on this event. Only the original verified host or an admin may edit it.";
+        showMsg(els.submitMsg, "err", "This event is not editable under the host identity just verified.");
+        return;
+      }
+
+      fillFormFromEvent(ev);
+
+      if (getAdminToken() && !eventBelongsToVerifiedHost(ev)) {
+        showMsg(els.submitMsg, "warn", "Admin token detected. Edit access has been allowed even though the verified host does not appear to match the saved event.");
+      }
+    } catch (err) {
+      console.error(err);
+      showMsg(els.submitMsg, "err", "There was a problem loading the existing event.");
+    }
+  }
+
+  async function saveEvent(e) {
+    e.preventDefault();
+    clearMsg(els.submitMsg);
+
+    const payload = buildPayload();
+    const validation = validatePayload(payload);
+    if (validation) {
+      showMsg(els.submitMsg, "err", validation);
+      return;
+    }
+
+    const memberToken = readGenericMemberToken();
+    const adminToken = getAdminToken();
+
+    if (!memberToken && !adminToken) {
+      showMsg(els.submitMsg, "err", "Host verification succeeded locally, but no backend login token is available for saving.");
+      return;
+    }
+
+    els.saveBtn.disabled = true;
+    els.saveBtn.textContent = "Saving...";
+
+    try {
+      const url = isEditMode
+        ? `${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`
+        : `${BACKEND_URL}/api/events`;
+
+      const method = isEditMode ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      let data = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok) {
+        const message =
+          (data && (data.message || data.error)) ||
+          (res.status === 401
+            ? "The backend did not accept the login token for saving."
+            : `The event could not be saved (${res.status}).`);
+        showMsg(els.submitMsg, "err", message);
+        return;
+      }
+
+      const savedEvent =
+        (data && data.event) ||
+        data ||
+        {};
+
+      const savedEventId = savedEvent.event_id || savedEvent.id || eventId || "";
+
+      showMsg(
+        els.submitMsg,
+        "ok",
+        isEditMode ? "Event notice updated successfully." : "Event notice created successfully."
+      );
+
+      if (!isEditMode && savedEventId) {
+        setTimeout(() => {
+          window.location.href = `events-details.html?event_id=${encodeURIComponent(savedEventId)}`;
+        }, 700);
+      }
+    } catch (err) {
+      console.error(err);
+      showMsg(els.submitMsg, "err", "There was a network or server problem while saving the event.");
+    } finally {
+      els.saveBtn.disabled = false;
+      els.saveBtn.textContent = isEditMode ? "Save Changes" : "Save Event Notice";
+    }
+  }
+
+  function resetFormKeepHost() {
+    clearMsg(els.submitMsg);
+
+    els.category.value = "";
+    els.location.value = "";
+    els.eventDate.value = "";
+    els.startTime.value = "";
+    els.endTime.value = "";
+    els.placesTotal.value = 1;
+    els.bookingMode.value = "booking";
+
+    const typedRadio = document.querySelector('input[name="titleMode"][value="typed"]');
+    if (typedRadio) typedRadio.checked = true;
+
+    els.typedTitle.value = "";
+    els.graphicTitleUrl.value = "";
+    els.bodyImageUrl.value = "";
+    els.summary.value = "";
+    els.bodyText.value = "";
+    els.publishLive.value = "true";
+    els.showInLists.value = "true";
+
+    syncTitleModeUI();
+    renderPreview();
+  }
+
+  function bindPreviewInputs() {
+    [
+      els.category,
+      els.location,
+      els.eventDate,
+      els.startTime,
+      els.endTime,
+      els.bookingMode,
+      els.typedTitle,
+      els.graphicTitleUrl,
+      els.bodyImageUrl,
+      els.bodyText
+    ].forEach(node => {
+      node.addEventListener("input", renderPreview);
+      node.addEventListener("change", renderPreview);
+    });
+
+    document.querySelectorAll('input[name="titleMode"]').forEach(radio => {
+      radio.addEventListener("change", syncTitleModeUI);
+    });
+  }
+
+  els.verifyBtn.addEventListener("click", verifyHost);
+  els.clearVerifyBtn.addEventListener("click", clearVerificationInputs);
+  els.previewBtn.addEventListener("click", renderPreview);
+  els.resetBtn.addEventListener("click", resetFormKeepHost);
+  els.eventForm.addEventListener("submit", saveEvent);
+
+  bindPreviewInputs();
+  syncTitleModeUI();
+  renderPreview();
+  lockForm();
+</script>

@@ -1450,7 +1450,7 @@ function normaliseCategory(value) {
 }
   function validatePayload(payload) {
     if (!state.verified) return "Please verify the host first.";
-    if (!normaliseCategory(payload.category)) return "Please choose a valid category.";
+    if (!payload.category) return "Please choose a category.";
     if (!payload.event_date) return "Please choose a date.";
     if (!payload.start_time) return "Please choose a start time.";
     if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";

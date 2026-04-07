@@ -1116,7 +1116,7 @@
           continue;
         }
 
-        const token =
+                const token =
           (data && (data.token || data.access_token || data.auth_token)) ||
           "";
 
@@ -1166,6 +1166,69 @@
     lockForm();
   }
 
+  function findBestHostName(memberId) {
+    const target = canonicalMemberId(memberId);
+    const store = readMembersStore();
+
+    const pullName = (record) => {
+      if (!record || typeof record !== "object") return "";
+      return (
+        record.displayName ||
+        record.member_name ||
+        record.memberName ||
+        record.name ||
+        record.full_name ||
+        record.fullName ||
+        record.primary_name ||
+        record.primaryName ||
+        record.host_name ||
+        record.hostName ||
+        ""
+      );
+    };
+
+    if (Array.isArray(store)) {
+      for (const item of store) {
+        const ids = candidateMemberIdsFromRecord(item, "");
+        if (ids.some(id => memberIdsMatch(id, target))) {
+          const name = pullName(item);
+          if (String(name).trim()) return String(name).trim();
+
+          const residents = Array.isArray(item.residents) ? item.residents : [];
+          for (const r of residents) {
+            if (r && typeof r === "object" && r.name && String(r.name).trim()) {
+              return String(r.name).trim();
+            }
+          }
+        }
+      }
+    }
+
+    if (store && typeof store === "object") {
+      for (const [key, value] of Object.entries(store)) {
+        if (memberIdsMatch(key, target)) {
+          const name = pullName(value);
+          if (String(name).trim()) return String(name).trim();
+        }
+
+        const ids = candidateMemberIdsFromRecord(value, key);
+        if (ids.some(id => memberIdsMatch(id, target))) {
+          const name = pullName(value);
+          if (String(name).trim()) return String(name).trim();
+
+          const residents = Array.isArray(value?.residents) ? value.residents : [];
+          for (const r of residents) {
+            if (r && typeof r === "object" && r.name && String(r.name).trim()) {
+              return String(r.name).trim();
+            }
+          }
+        }
+      }
+    }
+
+    return String(memberId || "").trim().toUpperCase();
+  }
+
   async function verifyHost() {
     clearMsg(els.verifyMsg);
     clearMsg(els.submitMsg);
@@ -1183,52 +1246,24 @@
       return;
     }
 
-    const memberHit = findMemberRecord(inputMemberId);
-    if (!memberHit || !memberHit.record) {
-      showMsg(els.verifyMsg, "err", "That membership number was not found in this browser’s saved member records.");
-      lockForm();
-      return;
-    }
+    const backendLogin = await attemptBackendLogin(inputMemberId, pin);
 
-    const storedHash = findStoredPinHash(inputMemberId);
-    if (!storedHash) {
-      showMsg(els.verifyMsg, "err", "No saved PIN record was found for that membership number in this browser.");
-      lockForm();
-      return;
-    }
-
-    const canonicalId = canonicalMemberId(inputMemberId);
-    const candidateA = await sha256Hex(`${canonicalId}::${pin}::sanctuary`);
-    const candidateB = await sha256Hex(`${inputMemberId.trim().toUpperCase()}::${pin}::sanctuary`);
-    const candidateC = await sha256Hex(`${inputMemberId.trim()}::${pin}::sanctuary`);
-
-    const ok = [candidateA, candidateB, candidateC].includes(String(storedHash));
-
-    if (!ok) {
-      showMsg(els.verifyMsg, "err", "Membership number and PIN do not match the saved host record.");
-      lockForm();
-      return;
-    }
-
-    const displayMemberId =
-      candidateMemberIdsFromRecord(memberHit.record, memberHit.key).find(Boolean) ||
-      inputMemberId.trim().toUpperCase();
-
-    const backendLogin = await attemptBackendLogin(displayMemberId, pin);
     if (!backendLogin.ok && !getAdminToken()) {
       lockForm();
       showMsg(
         els.verifyMsg,
         "err",
-        backendLogin.message || "Host was recognised locally, but backend login failed so event saving is not authorised."
+        backendLogin.message || "Membership number and PIN were not accepted by the backend."
       );
       return;
     }
 
+    const displayMemberId = inputMemberId.trim().toUpperCase();
+
     state.verified = true;
     state.verifiedMemberId = displayMemberId;
-    state.verifiedMemberRecord = memberHit.record;
-    state.verifiedHostName = pickHostName(displayMemberId, memberHit.record);
+    state.verifiedMemberRecord = null;
+    state.verifiedHostName = findBestHostName(displayMemberId);
     state.adminOverride = !!getAdminToken();
 
     els.verifiedHostName.textContent = state.verifiedHostName;
@@ -1241,9 +1276,17 @@
     unlockForm();
 
     if (backendLogin.ok) {
-      showMsg(els.verifyMsg, "ok", "Host verification successful. Backend login also succeeded, and the form is now unlocked.");
+      showMsg(
+        els.verifyMsg,
+        "ok",
+        "Host verification successful. Backend login also succeeded, and the form is now unlocked."
+      );
     } else {
-      showMsg(els.verifyMsg, "warn", "Local verification succeeded and admin token detected. The form is unlocked under admin authority.");
+      showMsg(
+        els.verifyMsg,
+        "warn",
+        "Backend login bypassed under admin authority. The form is unlocked."
+      );
     }
 
     if (isEditMode) {

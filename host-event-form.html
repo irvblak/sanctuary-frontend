@@ -1420,8 +1420,22 @@ function normaliseCategory(value) {
  function buildPayload() {
   const mode = getSelectedTitleMode();
 
+  const categoryMap = {
+    "Social": "social",
+    "Sport": "sport",
+    "Games": "games",
+    "Fitness": "fitness",
+    "Food": "food",
+    "Entertainment": "entertainment",
+    "Meeting": "meeting",
+    "External Service": "external-service"
+  };
+
+  const categoryLabel = String(els.category.value || "").trim();
+  const category = categoryMap[categoryLabel] || "";
+
   return {
-    category: String(els.category.value || "").trim(),
+    category,
 
     location: (els.location.value || "").trim(),
     event_date: els.eventDate.value || "",

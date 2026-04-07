@@ -1419,12 +1419,9 @@ function normaliseCategory(value) {
 
  function buildPayload() {
   const mode = getSelectedTitleMode();
-  const categoryLabel = String(els.category.value || "").trim();
-  const categoryKey = categoryLabel.toLowerCase().replace(/\s+/g, "_");
 
   return {
-    category_key: categoryKey,
-    category_label: categoryLabel,
+    category: String(els.category.value || "").trim(),
 
     location: (els.location.value || "").trim(),
     event_date: els.eventDate.value || "",

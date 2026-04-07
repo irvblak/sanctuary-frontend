@@ -1400,12 +1400,32 @@ function normaliseCategory(value) {
 
   return allowed.includes(raw) ? raw : "";
 }
+function normaliseCategory(value) {
+  const raw = String(value || "").trim();
+
+  const map = {
+    "Social": "social",
+    "Sport": "sport",
+    "Games": "games",
+    "Fitness": "fitness",
+    "Food": "food",
+    "Entertainment": "entertainment",
+    "Meeting": "meeting",
+    "External Service": "external service"
+  };
+
+  return map[raw] || "";
+}
+
  function buildPayload() {
   const mode = getSelectedTitleMode();
-  const category = normaliseCategory(els.category.value);
+  const categoryLabel = String(els.category.value || "").trim();
+  const category = normaliseCategory(categoryLabel);
 
   return {
     category,
+    category_label: categoryLabel,
+
     location: (els.location.value || "").trim(),
     event_date: els.eventDate.value || "",
     start_time: els.startTime.value || "",
@@ -1427,7 +1447,8 @@ function normaliseCategory(value) {
     publish_live_immediately: els.publishLive.value === "true",
     show_in_calendar_and_list: els.showInLists.value === "true"
   };
-} 
+}   
+ 
   function validatePayload(payload) {
     if (!state.verified) return "Please verify the host first.";
     if (!normaliseCategory(payload.category)) return "Please choose a valid category.";

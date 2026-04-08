@@ -287,13 +287,12 @@
       font-weight:800;
     }
 
-    .events{
-  display:flex;
-  flex-direction:column;
+ .events{
+  display:grid;
+  justify-items:start;
+  align-content:start;
   gap:0.35rem;
-  align-items:flex-start;   /* ⭐ THIS is the key fix */
-}
-
+}   
 .pill{
   display:inline-grid;
   grid-auto-flow:column;

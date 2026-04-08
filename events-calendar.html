@@ -294,11 +294,10 @@
   align-items:flex-start;   /* ⭐ THIS is the key fix */
 }
 
-   .pill{
-  display:flex;
+.pill{
+  display:inline-flex;
   align-items:center;
   gap:6px;
-  width:100%;
   max-width:100%;
   min-width:0;
   padding:4px 7px;
@@ -312,7 +311,8 @@
   text-overflow:ellipsis;
   cursor:pointer;
   user-select:none;
-}
+  align-self:flex-start;
+}  
 
 .pill:hover{
   filter:brightness(1.03);

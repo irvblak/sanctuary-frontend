@@ -1420,6 +1420,7 @@ function normaliseCategory(value) {
  function buildPayload() {
   const mode = getSelectedTitleMode();
 
+  const categoryLabel = String(els.category.value || "").trim();
   const categoryMap = {
     "Social": "social",
     "Sport": "sport",
@@ -1430,56 +1431,67 @@ function normaliseCategory(value) {
     "Meeting": "meeting",
     "External Service": "external-service"
   };
+  const categoryKey = categoryMap[categoryLabel] || "";
 
-  const categoryLabel = String(els.category.value || "").trim();
-  const category = categoryMap[categoryLabel] || "";
+  const typedTitle = (els.typedTitle.value || "").trim();
+  const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
+  const summary = (els.summary.value || "").trim();
+  const body = (els.bodyText.value || "").trim();
+  const noticeImageUrl = (els.bodyImageUrl.value || "").trim();
 
   return {
-    category,
+    title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
 
-    location: (els.location.value || "").trim(),
-    event_date: els.eventDate.value || "",
-    start_time: els.startTime.value || "",
-    end_time: els.endTime.value || "",
-    places_total: Number(els.placesTotal.value || 0),
-    booking_mode: els.bookingMode.value || "booking",
+    category_key: categoryKey,
+    category_label: categoryLabel,
 
     host_member_id: state.verifiedMemberId,
     host_name: state.verifiedHostName,
 
+    event_date: els.eventDate.value || "",
+    start_time: els.startTime.value || "",
+    end_time: els.endTime.value || "",
+    location: (els.location.value || "").trim(),
+
+    capacity_total: Number(els.placesTotal.value || 0),
+    booking_mode: els.bookingMode.value || "booking",
+
+    description: summary || body,
+    notice_title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
+    notice_summary: summary,
+    notice_body: body,
+
     title_mode: mode,
-    title: mode === "typed" ? (els.typedTitle.value || "").trim() : "",
-    title_graphic_url: mode === "graphic" ? (els.graphicTitleUrl.value || "").trim() : "",
+    title_graphic_url: mode === "graphic" ? graphicTitleUrl : "",
+    notice_image_url: noticeImageUrl,
 
-    notice_image_url: (els.bodyImageUrl.value || "").trim(),
-    summary: (els.summary.value || "").trim(),
-    body: (els.bodyText.value || "").trim(),
-
-    publish_live_immediately: els.publishLive.value === "true",
-    show_in_calendar_and_list: els.showInLists.value === "true"
+    status: els.publishLive.value === "true" ? "published" : "draft",
+    notice_published: els.showInLists.value === "true"
   };
 }
   function validatePayload(payload) {
-    if (!state.verified) return "Please verify the host first.";
-    if (!payload.category) return "Please choose a category.";
-    if (!payload.event_date) return "Please choose a date.";
-    if (!payload.start_time) return "Please choose a start time.";
-    if (!payload.places_total || payload.places_total < 1) return "Please enter at least one place.";
+  const mode = getSelectedTitleMode();
 
-    if (payload.title_mode === "typed") {
-      if (!payload.title) return "Please type the event title.";
-    } else if (payload.title_mode === "graphic") {
-      if (!payload.title_graphic_url) return "Please provide the graphic title image link.";
-    } else {
-      return "Please choose whether the title is typed or graphic.";
-    }
+  if (!state.verified) return "Please verify the host first.";
+  if (!payload.category_key) return "Please choose a category.";
+  if (!payload.event_date) return "Please choose a date.";
+  if (!payload.start_time) return "Please choose a start time.";
+  if (!payload.capacity_total || payload.capacity_total < 1) return "Please enter at least one place.";
 
-    if (!payload.body && !payload.summary) {
-      return "Please add at least a short summary or some notice text.";
-    }
-
-    return "";
+  if (mode === "typed" && !payload.title) {
+    return "Please type the event title.";
   }
+
+  if (mode === "graphic" && !payload.title_graphic_url) {
+    return "Please provide the graphic title image link.";
+  }
+
+  if (!payload.notice_body && !payload.notice_summary) {
+    return "Please add at least a short summary or some notice text.";
+  }
+
+  return "";
+}
 
   function fillFormFromEvent(ev) {
     const titleMode = ev.title_mode === "graphic" ? "graphic" : "typed";

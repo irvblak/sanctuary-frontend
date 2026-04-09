@@ -125,6 +125,7 @@
       color:var(--muted);
       font-size:.96rem;
       line-height:1.45;
+      max-width:760px;
     }
 
     .controls{
@@ -215,7 +216,7 @@
     table{
       width:100%;
       border-collapse:collapse;
-      min-width:900px;
+      min-width:860px;
     }
 
     thead th{
@@ -245,10 +246,15 @@
       border-bottom:none;
     }
 
-    .ref{
+    .eventTitle{
       font-weight:900;
       color:var(--brand-dark);
       margin-bottom:.18rem;
+    }
+
+    .summary{
+      color:var(--ink);
+      line-height:1.45;
     }
 
     .muted{
@@ -266,30 +272,7 @@
       font-weight:900;
       font-size:.82rem;
       white-space:nowrap;
-    }
-
-    .inlineList{
-      display:flex;
-      gap:.4rem;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .miniBadge{
-      display:inline-flex;
-      align-items:center;
-      padding:.18rem .5rem;
-      border-radius:999px;
-      background:#eef6ff;
-      color:#0b4d87;
-      border:1px solid rgba(0,94,168,.15);
-      font-weight:800;
-      font-size:.82rem;
-      white-space:nowrap;
-    }
-
-    .actionCell{
-      white-space:nowrap;
+      margin-top:.35rem;
     }
 
     .empty{
@@ -338,7 +321,7 @@
         <div>
           <h1>Events Diary – List View</h1>
           <div class="subtitle">
-            All upcoming Sanctuary Club events in date order.
+            Upcoming and current Sanctuary Club events in date order. Past events are removed from this main list once they have finished.
           </div>
         </div>
 
@@ -363,9 +346,8 @@
             <tr>
               <th>Date</th>
               <th>Event</th>
-              <th>Location</th>
-              <th>Category</th>
-              <th>Booking / Cost</th>
+              <th>Host</th>
+              <th>Summary</th>
               <th>More Info</th>
             </tr>
           </thead>
@@ -375,7 +357,7 @@
       </div>
 
       <div class="footNote">
-        More Info opens the Host Notice page for that event.
+        More Info opens the full Event Notice page for that event.
       </div>
     </div>
   </main>
@@ -425,24 +407,20 @@
       return d;
     }
 
-    function parseDateAndTime(eventDate, startTime){
+    function parseDateTimeOnDate(eventDate, timeText, fallbackHours, fallbackMinutes){
       const baseDate = parseYMD(eventDate);
       if(!baseDate) return null;
 
-      const timeText = String(startTime || "").trim();
-      const timeMatch = timeText.match(/^(\d{1,2}):(\d{2})$/);
+      const text = String(timeText || "").trim();
+      const match = text.match(/^(\d{1,2}):(\d{2})$/);
 
-      if(!timeMatch){
-        return new Date(
-          baseDate.getFullYear(),
-          baseDate.getMonth(),
-          baseDate.getDate(),
-          12, 0, 0, 0
-        );
+      let hours = fallbackHours;
+      let minutes = fallbackMinutes;
+
+      if(match){
+        hours = Number(match[1]);
+        minutes = Number(match[2]);
       }
-
-      const hours = Number(timeMatch[1]);
-      const minutes = Number(timeMatch[2]);
 
       return new Date(
         baseDate.getFullYear(),
@@ -464,15 +442,6 @@
         weekday:"short",
         day:"2-digit",
         month:"short",
-        year:"numeric"
-      });
-    }
-
-    function longDateDisplay(d){
-      return d.toLocaleDateString("en-GB", {
-        weekday:"long",
-        day:"2-digit",
-        month:"long",
         year:"numeric"
       });
     }
@@ -513,6 +482,47 @@
       if (map[label]) return map[label];
 
       return key || label || "social";
+    }
+
+    function cleanText(value){
+      return String(value || "").trim();
+    }
+
+    function escapeHtml(value){
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function shortSummary(ev){
+      const summary =
+        cleanText(ev.notice_summary) ||
+        cleanText(ev.notice_title) ||
+        cleanText(ev.description) ||
+        cleanText(ev.notice_body);
+
+      if(!summary) return "See More Info for full details.";
+
+      const singleLine = summary.replace(/\s+/g, " ").trim();
+      if(singleLine.length <= 140) return singleLine;
+      return singleLine.slice(0, 137).trimEnd() + "...";
+    }
+
+    function eventStartDate(ev){
+      return parseDateTimeOnDate(ev.event_date, ev.start_time, 12, 0);
+    }
+
+    function eventFinishDate(ev){
+      return parseDateTimeOnDate(ev.event_date, ev.end_time, 23, 59);
+    }
+
+    function isUpcomingOrCurrent(ev){
+      const finish = eventFinishDate(ev);
+      if(!finish) return false;
+      return finish.getTime() >= Date.now();
     }
 
     function showInfo(msg){
@@ -563,68 +573,30 @@
     function normalisedEvents(){
       return EVENTS
         .map(ev => {
-          const dateObj = parseDateAndTime(ev.event_date, ev.start_time);
-          if (!dateObj) return null;
+          const startDateObj = eventStartDate(ev);
+          const finishDateObj = eventFinishDate(ev);
+          if (!startDateObj || !finishDateObj) return null;
 
           return {
             raw: ev,
-            id: ev.event_ref || ev.event_id || "",
             backendId: ev.event_id || "",
             title: ev.title || "Untitled event",
             category: toCategoryKey(ev.category_key, ev.category_label),
             categoryLabel: ev.category_label || ev.category_key || "",
-            dateObj,
-            where: ev.location || "",
-            hostName: ev.host_name || "",
-            status: ev.status || "",
-            endTime: ev.end_time || "",
-            tracking: ev.tracking || {},
-            priceMember: Number(ev.price_member || 0),
-            priceGuest: Number(ev.price_guest || 0),
-            capacityTotal: Number(ev.capacity_total || 0),
-            bookingOpen: ev.member_booking_open === true,
-            guestOpen: ev.guest_booking_open === true,
-            cancellationOpen: ev.cancellation_open === true,
-            refundWindowOpen: ev.refund_window_open === true,
-            memberBookingOpensAt: parseBackendIso(ev.members_booking_open_at),
-            guestBookingOpensAt: parseBackendIso(ev.guests_booking_open_at),
-            bookingCloseAt: parseBackendIso(ev.booking_close_at)
+            startDateObj,
+            finishDateObj,
+            startTime: cleanText(ev.start_time),
+            endTime: cleanText(ev.end_time),
+            where: cleanText(ev.location),
+            hostName: cleanText(ev.host_name),
+            summary: shortSummary(ev)
           };
         })
         .filter(Boolean)
         .filter(ev => !!ev.backendId)
         .filter(ev => catOn[ev.category] !== false)
-        .sort((a, b) => a.dateObj - b.dateObj);
-    }
-
-    function bookingSummaryText(ev){
-      const tracked = ev.tracking || {};
-      const booked = Number(tracked.total_places_booked || 0);
-      const remaining = Number(tracked.places_remaining || 0);
-
-      if (ev.bookingOpen){
-        return `Open now · ${booked} booked · ${remaining} left`;
-      }
-
-      if (ev.memberBookingOpensAt){
-        return `Opens ${longDateDisplay(ev.memberBookingOpensAt)} ${timeHM(ev.memberBookingOpensAt)}`;
-      }
-
-      return "Booking details on event page";
-    }
-
-    function costText(ev){
-      const pm = Number(ev.priceMember || 0);
-      const pg = Number(ev.priceGuest || 0);
-
-      if (pm <= 0 && pg <= 0) return "Free";
-
-      if (pm > 0 && pg > 0 && pm !== pg){
-        return `£${pm.toFixed(2)} member · £${pg.toFixed(2)} guest`;
-      }
-
-      if (pm > 0) return `£${pm.toFixed(2)}`;
-      return `£${pg.toFixed(2)}`;
+        .filter(ev => ev.finishDateObj.getTime() >= Date.now())
+        .sort((a, b) => a.startDateObj - b.startDateObj);
     }
 
     function renderFilters(){
@@ -652,7 +624,7 @@
       if (!rows.length){
         eventsBody.innerHTML = `
           <tr>
-            <td colspan="6" class="empty">No events match your current filters.</td>
+            <td colspan="5" class="empty">No upcoming events match your current filters.</td>
           </tr>
         `;
         return;
@@ -660,35 +632,26 @@
 
       for (const ev of rows){
         const tr = document.createElement("tr");
-
-        const chip = `<span class="chip" style="background:${categoryColor(ev.category)}">${ev.categoryLabel || ev.category}</span>`;
-        const tracked = ev.tracking || {};
+        const chip = `<span class="chip" style="background:${categoryColor(ev.category)}">${escapeHtml(ev.categoryLabel || ev.category)}</span>`;
 
         tr.innerHTML = `
           <td>
-            <div><strong>${dateDisplay(ev.dateObj)}</strong></div>
-            <div class="muted">${timeHM(ev.dateObj)}${ev.endTime ? ` to ${ev.endTime}` : ""}</div>
+            <div><strong>${escapeHtml(dateDisplay(ev.startDateObj))}</strong></div>
+            <div class="muted">${escapeHtml(timeHM(ev.startDateObj))}${ev.endTime ? ` to ${escapeHtml(ev.endTime)}` : ""}</div>
           </td>
           <td>
-            <div class="ref">${ev.id}</div>
-            <div><strong>${ev.title}</strong></div>
-            <div class="muted">Host: ${ev.hostName || "Host"}</div>
+            <div class="eventTitle">${escapeHtml(ev.title)}</div>
+            ${ev.where ? `<div class="muted">${escapeHtml(ev.where)}</div>` : `<div class="muted">Location to be confirmed</div>`}
+            ${chip}
           </td>
           <td>
-            <div>${ev.where || "TBC"}</div>
+            <div>${escapeHtml(ev.hostName || "Host")}</div>
           </td>
-          <td>${chip}</td>
           <td>
-            <div class="inlineList">
-              <span class="miniBadge">${costText(ev)}</span>
-              <span class="miniBadge">${bookingSummaryText(ev)}</span>
-            </div>
-            <div class="muted" style="margin-top:.35rem;">
-              ${Number(tracked.waitlist_count || 0)} waitlist · ${Number(tracked.interested_count || 0)} interested
-            </div>
+            <div class="summary">${escapeHtml(ev.summary)}</div>
           </td>
-          <td class="actionCell">
-          <a class="btn primary" href="events-details.html?v=HN_2&event_id=${encodeURIComponent(ev.backendId)}">More Info</a>  
+          <td>
+            <a class="btn primary" href="events-details.html?v=HN_2&event_id=${encodeURIComponent(ev.backendId)}">More Info</a>
           </td>
         `;
 
@@ -704,12 +667,19 @@
       try{
         const data = await getJson(`${BACKEND_URL}/api/events`);
         EVENTS = Array.isArray(data.events) ? data.events : [];
-        showInfo(`${EVENTS.length} event${EVENTS.length === 1 ? "" : "s"} loaded.`);
+
+        const totalCount = EVENTS.filter(ev => !!eventStartDate(ev)).length;
+        const visibleCount = normalisedEvents().length;
+        const pastCount = Math.max(0, totalCount - visibleCount);
+
         renderFilters();
         renderTable();
 
-        if (!EVENTS.length){
+        showInfo(`${visibleCount} upcoming/current event${visibleCount === 1 ? "" : "s"} shown.`);
+        if (!totalCount){
           showWarn("There are no events yet.");
+        } else if (pastCount > 0){
+          showWarn(`${pastCount} past event${pastCount === 1 ? "" : "s"} hidden from the main list.`);
         }
       }catch(err){
         EVENTS = [];

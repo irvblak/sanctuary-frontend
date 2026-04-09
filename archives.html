@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Archives | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <script src="access.js?v=AC_1"></script>
+
+  <style>
+    :root{
+      --bg1:#eef6ff;
+      --bg2:#f8fbff;
+      --ink:#18324a;
+      --muted:#617789;
+      --line:#d8e5f0;
+      --panel:#ffffff;
+      --soft:#f4f8fc;
+      --brand:#245d8b;
+      --brand2:#2f79b1;
+      --shadow:0 16px 34px rgba(20,60,90,.11);
+      --radius:22px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 42%,#fff 100%);
+      min-height:100%;
+    }
+
+    a{
+      color:var(--brand);
+      text-decoration:none;
+    }
+
+    a:hover{
+      text-decoration:underline;
+    }
+
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px 16px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+    }
+
+    .crumbs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .crumbs a{
+      font-weight:700;
+    }
+
+    .top-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .pill-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:9px 13px;
+      border-radius:999px;
+      background:#f1f7fc;
+      border:1px solid var(--line);
+      color:var(--brand);
+      font-size:.93rem;
+      font-weight:800;
+      text-decoration:none;
+    }
+
+    .hero{
+      background:rgba(255,255,255,.8);
+      border:1px solid rgba(216,229,240,.95);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:24px 22px 20px;
+      margin-bottom:18px;
+      backdrop-filter:blur(4px);
+    }
+
+    .hero h1{
+      margin:0 0 10px;
+      font-size:1.9rem;
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      max-width:78ch;
+      line-height:1.65;
+      font-size:1rem;
+    }
+
+    .hero-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .hero-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#f3f8fc;
+      border:1px solid var(--line);
+      color:var(--brand);
+      font-weight:800;
+      font-size:.92rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:18px;
+    }
+
+    @media (max-width: 960px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .card{
+      background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:20px 18px 18px;
+      display:grid;
+      gap:14px;
+      min-height:280px;
+    }
+
+    .card-head{
+      display:grid;
+      gap:8px;
+    }
+
+    .icon{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef5fb;
+      border:1px solid var(--line);
+      color:var(--brand);
+      font-size:1.35rem;
+      font-weight:900;
+    }
+
+    .card h2{
+      margin:0;
+      font-size:1.25rem;
+      line-height:1.2;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .list{
+      margin:0;
+      padding-left:1.1rem;
+      color:var(--ink);
+      line-height:1.7;
+    }
+
+    .list li + li{
+      margin-top:4px;
+    }
+
+    .card-actions{
+      margin-top:auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn-primary,
+    .btn-secondary{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:800;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      cursor:pointer;
+    }
+
+    .btn-primary{
+      background:linear-gradient(180deg,var(--brand2),var(--brand));
+      color:#fff;
+      box-shadow:0 10px 20px rgba(36,93,139,.18);
+    }
+
+    .btn-secondary{
+      background:#eef5fb;
+      color:var(--brand);
+      border:1px solid var(--line);
+    }
+
+    .footer-note{
+      margin-top:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:16px 18px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+
+    .footer-note strong{
+      color:var(--ink);
+    }
+
+    .coming{
+      display:inline-block;
+      padding:4px 9px;
+      border-radius:999px;
+      background:#f7fafc;
+      border:1px solid var(--line);
+      color:#4f687d;
+      font-size:.84rem;
+      font-weight:800;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Home</a>
+        <span>•</span>
+        <a href="members-info.html">Members Hub</a>
+        <span>•</span>
+        <span>Archives</span>
+      </div>
+
+      <div class="top-actions">
+        <a class="pill-link" href="members-info.html">Members Hub</a>
+        <a class="pill-link" href="events.html">Events List</a>
+        <a class="pill-link" href="events-calendar.html">Events Calendar</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Sanctuary Club Archives</h1>
+      <p>
+        The Archives provide a simple historical record of past community life and governance.
+        They are separate from live listings, so the current Events List and Calendar can remain
+        focused on what is upcoming, while important past material remains accessible.
+      </p>
+
+      <div class="hero-badges">
+        <span class="hero-badge">Past Events</span>
+        <span class="hero-badge">Committee Meetings</span>
+        <span class="hero-badge">News</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card-head">
+          <div class="icon">📅</div>
+          <h2>Past Events</h2>
+          <p>
+            A record of completed club events, retained for community memory and reference.
+          </p>
+        </div>
+
+        <ul class="list">
+          <li>Date</li>
+          <li>Event title</li>
+          <li>Optional link to the original notice</li>
+        </ul>
+
+        <div class="card-actions">
+          <a class="btn-primary" href="archive-events.html">Open Past Events</a>
+          <span class="coming">Archive feed to follow</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div class="icon">🏛</div>
+          <h2>Committee Meetings</h2>
+          <p>
+            A governance record of committee meetings and, where available, minutes.
+          </p>
+        </div>
+
+        <ul class="list">
+          <li>Date</li>
+          <li>Meeting title</li>
+          <li>Minutes or linked document</li>
+        </ul>
+
+        <div class="card-actions">
+          <a class="btn-primary" href="archive-committee.html">Open Committee Archive</a>
+          <span class="coming">Minutes section to follow</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div class="icon">📰</div>
+          <h2>News</h2>
+          <p>
+            A future archive of community news items with dates and headlines.
+          </p>
+        </div>
+
+        <ul class="list">
+          <li>Date</li>
+          <li>Headline</li>
+          <li>Short summary</li>
+        </ul>
+
+        <div class="card-actions">
+          <a class="btn-secondary" href="archive-news.html">News Archive</a>
+          <span class="coming">To be developed</span>
+        </div>
+      </article>
+    </section>
+
+    <div class="footer-note">
+      <strong>Archive principle:</strong> material with continuing community or governance value belongs here.
+      Temporary activities and services postings do not need a permanent archive record.
+    </div>
+  </div>
+</body>
+</html>

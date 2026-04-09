@@ -2,220 +2,95 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Members Hub | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Members Hub</title>
-
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- 🔒 Session gate -->
-  <script src="access.js?v=MH_3"></script>
-  <script src="logout.js?v=LO_3"></script>
-
-  <link rel="stylesheet" href="styles-main.css?v=HUB_2" />
+  <!-- 🔒 Access gate -->
+  <script src="access.js?v=MH_1"></script>
 
   <style>
-    /* =========================================================
-       MEMBERS HUB (MH) — single hub page for the members area
-       Spec: Home (left), Calendar (centre), Logout (right)
-       Background: blue gradient like H side panels
-       Vertical buttons + narrative + scroll-friendly
-    ========================================================= */
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
-      color: #222;
-      min-height: 100vh;
+      color:#222;
+      min-height:100vh;
     }
 
-    /* ---------- TOP NAV ---------- */
-    nav {
-      padding: 1rem 1.25rem;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
+    nav{
+      padding:1rem;
+      text-align:center;
+      font-size:1.4rem;
+      font-weight:600;
     }
 
-    nav a {
-      text-decoration: none;
-      font-weight: 600;
-      color: #003366;
+    .container{
+      max-width:720px;
+      margin:0 auto;
+      padding:1rem;
     }
 
-    .nav-left { justify-self: start; }
-    .nav-center { justify-self: center; }
-    .nav-right { justify-self: end; }
-
-    /* ---------- MAIN ---------- */
-    main {
-      max-width: 980px;
-      margin: 0 auto 1rem;
-      padding: 0 1rem;
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:0.9rem;
+      margin-top:1rem;
     }
 
-    .hub-card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      padding: 1.1rem;
+    .btn{
+      display:block;
+      padding:0.95rem 1rem;
+      border-radius:10px;
+      text-decoration:none;
+      color:#222;
+      font-weight:600;
+      background:#ffffff;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      transition:all 0.15s ease;
     }
 
-    h1 {
-      margin: 0 0 0.75rem 0;
-      font-size: 1.6rem;
-      color: #003366;
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.12);
     }
 
-    .intro {
-      margin: 0 0 1.25rem 0;
-      color: #444;
-      line-height: 1.4;
+    .section-title{
+      margin-top:1.5rem;
+      font-size:1.05rem;
+      font-weight:600;
+      color:#555;
     }
 
-    /* ---------- HUB BUTTON LIST ---------- */
-    .hub-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-      margin-top: 1rem;
-    }
-
-    .hub-item {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 1rem;
-      align-items: center;
-      padding: 0.9rem 0.9rem;
-      border: 1px solid #dbe6f3;
-      border-radius: 12px;
-      background: #fbfdff;
-    }
-
-    .hub-item a.hub-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      border-radius: 10px;
-      font-weight: 700;
-      text-decoration: none;
-      color: #fff;
-      background: #005ea8;
-      border: 0;
-      cursor: pointer;
-      box-sizing: border-box;
-    }
-
-    .hub-item .desc {
-      color: #333;
-      line-height: 1.35;
-    }
-
-    .muted .hub-btn {
-      background: #7f97ad;
-      cursor: default;
-      pointer-events: none;
-    }
-
-    .coming-soon {
-      display: inline-block;
-      margin-left: 0.5rem;
-      padding: 0.2rem 0.5rem;
-      font-size: 0.8rem;
-      border-radius: 999px;
-      background: #eef4fb;
-      color: #003366;
-      border: 1px solid #d3e2f5;
-      vertical-align: middle;
-    }
-
-    /* ---------- MOBILE ---------- */
-    @media (max-width: 720px) {
-      nav {
-        grid-template-columns: 1fr;
-        row-gap: 0.65rem;
-        text-align: center;
-      }
-      .nav-left, .nav-center, .nav-right {
-        justify-self: center;
-      }
-      .hub-item {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
 
 <body>
 
-<nav>
-  <div class="nav-left">
-    <a href="index.html">Home</a>
-  </div>
+  <nav>Members Hub</nav>
 
-  <div class="nav-center">
-    <a href="events-calendar.html">Calendar</a>
-  </div>
+  <div class="container">
 
-  <div class="nav-right">
-    <a href="#" onclick="logout(); return false;">Logout</a>
-  </div>
-</nav>
+    <div class="grid">
 
-<main>
-  <div class="hub-card">
-    <h1>Members Hub</h1>
+      <a class="btn" href="your-info.html">Your Information</a>
 
-    <p class="intro">
-      Welcome to the members area. Use the buttons below to access club services and information.
-    </p>
+      <a class="btn" href="members-directory.html">Members Directory</a>
 
-    <div class="hub-list">
-      <!-- 1) Your Information -->
-      <div class="hub-item">
-        <a class="hub-btn" href="your-info.html">Your Information</a>
-        <div class="desc">
-          You choose what to share with other members
-        </div>
-      </div>
+      <a class="btn" href="events-calendar.html">Events Calendar</a>
 
-      <!-- 2) Members Directory -->
-      <div class="hub-item">
-        <a class="hub-btn" href="members-directory.html">Members Directory</a>
-        <div class="desc">
-          View contact details shared by members
-        </div>
-      </div>
+      <a class="btn" href="events.html">Events Diary – List View</a>
 
-      <!-- 3) Notices -->
-      <div class="hub-item">
-        <a class="hub-btn" href="notices-preview.html">Notices & News</a>
-        <div class="desc">
-          Announcements and updates
-        </div>
-      </div>
+      <a class="btn" href="notices-preview.html">Club Notices and News</a>
 
-      <!-- 4) Host an Event -->
-      <div class="hub-item">
-        <a class="hub-btn" href="host-event-form.html">Host an Event</a>
-        <div class="desc">
-          Members approved for Host role may create and manage events
-        </div>
-      </div>
+      <a class="btn" href="host-event-form.html">Host an Event</a>
 
-      <!-- 5) Payments (Coming soon) -->
-      <div class="hub-item muted" aria-disabled="true">
-        <a class="hub-btn" href="#" tabindex="-1">Payments</a>
-        <div class="desc">
-          Pay by bank transfer to club account or cash
-          <span class="coming-soon">Coming soon</span>
-        </div>
-      </div>
+      <!-- ✅ NEW ARCHIVES BUTTON -->
+      <a class="btn" href="archives.html">Archives</a>
+
     </div>
+
   </div>
-</main>
 
 </body>
 </html>

@@ -7,90 +7,233 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <!-- 🔒 Access gate -->
-  <script src="access.js?v=MH_1"></script>
+  <script src="access.js?v=MH_2"></script>
 
   <style>
+    :root{
+      --bg1:#d9ecff;
+      --bg2:#f2f7fb;
+      --bg3:#ffffff;
+      --ink:#1f2a37;
+      --muted:#5b6573;
+      --blue:#123a78;
+      --blueHover:#0f3166;
+      --panel:#ffffff;
+      --line:#d8e1ec;
+      --shadow:0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    *{ box-sizing:border-box; }
+
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
-      color:#222;
+      background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 42%, var(--bg3) 100%);
+      color:var(--ink);
       min-height:100vh;
     }
 
-    nav{
-      padding:1rem;
-      text-align:center;
-      font-size:1.4rem;
-      font-weight:600;
-    }
-
-    .container{
-      max-width:720px;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:1rem 1.1rem 0.25rem;
+      max-width:980px;
       margin:0 auto;
-      padding:1rem;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:0.9rem;
-      margin-top:1rem;
+    .brand{
+      font-size:1.55rem;
+      font-weight:700;
+      letter-spacing:0.01em;
     }
 
-    .btn{
-      display:block;
-      padding:0.95rem 1rem;
-      border-radius:10px;
-      text-decoration:none;
-      color:#222;
-      font-weight:600;
-      background:#ffffff;
-      box-shadow:0 2px 6px rgba(0,0,0,0.08);
-      transition:all 0.15s ease;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
+    .logout-tab{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:96px;
+      padding:0.6rem 0.9rem;
+      border:none;
+      border-radius:12px 12px 0 0;
+      background:var(--blue);
+      color:#fff;
+      font-size:0.95rem;
+      font-weight:700;
+      cursor:pointer;
       box-shadow:0 4px 10px rgba(0,0,0,0.12);
     }
 
-    .section-title{
-      margin-top:1.5rem;
-      font-size:1.05rem;
-      font-weight:600;
-      color:#555;
+    .logout-tab:hover{
+      background:var(--blueHover);
     }
 
+    .shell{
+      max-width:980px;
+      margin:0 auto;
+      padding:0 1rem 2rem;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:1.25rem 1rem 1rem;
+    }
+
+    .intro{
+      margin:0 0 1rem;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:0.98rem;
+    }
+
+    .hub-list{
+      display:flex;
+      flex-direction:column;
+      gap:0.8rem;
+      margin-top:0.5rem;
+    }
+
+    .hub-row{
+      display:grid;
+      grid-template-columns:260px minmax(0,1fr);
+      gap:0.9rem;
+      align-items:center;
+      padding:0.15rem 0;
+    }
+
+    .hub-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:260px;
+      min-height:46px;
+      padding:0.72rem 0.9rem;
+      background:var(--blue);
+      color:#fff;
+      text-decoration:none;
+      font-weight:700;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(18,58,120,0.22);
+      transition:background 0.15s ease, transform 0.15s ease;
+      text-align:center;
+      line-height:1.2;
+    }
+
+    .hub-btn:hover{
+      background:var(--blueHover);
+      transform:translateY(-1px);
+    }
+
+    .hub-note{
+      color:var(--muted);
+      font-size:0.97rem;
+      line-height:1.38;
+    }
+
+    @media (max-width: 760px){
+      .topbar{
+        padding:0.85rem 0.85rem 0.2rem;
+      }
+
+      .brand{
+        font-size:1.3rem;
+      }
+
+      .shell{
+        padding:0 0.85rem 1.5rem;
+      }
+
+      .panel{
+        padding:1rem 0.9rem;
+      }
+
+      .hub-row{
+        grid-template-columns:1fr;
+        gap:0.45rem;
+      }
+
+      .hub-btn{
+        width:100%;
+      }
+
+      .hub-note{
+        padding-left:0.1rem;
+      }
+    }
   </style>
 </head>
-
 <body>
-
-  <nav>Members Hub</nav>
-
-  <div class="container">
-
-    <div class="grid">
-
-      <a class="btn" href="your-info.html">Your Information</a>
-
-      <a class="btn" href="members-directory.html">Members Directory</a>
-
-      <a class="btn" href="events-calendar.html">Events Calendar</a>
-
-      <a class="btn" href="events.html">Events Diary – List View</a>
-
-      <a class="btn" href="notices-preview.html">Club Notices and News</a>
-
-      <a class="btn" href="host-event-form.html">Host an Event</a>
-
-      <!-- ✅ NEW ARCHIVES BUTTON -->
-      <a class="btn" href="archives.html">Archives</a>
-
-    </div>
-
+  <div class="topbar">
+    <div class="brand">Members Hub</div>
+    <button class="logout-tab" type="button" onclick="memberLogout()">Logout</button>
   </div>
 
+  <div class="shell">
+    <div class="panel">
+      <p class="intro">
+        Welcome to the Members Hub. From here you can view your details, see what is happening,
+        browse notices and news, host an event, access archives and, in due course, manage payments.
+      </p>
+
+      <div class="hub-list">
+
+        <div class="hub-row">
+          <a class="hub-btn" href="your-info.html">Your Information</a>
+          <div class="hub-note">View or update your household information and membership details.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="members-directory.html">Members Directory</a>
+          <div class="hub-note">Look up fellow members in the private residents directory.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="events-calendar.html">Events Calendar</a>
+          <div class="hub-note">See events in calendar form by date and time.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="events.html">Events Diary - List View</a>
+          <div class="hub-note">Browse upcoming events in a simple date-by-date list.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="notices-preview.html">Club Notices and News</a>
+          <div class="hub-note">Read notices, announcements and community news items.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="host-event-form.html">Host an Event</a>
+          <div class="hub-note">Create or edit an event notice if you are an authorised host.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="archives.html">Archives</a>
+          <div class="hub-note">Open the archive sections for past events, committee material and news.</div>
+        </div>
+
+        <div class="hub-row">
+          <a class="hub-btn" href="payments.html">Payments</a>
+          <div class="hub-note">Reserved for future payment-related functions and records.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function memberLogout(){
+      try{
+        sessionStorage.removeItem("sanctuaryAccess");
+        sessionStorage.removeItem("sanctuaryAccessTime");
+        sessionStorage.removeItem("sanctuaryMDAccess");
+        sessionStorage.removeItem("sanctuaryMDAccessTime");
+      }catch(e){}
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>

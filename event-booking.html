@@ -81,6 +81,7 @@
       cursor:pointer;
       box-shadow:0 6px 16px rgba(0,0,0,.05);
       font-size:.95rem;
+      white-space:nowrap;
     }
 
     a.btn.primary, button.btn.primary{
@@ -244,6 +245,7 @@
       border-radius:14px;
       padding:.85rem .95rem;
       margin-bottom:1rem;
+      line-height:1.45;
     }
 
     .bookingForm{
@@ -402,7 +404,7 @@
         <div>
           <div class="section">
             <h2>Booking form</h2>
-            <div class="bookingPrompt">Book or register your interest for this event.</div>
+            <div class="bookingPrompt" id="bookingPrompt">Book or register your interest for this event.</div>
 
             <form class="bookingForm" id="bookingForm">
               <div class="grid2">
@@ -448,12 +450,14 @@
 
               <div class="grid2">
                 <div>
-                  <label for="placesTotal">Total places</label>
+                  <label for="placesTotal">Household member places</label>
                   <input id="placesTotal" type="number" min="1" step="1" value="1" />
+                  <span class="fieldNote">These are places for members of your own household on this membership.</span>
                 </div>
                 <div>
                   <label for="guestPlaces">Guest places</label>
                   <input id="guestPlaces" type="number" min="0" step="1" value="0" />
+                  <span class="fieldNote">Guests are additional to your household member places, subject to the guest booking window.</span>
                 </div>
               </div>
 
@@ -468,12 +472,12 @@
               </div>
 
               <div class="actions">
-                <button class="btn primary" id="bookBtn" type="submit">Submit</button>
+                <button class="btn primary" id="bookBtn" type="submit">Submit booking</button>
                 <button class="btn" id="cancelBtn" type="button" disabled>Cancel my booking</button>
               </div>
 
-              <div class="noteText">
-                Member lookup uses your membership number and PIN. Where available, your details are auto-filled from Your Information.
+              <div class="noteText" id="noteText">
+                Member lookup uses your membership number and PIN. If you already have a booking or interest record for this event, it will be loaded automatically.
               </div>
 
               <div class="bookingResult bookingOk" id="bookingOk"></div>
@@ -550,6 +554,8 @@
     const topNoticeLink = document.getElementById("topNoticeLink");
 
     const bookingForm = document.getElementById("bookingForm");
+    const bookingPrompt = document.getElementById("bookingPrompt");
+    const noteText = document.getElementById("noteText");
     const memberIdEl = document.getElementById("memberId");
     const memberPinEl = document.getElementById("memberPin");
     const memberNameEl = document.getElementById("memberName");
@@ -780,7 +786,7 @@
         makeDetailBox("Max places per member", Number(eventData.max_places_per_member || 0))
       ].join("");
 
-            const noticeHref = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
+      const noticeHref = `events-details.html?v=HN_2&event_id=${encodeURIComponent(eventData.event_id || EVENT_ID)}`;
       backToNoticeLink.href = noticeHref;
       topNoticeLink.href = noticeHref;
     }
@@ -789,7 +795,9 @@
       if (!currentBooking){
         currentBookingWrap.className = "empty";
         currentBookingWrap.innerHTML = "No current booking or interest record loaded.";
+        bookBtn.textContent = "Submit booking";
         cancelBtn.disabled = true;
+        bookingPrompt.textContent = "Book or register your interest for this event.";
         return;
       }
 
@@ -797,16 +805,28 @@
       currentBookingWrap.innerHTML = `
         <div class="detailGrid">
           ${makeDetailBox("Status", currentBooking.status || "—")}
-          ${makeDetailBox("Total places", Number(currentBooking.places_total || 0))}
+          ${makeDetailBox("Household member places", Number(currentBooking.member_places || currentBooking.places_total || 0))}
           ${makeDetailBox("Guest places", Number(currentBooking.guest_places || 0))}
-          ${makeDetailBox("Member places", Number(currentBooking.member_places || 0))}
+          ${makeDetailBox("Total occupied places", Number(currentBooking.member_places || 0) + Number(currentBooking.guest_places || 0))}
           ${makeDetailBox("Amount due", money(currentBooking.amount_due))}
           ${makeDetailBox("Payment status", currentBooking.payment_status || "—")}
         </div>
         <p class="small" style="margin-top:.8rem;"><strong>Booking ID:</strong> ${currentBooking.booking_id || "—"}</p>
       `;
 
+      bookBtn.textContent = "Update my booking";
       cancelBtn.disabled = !(currentBooking.booking_id && ["booked", "waitlist", "interested"].includes(String(currentBooking.status || "").toLowerCase()));
+      bookingPrompt.textContent = "Your existing booking or interest record for this event has been loaded. You may update it or cancel it.";
+    }
+
+    function populateBookingFormFromCurrent(){
+      if (!currentBooking) return;
+
+      modeEl.value = String(currentBooking.status || "").toLowerCase() === "interested" ? "interest" : "book";
+      placesTotalEl.value = String(Number(currentBooking.member_places || currentBooking.places_total || 1));
+      guestPlacesEl.value = String(Number(currentBooking.guest_places || 0));
+      guestNamesEl.value = Array.isArray(currentBooking.guest_names) ? currentBooking.guest_names.join("\n") : "";
+      bookingNotesEl.value = String(currentBooking.notes || "");
     }
 
     async function loadEvent(){
@@ -831,6 +851,24 @@
       }catch(err){
         clearInfo();
         showErr(err.message || "Could not load event.");
+      }
+    }
+
+    async function loadMyBooking(){
+      if (!authToken || !currentMemberId || !EVENT_ID) return;
+
+      const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
+      });
+
+      currentBooking = result.booking || null;
+      renderCurrentBooking();
+
+      if (currentBooking){
+        populateBookingFormFromCurrent();
       }
     }
 
@@ -934,9 +972,15 @@
         currentBooking = null;
         renderCurrentBooking();
 
-        showBookingOk(
-          `Member lookup successful for ${currentMemberId}. You can book up to ${householdMaxPlaces} place${householdMaxPlaces === 1 ? "" : "s"} based on your household.`
-        );
+        await loadMyBooking();
+
+        if (currentBooking){
+          showBookingOk(`Member lookup successful for ${currentMemberId}. Your existing booking or interest record has been loaded.`);
+        } else {
+          showBookingOk(
+            `Member lookup successful for ${currentMemberId}. You can book up to ${householdMaxPlaces} household member place${householdMaxPlaces === 1 ? "" : "s"} plus guests if guest booking is open.`
+          );
+        }
       }catch(err){
         authToken = "";
         currentMemberId = "";
@@ -952,14 +996,13 @@
       if (!eventData) return "Event not loaded.";
       if (!authToken || !currentMemberId) return "Please do member lookup first.";
 
-      const total = Number(placesTotalEl.value || 0);
-      const guests = Number(guestPlacesEl.value || 0);
+      const memberPlaces = Number(placesTotalEl.value || 0);
+      const guestPlaces = Number(guestPlacesEl.value || 0);
       const maxPlaces = Number(placesTotalEl.max || 1);
 
-      if (Number.isNaN(total) || total < 1) return "Total places must be at least 1.";
-      if (Number.isNaN(guests) || guests < 0) return "Guest places cannot be negative.";
-      if (guests > total) return "Guest places cannot exceed total places.";
-      if (total > maxPlaces) return `Total places cannot exceed ${maxPlaces}.`;
+      if (Number.isNaN(memberPlaces) || memberPlaces < 1) return "Household member places must be at least 1.";
+      if (Number.isNaN(guestPlaces) || guestPlaces < 0) return "Guest places cannot be negative.";
+      if (memberPlaces > maxPlaces) return `Household member places cannot exceed ${maxPlaces}.`;
 
       return "";
     }
@@ -989,7 +1032,12 @@
           notes: bookingNotesEl.value.trim()
         };
 
-        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
+        const isUpdate = !!(currentBooking && currentBooking.booking_id);
+        const endpoint = isUpdate
+          ? `${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/update-booking`
+          : `${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`;
+
+        const result = await getJson(endpoint, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1000,8 +1048,11 @@
 
         currentBooking = result.booking || null;
         renderCurrentBooking();
-        showBookingOk(result.message || "Booking submitted.");
+        if (currentBooking){
+          populateBookingFormFromCurrent();
+        }
 
+        showBookingOk(result.message || (isUpdate ? "Booking updated." : "Booking submitted."));
         await loadEvent();
       }catch(err){
         showBookingErr(err.message || "Could not submit booking.");
@@ -1036,10 +1087,14 @@
           })
         });
 
-        currentBooking = result.booking || null;
+        currentBooking = null;
         renderCurrentBooking();
-        showBookingOk(result.message || "Booking cancelled.");
+        guestNamesEl.value = "";
+        bookingNotesEl.value = "";
+        guestPlacesEl.value = "0";
+        placesTotalEl.value = "1";
 
+        showBookingOk(result.message || "Booking cancelled.");
         await loadEvent();
       }catch(err){
         showBookingErr(err.message || "Could not cancel booking.");

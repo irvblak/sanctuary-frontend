@@ -543,7 +543,7 @@
               <div class="host-line"><strong>Status</strong><span>Verified host</span></div>
               <div class="host-line"><strong>Name</strong><span id="verifiedHostName">—</span></div>
               <div class="host-line"><strong>Member no.</strong><span id="verifiedHostMemberId">—</span></div>
-              <div class="host-line"><strong>Source</strong><span class="muted">Existing member information already saved in this browser</span></div>
+              <div class="host-line"><strong>Source</strong><span class="muted">Verified from backend login and existing member information</span></div>
             </div>
           </div>
         </section>
@@ -611,8 +611,9 @@
 
               <div class="row">
                 <div class="field">
-                  <label for="placesTotal">Number of places</label>
+                  <label for="placesTotal">Number of household member places</label>
                   <input id="placesTotal" type="number" min="1" step="1" value="1" />
+                  <div class="help">This is the number of places available for members booking under a household membership. Guests are additional and have their own opening time.</div>
                 </div>
 
                 <div class="field">
@@ -622,6 +623,31 @@
                     <option value="interest">Register interest</option>
                     <option value="booking_or_interest">Booking or register interest</option>
                   </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="membersBookingOpenDate">Member booking opens</label>
+                  <input id="membersBookingOpenDate" type="date" />
+                </div>
+
+                <div class="field">
+                  <label for="membersBookingOpenTime">Member booking open time</label>
+                  <input id="membersBookingOpenTime" type="time" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="guestsBookingOpenDate">Guest booking opens</label>
+                  <input id="guestsBookingOpenDate" type="date" />
+                </div>
+
+                <div class="field">
+                  <label for="guestsBookingOpenTime">Guest booking open time</label>
+                  <input id="guestsBookingOpenTime" type="time" />
+                  <div class="help">Leave blank only if you do not want guest booking to open yet. Guests may only be booked from this date and time onwards.</div>
                 </div>
               </div>
 
@@ -762,8 +788,6 @@
 
   <script>
   const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-  const STORAGE_KEY = "sanctuaryMembers";
-  const PIN_KEY = "sanctuaryPins";
   const HOST_FORM_TOKEN_KEY = "sanctuaryHostEventToken";
 
   const qs = new URLSearchParams(window.location.search);
@@ -777,7 +801,8 @@
     verifiedMemberRecord: null,
     loadedEvent: null,
     adminOverride: false,
-    memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || ""
+    memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || "",
+    backendLoginData: null
   };
 
   const els = {
@@ -808,6 +833,10 @@
     endTime: document.getElementById("endTime"),
     placesTotal: document.getElementById("placesTotal"),
     bookingMode: document.getElementById("bookingMode"),
+    membersBookingOpenDate: document.getElementById("membersBookingOpenDate"),
+    membersBookingOpenTime: document.getElementById("membersBookingOpenTime"),
+    guestsBookingOpenDate: document.getElementById("guestsBookingOpenDate"),
+    guestsBookingOpenTime: document.getElementById("guestsBookingOpenTime"),
 
     typedTitle: document.getElementById("typedTitle"),
     graphicTitleUrl: document.getElementById("graphicTitleUrl"),
@@ -853,14 +882,6 @@
     node.textContent = "";
   }
 
-  function safeJsonParse(raw, fallback) {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return fallback;
-    }
-  }
-
   function canonicalMemberId(value) {
     return String(value || "")
       .trim()
@@ -879,176 +900,6 @@
     const cb = canonicalMemberId(b);
     if (ca && cb && ca === cb) return true;
     return softCanonicalMemberId(a) === softCanonicalMemberId(b);
-  }
-
-  function readMembersStore() {
-    const parsed = safeJsonParse(localStorage.getItem(STORAGE_KEY), {});
-    return parsed;
-  }
-
-  function readPinsStore() {
-    const parsed = safeJsonParse(localStorage.getItem(PIN_KEY), {});
-    return parsed;
-  }
-
-  function candidateMemberIdsFromRecord(record, fallbackKey) {
-    const ids = [];
-
-    if (fallbackKey) ids.push(fallbackKey);
-
-    if (record && typeof record === "object") {
-      [
-        "memberId",
-        "member_id",
-        "membershipNumber",
-        "membership_number",
-        "membershipNo",
-        "membership_no",
-        "id",
-        "member",
-        "memberNumber",
-        "member_number",
-        "property_member_id",
-        "membership"
-      ].forEach(key => {
-        if (record[key]) ids.push(record[key]);
-      });
-
-      if (record.profile && typeof record.profile === "object") {
-        [
-          "memberId",
-          "member_id",
-          "membershipNumber",
-          "membership_number",
-          "membershipNo",
-          "membership_no",
-          "id"
-        ].forEach(key => {
-          if (record.profile[key]) ids.push(record.profile[key]);
-        });
-      }
-    }
-
-    return ids.filter(Boolean);
-  }
-
-  function findMemberRecord(memberIdRaw) {
-    const store = readMembersStore();
-    const target = canonicalMemberId(memberIdRaw);
-
-    if (!target) return null;
-
-    if (Array.isArray(store)) {
-      for (const item of store) {
-        const ids = candidateMemberIdsFromRecord(item, "");
-        if (ids.some(id => memberIdsMatch(id, target))) {
-          return { key: "", record: item };
-        }
-      }
-    }
-
-    if (store && typeof store === "object") {
-      for (const [key, value] of Object.entries(store)) {
-        if (memberIdsMatch(key, target)) {
-          return { key, record: value };
-        }
-
-        const ids = candidateMemberIdsFromRecord(value, key);
-        if (ids.some(id => memberIdsMatch(id, target))) {
-          return { key, record: value };
-        }
-      }
-    }
-
-    return null;
-  }
-
-  function findStoredPinHash(memberIdRaw) {
-    const pinStore = readPinsStore();
-    const target = canonicalMemberId(memberIdRaw);
-
-    if (!target || !pinStore) return "";
-
-    if (Array.isArray(pinStore)) {
-      for (const item of pinStore) {
-        if (!item || typeof item !== "object") continue;
-
-        const ids = candidateMemberIdsFromRecord(item, "");
-        const hash = item.hash || item.pinHash || item.pin_hash || item.value || item.pin;
-
-        if (hash && ids.some(id => memberIdsMatch(id, target))) {
-          return String(hash);
-        }
-      }
-    }
-
-    if (pinStore && typeof pinStore === "object") {
-      for (const [key, value] of Object.entries(pinStore)) {
-        if (typeof value === "string") {
-          if (memberIdsMatch(key, target)) return value;
-          continue;
-        }
-
-        if (value && typeof value === "object") {
-          const ids = candidateMemberIdsFromRecord(value, key);
-          const hash = value.hash || value.pinHash || value.pin_hash || value.value || value.pin;
-
-          if (hash && ids.some(id => memberIdsMatch(id, target))) {
-            return String(hash);
-          }
-        }
-      }
-    }
-
-    return "";
-  }
-
-  function pickHostName(memberId, record) {
-    if (!record || typeof record !== "object") return memberId;
-
-    const direct =
-      record.displayName ||
-      record.member_name ||
-      record.memberName ||
-      record.name ||
-      record.full_name ||
-      record.fullName ||
-      record.primary_name ||
-      record.primaryName ||
-      record.host_name ||
-      record.hostName;
-
-    if (direct && String(direct).trim()) return String(direct).trim();
-
-    if (record.profile && typeof record.profile === "object") {
-      const profileName =
-        record.profile.displayName ||
-        record.profile.member_name ||
-        record.profile.memberName ||
-        record.profile.name ||
-        record.profile.full_name ||
-        record.profile.fullName;
-
-      if (profileName && String(profileName).trim()) {
-        return String(profileName).trim();
-      }
-    }
-
-    const residents = Array.isArray(record.residents) ? record.residents : [];
-    for (const r of residents) {
-      if (r && typeof r === "object" && r.name && String(r.name).trim()) {
-        return String(r.name).trim();
-      }
-    }
-
-    return memberId;
-  }
-
-  async function sha256Hex(text) {
-    const encoded = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
   }
 
   function getAdminToken() {
@@ -1116,12 +967,13 @@
           continue;
         }
 
-                const token =
+        const token =
           (data && (data.token || data.access_token || data.auth_token)) ||
           "";
 
         if (token) {
           state.memberToken = token;
+          state.backendLoginData = data || null;
           sessionStorage.setItem(HOST_FORM_TOKEN_KEY, token);
           return { ok: true, token, data };
         }
@@ -1143,6 +995,7 @@
     state.loadedEvent = null;
     state.adminOverride = false;
     state.memberToken = "";
+    state.backendLoginData = null;
     sessionStorage.removeItem(HOST_FORM_TOKEN_KEY);
 
     els.verifiedHostCard.classList.add("hidden");
@@ -1166,67 +1019,45 @@
     lockForm();
   }
 
-  function findBestHostName(memberId) {
-    const target = canonicalMemberId(memberId);
-    const store = readMembersStore();
-
-    const pullName = (record) => {
-      if (!record || typeof record !== "object") return "";
-      return (
-        record.displayName ||
-        record.member_name ||
-        record.memberName ||
-        record.name ||
-        record.full_name ||
-        record.fullName ||
-        record.primary_name ||
-        record.primaryName ||
-        record.host_name ||
-        record.hostName ||
-        ""
-      );
-    };
-
-    if (Array.isArray(store)) {
-      for (const item of store) {
-        const ids = candidateMemberIdsFromRecord(item, "");
-        if (ids.some(id => memberIdsMatch(id, target))) {
-          const name = pullName(item);
-          if (String(name).trim()) return String(name).trim();
-
-          const residents = Array.isArray(item.residents) ? item.residents : [];
-          for (const r of residents) {
-            if (r && typeof r === "object" && r.name && String(r.name).trim()) {
-              return String(r.name).trim();
-            }
-          }
-        }
-      }
+  function bestString(...values) {
+    for (const v of values) {
+      const s = String(v || "").trim();
+      if (s) return s;
     }
+    return "";
+  }
 
-    if (store && typeof store === "object") {
-      for (const [key, value] of Object.entries(store)) {
-        if (memberIdsMatch(key, target)) {
-          const name = pullName(value);
-          if (String(name).trim()) return String(name).trim();
-        }
+  async function loadMemberProfile(memberId) {
+    try {
+      const p = await fetch(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(memberId)}`, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
 
-        const ids = candidateMemberIdsFromRecord(value, key);
-        if (ids.some(id => memberIdsMatch(id, target))) {
-          const name = pullName(value);
-          if (String(name).trim()) return String(name).trim();
+      if (!p.ok) return null;
 
-          const residents = Array.isArray(value?.residents) ? value.residents : [];
-          for (const r of residents) {
-            if (r && typeof r === "object" && r.name && String(r.name).trim()) {
-              return String(r.name).trim();
-            }
-          }
-        }
-      }
+      const data = await p.json();
+      return data.member || data.profile || data.data || data || null;
+    } catch {
+      return null;
     }
+  }
 
-    return String(memberId || "").trim().toUpperCase();
+  function chooseVerifiedHostName(memberId, backendLoginData, profile) {
+    const loginMember = backendLoginData && backendLoginData.member ? backendLoginData.member : {};
+    const firstResident = Array.isArray(profile?.residents) && profile.residents.length ? profile.residents[0] : {};
+
+    const candidate = bestString(
+      loginMember.name,
+      loginMember.full_name,
+      loginMember.displayName,
+      profile?.primary_name,
+      profile?.name,
+      profile?.displayName,
+      firstResident?.name
+    );
+
+    return candidate || String(memberId || "").trim().toUpperCase();
   }
 
   async function verifyHost() {
@@ -1259,11 +1090,12 @@
     }
 
     const displayMemberId = inputMemberId.trim().toUpperCase();
+    const profile = await loadMemberProfile(displayMemberId);
 
     state.verified = true;
     state.verifiedMemberId = displayMemberId;
-    state.verifiedMemberRecord = null;
-    state.verifiedHostName = findBestHostName(displayMemberId);
+    state.verifiedMemberRecord = profile;
+    state.verifiedHostName = chooseVerifiedHostName(displayMemberId, backendLogin.data, profile);
     state.adminOverride = !!getAdminToken();
 
     els.verifiedHostName.textContent = state.verifiedHostName;
@@ -1384,140 +1216,145 @@
       els.previewBody.innerHTML = '<span class="preview-placeholder">Your notice text will appear here.</span>';
     }
   }
-function normaliseCategory(value) {
-  const raw = String(value || "").trim();
 
-  const allowed = [
-    "Social",
-    "Sport",
-    "Games",
-    "Fitness",
-    "Food",
-    "Entertainment",
-    "Meeting",
-    "External Service"
-  ];
+  function combineDateTime(dateValue, timeValue) {
+    const d = String(dateValue || "").trim();
+    const t = String(timeValue || "").trim();
+    if (!d) return "";
+    return `${d}T${t || "00:00"}:00`;
+  }
 
-  return allowed.includes(raw) ? raw : "";
-}
-function normaliseCategory(value) {
-  const raw = String(value || "").trim();
+  function splitIsoToDateTime(isoValue) {
+    const text = String(isoValue || "").trim();
+    if (!text) return { date: "", time: "" };
 
-  const map = {
-    "Social": "social",
-    "Sport": "sport",
-    "Games": "games",
-    "Fitness": "fitness",
-    "Food": "food",
-    "Entertainment": "entertainment",
-    "Meeting": "meeting",
-    "External Service": "external service"
-  };
+    const m = text.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})/);
+    if (m) {
+      return { date: m[1], time: m[2] };
+    }
 
-  return map[raw] || "";
-}
+    return { date: "", time: "" };
+  }
 
- function buildPayload() {
-  const mode = getSelectedTitleMode();
+  function buildPayload() {
+    const mode = getSelectedTitleMode();
 
-  const categoryLabel = String(els.category.value || "").trim();
-  const categoryMap = {
-    "Social": "social",
-    "Sport": "sport",
-    "Games": "games",
-    "Fitness": "fitness",
-    "Food": "food",
-    "Entertainment": "entertainment",
-    "Meeting": "meeting",
-    "External Service": "external-service"
-  };
-  const categoryKey = categoryMap[categoryLabel] || "";
+    const categoryLabel = String(els.category.value || "").trim();
+    const categoryMap = {
+      "Social": "social",
+      "Sport": "sport",
+      "Games": "games",
+      "Fitness": "fitness",
+      "Food": "food",
+      "Entertainment": "entertainment",
+      "Meeting": "meeting",
+      "External Service": "external-service"
+    };
+    const categoryKey = categoryMap[categoryLabel] || "";
 
-  const typedTitle = (els.typedTitle.value || "").trim();
-  const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
-  const summary = (els.summary.value || "").trim();
-  const body = (els.bodyText.value || "").trim();
-  const noticeImageUrl = (els.bodyImageUrl.value || "").trim();
+    const typedTitle = (els.typedTitle.value || "").trim();
+    const graphicTitleUrl = (els.graphicTitleUrl.value || "").trim();
+    const summary = (els.summary.value || "").trim();
+    const body = (els.bodyText.value || "").trim();
+    const noticeImageUrl = (els.bodyImageUrl.value || "").trim();
 
-  return {
-    title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
+    return {
+      title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
 
-    category_key: categoryKey,
-    category_label: categoryLabel,
+      category_key: categoryKey,
+      category_label: categoryLabel,
 
-    host_member_id: state.verifiedMemberId,
-    host_name: state.verifiedHostName,
+      host_member_id: state.verifiedMemberId,
+      host_name: state.verifiedHostName,
 
-    event_date: els.eventDate.value || "",
-    start_time: els.startTime.value || "",
-    end_time: els.endTime.value || "",
-    location: (els.location.value || "").trim(),
+      event_date: els.eventDate.value || "",
+      start_time: els.startTime.value || "",
+      end_time: els.endTime.value || "",
+      location: (els.location.value || "").trim(),
 
-    capacity_total: Number(els.placesTotal.value || 0),
-    booking_mode: els.bookingMode.value || "booking",
+      capacity_total: Number(els.placesTotal.value || 0),
+      booking_mode: els.bookingMode.value || "booking",
 
-    description: summary || body,
-    notice_title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
-    notice_summary: summary,
-    notice_body: body,
+      members_booking_open_at: combineDateTime(els.membersBookingOpenDate.value, els.membersBookingOpenTime.value),
+      guests_booking_open_at: combineDateTime(els.guestsBookingOpenDate.value, els.guestsBookingOpenTime.value),
 
-    title_mode: mode,
-    title_graphic_url: mode === "graphic" ? graphicTitleUrl : "",
-    notice_image_url: noticeImageUrl,
+      description: summary || body,
+      notice_title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
+      notice_summary: summary,
+      notice_body: body,
 
-    status: els.publishLive.value === "true" ? "published" : "draft",
-    notice_published: els.showInLists.value === "true"
-  };
-}
+      title_mode: mode,
+      title_graphic_url: mode === "graphic" ? graphicTitleUrl : "",
+      notice_image_url: noticeImageUrl,
+
+      status: els.publishLive.value === "true" ? "published" : "draft",
+      notice_published: els.showInLists.value === "true"
+    };
+  }
+
   function validatePayload(payload) {
-  const mode = getSelectedTitleMode();
+    const mode = getSelectedTitleMode();
 
-  if (!state.verified) return "Please verify the host first.";
-  if (!payload.category_key) return "Please choose a category.";
-  if (!payload.event_date) return "Please choose a date.";
-  if (!payload.start_time) return "Please choose a start time.";
-  if (!payload.capacity_total || payload.capacity_total < 1) return "Please enter at least one place.";
+    if (!state.verified) return "Please verify the host first.";
+    if (!payload.category_key) return "Please choose a category.";
+    if (!payload.event_date) return "Please choose a date.";
+    if (!payload.start_time) return "Please choose a start time.";
+    if (!payload.capacity_total || payload.capacity_total < 1) return "Please enter at least one place.";
 
-  if (mode === "typed" && !payload.title) {
-    return "Please type the event title.";
+    if (mode === "typed" && !payload.title) {
+      return "Please type the event title.";
+    }
+
+    if (mode === "graphic" && !payload.title_graphic_url) {
+      return "Please provide the graphic title image link.";
+    }
+
+    if (!payload.notice_body && !payload.notice_summary) {
+      return "Please add at least a short summary or some notice text.";
+    }
+
+    if (!payload.members_booking_open_at) {
+      return "Please provide when member booking opens.";
+    }
+
+    if (payload.guests_booking_open_at && payload.members_booking_open_at) {
+      if (payload.guests_booking_open_at < payload.members_booking_open_at) {
+        return "Guest booking cannot open before member booking.";
+      }
+    }
+
+    return "";
   }
-
-  if (mode === "graphic" && !payload.title_graphic_url) {
-    return "Please provide the graphic title image link.";
-  }
-
-  if (!payload.notice_body && !payload.notice_summary) {
-    return "Please add at least a short summary or some notice text.";
-  }
-
-  return "";
-}
 
   function fillFormFromEvent(ev) {
     const titleMode = ev.title_mode === "graphic" ? "graphic" : "typed";
     const radio = document.querySelector(`input[name="titleMode"][value="${titleMode}"]`);
     if (radio) radio.checked = true;
 
-    els.category.value = ev.category || "";
+    els.category.value = ev.category_label || ev.category || "";
     els.location.value = ev.location || "";
     els.eventDate.value = ev.event_date || ev.date || "";
     els.startTime.value = ev.start_time || "";
     els.endTime.value = ev.end_time || "";
-    els.placesTotal.value = Number(ev.places_total || ev.capacity || 1);
+    els.placesTotal.value = Number(ev.capacity_total || ev.places_total || ev.capacity || 1);
     els.bookingMode.value = ev.booking_mode || "booking";
 
-    els.typedTitle.value = ev.title || "";
-    els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
-    els.bodyImageUrl.value = ev.notice_image_url || ev.image_url || "";
-    els.summary.value = ev.summary || ev.description || "";
-    els.bodyText.value = ev.body || ev.notice_text || ev.details || "";
+    const memberOpen = splitIsoToDateTime(ev.members_booking_open_at);
+    els.membersBookingOpenDate.value = memberOpen.date;
+    els.membersBookingOpenTime.value = memberOpen.time;
 
-    if (typeof ev.publish_live_immediately === "boolean") {
-      els.publishLive.value = String(ev.publish_live_immediately);
-    }
-    if (typeof ev.show_in_calendar_and_list === "boolean") {
-      els.showInLists.value = String(ev.show_in_calendar_and_list);
-    }
+    const guestOpen = splitIsoToDateTime(ev.guests_booking_open_at);
+    els.guestsBookingOpenDate.value = guestOpen.date;
+    els.guestsBookingOpenTime.value = guestOpen.time;
+
+    els.typedTitle.value = ev.notice_title || ev.title || "";
+    els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
+    els.bodyImageUrl.value = ev.notice_image_url || "";
+    els.summary.value = ev.notice_summary || ev.summary || ev.description || "";
+    els.bodyText.value = ev.notice_body || ev.body || ev.notice_text || ev.details || "";
+
+    els.publishLive.value = String((ev.status || "published") === "published");
+    els.showInLists.value = String(ev.notice_published !== false);
 
     syncTitleModeUI();
     renderPreview();
@@ -1663,6 +1500,10 @@ function normaliseCategory(value) {
     els.endTime.value = "";
     els.placesTotal.value = 1;
     els.bookingMode.value = "booking";
+    els.membersBookingOpenDate.value = "";
+    els.membersBookingOpenTime.value = "";
+    els.guestsBookingOpenDate.value = "";
+    els.guestsBookingOpenTime.value = "";
 
     const typedRadio = document.querySelector('input[name="titleMode"][value="typed"]');
     if (typedRadio) typedRadio.checked = true;
@@ -1712,3 +1553,5 @@ function normaliseCategory(value) {
   renderPreview();
   lockForm();
 </script>
+</body>
+</html>

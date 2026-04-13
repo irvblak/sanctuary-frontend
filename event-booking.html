@@ -638,8 +638,46 @@
       if (Number.isNaN(d.getTime())) return null;
       return d;
     }
+function nowMs(){
+  return Date.now();
+}
 
-    function dateDisplay(d){
+function isOpenFromIso(iso){
+  const d = parseIso(iso);
+  if (!d) return false;
+  return d.getTime() <= nowMs();
+}
+
+function isBeforeIso(iso){
+  const d = parseIso(iso);
+  if (!d) return false;
+  return nowMs() < d.getTime();
+}
+
+function memberBookingOpen(ev){
+  if (typeof ev.member_booking_open === "boolean") return ev.member_booking_open;
+  return isOpenFromIso(ev.members_booking_open_at);
+}
+
+function guestBookingOpen(ev){
+  if (typeof ev.guest_booking_open === "boolean") return ev.guest_booking_open;
+  return isOpenFromIso(ev.guests_booking_open_at);
+}
+
+function cancellationOpen(ev){
+  if (typeof ev.cancellation_open === "boolean") return ev.cancellation_open;
+  if (!ev.cancellation_cutoff_at) return true;
+  return isBeforeIso(ev.cancellation_cutoff_at);
+}
+
+function refundWindowOpen(ev){
+  if (typeof ev.refund_window_open === "boolean") return ev.refund_window_open;
+  if (!ev.refund_cutoff_at) return false;
+  return isBeforeIso(ev.refund_cutoff_at);
+}
+
+function dateDisplay(d){
+    
       if (!d) return "—";
       return d.toLocaleDateString("en-GB", {
         weekday:"long",

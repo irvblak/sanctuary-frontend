@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Bookings | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <script src="access.js?v=MB_1"></script>
+
+  <style>
+    :root{
+      --bg1:#eef6ff;
+      --bg2:#f8fbff;
+      --card:#ffffff;
+      --ink:#17324d;
+      --muted:#5f7690;
+      --line:#d7e3f0;
+      --blue:#2b6cb0;
+      --blue-soft:#e8f2ff;
+      --green:#1f7a4d;
+      --green-soft:#eaf7ef;
+      --amber:#9a6700;
+      --amber-soft:#fff6dd;
+      --red:#b42318;
+      --red-soft:#fff0ee;
+      --purple:#6e59cf;
+      --purple-soft:#f2efff;
+      --shadow:0 10px 30px rgba(23,50,77,0.08);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top, #f8fbff 0%, #eef6ff 38%, #f8fbff 100%);
+      min-height:100%;
+    }
+
+    body{
+      min-height:100vh;
+    }
+
+    .wrap{
+      width:min(1100px, calc(100% - 24px));
+      margin:0 auto;
+      padding:18px 0 36px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:0.45rem;
+      text-decoration:none;
+      color:var(--blue);
+      font-weight:700;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:0.75rem 1rem;
+      box-shadow:var(--shadow);
+    }
+
+    .hero{
+      background:linear-gradient(135deg, #ffffff 0%, #f4f9ff 100%);
+      border:1px solid var(--line);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      padding:24px 20px;
+      margin-bottom:18px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(1.7rem, 3.3vw, 2.45rem);
+      line-height:1.1;
+      letter-spacing:-0.02em;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:1rem;
+      max-width:760px;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+      margin:18px 0 20px;
+    }
+
+    .summary-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 16px;
+      box-shadow:var(--shadow);
+    }
+
+    .summary-card .label{
+      font-size:0.86rem;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .summary-card .value{
+      font-size:1.6rem;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:18px;
+    }
+
+    .panel-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
+      flex-wrap:wrap;
+    }
+
+    .panel-head h2{
+      margin:0;
+      font-size:1.2rem;
+    }
+
+    .panel-head .count{
+      color:var(--muted);
+      font-size:0.95rem;
+      font-weight:700;
+    }
+
+    .panel-body{
+      padding:14px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+
+    .booking-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:linear-gradient(180deg, #ffffff 0%, #fcfeff 100%);
+    }
+
+    .booking-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .title-block h3{
+      margin:0 0 6px;
+      font-size:1.15rem;
+      line-height:1.25;
+    }
+
+    .meta-line{
+      color:var(--muted);
+      font-size:0.95rem;
+      line-height:1.45;
+    }
+
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content

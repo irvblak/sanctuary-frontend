@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=MB_3"></script>
+  <script src="access.js?v=MB_4"></script>
 
   <style>
     :root{
@@ -532,12 +532,36 @@
         .replace(/'/g, "&#39;");
     }
 
-    async function getJson(url, options){
-      const res = await fetch(url, options || {});
+    async function postJson(url, payload){
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success){
-        throw new Error(data.message || "Request failed");
+
+      if (!res.ok){
+        throw new Error(data.message || "Sign-in failed");
       }
+
+      return data;
+    }
+
+    async function getJsonAuth(url, token){
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok){
+        throw new Error(data.message || "Could not load your bookings");
+      }
+
       return data;
     }
 
@@ -678,17 +702,16 @@
 
       const noticeBtn = document.createElement("a");
       noticeBtn.className = "link-btn secondary";
-      noticeBtn.href = item.links?.notice || `events-details.html?event_id=${encodeURIComponent(item.event_id || "")}`;
+      noticeBtn.href = (item.links && item.links.notice) ? item.links.notice : `events-details.html?event_id=${encodeURIComponent(item.event_id || "")}`;
       noticeBtn.textContent = "View Notice";
 
       const bookingBtn = document.createElement("a");
       bookingBtn.className = "link-btn primary";
-      bookingBtn.href = item.links?.booking || `event-booking.html?event_id=${encodeURIComponent(item.event_id || "")}`;
+      bookingBtn.href = (item.links && item.links.booking) ? item.links.booking : `event-booking.html?event_id=${encodeURIComponent(item.event_id || "")}`;
       bookingBtn.textContent = "Open Booking";
 
       actions.appendChild(noticeBtn);
       actions.appendChild(bookingBtn);
-
       card.appendChild(actions);
 
       return card;
@@ -726,13 +749,7 @@
     }
 
     async function loadMyBookings(){
-      const data = await getJson(`${BACKEND_URL}/api/my-bookings`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${authToken}`
-        }
-      });
-
+      const data = await getJsonAuth(`${BACKEND_URL}/api/my-bookings`, authToken);
       const bookings = Array.isArray(data.bookings) ? data.bookings : [];
       renderBookings(bookings);
 
@@ -761,16 +778,14 @@
 
       lookupBtn.disabled = true;
       lookupBtn.textContent = "Signing in...";
+      bookingsArea.style.display = "none";
+      summaryRow.style.display = "none";
 
       try{
-        const login = await getJson(`${BACKEND_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ memberId, pin })
-        });
+        const login = await postJson(`${BACKEND_URL}/auth/login`, { memberId, pin });
 
         authToken = login.token || "";
-        currentMemberId = (login.member?.memberId || memberId).trim().toUpperCase();
+        currentMemberId = String((login.member && login.member.memberId) || memberId).trim().toUpperCase();
 
         if (!authToken){
           throw new Error("No login token was returned.");
@@ -779,8 +794,6 @@
         lookupBtn.textContent = "Loading bookings...";
         await loadMyBookings();
       }catch(err){
-        bookingsArea.style.display = "none";
-        summaryRow.style.display = "none";
         setMessage(err && err.message ? err.message : "Could not sign in.", "error");
       }finally{
         lookupBtn.disabled = false;

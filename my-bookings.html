@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
+  <script src="access.js?v=MB_3"></script>
 
   <style>
     :root{
@@ -17,6 +17,7 @@
       --text:#1f2a36;
       --muted:#617285;
       --blue:#2d6cdf;
+      --blue-dark:#234f9c;
       --green:#1f8f55;
       --green-bg:#eaf8f0;
       --amber:#a56a00;
@@ -26,7 +27,6 @@
       --grey:#5c6b7a;
       --grey-bg:#eef2f6;
       --shadow:0 10px 30px rgba(31,42,54,0.08);
-      --radius:18px;
     }
 
     *{ box-sizing:border-box; }
@@ -64,7 +64,7 @@
 
     .hero,
     .panel{
-      background:rgba(255,255,255,0.95);
+      background:rgba(255,255,255,0.96);
       border:1px solid var(--line);
       border-radius:24px;
       box-shadow:var(--shadow);
@@ -100,6 +100,66 @@
       margin:0;
       color:var(--muted);
       line-height:1.55;
+    }
+
+    .login-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+      align-items:end;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .field label{
+      font-size:0.9rem;
+      font-weight:700;
+      color:#23425f;
+    }
+
+    .field input{
+      width:100%;
+      min-height:46px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:0.78rem 0.9rem;
+      font-size:1rem;
+      background:#fff;
+      color:var(--text);
+    }
+
+    .field input:focus{
+      outline:none;
+      border-color:#a9c8f5;
+      box-shadow:0 0 0 3px rgba(45,108,223,0.12);
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:46px;
+      padding:0.78rem 1rem;
+      border:none;
+      border-radius:12px;
+      font-weight:800;
+      font-size:0.96rem;
+      cursor:pointer;
+      text-decoration:none;
+    }
+
+    .btn.primary{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .btn.primary:hover{
+      background:var(--blue-dark);
     }
 
     .summary{
@@ -148,6 +208,12 @@
       background:#f7fbff;
       border-color:#d9e8f8;
       color:#2e537d;
+    }
+
+    .message.success{
+      background:#f3fbf6;
+      border-color:#cfe9d8;
+      color:#236842;
     }
 
     .list{
@@ -309,7 +375,7 @@
       margin-top:14px;
     }
 
-    .btn{
+    .link-btn{
       display:inline-block;
       text-decoration:none;
       min-height:42px;
@@ -320,12 +386,12 @@
       text-align:center;
     }
 
-    .btn.primary{
+    .link-btn.primary{
       background:var(--blue);
       color:#fff;
     }
 
-    .btn.secondary{
+    .link-btn.secondary{
       background:#fff;
       color:#17324d;
       border:1px solid var(--line);
@@ -336,7 +402,12 @@
       font-size:0.88rem;
     }
 
+    #bookingsArea{
+      display:none;
+    }
+
     @media (max-width: 900px){
+      .login-grid,
       .summary{
         grid-template-columns:1fr;
       }
@@ -363,15 +434,30 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <a class="back-link" href="members-info.html">← Back to Members Hub</a>
+      <a class="back-link" href="your-info.html">← Back to Your Information</a>
     </div>
 
     <section class="hero">
       <p class="eyebrow">Sanctuary Club</p>
       <h1>My Bookings</h1>
       <p>
-        View your upcoming and past event bookings, together with your current status and payment position.
+        Sign in with your membership number and PIN to view your bookings, their current status,
+        places reserved, payment position and links back to the event notice or booking page.
       </p>
+
+      <div class="login-grid">
+        <div class="field">
+          <label for="memberIdInput">Membership number</label>
+          <input id="memberIdInput" type="text" placeholder="e.g. SM55" autocomplete="username" />
+        </div>
+
+        <div class="field">
+          <label for="pinInput">PIN</label>
+          <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" autocomplete="current-password" />
+        </div>
+
+        <button id="lookupBtn" class="btn primary" type="button">View My Bookings</button>
+      </div>
 
       <div class="summary" id="summaryRow" style="display:none;">
         <div class="summary-card">
@@ -389,55 +475,52 @@
       </div>
     </section>
 
-    <div id="messageArea" class="message loading">Loading your bookings...</div>
+    <div id="messageArea" class="message">Please sign in to view your bookings.</div>
 
-    <section class="panel">
-      <h2>Upcoming</h2>
-      <p class="panel-intro">Bookings for events that have not yet passed.</p>
-      <div id="upcomingList" class="list"></div>
-    </section>
+    <div id="bookingsArea">
+      <section class="panel">
+        <h2>Upcoming</h2>
+        <p class="panel-intro">Bookings for events that have not yet passed.</p>
+        <div id="upcomingList" class="list"></div>
+      </section>
 
-    <section class="panel">
-      <h2>Past</h2>
-      <p class="panel-intro">Previous event bookings kept for reference.</p>
-      <div id="pastList" class="list"></div>
-    </section>
+      <section class="panel">
+        <h2>Past</h2>
+        <p class="panel-intro">Previous event bookings kept for reference.</p>
+        <div id="pastList" class="list"></div>
+      </section>
 
-    <p class="footnote">
-      Amendments and cancellations depend on each event’s own time windows. Opening the booking page will let you review the current position.
-    </p>
+      <p class="footnote">
+        Amendments and cancellations depend on each event’s own time windows.
+        Opening the booking page will let you review the current position.
+      </p>
+    </div>
   </div>
 
   <script>
-    var API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
-    var messageArea = document.getElementById("messageArea");
-    var upcomingList = document.getElementById("upcomingList");
-    var pastList = document.getElementById("pastList");
+    const memberIdInput = document.getElementById("memberIdInput");
+    const pinInput = document.getElementById("pinInput");
+    const lookupBtn = document.getElementById("lookupBtn");
 
-    var summaryRow = document.getElementById("summaryRow");
-    var summaryUpcoming = document.getElementById("summaryUpcoming");
-    var summaryPast = document.getElementById("summaryPast");
-    var summaryTotal = document.getElementById("summaryTotal");
+    const messageArea = document.getElementById("messageArea");
+    const bookingsArea = document.getElementById("bookingsArea");
+    const upcomingList = document.getElementById("upcomingList");
+    const pastList = document.getElementById("pastList");
 
-    function getAuthToken(){
-      var token = localStorage.getItem("authToken");
-      if (!token) token = sessionStorage.getItem("authToken");
-      if (!token) token = "";
-      return String(token).trim();
-    }
+    const summaryRow = document.getElementById("summaryRow");
+    const summaryUpcoming = document.getElementById("summaryUpcoming");
+    const summaryPast = document.getElementById("summaryPast");
+    const summaryTotal = document.getElementById("summaryTotal");
+
+    let authToken = "";
+    let currentMemberId = "";
 
     function setMessage(text, type){
-      if (!type) type = "";
       messageArea.className = "message" + (type ? " " + type : "");
       messageArea.textContent = text;
       messageArea.style.display = "block";
-    }
-
-    function clearMessage(){
-      messageArea.style.display = "none";
-      messageArea.textContent = "";
-      messageArea.className = "message";
     }
 
     function escapeHtml(value){
@@ -449,12 +532,19 @@
         .replace(/'/g, "&#39;");
     }
 
+    async function getJson(url, options){
+      const res = await fetch(url, options || {});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success){
+        throw new Error(data.message || "Request failed");
+      }
+      return data;
+    }
+
     function formatDateTime(value){
       if (!value) return "Date to be confirmed";
-
-      var d = new Date(value);
-      if (isNaN(d.getTime())) return String(value);
-
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value);
       return d.toLocaleString("en-GB", {
         weekday: "short",
         day: "numeric",
@@ -466,22 +556,22 @@
     }
 
     function formatMoney(value){
-      var n = Number(value);
-      if (!isFinite(n)) return "—";
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "—";
       return "£" + n.toFixed(2);
     }
 
     function normaliseStatus(status){
-      var s = String(status || "").toLowerCase().trim();
-      if (s.indexOf("wait") !== -1) return "waitlist";
-      if (s.indexOf("interest") !== -1) return "interest";
+      const s = String(status || "").toLowerCase().trim();
+      if (s.includes("wait")) return "waitlist";
+      if (s.includes("interest")) return "interest";
       if (s === "cancelled" || s === "canceled") return "cancelled";
       if (s === "refunded") return "refunded";
       return "booked";
     }
 
     function statusLabel(status){
-      var s = normaliseStatus(status);
+      const s = normaliseStatus(status);
       if (s === "waitlist") return "Waitlist";
       if (s === "interest") return "Interest";
       if (s === "cancelled") return "Cancelled";
@@ -490,57 +580,57 @@
     }
 
     function paymentLabel(status){
-      var s = String(status || "").trim();
+      const s = String(status || "").trim();
       if (!s) return "Unpaid";
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     function buildEmpty(title, text){
-      var div = document.createElement("div");
+      const div = document.createElement("div");
       div.className = "empty";
-      div.innerHTML = "<h3>" + escapeHtml(title) + "</h3><div>" + escapeHtml(text) + "</div>";
+      div.innerHTML = `<h3>${escapeHtml(title)}</h3><div>${escapeHtml(text)}</div>`;
       return div;
     }
 
     function buildInfoBox(label, value){
-      var div = document.createElement("div");
+      const div = document.createElement("div");
       div.className = "info-box";
       div.innerHTML =
-        "<p class=\"info-label\">" + escapeHtml(label) + "</p>" +
-        "<p class=\"info-value\">" + escapeHtml(value) + "</p>";
+        `<p class="info-label">${escapeHtml(label)}</p>` +
+        `<p class="info-value">${escapeHtml(value)}</p>`;
       return div;
     }
 
     function buildBadge(status){
-      var span = document.createElement("span");
-      span.className = "badge " + normaliseStatus(status);
+      const span = document.createElement("span");
+      span.className = `badge ${normaliseStatus(status)}`;
       span.textContent = statusLabel(status);
       return span;
     }
 
     function buildCard(item){
-      var booking = item.booking || {};
-      var guestNames = booking.guest_names;
-      if (!Array.isArray(guestNames)) guestNames = [];
+      const booking = item.booking || {};
+      const guestNames = Array.isArray(booking.guest_names) ? booking.guest_names.filter(Boolean) : [];
 
-      var card = document.createElement("article");
+      const card = document.createElement("article");
       card.className = "booking-card";
 
-      var top = document.createElement("div");
+      const top = document.createElement("div");
       top.className = "booking-top";
 
-      var left = document.createElement("div");
-      var title = document.createElement("h3");
+      const left = document.createElement("div");
+
+      const title = document.createElement("h3");
       title.className = "event-title";
       title.textContent = item.title || "Untitled event";
       left.appendChild(title);
 
-      var meta = document.createElement("div");
+      const meta = document.createElement("div");
       meta.className = "meta";
 
       function addMeta(text){
         if (!text) return;
-        var span = document.createElement("span");
+        const span = document.createElement("span");
         span.className = "meta-pill";
         span.textContent = text;
         meta.appendChild(span);
@@ -553,7 +643,7 @@
 
       left.appendChild(meta);
 
-      var right = document.createElement("div");
+      const right = document.createElement("div");
       right.className = "badges";
       right.appendChild(buildBadge(booking.status));
 
@@ -561,51 +651,39 @@
       top.appendChild(right);
       card.appendChild(top);
 
-      var grid = document.createElement("div");
+      const grid = document.createElement("div");
       grid.className = "grid";
-
       grid.appendChild(buildInfoBox("Member places", String(booking.member_places != null ? booking.member_places : "—")));
       grid.appendChild(buildInfoBox("Guest places", String(booking.guest_places != null ? booking.guest_places : "—")));
       grid.appendChild(buildInfoBox("Amount due", formatMoney(booking.amount_due)));
       grid.appendChild(buildInfoBox("Payment", paymentLabel(booking.payment_status)));
-
       card.appendChild(grid);
 
       if (guestNames.length){
-        var guestBox = document.createElement("div");
+        const guestBox = document.createElement("div");
         guestBox.className = "subbox";
-        guestBox.innerHTML =
-          "<h3>Guest names</h3>" +
-          "<p>" + escapeHtml(guestNames.join(", ")) + "</p>";
+        guestBox.innerHTML = `<h3>Guest names</h3><p>${escapeHtml(guestNames.join(", "))}</p>`;
         card.appendChild(guestBox);
       }
 
       if (booking.notes){
-        var notesBox = document.createElement("div");
+        const notesBox = document.createElement("div");
         notesBox.className = "subbox";
-        notesBox.innerHTML =
-          "<h3>Notes</h3>" +
-          "<p>" + escapeHtml(booking.notes) + "</p>";
+        notesBox.innerHTML = `<h3>Notes</h3><p>${escapeHtml(booking.notes)}</p>`;
         card.appendChild(notesBox);
       }
 
-      var actions = document.createElement("div");
+      const actions = document.createElement("div");
       actions.className = "actions";
 
-      var noticeUrl = "events-details.html?event_id=" + encodeURIComponent(item.event_id || "");
-      if (item.links && item.links.notice) noticeUrl = item.links.notice;
-
-      var bookingUrl = "event-booking.html?event_id=" + encodeURIComponent(item.event_id || "");
-      if (item.links && item.links.booking) bookingUrl = item.links.booking;
-
-      var noticeBtn = document.createElement("a");
-      noticeBtn.className = "btn secondary";
-      noticeBtn.href = noticeUrl;
+      const noticeBtn = document.createElement("a");
+      noticeBtn.className = "link-btn secondary";
+      noticeBtn.href = item.links?.notice || `events-details.html?event_id=${encodeURIComponent(item.event_id || "")}`;
       noticeBtn.textContent = "View Notice";
 
-      var bookingBtn = document.createElement("a");
-      bookingBtn.className = "btn primary";
-      bookingBtn.href = bookingUrl;
+      const bookingBtn = document.createElement("a");
+      bookingBtn.className = "link-btn primary";
+      bookingBtn.href = item.links?.booking || `event-booking.html?event_id=${encodeURIComponent(item.event_id || "")}`;
       bookingBtn.textContent = "Open Booking";
 
       actions.appendChild(noticeBtn);
@@ -620,78 +698,105 @@
       upcomingList.innerHTML = "";
       pastList.innerHTML = "";
 
-      var upcoming = [];
-      var past = [];
+      const upcoming = [];
+      const past = [];
 
-      var i;
-      for (i = 0; i < bookings.length; i++){
-        if (bookings[i] && bookings[i].is_past) past.push(bookings[i]);
-        else upcoming.push(bookings[i]);
-      }
+      bookings.forEach(item => {
+        if (item && item.is_past) past.push(item);
+        else upcoming.push(item);
+      });
 
       summaryUpcoming.textContent = String(upcoming.length);
       summaryPast.textContent = String(past.length);
       summaryTotal.textContent = String(bookings.length);
       summaryRow.style.display = "grid";
+      bookingsArea.style.display = "block";
 
       if (!upcoming.length){
         upcomingList.appendChild(buildEmpty("No upcoming bookings", "You do not currently have any upcoming event bookings."));
       } else {
-        for (i = 0; i < upcoming.length; i++){
-          upcomingList.appendChild(buildCard(upcoming[i]));
-        }
+        upcoming.forEach(item => upcomingList.appendChild(buildCard(item)));
       }
 
       if (!past.length){
         pastList.appendChild(buildEmpty("No past bookings", "Past bookings will appear here once you have earlier event records."));
       } else {
-        for (i = 0; i < past.length; i++){
-          pastList.appendChild(buildCard(past[i]));
-        }
+        past.forEach(item => pastList.appendChild(buildCard(item)));
       }
     }
 
-    function loadBookings(){
-      var authToken = getAuthToken();
+    async function loadMyBookings(){
+      const data = await getJson(`${BACKEND_URL}/api/my-bookings`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
+      });
 
-      if (!authToken){
-        setMessage("Your member login token was not found. Please return to the Members Hub and sign in again.", "error");
+      const bookings = Array.isArray(data.bookings) ? data.bookings : [];
+      renderBookings(bookings);
+
+      if (bookings.length){
+        setMessage(`Signed in as ${currentMemberId}. Your bookings are shown below.`, "success");
+      } else {
+        setMessage(`Signed in as ${currentMemberId}. No bookings are currently recorded.`, "success");
+      }
+    }
+
+    async function signInAndLoad(){
+      const memberId = memberIdInput.value.trim().toUpperCase();
+      const pin = pinInput.value.trim();
+
+      if (!memberId){
+        setMessage("Please enter your membership number.", "error");
+        memberIdInput.focus();
         return;
       }
 
-      setMessage("Loading your bookings...", "loading");
+      if (!/^\d{4}$/.test(pin)){
+        setMessage("Please enter your 4-digit PIN.", "error");
+        pinInput.focus();
+        return;
+      }
 
-      fetch(API_BASE + "/api/my-bookings", {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + authToken
-        }
-      })
-      .then(function(res){
-        return res.json().then(function(data){
-          return { ok: res.ok, data: data };
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = "Signing in...";
+
+      try{
+        const login = await getJson(`${BACKEND_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ memberId, pin })
         });
-      })
-      .then(function(result){
-        var data = result.data || {};
 
-        if (!result.ok || !data.success){
-          throw new Error(data.message || "Could not load your bookings.");
+        authToken = login.token || "";
+        currentMemberId = (login.member?.memberId || memberId).trim().toUpperCase();
+
+        if (!authToken){
+          throw new Error("No login token was returned.");
         }
 
-        clearMessage();
-
-        var bookings = data.bookings;
-        if (!Array.isArray(bookings)) bookings = [];
-
-        renderBookings(bookings);
-      })
-      .catch(function(err){
-        setMessage(err && err.message ? err.message : "Could not load your bookings at this time.", "error");
-      });
+        lookupBtn.textContent = "Loading bookings...";
+        await loadMyBookings();
+      }catch(err){
+        bookingsArea.style.display = "none";
+        summaryRow.style.display = "none";
+        setMessage(err && err.message ? err.message : "Could not sign in.", "error");
+      }finally{
+        lookupBtn.disabled = false;
+        lookupBtn.textContent = "View My Bookings";
+      }
     }
 
-    loadBookings();
+    lookupBtn.addEventListener("click", signInAndLoad);
+
+    pinInput.addEventListener("keydown", function(e){
+      if (e.key === "Enter") signInAndLoad();
+    });
+
+    memberIdInput.addEventListener("keydown", function(e){
+      if (e.key === "Enter") signInAndLoad();
+    });
   </script>
 </body>
 </html>

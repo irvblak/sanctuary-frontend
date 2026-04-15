@@ -6,27 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=MB_1"></script>
+  <script src="access.js?v=AC_1"></script>
 
   <style>
     :root{
       --bg1:#eef6ff;
       --bg2:#f8fbff;
       --card:#ffffff;
-      --ink:#17324d;
-      --muted:#5f7690;
-      --line:#d7e3f0;
-      --blue:#2b6cb0;
-      --blue-soft:#e8f2ff;
-      --green:#1f7a4d;
-      --green-soft:#eaf7ef;
-      --amber:#9a6700;
-      --amber-soft:#fff6dd;
-      --red:#b42318;
-      --red-soft:#fff0ee;
-      --purple:#6e59cf;
-      --purple-soft:#f2efff;
-      --shadow:0 10px 30px rgba(23,50,77,0.08);
+      --line:#dbe7f3;
+      --text:#1f2a36;
+      --muted:#617285;
+      --blue:#2d6cdf;
+      --green:#1f8f55;
+      --green-bg:#eaf8f0;
+      --amber:#a56a00;
+      --amber-bg:#fff6e2;
+      --red:#b54848;
+      --red-bg:#fdeeee;
+      --grey:#5c6b7a;
+      --grey-bg:#eef2f6;
+      --shadow:0 10px 30px rgba(31,42,54,0.08);
       --radius:18px;
     }
 
@@ -35,173 +34,664 @@
     html,body{
       margin:0;
       padding:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at top, #f8fbff 0%, #eef6ff 38%, #f8fbff 100%);
       min-height:100%;
-    }
-
-    body{
-      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 45%,#ffffff 100%);
     }
 
     .wrap{
       width:min(1100px, calc(100% - 24px));
       margin:0 auto;
-      padding:18px 0 36px;
+      padding:18px 0 40px;
     }
 
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:18px;
-      flex-wrap:wrap;
+      margin-bottom:16px;
     }
 
     .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:0.45rem;
+      display:inline-block;
       text-decoration:none;
       color:var(--blue);
       font-weight:700;
       background:#fff;
       border:1px solid var(--line);
       border-radius:999px;
-      padding:0.75rem 1rem;
+      padding:10px 14px;
       box-shadow:var(--shadow);
     }
 
-    .hero{
-      background:linear-gradient(135deg, #ffffff 0%, #f4f9ff 100%);
+    .hero,
+    .panel{
+      background:rgba(255,255,255,0.95);
       border:1px solid var(--line);
-      border-radius:26px;
+      border-radius:24px;
       box-shadow:var(--shadow);
-      padding:24px 20px;
+      padding:20px;
       margin-bottom:18px;
     }
 
-    .hero h1{
+    .eyebrow{
       margin:0 0 8px;
-      font-size:clamp(1.7rem, 3.3vw, 2.45rem);
-      line-height:1.1;
-      letter-spacing:-0.02em;
+      font-size:0.82rem;
+      font-weight:800;
+      letter-spacing:0.08em;
+      color:var(--blue);
+      text-transform:uppercase;
     }
 
-    .hero p{
+    h1{
+      margin:0 0 8px;
+      font-size:2rem;
+      line-height:1.15;
+      color:#17324d;
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:1.25rem;
+      color:#17324d;
+    }
+
+    .hero p,
+    .panel-intro,
+    .footnote{
       margin:0;
       color:var(--muted);
-      font-size:1rem;
-      max-width:760px;
+      line-height:1.55;
     }
 
     .summary{
       display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
+      grid-template-columns:repeat(3, minmax(0,1fr));
       gap:12px;
-      margin:18px 0 20px;
+      margin-top:16px;
     }
 
     .summary-card{
-      background:var(--card);
+      background:#fff;
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px 16px;
-      box-shadow:var(--shadow);
-    }
-
-    .summary-card .label{
-      font-size:0.86rem;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
-    .summary-card .value{
-      font-size:1.6rem;
-      font-weight:800;
-      line-height:1;
-    }
-
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      margin-bottom:18px;
-    }
-
-    .panel-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:16px 18px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%);
-      flex-wrap:wrap;
-    }
-
-    .panel-head h2{
-      margin:0;
-      font-size:1.2rem;
-    }
-
-    .panel-head .count{
-      color:var(--muted);
-      font-size:0.95rem;
-      font-weight:700;
-    }
-
-    .panel-body{
+      border-radius:16px;
       padding:14px;
     }
 
-    .cards{
+    .summary-label{
+      margin:0 0 5px;
+      color:var(--muted);
+      font-size:0.84rem;
+    }
+
+    .summary-value{
+      margin:0;
+      font-size:1.4rem;
+      font-weight:800;
+      color:#17324d;
+    }
+
+    .message{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      color:#17324d;
+      padding:14px 16px;
+      margin-bottom:18px;
+    }
+
+    .message.error{
+      background:#fff5f5;
+      border-color:#f1c9c9;
+      color:#8f2e2e;
+    }
+
+    .message.loading{
+      background:#f7fbff;
+      border-color:#d9e8f8;
+      color:#2e537d;
+    }
+
+    .list{
       display:grid;
-      grid-template-columns:1fr;
       gap:14px;
+      margin-top:14px;
+    }
+
+    .empty{
+      border:1px dashed #c9d8e6;
+      border-radius:18px;
+      padding:22px 16px;
+      text-align:center;
+      background:#fbfdff;
+      color:var(--muted);
+    }
+
+    .empty h3{
+      margin:0 0 8px;
+      font-size:1.04rem;
+      color:#17324d;
     }
 
     .booking-card{
       border:1px solid var(--line);
       border-radius:18px;
+      background:#fff;
       padding:16px;
-      background:linear-gradient(180deg, #ffffff 0%, #fcfeff 100%);
     }
 
     .booking-top{
       display:flex;
-      align-items:flex-start;
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
       margin-bottom:10px;
     }
 
-    .title-block h3{
+    .event-title{
       margin:0 0 6px;
       font-size:1.15rem;
       line-height:1.25;
+      color:#17324d;
     }
 
-    .meta-line{
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .meta-pill{
+      display:inline-block;
+      border:1px solid var(--line);
+      background:#fafcff;
+      border-radius:999px;
+      padding:6px 10px;
       color:var(--muted);
-      font-size:0.95rem;
-      line-height:1.45;
+      font-size:0.93rem;
     }
 
     .badges{
       display:flex;
-      flex-wrap:wrap;
       gap:8px;
-      justify-content:flex-end;
+      flex-wrap:wrap;
     }
 
     .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content
+      display:inline-block;
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:0.82rem;
+      font-weight:800;
+      border:1px solid transparent;
+    }
+
+    .badge.booked{
+      background:var(--green-bg);
+      color:var(--green);
+      border-color:#cdebd8;
+    }
+
+    .badge.waitlist{
+      background:var(--amber-bg);
+      color:var(--amber);
+      border-color:#f1dfaa;
+    }
+
+    .badge.interest{
+      background:#edf4ff;
+      color:var(--blue);
+      border-color:#d7e7ff;
+    }
+
+    .badge.cancelled{
+      background:var(--red-bg);
+      color:var(--red);
+      border-color:#f3caca;
+    }
+
+    .badge.refunded{
+      background:var(--grey-bg);
+      color:var(--grey);
+      border-color:#dce3ea;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .info-box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+      padding:12px;
+    }
+
+    .info-label{
+      margin:0 0 5px;
+      color:var(--muted);
+      font-size:0.82rem;
+    }
+
+    .info-value{
+      margin:0;
+      font-weight:700;
+      color:#17324d;
+      line-height:1.35;
+    }
+
+    .subbox{
+      margin-top:10px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfdff;
+    }
+
+    .subbox h3{
+      margin:0 0 8px;
+      font-size:0.95rem;
+      color:#17324d;
+    }
+
+    .subbox p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      white-space:pre-wrap;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      display:inline-block;
+      text-decoration:none;
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:800;
+      font-size:0.95rem;
+      text-align:center;
+    }
+
+    .btn.primary{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .btn.secondary{
+      background:#fff;
+      color:#17324d;
+      border:1px solid var(--line);
+    }
+
+    .footnote{
+      margin-top:8px;
+      font-size:0.88rem;
+    }
+
+    @media (max-width: 900px){
+      .summary{
+        grid-template-columns:1fr;
+      }
+      .grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 640px){
+      .wrap{
+        width:min(100% - 16px, 100%);
+        padding-top:12px;
+      }
+      .hero,
+      .panel{
+        border-radius:20px;
+      }
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back-link" href="members-info.html">← Back to Members Hub</a>
+    </div>
+
+    <section class="hero">
+      <p class="eyebrow">Sanctuary Club</p>
+      <h1>My Bookings</h1>
+      <p>
+        View your upcoming and past event bookings, together with your current status and payment position.
+      </p>
+
+      <div class="summary" id="summaryRow" style="display:none;">
+        <div class="summary-card">
+          <p class="summary-label">Upcoming bookings</p>
+          <p class="summary-value" id="summaryUpcoming">0</p>
+        </div>
+        <div class="summary-card">
+          <p class="summary-label">Past bookings</p>
+          <p class="summary-value" id="summaryPast">0</p>
+        </div>
+        <div class="summary-card">
+          <p class="summary-label">Total records</p>
+          <p class="summary-value" id="summaryTotal">0</p>
+        </div>
+      </div>
+    </section>
+
+    <div id="messageArea" class="message loading">Loading your bookings...</div>
+
+    <section class="panel">
+      <h2>Upcoming</h2>
+      <p class="panel-intro">Bookings for events that have not yet passed.</p>
+      <div id="upcomingList" class="list"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Past</h2>
+      <p class="panel-intro">Previous event bookings kept for reference.</p>
+      <div id="pastList" class="list"></div>
+    </section>
+
+    <p class="footnote">
+      Amendments and cancellations depend on each event’s own time windows. Opening the booking page will let you review the current position.
+    </p>
+  </div>
+
+  <script>
+    var API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+    var messageArea = document.getElementById("messageArea");
+    var upcomingList = document.getElementById("upcomingList");
+    var pastList = document.getElementById("pastList");
+
+    var summaryRow = document.getElementById("summaryRow");
+    var summaryUpcoming = document.getElementById("summaryUpcoming");
+    var summaryPast = document.getElementById("summaryPast");
+    var summaryTotal = document.getElementById("summaryTotal");
+
+    function getAuthToken(){
+      var token = localStorage.getItem("authToken");
+      if (!token) token = sessionStorage.getItem("authToken");
+      if (!token) token = "";
+      return String(token).trim();
+    }
+
+    function setMessage(text, type){
+      if (!type) type = "";
+      messageArea.className = "message" + (type ? " " + type : "");
+      messageArea.textContent = text;
+      messageArea.style.display = "block";
+    }
+
+    function clearMessage(){
+      messageArea.style.display = "none";
+      messageArea.textContent = "";
+      messageArea.className = "message";
+    }
+
+    function escapeHtml(value){
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatDateTime(value){
+      if (!value) return "Date to be confirmed";
+
+      var d = new Date(value);
+      if (isNaN(d.getTime())) return String(value);
+
+      return d.toLocaleString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatMoney(value){
+      var n = Number(value);
+      if (!isFinite(n)) return "—";
+      return "£" + n.toFixed(2);
+    }
+
+    function normaliseStatus(status){
+      var s = String(status || "").toLowerCase().trim();
+      if (s.indexOf("wait") !== -1) return "waitlist";
+      if (s.indexOf("interest") !== -1) return "interest";
+      if (s === "cancelled" || s === "canceled") return "cancelled";
+      if (s === "refunded") return "refunded";
+      return "booked";
+    }
+
+    function statusLabel(status){
+      var s = normaliseStatus(status);
+      if (s === "waitlist") return "Waitlist";
+      if (s === "interest") return "Interest";
+      if (s === "cancelled") return "Cancelled";
+      if (s === "refunded") return "Refunded";
+      return "Booked";
+    }
+
+    function paymentLabel(status){
+      var s = String(status || "").trim();
+      if (!s) return "Unpaid";
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function buildEmpty(title, text){
+      var div = document.createElement("div");
+      div.className = "empty";
+      div.innerHTML = "<h3>" + escapeHtml(title) + "</h3><div>" + escapeHtml(text) + "</div>";
+      return div;
+    }
+
+    function buildInfoBox(label, value){
+      var div = document.createElement("div");
+      div.className = "info-box";
+      div.innerHTML =
+        "<p class=\"info-label\">" + escapeHtml(label) + "</p>" +
+        "<p class=\"info-value\">" + escapeHtml(value) + "</p>";
+      return div;
+    }
+
+    function buildBadge(status){
+      var span = document.createElement("span");
+      span.className = "badge " + normaliseStatus(status);
+      span.textContent = statusLabel(status);
+      return span;
+    }
+
+    function buildCard(item){
+      var booking = item.booking || {};
+      var guestNames = booking.guest_names;
+      if (!Array.isArray(guestNames)) guestNames = [];
+
+      var card = document.createElement("article");
+      card.className = "booking-card";
+
+      var top = document.createElement("div");
+      top.className = "booking-top";
+
+      var left = document.createElement("div");
+      var title = document.createElement("h3");
+      title.className = "event-title";
+      title.textContent = item.title || "Untitled event";
+      left.appendChild(title);
+
+      var meta = document.createElement("div");
+      meta.className = "meta";
+
+      function addMeta(text){
+        if (!text) return;
+        var span = document.createElement("span");
+        span.className = "meta-pill";
+        span.textContent = text;
+        meta.appendChild(span);
+      }
+
+      addMeta(formatDateTime(item.start_at));
+      addMeta(item.category);
+      addMeta(item.location);
+      addMeta(item.event_ref);
+
+      left.appendChild(meta);
+
+      var right = document.createElement("div");
+      right.className = "badges";
+      right.appendChild(buildBadge(booking.status));
+
+      top.appendChild(left);
+      top.appendChild(right);
+      card.appendChild(top);
+
+      var grid = document.createElement("div");
+      grid.className = "grid";
+
+      grid.appendChild(buildInfoBox("Member places", String(booking.member_places != null ? booking.member_places : "—")));
+      grid.appendChild(buildInfoBox("Guest places", String(booking.guest_places != null ? booking.guest_places : "—")));
+      grid.appendChild(buildInfoBox("Amount due", formatMoney(booking.amount_due)));
+      grid.appendChild(buildInfoBox("Payment", paymentLabel(booking.payment_status)));
+
+      card.appendChild(grid);
+
+      if (guestNames.length){
+        var guestBox = document.createElement("div");
+        guestBox.className = "subbox";
+        guestBox.innerHTML =
+          "<h3>Guest names</h3>" +
+          "<p>" + escapeHtml(guestNames.join(", ")) + "</p>";
+        card.appendChild(guestBox);
+      }
+
+      if (booking.notes){
+        var notesBox = document.createElement("div");
+        notesBox.className = "subbox";
+        notesBox.innerHTML =
+          "<h3>Notes</h3>" +
+          "<p>" + escapeHtml(booking.notes) + "</p>";
+        card.appendChild(notesBox);
+      }
+
+      var actions = document.createElement("div");
+      actions.className = "actions";
+
+      var noticeUrl = "events-details.html?event_id=" + encodeURIComponent(item.event_id || "");
+      if (item.links && item.links.notice) noticeUrl = item.links.notice;
+
+      var bookingUrl = "event-booking.html?event_id=" + encodeURIComponent(item.event_id || "");
+      if (item.links && item.links.booking) bookingUrl = item.links.booking;
+
+      var noticeBtn = document.createElement("a");
+      noticeBtn.className = "btn secondary";
+      noticeBtn.href = noticeUrl;
+      noticeBtn.textContent = "View Notice";
+
+      var bookingBtn = document.createElement("a");
+      bookingBtn.className = "btn primary";
+      bookingBtn.href = bookingUrl;
+      bookingBtn.textContent = "Open Booking";
+
+      actions.appendChild(noticeBtn);
+      actions.appendChild(bookingBtn);
+
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function renderBookings(bookings){
+      upcomingList.innerHTML = "";
+      pastList.innerHTML = "";
+
+      var upcoming = [];
+      var past = [];
+
+      var i;
+      for (i = 0; i < bookings.length; i++){
+        if (bookings[i] && bookings[i].is_past) past.push(bookings[i]);
+        else upcoming.push(bookings[i]);
+      }
+
+      summaryUpcoming.textContent = String(upcoming.length);
+      summaryPast.textContent = String(past.length);
+      summaryTotal.textContent = String(bookings.length);
+      summaryRow.style.display = "grid";
+
+      if (!upcoming.length){
+        upcomingList.appendChild(buildEmpty("No upcoming bookings", "You do not currently have any upcoming event bookings."));
+      } else {
+        for (i = 0; i < upcoming.length; i++){
+          upcomingList.appendChild(buildCard(upcoming[i]));
+        }
+      }
+
+      if (!past.length){
+        pastList.appendChild(buildEmpty("No past bookings", "Past bookings will appear here once you have earlier event records."));
+      } else {
+        for (i = 0; i < past.length; i++){
+          pastList.appendChild(buildCard(past[i]));
+        }
+      }
+    }
+
+    function loadBookings(){
+      var authToken = getAuthToken();
+
+      if (!authToken){
+        setMessage("Your member login token was not found. Please return to the Members Hub and sign in again.", "error");
+        return;
+      }
+
+      setMessage("Loading your bookings...", "loading");
+
+      fetch(API_BASE + "/api/my-bookings", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + authToken
+        }
+      })
+      .then(function(res){
+        return res.json().then(function(data){
+          return { ok: res.ok, data: data };
+        });
+      })
+      .then(function(result){
+        var data = result.data || {};
+
+        if (!result.ok || !data.success){
+          throw new Error(data.message || "Could not load your bookings.");
+        }
+
+        clearMessage();
+
+        var bookings = data.bookings;
+        if (!Array.isArray(bookings)) bookings = [];
+
+        renderBookings(bookings);
+      })
+      .catch(function(err){
+        setMessage(err && err.message ? err.message : "Could not load your bookings at this time.", "error");
+      });
+    }
+
+    loadBookings();
+  </script>
+</body>
+</html>

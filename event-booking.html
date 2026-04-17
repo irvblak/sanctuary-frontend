@@ -1,1034 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Event Booking | Sanctuary Club</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
+<meta charset="UTF-8" />
+<title>Event Booking</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
+<script src="access.js?v=AC_2"></script>
 
-  <style>
-    :root{
-      --bg1:#eef6ff;
-      --bg2:#f8fbff;
-      --ink:#19334a;
-      --muted:#607689;
-      --line:#d7e4ef;
-      --panel:#ffffff;
-      --soft:#f4f8fc;
-      --accent:#245d8b;
-      --accent2:#2f79b1;
-      --ok:#1f6f47;
-      --warn:#8a5a00;
-      --err:#9e2b2b;
-      --shadow:0 16px 36px rgba(20,60,100,.10);
-      --radius:18px;
-    }
-
-    *{ box-sizing:border-box; }
-
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1),var(--bg2) 45%,#fff);
-      min-height:100vh;
-    }
-
-    .wrap{
-      width:min(980px, calc(100% - 24px));
-      margin:0 auto;
-      padding:20px 0 42px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:16px;
-      flex-wrap:wrap;
-    }
-
-    .backlink{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:700;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(1.5rem, 2.4vw, 2rem);
-      line-height:1.15;
-      color:var(--ink);
-    }
-
-    .subhead{
-      margin:.35rem 0 0;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1.08fr .92fr;
-      gap:18px;
-      align-items:start;
-    }
-
-    @media (max-width:860px){
-      .grid{ grid-template-columns:1fr; }
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-
-    .card h2{
-      margin:0 0 10px;
-      font-size:1.08rem;
-      color:var(--ink);
-    }
-
-    .muted{ color:var(--muted); }
-
-    .event-title{
-      margin:0 0 8px;
-      font-size:1.4rem;
-      line-height:1.2;
-    }
-
-    .event-meta{
-      display:grid;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .meta-row{
-      display:grid;
-      grid-template-columns:160px 1fr;
-      gap:12px;
-      padding:10px 0;
-      border-top:1px solid var(--line);
-    }
-
-    .meta-row:first-child{ border-top:none; padding-top:0; }
-
-    .meta-label{
-      color:var(--muted);
-      font-weight:700;
-    }
-
-    .message{
-      display:none;
-      margin-bottom:14px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-size:.97rem;
-      line-height:1.4;
-      border:1px solid transparent;
-    }
-
-    .message.show{ display:block; }
-    .message.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
-    .message.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
-    .message.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
-    .message.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
-
-    form{
-      display:grid;
-      gap:14px;
-    }
-
-    .field-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    @media (max-width:640px){
-      .field-grid{ grid-template-columns:1fr; }
-    }
-
-    label{
-      display:grid;
-      gap:6px;
-      font-weight:700;
-      color:var(--ink);
-      font-size:.96rem;
-    }
-
-    input, select, textarea{
-      width:100%;
-      border:1px solid #cddae5;
-      border-radius:12px;
-      padding:12px 13px;
-      font:inherit;
-      color:var(--ink);
-      background:#fff;
-    }
-
-    textarea{
-      min-height:120px;
-      resize:vertical;
-    }
-
-    input[readonly]{
-      background:#f6f9fc;
-      color:#4c6276;
-    }
-
-    .small{
-      font-size:.9rem;
-      color:var(--muted);
-      font-weight:500;
-    }
-
-    .button-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:4px;
-    }
-
-    button, .btn{
-      appearance:none;
-      border:none;
-      border-radius:999px;
-      padding:12px 18px;
-      font:inherit;
-      font-weight:800;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      transition:transform .04s ease, opacity .18s ease;
-    }
-
-    button:active{ transform:translateY(1px); }
-    button:disabled{ opacity:.58; cursor:not-allowed; }
-
-    .btn-primary{ background:var(--accent); color:#fff; }
-    .btn-secondary{ background:#e8f0f8; color:var(--accent); }
-    .btn-soft{ background:#f2f6fa; color:var(--ink); }
-    .btn-danger{ background:#a33030; color:#fff; }
-
-    .current-booking{
-      display:none;
-      margin-top:14px;
-      border:1px solid var(--line);
-      background:var(--soft);
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .current-booking.show{ display:block; }
-
-    .booking-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border-radius:999px;
-      background:#e8f1fb;
-      color:var(--accent);
-      padding:6px 12px;
-      font-weight:800;
-      font-size:.9rem;
-      margin-bottom:10px;
-    }
-
-    .booking-lines{
-      display:grid;
-      gap:8px;
-      font-size:.97rem;
-    }
-
-    .booking-line strong{
-      color:var(--ink);
-    }
-
-    .inline-note{
-      margin-top:8px;
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .divider{
-      height:1px;
-      background:var(--line);
-      margin:16px 0;
-    }
-
-    .pill-group{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .pill{
-      border:1px solid #cfdcea;
-      background:#fff;
-      border-radius:999px;
-      padding:10px 14px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      font-weight:700;
-    }
-
-    .pill input{
-      width:auto;
-      margin:0;
-      padding:0;
-    }
-
-    .hidden{ display:none !important; }
-  </style>
+<style>
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#f4f8fc;
+  margin:0;
+  padding:20px;
+}
+.wrap{
+  max-width:700px;
+  margin:auto;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:16px;
+}
+button{
+  padding:10px 14px;
+  border-radius:999px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+.primary{background:#245d8b;color:#fff;}
+.secondary{background:#e8f0f8;}
+.danger{background:#9e2b2b;color:#fff;}
+input{width:100%;padding:10px;margin-top:4px;}
+label{display:block;margin-bottom:12px;}
+.msg{margin-bottom:12px;}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <a class="backlink" id="backLink" href="events-details.html">← Back to event notice</a>
-      <div></div>
-    </div>
-
-    <div id="pageMessage" class="message info"></div>
-
-    <div class="grid">
-      <section class="card">
-        <h1>Book or register your interest</h1>
-        <p class="subhead">Use Member lookup first. If you have already booked or registered interest, your existing record should reload automatically.</p>
-
-        <div class="divider"></div>
-
-        <div id="eventBox">
-          <h2 class="event-title" id="eventTitle">Loading event…</h2>
-          <div class="muted" id="eventSummary">Please wait.</div>
-
-          <div class="event-meta">
-            <div class="meta-row">
-              <div class="meta-label">Date</div>
-              <div id="eventDate">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Time</div>
-              <div id="eventTime">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Location</div>
-              <div id="eventLocation">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Host</div>
-              <div id="eventHost">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Booking</div>
-              <div id="eventBookingWindow">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Guest booking</div>
-              <div id="eventGuestWindow">—</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">Cancellation</div>
-              <div id="eventCancelWindow">—</div>
-            </div>
-          </div>
-        </div>
-
-        <div id="currentBookingCard" class="current-booking">
-          <div class="booking-badge">Existing record loaded</div>
-          <div id="currentBookingLines" class="booking-lines"></div>
-          <div class="inline-note">You may amend the form below and save again, or cancel this record if the event rules still allow it.</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Member lookup</h2>
-
-        <form id="lookupForm" autocomplete="on">
-          <div class="field-grid">
-            <label>
-              Membership number
-              <input id="memberIdInput" type="text" placeholder="e.g. SM70" autocomplete="username" />
-            </label>
-
-            <label>
-              PIN
-              <input id="memberPinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
-            </label>
-          </div>
-
-          <div class="button-row">
-            <button class="btn-primary" type="submit" id="lookupBtn">Lookup member</button>
-            <button class="btn-soft" type="button" id="clearLookupBtn">Clear</button>
-          </div>
-        </form>
-
-        <div class="divider"></div>
-
-        <h2>Your details</h2>
-
-        <form id="bookingForm" autocomplete="on">
-          <div class="field-grid">
-            <label>
-              Member name
-              <input id="memberNameInput" type="text" />
-            </label>
-
-            <label>
-              Email
-              <input id="memberEmailInput" type="email" />
-            </label>
-          </div>
-
-          <div class="field-grid">
-            <label>
-              Mobile
-              <input id="memberMobileInput" type="text" />
-            </label>
-
-            <label>
-              Membership number
-              <input id="memberIdReadonly" type="text" readonly />
-            </label>
-          </div>
-
-          <label>
-            Response
-            <div class="pill-group">
-              <label class="pill">
-                <input type="radio" name="responseType" value="booking" checked />
-                Booking
-              </label>
-              <label class="pill">
-                <input type="radio" name="responseType" value="interest" />
-                Interest only
-              </label>
-            </div>
-            <span class="small">If you previously booked or registered interest, the existing choice should reload here automatically.</span>
-          </label>
-
-          <div class="field-grid">
-            <label>
-              Total places requested
-              <input id="placesTotalInput" type="number" min="0" step="1" value="1" />
-            </label>
-
-            <label>
-              Guest places
-              <input id="guestPlacesInput" type="number" min="0" step="1" value="0" />
-            </label>
-          </div>
-
-          <label>
-            Notes
-            <textarea id="notesInput" placeholder="Optional note"></textarea>
-          </label>
-
-          <div class="button-row">
-            <button class="btn-primary" type="submit" id="saveBtn" disabled>Save booking / interest</button>
-            <button class="btn-secondary hidden" type="button" id="reloadExistingBtn">Reload existing record</button>
-            <button class="btn-danger hidden" type="button" id="cancelBtn">Cancel this booking / interest</button>
-          </div>
-        </form>
-      </section>
-    </div>
-  </div>
-
-  <script>
-    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-
-    const qs = new URLSearchParams(window.location.search);
-    const EVENT_ID = (qs.get("event_id") || "").trim();
-
-    let eventData = null;
-    let authToken = readStored("sanctuaryAuthToken") || readStored("authToken") || "";
-    let currentMemberId = baseMemberId(readStored("sanctuaryCurrentMemberId") || readStored("currentMemberId") || "");
-    let currentBooking = null;
-
-    const pageMessage = document.getElementById("pageMessage");
-
-    const eventTitle = document.getElementById("eventTitle");
-    const eventSummary = document.getElementById("eventSummary");
-    const eventDate = document.getElementById("eventDate");
-    const eventTime = document.getElementById("eventTime");
-    const eventLocation = document.getElementById("eventLocation");
-    const eventHost = document.getElementById("eventHost");
-    const eventBookingWindow = document.getElementById("eventBookingWindow");
-    const eventGuestWindow = document.getElementById("eventGuestWindow");
-    const eventCancelWindow = document.getElementById("eventCancelWindow");
-    const backLink = document.getElementById("backLink");
-
-    const currentBookingCard = document.getElementById("currentBookingCard");
-    const currentBookingLines = document.getElementById("currentBookingLines");
-
-    const lookupForm = document.getElementById("lookupForm");
-    const bookingForm = document.getElementById("bookingForm");
-
-    const memberIdInput = document.getElementById("memberIdInput");
-    const memberPinInput = document.getElementById("memberPinInput");
-    const memberNameInput = document.getElementById("memberNameInput");
-    const memberEmailInput = document.getElementById("memberEmailInput");
-    const memberMobileInput = document.getElementById("memberMobileInput");
-    const memberIdReadonly = document.getElementById("memberIdReadonly");
-
-    const placesTotalInput = document.getElementById("placesTotalInput");
-    const guestPlacesInput = document.getElementById("guestPlacesInput");
-    const notesInput = document.getElementById("notesInput");
-
-    const lookupBtn = document.getElementById("lookupBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const reloadExistingBtn = document.getElementById("reloadExistingBtn");
-    const clearLookupBtn = document.getElementById("clearLookupBtn");
-
-    function readStored(key){
-      try{
-        return sessionStorage.getItem(key) || localStorage.getItem(key) || "";
-      }catch(_){
-        return "";
-      }
-    }
-
-    function writeStored(key, value){
-      try{ sessionStorage.setItem(key, value); }catch(_){}
-      try{ localStorage.setItem(key, value); }catch(_){}
-    }
-
-    function removeStored(key){
-      try{ sessionStorage.removeItem(key); }catch(_){}
-      try{ localStorage.removeItem(key); }catch(_){}
-    }
-
-    function baseMemberId(value){
-      const raw = String(value || "").trim().toUpperCase();
-      if (!raw) return "";
-      const m = raw.match(/^([A-Z]{2}\d+)/);
-      return m ? m[1] : raw;
-    }
-
-    function escapeHtml(value){
-      return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#39;");
-    }
-
-    function showMessage(text, kind = "info"){
-      if (!text){
-        pageMessage.className = "message info";
-        pageMessage.textContent = "";
-        return;
-      }
-      pageMessage.textContent = text;
-      pageMessage.className = `message show ${kind}`;
-    }
-
-    function formatDateTime(value){
-      if (!value) return "—";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return value;
-      return d.toLocaleString("en-GB", {
-        weekday:"short",
-        day:"numeric",
-        month:"short",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
-      });
-    }
-
-    function formatDateOnly(value){
-      if (!value) return "—";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return value;
-      return d.toLocaleDateString("en-GB", {
-        weekday:"long",
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      });
-    }
-
-    function formatTimeRange(startValue, endValue){
-      if (!startValue && !endValue) return "—";
-
-      const start = startValue ? new Date(startValue) : null;
-      const end = endValue ? new Date(endValue) : null;
-
-      if (start && !Number.isNaN(start.getTime()) && end && !Number.isNaN(end.getTime())){
-        return `${start.toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"})} – ${end.toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"})}`;
-      }
-
-      return [startValue, endValue].filter(Boolean).join(" – ") || "—";
-    }
-
-    function pick(...values){
-      for (const v of values){
-        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
-      }
-      return "";
-    }
-
-    async function getJson(url, options = {}){
-      const res = await fetch(url, options);
-      const text = await res.text();
-      let data = {};
-      try{
-        data = text ? JSON.parse(text) : {};
-      }catch(_){
-        data = { success:false, message:text || `HTTP ${res.status}` };
-      }
-
-      if (!res.ok || data.success === false){
-        throw new Error(data.message || `Request failed (${res.status})`);
-      }
-      return data;
-    }
-
-    function responseTypeFromBooking(booking){
-      const raw = String(
-        pick(
-          booking?.response_type,
-          booking?.booking_type,
-          booking?.mode,
-          booking?.status,
-          booking?.intent
-        ) || ""
-      ).toLowerCase();
-
-      if (raw.includes("interest")) return "interest";
-      return "booking";
-    }
-
-    function setResponseType(value){
-      const wanted = value === "interest" ? "interest" : "booking";
-      const radio = bookingForm.querySelector(`input[name="responseType"][value="${wanted}"]`);
-      if (radio) radio.checked = true;
-    }
-
-    function getResponseType(){
-      return bookingForm.querySelector('input[name="responseType"]:checked')?.value || "booking";
-    }
-
-    function clearCurrentBookingUi(){
-      currentBookingCard.classList.remove("show");
-      currentBookingLines.innerHTML = "";
-      reloadExistingBtn.classList.add("hidden");
-      cancelBtn.classList.add("hidden");
-    }
-
-    function renderCurrentBooking(){
-      if (!currentBooking){
-        clearCurrentBookingUi();
-        return;
-      }
-
-      const responseType = responseTypeFromBooking(currentBooking);
-      const lines = [
-        ["Type", responseType === "interest" ? "Interest only" : "Booking"],
-        ["Places", pick(currentBooking.places_total, currentBooking.places, 0)],
-        ["Guest places", pick(currentBooking.guest_places, 0)],
-        ["Status", pick(currentBooking.booking_status, currentBooking.status, "Recorded")],
-        ["Updated", pick(currentBooking.updated_at, currentBooking.created_at, "—")]
-      ];
-
-      const note = pick(currentBooking.notes, currentBooking.note, currentBooking.message, "");
-
-      currentBookingLines.innerHTML = `
-        ${lines.map(([label, value]) => `
-          <div class="booking-line"><strong>${escapeHtml(label)}:</strong> ${escapeHtml(String(value))}</div>
-        `).join("")}
-        ${note ? `<div class="booking-line"><strong>Notes:</strong> ${escapeHtml(note)}</div>` : ""}
-      `;
-
-      currentBookingCard.classList.add("show");
-      reloadExistingBtn.classList.remove("hidden");
-      cancelBtn.classList.remove("hidden");
-    }
-
-    function populateBookingFormFromCurrent(){
-      if (!currentBooking) return;
-
-      setResponseType(responseTypeFromBooking(currentBooking));
-
-      const places = Number(pick(currentBooking.places_total, currentBooking.places, responseTypeFromBooking(currentBooking) === "interest" ? 0 : 1));
-      const guestPlaces = Number(pick(currentBooking.guest_places, 0));
-
-      placesTotalInput.value = Number.isFinite(places) ? String(Math.max(0, places)) : "1";
-      guestPlacesInput.value = Number.isFinite(guestPlaces) ? String(Math.max(0, guestPlaces)) : "0";
-      notesInput.value = String(pick(currentBooking.notes, currentBooking.note, currentBooking.message, "") || "");
-    }
-
-    function populateMemberFormFromProfile(profile = {}){
-      memberIdReadonly.value = currentMemberId || "";
-      memberIdInput.value = currentMemberId || memberIdInput.value.trim().toUpperCase();
-
-      memberNameInput.value = pick(
-        profile.name,
-        profile.member_name,
-        profile.full_name,
-        currentBooking?.member_name,
-        currentBooking?.name,
-        memberNameInput.value
-      ) || "";
-
-      memberEmailInput.value = pick(
-        profile.email,
-        currentBooking?.email,
-        memberEmailInput.value
-      ) || "";
-
-      memberMobileInput.value = pick(
-        profile.mobile,
-        profile.phone,
-        currentBooking?.mobile,
-        currentBooking?.phone,
-        memberMobileInput.value
-      ) || "";
-
-      saveBtn.disabled = !(authToken && currentMemberId && EVENT_ID);
-    }
-
-    async function loadEvent(){
-      if (!EVENT_ID){
-        showMessage("No event was specified.", "err");
-        eventTitle.textContent = "Event not found";
-        eventSummary.textContent = "This page needs an event_id in the address.";
-        return;
-      }
-
-      backLink.href = `events-details.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-
-      try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
-        eventData = data.event || data;
-
-        eventTitle.textContent = pick(eventData.title, eventData.event_title, "Event");
-        eventSummary.textContent = pick(eventData.summary, eventData.short_description, eventData.description, "Please use Member lookup to continue.");
-
-        eventDate.textContent = formatDateOnly(pick(eventData.start_at, eventData.date, eventData.starts_at));
-        eventTime.textContent = formatTimeRange(
-          pick(eventData.start_at, eventData.starts_at, eventData.date),
-          pick(eventData.end_at, eventData.ends_at)
-        );
-        eventLocation.textContent = pick(eventData.location, "—");
-        eventHost.textContent = pick(
-          eventData.host_display,
-          eventData.host_name_with_member_id,
-          eventData.host_name,
-          "—"
-        );
-
-        eventBookingWindow.textContent = `${formatDateTime(eventData.members_booking_open_at)} to ${formatDateTime(eventData.booking_close_at)}`;
-        eventGuestWindow.textContent = `${formatDateTime(eventData.guests_booking_open_at)} to ${formatDateTime(eventData.booking_close_at)}`;
-        eventCancelWindow.textContent = pick(
-          formatDateTime(eventData.cancellation_cutoff_at),
-          "See event notice"
-        );
-      }catch(err){
-        eventTitle.textContent = "Unable to load event";
-        eventSummary.textContent = err.message || "Please try again.";
-        showMessage(err.message || "Unable to load event details.", "err");
-      }
-    }
-
-    async function memberLogin(memberId, pin){
-      const data = await getJson(`${BACKEND_URL}/auth/login`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({
-          member_id: memberId,
-          pin: pin
-        })
-      });
-
-      const token = pick(data.token, data.authToken, data.access_token);
-      if (!token) throw new Error("Login succeeded but no token was returned.");
-
-      authToken = token;
-      currentMemberId = baseMemberId(memberId);
-
-      writeStored("authToken", authToken);
-      writeStored("sanctuaryAuthToken", authToken);
-      writeStored("currentMemberId", currentMemberId);
-      writeStored("sanctuaryCurrentMemberId", currentMemberId);
-    }
-
-    async function loadMemberProfile(){
-      if (!authToken || !currentMemberId) return null;
-
-      try{
-        const data = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
-          method:"GET",
-          headers:{
-            "Authorization": `Bearer ${authToken}`
-          }
-        });
-        return data.profile || data.member || data || null;
-      }catch(_){
-        return null;
-      }
-    }
-
-    async function loadMyBooking(){
-      if (!authToken || !currentMemberId || !EVENT_ID) return;
-
-      try{
-        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${authToken}`
-          }
-        });
-
-        currentBooking = result.booking || null;
-        renderCurrentBooking();
-
-        if (currentBooking){
-          populateBookingFormFromCurrent();
-        }
-      }catch(err){
-        currentBooking = null;
-        renderCurrentBooking();
-      }
-    }
-
-    function makeBookingPayload(){
-      const responseType = getResponseType();
-
-      const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));
-      const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
-
-      const payload = {
-        member_id: currentMemberId,
-        member_name: memberNameInput.value.trim(),
-        email: memberEmailInput.value.trim(),
-        mobile: memberMobileInput.value.trim(),
-        places_total: responseType === "interest" ? 0 : placesTotal,
-        guest_places: responseType === "interest" ? 0 : guestPlaces,
-        response_type: responseType,
-        notes: notesInput.value.trim()
-      };
-
-      if (currentBooking && currentBooking.booking_id){
-        payload.booking_id = currentBooking.booking_id;
-      }
-
-      return payload;
-    }
-
-    async function saveBooking(){
-      if (!EVENT_ID){
-        showMessage("No event was specified.", "err");
-        return;
-      }
-      if (!authToken || !currentMemberId){
-        showMessage("Please do Member lookup first.", "warn");
-        return;
-      }
-
-      const payload = makeBookingPayload();
-
-      if (payload.response_type !== "interest" && payload.places_total < 1){
-        showMessage("Please request at least one place, or switch to Interest only.", "warn");
-        return;
-      }
-
-      saveBtn.disabled = true;
-
-      try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
-          body:JSON.stringify(payload)
-        });
-
-        showMessage(data.message || "Your booking/interest has been saved.", "ok");
-        await loadMyBooking();
-      }catch(err){
-        showMessage(err.message || "Unable to save your booking/interest.", "err");
-      }finally{
-        saveBtn.disabled = !(authToken && currentMemberId && EVENT_ID);
-      }
-    }
-
-    async function cancelBooking(){
-      if (!EVENT_ID){
-        showMessage("No event was specified.", "err");
-        return;
-      }
-      if (!authToken || !currentMemberId){
-        showMessage("Please do Member lookup first.", "warn");
-        return;
-      }
-      if (!currentBooking){
-        showMessage("There is no current booking/interest loaded to cancel.", "warn");
-        return;
-      }
-
-      const yes = window.confirm("Cancel this booking / interest?");
-      if (!yes) return;
-
-      cancelBtn.disabled = true;
-
-      try{
-        const payload = {
-          member_id: currentMemberId
-        };
-
-        if (currentBooking.booking_id){
-          payload.booking_id = currentBooking.booking_id;
-        }
-
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
-          body:JSON.stringify(payload)
-        });
-
-        currentBooking = null;
-        renderCurrentBooking();
-
-        setResponseType("booking");
-        placesTotalInput.value = "1";
-        guestPlacesInput.value = "0";
-        notesInput.value = "";
-
-        showMessage(data.message || "Your booking/interest has been cancelled.", "ok");
-      }catch(err){
-        showMessage(err.message || "Unable to cancel your booking/interest.", "err");
-      }finally{
-        cancelBtn.disabled = false;
-      }
-    }
-
-    async function handleLookupSubmit(event){
-      event.preventDefault();
-
-      const enteredMemberId = baseMemberId(memberIdInput.value);
-      const pin = memberPinInput.value.trim();
-
-      if (!enteredMemberId){
-        showMessage("Please enter a membership number.", "warn");
-        return;
-      }
-      if (!pin){
-        showMessage("Please enter your PIN.", "warn");
-        return;
-      }
-
-      lookupBtn.disabled = true;
-      showMessage("Looking up member details…", "info");
-
-      try{
-        await memberLogin(enteredMemberId, pin);
-
-        const profile = await loadMemberProfile();
-        populateMemberFormFromProfile(profile || {});
-
-        await loadMyBooking();
-
-        if (currentBooking){
-          showMessage("Your existing booking/interest has been reloaded.", "ok");
-        }else{
-          showMessage("Member lookup complete. No existing booking/interest was found for this event.", "info");
-        }
-      }catch(err){
-        showMessage(err.message || "Member lookup failed.", "err");
-      }finally{
-        lookupBtn.disabled = false;
-        saveBtn.disabled = !(authToken && currentMemberId && EVENT_ID);
-      }
-    }
-
-    function clearLookupState(){
-      authToken = "";
-      currentMemberId = "";
-      currentBooking = null;
-
-      removeStored("authToken");
-      removeStored("sanctuaryAuthToken");
-      removeStored("currentMemberId");
-      removeStored("sanctuaryCurrentMemberId");
-
-      memberIdInput.value = "";
-      memberPinInput.value = "";
-      memberNameInput.value = "";
-      memberEmailInput.value = "";
-      memberMobileInput.value = "";
-      memberIdReadonly.value = "";
-
-      setResponseType("booking");
-      placesTotalInput.value = "1";
-      guestPlacesInput.value = "0";
-      notesInput.value = "";
-
-      clearCurrentBookingUi();
-      saveBtn.disabled = true;
-
-      showMessage("Member lookup has been cleared.", "info");
-    }
-
-    lookupForm.addEventListener("submit", handleLookupSubmit);
-
-    bookingForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      await saveBooking();
+<div class="wrap">
+
+<div id="msg" class="msg"></div>
+
+<div class="card">
+<h2 id="eventTitle">Loading event…</h2>
+<div id="eventInfo"></div>
+</div>
+
+<div class="card">
+<h3>Member lookup</h3>
+
+<form id="lookupForm">
+<label>
+Membership number
+<input id="memberIdInput" />
+</label>
+
+<label>
+PIN
+<input id="pinInput" type="password" />
+</label>
+
+<button class="primary" type="submit">Lookup</button>
+</form>
+</div>
+
+<div class="card">
+<h3>Booking</h3>
+
+<form id="bookingForm">
+
+<label>
+Name
+<input id="nameInput" />
+</label>
+
+<label>
+Email
+<input id="emailInput" />
+</label>
+
+<label>
+Places
+<input id="placesInput" type="number" value="1" min="0"/>
+</label>
+
+<label>
+Notes
+<input id="notesInput"/>
+</label>
+
+<button class="primary" type="submit">Save</button>
+<button class="danger" type="button" id="cancelBtn">Cancel</button>
+
+</form>
+
+<div id="existingBox"></div>
+
+</div>
+
+</div>
+
+<script>
+const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+
+/* -------------------------
+   ROBUST EVENT ID DETECTION
+-------------------------- */
+
+const rawSearch = window.location.search || "";
+const rawHref = window.location.href || "";
+const qs = new URLSearchParams(rawSearch);
+
+let EVENT_ID =
+  (qs.get("event_id") || qs.get("_id") || "").trim();
+
+if (!EVENT_ID && rawHref.includes("?")) {
+  try{
+    const tail = rawHref.split("?")[1].split("#")[0];
+    const qs2 = new URLSearchParams(tail);
+    EVENT_ID = (qs2.get("event_id") || qs2.get("_id") || "").trim();
+  }catch(_){}
+}
+
+/* 🔍 TEMP DEBUG (REMOVE LATER) */
+alert(
+  "DEBUG\n\n" +
+  "Href: " + window.location.href + "\n\n" +
+  "Search: " + window.location.search + "\n\n" +
+  "EVENT_ID: " + EVENT_ID
+);
+
+/* ------------------------- */
+
+let authToken = "";
+let memberId = "";
+let currentBooking = null;
+
+/* ------------------------- */
+
+function msg(t){document.getElementById("msg").textContent=t;}
+
+async function getJson(url, opts={}){
+  const r = await fetch(url, opts);
+  const j = await r.json();
+  if (!r.ok || j.success===false){
+    throw new Error(j.message || "error");
+  }
+  return j;
+}
+
+/* -------------------------
+   LOAD EVENT (NO AUTH)
+-------------------------- */
+
+async function loadEvent(){
+  if (!EVENT_ID){
+    msg("❌ No event_id detected");
+    return;
+  }
+
+  try{
+    const data = await getJson(`${BACKEND}/api/events/${EVENT_ID}`);
+    const e = data.event || data;
+
+    document.getElementById("eventTitle").textContent =
+      e.title || e.event_title || "Event";
+
+    document.getElementById("eventInfo").textContent =
+      e.location || "";
+
+  }catch(e){
+    msg("Event load failed: " + e.message);
+  }
+}
+
+/* -------------------------
+   LOGIN
+-------------------------- */
+
+async function login(mid, pin){
+
+  const res = await getJson(`${BACKEND}/auth/login`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      member_id: mid,
+      memberId: mid,
+      pin: pin
+    })
+  });
+
+  authToken = res.token || res.authToken;
+  memberId = mid;
+
+}
+
+/* -------------------------
+   LOAD EXISTING BOOKING
+-------------------------- */
+
+async function loadMyBooking(){
+
+  if (!authToken || !memberId) return;
+
+  try{
+    const r = await getJson(`${BACKEND}/api/events/${EVENT_ID}/my-booking`,{
+      headers:{Authorization:`Bearer ${authToken}`}
     });
 
-    cancelBtn.addEventListener("click", async () => {
-      await cancelBooking();
-    });
+    currentBooking = r.booking || null;
 
-    reloadExistingBtn.addEventListener("click", () => {
-      if (!currentBooking){
-        showMessage("There is no existing booking/interest loaded.", "warn");
-        return;
-      }
-      populateBookingFormFromCurrent();
-      showMessage("Existing booking/interest reloaded into the form.", "ok");
-    });
+    renderExisting();
 
-    clearLookupBtn.addEventListener("click", clearLookupState);
+  }catch(e){
+    currentBooking = null;
+  }
+}
 
-    (async function init(){
-      await loadEvent();
+/* -------------------------
+   RENDER EXISTING
+-------------------------- */
 
-      if (currentMemberId){
-        memberIdInput.value = currentMemberId;
-        memberIdReadonly.value = currentMemberId;
-      }
+function renderExisting(){
 
-      if (authToken && currentMemberId && EVENT_ID){
-        const profile = await loadMemberProfile();
-        populateMemberFormFromProfile(profile || {});
-        await loadMyBooking();
-      }else{
-        saveBtn.disabled = true;
-      }
-    })();
-  </script>
+  const box = document.getElementById("existingBox");
+
+  if (!currentBooking){
+    box.innerHTML = "No existing booking";
+    return;
+  }
+
+  box.innerHTML =
+    "Existing booking: " +
+    JSON.stringify(currentBooking);
+}
+
+/* -------------------------
+   SAVE
+-------------------------- */
+
+async function saveBooking(){
+
+  const payload = {
+    member_id: memberId,
+    member_name: document.getElementById("nameInput").value,
+    email: document.getElementById("emailInput").value,
+    places_total: Number(document.getElementById("placesInput").value),
+    notes: document.getElementById("notesInput").value
+  };
+
+  await getJson(`${BACKEND}/api/events/${EVENT_ID}/book`,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:`Bearer ${authToken}`
+    },
+    body:JSON.stringify(payload)
+  });
+
+  msg("Saved ✔");
+
+  await loadMyBooking();
+}
+
+/* -------------------------
+   CANCEL
+-------------------------- */
+
+async function cancelBooking(){
+
+  await getJson(`${BACKEND}/api/events/${EVENT_ID}/cancel`,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:`Bearer ${authToken}`
+    },
+    body:JSON.stringify({member_id:memberId})
+  });
+
+  msg("Cancelled ✔");
+
+  currentBooking = null;
+  renderExisting();
+}
+
+/* -------------------------
+   EVENTS
+-------------------------- */
+
+document.getElementById("lookupForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+
+  try{
+    await login(
+      document.getElementById("memberIdInput").value.trim(),
+      document.getElementById("pinInput").value.trim()
+    );
+
+    msg("Login OK");
+
+    await loadMyBooking();
+
+  }catch(err){
+    msg("Login failed: " + err.message);
+  }
+});
+
+document.getElementById("bookingForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  await saveBooking();
+});
+
+document.getElementById("cancelBtn").addEventListener("click", cancelBooking);
+
+/* ------------------------- */
+
+loadEvent();
+
+</script>
 </body>
 </html>

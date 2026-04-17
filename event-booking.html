@@ -893,22 +893,27 @@ function dateDisplay(d){
     }
 
     async function loadMyBooking(){
-      if (!authToken || !currentMemberId || !EVENT_ID) return;
+  if (!authToken || !currentMemberId || !EVENT_ID) return;
 
-      const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${authToken}`
-        }
-      });
-
-      currentBooking = result.booking || null;
-      renderCurrentBooking();
-
-      if (currentBooking){
-        populateBookingFormFromCurrent();
+  try{
+    const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${authToken}`
       }
+    });
+
+    currentBooking = result.booking || null;
+    renderCurrentBooking();
+
+    if (currentBooking){
+      populateBookingFormFromCurrent();
     }
+  }catch(err){
+    currentBooking = null;
+    renderCurrentBooking();
+  }
+}
 
     async function memberLookup(){
   clearBookingMessages();

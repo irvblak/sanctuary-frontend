@@ -152,7 +152,40 @@
 
     .meta-row strong{
       color:#17314a;
-      min-width:96px;
+      min-width:132px;
+    }
+
+    .timing-box{
+      margin:18px 22px 0;
+      padding:14px 16px;
+      border-radius:18px;
+      background:#f7fbfe;
+      border:1px solid var(--line);
+      color:#31506b;
+      line-height:1.55;
+    }
+
+    .timing-title{
+      font-weight:800;
+      color:#17314a;
+      margin-bottom:8px;
+    }
+
+    .timing-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 14px;
+      align-items:flex-start;
+      margin-bottom:6px;
+    }
+
+    .timing-row:last-child{
+      margin-bottom:0;
+    }
+
+    .timing-row strong{
+      color:#17314a;
+      min-width:150px;
     }
 
     .host-box{
@@ -256,7 +289,7 @@
     }
 
     .status{
-      margin:18px 0 0;
+      margin:18px 22px 0;
       padding:12px 14px;
       border-radius:16px;
       display:none;
@@ -306,16 +339,19 @@
         font-size:1.7rem;
       }
 
-      .meta-row strong{
-        min-width:84px;
+      .meta-row strong,
+      .timing-row strong{
+        min-width:110px;
       }
 
       .notice-top,
       .meta,
+      .timing-box,
       .host-box,
       .body-image-wrap,
       .body,
-      .cta-row{
+      .cta-row,
+      .status{
         padding-left:16px;
         padding-right:16px;
       }
@@ -365,6 +401,13 @@
         <div class="meta-row"><strong>Reference</strong><span id="metaRef">—</span></div>
       </div>
 
+      <div class="timing-box">
+        <div class="timing-title">Booking times</div>
+        <div class="timing-row"><strong>Member booking opens</strong><span id="timingMembersOpen">—</span></div>
+        <div class="timing-row"><strong>Guest booking opens</strong><span id="timingGuestsOpen">—</span></div>
+        <div class="timing-row"><strong>Booking closes</strong><span id="timingBookingClose">—</span></div>
+      </div>
+
       <div class="host-box">
         <strong>Hosted by:</strong>
         <span id="hostText">—</span>
@@ -406,6 +449,10 @@
       metaLocation: document.getElementById("metaLocation"),
       metaBooking: document.getElementById("metaBooking"),
       metaRef: document.getElementById("metaRef"),
+
+      timingMembersOpen: document.getElementById("timingMembersOpen"),
+      timingGuestsOpen: document.getElementById("timingGuestsOpen"),
+      timingBookingClose: document.getElementById("timingBookingClose"),
 
       hostText: document.getElementById("hostText"),
       bodyImage: document.getElementById("bodyImage"),
@@ -465,6 +512,23 @@
       return s || e || "—";
     }
 
+    function formatDateTime(value) {
+      const raw = cleanText(value);
+      if (!raw) return "—";
+
+      const dt = new Date(raw);
+      if (isNaN(dt.getTime())) return raw;
+
+      return dt.toLocaleString(undefined, {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
     function bookingLabel(ev) {
       const mode = cleanText(ev.booking_mode || ev.bookingMode).toLowerCase();
 
@@ -484,7 +548,12 @@
     }
 
     function setTitleDisplay(ev) {
-      const graphicUrl = cleanText(ev.title_graphic_url || ev.graphic_title_url);
+      const graphicUrl = cleanText(
+        ev.title_graphic_url ||
+        ev.graphic_title_url ||
+        ev.titleGraphicUrl
+      );
+
       const title =
         cleanText(ev.notice_title) ||
         cleanText(ev.title) ||
@@ -519,7 +588,8 @@
     function setBodyImage(ev) {
       const imageUrl =
         cleanText(ev.notice_image_url) ||
-        cleanText(ev.image_url);
+        cleanText(ev.image_url) ||
+        cleanText(ev.noticeImageUrl);
 
       if (imageUrl) {
         els.bodyImage.style.display = "inline-block";
@@ -535,7 +605,8 @@
       const bodyText =
         cleanText(ev.notice_body) ||
         cleanText(ev.body) ||
-        cleanText(ev.description);
+        cleanText(ev.description) ||
+        cleanText(ev.notice_text);
 
       if (bodyHtml) {
         els.noticeBody.className = "body rich";
@@ -560,8 +631,17 @@
         cleanText(ev.category) ||
         "—";
 
-      els.metaDate.textContent = formatDate(ev.event_date || ev.date);
-      els.metaTime.textContent = formatTime(ev.start_time, ev.end_time);
+      els.metaDate.textContent = formatDate(
+        ev.event_date ||
+        ev.date ||
+        ev.start_date
+      );
+
+      els.metaTime.textContent = formatTime(
+        ev.start_time,
+        ev.end_time
+      );
+
       els.metaLocation.textContent = cleanText(ev.location) || "—";
       els.metaBooking.textContent = bookingLabel(ev);
       els.metaRef.textContent =
@@ -569,6 +649,22 @@
         cleanText(ev.id) ||
         cleanText(ev.event_id) ||
         "—";
+
+      els.timingMembersOpen.textContent = formatDateTime(
+        ev.members_booking_open_at ||
+        ev.member_booking_open_at ||
+        ev.booking_open_at
+      );
+
+      els.timingGuestsOpen.textContent = formatDateTime(
+        ev.guests_booking_open_at ||
+        ev.guest_booking_open_at
+      );
+
+      els.timingBookingClose.textContent = formatDateTime(
+        ev.booking_close_at ||
+        ev.bookings_close_at
+      );
 
       els.hostText.textContent = hostDisplay(ev);
 

@@ -2,74 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Event Booking | Sanctuary Club</title>
+  <title>Book or register your interest | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_3"></script>
+  <script src="access.js?v=AC_4"></script>
 
   <style>
     :root{
-      --bg:#f4f8fc;
-      --panel:#ffffff;
+      --bg1:#eef6ff;
+      --bg2:#f8fbff;
       --ink:#19334a;
       --muted:#607689;
       --line:#d7e4ef;
-      --soft:#eef5fb;
+      --panel:#ffffff;
+      --soft:#f4f8fc;
       --accent:#245d8b;
+      --accent2:#2f79b1;
       --ok:#1f6f47;
       --warn:#8a5a00;
       --err:#9e2b2b;
+      --shadow:0 16px 36px rgba(20,60,100,.10);
+      --radius:18px;
     }
 
     *{ box-sizing:border-box; }
 
     body{
       margin:0;
-      padding:20px;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
-      background:var(--bg);
+      background:linear-gradient(180deg,var(--bg1),var(--bg2) 45%,#fff);
+      min-height:100vh;
     }
 
     .wrap{
-      max-width:860px;
+      width:min(980px, calc(100% - 24px));
       margin:0 auto;
+      padding:20px 0 42px;
+    }
+
+    .backlink{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.02fr .98fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    @media (max-width:900px){
+      .grid{ grid-template-columns:1fr; }
     }
 
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:16px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       padding:18px;
-      margin-bottom:16px;
     }
 
-    h1,h2,h3{ margin-top:0; }
+    h1,h2,h3{
+      margin:0 0 10px;
+      color:var(--ink);
+    }
 
-    .msg{
+    .subhead{
+      margin:.25rem 0 0;
+      color:var(--muted);
+      font-size:.98rem;
+      line-height:1.45;
+    }
+
+    .message{
       display:none;
       margin-bottom:14px;
       padding:12px 14px;
-      border-radius:12px;
+      border-radius:14px;
+      font-size:.97rem;
+      line-height:1.45;
       border:1px solid transparent;
-      line-height:1.4;
     }
-    .msg.show{ display:block; }
-    .msg.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
-    .msg.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
-    .msg.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
-    .msg.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
+
+    .message.show{ display:block; }
+    .message.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
+    .message.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
+    .message.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
+    .message.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
+
+    .event-title{
+      margin:0 0 8px;
+      font-size:1.42rem;
+      line-height:1.2;
+    }
 
     .meta{
       display:grid;
-      grid-template-columns:160px 1fr;
-      gap:10px 14px;
+      gap:10px;
+      margin-top:14px;
     }
 
-    .meta div:nth-child(odd){
+    .meta-row{
+      display:grid;
+      grid-template-columns:170px 1fr;
+      gap:12px;
+      padding:10px 0;
+      border-top:1px solid var(--line);
+    }
+
+    .meta-row:first-child{
+      border-top:none;
+      padding-top:0;
+    }
+
+    .meta-label{
       color:var(--muted);
       font-weight:700;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:7px 12px;
+      font-weight:800;
+      font-size:.9rem;
+      background:#e8f1fb;
+      color:var(--accent);
+    }
+
+    .pill.warn{
+      background:#fff3d9;
+      color:#8a5a00;
+    }
+
+    .pill.ok{
+      background:#e9f6ee;
+      color:#1f6f47;
     }
 
     form{
@@ -77,30 +156,37 @@
       gap:14px;
     }
 
-    .grid2{
+    .field-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
     }
 
-    @media (max-width:700px){
-      .grid2{ grid-template-columns:1fr; }
+    @media (max-width:680px){
+      .field-grid{ grid-template-columns:1fr; }
     }
 
     label{
       display:grid;
       gap:6px;
       font-weight:700;
+      color:var(--ink);
+      font-size:.96rem;
     }
 
     input, textarea{
       width:100%;
-      padding:11px 12px;
       border:1px solid #cddae5;
       border-radius:12px;
+      padding:12px 13px;
       font:inherit;
       color:var(--ink);
       background:#fff;
+    }
+
+    textarea{
+      min-height:120px;
+      resize:vertical;
     }
 
     input[readonly]{
@@ -108,164 +194,283 @@
       color:#4c6276;
     }
 
-    textarea{
-      min-height:110px;
-      resize:vertical;
+    .small{
+      font-size:.9rem;
+      color:var(--muted);
+      font-weight:500;
+      line-height:1.4;
     }
 
-    .buttons{
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:4px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:transform .04s ease, opacity .18s ease;
+    }
+
+    button:active{ transform:translateY(1px); }
+    button:disabled{ opacity:.58; cursor:not-allowed; }
+
+    .btn-primary{ background:var(--accent); color:#fff; }
+    .btn-secondary{ background:#e8f0f8; color:var(--accent); }
+    .btn-soft{ background:#f2f6fa; color:var(--ink); }
+    .btn-danger{ background:#a33030; color:#fff; }
+
+    .response-box{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
     }
 
-    button{
-      border:none;
+    .choice{
+      border:1px solid #cfdcea;
+      background:#fff;
       border-radius:999px;
-      padding:11px 16px;
-      font:inherit;
-      font-weight:700;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
       cursor:pointer;
+      font-weight:700;
     }
 
-    button:disabled{
-      opacity:.6;
-      cursor:not-allowed;
+    .choice input{
+      width:auto;
+      margin:0;
+      padding:0;
     }
 
-    .primary{ background:var(--accent); color:#fff; }
-    .secondary{ background:#e8f0f8; color:var(--accent); }
-    .danger{ background:#a33030; color:#fff; }
-    .soft{ background:#f2f6fa; color:var(--ink); }
-
-    .existing{
+    .existing-card{
+      display:none;
       margin-top:14px;
-      padding:14px;
       border:1px solid var(--line);
       background:var(--soft);
-      border-radius:14px;
-      display:none;
-      line-height:1.5;
+      border-radius:16px;
+      padding:14px;
     }
 
-    .existing.show{ display:block; }
+    .existing-card.show{ display:block; }
 
-    .small{
+    .existing-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .existing-lines{
+      display:grid;
+      gap:8px;
+      font-size:.97rem;
+      line-height:1.45;
+    }
+
+    .existing-lines strong{
+      color:var(--ink);
+    }
+
+    .refund-note{
+      margin-top:8px;
       color:var(--muted);
       font-size:.92rem;
+      line-height:1.4;
     }
 
-    .back{
-      display:inline-block;
-      margin-bottom:14px;
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:700;
+    .divider{
+      height:1px;
+      background:var(--line);
+      margin:16px 0;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <a id="backLink" class="back" href="events-details.html">← Back to event notice</a>
+    <a id="backLink" class="backlink" href="events-details.html">← Back to event notice</a>
 
-    <div id="pageMsg" class="msg info"></div>
+    <div id="pageMessage" class="message info"></div>
 
-    <div class="card">
-      <h1>Book or register your interest</h1>
-      <p class="small">Please begin with Member lookup. If you already have a booking or interest recorded for this event, it should reload automatically.</p>
+    <div class="grid">
+      <section class="card">
+        <h1>Book or register your interest</h1>
+        <p class="subhead">Please begin with Member lookup. If you already have a booking or interest recorded for this event, it should reload automatically so you can edit, cancel, or request a refund.</p>
 
-      <h3 id="eventTitle">Loading event…</h3>
+        <div class="divider"></div>
 
-      <div class="meta">
-        <div>Event ID</div><div id="eventIdLine">—</div>
-        <div>Date</div><div id="eventDate">—</div>
-        <div>Time</div><div id="eventTime">—</div>
-        <div>Location</div><div id="eventLocation">—</div>
-        <div>Host</div><div id="eventHost">—</div>
-      </div>
-    </div>
+        <h2 id="eventTitle" class="event-title">Loading event…</h2>
+        <div id="eventSummary" class="subhead">Please wait.</div>
 
-    <div class="card">
-      <h2>Member lookup</h2>
-
-      <form id="lookupForm" autocomplete="on">
-        <div class="grid2">
-          <label>
-            Membership number
-            <input id="memberIdInput" type="text" placeholder="e.g. SM70" autocomplete="username" />
-          </label>
-
-          <label>
-            PIN
-            <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
-          </label>
+        <div class="meta">
+          <div class="meta-row">
+            <div class="meta-label">Reference</div>
+            <div id="eventReference">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Date</div>
+            <div id="eventDate">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Time</div>
+            <div id="eventTime">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Location</div>
+            <div id="eventLocation">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Host</div>
+            <div id="eventHost">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Spaces available</div>
+            <div id="eventSpacesAvailable">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Members booking opens</div>
+            <div id="eventMembersOpen">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Guests booking opens</div>
+            <div id="eventGuestsOpen">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Booking closes</div>
+            <div id="eventBookingClose">—</div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">Cancellation cutoff</div>
+            <div id="eventCancelCutoff">—</div>
+          </div>
         </div>
 
-        <div class="buttons">
-          <button id="lookupBtn" class="primary" type="submit">Lookup member</button>
-          <button id="clearBtn" class="soft" type="button">Clear</button>
-        </div>
-      </form>
-    </div>
-
-    <div class="card">
-      <h2>Your booking / interest</h2>
-
-      <form id="bookingForm" autocomplete="on">
-        <div class="grid2">
-          <label>
-            Member name
-            <input id="nameInput" type="text" />
-          </label>
-
-          <label>
-            Membership number
-            <input id="memberIdReadonly" type="text" readonly />
-          </label>
+        <div style="margin-top:14px;">
+          <span id="availabilityPill" class="pill">Availability not yet known</span>
         </div>
 
-        <div class="grid2">
-          <label>
-            Email
-            <input id="emailInput" type="email" />
-          </label>
-
-          <label>
-            Mobile
-            <input id="mobileInput" type="text" />
-          </label>
+        <div id="existingBookingCard" class="existing-card">
+          <div class="existing-title">
+            <strong>Existing booking / interest found</strong>
+            <span id="existingStatusPill" class="pill ok">Loaded</span>
+          </div>
+          <div id="existingBookingLines" class="existing-lines"></div>
+          <div class="refund-note">To request a refund, use the <strong>Request refund</strong> button below, then press <strong>Save booking / interest</strong>. This version records the refund request as part of the booking notes.</div>
         </div>
+      </section>
 
-        <div class="grid2">
+      <section class="card">
+        <h2>Member lookup</h2>
+
+        <form id="lookupForm" autocomplete="on">
+          <div class="field-grid">
+            <label>
+              Membership number
+              <input id="memberIdInput" type="text" placeholder="e.g. SM70" autocomplete="username" />
+            </label>
+
+            <label>
+              PIN
+              <input id="memberPinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="lookupBtn" class="btn-primary" type="submit">Lookup member</button>
+            <button id="clearBtn" class="btn-soft" type="button">Clear</button>
+          </div>
+        </form>
+
+        <div class="divider"></div>
+
+        <h2>Your booking / interest</h2>
+
+        <form id="bookingForm" autocomplete="on">
+          <div class="field-grid">
+            <label>
+              Member name
+              <input id="memberNameInput" type="text" />
+            </label>
+
+            <label>
+              Membership number
+              <input id="memberIdReadonly" type="text" readonly />
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              Email
+              <input id="memberEmailInput" type="email" />
+            </label>
+
+            <label>
+              Mobile
+              <input id="memberMobileInput" type="text" />
+            </label>
+          </div>
+
           <label>
-            Total places requested
-            <input id="placesInput" type="number" min="0" step="1" value="1" />
+            Response
+            <div class="response-box">
+              <label class="choice">
+                <input type="radio" name="responseType" value="booking" checked />
+                Booking
+              </label>
+              <label class="choice">
+                <input type="radio" name="responseType" value="interest" />
+                Interest only
+              </label>
+            </div>
+            <span class="small">If an existing record is found, the saved type should reload here automatically.</span>
           </label>
 
+          <div class="field-grid">
+            <label>
+              Total places requested
+              <input id="placesTotalInput" type="number" min="0" step="1" value="1" />
+            </label>
+
+            <label>
+              Guest places
+              <input id="guestPlacesInput" type="number" min="0" step="1" value="0" />
+            </label>
+          </div>
+
           <label>
-            Guest places
-            <input id="guestPlacesInput" type="number" min="0" step="1" value="0" />
+            Notes
+            <textarea id="notesInput" placeholder="Optional note"></textarea>
           </label>
-        </div>
 
-        <label>
-          Notes
-          <textarea id="notesInput" placeholder="Optional note"></textarea>
-        </label>
+          <div class="button-row">
+            <button id="saveBtn" class="btn-primary" type="submit" disabled>Save booking / interest</button>
+            <button id="reloadBtn" class="btn-secondary" type="button" disabled>Reload saved booking</button>
+            <button id="refundBtn" class="btn-secondary" type="button" disabled>Request refund</button>
+            <button id="cancelBtn" class="btn-danger" type="button" disabled>Cancel</button>
+          </div>
 
-        <div class="buttons">
-          <button id="saveBtn" class="primary" type="submit" disabled>Save booking / interest</button>
-          <button id="reloadBtn" class="secondary" type="button" disabled>Reload existing</button>
-          <button id="cancelBtn" class="danger" type="button" disabled>Cancel</button>
-        </div>
-      </form>
-
-      <div id="existingBox" class="existing"></div>
+          <div class="small">A saved booking should be reloaded after Member lookup. You may then amend the form and save again.</div>
+        </form>
+      </section>
     </div>
   </div>
 
   <script>
-    const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
     const rawSearch = window.location.search || "";
     const rawHref = window.location.href || "";
@@ -286,26 +491,38 @@
     let currentMemberId = "";
     let currentBooking = null;
 
-    const pageMsg = document.getElementById("pageMsg");
+    const pageMessage = document.getElementById("pageMessage");
+
+    const backLink = document.getElementById("backLink");
     const eventTitle = document.getElementById("eventTitle");
-    const eventIdLine = document.getElementById("eventIdLine");
+    const eventSummary = document.getElementById("eventSummary");
+    const eventReference = document.getElementById("eventReference");
     const eventDate = document.getElementById("eventDate");
     const eventTime = document.getElementById("eventTime");
     const eventLocation = document.getElementById("eventLocation");
     const eventHost = document.getElementById("eventHost");
-    const backLink = document.getElementById("backLink");
+    const eventSpacesAvailable = document.getElementById("eventSpacesAvailable");
+    const eventMembersOpen = document.getElementById("eventMembersOpen");
+    const eventGuestsOpen = document.getElementById("eventGuestsOpen");
+    const eventBookingClose = document.getElementById("eventBookingClose");
+    const eventCancelCutoff = document.getElementById("eventCancelCutoff");
+    const availabilityPill = document.getElementById("availabilityPill");
+
+    const existingBookingCard = document.getElementById("existingBookingCard");
+    const existingBookingLines = document.getElementById("existingBookingLines");
+    const existingStatusPill = document.getElementById("existingStatusPill");
 
     const lookupForm = document.getElementById("lookupForm");
     const bookingForm = document.getElementById("bookingForm");
 
     const memberIdInput = document.getElementById("memberIdInput");
-    const pinInput = document.getElementById("pinInput");
+    const memberPinInput = document.getElementById("memberPinInput");
 
-    const nameInput = document.getElementById("nameInput");
+    const memberNameInput = document.getElementById("memberNameInput");
     const memberIdReadonly = document.getElementById("memberIdReadonly");
-    const emailInput = document.getElementById("emailInput");
-    const mobileInput = document.getElementById("mobileInput");
-    const placesInput = document.getElementById("placesInput");
+    const memberEmailInput = document.getElementById("memberEmailInput");
+    const memberMobileInput = document.getElementById("memberMobileInput");
+    const placesTotalInput = document.getElementById("placesTotalInput");
     const guestPlacesInput = document.getElementById("guestPlacesInput");
     const notesInput = document.getElementById("notesInput");
 
@@ -313,8 +530,8 @@
     const clearBtn = document.getElementById("clearBtn");
     const saveBtn = document.getElementById("saveBtn");
     const reloadBtn = document.getElementById("reloadBtn");
+    const refundBtn = document.getElementById("refundBtn");
     const cancelBtn = document.getElementById("cancelBtn");
-    const existingBox = document.getElementById("existingBox");
 
     function baseMemberId(value){
       const raw = String(value || "").trim().toUpperCase();
@@ -323,21 +540,31 @@
       return m ? m[1] : raw;
     }
 
-    function showMsg(text, kind="info"){
-      if (!text){
-        pageMsg.className = "msg info";
-        pageMsg.textContent = "";
-        return;
-      }
-      pageMsg.textContent = text;
-      pageMsg.className = `msg show ${kind}`;
-    }
-
-    function pick(...vals){
-      for (const v of vals){
+    function pick(){
+      for (let i = 0; i < arguments.length; i++){
+        const v = arguments[i];
         if (v !== undefined && v !== null && String(v).trim() !== "") return v;
       }
       return "";
+    }
+
+    function showMessage(text, kind = "info"){
+      if (!text){
+        pageMessage.className = "message info";
+        pageMessage.textContent = "";
+        return;
+      }
+      pageMessage.textContent = text;
+      pageMessage.className = `message show ${kind}`;
+    }
+
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
     }
 
     function formatDateOnly(value){
@@ -352,8 +579,23 @@
       });
     }
 
+    function formatDateTime(value){
+      if (!value) return "—";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return value;
+      return d.toLocaleString("en-GB", {
+        weekday:"short",
+        day:"numeric",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+    }
+
     function formatTimeRange(startValue, endValue){
       if (!startValue && !endValue) return "—";
+
       const s = startValue ? new Date(startValue) : null;
       const e = endValue ? new Date(endValue) : null;
 
@@ -364,8 +606,8 @@
       return [startValue, endValue].filter(Boolean).join(" – ") || "—";
     }
 
-    async function getJson(url, opts = {}){
-      const res = await fetch(url, opts);
+    async function getJson(url, options = {}){
+      const res = await fetch(url, options);
       const text = await res.text();
 
       let data = {};
@@ -382,55 +624,29 @@
       return data;
     }
 
-    function setButtonsAfterLookup(ok){
-      saveBtn.disabled = !ok;
-      reloadBtn.disabled = !ok;
-      cancelBtn.disabled = !ok || !currentBooking;
+    function getResponseType(){
+      return bookingForm.querySelector('input[name="responseType"]:checked')?.value || "booking";
     }
 
-    function renderExisting(){
-      if (!currentBooking){
-        existingBox.classList.remove("show");
-        existingBox.innerHTML = "";
-        cancelBtn.disabled = true;
-        return;
-      }
-
-      existingBox.innerHTML = `
-        <strong>Existing record loaded</strong><br>
-        Places: ${pick(currentBooking.places_total, currentBooking.places, 0)}<br>
-        Guest places: ${pick(currentBooking.guest_places, 0)}<br>
-        Status: ${pick(currentBooking.booking_status, currentBooking.status, "Recorded")}<br>
-        Notes: ${pick(currentBooking.notes, currentBooking.note, "—")}
-      `;
-
-      existingBox.classList.add("show");
-      cancelBtn.disabled = false;
+    function setResponseType(value){
+      const wanted = value === "interest" ? "interest" : "booking";
+      const el = bookingForm.querySelector(`input[name="responseType"][value="${wanted}"]`);
+      if (el) el.checked = true;
     }
 
-    function populateBookingFormFromCurrent(){
-      if (!currentBooking) return;
+    function responseTypeFromBooking(booking){
+      const raw = String(
+        pick(
+          booking?.response_type,
+          booking?.booking_type,
+          booking?.mode,
+          booking?.status,
+          booking?.intent
+        ) || ""
+      ).toLowerCase();
 
-      nameInput.value = pick(
-        currentBooking.member_name,
-        currentBooking.name,
-        nameInput.value
-      );
-
-      emailInput.value = pick(
-        currentBooking.email,
-        emailInput.value
-      );
-
-      mobileInput.value = pick(
-        currentBooking.mobile,
-        currentBooking.phone,
-        mobileInput.value
-      );
-
-      placesInput.value = String(Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0));
-      guestPlacesInput.value = String(Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0));
-      notesInput.value = pick(currentBooking.notes, currentBooking.note, "");
+      if (raw.includes("interest")) return "interest";
+      return "booking";
     }
 
     function firstResidentFromProfile(profile){
@@ -460,7 +676,7 @@
     function extractProfileContact(profile){
       const resident = firstResidentFromProfile(profile);
 
-      const nestedCandidates = [
+      const nested = [
         profile,
         profile && profile.profile,
         profile && profile.member,
@@ -473,52 +689,22 @@
       let email = "";
       let mobile = "";
 
-      for (const obj of nestedCandidates){
+      for (const obj of nested){
         if (!name){
-          name = pick(
-            obj.name,
-            obj.member_name,
-            obj.full_name,
-            obj.display_name,
-            obj.contact_name
-          );
+          name = pick(obj.name, obj.member_name, obj.full_name, obj.display_name, obj.contact_name);
         }
         if (!email){
-          email = pick(
-            obj.email,
-            obj.contact_email
-          );
+          email = pick(obj.email, obj.contact_email);
         }
         if (!mobile){
-          mobile = pick(
-            obj.mobile,
-            obj.phone,
-            obj.contact_mobile,
-            obj.contact_phone
-          );
+          mobile = pick(obj.mobile, obj.phone, obj.contact_mobile, obj.contact_phone);
         }
       }
 
       if (resident){
-        if (!name){
-          name = pick(
-            resident.name,
-            resident.full_name,
-            resident.display_name
-          );
-        }
-        if (!email){
-          email = pick(
-            resident.email
-          );
-        }
-        if (!mobile){
-          mobile = pick(
-            resident.mobile,
-            resident.phone,
-            resident.landline
-          );
-        }
+        if (!name) name = pick(resident.name, resident.full_name, resident.display_name);
+        if (!email) email = pick(resident.email);
+        if (!mobile) mobile = pick(resident.mobile, resident.phone, resident.landline);
       }
 
       return {
@@ -548,7 +734,7 @@
       return null;
     }
 
-    function populateMemberForm(profile = null){
+    function populateMemberForm(profile){
       const contact = extractProfileContact(profile || {});
       const fallback = localMemberFallback(currentMemberId) || {};
       const fallbackContact = extractProfileContact(fallback);
@@ -556,45 +742,137 @@
       memberIdReadonly.value = currentMemberId || "";
       memberIdInput.value = currentMemberId || "";
 
-      nameInput.value = pick(
+      memberNameInput.value = pick(
         contact.name,
         fallbackContact.name,
         currentBooking?.member_name,
         currentBooking?.name,
-        nameInput.value
+        memberNameInput.value
       );
 
-      emailInput.value = pick(
+      memberEmailInput.value = pick(
         contact.email,
         fallbackContact.email,
         currentBooking?.email,
-        emailInput.value
+        memberEmailInput.value
       );
 
-      mobileInput.value = pick(
+      memberMobileInput.value = pick(
         contact.mobile,
         fallbackContact.mobile,
         currentBooking?.mobile,
         currentBooking?.phone,
-        mobileInput.value
+        memberMobileInput.value
       );
+    }
+
+    function setActionButtons(lookupOk){
+      saveBtn.disabled = !lookupOk;
+      reloadBtn.disabled = !lookupOk || !currentBooking;
+      refundBtn.disabled = !lookupOk || !currentBooking;
+      cancelBtn.disabled = !lookupOk || !currentBooking;
+    }
+
+    function renderAvailability(){
+      const spaces = pick(
+        eventData?.spaces_available,
+        eventData?.places_remaining,
+        eventData?.remaining_places,
+        eventData?.available_places,
+        eventData?.capacity_remaining
+      );
+
+      if (spaces === ""){
+        availabilityPill.textContent = "Availability not yet known";
+        availabilityPill.className = "pill";
+        return;
+      }
+
+      const n = Number(spaces);
+      if (Number.isFinite(n)){
+        if (n <= 0){
+          availabilityPill.textContent = "No spaces currently available";
+          availabilityPill.className = "pill warn";
+          return;
+        }
+        availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
+        availabilityPill.className = "pill ok";
+        return;
+      }
+
+      availabilityPill.textContent = String(spaces);
+      availabilityPill.className = "pill";
+    }
+
+    function renderExistingBooking(){
+      if (!currentBooking){
+        existingBookingCard.classList.remove("show");
+        existingBookingLines.innerHTML = "";
+        existingStatusPill.textContent = "Not loaded";
+        existingStatusPill.className = "pill";
+        setActionButtons(!!(authToken && currentMemberId));
+        return;
+      }
+
+      const type = responseTypeFromBooking(currentBooking);
+      const lines = [
+        ["Type", type === "interest" ? "Interest only" : "Booking"],
+        ["Places", pick(currentBooking.places_total, currentBooking.places, 0)],
+        ["Guest places", pick(currentBooking.guest_places, 0)],
+        ["Status", pick(currentBooking.booking_status, currentBooking.status, "Recorded")],
+        ["Booked / updated", pick(currentBooking.updated_at, currentBooking.created_at, "—")],
+        ["Notes", pick(currentBooking.notes, currentBooking.note, "—")]
+      ];
+
+      existingBookingLines.innerHTML = lines.map(([label, value]) =>
+        `<div><strong>${escapeHtml(label)}:</strong> ${escapeHtml(String(value))}</div>`
+      ).join("");
+
+      existingBookingCard.classList.add("show");
+      existingStatusPill.textContent = "Loaded";
+      existingStatusPill.className = "pill ok";
+      setActionButtons(true);
+    }
+
+    function populateBookingFormFromCurrent(){
+      if (!currentBooking) return;
+
+      setResponseType(responseTypeFromBooking(currentBooking));
+
+      memberNameInput.value = pick(currentBooking.member_name, currentBooking.name, memberNameInput.value);
+      memberEmailInput.value = pick(currentBooking.email, memberEmailInput.value);
+      memberMobileInput.value = pick(currentBooking.mobile, currentBooking.phone, memberMobileInput.value);
+
+      placesTotalInput.value = String(Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0));
+      guestPlacesInput.value = String(Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0));
+      notesInput.value = pick(currentBooking.notes, currentBooking.note, "");
     }
 
     async function loadEvent(){
       if (!EVENT_ID){
-        showMsg("This booking page has no event_id in the address.", "err");
+        showMessage("This page was opened without an event reference in the address.", "err");
         eventTitle.textContent = "Event not found";
+        eventSummary.textContent = "This booking page needs an event_id in the address.";
         return;
       }
 
       backLink.href = `events-details.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      eventIdLine.textContent = EVENT_ID;
 
       try{
-        const data = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}`);
-        eventData = data.event || data;
+        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
+        eventData = data.event || data || {};
+
+        const reference = pick(
+          eventData.reference,
+          eventData.event_reference,
+          eventData.event_ref,
+          eventData.event_id,
+          EVENT_ID
+        );
 
         eventTitle.textContent = pick(eventData.title, eventData.event_title, "Event");
+        eventSummary.textContent = pick(eventData.summary, eventData.short_description, eventData.description, "Please use Member lookup to continue.");
+        eventReference.textContent = reference;
         eventDate.textContent = formatDateOnly(pick(eventData.start_at, eventData.starts_at, eventData.date));
         eventTime.textContent = formatTimeRange(
           pick(eventData.start_at, eventData.starts_at, eventData.date),
@@ -607,9 +885,37 @@
           eventData.host_name,
           "—"
         );
+
+        eventSpacesAvailable.textContent = pick(
+          eventData.spaces_available,
+          eventData.places_remaining,
+          eventData.remaining_places,
+          eventData.available_places,
+          eventData.capacity_remaining,
+          "—"
+        );
+
+        eventMembersOpen.textContent = formatDateTime(
+          pick(eventData.members_booking_open_at, eventData.booking_open_at)
+        );
+
+        eventGuestsOpen.textContent = formatDateTime(
+          pick(eventData.guests_booking_open_at, eventData.guest_booking_open_at)
+        );
+
+        eventBookingClose.textContent = formatDateTime(
+          pick(eventData.booking_close_at)
+        );
+
+        eventCancelCutoff.textContent = formatDateTime(
+          pick(eventData.cancellation_cutoff_at)
+        );
+
+        renderAvailability();
       }catch(err){
-        showMsg(`Event load failed: ${err.message}`, "err");
         eventTitle.textContent = "Unable to load event";
+        eventSummary.textContent = err.message || "Please try again.";
+        showMessage(err.message || "Unable to load event details.", "err");
       }
     }
 
@@ -623,10 +929,10 @@
 
       for (const payload of attempts){
         try{
-          const res = await getJson(`${BACKEND}/auth/login`, {
+          const res = await getJson(`${BACKEND_URL}/auth/login`, {
             method:"POST",
             headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify(payload)
+            body:JSON.stringify(payload)
           });
 
           const token = pick(res.token, res.authToken, res.access_token);
@@ -647,7 +953,7 @@
       if (!authToken || !currentMemberId) return null;
 
       try{
-        const data = await getJson(`${BACKEND}/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
+        const data = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
           method:"GET",
           headers:{
             "Authorization": `Bearer ${authToken}`
@@ -664,7 +970,7 @@
       if (!authToken || !currentMemberId || !EVENT_ID) return;
 
       try{
-        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
+        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
           method:"GET",
           headers:{
             "Authorization": `Bearer ${authToken}`
@@ -672,34 +978,34 @@
         });
 
         currentBooking = result.booking || null;
-        renderExisting();
+        renderExistingBooking();
 
         if (currentBooking){
           populateBookingFormFromCurrent();
         }
       }catch(_){
         currentBooking = null;
-        renderExisting();
+        renderExistingBooking();
       }
     }
 
-    async function handleLookup(ev){
-      ev.preventDefault();
+    async function handleLookupSubmit(event){
+      event.preventDefault();
 
       const memberId = baseMemberId(memberIdInput.value);
-      const pin = pinInput.value.trim();
+      const pin = memberPinInput.value.trim();
 
       if (!memberId){
-        showMsg("Please enter a membership number.", "warn");
+        showMessage("Please enter a membership number.", "warn");
         return;
       }
       if (!pin){
-        showMsg("Please enter your PIN.", "warn");
+        showMessage("Please enter your PIN.", "warn");
         return;
       }
 
       lookupBtn.disabled = true;
-      showMsg("Looking up member…", "info");
+      showMessage("Looking up member…", "info");
 
       try{
         await login(memberId, pin);
@@ -709,65 +1015,72 @@
 
         await loadMyBooking();
 
-        setButtonsAfterLookup(true);
+        setActionButtons(true);
 
         if (currentBooking){
-          showMsg("Existing booking / interest reloaded.", "ok");
+          showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
         }else{
-          const hasAnyContact = !!pick(nameInput.value, emailInput.value, mobileInput.value);
-
-          if (hasAnyContact){
-            showMsg("Member lookup complete. No existing booking was found for this event.", "info");
+          const hasContact = !!pick(memberNameInput.value, memberEmailInput.value, memberMobileInput.value);
+          if (hasContact){
+            showMessage("Member lookup complete. No existing booking was found for this event.", "info");
           }else{
-            showMsg("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
+            showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
           }
         }
       }catch(err){
         authToken = "";
         currentMemberId = "";
         currentBooking = null;
-        renderExisting();
-        setButtonsAfterLookup(false);
-        showMsg(`Member lookup failed: ${err.message}`, "err");
+        renderExistingBooking();
+        setActionButtons(false);
+        showMessage(`Member lookup failed: ${err.message}`, "err");
       }finally{
         lookupBtn.disabled = false;
       }
     }
 
-    async function saveBooking(ev){
-      ev.preventDefault();
+    function makeBookingPayload(){
+      const responseType = getResponseType();
+      const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));
+      const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
+
+      const payload = {
+        member_id: currentMemberId,
+        member_name: memberNameInput.value.trim(),
+        email: memberEmailInput.value.trim(),
+        mobile: memberMobileInput.value.trim(),
+        places_total: responseType === "interest" ? 0 : placesTotal,
+        guest_places: responseType === "interest" ? 0 : guestPlaces,
+        response_type: responseType,
+        notes: notesInput.value.trim()
+      };
+
+      if (currentBooking && currentBooking.booking_id){
+        payload.booking_id = currentBooking.booking_id;
+      }
+
+      return payload;
+    }
+
+    async function saveBooking(event){
+      event.preventDefault();
 
       if (!authToken || !currentMemberId){
-        showMsg("Please do Member lookup first.", "warn");
+        showMessage("Please do Member lookup first.", "warn");
         return;
       }
 
-      const placesTotal = Math.max(0, Number(placesInput.value || 0));
-      const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
+      const payload = makeBookingPayload();
 
-      if (placesTotal < 1){
-        showMsg("Please request at least one place.", "warn");
+      if (payload.response_type !== "interest" && payload.places_total < 1){
+        showMessage("Please request at least one place, or switch to Interest only.", "warn");
         return;
       }
 
       saveBtn.disabled = true;
 
       try{
-        const payload = {
-          member_id: currentMemberId,
-          member_name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          mobile: mobileInput.value.trim(),
-          places_total: placesTotal,
-          guest_places: guestPlaces,
-          notes: notesInput.value.trim()
-        };
-
-        if (currentBooking && currentBooking.booking_id){
-          payload.booking_id = currentBooking.booking_id;
-        }
-
-        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
+        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
           method:"POST",
           headers:{
             "Content-Type":"application/json",
@@ -776,40 +1089,40 @@
           body:JSON.stringify(payload)
         });
 
-        showMsg(result.message || "Booking saved.", "ok");
+        showMessage(data.message || "Booking / interest saved.", "ok");
         await loadMyBooking();
-        setButtonsAfterLookup(true);
       }catch(err){
-        showMsg(`Save failed: ${err.message}`, "err");
+        showMessage(`Save failed: ${err.message}`, "err");
       }finally{
         saveBtn.disabled = false;
+        setActionButtons(!!(authToken && currentMemberId));
       }
     }
 
     async function cancelBooking(){
       if (!authToken || !currentMemberId){
-        showMsg("Please do Member lookup first.", "warn");
+        showMessage("Please do Member lookup first.", "warn");
         return;
       }
 
       if (!currentBooking){
-        showMsg("There is no existing booking to cancel.", "warn");
+        showMessage("There is no existing booking / interest loaded to cancel.", "warn");
         return;
       }
 
-      const yes = window.confirm("Cancel this booking / interest?");
-      if (!yes) return;
+      const ok = window.confirm("Cancel this booking / interest?");
+      if (!ok) return;
 
       cancelBtn.disabled = true;
 
       try{
         const payload = { member_id: currentMemberId };
 
-        if (currentBooking.booking_id){
+        if (currentBooking && currentBooking.booking_id){
           payload.booking_id = currentBooking.booking_id;
         }
 
-        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
+        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
           method:"POST",
           headers:{
             "Content-Type":"application/json",
@@ -819,26 +1132,46 @@
         });
 
         currentBooking = null;
-        renderExisting();
-        placesInput.value = "1";
+        renderExistingBooking();
+
+        setResponseType("booking");
+        placesTotalInput.value = "1";
         guestPlacesInput.value = "0";
         notesInput.value = "";
 
-        showMsg(result.message || "Booking cancelled.", "ok");
+        showMessage(data.message || "Booking / interest cancelled.", "ok");
       }catch(err){
-        showMsg(`Cancel failed: ${err.message}`, "err");
+        showMessage(`Cancel failed: ${err.message}`, "err");
       }finally{
         cancelBtn.disabled = false;
+        setActionButtons(!!(authToken && currentMemberId));
       }
     }
 
-    function reloadExistingIntoForm(){
+    function reloadSavedBooking(){
       if (!currentBooking){
-        showMsg("No existing booking is currently loaded.", "warn");
+        showMessage("No saved booking / interest is currently loaded.", "warn");
         return;
       }
       populateBookingFormFromCurrent();
-      showMsg("Existing booking reloaded into the form.", "ok");
+      showMessage("Saved booking / interest reloaded into the form.", "ok");
+    }
+
+    function requestRefund(){
+      if (!currentBooking){
+        showMessage("A saved booking must be loaded before you can request a refund.", "warn");
+        return;
+      }
+
+      const existing = notesInput.value.trim();
+      const marker = "[REFUND REQUEST]";
+      const addition = `${marker} Please consider this a refund request for this booking.`;
+
+      if (!existing.includes(marker)){
+        notesInput.value = existing ? `${existing}\n\n${addition}` : addition;
+      }
+
+      showMessage("Refund request text has been added to the Notes box. Please now press Save booking / interest.", "info");
     }
 
     function clearLookup(){
@@ -847,24 +1180,26 @@
       currentBooking = null;
 
       memberIdInput.value = "";
-      pinInput.value = "";
+      memberPinInput.value = "";
+      memberNameInput.value = "";
+      memberEmailInput.value = "";
+      memberMobileInput.value = "";
       memberIdReadonly.value = "";
-      nameInput.value = "";
-      emailInput.value = "";
-      mobileInput.value = "";
-      placesInput.value = "1";
+      placesTotalInput.value = "1";
       guestPlacesInput.value = "0";
       notesInput.value = "";
+      setResponseType("booking");
 
-      renderExisting();
-      setButtonsAfterLookup(false);
-      showMsg("Lookup cleared.", "info");
+      renderExistingBooking();
+      setActionButtons(false);
+      showMessage("Member lookup cleared.", "info");
     }
 
-    lookupForm.addEventListener("submit", handleLookup);
+    lookupForm.addEventListener("submit", handleLookupSubmit);
     bookingForm.addEventListener("submit", saveBooking);
+    reloadBtn.addEventListener("click", reloadSavedBooking);
+    refundBtn.addEventListener("click", requestRefund);
     cancelBtn.addEventListener("click", cancelBooking);
-    reloadBtn.addEventListener("click", reloadExistingIntoForm);
     clearBtn.addEventListener("click", clearLookup);
 
     loadEvent();

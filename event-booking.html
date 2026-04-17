@@ -1021,15 +1021,12 @@ try{
           );
         }
       }catch(err){
-        authToken = "";
-        currentMemberId = "";
-        currentBooking = null;
-        renderCurrentBooking();
-        showBookingErr(err.message || "Member lookup failed.");
-      }finally{
-        lookupBtn.disabled = false;
-      }
-    }
+  currentBooking = null;
+  renderCurrentBooking();
+  showBookingErr(err.message || "Member lookup failed.");
+}finally{
+  lookupBtn.disabled = false;
+}
 
     function validateBookingForm(){
       if (!eventData) return "Event not loaded.";

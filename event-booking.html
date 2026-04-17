@@ -931,15 +931,16 @@ function dateDisplay(d){
         });
 
         authToken = login.token || "";
-        currentMemberId = (login.member?.memberId || memberId).trim().toUpperCase();
+currentMemberId = (login.member?.memberId || memberId).trim().toUpperCase();
+currentMemberId = currentMemberId.split("/")[0].trim();
 
-        let profile = null;
-        try{
-          const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
-          profile = p.member || p.profile || p.data || p || null;
-        }catch{
-          profile = null;
-        }
+let profile = null;
+try{
+  const p = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`);
+  profile = p.member || p.profile || p.data || p || null;
+}catch{
+  profile = null;
+}
 
         const backendResidents = Array.isArray(profile?.residents) ? profile.residents : [];
 

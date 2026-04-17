@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_2"></script>
+  <script src="access.js?v=AC_3"></script>
 
   <style>
     :root{
@@ -33,7 +33,7 @@
     }
 
     .wrap{
-      max-width:820px;
+      max-width:860px;
       margin:0 auto;
     }
 
@@ -45,9 +45,7 @@
       margin-bottom:16px;
     }
 
-    h1,h2,h3{
-      margin-top:0;
-    }
+    h1,h2,h3{ margin-top:0; }
 
     .msg{
       display:none;
@@ -147,6 +145,7 @@
       background:var(--soft);
       border-radius:14px;
       display:none;
+      line-height:1.5;
     }
 
     .existing.show{ display:block; }
@@ -412,33 +411,169 @@
     function populateBookingFormFromCurrent(){
       if (!currentBooking) return;
 
+      nameInput.value = pick(
+        currentBooking.member_name,
+        currentBooking.name,
+        nameInput.value
+      );
+
+      emailInput.value = pick(
+        currentBooking.email,
+        emailInput.value
+      );
+
+      mobileInput.value = pick(
+        currentBooking.mobile,
+        currentBooking.phone,
+        mobileInput.value
+      );
+
       placesInput.value = String(Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0));
       guestPlacesInput.value = String(Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0));
       notesInput.value = pick(currentBooking.notes, currentBooking.note, "");
     }
 
-    function populateMemberForm(profile = {}){
+    function firstResidentFromProfile(profile){
+      if (!profile || typeof profile !== "object") return null;
+
+      const lists = [
+        profile.residents,
+        profile.members,
+        profile.people,
+        profile.household_members,
+        profile.directory_residents,
+        profile.entry && profile.entry.residents,
+        profile.profile && profile.profile.residents,
+        profile.member && profile.member.residents
+      ];
+
+      for (const list of lists){
+        if (Array.isArray(list) && list.length){
+          const first = list.find(item => item && typeof item === "object");
+          if (first) return first;
+        }
+      }
+
+      return null;
+    }
+
+    function extractProfileContact(profile){
+      const resident = firstResidentFromProfile(profile);
+
+      const nestedCandidates = [
+        profile,
+        profile && profile.profile,
+        profile && profile.member,
+        profile && profile.resident,
+        profile && profile.directory_entry,
+        profile && profile.entry
+      ].filter(Boolean);
+
+      let name = "";
+      let email = "";
+      let mobile = "";
+
+      for (const obj of nestedCandidates){
+        if (!name){
+          name = pick(
+            obj.name,
+            obj.member_name,
+            obj.full_name,
+            obj.display_name,
+            obj.contact_name
+          );
+        }
+        if (!email){
+          email = pick(
+            obj.email,
+            obj.contact_email
+          );
+        }
+        if (!mobile){
+          mobile = pick(
+            obj.mobile,
+            obj.phone,
+            obj.contact_mobile,
+            obj.contact_phone
+          );
+        }
+      }
+
+      if (resident){
+        if (!name){
+          name = pick(
+            resident.name,
+            resident.full_name,
+            resident.display_name
+          );
+        }
+        if (!email){
+          email = pick(
+            resident.email
+          );
+        }
+        if (!mobile){
+          mobile = pick(
+            resident.mobile,
+            resident.phone,
+            resident.landline
+          );
+        }
+      }
+
+      return {
+        name: name || "",
+        email: email || "",
+        mobile: mobile || ""
+      };
+    }
+
+    function localMemberFallback(memberId){
+      try{
+        const raw = localStorage.getItem("sanctuaryMembers");
+        if (!raw) return null;
+        const all = JSON.parse(raw);
+        if (!all || typeof all !== "object") return null;
+
+        const exact = all[memberId];
+        if (exact && typeof exact === "object") return exact;
+
+        const keys = Object.keys(all);
+        for (const key of keys){
+          if (baseMemberId(key) === memberId && all[key] && typeof all[key] === "object"){
+            return all[key];
+          }
+        }
+      }catch(_){}
+      return null;
+    }
+
+    function populateMemberForm(profile = null){
+      const contact = extractProfileContact(profile || {});
+      const fallback = localMemberFallback(currentMemberId) || {};
+      const fallbackContact = extractProfileContact(fallback);
+
       memberIdReadonly.value = currentMemberId || "";
       memberIdInput.value = currentMemberId || "";
 
       nameInput.value = pick(
-        profile.name,
-        profile.member_name,
-        profile.full_name,
+        contact.name,
+        fallbackContact.name,
         currentBooking?.member_name,
         currentBooking?.name,
         nameInput.value
       );
 
       emailInput.value = pick(
-        profile.email,
+        contact.email,
+        fallbackContact.email,
         currentBooking?.email,
         emailInput.value
       );
 
       mobileInput.value = pick(
-        profile.mobile,
-        profile.phone,
+        contact.mobile,
+        fallbackContact.mobile,
         currentBooking?.mobile,
         currentBooking?.phone,
         mobileInput.value
@@ -518,7 +653,8 @@
             "Authorization": `Bearer ${authToken}`
           }
         });
-        return data.profile || data.member || data || null;
+
+        return data.profile || data.member || data.entry || data || null;
       }catch(_){
         return null;
       }
@@ -569,7 +705,7 @@
         await login(memberId, pin);
 
         const profile = await loadMemberProfile();
-        populateMemberForm(profile || {});
+        populateMemberForm(profile);
 
         await loadMyBooking();
 
@@ -578,7 +714,13 @@
         if (currentBooking){
           showMsg("Existing booking / interest reloaded.", "ok");
         }else{
-          showMsg("Member lookup complete. No existing booking was found for this event.", "info");
+          const hasAnyContact = !!pick(nameInput.value, emailInput.value, mobileInput.value);
+
+          if (hasAnyContact){
+            showMsg("Member lookup complete. No existing booking was found for this event.", "info");
+          }else{
+            showMsg("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
+          }
         }
       }catch(err){
         authToken = "";

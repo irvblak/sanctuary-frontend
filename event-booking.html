@@ -1,327 +1,731 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Event Booking</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="robots" content="noindex, nofollow" />
+  <meta charset="UTF-8" />
+  <title>Event Booking | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
 
-<script src="access.js?v=AC_2"></script>
+  <script src="access.js?v=AC_2"></script>
 
-<style>
-body{
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:#f4f8fc;
-  margin:0;
-  padding:20px;
-}
-.wrap{
-  max-width:700px;
-  margin:auto;
-}
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:16px;
-}
-button{
-  padding:10px 14px;
-  border-radius:999px;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-}
-.primary{background:#245d8b;color:#fff;}
-.secondary{background:#e8f0f8;}
-.danger{background:#9e2b2b;color:#fff;}
-input{width:100%;padding:10px;margin-top:4px;}
-label{display:block;margin-bottom:12px;}
-.msg{margin-bottom:12px;}
-</style>
+  <style>
+    :root{
+      --bg:#f4f8fc;
+      --panel:#ffffff;
+      --ink:#19334a;
+      --muted:#607689;
+      --line:#d7e4ef;
+      --soft:#eef5fb;
+      --accent:#245d8b;
+      --ok:#1f6f47;
+      --warn:#8a5a00;
+      --err:#9e2b2b;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:20px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+
+    .wrap{
+      max-width:820px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      margin-bottom:16px;
+    }
+
+    h1,h2,h3{
+      margin-top:0;
+    }
+
+    .msg{
+      display:none;
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid transparent;
+      line-height:1.4;
+    }
+    .msg.show{ display:block; }
+    .msg.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
+    .msg.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
+    .msg.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
+    .msg.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
+
+    .meta{
+      display:grid;
+      grid-template-columns:160px 1fr;
+      gap:10px 14px;
+    }
+
+    .meta div:nth-child(odd){
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    form{
+      display:grid;
+      gap:14px;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    @media (max-width:700px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    label{
+      display:grid;
+      gap:6px;
+      font-weight:700;
+    }
+
+    input, textarea{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid #cddae5;
+      border-radius:12px;
+      font:inherit;
+      color:var(--ink);
+      background:#fff;
+    }
+
+    input[readonly]{
+      background:#f6f9fc;
+      color:#4c6276;
+    }
+
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    button{
+      border:none;
+      border-radius:999px;
+      padding:11px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    button:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .primary{ background:var(--accent); color:#fff; }
+    .secondary{ background:#e8f0f8; color:var(--accent); }
+    .danger{ background:#a33030; color:#fff; }
+    .soft{ background:#f2f6fa; color:var(--ink); }
+
+    .existing{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid var(--line);
+      background:var(--soft);
+      border-radius:14px;
+      display:none;
+    }
+
+    .existing.show{ display:block; }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .back{
+      display:inline-block;
+      margin-bottom:14px;
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:700;
+    }
+  </style>
 </head>
-
 <body>
-<div class="wrap">
-
-<div id="msg" class="msg"></div>
-
-<div class="card">
-<h2 id="eventTitle">Loading event…</h2>
-<div id="eventInfo"></div>
-</div>
-
-<div class="card">
-<h3>Member lookup</h3>
-
-<form id="lookupForm">
-<label>
-Membership number
-<input id="memberIdInput" />
-</label>
-
-<label>
-PIN
-<input id="pinInput" type="password" />
-</label>
-
-<button class="primary" type="submit">Lookup</button>
-</form>
-</div>
-
-<div class="card">
-<h3>Booking</h3>
-
-<form id="bookingForm">
-
-<label>
-Name
-<input id="nameInput" />
-</label>
-
-<label>
-Email
-<input id="emailInput" />
-</label>
-
-<label>
-Places
-<input id="placesInput" type="number" value="1" min="0"/>
-</label>
-
-<label>
-Notes
-<input id="notesInput"/>
-</label>
-
-<button class="primary" type="submit">Save</button>
-<button class="danger" type="button" id="cancelBtn">Cancel</button>
-
-</form>
-
-<div id="existingBox"></div>
-
-</div>
-
-</div>
-
-<script>
-const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
-
-/* -------------------------
-   ROBUST EVENT ID DETECTION
--------------------------- */
-
-const rawSearch = window.location.search || "";
-const rawHref = window.location.href || "";
-const qs = new URLSearchParams(rawSearch);
-
-let EVENT_ID =
-  (qs.get("event_id") || qs.get("_id") || "").trim();
-
-if (!EVENT_ID && rawHref.includes("?")) {
-  try{
-    const tail = rawHref.split("?")[1].split("#")[0];
-    const qs2 = new URLSearchParams(tail);
-    EVENT_ID = (qs2.get("event_id") || qs2.get("_id") || "").trim();
-  }catch(_){}
-}
-
-/* 🔍 TEMP DEBUG (REMOVE LATER) */
-alert(
-  "DEBUG\n\n" +
-  "Href: " + window.location.href + "\n\n" +
-  "Search: " + window.location.search + "\n\n" +
-  "EVENT_ID: " + EVENT_ID
-);
-
-/* ------------------------- */
-
-let authToken = "";
-let memberId = "";
-let currentBooking = null;
-
-/* ------------------------- */
-
-function msg(t){document.getElementById("msg").textContent=t;}
-
-async function getJson(url, opts={}){
-  const r = await fetch(url, opts);
-  const j = await r.json();
-  if (!r.ok || j.success===false){
-    throw new Error(j.message || "error");
-  }
-  return j;
-}
-
-/* -------------------------
-   LOAD EVENT (NO AUTH)
--------------------------- */
-
-async function loadEvent(){
-  if (!EVENT_ID){
-    msg("❌ No event_id detected");
-    return;
-  }
-
-  try{
-    const data = await getJson(`${BACKEND}/api/events/${EVENT_ID}`);
-    const e = data.event || data;
-
-    document.getElementById("eventTitle").textContent =
-      e.title || e.event_title || "Event";
-
-    document.getElementById("eventInfo").textContent =
-      e.location || "";
-
-  }catch(e){
-    msg("Event load failed: " + e.message);
-  }
-}
-
-/* -------------------------
-   LOGIN
--------------------------- */
-
-async function login(mid, pin){
-
-  const res = await getJson(`${BACKEND}/auth/login`, {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      member_id: mid,
-      memberId: mid,
-      pin: pin
-    })
-  });
-
-  authToken = res.token || res.authToken;
-  memberId = mid;
-
-}
-
-/* -------------------------
-   LOAD EXISTING BOOKING
--------------------------- */
-
-async function loadMyBooking(){
-
-  if (!authToken || !memberId) return;
-
-  try{
-    const r = await getJson(`${BACKEND}/api/events/${EVENT_ID}/my-booking`,{
-      headers:{Authorization:`Bearer ${authToken}`}
-    });
-
-    currentBooking = r.booking || null;
-
-    renderExisting();
-
-  }catch(e){
-    currentBooking = null;
-  }
-}
-
-/* -------------------------
-   RENDER EXISTING
--------------------------- */
-
-function renderExisting(){
-
-  const box = document.getElementById("existingBox");
-
-  if (!currentBooking){
-    box.innerHTML = "No existing booking";
-    return;
-  }
-
-  box.innerHTML =
-    "Existing booking: " +
-    JSON.stringify(currentBooking);
-}
-
-/* -------------------------
-   SAVE
--------------------------- */
-
-async function saveBooking(){
-
-  const payload = {
-    member_id: memberId,
-    member_name: document.getElementById("nameInput").value,
-    email: document.getElementById("emailInput").value,
-    places_total: Number(document.getElementById("placesInput").value),
-    notes: document.getElementById("notesInput").value
-  };
-
-  await getJson(`${BACKEND}/api/events/${EVENT_ID}/book`,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:`Bearer ${authToken}`
-    },
-    body:JSON.stringify(payload)
-  });
-
-  msg("Saved ✔");
-
-  await loadMyBooking();
-}
-
-/* -------------------------
-   CANCEL
--------------------------- */
-
-async function cancelBooking(){
-
-  await getJson(`${BACKEND}/api/events/${EVENT_ID}/cancel`,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:`Bearer ${authToken}`
-    },
-    body:JSON.stringify({member_id:memberId})
-  });
-
-  msg("Cancelled ✔");
-
-  currentBooking = null;
-  renderExisting();
-}
-
-/* -------------------------
-   EVENTS
--------------------------- */
-
-document.getElementById("lookupForm").addEventListener("submit", async e=>{
-  e.preventDefault();
-
-  try{
-    await login(
-      document.getElementById("memberIdInput").value.trim(),
-      document.getElementById("pinInput").value.trim()
-    );
-
-    msg("Login OK");
-
-    await loadMyBooking();
-
-  }catch(err){
-    msg("Login failed: " + err.message);
-  }
-});
-
-document.getElementById("bookingForm").addEventListener("submit", async e=>{
-  e.preventDefault();
-  await saveBooking();
-});
-
-document.getElementById("cancelBtn").addEventListener("click", cancelBooking);
-
-/* ------------------------- */
-
-loadEvent();
-
-</script>
+  <div class="wrap">
+    <a id="backLink" class="back" href="events-details.html">← Back to event notice</a>
+
+    <div id="pageMsg" class="msg info"></div>
+
+    <div class="card">
+      <h1>Book or register your interest</h1>
+      <p class="small">Please begin with Member lookup. If you already have a booking or interest recorded for this event, it should reload automatically.</p>
+
+      <h3 id="eventTitle">Loading event…</h3>
+
+      <div class="meta">
+        <div>Event ID</div><div id="eventIdLine">—</div>
+        <div>Date</div><div id="eventDate">—</div>
+        <div>Time</div><div id="eventTime">—</div>
+        <div>Location</div><div id="eventLocation">—</div>
+        <div>Host</div><div id="eventHost">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Member lookup</h2>
+
+      <form id="lookupForm" autocomplete="on">
+        <div class="grid2">
+          <label>
+            Membership number
+            <input id="memberIdInput" type="text" placeholder="e.g. SM70" autocomplete="username" />
+          </label>
+
+          <label>
+            PIN
+            <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+          </label>
+        </div>
+
+        <div class="buttons">
+          <button id="lookupBtn" class="primary" type="submit">Lookup member</button>
+          <button id="clearBtn" class="soft" type="button">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Your booking / interest</h2>
+
+      <form id="bookingForm" autocomplete="on">
+        <div class="grid2">
+          <label>
+            Member name
+            <input id="nameInput" type="text" />
+          </label>
+
+          <label>
+            Membership number
+            <input id="memberIdReadonly" type="text" readonly />
+          </label>
+        </div>
+
+        <div class="grid2">
+          <label>
+            Email
+            <input id="emailInput" type="email" />
+          </label>
+
+          <label>
+            Mobile
+            <input id="mobileInput" type="text" />
+          </label>
+        </div>
+
+        <div class="grid2">
+          <label>
+            Total places requested
+            <input id="placesInput" type="number" min="0" step="1" value="1" />
+          </label>
+
+          <label>
+            Guest places
+            <input id="guestPlacesInput" type="number" min="0" step="1" value="0" />
+          </label>
+        </div>
+
+        <label>
+          Notes
+          <textarea id="notesInput" placeholder="Optional note"></textarea>
+        </label>
+
+        <div class="buttons">
+          <button id="saveBtn" class="primary" type="submit" disabled>Save booking / interest</button>
+          <button id="reloadBtn" class="secondary" type="button" disabled>Reload existing</button>
+          <button id="cancelBtn" class="danger" type="button" disabled>Cancel</button>
+        </div>
+      </form>
+
+      <div id="existingBox" class="existing"></div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const rawSearch = window.location.search || "";
+    const rawHref = window.location.href || "";
+    const qs = new URLSearchParams(rawSearch);
+
+    let EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
+
+    if (!EVENT_ID && rawHref.includes("?")) {
+      try{
+        const tail = rawHref.split("?")[1].split("#")[0];
+        const qs2 = new URLSearchParams(tail);
+        EVENT_ID = (qs2.get("event_id") || qs2.get("_id") || "").trim();
+      }catch(_){}
+    }
+
+    let eventData = null;
+    let authToken = "";
+    let currentMemberId = "";
+    let currentBooking = null;
+
+    const pageMsg = document.getElementById("pageMsg");
+    const eventTitle = document.getElementById("eventTitle");
+    const eventIdLine = document.getElementById("eventIdLine");
+    const eventDate = document.getElementById("eventDate");
+    const eventTime = document.getElementById("eventTime");
+    const eventLocation = document.getElementById("eventLocation");
+    const eventHost = document.getElementById("eventHost");
+    const backLink = document.getElementById("backLink");
+
+    const lookupForm = document.getElementById("lookupForm");
+    const bookingForm = document.getElementById("bookingForm");
+
+    const memberIdInput = document.getElementById("memberIdInput");
+    const pinInput = document.getElementById("pinInput");
+
+    const nameInput = document.getElementById("nameInput");
+    const memberIdReadonly = document.getElementById("memberIdReadonly");
+    const emailInput = document.getElementById("emailInput");
+    const mobileInput = document.getElementById("mobileInput");
+    const placesInput = document.getElementById("placesInput");
+    const guestPlacesInput = document.getElementById("guestPlacesInput");
+    const notesInput = document.getElementById("notesInput");
+
+    const lookupBtn = document.getElementById("lookupBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const reloadBtn = document.getElementById("reloadBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const existingBox = document.getElementById("existingBox");
+
+    function baseMemberId(value){
+      const raw = String(value || "").trim().toUpperCase();
+      if (!raw) return "";
+      const m = raw.match(/^([A-Z]{2}\d+)/);
+      return m ? m[1] : raw;
+    }
+
+    function showMsg(text, kind="info"){
+      if (!text){
+        pageMsg.className = "msg info";
+        pageMsg.textContent = "";
+        return;
+      }
+      pageMsg.textContent = text;
+      pageMsg.className = `msg show ${kind}`;
+    }
+
+    function pick(...vals){
+      for (const v of vals){
+        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+      }
+      return "";
+    }
+
+    function formatDateOnly(value){
+      if (!value) return "—";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return value;
+      return d.toLocaleDateString("en-GB", {
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      });
+    }
+
+    function formatTimeRange(startValue, endValue){
+      if (!startValue && !endValue) return "—";
+      const s = startValue ? new Date(startValue) : null;
+      const e = endValue ? new Date(endValue) : null;
+
+      if (s && !Number.isNaN(s.getTime()) && e && !Number.isNaN(e.getTime())){
+        return `${s.toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"})} – ${e.toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"})}`;
+      }
+
+      return [startValue, endValue].filter(Boolean).join(" – ") || "—";
+    }
+
+    async function getJson(url, opts = {}){
+      const res = await fetch(url, opts);
+      const text = await res.text();
+
+      let data = {};
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch(_){
+        data = { success:false, message:text || `HTTP ${res.status}` };
+      }
+
+      if (!res.ok || data.success === false){
+        throw new Error(data.message || `Request failed (${res.status})`);
+      }
+
+      return data;
+    }
+
+    function setButtonsAfterLookup(ok){
+      saveBtn.disabled = !ok;
+      reloadBtn.disabled = !ok;
+      cancelBtn.disabled = !ok || !currentBooking;
+    }
+
+    function renderExisting(){
+      if (!currentBooking){
+        existingBox.classList.remove("show");
+        existingBox.innerHTML = "";
+        cancelBtn.disabled = true;
+        return;
+      }
+
+      existingBox.innerHTML = `
+        <strong>Existing record loaded</strong><br>
+        Places: ${pick(currentBooking.places_total, currentBooking.places, 0)}<br>
+        Guest places: ${pick(currentBooking.guest_places, 0)}<br>
+        Status: ${pick(currentBooking.booking_status, currentBooking.status, "Recorded")}<br>
+        Notes: ${pick(currentBooking.notes, currentBooking.note, "—")}
+      `;
+
+      existingBox.classList.add("show");
+      cancelBtn.disabled = false;
+    }
+
+    function populateBookingFormFromCurrent(){
+      if (!currentBooking) return;
+
+      placesInput.value = String(Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0));
+      guestPlacesInput.value = String(Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0));
+      notesInput.value = pick(currentBooking.notes, currentBooking.note, "");
+    }
+
+    function populateMemberForm(profile = {}){
+      memberIdReadonly.value = currentMemberId || "";
+      memberIdInput.value = currentMemberId || "";
+
+      nameInput.value = pick(
+        profile.name,
+        profile.member_name,
+        profile.full_name,
+        currentBooking?.member_name,
+        currentBooking?.name,
+        nameInput.value
+      );
+
+      emailInput.value = pick(
+        profile.email,
+        currentBooking?.email,
+        emailInput.value
+      );
+
+      mobileInput.value = pick(
+        profile.mobile,
+        profile.phone,
+        currentBooking?.mobile,
+        currentBooking?.phone,
+        mobileInput.value
+      );
+    }
+
+    async function loadEvent(){
+      if (!EVENT_ID){
+        showMsg("This booking page has no event_id in the address.", "err");
+        eventTitle.textContent = "Event not found";
+        return;
+      }
+
+      backLink.href = `events-details.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      eventIdLine.textContent = EVENT_ID;
+
+      try{
+        const data = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}`);
+        eventData = data.event || data;
+
+        eventTitle.textContent = pick(eventData.title, eventData.event_title, "Event");
+        eventDate.textContent = formatDateOnly(pick(eventData.start_at, eventData.starts_at, eventData.date));
+        eventTime.textContent = formatTimeRange(
+          pick(eventData.start_at, eventData.starts_at, eventData.date),
+          pick(eventData.end_at, eventData.ends_at)
+        );
+        eventLocation.textContent = pick(eventData.location, "—");
+        eventHost.textContent = pick(
+          eventData.host_display,
+          eventData.host_name_with_member_id,
+          eventData.host_name,
+          "—"
+        );
+      }catch(err){
+        showMsg(`Event load failed: ${err.message}`, "err");
+        eventTitle.textContent = "Unable to load event";
+      }
+    }
+
+    async function login(memberId, pin){
+      let lastErr = null;
+
+      const attempts = [
+        { member_id: memberId, pin: pin },
+        { memberId: memberId, pin: pin }
+      ];
+
+      for (const payload of attempts){
+        try{
+          const res = await getJson(`${BACKEND}/auth/login`, {
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const token = pick(res.token, res.authToken, res.access_token);
+          if (!token) throw new Error("No token returned");
+
+          authToken = token;
+          currentMemberId = baseMemberId(memberId);
+          return;
+        }catch(err){
+          lastErr = err;
+        }
+      }
+
+      throw lastErr || new Error("Login failed");
+    }
+
+    async function loadMemberProfile(){
+      if (!authToken || !currentMemberId) return null;
+
+      try{
+        const data = await getJson(`${BACKEND}/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
+          method:"GET",
+          headers:{
+            "Authorization": `Bearer ${authToken}`
+          }
+        });
+        return data.profile || data.member || data || null;
+      }catch(_){
+        return null;
+      }
+    }
+
+    async function loadMyBooking(){
+      if (!authToken || !currentMemberId || !EVENT_ID) return;
+
+      try{
+        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
+          method:"GET",
+          headers:{
+            "Authorization": `Bearer ${authToken}`
+          }
+        });
+
+        currentBooking = result.booking || null;
+        renderExisting();
+
+        if (currentBooking){
+          populateBookingFormFromCurrent();
+        }
+      }catch(_){
+        currentBooking = null;
+        renderExisting();
+      }
+    }
+
+    async function handleLookup(ev){
+      ev.preventDefault();
+
+      const memberId = baseMemberId(memberIdInput.value);
+      const pin = pinInput.value.trim();
+
+      if (!memberId){
+        showMsg("Please enter a membership number.", "warn");
+        return;
+      }
+      if (!pin){
+        showMsg("Please enter your PIN.", "warn");
+        return;
+      }
+
+      lookupBtn.disabled = true;
+      showMsg("Looking up member…", "info");
+
+      try{
+        await login(memberId, pin);
+
+        const profile = await loadMemberProfile();
+        populateMemberForm(profile || {});
+
+        await loadMyBooking();
+
+        setButtonsAfterLookup(true);
+
+        if (currentBooking){
+          showMsg("Existing booking / interest reloaded.", "ok");
+        }else{
+          showMsg("Member lookup complete. No existing booking was found for this event.", "info");
+        }
+      }catch(err){
+        authToken = "";
+        currentMemberId = "";
+        currentBooking = null;
+        renderExisting();
+        setButtonsAfterLookup(false);
+        showMsg(`Member lookup failed: ${err.message}`, "err");
+      }finally{
+        lookupBtn.disabled = false;
+      }
+    }
+
+    async function saveBooking(ev){
+      ev.preventDefault();
+
+      if (!authToken || !currentMemberId){
+        showMsg("Please do Member lookup first.", "warn");
+        return;
+      }
+
+      const placesTotal = Math.max(0, Number(placesInput.value || 0));
+      const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
+
+      if (placesTotal < 1){
+        showMsg("Please request at least one place.", "warn");
+        return;
+      }
+
+      saveBtn.disabled = true;
+
+      try{
+        const payload = {
+          member_id: currentMemberId,
+          member_name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          mobile: mobileInput.value.trim(),
+          places_total: placesTotal,
+          guest_places: guestPlaces,
+          notes: notesInput.value.trim()
+        };
+
+        if (currentBooking && currentBooking.booking_id){
+          payload.booking_id = currentBooking.booking_id;
+        }
+
+        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body:JSON.stringify(payload)
+        });
+
+        showMsg(result.message || "Booking saved.", "ok");
+        await loadMyBooking();
+        setButtonsAfterLookup(true);
+      }catch(err){
+        showMsg(`Save failed: ${err.message}`, "err");
+      }finally{
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function cancelBooking(){
+      if (!authToken || !currentMemberId){
+        showMsg("Please do Member lookup first.", "warn");
+        return;
+      }
+
+      if (!currentBooking){
+        showMsg("There is no existing booking to cancel.", "warn");
+        return;
+      }
+
+      const yes = window.confirm("Cancel this booking / interest?");
+      if (!yes) return;
+
+      cancelBtn.disabled = true;
+
+      try{
+        const payload = { member_id: currentMemberId };
+
+        if (currentBooking.booking_id){
+          payload.booking_id = currentBooking.booking_id;
+        }
+
+        const result = await getJson(`${BACKEND}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body:JSON.stringify(payload)
+        });
+
+        currentBooking = null;
+        renderExisting();
+        placesInput.value = "1";
+        guestPlacesInput.value = "0";
+        notesInput.value = "";
+
+        showMsg(result.message || "Booking cancelled.", "ok");
+      }catch(err){
+        showMsg(`Cancel failed: ${err.message}`, "err");
+      }finally{
+        cancelBtn.disabled = false;
+      }
+    }
+
+    function reloadExistingIntoForm(){
+      if (!currentBooking){
+        showMsg("No existing booking is currently loaded.", "warn");
+        return;
+      }
+      populateBookingFormFromCurrent();
+      showMsg("Existing booking reloaded into the form.", "ok");
+    }
+
+    function clearLookup(){
+      authToken = "";
+      currentMemberId = "";
+      currentBooking = null;
+
+      memberIdInput.value = "";
+      pinInput.value = "";
+      memberIdReadonly.value = "";
+      nameInput.value = "";
+      emailInput.value = "";
+      mobileInput.value = "";
+      placesInput.value = "1";
+      guestPlacesInput.value = "0";
+      notesInput.value = "";
+
+      renderExisting();
+      setButtonsAfterLookup(false);
+      showMsg("Lookup cleared.", "info");
+    }
+
+    lookupForm.addEventListener("submit", handleLookup);
+    bookingForm.addEventListener("submit", saveBooking);
+    cancelBtn.addEventListener("click", cancelBooking);
+    reloadBtn.addEventListener("click", reloadExistingIntoForm);
+    clearBtn.addEventListener("click", clearLookup);
+
+    loadEvent();
+  </script>
 </body>
 </html>

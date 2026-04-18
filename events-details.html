@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
+  <script src="access.js?v=AC_2"></script>
 
   <style>
     :root{
@@ -22,96 +22,113 @@
       --ok:#1f6f47;
       --warn:#8a5a00;
       --err:#9e2b2b;
-      --shadow:0 16px 36px rgba(20,60,90,.11);
-      --radius:22px;
+      --shadow:0 16px 36px rgba(20,60,100,.10);
+      --radius:20px;
     }
 
     *{ box-sizing:border-box; }
 
-    html,body{
+    body{
       margin:0;
-      padding:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 42%,#fff 100%);
-      min-height:100%;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2) 45%,#fff);
+      min-height:100vh;
     }
 
-    a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-
-    a:hover{
-      text-decoration:underline;
-    }
-
-    .page{
-      max-width:980px;
+    .wrap{
+      width:min(1040px, calc(100% - 24px));
       margin:0 auto;
-      padding:18px 16px 40px;
+      padding:20px 0 42px;
     }
 
     .topbar{
       display:flex;
-      flex-wrap:wrap;
-      gap:10px;
+      align-items:center;
       justify-content:space-between;
-      align-items:center;
-      margin-bottom:16px;
-    }
-
-    .crumbs{
-      display:flex;
+      gap:12px;
       flex-wrap:wrap;
-      gap:8px;
-      align-items:center;
-      color:var(--muted);
-      font-size:.95rem;
+      margin-bottom:14px;
     }
 
-    .crumbs a{
+    .backlink{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--accent);
+      text-decoration:none;
       font-weight:700;
     }
 
     .top-actions{
       display:flex;
-      flex-wrap:wrap;
       gap:10px;
+      flex-wrap:wrap;
     }
 
-    .pill-link{
+    .btn, button{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:11px 16px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:9px 13px;
-      border-radius:999px;
-      background:#f1f7fc;
-      border:1px solid var(--line);
-      color:var(--accent);
-      font-size:.93rem;
-      font-weight:800;
-      text-decoration:none;
+      gap:8px;
     }
 
+    .btn-primary{
+      background:var(--accent);
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:#e8f0f8;
+      color:var(--accent);
+    }
+
+    .btn-soft{
+      background:#f2f6fa;
+      color:var(--ink);
+    }
+
+    .message{
+      display:none;
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:14px;
+      font-size:.97rem;
+      line-height:1.45;
+      border:1px solid transparent;
+    }
+
+    .message.show{ display:block; }
+    .message.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
+    .message.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
+    .message.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
+    .message.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
+
     .notice{
-      background:linear-gradient(180deg,#ffffff 0%,#fcfdff 100%);
+      background:var(--panel);
       border:1px solid var(--line);
-      border-radius:28px;
+      border-radius:26px;
       box-shadow:var(--shadow);
       overflow:hidden;
     }
 
     .notice-top{
-      padding:26px 22px 10px;
+      padding:24px 22px 12px;
       text-align:center;
     }
 
     .title-text{
       margin:0;
-      font-size:2rem;
-      line-height:1.16;
-      letter-spacing:.2px;
+      font-size:clamp(1.7rem, 3vw, 2.25rem);
+      line-height:1.14;
       color:#17314a;
       word-wrap:break-word;
     }
@@ -122,23 +139,14 @@
       max-height:170px;
       width:auto;
       height:auto;
-      object-fit:contain;
       margin:0 auto;
+      object-fit:contain;
     }
 
-    .summary{
-      max-width:760px;
-      margin:16px auto 0;
-      color:#466179;
-      font-size:1.05rem;
-      line-height:1.6;
-      white-space:pre-wrap;
-    }
-
-    .meta{
+    .meta-grid{
       display:grid;
       gap:10px;
-      padding:18px 22px 0;
+      padding:6px 22px 0;
     }
 
     .meta-row{
@@ -147,265 +155,167 @@
       gap:8px 14px;
       align-items:flex-start;
       color:#31506b;
+      font-size:.98rem;
       line-height:1.5;
     }
 
     .meta-row strong{
       color:#17314a;
-      min-width:132px;
-    }
-
-    .timing-box{
-      margin:18px 22px 0;
-      padding:14px 16px;
-      border-radius:18px;
-      background:#f7fbfe;
-      border:1px solid var(--line);
-      color:#31506b;
-      line-height:1.55;
-    }
-
-    .timing-title{
-      font-weight:800;
-      color:#17314a;
-      margin-bottom:8px;
-    }
-
-    .timing-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px 14px;
-      align-items:flex-start;
-      margin-bottom:6px;
-    }
-
-    .timing-row:last-child{
-      margin-bottom:0;
-    }
-
-    .timing-row strong{
-      color:#17314a;
-      min-width:150px;
+      min-width:110px;
     }
 
     .host-box{
-      margin:18px 22px 0;
-      padding:14px 16px;
-      border-radius:18px;
+      margin:16px 22px 0;
+      padding:13px 15px;
+      border-radius:16px;
       background:#f4f9fd;
       border:1px solid var(--line);
       color:#31506b;
       line-height:1.55;
     }
 
-    .host-box strong{
+    .timing-box{
+      margin:16px 22px 0;
+      padding:15px;
+      border-radius:18px;
+      background:var(--soft);
+      border:1px solid var(--line);
+    }
+
+    .timing-box h2{
+      margin:0 0 12px;
+      font-size:1.02rem;
+    }
+
+    .timing-grid{
+      display:grid;
+      gap:10px;
+    }
+
+    .timing-row{
+      display:grid;
+      grid-template-columns:190px 1fr;
+      gap:12px;
+      align-items:start;
+      font-size:.96rem;
+      line-height:1.45;
+    }
+
+    .timing-row strong{
       color:#17314a;
     }
 
+    @media (max-width:720px){
+      .timing-row{
+        grid-template-columns:1fr;
+        gap:4px;
+      }
+    }
+
+    .pill-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      padding:16px 22px 0;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:7px 12px;
+      font-weight:800;
+      font-size:.9rem;
+      background:#e8f1fb;
+      color:var(--accent);
+    }
+
+    .pill.ok{
+      background:#e9f6ee;
+      color:#1f6f47;
+    }
+
+    .pill.warn{
+      background:#fff3d9;
+      color:#8a5a00;
+    }
+
     .body-image-wrap{
-      padding:22px 22px 0;
+      padding:18px 22px 0;
       text-align:center;
     }
 
     .body-image{
       display:none;
       max-width:100%;
-      max-height:360px;
+      max-height:320px;
       width:auto;
       height:auto;
+      border-radius:16px;
       object-fit:contain;
-      border-radius:18px;
-      box-shadow:0 10px 26px rgba(22,58,90,.11);
+      box-shadow:0 8px 22px rgba(26,59,92,.10);
     }
 
-    .body{
-      padding:22px 22px 28px;
-      color:#22384d;
-      line-height:1.72;
+    .summary-box{
+      padding:18px 22px 0;
+      color:#31506b;
       font-size:1rem;
+      line-height:1.65;
+      white-space:pre-wrap;
       word-wrap:break-word;
     }
 
-    .body.plain{
+    .body-box{
+      padding:18px 22px 26px;
+      color:#22384d;
+      line-height:1.7;
       white-space:pre-wrap;
+      word-wrap:break-word;
+      min-height:180px;
     }
 
-    .body.rich p:first-child,
-    .body.rich h1:first-child,
-    .body.rich h2:first-child,
-    .body.rich h3:first-child{
-      margin-top:0;
+    .placeholder{
+      color:#71879a;
+      font-style:italic;
     }
 
-    .body.rich p:last-child{
-      margin-bottom:0;
-    }
-
-    .body.rich img{
-      max-width:100%;
-      height:auto;
-      border-radius:14px;
-    }
-
-    .body.rich ul,
-    .body.rich ol{
-      padding-left:1.4rem;
-    }
-
-    .cta-row{
+    .bottom-actions{
       display:flex;
+      gap:10px;
       flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      padding:0 22px 26px;
+      padding:0 22px 24px;
     }
 
-    .btn-primary,
-    .btn-secondary{
-      appearance:none;
-      border:none;
-      border-radius:999px;
-      padding:13px 18px;
-      font:inherit;
-      font-weight:800;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .btn-primary{
-      background:linear-gradient(180deg,var(--accent2),var(--accent));
-      color:#fff;
-      box-shadow:0 12px 22px rgba(36,93,139,.18);
-    }
-
-    .btn-secondary{
-      background:#eef5fb;
-      color:var(--accent);
-      border:1px solid var(--line);
-    }
-
-    .status{
-      margin:18px 22px 0;
-      padding:12px 14px;
-      border-radius:16px;
-      display:none;
-      line-height:1.5;
-      font-size:.96rem;
-    }
-
-    .status.show{ display:block; }
-    .status.ok{
-      background:#edf9f2;
-      color:var(--ok);
-      border:1px solid #bfe2ce;
-    }
-    .status.warn{
-      background:#fff6e8;
-      color:var(--warn);
-      border:1px solid #edd59a;
-    }
-    .status.err{
-      background:#fff2f2;
-      color:var(--err);
-      border:1px solid #efc1c1;
-    }
-
-    .loading-card,
-    .error-card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:22px 20px;
-      color:var(--muted);
-      line-height:1.6;
-    }
-
-    .loading-card strong,
-    .error-card strong{
-      color:var(--ink);
-    }
-
-    .hidden{
-      display:none !important;
-    }
-
-    @media (max-width: 700px){
-      .title-text{
-        font-size:1.7rem;
-      }
-
-      .meta-row strong,
-      .timing-row strong{
-        min-width:110px;
-      }
-
-      .notice-top,
-      .meta,
-      .timing-box,
-      .host-box,
-      .body-image-wrap,
-      .body,
-      .cta-row,
-      .status{
-        padding-left:16px;
-        padding-right:16px;
-      }
-    }
+    .hidden{ display:none !important; }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="wrap">
     <div class="topbar">
-      <div class="crumbs">
-        <a href="index.html">Home</a>
-        <span>•</span>
-        <a href="events.html">Events List</a>
-        <span>•</span>
-        <span>Event Notice</span>
-      </div>
+      <a class="backlink" href="events.html">← Back to Events List</a>
 
       <div class="top-actions">
-        <a class="pill-link" href="events-calendar.html">Events Calendar</a>
-        <a class="pill-link" href="events.html">Events List</a>
+        <a id="bookBtnTop" class="btn btn-primary" href="event-booking.html">Book</a>
+        <a id="editBtnTop" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
     </div>
 
-    <div id="loadingCard" class="loading-card">
-      <strong>Loading event notice…</strong><br />
-      Please wait while the event details are fetched.
-    </div>
+    <div id="pageMessage" class="message info"></div>
 
-    <div id="errorCard" class="error-card hidden">
-      <strong>Could not load this event notice.</strong><br />
-      <span id="errorText">Please try again.</span>
-    </div>
-
-    <article id="noticeCard" class="notice hidden">
+    <article class="notice">
       <div class="notice-top">
-        <h1 id="titleText" class="title-text">Event title</h1>
-        <img id="titleGraphic" class="title-graphic" alt="Event title graphic" />
-        <div id="summaryText" class="summary hidden"></div>
+        <h1 id="titleText" class="title-text">Loading event notice…</h1>
+        <img id="titleGraphic" class="title-graphic" alt="Graphic title" />
       </div>
 
-      <div class="meta">
+      <div class="meta-grid">
         <div class="meta-row"><strong>Category</strong><span id="metaCategory">—</span></div>
         <div class="meta-row"><strong>Date</strong><span id="metaDate">—</span></div>
         <div class="meta-row"><strong>Time</strong><span id="metaTime">—</span></div>
         <div class="meta-row"><strong>Location</strong><span id="metaLocation">—</span></div>
         <div class="meta-row"><strong>Booking</strong><span id="metaBooking">—</span></div>
-        <div class="meta-row"><strong>Reference</strong><span id="metaRef">—</span></div>
-      </div>
-
-      <div class="timing-box">
-        <div class="timing-title">Booking times</div>
-        <div class="timing-row"><strong>Member booking opens</strong><span id="timingMembersOpen">—</span></div>
-        <div class="timing-row"><strong>Guest booking opens</strong><span id="timingGuestsOpen">—</span></div>
-        <div class="timing-row"><strong>Booking closes</strong><span id="timingBookingClose">—</span></div>
+        <div class="meta-row"><strong>Reference</strong><span id="metaReference">—</span></div>
       </div>
 
       <div class="host-box">
@@ -413,311 +323,448 @@
         <span id="hostText">—</span>
       </div>
 
-      <div class="body-image-wrap">
-        <img id="bodyImage" class="body-image" alt="Event notice image" />
+      <div class="timing-box">
+        <h2>Booking details</h2>
+        <div class="timing-grid">
+          <div class="timing-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
+          <div class="timing-row"><strong>Members booking opens</strong><span id="membersOpen">—</span></div>
+          <div class="timing-row"><strong>Guests booking opens</strong><span id="guestsOpen">—</span></div>
+          <div class="timing-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
+          <div class="timing-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
+        </div>
       </div>
 
-      <div id="noticeBody" class="body plain"></div>
+      <div class="pill-row">
+        <span id="bookingModePill" class="pill">Booking details pending</span>
+        <span id="availabilityPill" class="pill">Availability not yet known</span>
+      </div>
 
-      <div id="pageStatus" class="status"></div>
+      <div class="body-image-wrap">
+        <img id="bodyImage" class="body-image" alt="Event image" />
+      </div>
 
-      <div class="cta-row">
-        <a id="bookingBtn" class="btn-primary" href="#">Book or register your interest</a>
-        <a id="backBtn" class="btn-secondary" href="events.html">Back to Events List</a>
+      <div id="summaryBox" class="summary-box hidden"></div>
+      <div id="bodyBox" class="body-box"><span class="placeholder">Loading notice…</span></div>
+
+      <div class="bottom-actions">
+        <a id="bookBtnBottom" class="btn btn-primary" href="event-booking.html">Book</a>
+        <a id="editBtnBottom" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
     </article>
   </div>
 
   <script>
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+
     const qs = new URLSearchParams(window.location.search);
-    const eventId = (qs.get("event_id") || "").trim();
+    const EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
 
-    const els = {
-      loadingCard: document.getElementById("loadingCard"),
-      errorCard: document.getElementById("errorCard"),
-      errorText: document.getElementById("errorText"),
-      noticeCard: document.getElementById("noticeCard"),
+    const pageMessage = document.getElementById("pageMessage");
 
-      titleText: document.getElementById("titleText"),
-      titleGraphic: document.getElementById("titleGraphic"),
-      summaryText: document.getElementById("summaryText"),
+    const titleText = document.getElementById("titleText");
+    const titleGraphic = document.getElementById("titleGraphic");
 
-      metaCategory: document.getElementById("metaCategory"),
-      metaDate: document.getElementById("metaDate"),
-      metaTime: document.getElementById("metaTime"),
-      metaLocation: document.getElementById("metaLocation"),
-      metaBooking: document.getElementById("metaBooking"),
-      metaRef: document.getElementById("metaRef"),
+    const metaCategory = document.getElementById("metaCategory");
+    const metaDate = document.getElementById("metaDate");
+    const metaTime = document.getElementById("metaTime");
+    const metaLocation = document.getElementById("metaLocation");
+    const metaBooking = document.getElementById("metaBooking");
+    const metaReference = document.getElementById("metaReference");
 
-      timingMembersOpen: document.getElementById("timingMembersOpen"),
-      timingGuestsOpen: document.getElementById("timingGuestsOpen"),
-      timingBookingClose: document.getElementById("timingBookingClose"),
+    const hostText = document.getElementById("hostText");
 
-      hostText: document.getElementById("hostText"),
-      bodyImage: document.getElementById("bodyImage"),
-      noticeBody: document.getElementById("noticeBody"),
-      bookingBtn: document.getElementById("bookingBtn"),
-      pageStatus: document.getElementById("pageStatus")
-    };
+    const spacesAvailable = document.getElementById("spacesAvailable");
+    const membersOpen = document.getElementById("membersOpen");
+    const guestsOpen = document.getElementById("guestsOpen");
+    const bookingClose = document.getElementById("bookingClose");
+    const cancelCutoff = document.getElementById("cancelCutoff");
 
-    function showStatus(type, text) {
-      els.pageStatus.className = `status show ${type}`;
-      els.pageStatus.textContent = text;
+    const bookingModePill = document.getElementById("bookingModePill");
+    const availabilityPill = document.getElementById("availabilityPill");
+
+    const bodyImage = document.getElementById("bodyImage");
+    const summaryBox = document.getElementById("summaryBox");
+    const bodyBox = document.getElementById("bodyBox");
+
+    const bookBtnTop = document.getElementById("bookBtnTop");
+    const bookBtnBottom = document.getElementById("bookBtnBottom");
+    const editBtnTop = document.getElementById("editBtnTop");
+    const editBtnBottom = document.getElementById("editBtnBottom");
+
+    function showMessage(text, kind = "info"){
+      if (!text){
+        pageMessage.className = "message info";
+        pageMessage.textContent = "";
+        return;
+      }
+      pageMessage.textContent = text;
+      pageMessage.className = `message show ${kind}`;
     }
 
-    function clearStatus() {
-      els.pageStatus.className = "status";
-      els.pageStatus.textContent = "";
+    function pick(){
+      for (let i = 0; i < arguments.length; i++){
+        const v = arguments[i];
+        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+      }
+      return "";
     }
 
-    function showError(text) {
-      els.loadingCard.classList.add("hidden");
-      els.noticeCard.classList.add("hidden");
-      els.errorCard.classList.remove("hidden");
-      els.errorText.textContent = text || "Please try again.";
+    function firstNumber(){
+      for (let i = 0; i < arguments.length; i++){
+        const v = arguments[i];
+        if (v === undefined || v === null || String(v).trim() === "") continue;
+        const n = Number(v);
+        if (Number.isFinite(n)) return n;
+      }
+      return null;
     }
 
-    function showNotice() {
-      els.loadingCard.classList.add("hidden");
-      els.errorCard.classList.add("hidden");
-      els.noticeCard.classList.remove("hidden");
-    }
-
-    function cleanText(value) {
-      return String(value || "").trim();
-    }
-
-    function formatDate(value) {
-      const raw = cleanText(value);
-      if (!raw) return "—";
-
-      const dt = new Date(`${raw}T12:00:00`);
-      if (isNaN(dt.getTime())) return raw;
-
-      return dt.toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
+    function formatDateOnly(value){
+      if (!value) return "—";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value);
+      return d.toLocaleDateString("en-GB", {
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
       });
     }
 
-    function formatTime(start, end) {
-      const s = cleanText(start);
-      const e = cleanText(end);
-
-      if (!s && !e) return "—";
-      if (s && e) return `${s} to ${e}`;
-      return s || e || "—";
-    }
-
-    function formatDateTime(value) {
-      const raw = cleanText(value);
-      if (!raw) return "—";
-
-      const dt = new Date(raw);
-      if (isNaN(dt.getTime())) return raw;
-
-      return dt.toLocaleString(undefined, {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
+    function formatDateTime(value){
+      if (!value) return "—";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value);
+      return d.toLocaleString("en-GB", {
+        weekday:"short",
+        day:"numeric",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
       });
     }
 
-    function bookingLabel(ev) {
-      const mode = cleanText(ev.booking_mode || ev.bookingMode).toLowerCase();
-
-      if (mode === "interest") return "Register interest";
-      if (mode === "booking_or_interest") return "Book or register interest";
-      return "Booking";
+    function formatTimeOnly(value){
+      if (!value) return "";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value);
+      return d.toLocaleTimeString("en-GB", {
+        hour:"2-digit",
+        minute:"2-digit"
+      });
     }
 
-    function hostDisplay(ev) {
-      const name = cleanText(ev.host_name || ev.hostName);
-      const memberId = cleanText(ev.host_member_id || ev.hostMemberId);
-
-      if (name && memberId) return `${name} (${memberId})`;
-      if (name) return name;
-      if (memberId) return memberId;
-      return "Host";
+    function combineDateAndTime(dateValue, timeValue){
+      if (!dateValue && !timeValue) return "";
+      if (dateValue && !timeValue) return dateValue;
+      if (!dateValue && timeValue) return timeValue;
+      return `${dateValue} ${timeValue}`;
     }
 
-    function setTitleDisplay(ev) {
-      const graphicUrl = cleanText(
-        ev.title_graphic_url ||
-        ev.graphic_title_url ||
-        ev.titleGraphicUrl
+    function getEventReference(e){
+      return pick(
+        e.reference,
+        e.event_reference,
+        e.event_ref,
+        e.ref,
+        e.event_id,
+        e.id,
+        EVENT_ID
+      );
+    }
+
+    function getEventDateValue(e){
+      return pick(
+        e.start_at,
+        e.starts_at,
+        e.event_date,
+        e.date,
+        e.start_date,
+        combineDateAndTime(e.date, e.time),
+        combineDateAndTime(e.event_date, e.event_time)
+      );
+    }
+
+    function getEventTimeText(e){
+      const startStamp = pick(e.start_at, e.starts_at);
+      const endStamp = pick(e.end_at, e.ends_at);
+
+      if (startStamp || endStamp){
+        const startText = formatTimeOnly(startStamp);
+        const endText = formatTimeOnly(endStamp);
+        return [startText, endText].filter(Boolean).join(" – ") || "—";
+      }
+
+      const directRange = pick(
+        e.time_range,
+        e.event_time_range,
+        e.display_time
+      );
+      if (directRange) return directRange;
+
+      const startText = pick(e.time, e.start_time, e.event_time);
+      const endText = pick(e.end_time, e.finish_time);
+      return [startText, endText].filter(Boolean).join(" – ") || "—";
+    }
+
+    function getSpacesAvailableValue(e){
+      const n = firstNumber(
+        e.spaces_available,
+        e.available_spaces,
+        e.available_places,
+        e.places_available,
+        e.places_remaining,
+        e.remaining_places,
+        e.capacity_remaining,
+        e.remaining_capacity
+      );
+      if (n !== null) return n;
+
+      const cap = firstNumber(
+        e.capacity,
+        e.capacity_total,
+        e.max_places,
+        e.total_places,
+        e.total_capacity,
+        e.spaces_total,
+        e.places_total
+      );
+      if (cap !== null) return cap;
+
+      return pick(
+        e.spaces_available,
+        e.available_spaces,
+        e.available_places,
+        e.places_available,
+        e.places_remaining,
+        e.remaining_places,
+        e.capacity_remaining,
+        e.remaining_capacity,
+        e.capacity,
+        e.capacity_total
+      );
+    }
+
+    function getMembersOpenValue(e){
+      return pick(
+        e.members_booking_open_at,
+        e.members_open_at,
+        e.booking_open_at,
+        e.booking_opens_at,
+        e.open_at
+      );
+    }
+
+    function getGuestsOpenValue(e){
+      return pick(
+        e.guests_booking_open_at,
+        e.guest_booking_open_at,
+        e.guests_open_at,
+        e.guest_open_at
+      );
+    }
+
+    function getBookingCloseValue(e){
+      return pick(
+        e.booking_close_at,
+        e.booking_closes_at,
+        e.close_at
+      );
+    }
+
+    function getCancelCutoffValue(e){
+      return pick(
+        e.cancellation_cutoff_at,
+        e.cancel_cutoff_at,
+        e.refund_cutoff_at
+      );
+    }
+
+    function getBookingLabel(e){
+      const original = pick(
+        e.booking_label,
+        e.bookingModeLabel,
+        e.booking_mode_label,
+        e.booking_mode,
+        e.bookingMode
       );
 
-      const title =
-        cleanText(ev.notice_title) ||
-        cleanText(ev.title) ||
-        "Untitled event";
+      const raw = String(original || "").trim().toLowerCase();
 
-      if (graphicUrl) {
-        els.titleText.style.display = "none";
-        els.titleGraphic.style.display = "block";
-        els.titleGraphic.src = graphicUrl;
-      } else {
-        els.titleGraphic.style.display = "none";
-        els.titleGraphic.removeAttribute("src");
-        els.titleText.style.display = "block";
-        els.titleText.textContent = title;
-      }
+      if (!raw) return "Book";
+
+      if (raw === "book" || raw === "booking") return "Book";
+      if (raw === "register interest" || raw === "register_interest" || raw === "interest") return "Register interest";
+      if (
+        raw === "book or register interest" ||
+        raw === "book_or_register_interest" ||
+        raw === "booking_or_interest"
+      ) return "Book or Register interest";
+
+      return String(original).trim() || "Book";
     }
 
-    function setSummary(ev) {
-      const summary =
-        cleanText(ev.notice_summary) ||
-        cleanText(ev.summary);
+    function setBookingButtons(label){
+      const text =
+        label === "Register interest"
+          ? "Register interest"
+          : label === "Book or Register interest"
+            ? "Book or Register interest"
+            : "Book";
 
-      if (summary) {
-        els.summaryText.classList.remove("hidden");
-        els.summaryText.textContent = summary;
-      } else {
-        els.summaryText.classList.add("hidden");
-        els.summaryText.textContent = "";
-      }
+      bookBtnTop.textContent = text;
+      bookBtnBottom.textContent = text;
     }
 
-    function setBodyImage(ev) {
-      const imageUrl =
-        cleanText(ev.notice_image_url) ||
-        cleanText(ev.image_url) ||
-        cleanText(ev.noticeImageUrl);
-
-      if (imageUrl) {
-        els.bodyImage.style.display = "inline-block";
-        els.bodyImage.src = imageUrl;
-      } else {
-        els.bodyImage.style.display = "none";
-        els.bodyImage.removeAttribute("src");
-      }
-    }
-
-    function setBody(ev) {
-      const bodyHtml = cleanText(ev.notice_body_html);
-      const bodyText =
-        cleanText(ev.notice_body) ||
-        cleanText(ev.body) ||
-        cleanText(ev.description) ||
-        cleanText(ev.notice_text);
-
-      if (bodyHtml) {
-        els.noticeBody.className = "body rich";
-        els.noticeBody.innerHTML = bodyHtml;
+    function renderAvailability(e){
+      const spaces = getSpacesAvailableValue(e);
+      if (spaces === ""){
+        availabilityPill.textContent = "Availability not yet known";
+        availabilityPill.className = "pill";
         return;
       }
 
-      els.noticeBody.className = "body plain";
-      els.noticeBody.textContent = bodyText || "";
-    }
-
-    function fillNotice(ev) {
-      setTitleDisplay(ev);
-      setSummary(ev);
-      setBodyImage(ev);
-      setBody(ev);
-
-      els.metaCategory.textContent =
-        cleanText(ev.category_label) ||
-        cleanText(ev.categoryLabel) ||
-        cleanText(ev.category_key) ||
-        cleanText(ev.category) ||
-        "—";
-
-      els.metaDate.textContent = formatDate(
-        ev.event_date ||
-        ev.date ||
-        ev.start_date
-      );
-
-      els.metaTime.textContent = formatTime(
-        ev.start_time,
-        ev.end_time
-      );
-
-      els.metaLocation.textContent = cleanText(ev.location) || "—";
-      els.metaBooking.textContent = bookingLabel(ev);
-      els.metaRef.textContent =
-        cleanText(ev.event_ref) ||
-        cleanText(ev.id) ||
-        cleanText(ev.event_id) ||
-        "—";
-
-      els.timingMembersOpen.textContent = formatDateTime(
-        ev.members_booking_open_at ||
-        ev.member_booking_open_at ||
-        ev.booking_open_at
-      );
-
-      els.timingGuestsOpen.textContent = formatDateTime(
-        ev.guests_booking_open_at ||
-        ev.guest_booking_open_at
-      );
-
-      els.timingBookingClose.textContent = formatDateTime(
-        ev.booking_close_at ||
-        ev.bookings_close_at
-      );
-
-      els.hostText.textContent = hostDisplay(ev);
-
-      const resolvedEventId = cleanText(ev.event_id || ev.id || eventId);
-      els.bookingBtn.href = `event-booking.html?event_id=${encodeURIComponent(resolvedEventId)}`;
-
-      const noticePublished = ev.notice_published;
-      if (noticePublished === false) {
-        showStatus("warn", "This notice is currently not marked as published.");
-      } else {
-        clearStatus();
-      }
-    }
-
-    async function loadEvent() {
-      if (!eventId) {
-        showError("No event ID was provided.");
+      const n = Number(spaces);
+      if (Number.isFinite(n)){
+        if (n <= 0){
+          availabilityPill.textContent = "No spaces currently available";
+          availabilityPill.className = "pill warn";
+          return;
+        }
+        availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
+        availabilityPill.className = "pill ok";
         return;
       }
 
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
-          method: "GET",
-          headers: {
-            "Accept": "application/json"
-          }
-        });
+      availabilityPill.textContent = String(spaces);
+      availabilityPill.className = "pill";
+    }
 
-        let data = null;
-        try {
-          data = await res.json();
-        } catch {
-          data = null;
-        }
+    function renderBookingModePill(label){
+      bookingModePill.textContent = label;
+      bookingModePill.className = label === "Register interest" ? "pill warn" : "pill ok";
+    }
 
-        if (!res.ok) {
-          const message =
-            (data && (data.message || data.error)) ||
-            "The event could not be loaded.";
-          showError(message);
-          return;
-        }
+    async function getJson(url, options = {}){
+      const res = await fetch(url, options);
+      const text = await res.text();
 
-        const ev = data && typeof data === "object" && data.event ? data.event : data;
-        if (!ev || typeof ev !== "object") {
-          showError("The event record was empty.");
-          return;
-        }
+      let data = {};
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch(_){
+        data = { success:false, message:text || `HTTP ${res.status}` };
+      }
 
-        fillNotice(ev);
-        showNotice();
-      } catch (err) {
-        showError("There was a network or server problem while loading the event notice.");
+      if (!res.ok || data.success === false){
+        throw new Error(data.message || `Request failed (${res.status})`);
+      }
+
+      return data;
+    }
+
+    function renderTitle(e){
+      const titleMode = String(pick(e.title_mode, "typed")).trim().toLowerCase();
+      const graphicUrl = pick(e.title_graphic_url, e.graphic_title_url);
+      const noticeTitle = pick(e.notice_title, e.title, "Event Notice");
+
+      if (titleMode === "graphic" && graphicUrl){
+        titleText.style.display = "none";
+        titleGraphic.style.display = "block";
+        titleGraphic.src = graphicUrl;
+      }else{
+        titleGraphic.style.display = "none";
+        titleGraphic.removeAttribute("src");
+        titleText.style.display = "block";
+        titleText.textContent = noticeTitle;
+      }
+    }
+
+    function renderBodyImage(e){
+      const url = pick(e.notice_image_url, e.body_image_url, e.image_url);
+      if (url){
+        bodyImage.style.display = "inline-block";
+        bodyImage.src = url;
+      }else{
+        bodyImage.style.display = "none";
+        bodyImage.removeAttribute("src");
+      }
+    }
+
+    function renderSummaryAndBody(e){
+      const summary = pick(e.notice_summary, e.summary);
+      const body = pick(e.notice_body, e.body, e.notice_text, e.details, e.description);
+
+      if (summary){
+        summaryBox.textContent = summary;
+        summaryBox.classList.remove("hidden");
+      }else{
+        summaryBox.textContent = "";
+        summaryBox.classList.add("hidden");
+      }
+
+      if (body){
+        bodyBox.textContent = body;
+      }else{
+        bodyBox.innerHTML = '<span class="placeholder">No further notice text has been added.</span>';
+      }
+    }
+
+    async function loadEvent(){
+      if (!EVENT_ID){
+        showMessage("This page was opened without an event reference.", "err");
+        titleText.textContent = "Event not found";
+        bodyBox.innerHTML = '<span class="placeholder">This page needs an event_id in the address.</span>';
+        return;
+      }
+
+      bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+
+      editBtnTop.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+
+      try{
+        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
+        const event = data.event || data || {};
+
+        renderTitle(event);
+
+        metaCategory.textContent = pick(event.category_label, event.category, "—");
+        metaDate.textContent = formatDateOnly(getEventDateValue(event));
+        metaTime.textContent = getEventTimeText(event);
+        metaLocation.textContent = pick(event.location, event.venue, "—");
+
+        const bookingLabel = getBookingLabel(event);
+        metaBooking.textContent = bookingLabel;
+        metaReference.textContent = getEventReference(event);
+
+        hostText.textContent = pick(
+          event.host_display,
+          event.host_name_with_member_id,
+          event.host_name,
+          "—"
+        );
+
+        const spacesValue = getSpacesAvailableValue(event);
+        spacesAvailable.textContent = spacesValue === "" ? "—" : String(spacesValue);
+
+        membersOpen.textContent = formatDateTime(getMembersOpenValue(event));
+        guestsOpen.textContent = formatDateTime(getGuestsOpenValue(event));
+        bookingClose.textContent = formatDateTime(getBookingCloseValue(event));
+        cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(event));
+
+        renderBookingModePill(bookingLabel);
+        renderAvailability(event);
+        setBookingButtons(bookingLabel);
+
+        renderBodyImage(event);
+        renderSummaryAndBody(event);
+      }catch(err){
+        showMessage(err.message || "Unable to load event notice.", "err");
+        titleText.textContent = "Unable to load event notice";
+        bodyBox.innerHTML = '<span class="placeholder">Please try again.</span>';
       }
     }
 

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
+  <script src="access.js?v=AC_2"></script>
 
   <style>
     :root{
@@ -613,15 +613,14 @@
                 <div class="field">
                   <label for="placesTotal">Number of places</label>
                   <input id="placesTotal" type="number" min="1" step="1" value="1" />
-                  <div class="help">Places available if appropriate (otherwise leave blank). Guests may be included (preferably after members have had an opportunity to book) </div>
+                  <div class="help">This is the total number of places available for the event. Guest places, if allowed later, come out of this same total and are not additional to it.</div>
                 </div>
 
                 <div class="field">
                   <label for="bookingMode">Booking option</label>
                   <select id="bookingMode">
-                    <option value="booking">Book</option>
+                    <option value="book">Book</option>
                     <option value="interest">Register interest</option>
-                    <option value="booking_or_interest">Book or register interest</option>
                   </select>
                 </div>
               </div>
@@ -647,7 +646,19 @@
                 <div class="field">
                   <label for="guestsBookingOpenTime">Guest booking open time</label>
                   <input id="guestsBookingOpenTime" type="time" />
-                  <div class="help">Leave blank if your event is not open to guests, or enter a date from which guests may be invited. </div>
+                  <div class="help">Leave blank if the event is not open to guests. If guests are allowed, enter the date and time from which guest places may be booked. Guest places come out of the same total number of places.</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="bookingCloseDate">Booking closes</label>
+                  <input id="bookingCloseDate" type="date" />
+                </div>
+
+                <div class="field">
+                  <label for="bookingCloseTime">Booking close time</label>
+                  <input id="bookingCloseTime" type="time" />
                 </div>
               </div>
 
@@ -839,6 +850,8 @@
     membersBookingOpenTime: document.getElementById("membersBookingOpenTime"),
     guestsBookingOpenDate: document.getElementById("guestsBookingOpenDate"),
     guestsBookingOpenTime: document.getElementById("guestsBookingOpenTime"),
+    bookingCloseDate: document.getElementById("bookingCloseDate"),
+    bookingCloseTime: document.getElementById("bookingCloseTime"),
 
     typedTitle: document.getElementById("typedTitle"),
     graphicTitleUrl: document.getElementById("graphicTitleUrl"),
@@ -1157,6 +1170,12 @@
     renderPreview();
   }
 
+  function bookingLabelFromValue(value) {
+    const raw = String(value || "").trim().toLowerCase();
+    if (raw === "interest" || raw === "register interest") return "Register interest";
+    return "Book";
+  }
+
   function formatDateTimeForPreview() {
     const d = els.eventDate.value;
     const st = els.startTime.value;
@@ -1209,7 +1228,7 @@
     els.previewCategory.textContent = els.category.value || "—";
     els.previewWhen.textContent = formatDateTimeForPreview();
     els.previewLocation.textContent = (els.location.value || "").trim() || "—";
-    els.previewBookingMode.textContent = els.bookingMode.options[els.bookingMode.selectedIndex]?.text || "—";
+    els.previewBookingMode.textContent = bookingLabelFromValue(els.bookingMode.value);
 
     if (state.verified && state.verifiedHostName && state.verifiedMemberId) {
       els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
@@ -1289,10 +1308,11 @@
       location: (els.location.value || "").trim(),
 
       capacity_total: Number(els.placesTotal.value || 0),
-      booking_mode: els.bookingMode.value || "booking",
+      booking_mode: els.bookingMode.value || "book",
 
       members_booking_open_at: combineDateTime(els.membersBookingOpenDate.value, els.membersBookingOpenTime.value),
       guests_booking_open_at: combineDateTime(els.guestsBookingOpenDate.value, els.guestsBookingOpenTime.value),
+      booking_close_at: combineDateTime(els.bookingCloseDate.value, els.bookingCloseTime.value),
 
       description: summary || body,
       notice_title: mode === "typed" ? typedTitle : (summary || body || "Untitled event"),
@@ -1339,6 +1359,18 @@
       }
     }
 
+    if (payload.booking_close_at && payload.members_booking_open_at) {
+      if (payload.booking_close_at < payload.members_booking_open_at) {
+        return "Booking close cannot be before member booking opens.";
+      }
+    }
+
+    if (payload.booking_close_at && payload.guests_booking_open_at) {
+      if (payload.booking_close_at < payload.guests_booking_open_at) {
+        return "Booking close cannot be before guest booking opens.";
+      }
+    }
+
     return "";
   }
 
@@ -1353,7 +1385,12 @@
     els.startTime.value = ev.start_time || "";
     els.endTime.value = ev.end_time || "";
     els.placesTotal.value = Number(ev.capacity_total || ev.places_total || ev.capacity || 1);
-    els.bookingMode.value = ev.booking_mode || "booking";
+
+    const savedBookingMode = String(ev.booking_mode || "").trim().toLowerCase();
+    els.bookingMode.value =
+      savedBookingMode === "interest" || savedBookingMode === "register interest"
+        ? "interest"
+        : "book";
 
     const memberOpen = splitIsoToDateTime(ev.members_booking_open_at);
     els.membersBookingOpenDate.value = memberOpen.date;
@@ -1362,6 +1399,10 @@
     const guestOpen = splitIsoToDateTime(ev.guests_booking_open_at);
     els.guestsBookingOpenDate.value = guestOpen.date;
     els.guestsBookingOpenTime.value = guestOpen.time;
+
+    const bookingClose = splitIsoToDateTime(ev.booking_close_at);
+    els.bookingCloseDate.value = bookingClose.date;
+    els.bookingCloseTime.value = bookingClose.time;
 
     els.typedTitle.value = ev.notice_title || ev.title || "";
     els.graphicTitleUrl.value = ev.title_graphic_url || ev.graphic_title_url || "";
@@ -1599,11 +1640,13 @@
     els.startTime.value = "";
     els.endTime.value = "";
     els.placesTotal.value = 1;
-    els.bookingMode.value = "booking";
+    els.bookingMode.value = "book";
     els.membersBookingOpenDate.value = "";
     els.membersBookingOpenTime.value = "";
     els.guestsBookingOpenDate.value = "";
     els.guestsBookingOpenTime.value = "";
+    els.bookingCloseDate.value = "";
+    els.bookingCloseTime.value = "";
 
     const typedRadio = document.querySelector('input[name="titleMode"][value="typed"]');
     if (typedRadio) typedRadio.checked = true;

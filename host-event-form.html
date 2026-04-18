@@ -800,6 +800,8 @@
     verifiedHostName: "",
     verifiedMemberRecord: null,
     loadedEvent: null,
+    loadedEventId: "",
+    loadedEventLookupKey: eventId,
     adminOverride: false,
     memberToken: sessionStorage.getItem(HOST_FORM_TOKEN_KEY) || "",
     backendLoginData: null
@@ -892,6 +894,19 @@
 
   function softCanonicalMemberId(value) {
     return canonicalMemberId(value).replace(/\//g, "");
+  }
+
+  function canonicalEventKey(value) {
+    return String(value || "")
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, "")
+      .replace(/[^A-Z0-9/\-]/g, "");
+  }
+
+  function eventKeysMatch(a, b) {
+    if (!a || !b) return false;
+    return canonicalEventKey(a) === canonicalEventKey(b);
   }
 
   function memberIdsMatch(a, b) {
@@ -993,6 +1008,7 @@
     state.verifiedHostName = "";
     state.verifiedMemberRecord = null;
     state.loadedEvent = null;
+    state.loadedEventId = "";
     state.adminOverride = false;
     state.memberToken = "";
     state.backendLoginData = null;
@@ -1372,23 +1388,99 @@
     return candidateIds.some(id => memberIdsMatch(id, state.verifiedMemberId));
   }
 
+  async function fetchEventDirect(key) {
+    const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(key)}`, {
+      method: "GET",
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+    const ev = data && typeof data === "object" && data.event ? data.event : data;
+    if (!ev || typeof ev !== "object") return null;
+
+    return ev;
+  }
+
+  function extractEventsArray(data) {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.events)) return data.events;
+    if (Array.isArray(data?.data)) return data.data;
+    return [];
+  }
+
+  function eventMatchesLookupKey(ev, key) {
+    const candidates = [
+      ev?.event_id,
+      ev?.id,
+      ev?.reference,
+      ev?.event_reference,
+      ev?.event_ref,
+      ev?.ref
+    ].filter(Boolean);
+
+    return candidates.some(candidate => eventKeysMatch(candidate, key));
+  }
+
+  async function resolveEventForEdit(key) {
+    const direct = await fetchEventDirect(key);
+    if (direct) {
+      return {
+        event: direct,
+        resolvedId: direct.event_id || direct.id || key,
+        matchedBy: "direct"
+      };
+    }
+
+    const listRes = await fetch(`${BACKEND_URL}/api/events`, {
+      method: "GET",
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!listRes.ok) {
+      return null;
+    }
+
+    const listData = await listRes.json();
+    const events = extractEventsArray(listData);
+
+    const matched = events.find(ev => eventMatchesLookupKey(ev, key));
+    if (!matched) {
+      return null;
+    }
+
+    const resolvedId = matched.event_id || matched.id || key;
+    let fullEvent = matched;
+
+    if (resolvedId && !eventKeysMatch(resolvedId, key)) {
+      const secondFetch = await fetchEventDirect(resolvedId);
+      if (secondFetch) fullEvent = secondFetch;
+    }
+
+    return {
+      event: fullEvent,
+      resolvedId,
+      matchedBy: "list"
+    };
+  }
+
   async function loadExistingEventForEdit() {
     clearMsg(els.submitMsg);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`, {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-      });
+      const resolved = await resolveEventForEdit(eventId);
 
-      if (!res.ok) {
+      if (!resolved || !resolved.event) {
         showMsg(els.submitMsg, "err", "The existing event could not be loaded for editing.");
         return;
       }
 
-      const data = await res.json();
-      const ev = data && typeof data === "object" && data.event ? data.event : data;
+      const ev = resolved.event;
       state.loadedEvent = ev;
+      state.loadedEventId = resolved.resolvedId || ev.event_id || ev.id || "";
 
       const allowed = eventBelongsToVerifiedHost(ev) || !!getAdminToken();
       if (!allowed) {
@@ -1401,6 +1493,14 @@
       }
 
       fillFormFromEvent(ev);
+
+      if (resolved.matchedBy === "list" && state.loadedEventId) {
+        showMsg(
+          els.submitMsg,
+          "ok",
+          `Existing event loaded for editing via reference match (${state.loadedEventId}).`
+        );
+      }
 
       if (getAdminToken() && !eventBelongsToVerifiedHost(ev)) {
         showMsg(els.submitMsg, "warn", "Admin token detected. Edit access has been allowed even though the verified host does not appear to match the saved event.");
@@ -1434,8 +1534,9 @@
     els.saveBtn.textContent = "Saving...";
 
     try {
+      const effectiveEditId = state.loadedEventId || eventId;
       const url = isEditMode
-        ? `${BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`
+        ? `${BACKEND_URL}/api/events/${encodeURIComponent(effectiveEditId)}`
         : `${BACKEND_URL}/api/events`;
 
       const method = isEditMode ? "PUT" : "POST";
@@ -1463,12 +1564,11 @@
         return;
       }
 
-      const savedEvent =
-        (data && data.event) ||
-        data ||
-        {};
+      const savedEvent = (data && data.event) || data || {};
+      const savedEventId = savedEvent.event_id || savedEvent.id || effectiveEditId || "";
 
-      const savedEventId = savedEvent.event_id || savedEvent.id || eventId || "";
+      state.loadedEvent = savedEvent && typeof savedEvent === "object" ? savedEvent : state.loadedEvent;
+      state.loadedEventId = savedEventId || state.loadedEventId;
 
       showMsg(
         els.submitMsg,
@@ -1552,6 +1652,6 @@
   syncTitleModeUI();
   renderPreview();
   lockForm();
-</script>
+  </script>
 </body>
 </html>

@@ -938,9 +938,9 @@
           const token = pick(res.token, res.authToken, res.access_token);
           if (!token) throw new Error("No token returned");
 
-          authToken = token;
-          currentMemberId = baseMemberId(memberId);
-          return;
+         authToken = token;
+         currentMemberId = String(memberId || "").trim().toUpperCase();
+         return; 
         }catch(err){
           lastErr = err;
         }
@@ -990,55 +990,57 @@
     }
 
     async function handleLookupSubmit(event){
-      event.preventDefault();
+  event.preventDefault();
 
-      const memberId = baseMemberId(memberIdInput.value);
-      const pin = memberPinInput.value.trim();
+  const rawMemberId = String(memberIdInput.value || "").trim().toUpperCase();
+  const memberIdBase = baseMemberId(rawMemberId);
+  const pin = memberPinInput.value.trim();
 
-      if (!memberId){
-        showMessage("Please enter a membership number.", "warn");
-        return;
-      }
-      if (!pin){
-        showMessage("Please enter your PIN.", "warn");
-        return;
-      }
+  if (!rawMemberId){
+    showMessage("Please enter a membership number.", "warn");
+    return;
+  }
+  if (!pin){
+    showMessage("Please enter your PIN.", "warn");
+    return;
+  }
 
-      lookupBtn.disabled = true;
-      showMessage("Looking up member…", "info");
+  lookupBtn.disabled = true;
+  showMessage("Looking up member…", "info");
 
-      try{
-        await login(memberId, pin);
+  try{
+    await login(rawMemberId, pin);
 
-        const profile = await loadMemberProfile();
-        populateMemberForm(profile);
+    currentMemberId = memberIdBase || rawMemberId;
 
-        await loadMyBooking();
+    const profile = await loadMemberProfile();
+    populateMemberForm(profile);
 
-        setActionButtons(true);
+    await loadMyBooking();
 
-        if (currentBooking){
-          showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
-        }else{
-          const hasContact = !!pick(memberNameInput.value, memberEmailInput.value, memberMobileInput.value);
-          if (hasContact){
-            showMessage("Member lookup complete. No existing booking was found for this event.", "info");
-          }else{
-            showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
-          }
-        }
-      }catch(err){
-        authToken = "";
-        currentMemberId = "";
-        currentBooking = null;
-        renderExistingBooking();
-        setActionButtons(false);
-        showMessage(`Member lookup failed: ${err.message}`, "err");
-      }finally{
-        lookupBtn.disabled = false;
+    setActionButtons(true);
+
+    if (currentBooking){
+      showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
+    }else{
+      const hasContact = !!pick(memberNameInput.value, memberEmailInput.value, memberMobileInput.value);
+      if (hasContact){
+        showMessage("Member lookup complete. No existing booking was found for this event.", "info");
+      }else{
+        showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
       }
     }
-
+  }catch(err){
+    authToken = "";
+    currentMemberId = "";
+    currentBooking = null;
+    renderExistingBooking();
+    setActionButtons(false);
+    showMessage(`Member lookup failed: ${err.message}`, "err");
+  }finally{
+    lookupBtn.disabled = false;
+  }
+}
     function makeBookingPayload(){
       const responseType = getResponseType();
       const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));

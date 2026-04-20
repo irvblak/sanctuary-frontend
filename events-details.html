@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Event Notice | Sanctuary Club</title>
+  <title>Notice | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_2"></script>
+  <script src="access.js?v=AC_3"></script>
 
   <style>
     :root{
@@ -18,7 +18,6 @@
       --panel:#ffffff;
       --soft:#f4f8fc;
       --accent:#245d8b;
-      --accent2:#2f79b1;
       --ok:#1f6f47;
       --warn:#8a5a00;
       --err:#9e2b2b;
@@ -60,7 +59,8 @@
       font-weight:700;
     }
 
-    .top-actions{
+    .top-actions,
+    .bottom-actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -161,7 +161,7 @@
 
     .meta-row strong{
       color:#17314a;
-      min-width:110px;
+      min-width:120px;
     }
 
     .host-box{
@@ -174,7 +174,7 @@
       line-height:1.55;
     }
 
-    .timing-box{
+    .detail-box{
       margin:16px 22px 0;
       padding:15px;
       border-radius:18px;
@@ -182,31 +182,31 @@
       border:1px solid var(--line);
     }
 
-    .timing-box h2{
+    .detail-box h2{
       margin:0 0 12px;
       font-size:1.02rem;
     }
 
-    .timing-grid{
+    .detail-grid{
       display:grid;
       gap:10px;
     }
 
-    .timing-row{
+    .detail-row{
       display:grid;
-      grid-template-columns:190px 1fr;
+      grid-template-columns:200px 1fr;
       gap:12px;
       align-items:start;
       font-size:.96rem;
       line-height:1.45;
     }
 
-    .timing-row strong{
+    .detail-row strong{
       color:#17314a;
     }
 
     @media (max-width:720px){
-      .timing-row{
+      .detail-row{
         grid-template-columns:1fr;
         gap:4px;
       }
@@ -281,9 +281,6 @@
     }
 
     .bottom-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
       padding:0 22px 24px;
     }
 
@@ -296,7 +293,7 @@
       <a class="backlink" href="events.html">← Back to Events List</a>
 
       <div class="top-actions">
-        <a id="bookBtnTop" class="btn btn-primary" href="event-booking.html">Book</a>
+        <a id="bookBtnTop" class="btn btn-primary hidden" href="event-booking.html">Book</a>
         <a id="editBtnTop" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
     </div>
@@ -305,7 +302,7 @@
 
     <article class="notice">
       <div class="notice-top">
-        <h1 id="titleText" class="title-text">Loading event notice…</h1>
+        <h1 id="titleText" class="title-text">Loading notice…</h1>
         <img id="titleGraphic" class="title-graphic" alt="Graphic title" />
       </div>
 
@@ -314,40 +311,50 @@
         <div class="meta-row"><strong>Date</strong><span id="metaDate">—</span></div>
         <div class="meta-row"><strong>Time</strong><span id="metaTime">—</span></div>
         <div class="meta-row"><strong>Location</strong><span id="metaLocation">—</span></div>
-        <div class="meta-row"><strong>Booking</strong><span id="metaBooking">—</span></div>
+        <div class="meta-row" id="bookingMetaRow"><strong>Booking</strong><span id="metaBooking">—</span></div>
         <div class="meta-row"><strong>Reference</strong><span id="metaReference">—</span></div>
       </div>
 
       <div class="host-box">
-        <strong>Hosted by:</strong>
+        <strong>Author / host:</strong>
         <span id="hostText">—</span>
       </div>
 
-      <div class="timing-box">
+      <div id="bookingDetailsBox" class="detail-box hidden">
         <h2>Booking details</h2>
-        <div class="timing-grid">
-          <div class="timing-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
-          <div class="timing-row"><strong>Members booking opens</strong><span id="membersOpen">—</span></div>
-          <div class="timing-row"><strong>Guests booking opens</strong><span id="guestsOpen">—</span></div>
-          <div class="timing-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
-          <div class="timing-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
+        <div class="detail-grid">
+          <div class="detail-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
+          <div class="detail-row"><strong>Members booking opens</strong><span id="membersOpen">—</span></div>
+          <div class="detail-row"><strong>Guests booking opens</strong><span id="guestsOpen">—</span></div>
+          <div class="detail-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
+          <div class="detail-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
+        </div>
+      </div>
+
+      <div id="contactDetailsBox" class="detail-box hidden">
+        <h2>Contact details</h2>
+        <div class="detail-grid">
+          <div class="detail-row"><strong>Name</strong><span id="contactName">—</span></div>
+          <div class="detail-row"><strong>Email</strong><span id="contactEmail">—</span></div>
+          <div class="detail-row"><strong>Mobile</strong><span id="contactMobile">—</span></div>
         </div>
       </div>
 
       <div class="pill-row">
-        <span id="bookingModePill" class="pill">Booking details pending</span>
-        <span id="availabilityPill" class="pill">Availability not yet known</span>
+        <span id="typePill" class="pill">Notice</span>
+        <span id="bookingModePill" class="pill hidden">Booking details</span>
+        <span id="availabilityPill" class="pill hidden">Availability</span>
       </div>
 
       <div class="body-image-wrap">
-        <img id="bodyImage" class="body-image" alt="Event image" />
+        <img id="bodyImage" class="body-image" alt="Notice image" />
       </div>
 
       <div id="summaryBox" class="summary-box hidden"></div>
       <div id="bodyBox" class="body-box"><span class="placeholder">Loading notice…</span></div>
 
       <div class="bottom-actions">
-        <a id="bookBtnBottom" class="btn btn-primary" href="event-booking.html">Book</a>
+        <a id="bookBtnBottom" class="btn btn-primary hidden" href="event-booking.html">Book</a>
         <a id="editBtnBottom" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
     </article>
@@ -368,17 +375,25 @@
     const metaDate = document.getElementById("metaDate");
     const metaTime = document.getElementById("metaTime");
     const metaLocation = document.getElementById("metaLocation");
+    const bookingMetaRow = document.getElementById("bookingMetaRow");
     const metaBooking = document.getElementById("metaBooking");
     const metaReference = document.getElementById("metaReference");
 
     const hostText = document.getElementById("hostText");
 
+    const bookingDetailsBox = document.getElementById("bookingDetailsBox");
     const spacesAvailable = document.getElementById("spacesAvailable");
     const membersOpen = document.getElementById("membersOpen");
     const guestsOpen = document.getElementById("guestsOpen");
     const bookingClose = document.getElementById("bookingClose");
     const cancelCutoff = document.getElementById("cancelCutoff");
 
+    const contactDetailsBox = document.getElementById("contactDetailsBox");
+    const contactName = document.getElementById("contactName");
+    const contactEmail = document.getElementById("contactEmail");
+    const contactMobile = document.getElementById("contactMobile");
+
+    const typePill = document.getElementById("typePill");
     const bookingModePill = document.getElementById("bookingModePill");
     const availabilityPill = document.getElementById("availabilityPill");
 
@@ -474,7 +489,7 @@
       );
     }
 
-    function getEventDateValue(e){
+    function getNoticeDateValue(e){
       return pick(
         e.start_at,
         e.starts_at,
@@ -486,7 +501,7 @@
       );
     }
 
-    function getEventTimeText(e){
+    function getNoticeTimeText(e){
       const startStamp = pick(e.start_at, e.starts_at);
       const endStamp = pick(e.end_at, e.ends_at);
 
@@ -496,11 +511,7 @@
         return [startText, endText].filter(Boolean).join(" – ") || "—";
       }
 
-      const directRange = pick(
-        e.time_range,
-        e.event_time_range,
-        e.display_time
-      );
+      const directRange = pick(e.time_range, e.event_time_range, e.display_time);
       if (directRange) return directRange;
 
       const startText = pick(e.time, e.start_time, e.event_time);
@@ -592,20 +603,37 @@
 
       const raw = String(original || "").trim().toLowerCase();
 
-      if (!raw) return "Book";
-
+      if (!raw) return "";
       if (raw === "book" || raw === "booking") return "Book";
       if (raw === "register interest" || raw === "register_interest" || raw === "interest") return "Register interest";
-      if (
-        raw === "book or register interest" ||
-        raw === "book_or_register_interest" ||
-        raw === "booking_or_interest"
-      ) return "Book or Register interest";
+      if (raw === "book or register interest" || raw === "book_or_register_interest" || raw === "booking_or_interest") return "Book or Register interest";
 
-      return String(original).trim() || "Book";
+      return String(original).trim() || "";
+    }
+
+    function hasBookingBehaviour(e){
+      return !!(
+        getBookingLabel(e) ||
+        getMembersOpenValue(e) ||
+        getGuestsOpenValue(e) ||
+        getBookingCloseValue(e) ||
+        getCancelCutoffValue(e) ||
+        getSpacesAvailableValue(e) !== ""
+      );
+    }
+
+    function getNoticeTypeLabel(e){
+      if (hasBookingBehaviour(e)) return "Event Notice";
+      return "Notice";
     }
 
     function setBookingButtons(label){
+      if (!label){
+        bookBtnTop.classList.add("hidden");
+        bookBtnBottom.classList.add("hidden");
+        return;
+      }
+
       const text =
         label === "Register interest"
           ? "Register interest"
@@ -615,17 +643,20 @@
 
       bookBtnTop.textContent = text;
       bookBtnBottom.textContent = text;
+      bookBtnTop.classList.remove("hidden");
+      bookBtnBottom.classList.remove("hidden");
     }
 
     function renderAvailability(e){
       const spaces = getSpacesAvailableValue(e);
       if (spaces === ""){
-        availabilityPill.textContent = "Availability not yet known";
-        availabilityPill.className = "pill";
+        availabilityPill.classList.add("hidden");
         return;
       }
 
       const n = Number(spaces);
+      availabilityPill.classList.remove("hidden");
+
       if (Number.isFinite(n)){
         if (n <= 0){
           availabilityPill.textContent = "No spaces currently available";
@@ -642,8 +673,13 @@
     }
 
     function renderBookingModePill(label){
+      if (!label){
+        bookingModePill.classList.add("hidden");
+        return;
+      }
       bookingModePill.textContent = label;
       bookingModePill.className = label === "Register interest" ? "pill warn" : "pill ok";
+      bookingModePill.classList.remove("hidden");
     }
 
     async function getJson(url, options = {}){
@@ -667,7 +703,7 @@
     function renderTitle(e){
       const titleMode = String(pick(e.title_mode, "typed")).trim().toLowerCase();
       const graphicUrl = pick(e.title_graphic_url, e.graphic_title_url);
-      const noticeTitle = pick(e.notice_title, e.title, "Event Notice");
+      const noticeTitle = pick(e.notice_title, e.title, "Notice");
 
       if (titleMode === "graphic" && graphicUrl){
         titleText.style.display = "none";
@@ -711,10 +747,72 @@
       }
     }
 
-    async function loadEvent(){
+    function renderContactDetails(e){
+      const name = pick(
+        e.contact_name,
+        e.author_name,
+        e.producer_name,
+        e.host_name
+      );
+      const email = pick(
+        e.contact_email,
+        e.author_email,
+        e.producer_email,
+        e.email
+      );
+      const mobile = pick(
+        e.contact_mobile,
+        e.author_mobile,
+        e.producer_mobile,
+        e.mobile,
+        e.phone
+      );
+
+      if (!name && !email && !mobile){
+        contactDetailsBox.classList.add("hidden");
+        return;
+      }
+
+      contactName.textContent = name || "—";
+      contactEmail.textContent = email || "—";
+      contactMobile.textContent = mobile || "—";
+      contactDetailsBox.classList.remove("hidden");
+    }
+
+    function renderBookingDetails(e){
+      const label = getBookingLabel(e);
+      const show = hasBookingBehaviour(e);
+
+      if (!label){
+        bookingMetaRow.classList.add("hidden");
+      }else{
+        bookingMetaRow.classList.remove("hidden");
+        metaBooking.textContent = label;
+      }
+
+      renderBookingModePill(label);
+      setBookingButtons(label);
+      renderAvailability(e);
+
+      if (!show){
+        bookingDetailsBox.classList.add("hidden");
+        return;
+      }
+
+      const spacesValue = getSpacesAvailableValue(e);
+      spacesAvailable.textContent = spacesValue === "" ? "—" : String(spacesValue);
+      membersOpen.textContent = formatDateTime(getMembersOpenValue(e));
+      guestsOpen.textContent = formatDateTime(getGuestsOpenValue(e));
+      bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
+      cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
+
+      bookingDetailsBox.classList.remove("hidden");
+    }
+
+    async function loadNotice(){
       if (!EVENT_ID){
         showMessage("This page was opened without an event reference.", "err");
-        titleText.textContent = "Event not found";
+        titleText.textContent = "Notice not found";
         bodyBox.innerHTML = '<span class="placeholder">This page needs an event_id in the address.</span>';
         return;
       }
@@ -727,48 +825,41 @@
 
       try{
         const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
-        const event = data.event || data || {};
+        const notice = data.event || data || {};
 
-        renderTitle(event);
+        renderTitle(notice);
 
-        metaCategory.textContent = pick(event.category_label, event.category, "—");
-        metaDate.textContent = formatDateOnly(getEventDateValue(event));
-        metaTime.textContent = getEventTimeText(event);
-        metaLocation.textContent = pick(event.location, event.venue, "—");
+        const bookingLabel = getBookingLabel(notice);
 
-        const bookingLabel = getBookingLabel(event);
-        metaBooking.textContent = bookingLabel;
-        metaReference.textContent = getEventReference(event);
+        metaCategory.textContent = pick(notice.category_label, notice.category, "—");
+        metaDate.textContent = formatDateOnly(getNoticeDateValue(notice));
+        metaTime.textContent = getNoticeTimeText(notice);
+        metaLocation.textContent = pick(notice.location, notice.venue, "—");
+        metaReference.textContent = getEventReference(notice);
 
         hostText.textContent = pick(
-          event.host_display,
-          event.host_name_with_member_id,
-          event.host_name,
+          notice.host_display,
+          notice.host_name_with_member_id,
+          notice.host_name,
+          notice.contact_name,
+          notice.author_name,
           "—"
         );
 
-        const spacesValue = getSpacesAvailableValue(event);
-        spacesAvailable.textContent = spacesValue === "" ? "—" : String(spacesValue);
+        typePill.textContent = getNoticeTypeLabel(notice);
 
-        membersOpen.textContent = formatDateTime(getMembersOpenValue(event));
-        guestsOpen.textContent = formatDateTime(getGuestsOpenValue(event));
-        bookingClose.textContent = formatDateTime(getBookingCloseValue(event));
-        cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(event));
-
-        renderBookingModePill(bookingLabel);
-        renderAvailability(event);
-        setBookingButtons(bookingLabel);
-
-        renderBodyImage(event);
-        renderSummaryAndBody(event);
+        renderBookingDetails(notice);
+        renderContactDetails(notice);
+        renderBodyImage(notice);
+        renderSummaryAndBody(notice);
       }catch(err){
-        showMessage(err.message || "Unable to load event notice.", "err");
-        titleText.textContent = "Unable to load event notice";
+        showMessage(err.message || "Unable to load notice.", "err");
+        titleText.textContent = "Unable to load notice";
         bodyBox.innerHTML = '<span class="placeholder">Please try again.</span>';
       }
     }
 
-    loadEvent();
+    loadNotice();
   </script>
 </body>
 </html>

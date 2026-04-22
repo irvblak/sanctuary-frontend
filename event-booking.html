@@ -885,16 +885,17 @@
           eventData.host_name,
           "—"
         );
-
-        eventSpacesAvailable.textContent = pick(
-          eventData.spaces_available,
-          eventData.places_remaining,
-          eventData.remaining_places,
-          eventData.available_places,
-          eventData.capacity_remaining,
-          "—"
-        );
-
+eventSpacesAvailable.textContent = pick(
+  eventData?.tracking?.places_remaining,   // ✅ correct backend field
+  eventData.spaces_available,
+  eventData.places_remaining,
+  eventData.remaining_places,
+  eventData.available_places,
+  eventData.capacity_remaining,
+  eventData.capacity_total,
+  "—"
+);
+        
         eventMembersOpen.textContent = formatDateTime(
           pick(eventData.members_booking_open_at, eventData.booking_open_at)
         );

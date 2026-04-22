@@ -520,42 +520,44 @@
     }
 
     function getSpacesAvailableValue(e){
-      const n = firstNumber(
-        e.spaces_available,
-        e.available_spaces,
-        e.available_places,
-        e.places_available,
-        e.places_remaining,
-        e.remaining_places,
-        e.capacity_remaining,
-        e.remaining_capacity
-      );
-      if (n !== null) return n;
+  const n = firstNumber(
+    e?.tracking?.places_remaining,
+    e?.spaces_available,
+    e?.available_spaces,
+    e?.available_places,
+    e?.places_available,
+    e?.places_remaining,
+    e?.remaining_places,
+    e?.capacity_remaining,
+    e?.remaining_capacity
+  );
+  if (n !== null) return n;
 
-      const cap = firstNumber(
-        e.capacity,
-        e.capacity_total,
-        e.max_places,
-        e.total_places,
-        e.total_capacity,
-        e.spaces_total,
-        e.places_total
-      );
-      if (cap !== null) return cap;
+  const cap = firstNumber(
+    e?.capacity_total,
+    e?.capacity,
+    e?.max_places,
+    e?.total_places,
+    e?.total_capacity,
+    e?.spaces_total,
+    e?.places_total
+  );
+  if (cap !== null) return cap;
 
-      return pick(
-        e.spaces_available,
-        e.available_spaces,
-        e.available_places,
-        e.places_available,
-        e.places_remaining,
-        e.remaining_places,
-        e.capacity_remaining,
-        e.remaining_capacity,
-        e.capacity,
-        e.capacity_total
-      );
-    }
+  return pick(
+    e?.tracking?.places_remaining,
+    e?.spaces_available,
+    e?.available_spaces,
+    e?.available_places,
+    e?.places_available,
+    e?.places_remaining,
+    e?.remaining_places,
+    e?.capacity_remaining,
+    e?.remaining_capacity,
+    e?.capacity_total,
+    e?.capacity
+  );
+}
 
     function getMembersOpenValue(e){
       return pick(

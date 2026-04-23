@@ -1159,6 +1159,16 @@
       }catch(err){
         clearPersistedAuth();
         currentBooking = null;
+
+        memberIdReadonly.value = "";
+        memberNameInput.value = "";
+        memberEmailInput.value = "";
+        memberMobileInput.value = "";
+        placesTotalInput.value = "1";
+        guestPlacesInput.value = "0";
+        notesInput.value = "";
+        setResponseType("booking");
+
         renderExistingBooking();
         setActionButtons(false);
         showMessage(`Member lookup failed: ${err.message}`, "err");

@@ -773,37 +773,39 @@
       cancelBtn.disabled = !lookupOk || !currentBooking;
     }
 
-    function renderAvailability(){
-      const spaces = pick(
-        eventData?.spaces_available,
-        eventData?.places_remaining,
-        eventData?.remaining_places,
-        eventData?.available_places,
-        eventData?.capacity_remaining
-      );
+   function renderAvailability(){
+  const spaces = pick(
+    eventData?.tracking?.places_remaining,
+    eventData?.spaces_available,
+    eventData?.places_remaining,
+    eventData?.remaining_places,
+    eventData?.available_places,
+    eventData?.capacity_remaining,
+    eventData?.capacity_total,
+    ""
+  );
 
-      if (spaces === ""){
-        availabilityPill.textContent = "Availability not yet known";
-        availabilityPill.className = "pill";
-        return;
-      }
+  if (spaces === ""){
+    availabilityPill.textContent = "Availability not yet known";
+    availabilityPill.className = "pill";
+    return;
+  }
 
-      const n = Number(spaces);
-      if (Number.isFinite(n)){
-        if (n <= 0){
-          availabilityPill.textContent = "No spaces currently available";
-          availabilityPill.className = "pill warn";
-          return;
-        }
-        availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
-        availabilityPill.className = "pill ok";
-        return;
-      }
-
-      availabilityPill.textContent = String(spaces);
-      availabilityPill.className = "pill";
+  const n = Number(spaces);
+  if (Number.isFinite(n)){
+    if (n <= 0){
+      availabilityPill.textContent = "No spaces currently available";
+      availabilityPill.className = "pill warn";
+      return;
     }
+    availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
+    availabilityPill.className = "pill ok";
+    return;
+  }
 
+  availabilityPill.textContent = String(spaces);
+  availabilityPill.className = "pill";
+} 
     function renderExistingBooking(){
       if (!currentBooking){
         existingBookingCard.classList.remove("show");

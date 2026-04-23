@@ -606,8 +606,58 @@
       return [startValue, endValue].filter(Boolean).join(" – ") || "—";
     }
 
-    async function getJson(url, options = {}){
-      const res = await fetch(url, options);
+    function getStoredAuthToken(){
+      return (
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken") ||
+        ""
+      );
+    }
+
+    function getStoredMemberId(){
+      return (
+        localStorage.getItem("currentMemberId") ||
+        sessionStorage.getItem("currentMemberId") ||
+        ""
+      );
+    }
+
+    function persistAuth(token, memberId){
+      authToken = token || "";
+      currentMemberId = baseMemberId(memberId || "");
+
+      if (authToken){
+        localStorage.setItem("authToken", authToken);
+        sessionStorage.setItem("authToken", authToken);
+      }
+
+      if (currentMemberId){
+        localStorage.setItem("currentMemberId", currentMemberId);
+        sessionStorage.setItem("currentMemberId", currentMemberId);
+      }
+    }
+
+    function clearPersistedAuth(){
+      authToken = "";
+      currentMemberId = "";
+
+      localStorage.removeItem("authToken");
+      sessionStorage.removeItem("authToken");
+      localStorage.removeItem("currentMemberId");
+      sessionStorage.removeItem("currentMemberId");
+    }
+
+    async function apiFetch(path, options = {}){
+      const headers = Object.assign({}, options.headers || {});
+      if (authToken){
+        headers.Authorization = `Bearer ${authToken}`;
+      }
+
+      const res = await fetch(`${BACKEND_URL}${path}`, {
+        ...options,
+        headers
+      });
+
       const text = await res.text();
 
       let data = {};
@@ -640,13 +690,23 @@
           booking?.response_type,
           booking?.booking_type,
           booking?.mode,
-          booking?.status,
-          booking?.intent
+          booking?.intent,
+          booking?.status
         ) || ""
       ).toLowerCase();
 
       if (raw.includes("interest")) return "interest";
+      if (raw === "interested") return "interest";
       return "booking";
+    }
+
+    function bookingStatusText(booking){
+      return pick(
+        booking?.booking_status,
+        booking?.status,
+        booking?.state,
+        "Recorded"
+      );
     }
 
     function firstResidentFromProfile(profile){
@@ -754,6 +814,7 @@
         contact.email,
         fallbackContact.email,
         currentBooking?.email,
+        currentBooking?.member_email,
         memberEmailInput.value
       );
 
@@ -761,6 +822,7 @@
         contact.mobile,
         fallbackContact.mobile,
         currentBooking?.mobile,
+        currentBooking?.member_mobile,
         currentBooking?.phone,
         memberMobileInput.value
       );
@@ -773,39 +835,40 @@
       cancelBtn.disabled = !lookupOk || !currentBooking;
     }
 
-   function renderAvailability(){
-  const spaces = pick(
-    eventData?.tracking?.places_remaining,
-    eventData?.spaces_available,
-    eventData?.places_remaining,
-    eventData?.remaining_places,
-    eventData?.available_places,
-    eventData?.capacity_remaining,
-    eventData?.capacity_total,
-    ""
-  );
+    function renderAvailability(){
+      const spaces = pick(
+        eventData?.tracking?.places_remaining,
+        eventData?.spaces_available,
+        eventData?.places_remaining,
+        eventData?.remaining_places,
+        eventData?.available_places,
+        eventData?.capacity_remaining,
+        eventData?.capacity_total,
+        ""
+      );
 
-  if (spaces === ""){
-    availabilityPill.textContent = "Availability not yet known";
-    availabilityPill.className = "pill";
-    return;
-  }
+      if (spaces === ""){
+        availabilityPill.textContent = "Availability not yet known";
+        availabilityPill.className = "pill";
+        return;
+      }
 
-  const n = Number(spaces);
-  if (Number.isFinite(n)){
-    if (n <= 0){
-      availabilityPill.textContent = "No spaces currently available";
-      availabilityPill.className = "pill warn";
-      return;
+      const n = Number(spaces);
+      if (Number.isFinite(n)){
+        if (n <= 0){
+          availabilityPill.textContent = "No spaces currently available";
+          availabilityPill.className = "pill warn";
+          return;
+        }
+        availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
+        availabilityPill.className = "pill ok";
+        return;
+      }
+
+      availabilityPill.textContent = String(spaces);
+      availabilityPill.className = "pill";
     }
-    availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
-    availabilityPill.className = "pill ok";
-    return;
-  }
 
-  availabilityPill.textContent = String(spaces);
-  availabilityPill.className = "pill";
-} 
     function renderExistingBooking(){
       if (!currentBooking){
         existingBookingCard.classList.remove("show");
@@ -821,7 +884,7 @@
         ["Type", type === "interest" ? "Interest only" : "Booking"],
         ["Places", pick(currentBooking.places_total, currentBooking.places, 0)],
         ["Guest places", pick(currentBooking.guest_places, 0)],
-        ["Status", pick(currentBooking.booking_status, currentBooking.status, "Recorded")],
+        ["Status", bookingStatusText(currentBooking)],
         ["Booked / updated", pick(currentBooking.updated_at, currentBooking.created_at, "—")],
         ["Notes", pick(currentBooking.notes, currentBooking.note, "—")]
       ];
@@ -841,12 +904,33 @@
 
       setResponseType(responseTypeFromBooking(currentBooking));
 
-      memberNameInput.value = pick(currentBooking.member_name, currentBooking.name, memberNameInput.value);
-      memberEmailInput.value = pick(currentBooking.email, memberEmailInput.value);
-      memberMobileInput.value = pick(currentBooking.mobile, currentBooking.phone, memberMobileInput.value);
+      memberNameInput.value = pick(
+        currentBooking.member_name,
+        currentBooking.name,
+        memberNameInput.value
+      );
 
-      placesTotalInput.value = String(Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0));
-      guestPlacesInput.value = String(Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0));
+      memberEmailInput.value = pick(
+        currentBooking.email,
+        currentBooking.member_email,
+        memberEmailInput.value
+      );
+
+      memberMobileInput.value = pick(
+        currentBooking.mobile,
+        currentBooking.member_mobile,
+        currentBooking.phone,
+        memberMobileInput.value
+      );
+
+      placesTotalInput.value = String(
+        Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0)
+      );
+
+      guestPlacesInput.value = String(
+        Math.max(0, Number(pick(currentBooking.guest_places, 0)) || 0)
+      );
+
       notesInput.value = pick(currentBooking.notes, currentBooking.note, "");
     }
 
@@ -861,7 +945,10 @@
       backLink.href = `events-details.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
       try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
+        const data = await apiFetch(`/api/events/${encodeURIComponent(EVENT_ID)}`, {
+          method:"GET"
+        });
+
         eventData = data.event || data || {};
 
         const reference = pick(
@@ -873,9 +960,17 @@
         );
 
         eventTitle.textContent = pick(eventData.title, eventData.event_title, "Event");
-        eventSummary.textContent = pick(eventData.summary, eventData.short_description, eventData.description, "Please use Member lookup to continue.");
+        eventSummary.textContent = pick(
+          eventData.summary,
+          eventData.short_description,
+          eventData.description,
+          "Please use Member lookup to continue."
+        );
+
         eventReference.textContent = reference;
-        eventDate.textContent = formatDateOnly(pick(eventData.start_at, eventData.starts_at, eventData.date));
+        eventDate.textContent = formatDateOnly(
+          pick(eventData.start_at, eventData.starts_at, eventData.date)
+        );
         eventTime.textContent = formatTimeRange(
           pick(eventData.start_at, eventData.starts_at, eventData.date),
           pick(eventData.end_at, eventData.ends_at)
@@ -887,17 +982,18 @@
           eventData.host_name,
           "—"
         );
-eventSpacesAvailable.textContent = pick(
-  eventData?.tracking?.places_remaining,   // ✅ correct backend field
-  eventData.spaces_available,
-  eventData.places_remaining,
-  eventData.remaining_places,
-  eventData.available_places,
-  eventData.capacity_remaining,
-  eventData.capacity_total,
-  "—"
-);
-        
+
+        eventSpacesAvailable.textContent = pick(
+          eventData?.tracking?.places_remaining,
+          eventData.spaces_available,
+          eventData.places_remaining,
+          eventData.remaining_places,
+          eventData.available_places,
+          eventData.capacity_remaining,
+          eventData.capacity_total,
+          "—"
+        );
+
         eventMembersOpen.textContent = formatDateTime(
           pick(eventData.members_booking_open_at, eventData.booking_open_at)
         );
@@ -932,7 +1028,7 @@ eventSpacesAvailable.textContent = pick(
 
       for (const payload of attempts){
         try{
-          const res = await getJson(`${BACKEND_URL}/auth/login`, {
+          const res = await apiFetch(`/auth/login`, {
             method:"POST",
             headers:{ "Content-Type":"application/json" },
             body:JSON.stringify(payload)
@@ -941,9 +1037,8 @@ eventSpacesAvailable.textContent = pick(
           const token = pick(res.token, res.authToken, res.access_token);
           if (!token) throw new Error("No token returned");
 
-         authToken = token;
-         currentMemberId = String(memberId || "").trim().toUpperCase();
-         return; 
+          persistAuth(token, memberId);
+          return;
         }catch(err){
           lastErr = err;
         }
@@ -956,11 +1051,8 @@ eventSpacesAvailable.textContent = pick(
       if (!authToken || !currentMemberId) return null;
 
       try{
-        const data = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
-          method:"GET",
-          headers:{
-            "Authorization": `Bearer ${authToken}`
-          }
+        const data = await apiFetch(`/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
+          method:"GET"
         });
 
         return data.profile || data.member || data.entry || data || null;
@@ -969,81 +1061,112 @@ eventSpacesAvailable.textContent = pick(
       }
     }
 
-    async function loadMyBooking(){
-      if (!authToken || !currentMemberId || !EVENT_ID) return;
+    async function loadMyBooking(showStatusMessage = false){
+      if (!authToken || !currentMemberId || !EVENT_ID){
+        currentBooking = null;
+        renderExistingBooking();
+        return;
+      }
 
       try{
-        const result = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
-          method:"GET",
-          headers:{
-            "Authorization": `Bearer ${authToken}`
-          }
+        const result = await apiFetch(`/api/events/${encodeURIComponent(EVENT_ID)}/my-booking`, {
+          method:"GET"
         });
+
+        if (result && result.event){
+          eventData = result.event;
+          eventSpacesAvailable.textContent = pick(
+            eventData?.tracking?.places_remaining,
+            eventData.spaces_available,
+            eventData.places_remaining,
+            eventData.remaining_places,
+            eventData.available_places,
+            eventData.capacity_remaining,
+            eventData.capacity_total,
+            "—"
+          );
+          renderAvailability();
+        }
 
         currentBooking = result.booking || null;
         renderExistingBooking();
 
         if (currentBooking){
           populateBookingFormFromCurrent();
+          if (showStatusMessage){
+            showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
+          }
+        }else if (showStatusMessage){
+          showMessage("No existing booking was found for this event.", "info");
         }
-      }catch(_){
+      }catch(err){
         currentBooking = null;
         renderExistingBooking();
+
+        if (showStatusMessage){
+          showMessage(`Could not reload saved booking: ${err.message}`, "err");
+        }
       }
     }
 
     async function handleLookupSubmit(event){
-  event.preventDefault();
+      event.preventDefault();
 
-  const rawMemberId = String(memberIdInput.value || "").trim().toUpperCase();
-  const memberIdBase = baseMemberId(rawMemberId);
-  const pin = memberPinInput.value.trim();
+      const rawMemberId = String(memberIdInput.value || "").trim().toUpperCase();
+      const memberIdBase = baseMemberId(rawMemberId);
+      const pin = memberPinInput.value.trim();
 
-  if (!rawMemberId){
-    showMessage("Please enter a membership number.", "warn");
-    return;
-  }
-  if (!pin){
-    showMessage("Please enter your PIN.", "warn");
-    return;
-  }
+      if (!rawMemberId){
+        showMessage("Please enter a membership number.", "warn");
+        return;
+      }
+      if (!pin){
+        showMessage("Please enter your PIN.", "warn");
+        return;
+      }
 
-  lookupBtn.disabled = true;
-  showMessage("Looking up member…", "info");
+      lookupBtn.disabled = true;
+      showMessage("Looking up member…", "info");
 
-  try{
-    await login(rawMemberId, pin);
+      try{
+        await login(rawMemberId, pin);
 
-    currentMemberId = memberIdBase || rawMemberId;
+        currentMemberId = memberIdBase || rawMemberId;
+        persistAuth(authToken, currentMemberId);
 
-    const profile = await loadMemberProfile();
-    populateMemberForm(profile);
+        const profile = await loadMemberProfile();
+        populateMemberForm(profile);
 
-    await loadMyBooking();
+        await loadMyBooking(false);
 
-    setActionButtons(true);
+        setActionButtons(true);
 
-    if (currentBooking){
-      showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
-    }else{
-      const hasContact = !!pick(memberNameInput.value, memberEmailInput.value, memberMobileInput.value);
-      if (hasContact){
-        showMessage("Member lookup complete. No existing booking was found for this event.", "info");
-      }else{
-        showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
+        if (currentBooking){
+          showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
+        }else{
+          const hasContact = !!pick(
+            memberNameInput.value,
+            memberEmailInput.value,
+            memberMobileInput.value
+          );
+
+          if (hasContact){
+            showMessage("Member lookup complete. No existing booking was found for this event.", "info");
+          }else{
+            showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
+          }
+        }
+      }catch(err){
+        clearPersistedAuth();
+        currentBooking = null;
+        renderExistingBooking();
+        setActionButtons(false);
+        showMessage(`Member lookup failed: ${err.message}`, "err");
+      }finally{
+        lookupBtn.disabled = false;
       }
     }
-  }catch(err){
-    authToken = "";
-    currentMemberId = "";
-    currentBooking = null;
-    renderExistingBooking();
-    setActionButtons(false);
-    showMessage(`Member lookup failed: ${err.message}`, "err");
-  }finally{
-    lookupBtn.disabled = false;
-  }
-}
+
     function makeBookingPayload(){
       const responseType = getResponseType();
       const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));
@@ -1085,17 +1208,20 @@ eventSpacesAvailable.textContent = pick(
       saveBtn.disabled = true;
 
       try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/book`, {
+        const endpoint = currentBooking
+          ? `/api/events/${encodeURIComponent(EVENT_ID)}/update-booking`
+          : `/api/events/${encodeURIComponent(EVENT_ID)}/book`;
+
+        const data = await apiFetch(endpoint, {
           method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
+          headers:{ "Content-Type":"application/json" },
           body:JSON.stringify(payload)
         });
 
-        showMessage(data.message || "Booking / interest saved.", "ok");
-        await loadMyBooking();
+        showMessage(data.message || (currentBooking ? "Booking / interest updated." : "Booking / interest saved."), "ok");
+
+        await loadMyBooking(false);
+        await loadEvent();
       }catch(err){
         showMessage(`Save failed: ${err.message}`, "err");
       }finally{
@@ -1127,12 +1253,9 @@ eventSpacesAvailable.textContent = pick(
           payload.booking_id = currentBooking.booking_id;
         }
 
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
+        const data = await apiFetch(`/api/events/${encodeURIComponent(EVENT_ID)}/cancel`, {
           method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization": `Bearer ${authToken}`
-          },
+          headers:{ "Content-Type":"application/json" },
           body:JSON.stringify(payload)
         });
 
@@ -1145,6 +1268,8 @@ eventSpacesAvailable.textContent = pick(
         notesInput.value = "";
 
         showMessage(data.message || "Booking / interest cancelled.", "ok");
+
+        await loadEvent();
       }catch(err){
         showMessage(`Cancel failed: ${err.message}`, "err");
       }finally{
@@ -1153,13 +1278,13 @@ eventSpacesAvailable.textContent = pick(
       }
     }
 
-    function reloadSavedBooking(){
-      if (!currentBooking){
-        showMessage("No saved booking / interest is currently loaded.", "warn");
+    async function reloadSavedBooking(){
+      if (!authToken || !currentMemberId){
+        showMessage("Please do Member lookup first.", "warn");
         return;
       }
-      populateBookingFormFromCurrent();
-      showMessage("Saved booking / interest reloaded into the form.", "ok");
+
+      await loadMyBooking(true);
     }
 
     function requestRefund(){
@@ -1180,8 +1305,7 @@ eventSpacesAvailable.textContent = pick(
     }
 
     function clearLookup(){
-      authToken = "";
-      currentMemberId = "";
+      clearPersistedAuth();
       currentBooking = null;
 
       memberIdInput.value = "";
@@ -1200,6 +1324,18 @@ eventSpacesAvailable.textContent = pick(
       showMessage("Member lookup cleared.", "info");
     }
 
+    function hydrateStoredSession(){
+      authToken = getStoredAuthToken();
+      currentMemberId = baseMemberId(getStoredMemberId());
+
+      if (currentMemberId){
+        memberIdInput.value = currentMemberId;
+        memberIdReadonly.value = currentMemberId;
+      }
+
+      setActionButtons(!!(authToken && currentMemberId));
+    }
+
     lookupForm.addEventListener("submit", handleLookupSubmit);
     bookingForm.addEventListener("submit", saveBooking);
     reloadBtn.addEventListener("click", reloadSavedBooking);
@@ -1207,7 +1343,15 @@ eventSpacesAvailable.textContent = pick(
     cancelBtn.addEventListener("click", cancelBooking);
     clearBtn.addEventListener("click", clearLookup);
 
-    loadEvent();
+    (async function init(){
+      hydrateStoredSession();
+      await loadEvent();
+
+      if (authToken && currentMemberId && EVENT_ID){
+        await loadMyBooking(false);
+        renderExistingBooking();
+      }
+    })();
   </script>
 </body>
 </html>

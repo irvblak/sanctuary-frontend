@@ -850,7 +850,8 @@
 
     formHostName: document.getElementById("formHostName"),
     formHostMemberId: document.getElementById("formHostMemberId"),
-
+    hostEmail: document.getElementById("hostEmail"),
+    hostMobile: document.getElementById("hostMobile"),
     category: document.getElementById("category"),
     location: document.getElementById("location"),
     eventDate: document.getElementById("eventDate"),
@@ -1143,9 +1144,27 @@
     els.verifiedHostMemberId.textContent = state.verifiedMemberId;
     els.formHostName.textContent = state.verifiedHostName;
     els.formHostMemberId.textContent = state.verifiedMemberId;
-    els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
-    els.verifiedHostCard.classList.remove("hidden");
+    const firstResident = Array.isArray(profile?.residents) && profile.residents.length ? profile.residents[0] : {};
 
+els.hostEmail.value = bestString(
+  profile?.primary_email,
+  profile?.email,
+  firstResident?.email,
+  ""
+);
+
+els.hostMobile.value = bestString(
+  profile?.primary_mobile,
+  profile?.mobile,
+  profile?.phone,
+  firstResident?.mobile,
+  firstResident?.phone,
+  firstResident?.landline,
+  ""
+);
+
+els.previewHostText.textContent = `${state.verifiedHostName} (${state.verifiedMemberId})`;
+els.verifiedHostCard.classList.remove("hidden");
     unlockForm();
 
     if (backendLogin.ok) {

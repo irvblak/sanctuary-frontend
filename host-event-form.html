@@ -633,14 +633,21 @@
         typeof r === "object" &&
         (
           cleanText(r.name) ||
+          cleanText(r.full_name) ||
+          cleanText(r.resident_name) ||
           cleanText(r.email) ||
+          cleanText(r.email_address) ||
           cleanText(r.mobile) ||
+          cleanText(r.mobile_phone) ||
+          cleanText(r.mobile_number) ||
           cleanText(r.landline) ||
-          cleanText(r.phone)
+          cleanText(r.landline_phone) ||
+          cleanText(r.landline_number) ||
+          cleanText(r.phone) ||
+          cleanText(r.telephone)
         )
       ) || {};
     }
-
     function pick(obj, keys){
   for (const key of keys){
     const value = cleanText(obj && obj[key]);

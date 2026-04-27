@@ -890,10 +890,8 @@ function contactFromProfile(profile){
   title_art_url: cleanText(els.titleArtUrl.value),
   image_url: cleanText(els.imageUrl.value),
 
-        const hostId = baseMemberId(
-          els.hostMemberId.value || (verifiedHost && verifiedHost.member_id) || ""
-        );
-        
+        host_member_id: baseMemberId(els.hostMemberId.value),
+        host_id: baseMemberId(els.hostMemberId.value),
         host_name: cleanText(els.hostName.value),
         host_email: cleanText(els.hostEmail.value),
         host_mobile: cleanText(els.hostMobile.value),

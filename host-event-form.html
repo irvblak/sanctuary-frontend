@@ -863,10 +863,7 @@ function contactFromProfile(profile){
     function buildPayload(){
       const allowGuestsValue = cleanText(els.allowGuests.value);
       const categoryValue = cleanText(els.category.value);
-      const hostId = baseMemberId(
-  els.hostMemberId.value || (verifiedHost && verifiedHost.member_id) || ""
-);
-
+      
       return {
   event_id: editEventId || cleanText(loadedEvent && loadedEvent.event_id),
 

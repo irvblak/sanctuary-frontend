@@ -641,28 +641,37 @@
       ) || {};
     }
 
-    function contactFromProfile(profile){
-      const resident = firstUsableResident(profile || {});
+    function pick(obj, keys){
+  for (const key of keys){
+    const value = cleanText(obj && obj[key]);
+    if (value) return value;
+  }
+  return "";
+}
 
-      return {
-        name:
-          cleanText(profile && (profile.display_name || profile.name || profile.household_name || profile.host_name)) ||
-          cleanText(resident.name),
+function contactFromProfile(profile){
+  profile = profile || {};
 
-        email:
-          cleanText(profile && (profile.email || profile.host_email)) ||
-          cleanText(resident.email),
+  const resident = firstUsableResident(profile);
 
-        mobile:
-          cleanText(profile && (profile.mobile || profile.host_mobile)) ||
-          cleanText(resident.mobile),
+  return {
+    name:
+      pick(profile, ["display_name","name","household_name","host_name","full_name","resident_name"]) ||
+      pick(resident, ["name","full_name","resident_name","first_name"]),
 
-        landline:
-          cleanText(profile && (profile.landline || profile.host_landline || profile.phone)) ||
-          cleanText(resident.landline || resident.phone)
-      };
-    }
+    email:
+      pick(profile, ["email","email_address","host_email"]) ||
+      pick(resident, ["email","email_address"]),
 
+    mobile:
+      pick(profile, ["mobile","mobile_phone","mobile_number","host_mobile"]) ||
+      pick(resident, ["mobile","mobile_phone","mobile_number"]),
+
+    landline:
+      pick(profile, ["landline","landline_phone","landline_number","phone","telephone","host_landline"]) ||
+      pick(resident, ["landline","landline_phone","landline_number","phone","telephone"])
+  };
+}
     function mergeContactSources(memberId, backendData){
       const localProfile = findLocalMember(memberId) || {};
       const backendProfile =

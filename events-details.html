@@ -749,39 +749,50 @@
         bodyBox.innerHTML = '<span class="placeholder">No further notice text has been added.</span>';
       }
     }
+function renderContactDetails(e){
+  const name = pick(
+    e.host_name,
+    e.contact_name,
+    e.author_name,
+    e.producer_name
+  );
 
-    function renderContactDetails(e){
-      const name = pick(
-        e.contact_name,
-        e.author_name,
-        e.producer_name,
-        e.host_name
-      );
-      const email = pick(
-        e.contact_email,
-        e.author_email,
-        e.producer_email,
-        e.email
-      );
-      const mobile = pick(
-        e.contact_mobile,
-        e.author_mobile,
-        e.producer_mobile,
-        e.mobile,
-        e.phone
-      );
+  const email = pick(
+    e.host_email,
+    e.contact_email,
+    e.author_email,
+    e.producer_email,
+    e.email
+  );
 
-      if (!name && !email && !mobile){
-        contactDetailsBox.classList.add("hidden");
-        return;
-      }
+  const mobile = pick(
+    e.host_mobile,
+    e.contact_mobile,
+    e.author_mobile,
+    e.producer_mobile,
+    e.mobile
+  );
 
-      contactName.textContent = name || "—";
-      contactEmail.textContent = email || "—";
-      contactMobile.textContent = mobile || "—";
-      contactDetailsBox.classList.remove("hidden");
-    }
+  const landline = pick(
+    e.host_landline,
+    e.contact_landline,
+    e.landline,
+    e.phone
+  );
 
+  if (!name && !email && !mobile && !landline){
+    contactDetailsBox.classList.add("hidden");
+    return;
+  }
+
+  contactName.textContent = name || "—";
+  contactEmail.textContent = email || "—";
+  contactMobile.textContent = mobile || "—";
+  contactLandline.textContent = landline || "—";
+
+  contactDetailsBox.classList.remove("hidden");
+}
+    
     function renderBookingDetails(e){
       const label = getBookingLabel(e);
       const show = hasBookingBehaviour(e);

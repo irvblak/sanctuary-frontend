@@ -862,28 +862,41 @@ function contactFromProfile(profile){
 
     function buildPayload(){
       const allowGuestsValue = cleanText(els.allowGuests.value);
+      const categoryValue = cleanText(els.category.value);
+      const hostId = baseMemberId(
+  els.hostMemberId.value || (verifiedHost && verifiedHost.member_id) || ""
+);
 
       return {
-        event_id: editEventId || cleanText(loadedEvent && loadedEvent.event_id),
+  event_id: editEventId || cleanText(loadedEvent && loadedEvent.event_id),
 
-        title: cleanText(els.title.value),
-        category: cleanText(els.category.value),
-        event_category: cleanText(els.category.value),
-        date: cleanText(els.eventDate.value),
-        event_date: cleanText(els.eventDate.value),
-        start_time: cleanText(els.startTime.value),
-        end_time: cleanText(els.endTime.value),
-        venue: cleanText(els.venue.value),
-        location: cleanText(els.venue.value),
-        summary: cleanText(els.summary.value),
-        description: cleanText(els.description.value),
-        body: cleanText(els.description.value),
+  title: cleanText(els.title.value),
 
-        title_art_url: cleanText(els.titleArtUrl.value),
-        image_url: cleanText(els.imageUrl.value),
+  category: categoryValue,
+  event_category: categoryValue,
+  category_key: categoryValue,
+  category_label: categoryValue,
 
-        host_member_id: baseMemberId(els.hostMemberId.value || verifiedHost && verifiedHost.member_id),
-        host_id: baseMemberId(els.hostMemberId.value || verifiedHost && verifiedHost.member_id),
+  date: cleanText(els.eventDate.value),
+  event_date: cleanText(els.eventDate.value),
+
+  start_time: cleanText(els.startTime.value),
+  end_time: cleanText(els.endTime.value),
+
+  venue: cleanText(els.venue.value),
+  location: cleanText(els.venue.value),
+
+  summary: cleanText(els.summary.value),
+  description: cleanText(els.description.value),
+  body: cleanText(els.description.value),
+
+  title_art_url: cleanText(els.titleArtUrl.value),
+  image_url: cleanText(els.imageUrl.value),
+
+        const hostId = baseMemberId(
+          els.hostMemberId.value || (verifiedHost && verifiedHost.member_id) || ""
+        );
+        
         host_name: cleanText(els.hostName.value),
         host_email: cleanText(els.hostEmail.value),
         host_mobile: cleanText(els.hostMobile.value),

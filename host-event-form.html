@@ -1170,7 +1170,45 @@ function firstResident(record) {
 
     const displayMemberId = inputMemberId.trim().toUpperCase();
     const profile = await loadMemberProfile(displayMemberId);
+    const yiRecord = localYiMemberRecord(displayMemberId);
 
+  const profileResident = firstResident(profile);
+  const yiResident = firstResident(yiRecord);
+
+  els.hostEmail.value = bestString(
+    profile?.primary_email,
+    profile?.email,
+    profileResident?.email,
+    yiRecord?.primary_email,
+    yiRecord?.email,
+    yiResident?.email,
+    ""
+  );
+
+  els.hostMobile.value = bestString(
+    profile?.primary_mobile,
+    profile?.mobile,
+    profile?.phone,
+    profileResident?.mobile,
+    profileResident?.phone,
+    yiRecord?.primary_mobile,
+    yiRecord?.mobile,
+    yiRecord?.phone,
+    yiResident?.mobile,
+    yiResident?.phone,
+    ""
+  );
+
+  els.hostLandline.value = bestString(
+    profile?.primary_landline,
+    profile?.landline,
+    profileResident?.landline,
+    yiRecord?.primary_landline,
+    yiRecord?.landline,
+    yiResident?.landline,
+    ""
+  );
+   
     state.verified = true;
     state.verifiedMemberId = displayMemberId;
     state.verifiedMemberRecord = profile;

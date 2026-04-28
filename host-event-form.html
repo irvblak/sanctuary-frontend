@@ -691,34 +691,22 @@ function pick(obj, keys){
 
 function getHostContact(memberId, loginData){
   const local = findStoredMember(memberId);
-  const localResident = firstResident(local);
-
-  const backend = loginData.profile || loginData.member || loginData.user || {};
-  const backendResident = firstResident(backend);
+  const resident = firstResident(local);
 
   return {
     name:
-      pick(local, ["primary_name","display_name","name","household_name"]) ||
-      pick(localResident, ["name","full_name","resident_name"]) ||
-      pick(backend, ["primary_name","display_name","name","household_name"]) ||
-      pick(backendResident, ["name","full_name","resident_name"]),
+      cleanText(resident.name) ||
+      cleanText(local.primary_name) ||
+      memberId,
 
     email:
-      pick(local, ["email","email_address"]) ||
-      pick(localResident, ["email","email_address"]) ||
-      pick(backend, ["email","email_address"]) ||
-      pick(backendResident, ["email","email_address"]),
+      cleanText(resident.email) || "",
 
     mobile:
-      pick(local, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
-      pick(localResident, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
-      pick(backend, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
-      pick(backendResident, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]),
+      cleanText(resident.mobile) || "",
+
     landline:
-      pick(local, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
-      pick(localResident, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
-      pick(backend, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
-      pick(backendResident, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"])
+      cleanText(resident.landline) || ""
   };
 }
 async function verifyHost(){

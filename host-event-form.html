@@ -669,14 +669,14 @@ function findStoredMember(memberId){
 }
 
 function firstResident(profile){
-  const residents = Array.isArray(profile.residents) ? profile.residents : [];
+  const residents = Array.isArray(profile?.residents) ? profile.residents : [];
+
   return residents.find(r =>
     r && (
       cleanText(r.name) ||
       cleanText(r.email) ||
       cleanText(r.mobile) ||
-      cleanText(r.landline) ||
-      cleanText(r.phone)
+      cleanText(r.landline)
     )
   ) || {};
 }

@@ -710,16 +710,15 @@ function getHostContact(memberId, loginData){
       pick(backendResident, ["email","email_address"]),
 
     mobile:
-      pick(local, ["mobile","mobile_phone","mobile_number"]) ||
-      pick(localResident, ["mobile","mobile_phone","mobile_number"]) ||
-      pick(backend, ["mobile","mobile_phone","mobile_number"]) ||
-      pick(backendResident, ["mobile","mobile_phone","mobile_number"]),
-
+      pick(local, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
+      pick(localResident, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
+      pick(backend, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]) ||
+      pick(backendResident, ["mobile","mobile_phone","mobile_number","phone_mobile","contact_mobile","resident_mobile"]),
     landline:
-      pick(local, ["landline","landline_phone","landline_number","phone","telephone"]) ||
-      pick(localResident, ["landline","landline_phone","landline_number","phone","telephone"]) ||
-      pick(backend, ["landline","landline_phone","landline_number","phone","telephone"]) ||
-      pick(backendResident, ["landline","landline_phone","landline_number","phone","telephone"])
+      pick(local, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
+      pick(localResident, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
+      pick(backend, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"]) ||
+      pick(backendResident, ["landline","landline_phone","landline_number","phone","telephone","home_phone","contact_landline","resident_landline"])
   };
 }
 async function verifyHost(){

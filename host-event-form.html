@@ -626,7 +626,88 @@ function clearStatus(el){
 function unlockForm(){
   els.eventForm.classList.remove("locked");
 }
+function getStoredMembers(){
+  try{
+    return JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
+  }catch(_){
+    return {};
+  }
+}
 
+function findStoredMember(memberId){
+  const wanted = baseMemberId(memberId);
+  const store = getStoredMembers();
+
+  if (Array.isArray(store)){
+    return store.find(m => baseMemberId(m.memberId || m.member_id || m.id) === wanted) || {};
+  }
+
+  if (store[wanted]) return store[wanted];
+
+  for (const [key, value] of Object.entries(store)){
+    if (baseMemberId(key) === wanted) return value || {};
+    if (value && baseMemberId(value.memberId || value.member_id || value.id) === wanted){
+      return value;
+    }
+  }
+
+  return {};
+}
+
+function firstResident(profile){
+  const residents = Array.isArray(profile.residents) ? profile.residents : [];
+  return residents.find(r =>
+    r && (
+      cleanText(r.name) ||
+      cleanText(r.email) ||
+      cleanText(r.mobile) ||
+      cleanText(r.landline) ||
+      cleanText(r.phone)
+    )
+  ) || {};
+}
+
+function pick(obj, keys){
+  for (const key of keys){
+    const value = cleanText(obj && obj[key]);
+    if (value) return value;
+  }
+  return "";
+}
+
+function getHostContact(memberId, loginData){
+  const local = findStoredMember(memberId);
+  const localResident = firstResident(local);
+
+  const backend = loginData.profile || loginData.member || loginData.user || {};
+  const backendResident = firstResident(backend);
+
+  return {
+    name:
+      pick(local, ["primary_name","display_name","name","household_name"]) ||
+      pick(localResident, ["name","full_name","resident_name"]) ||
+      pick(backend, ["primary_name","display_name","name","household_name"]) ||
+      pick(backendResident, ["name","full_name","resident_name"]),
+
+    email:
+      pick(local, ["email","email_address"]) ||
+      pick(localResident, ["email","email_address"]) ||
+      pick(backend, ["email","email_address"]) ||
+      pick(backendResident, ["email","email_address"]),
+
+    mobile:
+      pick(local, ["mobile","mobile_phone","mobile_number"]) ||
+      pick(localResident, ["mobile","mobile_phone","mobile_number"]) ||
+      pick(backend, ["mobile","mobile_phone","mobile_number"]) ||
+      pick(backendResident, ["mobile","mobile_phone","mobile_number"]),
+
+    landline:
+      pick(local, ["landline","landline_phone","landline_number","phone","telephone"]) ||
+      pick(localResident, ["landline","landline_phone","landline_number","phone","telephone"]) ||
+      pick(backend, ["landline","landline_phone","landline_number","phone","telephone"]) ||
+      pick(backendResident, ["landline","landline_phone","landline_number","phone","telephone"])
+  };
+}
 async function verifyHost(){
   clearStatus(els.verifyStatus);
 

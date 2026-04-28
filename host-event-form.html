@@ -651,8 +651,11 @@ async function verifyHost(){
       throw new Error(data.message || "Verification failed");
     }
 
-    authToken = data.token;
-    localStorage.setItem("authToken",authToken);
+    authToken = cleanText(data.token || data.access_token || data.authToken || "");
+    if (!authToken){
+     throw new Error("Verification succeeded but no login token was returned.");
+    }
+localStorage.setItem("authToken", authToken);
     localStorage.setItem("currentMemberId",memberId);
 
     els.hostMemberId.value = memberId;

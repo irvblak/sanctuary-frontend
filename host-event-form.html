@@ -662,13 +662,13 @@ async function verifyHost(){
 localStorage.setItem("authToken", authToken);
     localStorage.setItem("currentMemberId",memberId);
 
+    const contact = getHostContact(memberId, data);
+
     els.hostMemberId.value = memberId;
-    els.hostName.value = data.profile?.primary_name || memberId;
-
-    els.hostEmail.value = data.profile?.email || "";
-    els.hostMobile.value = data.profile?.mobile || "";
-    els.hostLandline.value = data.profile?.landline || "";
-
+    els.hostName.value = contact.name || memberId;
+    els.hostEmail.value = contact.email || "";
+    els.hostMobile.value = contact.mobile || "";
+    els.hostLandline.value = contact.landline || "";
     verified = true;
     unlockForm();
 

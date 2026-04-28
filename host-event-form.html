@@ -568,3 +568,285 @@
       <div id="libraryGrid" class="library-grid"></div>
     </div>
   </div>
+<script>
+const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+function cleanText(v){ return String(v==null?"":v).trim(); }
+function baseMemberId(v){ return cleanText(v).toUpperCase().split("/")[0]; }
+
+let editEventId = cleanText(new URLSearchParams(location.search).get("event_id") || "");
+
+const els = {
+  memberId: document.getElementById("memberId"),
+  pin: document.getElementById("pin"),
+  verifyBtn: document.getElementById("verifyBtn"),
+  verifyStatus: document.getElementById("verifyStatus"),
+  eventForm: document.getElementById("eventForm"),
+  hostName: document.getElementById("hostName"),
+  hostMemberId: document.getElementById("hostMemberId"),
+  hostEmail: document.getElementById("hostEmail"),
+  hostMobile: document.getElementById("hostMobile"),
+  hostLandline: document.getElementById("hostLandline"),
+  title: document.getElementById("title"),
+  category: document.getElementById("category"),
+  eventDate: document.getElementById("eventDate"),
+  venue: document.getElementById("venue"),
+  startTime: document.getElementById("startTime"),
+  endTime: document.getElementById("endTime"),
+  summary: document.getElementById("summary"),
+  description: document.getElementById("description"),
+  titleArtUrl: document.getElementById("titleArtUrl"),
+  imageUrl: document.getElementById("imageUrl"),
+  capacityTotal: document.getElementById("capacityTotal"),
+  maxPlacesPerMember: document.getElementById("maxPlacesPerMember"),
+  bookingMode: document.getElementById("bookingMode"),
+  membersBookingOpenAt: document.getElementById("membersBookingOpenAt"),
+  guestsBookingOpenAt: document.getElementById("guestsBookingOpenAt"),
+  bookingCloseAt: document.getElementById("bookingCloseAt"),
+  cancellationCutoffAt: document.getElementById("cancellationCutoffAt"),
+  refundCutoffAt: document.getElementById("refundCutoffAt"),
+  saveBtn: document.getElementById("saveBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+  saveStatus: document.getElementById("saveStatus"),
+  viewNoticeLink: document.getElementById("viewNoticeLink")
+};
+
+let authToken = localStorage.getItem("authToken") || "";
+let verified = false;
+
+function setStatus(el,type,msg){
+  el.className = "status show " + type;
+  el.textContent = msg;
+}
+function clearStatus(el){
+  el.className = "status";
+  el.textContent = "";
+}
+
+function unlockForm(){
+  els.eventForm.classList.remove("locked");
+}
+
+async function verifyHost(){
+  clearStatus(els.verifyStatus);
+
+  const memberId = baseMemberId(els.memberId.value);
+  const pin = cleanText(els.pin.value);
+
+  if(!memberId || !pin){
+    setStatus(els.verifyStatus,"warn","Enter membership and PIN");
+    return;
+  }
+
+  try{
+    const res = await fetch(API_BASE + "/auth/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ member_id:memberId, pin })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok || data.success===false){
+      throw new Error(data.message || "Verification failed");
+    }
+
+    authToken = data.token;
+    localStorage.setItem("authToken",authToken);
+    localStorage.setItem("currentMemberId",memberId);
+
+    els.hostMemberId.value = memberId;
+    els.hostName.value = data.profile?.primary_name || memberId;
+
+    els.hostEmail.value = data.profile?.email || "";
+    els.hostMobile.value = data.profile?.mobile || "";
+    els.hostLandline.value = data.profile?.landline || "";
+
+    verified = true;
+    unlockForm();
+
+    setStatus(els.verifyStatus,"ok","Verified");
+
+    if(editEventId) loadEvent();
+
+  }catch(err){
+    setStatus(els.verifyStatus,"err",err.message);
+  }
+}
+
+async function loadEvent(){
+  try{
+    const res = await fetch(API_BASE + "/api/events/" + editEventId);
+    const data = await res.json();
+
+    if(!res.ok || data.success===false) return;
+
+    const e = data.event;
+
+    els.title.value = e.title || "";
+    els.category.value = e.category_label || "";
+    els.eventDate.value = e.event_date || "";
+    els.venue.value = e.location || "";
+    els.startTime.value = e.start_time || "";
+    els.endTime.value = e.end_time || "";
+    els.summary.value = e.notice_summary || "";
+    els.description.value = e.notice_body || "";
+    els.titleArtUrl.value = e.title_art_url || "";
+    els.imageUrl.value = e.image_url || "";
+
+    els.capacityTotal.value = e.capacity_total || "";
+    els.maxPlacesPerMember.value = e.max_places_per_member || 1;
+
+    els.hostEmail.value = e.host_email || "";
+    els.hostMobile.value = e.host_mobile || "";
+    els.hostLandline.value = e.host_landline || "";
+
+    els.viewNoticeLink.href = "events-details.html?event_id=" + editEventId;
+    els.viewNoticeLink.style.display = "inline-flex";
+
+  }catch{}
+}
+
+function buildPayload(){
+  const category = cleanText(els.category.value);
+  const hostId = baseMemberId(els.hostMemberId.value);
+
+  return {
+    event_id: editEventId,
+    title: cleanText(els.title.value),
+
+    category,
+    category_key: category,
+    category_label: category,
+
+    event_date: cleanText(els.eventDate.value),
+
+    start_time: cleanText(els.startTime.value),
+    end_time: cleanText(els.endTime.value),
+    location: cleanText(els.venue.value),
+
+    notice_title: cleanText(els.title.value),
+    notice_summary: cleanText(els.summary.value),
+    notice_body: cleanText(els.description.value),
+
+    title_art_url: cleanText(els.titleArtUrl.value),
+    image_url: cleanText(els.imageUrl.value),
+
+    host_member_id: hostId,
+    host_name: cleanText(els.hostName.value),
+    host_email: cleanText(els.hostEmail.value),
+    host_mobile: cleanText(els.hostMobile.value),
+    host_landline: cleanText(els.hostLandline.value),
+
+    capacity_total: parseInt(els.capacityTotal.value)||0,
+    max_places_per_member: parseInt(els.maxPlacesPerMember.value)||1
+  };
+}
+
+async function saveEvent(e){
+  e.preventDefault();
+  clearStatus(els.saveStatus);
+
+  if(!verified){
+    setStatus(els.saveStatus,"warn","Verify host first");
+    return;
+  }
+
+  const payload = buildPayload();
+
+  if(!payload.title || !payload.event_date || !payload.category){
+    setStatus(els.saveStatus,"warn","Title, date, category required");
+    return;
+  }
+
+  try{
+    const res = await fetch(
+      API_BASE + "/api/events" + (editEventId?"/"+editEventId:""),
+      {
+        method: editEventId ? "PUT" : "POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+authToken
+        },
+        body:JSON.stringify(payload)
+      }
+    );
+
+    const data = await res.json();
+
+    if(!res.ok || data.success===false){
+      throw new Error(data.message || "Save failed");
+    }
+
+    const id = data.event?.event_id || editEventId;
+
+    if(id){
+      editEventId = id;
+      history.replaceState(null,"","?event_id="+id);
+      els.viewNoticeLink.href = "events-details.html?event_id="+id;
+      els.viewNoticeLink.style.display="inline-flex";
+    }
+
+    setStatus(els.saveStatus,"ok","Saved");
+
+  }catch(err){
+    setStatus(els.saveStatus,"err",err.message);
+  }
+}
+
+function resetForm(){
+  els.title.value="";
+  els.category.value="";
+  els.eventDate.value="";
+  els.venue.value="";
+  els.startTime.value="";
+  els.endTime.value="";
+  els.summary.value="";
+  els.description.value="";
+  els.titleArtUrl.value="";
+  els.imageUrl.value="";
+  els.capacityTotal.value="";
+}
+
+const LIB = {
+  title:["images/title-art/social.svg","images/title-art/sport.svg"],
+  poster:["images/banners/social.jpg","images/banners/sport.jpg"]
+};
+
+function openLib(kind,targetId){
+  const modal=document.getElementById("libraryModal");
+  const grid=document.getElementById("libraryGrid");
+  grid.innerHTML="";
+
+  LIB[kind].forEach(p=>{
+    const b=document.createElement("button");
+    b.className="library-card";
+    b.innerHTML=`<img src="${p}"><span>${p}</span>`;
+    b.onclick=()=>{
+      document.getElementById(targetId).value=p;
+      modal.classList.remove("show");
+    };
+    grid.appendChild(b);
+  });
+
+  modal.classList.add("show");
+}
+
+document.querySelectorAll("[data-library-target]").forEach(btn=>{
+  btn.onclick=()=>openLib(btn.dataset.libraryKind,btn.dataset.libraryTarget);
+});
+
+document.getElementById("libraryCloseBtn").onclick=()=>{
+  document.getElementById("libraryModal").classList.remove("show");
+};
+
+els.verifyBtn.onclick=verifyHost;
+els.eventForm.onsubmit=saveEvent;
+els.resetBtn.onclick=resetForm;
+
+if(localStorage.getItem("currentMemberId")){
+  els.memberId.value = localStorage.getItem("currentMemberId");
+}
+</script>
+</body>
+</html>

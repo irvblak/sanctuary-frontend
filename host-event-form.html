@@ -970,8 +970,9 @@ function contactFromProfile(profile){
           els.viewNoticeLink.style.display = "inline-flex";
 
           if (!isEdit){
-            history.replaceState(null, "", "host-event-form.html?event_id=" + encodeURIComponent(savedId));
-          }
+       if (!isEdit){
+         history.replaceState(null, "", "host-event-form.html?event_id=" + encodeURIComponent(savedId));
+       }     
         }
 
         loadedEvent = saved;

@@ -650,24 +650,25 @@ function getStoredMembers(){
 
 function findStoredMember(memberId){
   const wanted = baseMemberId(memberId);
-  const store = getStoredMembers();
 
-  if (Array.isArray(store)){
-    return store.find(m => baseMemberId(m.memberId || m.member_id || m.id) === wanted) || {};
-  }
+  try{
+    const store = JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
 
-  if (store[wanted]) return store[wanted];
-
-  for (const [key, value] of Object.entries(store)){
-    if (baseMemberId(key) === wanted) return value || {};
-    if (value && baseMemberId(value.memberId || value.member_id || value.id) === wanted){
-      return value;
+    if (store && store[wanted]){
+      return store[wanted];
     }
-  }
+
+    const lowerWanted = wanted.toLowerCase();
+
+    for (const [key, value] of Object.entries(store || {})){
+      if (baseMemberId(key).toLowerCase() === lowerWanted){
+        return value || {};
+      }
+    }
+  }catch(_){}
 
   return {};
 }
-
 function firstResident(profile){
   const residents = Array.isArray(profile?.residents) ? profile.residents : [];
 

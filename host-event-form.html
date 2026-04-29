@@ -747,7 +747,7 @@ localStorage.setItem("authToken", authToken);
 
     const contact = getHostContact(memberId, data);
 
-    els.hostMemberId.value = memberId;
+    els.hostMemberId.textContent = memberId;
     els.hostName.value = contact.name || memberId;
     els.hostEmail.value = contact.email || "";
     els.hostMobile.value = contact.mobile || "";

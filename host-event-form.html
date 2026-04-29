@@ -786,7 +786,11 @@ async function loadEvent(){
 
     els.capacityTotal.value = e.capacity_total || "";
     els.maxPlacesPerMember.value = e.max_places_per_member || 1;
-
+    els.membersBookingOpenAt.value = e.members_booking_open_at || "";
+    els.guestsBookingOpenAt.value = e.guests_booking_open_at || "";
+    els.bookingCloseAt.value = e.booking_close_at || "";
+    els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
+    els.refundCutoffAt.value = e.refund_cutoff_at || "";
     els.hostEmail.value = e.host_email || "";
     els.hostMobile.value = e.host_mobile || "";
     els.hostLandline.value = e.host_landline || "";

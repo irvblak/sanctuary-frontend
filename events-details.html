@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Notice | Sanctuary Club</title>
+  <title>Event Notice | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_3"></script>
+  <script src="access.js"></script>
 
   <style>
     :root{
@@ -18,14 +18,15 @@
       --panel:#ffffff;
       --soft:#f4f8fc;
       --accent:#245d8b;
+      --accent2:#2f7ab4;
       --ok:#1f6f47;
       --warn:#8a5a00;
       --err:#9e2b2b;
-      --shadow:0 16px 36px rgba(20,60,100,.10);
-      --radius:20px;
+      --shadow:0 18px 44px rgba(20,60,100,.12);
+      --radius:28px;
     }
 
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
 
     body{
       margin:0;
@@ -36,9 +37,9 @@
     }
 
     .wrap{
-      width:min(1040px, calc(100% - 24px));
+      width:min(980px,calc(100% - 24px));
       margin:0 auto;
-      padding:20px 0 42px;
+      padding:18px 0 42px;
     }
 
     .topbar{
@@ -53,10 +54,9 @@
     .backlink{
       display:inline-flex;
       align-items:center;
-      gap:8px;
       color:var(--accent);
       text-decoration:none;
-      font-weight:700;
+      font-weight:800;
     }
 
     .top-actions,
@@ -64,6 +64,7 @@
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:center;
     }
 
     .btn, button{
@@ -72,7 +73,7 @@
       border-radius:999px;
       padding:11px 16px;
       font:inherit;
-      font-weight:800;
+      font-weight:850;
       cursor:pointer;
       text-decoration:none;
       display:inline-flex;
@@ -82,8 +83,9 @@
     }
 
     .btn-primary{
-      background:var(--accent);
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
       color:#fff;
+      box-shadow:0 10px 22px rgba(36,93,139,.20);
     }
 
     .btn-secondary{
@@ -106,29 +108,30 @@
       border:1px solid transparent;
     }
 
-    .message.show{ display:block; }
-    .message.info{ background:#eef6ff; border-color:#cfe0f0; color:#20496b; }
-    .message.ok{ background:#edf8f0; border-color:#cfe7d6; color:var(--ok); }
-    .message.warn{ background:#fff7e8; border-color:#eddcab; color:var(--warn); }
-    .message.err{ background:#fff1f1; border-color:#efcaca; color:var(--err); }
+    .message.show{display:block}
+    .message.info{background:#eef6ff;border-color:#cfe0f0;color:#20496b}
+    .message.ok{background:#edf8f0;border-color:#cfe7d6;color:var(--ok)}
+    .message.warn{background:#fff7e8;border-color:#eddcab;color:var(--warn)}
+    .message.err{background:#fff1f1;border-color:#efcaca;color:var(--err)}
 
-    .notice{
+    .notice-card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:26px;
+      border-radius:var(--radius);
       box-shadow:var(--shadow);
       overflow:hidden;
     }
 
-    .notice-top{
-      padding:24px 22px 12px;
+    .poster-head{
+      padding:28px 26px 12px;
       text-align:center;
     }
 
     .title-text{
       margin:0;
-      font-size:clamp(1.7rem, 3vw, 2.25rem);
-      line-height:1.14;
+      font-size:clamp(2rem,5vw,3.45rem);
+      line-height:1.05;
+      letter-spacing:-.04em;
       color:#17314a;
       word-wrap:break-word;
     }
@@ -136,87 +139,116 @@
     .title-graphic{
       display:none;
       max-width:100%;
-      max-height:170px;
+      max-height:190px;
       width:auto;
       height:auto;
       margin:0 auto;
       object-fit:contain;
     }
 
-    .meta-grid{
-      display:grid;
-      gap:10px;
-      padding:6px 22px 0;
-    }
-
-    .meta-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px 14px;
-      align-items:flex-start;
+    .event-line{
+      margin:14px auto 0;
+      max-width:760px;
       color:#31506b;
-      font-size:.98rem;
+      font-size:1.05rem;
       line-height:1.5;
+      font-weight:700;
     }
 
-    .meta-row strong{
-      color:#17314a;
-      min-width:120px;
+    .image-wrap{
+      padding:18px 26px 0;
+      text-align:center;
     }
 
-    .host-box{
-      margin:16px 22px 0;
-      padding:13px 15px;
-      border-radius:16px;
-      background:#f4f9fd;
+    .body-image{
+      display:none;
+      max-width:100%;
+      max-height:390px;
+      width:auto;
+      height:auto;
+      border-radius:20px;
+      object-fit:contain;
+      box-shadow:0 10px 24px rgba(26,59,92,.12);
+      background:#fff;
+    }
+
+    .summary-box{
+      margin:20px 26px 0;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#f7fbff;
       border:1px solid var(--line);
       color:#31506b;
-      line-height:1.55;
+      font-size:1.05rem;
+      line-height:1.6;
+      white-space:pre-wrap;
+      word-wrap:break-word;
     }
 
-    .detail-box{
-      margin:16px 22px 0;
-      padding:15px;
-      border-radius:18px;
-      background:var(--soft);
+    .body-box{
+      padding:22px 30px 26px;
+      color:#22384d;
+      line-height:1.75;
+      font-size:1.04rem;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      min-height:120px;
+      text-align:left;
+    }
+
+    .placeholder{
+      color:#71879a;
+      font-style:italic;
+    }
+
+    .panel-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      padding:0 26px 26px;
+    }
+
+    .info-panel{
       border:1px solid var(--line);
+      background:var(--soft);
+      border-radius:20px;
+      padding:16px;
     }
 
-    .detail-box h2{
+    .info-panel h2{
       margin:0 0 12px;
-      font-size:1.02rem;
+      font-size:1.04rem;
+      color:#17314a;
     }
 
     .detail-grid{
       display:grid;
-      gap:10px;
+      gap:9px;
     }
 
     .detail-row{
       display:grid;
-      grid-template-columns:200px 1fr;
-      gap:12px;
+      grid-template-columns:150px 1fr;
+      gap:10px;
       align-items:start;
-      font-size:.96rem;
-      line-height:1.45;
+      font-size:.95rem;
+      line-height:1.42;
     }
 
     .detail-row strong{
       color:#17314a;
     }
 
-    @media (max-width:720px){
-      .detail-row{
-        grid-template-columns:1fr;
-        gap:4px;
-      }
+    .contact-line{
+      overflow-wrap:anywhere;
     }
 
     .pill-row{
       display:flex;
       flex-wrap:wrap;
+      justify-content:center;
       gap:10px;
-      padding:16px 22px 0;
+      padding:10px 26px 22px;
     }
 
     .pill{
@@ -225,74 +257,121 @@
       gap:8px;
       border-radius:999px;
       padding:7px 12px;
-      font-weight:800;
+      font-weight:850;
       font-size:.9rem;
       background:#e8f1fb;
       color:var(--accent);
     }
 
-    .pill.ok{
-      background:#e9f6ee;
-      color:#1f6f47;
-    }
-
-    .pill.warn{
-      background:#fff3d9;
-      color:#8a5a00;
-    }
-
-    .body-image-wrap{
-      padding:18px 22px 0;
-      text-align:center;
-    }
-
-    .body-image{
-      display:none;
-      max-width:100%;
-      max-height:320px;
-      width:auto;
-      height:auto;
-      border-radius:16px;
-      object-fit:contain;
-      box-shadow:0 8px 22px rgba(26,59,92,.10);
-    }
-
-    .summary-box{
-      padding:18px 22px 0;
-      color:#31506b;
-      font-size:1rem;
-      line-height:1.65;
-      white-space:pre-wrap;
-      word-wrap:break-word;
-    }
-
-    .body-box{
-      padding:18px 22px 26px;
-      color:#22384d;
-      line-height:1.7;
-      white-space:pre-wrap;
-      word-wrap:break-word;
-      min-height:180px;
-    }
-
-    .placeholder{
-      color:#71879a;
-      font-style:italic;
-    }
+    .pill.ok{background:#e9f6ee;color:#1f6f47}
+    .pill.warn{background:#fff3d9;color:#8a5a00}
 
     .bottom-actions{
-      padding:0 22px 24px;
+      padding:0 26px 26px;
     }
 
-    .hidden{ display:none !important; }
+    .hidden{display:none !important}
+
+    @media (max-width:760px){
+      .panel-grid{
+        grid-template-columns:1fr;
+      }
+
+      .detail-row{
+        grid-template-columns:1fr;
+        gap:2px;
+      }
+
+      .poster-head{
+        padding:22px 18px 10px;
+      }
+
+      .body-box{
+        padding:18px 20px 22px;
+      }
+    }
+
+    @media print{
+      @page{
+        size:A4;
+        margin:14mm;
+      }
+
+      body{
+        background:#fff !important;
+        color:#111;
+      }
+
+      .wrap{
+        width:100%;
+        padding:0;
+      }
+
+      .no-print,
+      .topbar,
+      .bottom-actions,
+      .message,
+      .btn,
+      button{
+        display:none !important;
+      }
+
+      .notice-card{
+        border:0;
+        box-shadow:none;
+        border-radius:0;
+        overflow:visible;
+      }
+
+      .poster-head{
+        padding:0 0 8mm;
+      }
+
+      .title-text{
+        font-size:30pt;
+      }
+
+      .event-line{
+        font-size:12pt;
+      }
+
+      .body-image{
+        max-height:90mm;
+        box-shadow:none;
+        border-radius:0;
+      }
+
+      .summary-box,
+      .info-panel{
+        background:#fff;
+        border:1px solid #bbb;
+      }
+
+      .body-box{
+        padding:8mm 0;
+        font-size:11pt;
+        min-height:0;
+      }
+
+      .panel-grid{
+        padding:0;
+        gap:6mm;
+      }
+
+      .pill-row{
+        padding:5mm 0;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="topbar">
+    <div class="topbar no-print">
       <a class="backlink" href="events.html">← Back to Events List</a>
 
       <div class="top-actions">
+        <button id="printBtn" class="btn btn-soft" type="button">Print notice</button>
         <a id="bookBtnTop" class="btn btn-primary hidden" href="event-booking.html">Book</a>
         <a id="editBtnTop" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
@@ -300,61 +379,62 @@
 
     <div id="pageMessage" class="message info"></div>
 
-    <article class="notice">
-      <div class="notice-top">
+    <article class="notice-card">
+      <header class="poster-head">
         <h1 id="titleText" class="title-text">Loading notice…</h1>
         <img id="titleGraphic" class="title-graphic" alt="Graphic title" />
-      </div>
+        <div id="eventLine" class="event-line">Loading details…</div>
+      </header>
 
-      <div class="meta-grid">
-        <div class="meta-row"><strong>Category</strong><span id="metaCategory">—</span></div>
-        <div class="meta-row"><strong>Date</strong><span id="metaDate">—</span></div>
-        <div class="meta-row"><strong>Time</strong><span id="metaTime">—</span></div>
-        <div class="meta-row"><strong>Location</strong><span id="metaLocation">—</span></div>
-        <div class="meta-row" id="bookingMetaRow"><strong>Booking</strong><span id="metaBooking">—</span></div>
-        <div class="meta-row"><strong>Reference</strong><span id="metaReference">—</span></div>
-      </div>
-
-      <div class="host-box">
-        <strong>Author / host:</strong>
-        <span id="hostText">—</span>
-      </div>
-
-      <div id="bookingDetailsBox" class="detail-box hidden">
-        <h2>Booking details</h2>
-        <div class="detail-grid">
-          <div class="detail-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
-          <div class="detail-row"><strong>Members booking opens</strong><span id="membersOpen">—</span></div>
-          <div class="detail-row"><strong>Guests booking opens</strong><span id="guestsOpen">—</span></div>
-          <div class="detail-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
-          <div class="detail-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
-        </div>
-      </div>
-
-      <div id="contactDetailsBox" class="detail-box hidden">
-        <h2>Contact details</h2>
-        <div class="detail-grid">
-          <div class="detail-row"><strong>Name</strong><span id="contactName">—</span></div>
-          <div class="detail-row"><strong>Email</strong><span id="contactEmail">—</span></div>
-          <div class="detail-row"><strong>Mobile</strong><span id="contactMobile">—</span></div>
-          <div class="detail-row"><strong>Landline</strong><span id="contactLandline">—</span></div>
-        </div>
-      </div>
-
-      <div class="pill-row">
-        <span id="typePill" class="pill">Notice</span>
-        <span id="bookingModePill" class="pill hidden">Booking details</span>
-        <span id="availabilityPill" class="pill hidden">Availability</span>
-      </div>
-
-      <div class="body-image-wrap">
+      <div class="image-wrap">
         <img id="bodyImage" class="body-image" alt="Notice image" />
       </div>
 
       <div id="summaryBox" class="summary-box hidden"></div>
       <div id="bodyBox" class="body-box"><span class="placeholder">Loading notice…</span></div>
 
-      <div class="bottom-actions">
+      <div class="pill-row">
+        <span id="typePill" class="pill">Event Notice</span>
+        <span id="bookingModePill" class="pill hidden">Booking</span>
+        <span id="availabilityPill" class="pill hidden">Availability</span>
+      </div>
+
+      <div class="panel-grid">
+        <section class="info-panel" id="eventDetailsBox">
+          <h2>Event details</h2>
+          <div class="detail-grid">
+            <div class="detail-row"><strong>Category</strong><span id="metaCategory">—</span></div>
+            <div class="detail-row"><strong>Date</strong><span id="metaDate">—</span></div>
+            <div class="detail-row"><strong>Time</strong><span id="metaTime">—</span></div>
+            <div class="detail-row"><strong>Location</strong><span id="metaLocation">—</span></div>
+            <div class="detail-row"><strong>Reference</strong><span id="metaReference">—</span></div>
+          </div>
+        </section>
+
+        <section id="bookingDetailsBox" class="info-panel hidden">
+          <h2>Booking details</h2>
+          <div class="detail-grid">
+            <div class="detail-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
+            <div class="detail-row"><strong>Members opens</strong><span id="membersOpen">—</span></div>
+            <div class="detail-row"><strong>Guests opens</strong><span id="guestsOpen">—</span></div>
+            <div class="detail-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
+            <div class="detail-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
+            <div class="detail-row"><strong>Refund cutoff</strong><span id="refundCutoff">—</span></div>
+          </div>
+        </section>
+
+        <section id="contactDetailsBox" class="info-panel hidden">
+          <h2>Host contact</h2>
+          <div class="detail-grid">
+            <div class="detail-row"><strong>Name</strong><span id="contactName" class="contact-line">—</span></div>
+            <div class="detail-row"><strong>Email</strong><span id="contactEmail" class="contact-line">—</span></div>
+            <div class="detail-row"><strong>Mobile</strong><span id="contactMobile" class="contact-line">—</span></div>
+            <div class="detail-row"><strong>Landline</strong><span id="contactLandline" class="contact-line">—</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="bottom-actions no-print">
         <a id="bookBtnBottom" class="btn btn-primary hidden" href="event-booking.html">Book</a>
         <a id="editBtnBottom" class="btn btn-secondary" href="host-event-form.html">Edit this Notice</a>
       </div>
@@ -368,19 +448,17 @@
     const EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
 
     const pageMessage = document.getElementById("pageMessage");
+    const printBtn = document.getElementById("printBtn");
 
     const titleText = document.getElementById("titleText");
     const titleGraphic = document.getElementById("titleGraphic");
+    const eventLine = document.getElementById("eventLine");
 
     const metaCategory = document.getElementById("metaCategory");
     const metaDate = document.getElementById("metaDate");
     const metaTime = document.getElementById("metaTime");
     const metaLocation = document.getElementById("metaLocation");
-    const bookingMetaRow = document.getElementById("bookingMetaRow");
-    const metaBooking = document.getElementById("metaBooking");
     const metaReference = document.getElementById("metaReference");
-
-    const hostText = document.getElementById("hostText");
 
     const bookingDetailsBox = document.getElementById("bookingDetailsBox");
     const spacesAvailable = document.getElementById("spacesAvailable");
@@ -388,12 +466,14 @@
     const guestsOpen = document.getElementById("guestsOpen");
     const bookingClose = document.getElementById("bookingClose");
     const cancelCutoff = document.getElementById("cancelCutoff");
+    const refundCutoff = document.getElementById("refundCutoff");
 
     const contactDetailsBox = document.getElementById("contactDetailsBox");
     const contactName = document.getElementById("contactName");
     const contactEmail = document.getElementById("contactEmail");
     const contactMobile = document.getElementById("contactMobile");
     const contactLandline = document.getElementById("contactLandline");
+
     const typePill = document.getElementById("typePill");
     const bookingModePill = document.getElementById("bookingModePill");
     const availabilityPill = document.getElementById("availabilityPill");
@@ -461,157 +541,74 @@
       });
     }
 
-    function formatTimeOnly(value){
-      if (!value) return "";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value);
-      return d.toLocaleTimeString("en-GB", {
-        hour:"2-digit",
-        minute:"2-digit"
-      });
-    }
-
-    function combineDateAndTime(dateValue, timeValue){
-      if (!dateValue && !timeValue) return "";
-      if (dateValue && !timeValue) return dateValue;
-      if (!dateValue && timeValue) return timeValue;
-      return `${dateValue} ${timeValue}`;
+    function formatTimeText(start, end){
+      const s = pick(start);
+      const e = pick(end);
+      return [s, e].filter(Boolean).join(" – ") || "—";
     }
 
     function getEventReference(e){
-      return pick(
-        e.reference,
-        e.event_reference,
-        e.event_ref,
-        e.ref,
-        e.event_id,
-        e.id,
-        EVENT_ID
-      );
+      return pick(e.reference, e.event_reference, e.event_ref, e.ref, e.event_id, e.id, EVENT_ID);
     }
 
     function getNoticeDateValue(e){
-      return pick(
-        e.start_at,
-        e.starts_at,
-        e.event_date,
-        e.date,
-        e.start_date,
-        combineDateAndTime(e.date, e.time),
-        combineDateAndTime(e.event_date, e.event_time)
-      );
+      return pick(e.event_date, e.date, e.start_date, e.start_at, e.starts_at);
     }
 
     function getNoticeTimeText(e){
-      const startStamp = pick(e.start_at, e.starts_at);
-      const endStamp = pick(e.end_at, e.ends_at);
-
-      if (startStamp || endStamp){
-        const startText = formatTimeOnly(startStamp);
-        const endText = formatTimeOnly(endStamp);
-        return [startText, endText].filter(Boolean).join(" – ") || "—";
-      }
-
-      const directRange = pick(e.time_range, e.event_time_range, e.display_time);
-      if (directRange) return directRange;
-
-      const startText = pick(e.time, e.start_time, e.event_time);
-      const endText = pick(e.end_time, e.finish_time);
-      return [startText, endText].filter(Boolean).join(" – ") || "—";
-    }
-
-    function getSpacesAvailableValue(e){
-  const n = firstNumber(
-    e?.tracking?.places_remaining,
-    e?.spaces_available,
-    e?.available_spaces,
-    e?.available_places,
-    e?.places_available,
-    e?.places_remaining,
-    e?.remaining_places,
-    e?.capacity_remaining,
-    e?.remaining_capacity
-  );
-  if (n !== null) return n;
-
-  const cap = firstNumber(
-    e?.capacity_total,
-    e?.capacity,
-    e?.max_places,
-    e?.total_places,
-    e?.total_capacity,
-    e?.spaces_total,
-    e?.places_total
-  );
-  if (cap !== null) return cap;
-
-  return pick(
-    e?.tracking?.places_remaining,
-    e?.spaces_available,
-    e?.available_spaces,
-    e?.available_places,
-    e?.places_available,
-    e?.places_remaining,
-    e?.remaining_places,
-    e?.capacity_remaining,
-    e?.remaining_capacity,
-    e?.capacity_total,
-    e?.capacity
-  );
-}
-
-    function getMembersOpenValue(e){
-      return pick(
-        e.members_booking_open_at,
-        e.members_open_at,
-        e.booking_open_at,
-        e.booking_opens_at,
-        e.open_at
-      );
-    }
-
-    function getGuestsOpenValue(e){
-      return pick(
-        e.guests_booking_open_at,
-        e.guest_booking_open_at,
-        e.guests_open_at,
-        e.guest_open_at
-      );
-    }
-
-    function getBookingCloseValue(e){
-      return pick(
-        e.booking_close_at,
-        e.booking_closes_at,
-        e.close_at
-      );
-    }
-
-    function getCancelCutoffValue(e){
-      return pick(
-        e.cancellation_cutoff_at,
-        e.cancel_cutoff_at,
-        e.refund_cutoff_at
-      );
+      return pick(e.time_range, e.event_time_range, e.display_time) || formatTimeText(e.start_time, e.end_time);
     }
 
     function getBookingLabel(e){
-      const original = pick(
-        e.booking_label,
-        e.bookingModeLabel,
-        e.booking_mode_label,
-        e.booking_mode,
-        e.bookingMode
-      );
-
+      const original = pick(e.booking_label, e.bookingModeLabel, e.booking_mode_label, e.booking_mode, e.bookingMode);
       const raw = String(original || "").trim().toLowerCase();
 
       if (!raw) return "";
       if (raw === "book" || raw === "booking") return "Book";
       if (raw === "register interest" || raw === "register_interest" || raw === "interest") return "Register interest";
-      if (raw === "book or register interest" || raw === "book_or_register_interest" || raw === "booking_or_interest") return "Book or Register interest";
+      if (raw === "book or register interest" || raw === "book_or_register_interest" || raw === "booking_or_interest") return "Book or register interest";
 
-      return String(original).trim() || "";
+      return String(original).trim();
+    }
+
+    function getSpacesAvailableValue(e){
+      const n = firstNumber(
+        e?.tracking?.places_remaining,
+        e?.spaces_available,
+        e?.available_spaces,
+        e?.available_places,
+        e?.places_available,
+        e?.places_remaining,
+        e?.remaining_places,
+        e?.capacity_remaining,
+        e?.remaining_capacity
+      );
+      if (n !== null) return n;
+
+      const cap = firstNumber(e?.capacity_total, e?.capacity, e?.max_places, e?.total_places, e?.total_capacity);
+      if (cap !== null) return cap;
+
+      return "";
+    }
+
+    function getMembersOpenValue(e){
+      return pick(e.members_booking_open_at, e.members_open_at, e.booking_open_at, e.booking_opens_at, e.open_at);
+    }
+
+    function getGuestsOpenValue(e){
+      return pick(e.guests_booking_open_at, e.guest_booking_open_at, e.guests_open_at, e.guest_open_at);
+    }
+
+    function getBookingCloseValue(e){
+      return pick(e.booking_close_at, e.booking_closes_at, e.close_at);
+    }
+
+    function getCancelCutoffValue(e){
+      return pick(e.cancellation_cutoff_at, e.cancel_cutoff_at);
+    }
+
+    function getRefundCutoffValue(e){
+      return pick(e.refund_cutoff_at, e.refund_closes_at);
     }
 
     function hasBookingBehaviour(e){
@@ -621,13 +618,13 @@
         getGuestsOpenValue(e) ||
         getBookingCloseValue(e) ||
         getCancelCutoffValue(e) ||
+        getRefundCutoffValue(e) ||
         getSpacesAvailableValue(e) !== ""
       );
     }
 
     function getNoticeTypeLabel(e){
-      if (hasBookingBehaviour(e)) return "Event Notice";
-      return "Notice";
+      return hasBookingBehaviour(e) ? "Event Notice" : "Notice";
     }
 
     function setBookingButtons(label){
@@ -640,8 +637,8 @@
       const text =
         label === "Register interest"
           ? "Register interest"
-          : label === "Book or Register interest"
-            ? "Book or Register interest"
+          : label === "Book or register interest"
+            ? "Book or register interest"
             : "Book";
 
       bookBtnTop.textContent = text;
@@ -704,11 +701,10 @@
     }
 
     function renderTitle(e){
-      const titleMode = String(pick(e.title_mode, "typed")).trim().toLowerCase();
-      const graphicUrl = pick(e.title_graphic_url, e.graphic_title_url);
+      const graphicUrl = pick(e.title_art_url, e.title_graphic_url, e.graphic_title_url);
       const noticeTitle = pick(e.notice_title, e.title, "Notice");
 
-      if (titleMode === "graphic" && graphicUrl){
+      if (graphicUrl){
         titleText.style.display = "none";
         titleGraphic.style.display = "block";
         titleGraphic.src = graphicUrl;
@@ -718,6 +714,13 @@
         titleText.style.display = "block";
         titleText.textContent = noticeTitle;
       }
+    }
+
+    function renderEventLine(e){
+      const dateText = formatDateOnly(getNoticeDateValue(e));
+      const timeText = getNoticeTimeText(e);
+      const locationText = pick(e.location, e.venue);
+      eventLine.textContent = [dateText, timeText !== "—" ? timeText : "", locationText].filter(Boolean).join(" • ");
     }
 
     function renderBodyImage(e){
@@ -749,63 +752,31 @@
         bodyBox.innerHTML = '<span class="placeholder">No further notice text has been added.</span>';
       }
     }
-function renderContactDetails(e){
-  const name = pick(
-    e.host_name,
-    e.contact_name,
-    e.author_name,
-    e.producer_name
-  );
 
-  const email = pick(
-    e.host_email,
-    e.contact_email,
-    e.author_email,
-    e.producer_email,
-    e.email
-  );
+    function renderContactDetails(e){
+      const name = pick(e.host_name, e.contact_name, e.author_name, e.producer_name);
+      const email = pick(e.host_email, e.contact_email, e.author_email, e.producer_email, e.email);
+      const mobile = pick(e.host_mobile, e.contact_mobile, e.author_mobile, e.producer_mobile, e.mobile);
+      const landline = pick(e.host_landline, e.contact_landline, e.landline, e.phone);
 
-  const mobile = pick(
-    e.host_mobile,
-    e.contact_mobile,
-    e.author_mobile,
-    e.producer_mobile,
-    e.mobile
-  );
+      if (!name && !email && !mobile && !landline){
+        contactDetailsBox.classList.add("hidden");
+        return;
+      }
 
-  const landline = pick(
-    e.host_landline,
-    e.contact_landline,
-    e.landline,
-    e.phone
-  );
+      contactName.textContent = name || "—";
+      contactEmail.textContent = email || "—";
+      contactMobile.textContent = mobile || "—";
+      contactLandline.textContent = landline || "—";
+      contactDetailsBox.classList.remove("hidden");
+    }
 
-  if (!name && !email && !mobile && !landline){
-    contactDetailsBox.classList.add("hidden");
-    return;
-  }
-
-  contactName.textContent = name || "—";
-  contactEmail.textContent = email || "—";
-  contactMobile.textContent = mobile || "—";
-  contactLandline.textContent = landline || "—";
-
-  contactDetailsBox.classList.remove("hidden");
-}
-    
     function renderBookingDetails(e){
       const label = getBookingLabel(e);
       const show = hasBookingBehaviour(e);
 
-      if (!label){
-        bookingMetaRow.classList.add("hidden");
-      }else{
-        bookingMetaRow.classList.remove("hidden");
-        metaBooking.textContent = label;
-      }
-
       renderBookingModePill(label);
-      setBookingButtons(e, label);
+      setBookingButtons(label);
       renderAvailability(e);
 
       if (!show){
@@ -819,21 +790,31 @@ function renderContactDetails(e){
       guestsOpen.textContent = formatDateTime(getGuestsOpenValue(e));
       bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
       cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
+      refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
 
       bookingDetailsBox.classList.remove("hidden");
+    }
+
+    function renderMeta(e){
+      metaCategory.textContent = pick(e.category_label, e.category, "—");
+      metaDate.textContent = formatDateOnly(getNoticeDateValue(e));
+      metaTime.textContent = getNoticeTimeText(e);
+      metaLocation.textContent = pick(e.location, e.venue, "—");
+      metaReference.textContent = getEventReference(e);
+      typePill.textContent = getNoticeTypeLabel(e);
     }
 
     async function loadNotice(){
       if (!EVENT_ID){
         showMessage("This page was opened without an event reference.", "err");
         titleText.textContent = "Notice not found";
+        eventLine.textContent = "";
         bodyBox.innerHTML = '<span class="placeholder">This page needs an event_id in the address.</span>';
         return;
       }
 
       bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-
       editBtnTop.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
@@ -842,26 +823,8 @@ function renderContactDetails(e){
         const notice = data.event || data || {};
 
         renderTitle(notice);
-
-        const bookingLabel = getBookingLabel(notice);
-
-        metaCategory.textContent = pick(notice.category_label, notice.category, "—");
-        metaDate.textContent = formatDateOnly(getNoticeDateValue(notice));
-        metaTime.textContent = getNoticeTimeText(notice);
-        metaLocation.textContent = pick(notice.location, notice.venue, "—");
-        metaReference.textContent = getEventReference(notice);
-
-        hostText.textContent = pick(
-          notice.host_display,
-          notice.host_name_with_member_id,
-          notice.host_name,
-          notice.contact_name,
-          notice.author_name,
-          "—"
-        );
-
-        typePill.textContent = getNoticeTypeLabel(notice);
-
+        renderEventLine(notice);
+        renderMeta(notice);
         renderBookingDetails(notice);
         renderContactDetails(notice);
         renderBodyImage(notice);
@@ -869,9 +832,14 @@ function renderContactDetails(e){
       }catch(err){
         showMessage(err.message || "Unable to load notice.", "err");
         titleText.textContent = "Unable to load notice";
+        eventLine.textContent = "";
         bodyBox.innerHTML = '<span class="placeholder">Please try again.</span>';
       }
     }
+
+    printBtn.addEventListener("click", function(){
+      window.print();
+    });
 
     loadNotice();
   </script>

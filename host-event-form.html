@@ -799,7 +799,7 @@ async function loadEvent(){
 
 function buildPayload(){
   const category = cleanText(els.category.value);
-  const hostId = baseMemberId(els.hostMemberId.value);
+  const hostId = baseMemberId(els.hostMemberId.textContent);
 
   return {
     event_id: editEventId,

@@ -776,7 +776,7 @@
       const show = hasBookingBehaviour(e);
 
       renderBookingModePill(label);
-      setBookingButtons(label);
+      setBookingButtons(label || (show ? "Book" : ""));
       renderAvailability(e);
 
       if (!show){

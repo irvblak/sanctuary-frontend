@@ -780,7 +780,6 @@ async function loadEvent(){
     els.imageUrl.value = e.image_url || "";
 
     els.capacityTotal.value = e.capacity_total || "";
-    els.maxPlacesPerMember.value = e.max_places_per_member || 1;
     els.membersBookingOpenAt.value = e.members_booking_open_at || "";
     els.guestsBookingOpenAt.value = e.guests_booking_open_at || "";
     els.bookingCloseAt.value = e.booking_close_at || "";
@@ -829,7 +828,7 @@ function buildPayload(){
 
    capacity_total: parseInt(els.capacityTotal.value)||0,
 capacity: parseInt(els.capacityTotal.value)||0,
-max_places_per_member: parseInt(els.maxPlacesPerMember.value)||1,
+max_places_per_member: 0,
 booking_mode: cleanText(els.bookingMode.value),
 
 members_booking_open_at: cleanText(els.membersBookingOpenAt.value),

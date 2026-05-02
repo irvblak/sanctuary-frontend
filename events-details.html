@@ -697,26 +697,37 @@
       return hasBookingBehaviour(e) ? "Event Notice" : "Notice";
     }
 
-    function setBookingButtons(label){
-      if (!label){
-        bookBtnTop.classList.add("hidden");
-        bookBtnBottom.classList.add("hidden");
-        return;
-      }
+    function setBookingButtons(label, e){
+  if (!label){
+    bookBtnTop.classList.add("hidden");
+    bookBtnBottom.classList.add("hidden");
+    return;
+  }
 
-      const text =
-        label === "Register interest"
-          ? "Register interest"
-          : label === "Book or register interest"
-            ? "Book or register interest"
-            : "Book";
+  const actionText =
+    label === "Register interest"
+      ? "Register interest"
+      : label === "Book or register interest"
+        ? "Book or register your interest"
+        : "Book";
 
-      bookBtnTop.textContent = text;
-      bookBtnBottom.textContent = text;
-      bookBtnTop.classList.remove("hidden");
-      bookBtnBottom.classList.remove("hidden");
-    }
+  const dateText = formatDateOnly(getNoticeDateValue(e));
+  const timeText = getNoticeTimeText(e);
 
+  const whenText = [dateText !== "—" ? dateText : "", timeText !== "—" ? timeText : ""]
+    .filter(Boolean)
+    .join(" • ");
+
+  const buttonText = whenText
+    ? `${actionText} — ${whenText}`
+    : actionText;
+
+  bookBtnTop.textContent = buttonText;
+  bookBtnBottom.textContent = buttonText;
+
+  bookBtnTop.classList.remove("hidden");
+  bookBtnBottom.classList.remove("hidden");
+}
     function renderAvailability(e){
       const spaces = getSpacesAvailableValue(e);
       if (spaces === ""){

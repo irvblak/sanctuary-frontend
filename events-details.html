@@ -319,111 +319,122 @@
       }
     }
 
-    @media print{
-      @page{
-        size:A4;
-        margin:14mm;
-      }
+   @media print{
+  @page{
+    size:A4;
+    margin:14mm;
+  }
 
-      body{
-        background:#fff !important;
-        color:#111;
-      }
+  body{
+    background:#fff !important;
+    color:#111;
+  }
 
-      .wrap{
-        width:100%;
-        padding:0;
-      }
+  .wrap{
+    width:100%;
+    padding:0;
+  }
 
-      .no-print,
-      .topbar,
-      .bottom-actions,
-      .message,
-      .btn,
-      button{
-        display:none !important;
-      }
+  .no-print,
+  .topbar,
+  .bottom-actions,
+  .message,
+  .btn,
+  button{
+    display:none !important;
+  }
 
-      .notice-card{
-        border:0;
-        box-shadow:none;
-        border-radius:0;
-        overflow:visible;
-      }
+  .notice-card{
+    border:0;
+    box-shadow:none;
+    border-radius:0;
+    overflow:visible;
+  }
 
-      .poster-head{
-        padding:0 0 8mm;
-      }
+  .poster-head{
+    padding:0 0 6mm;
+  }
 
-      .title-text{
-        font-size:30pt;
-      }
+  .title-text{
+    font-size:26pt;
+  }
 
-      .event-line{
-        font-size:12pt;
-      }
+  .event-line{
+    font-size:11pt;
+  }
 
-      .body-image{
-        max-height:90mm;
-        box-shadow:none;
-        border-radius:0;
-      }
+  .body-image{
+    max-height:70mm;
+    box-shadow:none;
+    border-radius:0;
+  }
 
-      .summary-box,
-      .info-panel{
-        background:#fff;
-        border:1px solid #bbb;
-      }
+  .summary-box{
+    margin:3mm 0 0;
+    padding:2.5mm 3mm;
+    font-size:9.5pt;
+    line-height:1.35;
+    background:#fff;
+    border:1px solid #bbb;
+  }
 
-      .body-box{
-        padding:8mm 0;
-        font-size:11pt;
-        min-height:0;
-      }
+  .body-box{
+    max-height:82mm;
+    overflow:hidden;
+    padding:4mm 0;
+    font-size:10pt;
+    line-height:1.45;
+    min-height:0;
+  }
 
-      .panel-grid{
-        padding:0;
-        gap:6mm;
-      }
+  .pill-row{
+    padding:3mm 0;
+  }
 
-      .pill-row{
-        padding:5mm 0;
-      }
-      .panel-grid{
-  grid-template-columns:1fr;
-  gap:3mm;
-  padding:0;
-  page-break-inside:avoid;
-}
+  .panel-grid{
+    grid-template-columns:1fr;
+    gap:2mm;
+    padding:0;
+    page-break-inside:avoid;
+  }
 
-.info-panel{
-  padding:2.5mm 3mm;
-  border-radius:0;
-  background:#fff;
-  border:1px solid #bbb;
-}
+  .info-panel{
+    padding:2mm 2.5mm;
+    border-radius:0;
+    background:#fff;
+    border:1px solid #bbb;
+  }
 
-.info-panel h2{
-  font-size:8.5pt;
-  margin:0 0 2mm;
-}
+  .info-panel h2{
+    font-size:7.5pt;
+    margin:0 0 1mm;
+  }
 
-.detail-grid{
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:1.5mm 4mm;
-}
+  .compact-line{
+    gap:1mm 4mm;
+    font-size:7.2pt;
+    line-height:1.15;
+  }
 
-.detail-row{
-  font-size:7.8pt;
-  line-height:1.2;
-}
+  .compact-line strong{
+    font-size:6.4pt;
+  }
 
-.detail-row strong{
-  font-size:6.8pt;
-  margin-bottom:.5mm;
-}
+  .detail-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:1.5mm 4mm;
+  }
 
-    }
+  .detail-row{
+    font-size:7.8pt;
+    line-height:1.2;
+  }
+
+  .detail-row strong{
+    font-size:6.8pt;
+    margin-bottom:.5mm;
+  }
+} 
   </style>
 </head>
 

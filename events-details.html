@@ -364,6 +364,40 @@
       .pill-row{
         padding:5mm 0;
       }
+      .panel-grid{
+  grid-template-columns:1fr;
+  gap:3mm;
+  padding:0;
+  page-break-inside:avoid;
+}
+
+.info-panel{
+  padding:2.5mm 3mm;
+  border-radius:0;
+  background:#fff;
+  border:1px solid #bbb;
+}
+
+.info-panel h2{
+  font-size:8.5pt;
+  margin:0 0 2mm;
+}
+
+.detail-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1.5mm 4mm;
+}
+
+.detail-row{
+  font-size:7.8pt;
+  line-height:1.2;
+}
+
+.detail-row strong{
+  font-size:6.8pt;
+  margin-bottom:.5mm;
+}
+
     }
   </style>
 </head>

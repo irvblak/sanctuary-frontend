@@ -867,7 +867,6 @@
     }
 
     function renderMeta(e){
-      metaCategory.textContent = pick(e.category_label, e.category, "—");
       metaDate.textContent = formatDateOnly(getNoticeDateValue(e));
       metaTime.textContent = getNoticeTimeText(e);
       metaLocation.textContent = pick(e.location, e.venue, "—");

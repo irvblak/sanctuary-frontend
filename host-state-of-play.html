@@ -589,14 +589,42 @@
     }
 
     function getAuthToken(){
-  return (
-    localStorage.getItem("authToken") ||
-    sessionStorage.getItem("authToken") ||
-    localStorage.getItem("sanctuaryAuthToken") ||
-    sessionStorage.getItem("sanctuaryAuthToken") ||
-    ""
-  );
-}
+      return (
+      localStorage.getItem("authToken") ||
+      sessionStorage.getItem("authToken") ||
+      localStorage.getItem("sanctuaryAuthToken") ||
+      sessionStorage.getItem("sanctuaryAuthToken") ||
+      ""
+    );
+  }
+    async function fetchJson(url){
+      const token = getAuthToken();
+
+      const headers = {};
+      if (token){
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers
+      });
+
+      const text = await res.text();
+
+      let data = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+       } catch {
+         data = { success:false, message:text || "Invalid server response" };
+     }
+
+     if (!res.ok || data?.success === false){
+        throw new Error(data?.message || `Request failed: ${res.status}`);
+      }
+
+      return data;
+    }
     async function init(){
       const eventId = getEventId();
 

@@ -558,7 +558,74 @@
     const bookBtnBottom = document.getElementById("bookBtnBottom");
     const editBtnTop = document.getElementById("editBtnTop");
     const editBtnBottom = document.getElementById("editBtnBottom");
+const hsopBtnTop = document.getElementById("hsopBtnTop");
+const hsopBtnBottom = document.getElementById("hsopBtnBottom");
 
+function normaliseMemberId(value){
+  const raw = String(value || "").trim().toUpperCase();
+  if (!raw) return "";
+
+  const smMatch = raw.match(/SM\d+/);
+  if (smMatch) return smMatch[0];
+
+  return raw;
+}
+
+function getViewerMemberId(){
+  return normaliseMemberId(
+    localStorage.getItem("currentMemberId") ||
+    sessionStorage.getItem("currentMemberId") ||
+    localStorage.getItem("sanctuaryCurrentMemberId") ||
+    sessionStorage.getItem("sanctuaryCurrentMemberId") ||
+    localStorage.getItem("memberId") ||
+    sessionStorage.getItem("memberId")
+  );
+}
+
+function isAdminViewer(){
+  return !!(
+    localStorage.getItem("adminToken") ||
+    sessionStorage.getItem("adminToken")
+  );
+}
+
+function getEventHostMemberId(e){
+  const direct = normaliseMemberId(
+    e.host_member_id ||
+    e.hostMemberId ||
+    e.member_id ||
+    e.created_by ||
+    e.created_by_member_id ||
+    e.owner_member_id
+  );
+
+  if (direct) return direct;
+
+  const ref = getEventReference(e);
+  const refMatch = String(ref || "").toUpperCase().match(/^SM\d+/);
+  return refMatch ? refMatch[0] : "";
+}
+
+function viewerCanManageNotice(e){
+  const viewer = getViewerMemberId();
+  const host = getEventHostMemberId(e);
+
+  return isAdminViewer() || (!!viewer && !!host && viewer === host);
+}
+
+function setHostControlButtons(e){
+  const canManage = viewerCanManageNotice(e);
+
+  hsopBtnTop.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+  hsopBtnBottom.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+
+  editBtnTop.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+  editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+
+  [hsopBtnTop, hsopBtnBottom, editBtnTop, editBtnBottom].forEach(btn => {
+    btn.classList.toggle("hidden", !canManage);
+  });
+}
     function showMessage(text, kind = "info"){
       if (!text){
         pageMessage.className = "message info";

@@ -588,21 +588,15 @@
       $("tableWrap").innerHTML = html;
     }
 
-    async function fetchJson(url){
-      const res = await fetch(url, { cache:"no-store" });
-      const text = await res.text();
-
-      let data = null;
-      try { data = text ? JSON.parse(text) : null; }
-      catch { data = { success:false, message:text || "Invalid server response" }; }
-
-      if (!res.ok){
-        throw new Error(data?.message || `Request failed: ${res.status}`);
-      }
-
-      return data;
-    }
-
+    function getAuthToken(){
+  return (
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("authToken") ||
+    localStorage.getItem("sanctuaryAuthToken") ||
+    sessionStorage.getItem("sanctuaryAuthToken") ||
+    ""
+  );
+}
     async function init(){
       const eventId = getEventId();
 

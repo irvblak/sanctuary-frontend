@@ -6,790 +6,598 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Members gate -->
-  <script src="access.js?v=AC_1"></script>
+  <script src="access.js"></script>
 
   <style>
     :root{
-      --bg1:#eef6fb;
-      --bg2:#f8fbfd;
+      --bg:#eef6fb;
       --card:#ffffff;
       --ink:#173042;
-      --muted:#5f7483;
+      --muted:#607583;
       --line:#d7e3ea;
       --accent:#1f6f8b;
-      --accent-2:#2f8cab;
-      --soft:#e8f4f8;
+      --soft:#f3f8fb;
       --good:#216e39;
-      --good-bg:#e8f5eb;
       --warn:#8a5a00;
-      --warn-bg:#fff4db;
-      --wait:#7a1f5c;
-      --wait-bg:#f8e8f2;
-      --interest:#6a4a00;
-      --interest-bg:#fbf1d8;
-      --danger:#9f2d2d;
-      --danger-bg:#fdeceb;
-      --shadow:0 10px 28px rgba(21,55,72,.10);
-      --radius:18px;
+      --bad:#9e2b2b;
+      --shadow:0 14px 34px rgba(20,60,80,.12);
     }
 
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
 
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg),#f9fcfd);
       color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 48%,#ffffff 100%);
-      min-height:100vh;
+    }
+
+    .page{
+      max-width:1120px;
+      margin:0 auto;
+      padding:1.2rem;
     }
 
     .topbar{
       display:flex;
       justify-content:space-between;
-      align-items:center;
       gap:1rem;
-      padding:1rem 1.1rem;
-      background:rgba(255,255,255,.82);
-      backdrop-filter:blur(6px);
-      border-bottom:1px solid rgba(215,227,234,.9);
-      position:sticky;
-      top:0;
-      z-index:20;
-    }
-
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:.15rem;
-      min-width:0;
-    }
-
-    .brand a{
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:800;
-      letter-spacing:.01em;
-      font-size:1.05rem;
-    }
-
-    .brand small{
-      color:var(--muted);
-      font-size:.84rem;
-    }
-
-    .top-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.55rem;
-      justify-content:flex-end;
-    }
-
-    .btn{
-      appearance:none;
-      border:none;
-      border-radius:999px;
-      padding:.72rem 1rem;
-      font:inherit;
-      font-weight:700;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transition:transform .15s ease, opacity .15s ease, background .15s ease;
-      white-space:nowrap;
-    }
-
-    .btn:hover{ transform:translateY(-1px); }
-    .btn:active{ transform:translateY(0); }
-
-    .btn-primary{
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:#fff;
-      box-shadow:0 8px 18px rgba(31,111,139,.22);
-    }
-
-    .btn-soft{
-      background:#fff;
-      color:var(--accent);
-      border:1px solid var(--line);
-    }
-
-    .btn-danger{
-      background:#fff;
-      color:var(--danger);
-      border:1px solid #efc9c7;
-    }
-
-    main{
-      max-width:1120px;
-      margin:0 auto;
-      padding:1rem 1rem 2rem;
-    }
-
-    .hero{
-      background:linear-gradient(135deg, rgba(31,111,139,.10), rgba(47,140,171,.07));
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:1.15rem 1.1rem;
-      margin:1rem 0 1rem;
-    }
-
-    .eyebrow{
-      font-size:.78rem;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--accent);
-      font-weight:800;
-      margin-bottom:.45rem;
+      align-items:flex-start;
+      margin-bottom:1rem;
     }
 
     h1{
-      margin:.1rem 0 .4rem;
-      font-size:clamp(1.5rem,3vw,2.2rem);
+      margin:.1rem 0 .25rem;
+      font-size:1.55rem;
       line-height:1.15;
     }
 
-    .hero-meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem .75rem;
-      color:var(--muted);
-      font-size:.96rem;
-    }
-
-    .hero-meta span{
-      background:rgba(255,255,255,.7);
-      border:1px solid rgba(215,227,234,.9);
-      padding:.45rem .7rem;
-      border-radius:999px;
-    }
-
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      margin:1rem 0;
-    }
-
-    .panel-head{
-      padding:1rem 1rem .7rem;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#fff,#fbfdfe);
-    }
-
-    .panel-head h2{
-      margin:0;
-      font-size:1.1rem;
-    }
-
-    .panel-head p{
-      margin:.35rem 0 0;
+    .sub{
       color:var(--muted);
       font-size:.95rem;
     }
 
-    .panel-body{
-      padding:1rem;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:.9rem;
-    }
-
-    .stat{
-      border-radius:16px;
-      padding:1rem .95rem;
-      border:1px solid var(--line);
-      background:#fff;
-      min-height:120px;
+    .actions{
       display:flex;
-      flex-direction:column;
-      justify-content:space-between;
+      gap:.5rem;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
-    .stat .label{
+    a.btn, button.btn{
+      appearance:none;
+      border:1px solid var(--accent);
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      border-radius:999px;
+      padding:.55rem .9rem;
       font-size:.88rem;
       font-weight:700;
-      color:var(--muted);
-      margin-bottom:.6rem;
+      cursor:pointer;
+      white-space:nowrap;
     }
 
-    .stat .value{
-      font-size:2rem;
-      line-height:1;
-      font-weight:800;
-      letter-spacing:-.02em;
+    a.btn.secondary, button.btn.secondary{
+      background:#fff;
+      color:var(--accent);
     }
 
-    .stat .sub{
-      margin-top:.6rem;
-      color:var(--muted);
-      font-size:.92rem;
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:1rem;
+      margin-bottom:1rem;
     }
 
-    .stat.booked{ background:var(--good-bg); border-color:#cfe7d5; }
-    .stat.remaining{ background:var(--soft); border-color:#cfe4ec; }
-    .stat.waitlist{ background:var(--wait-bg); border-color:#e8cfe0; }
-    .stat.interested{ background:var(--interest-bg); border-color:#eddca8; }
-
-    .split{
+    .event-grid{
       display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:1rem;
+      grid-template-columns:repeat(4,1fr);
+      gap:.65rem;
     }
 
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:.8rem;
-    }
-
-    .mini{
+    .field{
+      background:var(--soft);
       border:1px solid var(--line);
       border-radius:14px;
-      padding:.85rem .9rem;
-      background:#fff;
+      padding:.65rem;
+      min-height:64px;
     }
 
-    .mini .mini-label{
-      font-size:.84rem;
+    .label{
+      display:block;
+      font-size:.72rem;
       color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.045em;
+      margin-bottom:.18rem;
+      font-weight:800;
+    }
+
+    .value{
+      font-size:.95rem;
+      font-weight:750;
+      word-break:break-word;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:.65rem;
+    }
+
+    .metric{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:.8rem;
+      background:#fff;
+      text-align:center;
+    }
+
+    .metric strong{
+      display:block;
+      font-size:1.45rem;
+      line-height:1.1;
+      margin-bottom:.2rem;
+    }
+
+    .metric span{
+      color:var(--muted);
+      font-size:.82rem;
       font-weight:700;
     }
 
-    .mini .mini-value{
-      margin-top:.35rem;
-      font-size:1.35rem;
-      font-weight:800;
+    .metric.good strong{color:var(--good)}
+    .metric.warn strong{color:var(--warn)}
+    .metric.bad strong{color:var(--bad)}
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:1rem;
+      margin-bottom:.65rem;
     }
 
-    .list-wrap{
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius:14px;
+    .section-title h2{
+      margin:0;
+      font-size:1.1rem;
+    }
+
+    .note{
+      color:var(--muted);
+      font-size:.86rem;
     }
 
     table{
       width:100%;
       border-collapse:collapse;
-      background:#fff;
+      font-size:.9rem;
     }
 
-    th, td{
-      padding:.8rem .8rem;
-      text-align:left;
-      border-bottom:1px solid #e8eef2;
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding:.55rem .45rem;
       vertical-align:top;
-      font-size:.95rem;
+      text-align:left;
     }
 
     th{
-      background:#f8fbfd;
-      color:#385263;
-      font-size:.84rem;
+      color:var(--muted);
+      font-size:.76rem;
       text-transform:uppercase;
-      letter-spacing:.05em;
+      letter-spacing:.04em;
+      background:#f7fbfd;
     }
 
-    tr:last-child td{ border-bottom:none; }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
+    .status{
+      display:inline-block;
       border-radius:999px;
-      padding:.28rem .6rem;
+      padding:.18rem .48rem;
       font-size:.78rem;
       font-weight:800;
-      letter-spacing:.02em;
-      white-space:nowrap;
+      background:#eef4f7;
     }
 
-    .badge-booked{
-      background:var(--good-bg);
-      color:var(--good);
-      border:1px solid #cfe7d5;
+    .status.booked{background:#e8f5eb;color:var(--good)}
+    .status.waitlist{background:#fff4db;color:var(--warn)}
+    .status.interested{background:#eef3ff;color:#314d8a}
+    .status.cancelled{background:#f8eaea;color:var(--bad)}
+
+    .contact{
+      color:var(--muted);
+      line-height:1.35;
     }
 
-    .badge-wait{
-      background:var(--wait-bg);
-      color:var(--wait);
-      border:1px solid #e8cfe0;
-    }
-
-    .badge-interest{
-      background:var(--interest-bg);
-      color:var(--warn);
-      border:1px solid #eddca8;
-    }
-
-    .muted{ color:var(--muted); }
-
-    .message{
-      padding:.9rem 1rem;
+    .empty{
+      border:1px dashed var(--line);
       border-radius:14px;
-      margin:1rem 0;
-      font-weight:600;
+      padding:1rem;
+      color:var(--muted);
+      background:#fbfdfe;
     }
 
-    .message.info{
-      background:#eef7fb;
-      border:1px solid #cfe4ec;
-      color:#2b5567;
+    .error{
+      border:1px solid #e5b8b8;
+      background:#fff1f1;
+      color:#8a1f1f;
+      border-radius:14px;
+      padding:1rem;
+      font-weight:700;
     }
 
-    .message.error{
-      background:var(--danger-bg);
-      border:1px solid #efc9c7;
-      color:#7a2020;
+    @media(max-width:850px){
+      .topbar{display:block}
+      .actions{justify-content:flex-start;margin-top:.8rem}
+      .event-grid{grid-template-columns:1fr 1fr}
+      .summary{grid-template-columns:1fr 1fr 1fr}
+      table{font-size:.82rem}
     }
 
-    .message.ok{
-      background:var(--good-bg);
-      border:1px solid #cfe7d5;
-      color:#215332;
-    }
-
-    .hidden{ display:none !important; }
-
-    @media (max-width: 900px){
-      .stats{ grid-template-columns:repeat(2, minmax(0,1fr)); }
-      .split{ grid-template-columns:1fr; }
-    }
-
-    @media (max-width: 640px){
-      .topbar{
-        flex-direction:column;
-        align-items:stretch;
+    @media(max-width:560px){
+      .page{padding:.8rem}
+      .event-grid,.summary{grid-template-columns:1fr}
+      th:nth-child(4),td:nth-child(4),
+      th:nth-child(5),td:nth-child(5),
+      th:nth-child(6),td:nth-child(6){
+        text-align:center;
       }
+    }
 
-      .top-actions{
-        justify-content:stretch;
-      }
-
-      .top-actions .btn{
-        flex:1 1 auto;
-      }
-
-      .stats{ grid-template-columns:1fr; }
-      .mini-grid{ grid-template-columns:1fr; }
-
-      th, td{
-        padding:.72rem .65rem;
-        font-size:.92rem;
-      }
+    @media print{
+      body{background:#fff}
+      .page{max-width:none;padding:0}
+      .actions{display:none}
+      .card{box-shadow:none;border-color:#bbb;break-inside:avoid}
+      a{color:inherit;text-decoration:none}
+      th{background:#f2f2f2}
     }
   </style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <a href="host-dashboard.html">Sanctuary Club</a>
-      <small>Host state of play</small>
+  <main class="page">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Host State of Play</h1>
+        <div class="sub" id="pageSub">Loading event booking position…</div>
+      </div>
+
+      <div class="actions">
+        <a class="btn secondary" id="noticeLink" href="#">Open Notice</a>
+        <a class="btn secondary" id="bookingLink" href="#">Open Booking Page</a>
+        <a class="btn secondary" id="editLink" href="#">Edit Notice</a>
+        <button class="btn" type="button" onclick="window.print()">Print</button>
+      </div>
     </div>
 
-    <div class="top-actions">
-      <a class="btn btn-soft" href="host-dashboard.html">Host Dashboard</a>
-      <a class="btn btn-soft" id="openNoticeLink" href="events-details.html">Open Notice</a>
-      <a class="btn btn-primary" id="openBookingLink" href="event-booking.html">Open Booking Page</a>
-      <button class="btn btn-danger" id="logoutBtn" type="button">Log out</button>
-    </div>
-  </header>
+    <section class="card" id="messageCard" hidden></section>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow">Host view</div>
-      <h1 id="eventTitle">Loading event…</h1>
-      <div class="hero-meta">
-        <span id="eventRef">Event ref: —</span>
-        <span id="eventCategory">Category: —</span>
-        <span id="eventWhen">When: —</span>
-        <span id="eventPlaces">Places: —</span>
+    <section class="card">
+      <div class="section-title">
+        <h2>Event details</h2>
+        <div class="note" id="liveNote">Live information from the booking records</div>
       </div>
-    </section>
 
-    <div id="statusMessage" class="message info">Loading state of play…</div>
-
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Headline numbers</h2>
-        <p>Read-only summary drawn from the live bookings endpoint.</p>
-      </div>
-      <div class="panel-body">
-        <div class="stats">
-          <article class="stat booked">
-            <div class="label">Booked places</div>
-            <div class="value" id="bookedPlaces">0</div>
-            <div class="sub" id="bookedHouseholds">0 households</div>
-          </article>
-
-          <article class="stat remaining">
-            <div class="label">Remaining places</div>
-            <div class="value" id="remainingPlaces">0</div>
-            <div class="sub" id="capacityLabel">Capacity: 0</div>
-          </article>
-
-          <article class="stat waitlist">
-            <div class="label">Waitlist</div>
-            <div class="value" id="waitlistPlaces">0</div>
-            <div class="sub" id="waitlistHouseholds">0 households</div>
-          </article>
-
-          <article class="stat interested">
-            <div class="label">Interested</div>
-            <div class="value" id="interestedPlaces">0</div>
-            <div class="sub" id="interestedHouseholds">0 households</div>
-          </article>
+      <div class="event-grid">
+        <div class="field">
+          <span class="label">Reference</span>
+          <div class="value" id="eventRef">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Date</span>
+          <div class="value" id="eventDate">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Time</span>
+          <div class="value" id="eventTime">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Location</span>
+          <div class="value" id="eventLocation">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Category</span>
+          <div class="value" id="eventCategory">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Capacity</span>
+          <div class="value" id="eventCapacity">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Booking mode</span>
+          <div class="value" id="eventMode">—</div>
+        </div>
+        <div class="field">
+          <span class="label">Event ID</span>
+          <div class="value" id="eventIdBox">—</div>
         </div>
       </div>
     </section>
 
-    <section class="split">
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Bookings and responses</h2>
-          <p>Each response grouped by current booking position.</p>
-        </div>
-        <div class="panel-body">
-          <div class="list-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Member</th>
-                  <th>Places</th>
-                  <th>Name</th>
-                  <th>Contact</th>
-                </tr>
-              </thead>
-              <tbody id="responsesTableBody">
-                <tr>
-                  <td colspan="5" class="muted">Loading…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    <section class="card">
+      <div class="section-title">
+        <h2>Booking summary</h2>
+        <div class="note">Booked total = member household places + guest places</div>
+      </div>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Quick breakdown</h2>
-          <p>Useful host summary without opening raw records.</p>
+      <div class="summary">
+        <div class="metric good">
+          <strong id="bookedMemberPlaces">0</strong>
+          <span>Member places</span>
         </div>
-        <div class="panel-body">
-          <div class="mini-grid">
-            <div class="mini">
-              <div class="mini-label">Booked households</div>
-              <div class="mini-value" id="miniBookedHouseholds">0</div>
-            </div>
-            <div class="mini">
-              <div class="mini-label">Waitlist households</div>
-              <div class="mini-value" id="miniWaitlistHouseholds">0</div>
-            </div>
-            <div class="mini">
-              <div class="mini-label">Interested households</div>
-              <div class="mini-value" id="miniInterestedHouseholds">0</div>
-            </div>
-            <div class="mini">
-              <div class="mini-label">Responses total</div>
-              <div class="mini-value" id="miniResponsesTotal">0</div>
-            </div>
-          </div>
+        <div class="metric good">
+          <strong id="bookedGuestPlaces">0</strong>
+          <span>Guest places</span>
         </div>
-      </section>
+        <div class="metric good">
+          <strong id="bookedTotalPlaces">0</strong>
+          <span>Total booked</span>
+        </div>
+        <div class="metric">
+          <strong id="remainingPlaces">—</strong>
+          <span>Remaining</span>
+        </div>
+        <div class="metric warn">
+          <strong id="waitlistPlaces">0</strong>
+          <span>Waitlist places</span>
+        </div>
+        <div class="metric">
+          <strong id="interestedCount">0</strong>
+          <span>Interested</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>Responses</h2>
+        <div class="note" id="responseCount">—</div>
+      </div>
+
+      <div id="tableWrap">
+        <div class="empty">Loading responses…</div>
+      </div>
     </section>
   </main>
 
   <script>
-    const CONFIG = {
-      BACKEND_URL: "https://sanctuary-backend-8iqc.onrender.com"
-    };
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const $ = (id) => document.getElementById(id);
+
+    function clean(value, fallback = "—"){
+      if (value === null || value === undefined) return fallback;
+      const s = String(value).trim();
+      return s ? s : fallback;
+    }
+
+    function asInt(value, fallback = 0){
+      const n = parseInt(value, 10);
+      return Number.isFinite(n) ? n : fallback;
+    }
 
     function getEventId(){
       const params = new URLSearchParams(window.location.search);
-      return (params.get("event_id") || "").trim();
+      return clean(
+        params.get("event_id") ||
+        params.get("id") ||
+        params.get("eventId"),
+        ""
+      );
     }
 
-    function fmtText(value, fallback = "—"){
-      if (value === null || value === undefined) return fallback;
-      const text = String(value).trim();
-      return text ? text : fallback;
+    function formatDate(iso){
+      if (!iso) return "—";
+      const d = new Date(String(iso) + "T00:00:00");
+      if (Number.isNaN(d.getTime())) return iso;
+      return d.toLocaleDateString("en-GB", {
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      });
     }
 
-    function fmtDateTime(value){
-      if (!value) return "—";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value);
-      try{
-        return d.toLocaleString("en-GB", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
-        });
-      }catch{
-        return d.toString();
-      }
+    function formatTime(t){
+      if (!t) return "";
+      return String(t).slice(0,5);
     }
 
-    function setStatus(message, type){
-      const el = document.getElementById("statusMessage");
-      el.textContent = message;
-      el.className = `message ${type || "info"}`;
+    function eventTimeLabel(event){
+      const start = formatTime(event.start_time || event.start || event.start_at || event.starts_at);
+      const end = formatTime(event.end_time || event.end || event.end_at || event.ends_at);
+      if (start && end) return `${start} – ${end}`;
+      return start || end || "—";
     }
 
-    function safeArray(value){
-      return Array.isArray(value) ? value : [];
+    function normaliseEvent(payload){
+      const event = payload && payload.event ? payload.event : payload;
+      return event || {};
     }
 
-    function num(value){
-      const n = Number(value);
-      return Number.isFinite(n) ? n : 0;
+    function normaliseBookings(payload){
+      if (Array.isArray(payload)) return payload;
+      if (payload && Array.isArray(payload.bookings)) return payload.bookings;
+      if (payload && Array.isArray(payload.items)) return payload.items;
+      if (payload && Array.isArray(payload.responses)) return payload.responses;
+      return [];
     }
 
-    function firstNonEmpty(obj, keys, fallback = ""){
-      for (const key of keys){
-        const value = obj && obj[key];
-        if (value === 0) return 0;
-        if (typeof value === "string" && value.trim()) return value.trim();
-        if (value !== null && value !== undefined && value !== "") return value;
-      }
-      return fallback;
-    }
+    function normaliseBooking(b){
+      const status = clean(b.status || b.booking_status, "booked").toLowerCase();
 
-    function normaliseStatus(raw){
-      const s = String(raw || "").trim().toLowerCase();
+      const memberPlaces = asInt(
+        b.places_total ??
+        b.member_places ??
+        b.places ??
+        b.household_places,
+        0
+      );
 
-      if ([
-        "booked", "confirmed", "accepted", "going", "attending", "booking"
-      ].includes(s)) return "booked";
-
-      if ([
-        "waitlist", "wait-listed", "wait_list", "waiting", "reserve"
-      ].includes(s)) return "waitlist";
-
-      if ([
-        "interested", "interest", "enquiry", "inquiry", "register_interest"
-      ].includes(s)) return "interested";
-
-      return s || "unknown";
-    }
-
-    function badgeHtml(status){
-      if (status === "booked"){
-        return '<span class="badge badge-booked">Booked</span>';
-      }
-      if (status === "waitlist"){
-        return '<span class="badge badge-wait">Waitlist</span>';
-      }
-      if (status === "interested"){
-        return '<span class="badge badge-interest">Interested</span>';
-      }
-      return `<span class="badge">${escapeHtml(status)}</span>`;
-    }
-
-    function escapeHtml(value){
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function inferPlaces(item){
-      const direct = firstNonEmpty(item, [
-        "places",
-        "places_booked",
-        "places_requested",
-        "party_size",
-        "quantity",
-        "tickets"
-      ], "");
-
-      const value = num(direct);
-      return value > 0 ? value : 1;
-    }
-
-    function flattenBookingsPayload(payload){
-      const totals = payload && typeof payload === "object" ? (payload.totals || payload.summary || {}) : {};
-
-      let rows = [];
-
-      if (Array.isArray(payload)){
-        rows = payload;
-      } else if (payload && typeof payload === "object"){
-        if (Array.isArray(payload.bookings)) {
-          rows = payload.bookings;
-        } else if (Array.isArray(payload.items)) {
-          rows = payload.items;
-        } else if (Array.isArray(payload.responses)) {
-          rows = payload.responses;
-        } else {
-          const booked = safeArray(payload.booked).map(item => ({ ...item, __forced_status: "booked" }));
-          const waitlist = safeArray(payload.waitlist).map(item => ({ ...item, __forced_status: "waitlist" }));
-          const interested = safeArray(payload.interested).map(item => ({ ...item, __forced_status: "interested" }));
-          rows = [...booked, ...waitlist, ...interested];
-        }
-      }
-
-      return { rows: safeArray(rows), totals };
-    }
-
-    function normaliseRow(item){
-      const status = normaliseStatus(item.__forced_status || firstNonEmpty(item, [
-        "status", "booking_status", "state", "type"
-      ], "interested"));
+      const guestPlaces = asInt(
+        b.guest_places ??
+        b.guests ??
+        b.additional_guest_places,
+        0
+      );
 
       return {
         status,
-        memberId: fmtText(firstNonEmpty(item, [
-          "member_id", "memberId", "membership_no", "membership_number", "property_id"
-        ], "")),
-        name: fmtText(firstNonEmpty(item, [
-          "name", "member_name", "resident_name", "contact_name"
-        ], "")),
-        email: fmtText(firstNonEmpty(item, [
-          "email", "member_email", "contact_email"
-        ], "")),
-        mobile: fmtText(firstNonEmpty(item, [
-          "mobile", "phone", "telephone", "contact_mobile"
-        ], "")),
-        places: inferPlaces(item)
+        memberId: clean(b.member_id || b.memberId || b.membership_number || b.property_id),
+        name: clean(b.member_name || b.contact_name || b.name || b.resident_name),
+        email: clean(b.email || b.contact_email || b.member_email, ""),
+        mobile: clean(b.mobile || b.contact_mobile || b.phone || b.member_mobile, ""),
+        memberPlaces,
+        guestPlaces,
+        totalPlaces: memberPlaces + guestPlaces,
+        updated: clean(b.updated || b.updated_at || b.created_at || b.timestamp, "")
       };
     }
 
-    function summariseRows(rows, totals, capacity){
-      const bookedRows = rows.filter(r => r.status === "booked");
-      const waitRows = rows.filter(r => r.status === "waitlist");
-      const interestedRows = rows.filter(r => r.status === "interested");
-
-      const bookedPlacesRaw = num(firstNonEmpty(totals, [
-        "booked_places", "total_booked_places", "booked"
-      ], ""));
-      const waitlistPlacesRaw = num(firstNonEmpty(totals, [
-        "waitlist_places", "total_waitlist_places"
-      ], ""));
-      const interestedPlacesRaw = num(firstNonEmpty(totals, [
-        "interested_places", "total_interested_places"
-      ], ""));
-
-      const bookedPlaces = bookedPlacesRaw > 0
-        ? bookedPlacesRaw
-        : bookedRows.reduce((sum, r) => sum + r.places, 0);
-
-      const waitlistPlaces = waitlistPlacesRaw > 0
-        ? waitlistPlacesRaw
-        : waitRows.reduce((sum, r) => sum + r.places, 0);
-
-      const interestedPlaces = interestedPlacesRaw > 0
-        ? interestedPlacesRaw
-        : interestedRows.reduce((sum, r) => sum + r.places, 0);
-
-      const remaining = Math.max(0, num(capacity) - bookedPlaces);
-
-      return {
-        bookedPlaces,
-        remainingPlaces: remaining,
-        waitlistPlaces,
-        interestedPlaces,
-        bookedHouseholds: bookedRows.length,
-        waitlistHouseholds: waitRows.length,
-        interestedHouseholds: interestedRows.length,
-        responsesTotal: rows.length
-      };
+    function statusOrder(status){
+      const order = { booked:1, waitlist:2, interested:3, cancelled:4 };
+      return order[status] || 9;
     }
 
-    function renderRows(rows){
-      const tbody = document.getElementById("responsesTableBody");
+    function showMessage(text, isError = false){
+      const card = $("messageCard");
+      card.hidden = false;
+      card.className = isError ? "card error" : "card";
+      card.textContent = text;
+    }
 
-      if (!rows.length){
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="5" class="muted">No booking responses found for this event yet.</td>
-          </tr>
-        `;
+    function setLinks(eventId){
+      $("noticeLink").href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
+      $("bookingLink").href = `event-booking.html?event_id=${encodeURIComponent(eventId)}`;
+      $("editLink").href = `host-event-form.html?event_id=${encodeURIComponent(eventId)}`;
+    }
+
+    function renderEvent(event, eventId){
+      const title = clean(event.title || event.event_title, "Untitled event");
+      const ref = clean(event.event_ref || event.reference || event.ref || eventId);
+      const category = clean(event.category_label || event.category || event.category_key);
+      const capacity = asInt(event.capacity_total ?? event.capacity ?? event.places_total, 0);
+
+      $("pageTitle").textContent = title;
+      $("pageSub").textContent = `${ref} • ${formatDate(event.event_date || event.date)} • ${eventTimeLabel(event)}`;
+
+      $("eventRef").textContent = ref;
+      $("eventDate").textContent = formatDate(event.event_date || event.date);
+      $("eventTime").textContent = eventTimeLabel(event);
+      $("eventLocation").textContent = clean(event.location);
+      $("eventCategory").textContent = category;
+      $("eventCapacity").textContent = capacity > 0 ? String(capacity) : "Not set";
+      $("eventMode").textContent = clean(event.booking_mode || event.mode);
+      $("eventIdBox").textContent = eventId;
+    }
+
+    function renderSummary(event, rows){
+      const capacity = asInt(event.capacity_total ?? event.capacity ?? event.places_total, 0);
+
+      let bookedMember = 0;
+      let bookedGuests = 0;
+      let waitlistPlaces = 0;
+      let interested = 0;
+
+      rows.forEach(r => {
+        if (r.status === "booked"){
+          bookedMember += r.memberPlaces;
+          bookedGuests += r.guestPlaces;
+        } else if (r.status === "waitlist"){
+          waitlistPlaces += r.totalPlaces || r.memberPlaces || 1;
+        } else if (r.status === "interested"){
+          interested += 1;
+        }
+      });
+
+      const bookedTotal = bookedMember + bookedGuests;
+
+      $("bookedMemberPlaces").textContent = bookedMember;
+      $("bookedGuestPlaces").textContent = bookedGuests;
+      $("bookedTotalPlaces").textContent = bookedTotal;
+      $("waitlistPlaces").textContent = waitlistPlaces;
+      $("interestedCount").textContent = interested;
+      $("remainingPlaces").textContent = capacity > 0 ? Math.max(0, capacity - bookedTotal) : "—";
+    }
+
+    function contactCell(row){
+      const bits = [];
+      if (row.email) bits.push(`<div>${escapeHtml(row.email)}</div>`);
+      if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
+      if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
+      return bits.length ? bits.join("") : "—";
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderTable(rows){
+      const activeRows = rows
+        .slice()
+        .sort((a,b) => {
+          const s = statusOrder(a.status) - statusOrder(b.status);
+          if (s !== 0) return s;
+          return String(a.memberId).localeCompare(String(b.memberId));
+        });
+
+      $("responseCount").textContent = `${activeRows.length} response${activeRows.length === 1 ? "" : "s"}`;
+
+      if (!activeRows.length){
+        $("tableWrap").innerHTML = `<div class="empty">No booking responses have been recorded yet.</div>`;
         return;
       }
 
-      tbody.innerHTML = rows.map(r => {
-        const contact = [r.email !== "—" ? r.email : "", r.mobile !== "—" ? r.mobile : ""]
-          .filter(Boolean)
-          .join("<br>");
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Member</th>
+              <th>Name</th>
+              <th>Member places</th>
+              <th>Guests</th>
+              <th>Total</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${activeRows.map(row => `
+              <tr>
+                <td><span class="status ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span></td>
+                <td>${escapeHtml(row.memberId)}</td>
+                <td>${escapeHtml(row.name)}</td>
+                <td>${row.memberPlaces}</td>
+                <td>${row.guestPlaces}</td>
+                <td><strong>${row.totalPlaces}</strong></td>
+                <td class="contact">${contactCell(row)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
 
-        return `
-          <tr>
-            <td>${badgeHtml(r.status)}</td>
-            <td>${escapeHtml(r.memberId || "—")}</td>
-            <td>${escapeHtml(String(r.places))}</td>
-            <td>${escapeHtml(r.name || "—")}</td>
-            <td>${contact || '<span class="muted">—</span>'}</td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function renderSummary(summary, capacity){
-      document.getElementById("bookedPlaces").textContent = String(summary.bookedPlaces);
-      document.getElementById("remainingPlaces").textContent = String(summary.remainingPlaces);
-      document.getElementById("waitlistPlaces").textContent = String(summary.waitlistPlaces);
-      document.getElementById("interestedPlaces").textContent = String(summary.interestedPlaces);
-
-      document.getElementById("bookedHouseholds").textContent = `${summary.bookedHouseholds} households`;
-      document.getElementById("waitlistHouseholds").textContent = `${summary.waitlistHouseholds} households`;
-      document.getElementById("interestedHouseholds").textContent = `${summary.interestedHouseholds} households`;
-      document.getElementById("capacityLabel").textContent = `Capacity: ${num(capacity)}`;
-
-      document.getElementById("miniBookedHouseholds").textContent = String(summary.bookedHouseholds);
-      document.getElementById("miniWaitlistHouseholds").textContent = String(summary.waitlistHouseholds);
-      document.getElementById("miniInterestedHouseholds").textContent = String(summary.interestedHouseholds);
-      document.getElementById("miniResponsesTotal").textContent = String(summary.responsesTotal);
-    }
-
-    function renderEvent(eventId, eventData){
-      const event = eventData && typeof eventData === "object"
-        ? (eventData.event && typeof eventData.event === "object" ? eventData.event : eventData)
-        : {};
-
-      const title = firstNonEmpty(event, ["title", "name", "event_title"], "Host state of play");
-      const ref = firstNonEmpty(event, ["event_ref", "reference", "ref"], eventId);
-      const category = firstNonEmpty(event, ["category"], "—");
-      const whenValue = firstNonEmpty(event, ["start", "start_at", "starts_at", "date_time", "datetime"], "");
-      const places = firstNonEmpty(event, ["places_total", "capacity", "max_places", "places"], "0");
-
-      document.getElementById("eventTitle").textContent = title;
-      document.getElementById("eventRef").textContent = `Event ref: ${fmtText(ref, eventId)}`;
-      document.getElementById("eventCategory").textContent = `Category: ${fmtText(category)}`;
-      document.getElementById("eventWhen").textContent = `When: ${fmtText(fmtDateTime(whenValue))}`;
-      document.getElementById("eventPlaces").textContent = `Places: ${fmtText(places, "0")}`;
-
-      document.getElementById("openNoticeLink").href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
-      document.getElementById("openBookingLink").href = `event-booking.html?event_id=${encodeURIComponent(eventId)}`;
+      $("tableWrap").innerHTML = html;
     }
 
     async function fetchJson(url){
-      const res = await fetch(url, { cache: "no-store" });
+      const res = await fetch(url, { cache:"no-store" });
       const text = await res.text();
-      let data = null;
 
-      try{
-        data = text ? JSON.parse(text) : null;
-      }catch{
-        data = null;
-      }
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; }
+      catch { data = { success:false, message:text || "Invalid server response" }; }
 
       if (!res.ok){
-        const msg = data && data.message ? data.message : `Request failed (${res.status})`;
-        throw new Error(msg);
+        throw new Error(data?.message || `Request failed: ${res.status}`);
       }
 
       return data;
@@ -799,57 +607,32 @@
       const eventId = getEventId();
 
       if (!eventId){
-        document.getElementById("eventTitle").textContent = "No event selected";
-        setStatus("No event_id was supplied in the page URL.", "error");
-        renderRows([]);
+        showMessage("No event_id was supplied in the page address.", true);
+        $("tableWrap").innerHTML = `<div class="empty">Open this page from an event link so the host report knows which event to load.</div>`;
         return;
       }
 
-      try{
-        setStatus("Loading state of play…", "info");
+      setLinks(eventId);
 
-        const [eventData, bookingsData] = await Promise.all([
-          fetchJson(`${CONFIG.BACKEND_URL}/api/events/${encodeURIComponent(eventId)}`),
-          fetchJson(`${CONFIG.BACKEND_URL}/api/events/${encodeURIComponent(eventId)}/bookings`)
+      try{
+        const [eventPayload, bookingsPayload] = await Promise.all([
+          fetchJson(`${API_BASE}/api/events/${encodeURIComponent(eventId)}`),
+          fetchJson(`${API_BASE}/api/events/${encodeURIComponent(eventId)}/bookings`)
         ]);
 
-        renderEvent(eventId, eventData);
+        const event = normaliseEvent(eventPayload);
+        const rows = normaliseBookings(bookingsPayload).map(normaliseBooking);
 
-        const event = eventData && typeof eventData === "object"
-          ? (eventData.event && typeof eventData.event === "object" ? eventData.event : eventData)
-          : {};
+        renderEvent(event, eventId);
+        renderSummary(event, rows);
+        renderTable(rows);
 
-        const capacity = firstNonEmpty(event, ["places_total", "capacity", "max_places", "places"], 0);
-
-        const flattened = flattenBookingsPayload(bookingsData);
-        const rows = flattened.rows.map(normaliseRow);
-        const summary = summariseRows(rows, flattened.totals || {}, capacity);
-
-        renderSummary(summary, capacity);
-        renderRows(rows);
-
-        setStatus("State of play loaded from the live event and bookings endpoints.", "ok");
       }catch(err){
         console.error(err);
-        document.getElementById("eventTitle").textContent = "Unable to load host state of play";
-        setStatus(err && err.message ? err.message : "Unable to load data.", "error");
-        renderRows([]);
+        showMessage(err.message || "Could not load the host state of play.", true);
+        $("tableWrap").innerHTML = `<div class="empty">Booking responses could not be loaded.</div>`;
       }
     }
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      try{
-        if (typeof logout === "function"){
-          logout();
-          return;
-        }
-      }catch{}
-      try{
-        sessionStorage.removeItem("sanctuaryAccess");
-        sessionStorage.removeItem("sanctuaryAccessTime");
-      }catch{}
-      window.location.href = "index.html";
-    });
 
     init();
   </script>

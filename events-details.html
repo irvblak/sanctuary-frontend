@@ -978,7 +978,7 @@ function setHostControlButtons(e){
         renderContactDetails(notice);
         renderBodyImage(notice);
         renderSummaryAndBody(notice);
-        setHostControlButtons(notice);
+        // setHostControlButtons(notice);
       }catch(err){
         showMessage(err.message || "Unable to load notice.", "err");
         titleText.textContent = "Unable to load notice";

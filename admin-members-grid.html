@@ -422,16 +422,16 @@
   }
 
   function setAdminUnlocked(state){
-    if (state) sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
-    else sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  if (state) sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
+  else sessionStorage.removeItem(ADMIN_SESSION_KEY);
 
-    document.getElementById("adminArea").classList.toggle("hidden", !state);
-    lockBtn.classList.toggle("hidden", !state);
-    unlockBtn.classList.toggle("hidden", state);
+  document.getElementById("gateBox").classList.toggle("hidden", state);
+  document.getElementById("adminArea").classList.toggle("hidden", !state);
+  lockBtn.classList.toggle("hidden", !state);
+  unlockBtn.classList.toggle("hidden", state);
 
-    if (state) render();
-  }
-
+  if (state) render();
+}
   async function handleUnlock(){
     const memberId = baseId(adminMemberIdEl.value);
     const pin = String(adminPinEl.value || "").trim();

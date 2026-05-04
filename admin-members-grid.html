@@ -486,9 +486,9 @@
 
   document.getElementById("downloadCsv").addEventListener("click", downloadMailMergeCSV);
 
-  // Restore unlocked state for this tab
-  setAdminUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === "1");
-  refreshUnlockBtn();
+  // Admin access is already controlled by admin-guard.js.
+// No additional YI PIN unlock is required here.
+setAdminUnlocked(true);
 </script>
 
 <!-- Centralised logout -->

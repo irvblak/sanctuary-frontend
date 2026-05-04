@@ -452,10 +452,10 @@
     }
 
     gateMsg.textContent = "";
-    window.addEventListener("DOMContentLoaded", function(){
-  setAdminUnlocked(true);
+    setAdminUnlocked(true);
 });
   }
+  
 
   function refreshUnlockBtn(){
     const memberId = baseId(adminMemberIdEl.value);
@@ -490,7 +490,9 @@
 
   // Admin access is already controlled by admin-guard.js.
 // No additional YI PIN unlock is required here.
-setAdminUnlocked(true);
+window.addEventListener("DOMContentLoaded", function(){
+  setAdminUnlocked(true);
+});
 </script>
 
 <!-- Centralised logout -->

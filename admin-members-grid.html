@@ -452,7 +452,9 @@
     }
 
     gateMsg.textContent = "";
-    setAdminUnlocked(true);
+    window.addEventListener("DOMContentLoaded", function(){
+  setAdminUnlocked(true);
+});
   }
 
   function refreshUnlockBtn(){

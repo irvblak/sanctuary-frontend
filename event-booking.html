@@ -1129,7 +1129,7 @@
       showMessage("Looking up member…", "info");
 
       try{
-        await login(rawMemberId, pin);
+        await login(memberIdBase || rawMemberId, pin);
 
         currentMemberId = memberIdBase || rawMemberId;
         persistAuth(authToken, currentMemberId);

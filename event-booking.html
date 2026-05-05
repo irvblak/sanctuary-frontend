@@ -1041,7 +1041,19 @@
 
   persistAuth(token, returnedMemberId);
 }
+    async function loadMemberProfile(){
+  if (!authToken || !currentMemberId) return null;
 
+  try{
+    const data = await apiFetch(`/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
+      method:"GET"
+    });
+
+    return data.profile || data.member || data.entry || data || null;
+  }catch(_){
+    return null;
+  }
+}
 
     async function loadMyBooking(showStatusMessage = false){
       if (!authToken || !currentMemberId || !EVENT_ID){

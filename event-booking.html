@@ -1019,34 +1019,48 @@
     }
 
     async function login(memberId, pin){
-      let lastErr = null;
+  let lastErr = null;
 
-      const attempts = [
-        { member_id: memberId, pin: pin },
-        { memberId: memberId, pin: pin }
-      ];
+  const baseId = baseMemberId(memberId);
+  const rawId = String(memberId || "").trim().toUpperCase();
 
-      for (const payload of attempts){
-        try{
-          const res = await apiFetch(`/auth/login`, {
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
-            body:JSON.stringify(payload)
-          });
+  const idsToTry = Array.from(new Set([
+    baseId,
+    rawId
+  ].filter(Boolean)));
 
-          const token = pick(res.token, res.authToken, res.access_token);
-          if (!token) throw new Error("No token returned");
+  const payloads = [];
 
-          persistAuth(token, memberId);
-          return;
-        }catch(err){
-          lastErr = err;
-        }
-      }
+  idsToTry.forEach(id => {
+    payloads.push({ member_id: id, pin: pin });
+    payloads.push({ memberId: id, pin: pin });
+    payloads.push({ membership_number: id, pin: pin });
+    payloads.push({ member_id: id, PIN: pin });
+    payloads.push({ memberId: id, PIN: pin });
+    payloads.push({ member_id: id, password: pin });
+    payloads.push({ memberId: id, password: pin });
+  });
 
-      throw lastErr || new Error("Login failed");
+  for (const payload of payloads){
+    try{
+      const res = await apiFetch(`/auth/login`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify(payload)
+      });
+
+      const token = pick(res.token, res.authToken, res.access_token);
+      if (!token) throw new Error("No token returned");
+
+      persistAuth(token, baseId || rawId);
+      return;
+    }catch(err){
+      lastErr = err;
     }
+  }
 
+  throw lastErr || new Error("Login failed");
+}
     async function loadMemberProfile(){
       if (!authToken || !currentMemberId) return null;
 

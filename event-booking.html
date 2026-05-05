@@ -1019,61 +1019,29 @@
     }
 
     async function login(memberId, pin){
-  let lastErr = null;
+  const cleanMemberId = baseMemberId(memberId);
 
-  const baseId = baseMemberId(memberId);
-  const rawId = String(memberId || "").trim().toUpperCase();
-
-  const idsToTry = Array.from(new Set([
-    baseId,
-    rawId
-  ].filter(Boolean)));
-
-  const payloads = [];
-
-  idsToTry.forEach(id => {
-    payloads.push({ member_id: id, pin: pin });
-    payloads.push({ memberId: id, pin: pin });
-    payloads.push({ membership_number: id, pin: pin });
-    payloads.push({ member_id: id, PIN: pin });
-    payloads.push({ memberId: id, PIN: pin });
-    payloads.push({ member_id: id, password: pin });
-    payloads.push({ memberId: id, password: pin });
+  const res = await apiFetch(`/auth/login`, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      memberId: cleanMemberId,
+      pin: String(pin || "").trim()
+    })
   });
 
-  for (const payload of payloads){
-    try{
-      const res = await apiFetch(`/auth/login`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify(payload)
-      });
+  const token = pick(res.token, res.authToken, res.access_token);
+  if (!token) throw new Error("No token returned");
 
-      const token = pick(res.token, res.authToken, res.access_token);
-      if (!token) throw new Error("No token returned");
+  const returnedMemberId = pick(
+    res.member?.memberId,
+    res.member?.member_id,
+    cleanMemberId
+  );
 
-      persistAuth(token, baseId || rawId);
-      return;
-    }catch(err){
-      lastErr = err;
-    }
-  }
-
-  throw lastErr || new Error("Login failed");
+  persistAuth(token, returnedMemberId);
 }
-    async function loadMemberProfile(){
-      if (!authToken || !currentMemberId) return null;
 
-      try{
-        const data = await apiFetch(`/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
-          method:"GET"
-        });
-
-        return data.profile || data.member || data.entry || data || null;
-      }catch(_){
-        return null;
-      }
-    }
 
     async function loadMyBooking(showStatusMessage = false){
       if (!authToken || !currentMemberId || !EVENT_ID){

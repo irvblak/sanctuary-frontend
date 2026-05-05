@@ -21,7 +21,6 @@
       --border:rgba(0,0,0,.08);
       --shadow:0 12px 28px rgba(0,0,0,.09);
       --radius:18px;
-
       --ok:#145a2c;
       --okbg:#f2fbf4;
       --warn:#8a5b00;
@@ -35,7 +34,7 @@
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg, var(--bg1) 0%, #f6faff 40%, var(--bg2) 100%);
+      background:linear-gradient(180deg,var(--bg1) 0%,#f6faff 40%,var(--bg2) 100%);
       color:var(--ink);
       min-height:100vh;
     }
@@ -63,12 +62,11 @@
       justify-self:center;
       font-weight:900;
       color:var(--brand-dark);
-      letter-spacing:.2px;
       text-align:center;
       white-space:nowrap;
     }
 
-    a.btn, button.btn{
+    a.btn,button.btn{
       appearance:none;
       border:1px solid var(--border);
       background:#fff;
@@ -82,7 +80,7 @@
       font-size:.96rem;
     }
 
-    a.btn.primary, button.btn.primary{
+    a.btn.primary,button.btn.primary{
       background:var(--brand);
       color:#fff;
       border-color:transparent;
@@ -160,13 +158,16 @@
 
     .grid{
       display:grid;
-      grid-template-columns:380px 1fr;
+      grid-template-columns:390px 1fr;
       gap:1rem;
       margin-top:1rem;
     }
 
     @media (max-width:980px){
       .grid{ grid-template-columns:1fr; }
+      nav{ grid-template-columns:1fr; }
+      .brand{ justify-self:start; }
+      .nav-right{ justify-content:flex-start; }
     }
 
     .panel{
@@ -217,34 +218,6 @@
       color:#415161;
     }
 
-    .password-wrap{
-      position:relative;
-    }
-
-    .password-wrap input{
-      padding-right:3rem;
-    }
-
-    .eye-btn{
-      position:absolute;
-      right:.5rem;
-      top:50%;
-      transform:translateY(-50%);
-      width:2.2rem;
-      height:2.2rem;
-      border:1px solid #cfd8e3;
-      border-radius:10px;
-      background:#fff;
-      color:var(--brand-dark);
-      font-size:1rem;
-      line-height:1;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 2px 8px rgba(0,0,0,.04);
-    }
-
     .pill{
       display:inline-block;
       padding:.22rem .62rem;
@@ -260,7 +233,7 @@
       display:flex;
       flex-direction:column;
       gap:.55rem;
-      max-height:620px;
+      max-height:660px;
       overflow:auto;
       padding-right:.2rem;
       margin-top:.8rem;
@@ -304,7 +277,7 @@
 
     .roleGrid{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:.75rem;
       margin-top:.7rem;
     }
@@ -328,10 +301,6 @@
       height:18px;
       margin-top:.15rem;
       flex:0 0 auto;
-    }
-
-    .roleText{
-      min-width:0;
     }
 
     .roleText strong{
@@ -405,8 +374,7 @@
         <div>
           <h1>Member Roles</h1>
           <div class="subtle">
-            Promote or remove Host, Committee, Treasurer, and Admin roles for members.
-            Hosts can only unlock host pages after Admin grants the Host role here.
+            Assign Host, Committee, Treasurer, and Admin roles to individual residents, not just households.
           </div>
         </div>
       </div>
@@ -420,50 +388,22 @@
 
       <div class="grid">
         <div class="panel">
-          <h2>Admin unlock</h2>
-
-          <div class="row">
-            <div class="field small">
-              <label for="adminUsername">Admin username</label>
-              <input id="adminUsername" placeholder="Admin username" autocomplete="username" />
-            </div>
-
-            <div class="field small">
-              <label for="adminPassword">Admin password</label>
-              <div class="password-wrap">
-                <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password" />
-                <button type="button" class="eye-btn" id="togglePassword" aria-label="Show password" title="Show password">👁</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="actions">
-            <div class="actions-left">
-              <button class="btn primary" id="btnLogin" type="button">Log in</button>
-            </div>
-            <div class="actions-right">
-              <span class="pill" id="adminStatusPill">CHECKING SESSION</span>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <h2>Members</h2>
+          <h2>Residents</h2>
 
           <div class="row">
             <div class="field">
-              <label for="memberSearch">Search members</label>
-              <input id="memberSearch" placeholder="Name, email, or membership number" />
+              <label for="memberSearch">Search residents</label>
+              <input id="memberSearch" placeholder="Name, email, or membership ref" />
             </div>
           </div>
 
           <div class="list" id="membersList">
-            <div class="empty">Loading members…</div>
+            <div class="empty">Loading residents…</div>
           </div>
         </div>
 
         <div class="panel">
-          <h2>Edit selected member</h2>
+          <h2>Edit selected resident</h2>
 
           <div class="row">
             <div class="field">
@@ -479,8 +419,13 @@
 
           <div class="row">
             <div class="field small">
-              <label for="memberId">Membership number</label>
+              <label for="memberId">Household ref</label>
               <input id="memberId" readonly />
+            </div>
+
+            <div class="field small">
+              <label for="residentId">Resident ref</label>
+              <input id="residentId" readonly />
             </div>
 
             <div class="field">
@@ -490,12 +435,11 @@
           </div>
 
           <div class="summaryBox">
-            <strong>Governance note:</strong> a member must have the <strong>Host</strong> role before they can unlock
-            <strong>host-dashboard.html</strong>, <strong>host-event-form.html</strong>, or <strong>host-notices-editor.html</strong>.
+            <strong>Governance note:</strong> roles now belong to the individual resident.
+            The public roles page should show only name and resident ref. Contact details remain in the Members Directory.
           </div>
 
           <div class="divider"></div>
-            </div>
 
           <h2>Assign roles</h2>
 
@@ -538,7 +482,7 @@
               <button class="btn primary" id="btnSaveRoles" type="button" disabled>Save roles</button>
             </div>
             <div class="actions-right">
-              <span class="pill" id="modePill">No member selected</span>
+              <span class="pill" id="modePill">No resident selected</span>
             </div>
           </div>
         </div>
@@ -557,20 +501,15 @@
     const errBox = $("errBox");
     const okBox = $("okBox");
 
-    const adminUsernameEl = $("adminUsername");
-    const adminPasswordEl = $("adminPassword");
-    const togglePasswordEl = $("togglePassword");
-    const btnLogin = $("btnLogin");
     const btnRefresh = $("btnRefresh");
     const btnLogout = $("btnLogout");
-    const adminStatusPill = $("adminStatusPill");
-
     const memberSearchEl = $("memberSearch");
     const membersList = $("membersList");
 
     const memberNameEl = $("memberName");
     const memberEmailEl = $("memberEmail");
     const memberIdEl = $("memberId");
+    const residentIdEl = $("residentId");
     const currentRolesEl = $("currentRoles");
 
     const roleHostEl = $("roleHost");
@@ -582,11 +521,11 @@
     const modePill = $("modePill");
 
     let adminToken = "";
-    let members = [];
-    let filteredMembers = [];
-    let selectedMember = null;
+    let residents = [];
+    let filteredResidents = [];
+    let selectedResident = null;
 
-    function showBox(el, msg){
+    function showBox(el,msg){
       el.textContent = msg;
       el.classList.add("show");
     }
@@ -603,25 +542,13 @@
       clearBox(okBox);
     }
 
-    async function getJson(url, options = {}){
-      const res = await fetch(url, options);
+    async function getJson(url,options = {}){
+      const res = await fetch(url,options);
       const text = await res.text();
       let data = {};
-      try{
-        data = text ? JSON.parse(text) : {};
-      }catch{
-        data = {};
-      }
-      if (!res.ok){
-        throw new Error(data.message || `HTTP ${res.status}`);
-      }
+      try{ data = text ? JSON.parse(text) : {}; }catch{ data = {}; }
+      if(!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
       return data;
-    }
-
-    function memberPrimaryId(member){
-      const props = Array.isArray(member?.properties) ? member.properties : [];
-      if (!props.length) return "";
-      return String(props[0] || "").trim().split("/")[0].toUpperCase();
     }
 
     function escapeHtml(s){
@@ -633,85 +560,165 @@
         .replace(/'/g,"&#39;");
     }
 
-    function rolesFor(member){
-      return Array.isArray(member?.roles) ? member.roles.map(r => String(r).trim().toLowerCase()).filter(Boolean) : [];
+    function cleanId(s){
+      return String(s || "").trim().toUpperCase();
+    }
+
+    function baseMemberIdFrom(member){
+      const direct = cleanId(member.member_id || member.memberId || member.membership_number);
+      if(direct) return direct.split("/")[0];
+
+      const props = Array.isArray(member.properties) ? member.properties : [];
+      if(props.length) return cleanId(props[0]).split("/")[0];
+
+      return "";
+    }
+
+    function rolesFor(obj){
+      return Array.isArray(obj?.roles)
+        ? obj.roles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
+        : [];
+    }
+
+    function firstNonEmpty(...vals){
+      for(const v of vals){
+        const s = String(v ?? "").trim();
+        if(s) return s;
+      }
+      return "";
+    }
+
+    function residentIndexFrom(resident,fallbackIndex){
+      const raw = resident.resident_index ?? resident.index ?? resident.residentIndex ?? fallbackIndex;
+      const n = parseInt(raw,10);
+      return Number.isFinite(n) && n > 0 ? n : fallbackIndex;
+    }
+
+    function makeResidentId(memberId,index,resident){
+      const direct = cleanId(resident.resident_id || resident.residentId || resident.id);
+      if(direct && direct.includes("/")) return direct;
+      return `${memberId}/${index}`;
+    }
+
+    function flattenMembers(members){
+      const out = [];
+
+      members.forEach(member => {
+        const memberId = baseMemberIdFrom(member);
+        if(!memberId) return;
+
+        const memberResidents = Array.isArray(member.residents) ? member.residents : [];
+
+        if(memberResidents.length){
+          memberResidents.forEach((r,index) => {
+            if(!r || typeof r !== "object") return;
+
+            const residentIndex = residentIndexFrom(r,index + 1);
+            const residentId = makeResidentId(memberId,residentIndex,r);
+
+            out.push({
+              resident_id: residentId,
+              member_id: memberId,
+              resident_index: residentIndex,
+              name: firstNonEmpty(r.name, r.full_name, r.display_name, member.name),
+              email: firstNonEmpty(r.email, r.email_address, member.email),
+              roles: rolesFor(r),
+              household_roles: rolesFor(member),
+              source: "resident"
+            });
+          });
+          return;
+        }
+
+        out.push({
+          resident_id: `${memberId}/1`,
+          member_id: memberId,
+          resident_index: 1,
+          name: firstNonEmpty(member.name, member.display_name),
+          email: firstNonEmpty(member.email, member.email_address),
+          roles: rolesFor(member),
+          household_roles: rolesFor(member),
+          source: "legacy"
+        });
+      });
+
+      out.sort((a,b) => {
+        const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
+        if(byMember !== 0) return byMember;
+        return Number(a.resident_index || 0) - Number(b.resident_index || 0);
+      });
+
+      return out;
     }
 
     function resetSelection(){
-      selectedMember = null;
+      selectedResident = null;
       memberNameEl.value = "";
       memberEmailEl.value = "";
       memberIdEl.value = "";
+      residentIdEl.value = "";
       currentRolesEl.value = "";
       roleHostEl.checked = false;
       roleCommitteeEl.checked = false;
       roleTreasurerEl.checked = false;
       roleAdminEl.checked = false;
       btnSaveRoles.disabled = true;
-      modePill.textContent = "No member selected";
-    }
-
-    function setAdminLoggedOut(){
-      adminToken = "";
-      adminStatusPill.textContent = "LOGGED OUT";
-      members = [];
-      filteredMembers = [];
-      membersList.innerHTML = `<div class="empty">Log in as Admin to load members.</div>`;
-      resetSelection();
-    }
-
-    function setAdminLoggedIn(){
-      adminStatusPill.textContent = "LOGGED IN";
+      modePill.textContent = "No resident selected";
     }
 
     function applyFilter(){
       const q = String(memberSearchEl.value || "").trim().toLowerCase();
 
-      filteredMembers = members.filter(m => {
-        const name = String(m.name || "").toLowerCase();
-        const email = String(m.email || "").toLowerCase();
-        const mid = memberPrimaryId(m).toLowerCase();
-        return !q || name.includes(q) || email.includes(q) || mid.includes(q);
+      filteredResidents = residents.filter(r => {
+        const hay = [
+          r.name,
+          r.email,
+          r.member_id,
+          r.resident_id,
+          rolesFor(r).join(" ")
+        ].join(" ").toLowerCase();
+
+        return !q || hay.includes(q);
       });
 
-      renderMembersList();
+      renderResidentsList();
     }
 
-    function renderMembersList(){
+    function renderResidentsList(){
       membersList.innerHTML = "";
 
-      if (!filteredMembers.length){
-        membersList.innerHTML = `<div class="empty">No matching members.</div>`;
+      if(!filteredResidents.length){
+        membersList.innerHTML = `<div class="empty">No matching residents.</div>`;
         return;
       }
 
-      filteredMembers.forEach(member => {
-        const mid = memberPrimaryId(member);
-        const roles = rolesFor(member);
-
+      filteredResidents.forEach(resident => {
+        const roles = rolesFor(resident);
         const item = document.createElement("div");
-        item.className = "item" + (selectedMember === member ? " active" : "");
+        item.className = "item" + (selectedResident === resident ? " active" : "");
+
         item.innerHTML = `
-          <div class="item-title">${escapeHtml(member.name || "(No name)")}</div>
+          <div class="item-title">${escapeHtml(resident.resident_id)} — ${escapeHtml(resident.name || "(No name)")}</div>
           <div class="item-meta">
-            ${mid ? `<span>${escapeHtml(mid)}</span>` : ""}
-            ${member.email ? `<span>•</span><span>${escapeHtml(member.email)}</span>` : ""}
-            ${roles.length ? `<span>•</span><span>${escapeHtml(roles.join(", "))}</span>` : `<span>•</span><span>no special roles</span>`}
+            ${resident.email ? `<span>${escapeHtml(resident.email)}</span><span>•</span>` : ""}
+            ${roles.length ? `<span>${escapeHtml(roles.join(", "))}</span>` : `<span>no special roles</span>`}
+            ${resident.source === "legacy" ? `<span>•</span><span>legacy household record</span>` : ""}
           </div>
         `;
-        item.onclick = () => selectMember(member);
+
+        item.onclick = () => selectResident(resident);
         membersList.appendChild(item);
       });
     }
 
-    function selectMember(member){
-      selectedMember = member;
+    function selectResident(resident){
+      selectedResident = resident;
+      const roles = rolesFor(resident);
 
-      const roles = rolesFor(member);
-
-      memberNameEl.value = member.name || "";
-      memberEmailEl.value = member.email || "";
-      memberIdEl.value = memberPrimaryId(member);
+      memberNameEl.value = resident.name || "";
+      memberEmailEl.value = resident.email || "";
+      memberIdEl.value = resident.member_id || "";
+      residentIdEl.value = resident.resident_id || "";
       currentRolesEl.value = roles.length ? roles.join(", ") : "member only";
 
       roleHostEl.checked = roles.includes("host");
@@ -720,187 +727,112 @@
       roleAdminEl.checked = roles.includes("admin");
 
       btnSaveRoles.disabled = false;
-      modePill.textContent = `Editing ${member.name || memberPrimaryId(member) || "member"}`;
+      modePill.textContent = `Editing ${resident.resident_id}`;
 
-      renderMembersList();
+      renderResidentsList();
     }
 
     function selectedRoles(){
       const roles = [];
-      if (roleHostEl.checked) roles.push("host");
-      if (roleCommitteeEl.checked) roles.push("committee");
-      if (roleTreasurerEl.checked) roles.push("treasurer");
-      if (roleAdminEl.checked) roles.push("admin");
+      if(roleHostEl.checked) roles.push("host");
+      if(roleCommitteeEl.checked) roles.push("committee");
+      if(roleTreasurerEl.checked) roles.push("treasurer");
+      if(roleAdminEl.checked) roles.push("admin");
       return roles;
     }
 
-    async function adminLogin(){
+    async function loadMembers(){
       clearMessages();
-      showBox(infoBox, "Logging in as Admin…");
+      showBox(infoBox,"Loading residents…");
 
-      const username = String(adminUsernameEl.value || "").trim();
-      const password = String(adminPasswordEl.value || "");
+      adminToken = localStorage.getItem(TOKEN_KEY) || "";
 
-      if (!username || !password){
+      if(!adminToken){
         clearBox(infoBox);
-        showBox(errBox, "Enter admin username and password.");
+        showBox(errBox,"Admin session not found. Please return through Admin sign-in.");
+        membersList.innerHTML = `<div class="empty">Admin session not found.</div>`;
+        resetSelection();
         return;
       }
 
-      btnLogin.disabled = true;
-
       try{
-        const login = await getJson(`${BACKEND_URL}/auth/admin-login`, {
-          method: "POST",
-          headers: { "Content-Type":"application/json" },
-          body: JSON.stringify({ username, password })
+        const data = await getJson(`${BACKEND_URL}/api/admin/members`,{
+          method:"GET",
+          headers:{ "Authorization":`Bearer ${adminToken}` }
         });
 
-        adminToken = login.token || "";
-        localStorage.setItem(TOKEN_KEY, adminToken);
-        adminStatusPill.textContent = `LOGGED IN (${login.admin?.username || username})`;
+        const rawMembers = Array.isArray(data.members) ? data.members : [];
+        residents = flattenMembers(rawMembers);
+        filteredResidents = residents.slice();
 
-        await loadMembers();
+        resetSelection();
+        applyFilter();
 
         clearBox(infoBox);
-        showBox(okBox, "Admin logged in.");
-      }catch(err){
-        setAdminLoggedOut();
-        localStorage.removeItem(TOKEN_KEY);
-        clearBox(infoBox);
-        showBox(errBox, err.message || "Admin login failed.");
-      }finally{
-        btnLogin.disabled = false;
-      }
-    }
 
-    async function loadMembers(){
-      showBox(infoBox, "Loading members…");
-
-      const data = await getJson(`${BACKEND_URL}/api/admin/members`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${adminToken}`
+        if(!residents.length){
+          showBox(warnBox,"No residents found. Only YI-created backend residents appear here.");
+        }else{
+          showBox(okBox,`Loaded ${residents.length} resident record${residents.length === 1 ? "" : "s"}.`);
         }
-      });
-
-      members = Array.isArray(data.members) ? data.members.slice() : [];
-      members.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
-
-      applyFilter();
-      clearBox(infoBox);
-
-      if (!members.length){
-        showBox(warnBox, "No members found.");
+      }catch(err){
+        clearBox(infoBox);
+        showBox(errBox,err.message || "Could not load residents.");
+        membersList.innerHTML = `<div class="empty">Could not load residents.</div>`;
+        resetSelection();
       }
     }
 
     async function saveRoles(){
       clearMessages();
 
-      if (!selectedMember){
-        showBox(errBox, "Select a member first.");
+      if(!selectedResident){
+        showBox(errBox,"Select a resident first.");
         return;
       }
 
-      const email = String(selectedMember.email || "").trim().toLowerCase();
-      if (!email){
-        showBox(errBox, "Selected member has no email record, so roles cannot be saved through the current backend route.");
-        return;
-      }
+      const roles = selectedRoles();
 
       btnSaveRoles.disabled = true;
 
       try{
-        const roles = selectedRoles();
-
-        await getJson(`${BACKEND_URL}/api/admin/set-roles`, {
-          method: "POST",
-          headers: {
+        await getJson(`${BACKEND_URL}/api/admin/set-roles`,{
+          method:"POST",
+          headers:{
             "Content-Type":"application/json",
-            "Authorization": `Bearer ${adminToken}`
+            "Authorization":`Bearer ${adminToken}`
           },
-          body: JSON.stringify({
-            email,
-            roles
+          body:JSON.stringify({
+            resident_id:selectedResident.resident_id,
+            member_id:selectedResident.member_id,
+            resident_index:selectedResident.resident_index,
+            name:selectedResident.name,
+            email:selectedResident.email,
+            roles:roles
           })
         });
 
-        showBox(okBox, `Roles updated for ${selectedMember.name || email}.`);
+        showBox(okBox,`Roles updated for ${selectedResident.resident_id} — ${selectedResident.name || "resident"}.`);
 
+        const keepId = selectedResident.resident_id;
         await loadMembers();
 
-        const refreshed = members.find(m => String(m.email || "").trim().toLowerCase() === email);
-        if (refreshed){
-          selectMember(refreshed);
-        } else {
-          resetSelection();
-        }
+        const refreshed = residents.find(r => r.resident_id === keepId);
+        if(refreshed) selectResident(refreshed);
       }catch(err){
-        showBox(errBox, err.message || "Could not save roles.");
+        showBox(errBox,err.message || "Could not save roles.");
       }finally{
-        btnSaveRoles.disabled = !selectedMember;
+        btnSaveRoles.disabled = !selectedResident;
       }
     }
 
-    async function initFromStoredToken(){
-      const stored = localStorage.getItem(TOKEN_KEY);
-      if (!stored){
-        setAdminLoggedOut();
-        clearBox(infoBox);
-        showBox(warnBox, "Admin session not found. Log in to continue.");
-        return;
-      }
+    btnRefresh.addEventListener("click",loadMembers);
+    memberSearchEl.addEventListener("input",applyFilter);
+    btnSaveRoles.addEventListener("click",saveRoles);
 
-      adminToken = stored;
-      setAdminLoggedIn();
-
-      try{
-        await loadMembers();
-        showBox(okBox, "Admin session recognised.");
-      }catch(err){
-        setAdminLoggedOut();
-        localStorage.removeItem(TOKEN_KEY);
-        showBox(errBox, err.message || "Stored admin session could not be used.");
-      }
-    }
-
-    togglePasswordEl.addEventListener("click", () => {
-      const hidden = adminPasswordEl.type === "password";
-      adminPasswordEl.type = hidden ? "text" : "password";
-      togglePasswordEl.textContent = hidden ? "🙈" : "👁";
-      togglePasswordEl.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
-      togglePasswordEl.title = hidden ? "Hide password" : "Show password";
-    });
-
-    btnLogin.addEventListener("click", adminLogin);
-
-    adminPasswordEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter"){
-        adminLogin();
-      }
-    });
-
-    btnRefresh.addEventListener("click", async () => {
-      clearMessages();
-      if (!adminToken){
-        showBox(warnBox, "Log in as Admin first.");
-        return;
-      }
-      try{
-        await loadMembers();
-        showBox(okBox, "Members list refreshed.");
-      }catch(err){
-        showBox(errBox, err.message || "Refresh failed.");
-      }
-    });
-
-    memberSearchEl.addEventListener("input", applyFilter);
-    btnSaveRoles.addEventListener("click", saveRoles);
-
-    btnLogout.addEventListener("click", () => {
+    btnLogout.addEventListener("click",() => {
       localStorage.removeItem(TOKEN_KEY);
-      if (typeof window.scLogout === "function"){
+      if(typeof window.scLogout === "function"){
         window.scLogout();
         return;
       }
@@ -910,7 +842,7 @@
     });
 
     resetSelection();
-    initFromStoredToken();
+    loadMembers();
   </script>
 </body>
 </html>

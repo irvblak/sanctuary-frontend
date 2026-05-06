@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Admin access guard (must be in <head>) -->
-  <script>
+ <script>
   (function () {
     const token = localStorage.getItem("adminToken");
+    alert("Dashboard sees adminToken: " + (token ? "YES" : "NO"));
+
     if (!token) {
       window.location.replace("admin-login.html");
     }

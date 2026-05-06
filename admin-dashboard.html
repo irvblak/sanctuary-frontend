@@ -176,10 +176,12 @@
 
   <!-- Logout handler (centralised) -->
   <script>
-  document.getElementById("logoutBtn")?.addEventListener("click", function () {
-    localStorage.removeItem("adminToken");
-    window.location.replace("admin-login.html");
-  });
+  (function () {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      window.location.replace("admin-login.html");
+    }
+  })();
 </script>
  </body>
 </html>

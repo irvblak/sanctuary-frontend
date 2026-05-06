@@ -175,7 +175,10 @@
       border-radius:16px;
       background:#fbfdff;
       padding:.95rem;
+      margin-top:1rem;
     }
+
+    .panel:first-child{ margin-top:0; }
 
     .row{
       display:flex;
@@ -294,6 +297,7 @@
       display:flex;
       gap:.65rem;
       align-items:flex-start;
+      cursor:pointer;
     }
 
     .roleBox input[type="checkbox"]{
@@ -350,6 +354,13 @@
       font-weight:800;
       padding:.35rem 0;
     }
+
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.4;
+      margin-top:.45rem;
+    }
   </style>
 </head>
 
@@ -374,7 +385,7 @@
         <div>
           <h1>Member Roles</h1>
           <div class="subtle">
-            Assign Host, Committee, Treasurer, and Admin roles to individual residents, not just households.
+            Manage current role incumbents only. Residents with no assigned role are not listed.
           </div>
         </div>
       </div>
@@ -386,19 +397,27 @@
         <div class="msg ok" id="okBox"></div>
       </div>
 
+      <div class="panel">
+        <h2>Add role-holder</h2>
+        <div class="row">
+          <div class="field small">
+            <label for="addResidentRef">Resident ref</label>
+            <input id="addResidentRef" placeholder="e.g. SM55/1" />
+          </div>
+          <div class="actions-left">
+            <button class="btn primary" id="btnLoadResident" type="button">Load resident</button>
+          </div>
+        </div>
+        <div class="hint">
+          Use this only when appointing a new role-holder who is not already listed below.
+        </div>
+      </div>
+
       <div class="grid">
         <div class="panel">
-          <h2>Residents</h2>
-
-          <div class="row">
-            <div class="field">
-              <label for="memberSearch">Search residents</label>
-              <input id="memberSearch" placeholder="Name, email, or membership ref" />
-            </div>
-          </div>
-
+          <h2>Current role-holders</h2>
           <div class="list" id="membersList">
-            <div class="empty">Loading residents…</div>
+            <div class="empty">Loading current role-holders…</div>
           </div>
         </div>
 
@@ -435,8 +454,8 @@
           </div>
 
           <div class="summaryBox">
-            <strong>Governance note:</strong> roles now belong to the individual resident.
-            The public roles page should show only name and resident ref. Contact details remain in the Members Directory.
+            <strong>Visibility rule:</strong> only current role incumbents are shown here and on the public “Who does what” notice.
+            If all roles are removed, the resident disappears from the list after saving.
           </div>
 
           <div class="divider"></div>
@@ -456,7 +475,7 @@
               <input type="checkbox" id="roleCommittee" />
               <div class="roleText">
                 <strong>Committee</strong>
-                <span>Can handle committee-level content and governance tasks.</span>
+                <span>Committee-level role for governance and Club responsibilities.</span>
               </div>
             </label>
 
@@ -464,7 +483,7 @@
               <input type="checkbox" id="roleTreasurer" />
               <div class="roleText">
                 <strong>Treasurer</strong>
-                <span>Can see event finance across the system.</span>
+                <span>Finance-related role for event and Club money matters.</span>
               </div>
             </label>
 
@@ -473,6 +492,14 @@
               <div class="roleText">
                 <strong>Admin</strong>
                 <span>Full system access. Use carefully.</span>
+              </div>
+            </label>
+
+            <label class="roleBox">
+              <input type="checkbox" id="roleNewsContributor" />
+              <div class="roleText">
+                <strong>News Contributor</strong>
+                <span>Can contribute news or standing Club notice material.</span>
               </div>
             </label>
           </div>
@@ -503,7 +530,8 @@
 
     const btnRefresh = $("btnRefresh");
     const btnLogout = $("btnLogout");
-    const memberSearchEl = $("memberSearch");
+    const btnLoadResident = $("btnLoadResident");
+    const addResidentRefEl = $("addResidentRef");
     const membersList = $("membersList");
 
     const memberNameEl = $("memberName");
@@ -516,14 +544,23 @@
     const roleCommitteeEl = $("roleCommittee");
     const roleTreasurerEl = $("roleTreasurer");
     const roleAdminEl = $("roleAdmin");
+    const roleNewsContributorEl = $("roleNewsContributor");
 
     const btnSaveRoles = $("btnSaveRoles");
     const modePill = $("modePill");
 
     let adminToken = "";
-    let residents = [];
-    let filteredResidents = [];
+    let allResidents = [];
+    let currentRoleHolders = [];
     let selectedResident = null;
+
+    const ROLE_LABELS = {
+      host: "Host",
+      committee: "Committee",
+      treasurer: "Treasurer",
+      admin: "Admin",
+      news_contributor: "News Contributor"
+    };
 
     function showBox(el,msg){
       el.textContent = msg;
@@ -547,7 +584,7 @@
       const text = await res.text();
       let data = {};
       try{ data = text ? JSON.parse(text) : {}; }catch{ data = {}; }
-      if(!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+      if(!res.ok || data.success === false) throw new Error(data.message || `HTTP ${res.status}`);
       return data;
     }
 
@@ -580,9 +617,9 @@
         : [];
     }
 
-    function firstNonEmpty(...vals){
-      for(const v of vals){
-        const s = String(v ?? "").trim();
+    function firstNonEmpty(){
+      for(let i = 0; i < arguments.length; i++){
+        const s = String(arguments[i] ?? "").trim();
         if(s) return s;
       }
       return "";
@@ -598,6 +635,13 @@
       const direct = cleanId(resident.resident_id || resident.residentId || resident.id);
       if(direct && direct.includes("/")) return direct;
       return `${memberId}/${index}`;
+    }
+
+    function displayRoles(roles){
+      const cleaned = Array.isArray(roles) ? roles : [];
+      return cleaned.length
+        ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
+        : "No role";
     }
 
     function flattenMembers(members){
@@ -623,7 +667,6 @@
               name: firstNonEmpty(r.name, r.full_name, r.display_name, member.name),
               email: firstNonEmpty(r.email, r.email_address, member.email),
               roles: rolesFor(r),
-              household_roles: rolesFor(member),
               source: "resident"
             });
           });
@@ -637,7 +680,6 @@
           name: firstNonEmpty(member.name, member.display_name),
           email: firstNonEmpty(member.email, member.email_address),
           roles: rolesFor(member),
-          household_roles: rolesFor(member),
           source: "legacy"
         });
       });
@@ -662,47 +704,28 @@
       roleCommitteeEl.checked = false;
       roleTreasurerEl.checked = false;
       roleAdminEl.checked = false;
+      roleNewsContributorEl.checked = false;
       btnSaveRoles.disabled = true;
       modePill.textContent = "No resident selected";
     }
 
-    function applyFilter(){
-      const q = String(memberSearchEl.value || "").trim().toLowerCase();
-
-      filteredResidents = residents.filter(r => {
-        const hay = [
-          r.name,
-          r.email,
-          r.member_id,
-          r.resident_id,
-          rolesFor(r).join(" ")
-        ].join(" ").toLowerCase();
-
-        return !q || hay.includes(q);
-      });
-
-      renderResidentsList();
-    }
-
-    function renderResidentsList(){
+    function renderRoleHoldersList(){
       membersList.innerHTML = "";
 
-      if(!filteredResidents.length){
-        membersList.innerHTML = `<div class="empty">No matching residents.</div>`;
+      if(!currentRoleHolders.length){
+        membersList.innerHTML = `<div class="empty">No current role-holders found.</div>`;
         return;
       }
 
-      filteredResidents.forEach(resident => {
-        const roles = rolesFor(resident);
+      currentRoleHolders.forEach(resident => {
         const item = document.createElement("div");
-        item.className = "item" + (selectedResident === resident ? " active" : "");
+        item.className = "item" + (selectedResident && selectedResident.resident_id === resident.resident_id ? " active" : "");
 
         item.innerHTML = `
           <div class="item-title">${escapeHtml(resident.resident_id)} — ${escapeHtml(resident.name || "(No name)")}</div>
           <div class="item-meta">
-            ${resident.email ? `<span>${escapeHtml(resident.email)}</span><span>•</span>` : ""}
-            ${roles.length ? `<span>${escapeHtml(roles.join(", "))}</span>` : `<span>no special roles</span>`}
-            ${resident.source === "legacy" ? `<span>•</span><span>legacy household record</span>` : ""}
+            <span>${escapeHtml(displayRoles(resident.roles))}</span>
+            ${resident.email ? `<span>•</span><span>${escapeHtml(resident.email)}</span>` : ""}
           </div>
         `;
 
@@ -712,24 +735,25 @@
     }
 
     function selectResident(resident){
-      selectedResident = resident;
-      const roles = rolesFor(resident);
+      selectedResident = Object.assign({}, resident);
+      const roles = rolesFor(selectedResident);
 
-      memberNameEl.value = resident.name || "";
-      memberEmailEl.value = resident.email || "";
-      memberIdEl.value = resident.member_id || "";
-      residentIdEl.value = resident.resident_id || "";
-      currentRolesEl.value = roles.length ? roles.join(", ") : "member only";
+      memberNameEl.value = selectedResident.name || "";
+      memberEmailEl.value = selectedResident.email || "";
+      memberIdEl.value = selectedResident.member_id || "";
+      residentIdEl.value = selectedResident.resident_id || "";
+      currentRolesEl.value = displayRoles(roles);
 
       roleHostEl.checked = roles.includes("host");
       roleCommitteeEl.checked = roles.includes("committee");
       roleTreasurerEl.checked = roles.includes("treasurer");
       roleAdminEl.checked = roles.includes("admin");
+      roleNewsContributorEl.checked = roles.includes("news_contributor");
 
       btnSaveRoles.disabled = false;
-      modePill.textContent = `Editing ${resident.resident_id}`;
+      modePill.textContent = `Editing ${selectedResident.resident_id}`;
 
-      renderResidentsList();
+      renderRoleHoldersList();
     }
 
     function selectedRoles(){
@@ -738,12 +762,13 @@
       if(roleCommitteeEl.checked) roles.push("committee");
       if(roleTreasurerEl.checked) roles.push("treasurer");
       if(roleAdminEl.checked) roles.push("admin");
+      if(roleNewsContributorEl.checked) roles.push("news_contributor");
       return roles;
     }
 
     async function loadMembers(){
       clearMessages();
-      showBox(infoBox,"Loading residents…");
+      showBox(infoBox,"Loading current role-holders…");
 
       adminToken = localStorage.getItem(TOKEN_KEY) || "";
 
@@ -762,37 +787,56 @@
         });
 
         const rawMembers = Array.isArray(data.members) ? data.members : [];
-        residents = flattenMembers(rawMembers);
-        filteredResidents = residents.slice();
+        allResidents = flattenMembers(rawMembers);
+        currentRoleHolders = allResidents.filter(r => rolesFor(r).length > 0);
 
         resetSelection();
-        applyFilter();
+        renderRoleHoldersList();
 
         clearBox(infoBox);
-
-        if(!residents.length){
-          showBox(warnBox,"No residents found. Only YI-created backend residents appear here.");
-        }else{
-          showBox(okBox,`Loaded ${residents.length} resident record${residents.length === 1 ? "" : "s"}.`);
-        }
+        showBox(okBox,`Loaded ${currentRoleHolders.length} current role-holder${currentRoleHolders.length === 1 ? "" : "s"}.`);
       }catch(err){
         clearBox(infoBox);
-        showBox(errBox,err.message || "Could not load residents.");
-        membersList.innerHTML = `<div class="empty">Could not load residents.</div>`;
+        showBox(errBox,err.message || "Could not load current role-holders.");
+        membersList.innerHTML = `<div class="empty">Could not load role-holders.</div>`;
         resetSelection();
       }
+    }
+
+    function loadResidentByRef(){
+      clearMessages();
+
+      const ref = cleanId(addResidentRefEl.value);
+      if(!ref){
+        showBox(warnBox,"Enter a resident reference such as SM55/1.");
+        return;
+      }
+
+      if(!ref.includes("/")){
+        showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
+        return;
+      }
+
+      const found = allResidents.find(r => cleanId(r.resident_id) === ref);
+
+      if(!found){
+        showBox(errBox,`Resident ${ref} was not found in the authorised member list.`);
+        return;
+      }
+
+      selectResident(found);
+      showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
     }
 
     async function saveRoles(){
       clearMessages();
 
       if(!selectedResident){
-        showBox(errBox,"Select a resident first.");
+        showBox(errBox,"Select or load a resident first.");
         return;
       }
 
       const roles = selectedRoles();
-
       btnSaveRoles.disabled = true;
 
       try{
@@ -812,22 +856,35 @@
           })
         });
 
-        showBox(okBox,`Roles updated for ${selectedResident.resident_id} — ${selectedResident.name || "resident"}.`);
+        if(roles.length){
+          showBox(okBox,`Roles updated for ${selectedResident.resident_id}.`);
+        }else{
+          showBox(okBox,`${selectedResident.resident_id} has been unassigned and removed from the current role-holder list.`);
+        }
 
         const keepId = selectedResident.resident_id;
         await loadMembers();
 
-        const refreshed = residents.find(r => r.resident_id === keepId);
-        if(refreshed) selectResident(refreshed);
+        const refreshed = currentRoleHolders.find(r => r.resident_id === keepId);
+        if(refreshed){
+          selectResident(refreshed);
+        }
       }catch(err){
         showBox(errBox,err.message || "Could not save roles.");
-      }finally{
-        btnSaveRoles.disabled = !selectedResident;
+        btnSaveRoles.disabled = false;
       }
     }
 
     btnRefresh.addEventListener("click",loadMembers);
+    btnLoadResident.addEventListener("click",loadResidentByRef);
     btnSaveRoles.addEventListener("click",saveRoles);
+
+    addResidentRefEl.addEventListener("keydown",(e) => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        loadResidentByRef();
+      }
+    });
 
     btnLogout.addEventListener("click",() => {
       localStorage.removeItem(TOKEN_KEY);

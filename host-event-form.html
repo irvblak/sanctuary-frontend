@@ -85,6 +85,7 @@
       justify-content:center;
       gap:.35rem;
     }
+
     .member-pill{
       display:flex;
       align-items:center;
@@ -97,7 +98,9 @@
       color:var(--accent);
       font-weight:800;
       font-size:.85rem;
+      white-space:nowrap;
     }
+
     a.pill{
       background:#fff;
       color:var(--accent);
@@ -171,7 +174,7 @@
 
     .details-grid{
       display:grid;
-      grid-template-columns:1.3fr 0.6fr 1.6fr 1fr 1fr;
+      grid-template-columns:1.3fr 0.7fr 1.6fr 1fr 1fr;
       gap:.62rem;
     }
 
@@ -197,9 +200,11 @@
       background:#fff;
       outline:none;
     }
-     #hostMemberId{
-       max-width:120px;
-     }
+
+    #hostResidentId{
+      max-width:140px;
+    }
+
     textarea{
       min-height:8rem;
       resize:vertical;
@@ -387,8 +392,9 @@
 
         <div class="grid">
           <div>
-            <label for="memberId">Membership number</label>
-            <input id="memberId" autocomplete="username" placeholder="SM55" />
+            <label for="residentRef">Resident ID</label>
+            <input id="residentRef" autocomplete="username" placeholder="SM55/1" />
+            <p class="small">Use the resident-specific reference, e.g. SM55/1 or SM55/2.</p>
           </div>
           <div>
             <label for="pin">PIN</label>
@@ -408,12 +414,12 @@
 
         <div class="details-grid">
           <div>
-            <label for="hostName">Name</label>
+            <label for="hostName">Host</label>
             <input id="hostName" />
           </div>
           <div>
-            <label for="hostMemberId">Membership</label>
-            <div id="hostMemberId" class="member-pill"></div>
+            <label for="hostResidentId">Resident Ref</label>
+            <div id="hostResidentId" class="member-pill"></div>
           </div>
           <div>
             <label for="hostEmail">Email</label>
@@ -577,25 +583,47 @@
       <div id="libraryGrid" class="library-grid"></div>
     </div>
   </div>
+
 <script>
 const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
 
-function cleanText(v){ return String(v==null?"":v).trim(); }
-function baseMemberId(v){ return cleanText(v).toUpperCase().split("/")[0]; }
+function cleanText(v){ return String(v == null ? "" : v).trim(); }
+
+function baseMemberId(v){
+  const raw = cleanText(v).toUpperCase();
+  const m = raw.match(/^([A-Z]{2}\d+)/);
+  return m ? m[1] : raw.split("/")[0];
+}
+
+function cleanResidentId(v){
+  return cleanText(v).toUpperCase();
+}
+
+function residentIndexFromRef(ref){
+  const parts = cleanResidentId(ref).split("/");
+  const n = parseInt(parts[1] || "1", 10);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
+function residentIdFrom(memberId, index){
+  return `${baseMemberId(memberId)}/${index}`;
+}
 
 let editEventId = cleanText(new URLSearchParams(location.search).get("event_id") || "");
 
 const els = {
-  memberId: document.getElementById("memberId"),
+  residentRef: document.getElementById("residentRef"),
   pin: document.getElementById("pin"),
   verifyBtn: document.getElementById("verifyBtn"),
   verifyStatus: document.getElementById("verifyStatus"),
   eventForm: document.getElementById("eventForm"),
+
   hostName: document.getElementById("hostName"),
-  hostMemberId: document.getElementById("hostMemberId"),
+  hostResidentId: document.getElementById("hostResidentId"),
   hostEmail: document.getElementById("hostEmail"),
   hostMobile: document.getElementById("hostMobile"),
   hostLandline: document.getElementById("hostLandline"),
+
   title: document.getElementById("title"),
   category: document.getElementById("category"),
   eventDate: document.getElementById("eventDate"),
@@ -606,14 +634,15 @@ const els = {
   description: document.getElementById("description"),
   titleArtUrl: document.getElementById("titleArtUrl"),
   imageUrl: document.getElementById("imageUrl"),
+
   capacityTotal: document.getElementById("capacityTotal"),
-  maxPlacesPerMember: document.getElementById("maxPlacesPerMember"),
   bookingMode: document.getElementById("bookingMode"),
   membersBookingOpenAt: document.getElementById("membersBookingOpenAt"),
   guestsBookingOpenAt: document.getElementById("guestsBookingOpenAt"),
   bookingCloseAt: document.getElementById("bookingCloseAt"),
   cancellationCutoffAt: document.getElementById("cancellationCutoffAt"),
   refundCutoffAt: document.getElementById("refundCutoffAt"),
+
   saveBtn: document.getElementById("saveBtn"),
   resetBtn: document.getElementById("resetBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -622,11 +651,15 @@ const els = {
 
 let authToken = localStorage.getItem("authToken") || "";
 let verified = false;
+let verifiedResidentId = "";
+let verifiedMemberId = "";
+let verifiedResidentIndex = 1;
 
 function setStatus(el,type,msg){
   el.className = "status show " + type;
   el.textContent = msg;
 }
+
 function clearStatus(el){
   el.className = "status";
   el.textContent = "";
@@ -634,16 +667,23 @@ function clearStatus(el){
 
 function unlockForm(){
   els.eventForm.classList.remove("locked");
-}
-function getStoredMembers(){
-  try{
-    return JSON.parse(localStorage.getItem("sanctuaryMembers") || "{}");
-  }catch(_){
-    return {};
-  }
+  els.saveBtn.disabled = false;
 }
 
-function findStoredMember(memberId){
+function lockForm(){
+  els.eventForm.classList.add("locked");
+  els.saveBtn.disabled = true;
+}
+
+function pick(){
+  for (let i = 0; i < arguments.length; i++){
+    const value = cleanText(arguments[i]);
+    if (value) return value;
+  }
+  return "";
+}
+
+function getStoredMember(memberId){
   const wanted = baseMemberId(memberId);
 
   try{
@@ -653,10 +693,8 @@ function findStoredMember(memberId){
       return store[wanted];
     }
 
-    const lowerWanted = wanted.toLowerCase();
-
     for (const [key, value] of Object.entries(store || {})){
-      if (baseMemberId(key).toLowerCase() === lowerWanted){
+      if (baseMemberId(key) === wanted){
         return value || {};
       }
     }
@@ -664,140 +702,254 @@ function findStoredMember(memberId){
 
   return {};
 }
-function firstResident(profile){
-  const residents = Array.isArray(profile?.residents) ? profile.residents : [];
 
-  return residents.find(r =>
-    r && (
-      cleanText(r.name) ||
-      cleanText(r.email) ||
-      cleanText(r.mobile) ||
-      cleanText(r.landline)
-    )
-  ) || {};
-}
+function profileResidents(profile){
+  const lists = [
+    profile && profile.residents,
+    profile && profile.member && profile.member.residents,
+    profile && profile.profile && profile.profile.residents,
+    profile && profile.entry && profile.entry.residents,
+    profile && profile.directory_entry && profile.directory_entry.residents
+  ];
 
-function pick(obj, keys){
-  for (const key of keys){
-    const value = cleanText(obj && obj[key]);
-    if (value) return value;
+  for (const list of lists){
+    if (Array.isArray(list)) return list;
   }
-  return "";
+
+  return [];
 }
 
-function getHostContact(memberId, loginData){
-  const local = findStoredMember(memberId);
-  const resident = firstResident(local);
+function residentFromList(residents, index){
+  const wanted = Number(index || 1);
+
+  const exact = residents.find(r => {
+    const raw = r && (r.resident_index ?? r.idx ?? r.index ?? r.residentIndex);
+    const n = parseInt(raw, 10);
+    return Number.isFinite(n) && n === wanted;
+  });
+
+  if (exact) return exact;
+
+  return residents[wanted - 1] || null;
+}
+
+async function apiFetch(path, options = {}){
+  const res = await fetch(API_BASE + path, options);
+  const text = await res.text();
+
+  let data = {};
+  try{
+    data = text ? JSON.parse(text) : {};
+  }catch(_){
+    data = { success:false, message:text || `HTTP ${res.status}` };
+  }
+
+  if (!res.ok || data.success === false){
+    throw new Error(data.message || `Request failed (${res.status})`);
+  }
+
+  return data;
+}
+
+async function fetchMemberProfile(memberId){
+  try{
+    const data = await apiFetch(`/api/member-profile/${encodeURIComponent(baseMemberId(memberId))}`, {
+      method:"GET",
+      headers: authToken ? { "Authorization":"Bearer " + authToken } : {}
+    });
+
+    return data.profile || data.member || data.entry || data || null;
+  }catch(_){
+    return null;
+  }
+}
+
+function contactFromResident(resident, memberId, residentId){
+  resident = resident || {};
 
   return {
-    name:
-      cleanText(resident.name) ||
-      cleanText(local.primary_name) ||
-      memberId,
-
-    email:
-      cleanText(resident.email) || "",
-
-    mobile:
-      cleanText(resident.mobile) || "",
-
-    landline:
-      cleanText(resident.landline) || ""
+    name: pick(resident.name, resident.full_name, resident.display_name, residentId),
+    email: pick(resident.email, resident.email_address),
+    mobile: pick(resident.mobile, resident.phone, resident.contact_mobile),
+    landline: pick(resident.landline, resident.home_phone)
   };
 }
+
+async function getHostContact(memberId, residentIndex, residentId){
+  const profile = await fetchMemberProfile(memberId);
+  const fromProfile = residentFromList(profileResidents(profile || {}), residentIndex);
+
+  if (fromProfile){
+    return contactFromResident(fromProfile, memberId, residentId);
+  }
+
+  const local = getStoredMember(memberId);
+  const fromLocal = residentFromList(profileResidents(local || {}), residentIndex);
+
+  if (fromLocal){
+    return contactFromResident(fromLocal, memberId, residentId);
+  }
+
+  throw new Error(`Resident ${residentId} was not found in Members Information.`);
+}
+
+function getEventHostResidentId(e){
+  return cleanResidentId(
+    e.host_resident_id ||
+    e.hostResidentId ||
+    e.host_resident_ref ||
+    e.hostResidentRef ||
+    ""
+  );
+}
+
+function getEventHostMemberId(e){
+  return baseMemberId(
+    e.host_member_id ||
+    e.hostMemberId ||
+    e.member_id ||
+    e.created_by ||
+    ""
+  );
+}
+
+function canVerifiedResidentEditEvent(e){
+  const eventResidentId = getEventHostResidentId(e);
+  const eventMemberId = getEventHostMemberId(e);
+
+  if (!editEventId) return true;
+  if (localStorage.getItem("adminToken")) return true;
+
+  if (eventResidentId){
+    return eventResidentId === verifiedResidentId;
+  }
+
+  if (eventMemberId){
+    return eventMemberId === verifiedMemberId;
+  }
+
+  return true;
+}
+
 async function verifyHost(){
   clearStatus(els.verifyStatus);
+  clearStatus(els.saveStatus);
 
-  const memberId = baseMemberId(els.memberId.value);
+  const residentId = cleanResidentId(els.residentRef.value);
+  const memberId = baseMemberId(residentId);
+  const residentIndex = residentIndexFromRef(residentId);
+  const normalResidentId = residentId.includes("/") ? residentId : residentIdFrom(memberId, residentIndex);
   const pin = cleanText(els.pin.value);
 
-  if(!memberId || !pin){
-    setStatus(els.verifyStatus,"warn","Enter membership and PIN");
+  if(!normalResidentId || !memberId || !pin){
+    setStatus(els.verifyStatus,"warn","Enter Resident ID and PIN.");
+    return;
+  }
+
+  if(!normalResidentId.includes("/")){
+    setStatus(els.verifyStatus,"warn","Use a resident-specific ID such as SM55/1.");
     return;
   }
 
   try{
-    const res = await fetch(API_BASE + "/auth/login",{
+    const data = await apiFetch("/auth/login", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify({
         memberId: memberId,
-        member_id: memberId,
         pin: pin
-      }) 
+      })
     });
-
-    const data = await res.json();
-
-    if(!res.ok || data.success===false){
-      throw new Error(data.message || "Verification failed");
-    }
 
     authToken = cleanText(data.token || data.access_token || data.authToken || "");
     if (!authToken){
-     throw new Error("Verification succeeded but no login token was returned.");
+      throw new Error("Verification succeeded but no login token was returned.");
     }
-localStorage.setItem("authToken", authToken);
-    localStorage.setItem("currentMemberId",memberId);
 
-    const contact = getHostContact(memberId, data);
+    localStorage.setItem("authToken", authToken);
+    localStorage.setItem("currentMemberId", memberId);
+    localStorage.setItem("currentResidentId", normalResidentId);
 
-    els.hostMemberId.textContent = memberId;
-    els.hostName.value = contact.name || memberId;
+    verified = true;
+    verifiedMemberId = memberId;
+    verifiedResidentIndex = residentIndex;
+    verifiedResidentId = normalResidentId;
+
+    const contact = await getHostContact(memberId, residentIndex, normalResidentId);
+
+    els.hostResidentId.textContent = normalResidentId;
+    els.hostName.value = contact.name || normalResidentId;
     els.hostEmail.value = contact.email || "";
     els.hostMobile.value = contact.mobile || "";
     els.hostLandline.value = contact.landline || "";
-    verified = true;
+
     unlockForm();
+    setStatus(els.verifyStatus,"ok",`Verified as ${normalResidentId}.`);
 
-    setStatus(els.verifyStatus,"ok","Verified");
-
-    if(editEventId) loadEvent();
+    if(editEventId){
+      await loadEvent();
+    }
 
   }catch(err){
-    setStatus(els.verifyStatus,"err",err.message);
+    verified = false;
+    lockForm();
+    setStatus(els.verifyStatus,"err",err.message || "Verification failed.");
   }
 }
 
 async function loadEvent(){
   try{
-    const res = await fetch(API_BASE + "/api/events/" + editEventId);
-    const data = await res.json();
+    const data = await apiFetch("/api/events/" + encodeURIComponent(editEventId));
+    const e = data.event || data || {};
 
-    if(!res.ok || data.success===false) return;
+    if(!canVerifiedResidentEditEvent(e)){
+      lockForm();
+      setStatus(
+        els.verifyStatus,
+        "err",
+        "This Event Notice is tied to a different host resident. Please verify as that resident, or ask Admin to make the change."
+      );
+      return;
+    }
 
-    const e = data.event;
-
-    els.title.value = e.title || "";
-    els.category.value = e.category_label || "";
-    els.eventDate.value = e.event_date || "";
-    els.venue.value = e.location || "";
+    els.title.value = e.title || e.notice_title || "";
+    els.category.value = e.category_label || e.category || "";
+    els.eventDate.value = e.event_date || e.date || "";
+    els.venue.value = e.location || e.venue || "";
     els.startTime.value = e.start_time || "";
     els.endTime.value = e.end_time || "";
-    els.summary.value = e.notice_summary || "";
-    els.description.value = e.notice_body || "";
+    els.summary.value = e.notice_summary || e.summary || "";
+    els.description.value = e.notice_body || e.body || e.description || "";
     els.titleArtUrl.value = e.title_art_url || "";
-    els.imageUrl.value = e.image_url || "";
+    els.imageUrl.value = e.image_url || e.notice_image_url || "";
 
-    els.capacityTotal.value = e.capacity_total || "";
+    els.capacityTotal.value = e.capacity_total || e.capacity || "";
+    els.bookingMode.value = e.booking_mode || "";
     els.membersBookingOpenAt.value = e.members_booking_open_at || "";
     els.guestsBookingOpenAt.value = e.guests_booking_open_at || "";
     els.bookingCloseAt.value = e.booking_close_at || "";
     els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
     els.refundCutoffAt.value = e.refund_cutoff_at || "";
-    els.hostEmail.value = e.host_email || "";
-    els.hostMobile.value = e.host_mobile || "";
-    els.hostLandline.value = e.host_landline || "";
 
-    els.viewNoticeLink.href = "events-details.html?event_id=" + editEventId;
+    els.hostName.value = e.host_name || els.hostName.value || "";
+    els.hostEmail.value = e.host_email || els.hostEmail.value || "";
+    els.hostMobile.value = e.host_mobile || els.hostMobile.value || "";
+    els.hostLandline.value = e.host_landline || els.hostLandline.value || "";
+
+    if (e.host_resident_id){
+      els.hostResidentId.textContent = e.host_resident_id;
+    }
+
+    els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(editEventId);
     els.viewNoticeLink.style.display = "inline-flex";
 
-  }catch{}
+  }catch(err){
+    setStatus(els.verifyStatus,"err",err.message || "Could not load Event Notice.");
+  }
 }
 
 function buildPayload(){
   const category = cleanText(els.category.value);
-  const hostId = baseMemberId(els.hostMemberId.textContent);
 
   return {
     event_id: editEventId,
@@ -820,22 +972,25 @@ function buildPayload(){
     title_art_url: cleanText(els.titleArtUrl.value),
     image_url: cleanText(els.imageUrl.value),
 
-    host_member_id: hostId,
+    host_resident_id: verifiedResidentId,
+    host_member_id: verifiedMemberId,
+    host_resident_index: verifiedResidentIndex,
+
     host_name: cleanText(els.hostName.value),
     host_email: cleanText(els.hostEmail.value),
     host_mobile: cleanText(els.hostMobile.value),
     host_landline: cleanText(els.hostLandline.value),
 
-   capacity_total: parseInt(els.capacityTotal.value)||0,
-capacity: parseInt(els.capacityTotal.value)||0,
-max_places_per_member: 0,
-booking_mode: cleanText(els.bookingMode.value),
+    capacity_total: parseInt(els.capacityTotal.value) || 0,
+    capacity: parseInt(els.capacityTotal.value) || 0,
+    max_places_per_member: 0,
+    booking_mode: cleanText(els.bookingMode.value),
 
-members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
-guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
-booking_close_at: cleanText(els.bookingCloseAt.value),
-cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
-refund_cutoff_at: cleanText(els.refundCutoffAt.value)
+    members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
+    guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
+    booking_close_at: cleanText(els.bookingCloseAt.value),
+    cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
+    refund_cutoff_at: cleanText(els.refundCutoffAt.value)
   };
 }
 
@@ -843,65 +998,69 @@ async function saveEvent(e){
   e.preventDefault();
   clearStatus(els.saveStatus);
 
-  if(!verified){
-    setStatus(els.saveStatus,"warn","Verify host first");
+  if(!verified || !verifiedResidentId){
+    setStatus(els.saveStatus,"warn","Verify host resident first.");
     return;
   }
 
   const payload = buildPayload();
 
   if(!payload.title || !payload.event_date || !payload.category){
-    setStatus(els.saveStatus,"warn","Title, date, category required");
+    setStatus(els.saveStatus,"warn","Title, date and category are required.");
     return;
   }
 
   try{
-    const res = await fetch(
-      API_BASE + "/api/events" + (editEventId?"/"+editEventId:""),
+    els.saveBtn.disabled = true;
+
+    const data = await apiFetch(
+      "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
       {
         method: editEventId ? "PUT" : "POST",
         headers:{
           "Content-Type":"application/json",
-          "Authorization":"Bearer "+authToken
+          "Authorization":"Bearer " + authToken
         },
         body:JSON.stringify(payload)
       }
     );
 
-    const data = await res.json();
-
-    if(!res.ok || data.success===false){
-      throw new Error(data.message || "Save failed");
-    }
-
-    const id = data.event?.event_id || editEventId;
+    const id = data.event?.event_id || data.event_id || editEventId;
 
     if(id){
       editEventId = id;
-      history.replaceState(null,"","?event_id="+id);
-      els.viewNoticeLink.href = "events-details.html?event_id="+id;
-      els.viewNoticeLink.style.display="inline-flex";
+      history.replaceState(null,"","?event_id=" + encodeURIComponent(id));
+      els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(id);
+      els.viewNoticeLink.style.display = "inline-flex";
     }
 
-    setStatus(els.saveStatus,"ok","Saved");
+    setStatus(els.saveStatus,"ok","Event Notice saved.");
 
   }catch(err){
-    setStatus(els.saveStatus,"err",err.message);
+    setStatus(els.saveStatus,"err",err.message || "Save failed.");
+  }finally{
+    els.saveBtn.disabled = false;
   }
 }
 
 function resetForm(){
-  els.title.value="";
-  els.category.value="";
-  els.eventDate.value="";
-  els.venue.value="";
-  els.startTime.value="";
-  els.endTime.value="";
-  els.summary.value="";
-  els.description.value="";
-  els.titleArtUrl.value="";
-  els.imageUrl.value="";
-  els.capacityTotal.value="";
+  els.title.value = "";
+  els.category.value = "";
+  els.eventDate.value = "";
+  els.venue.value = "";
+  els.startTime.value = "";
+  els.endTime.value = "";
+  els.summary.value = "";
+  els.description.value = "";
+  els.titleArtUrl.value = "";
+  els.imageUrl.value = "";
+  els.capacityTotal.value = "";
+  els.bookingMode.value = "";
+  els.membersBookingOpenAt.value = "";
+  els.guestsBookingOpenAt.value = "";
+  els.bookingCloseAt.value = "";
+  els.cancellationCutoffAt.value = "";
+  els.refundCutoffAt.value = "";
 }
 
 const LIB = {
@@ -910,16 +1069,17 @@ const LIB = {
 };
 
 function openLib(kind,targetId){
-  const modal=document.getElementById("libraryModal");
-  const grid=document.getElementById("libraryGrid");
-  grid.innerHTML="";
+  const modal = document.getElementById("libraryModal");
+  const grid = document.getElementById("libraryGrid");
+  grid.innerHTML = "";
 
-  LIB[kind].forEach(p=>{
-    const b=document.createElement("button");
-    b.className="library-card";
-    b.innerHTML=`<img src="${p}"><span>${p}</span>`;
-    b.onclick=()=>{
-      document.getElementById(targetId).value=p;
+  (LIB[kind] || []).forEach(p => {
+    const b = document.createElement("button");
+    b.className = "library-card";
+    b.type = "button";
+    b.innerHTML = `<img src="${p}" alt=""><span>${p}</span>`;
+    b.onclick = () => {
+      document.getElementById(targetId).value = p;
       modal.classList.remove("show");
     };
     grid.appendChild(b);
@@ -928,21 +1088,28 @@ function openLib(kind,targetId){
   modal.classList.add("show");
 }
 
-document.querySelectorAll("[data-library-target]").forEach(btn=>{
-  btn.onclick=()=>openLib(btn.dataset.libraryKind,btn.dataset.libraryTarget);
+document.querySelectorAll("[data-library-target]").forEach(btn => {
+  btn.onclick = () => openLib(btn.dataset.libraryKind, btn.dataset.libraryTarget);
 });
 
-document.getElementById("libraryCloseBtn").onclick=()=>{
+document.getElementById("libraryCloseBtn").onclick = () => {
   document.getElementById("libraryModal").classList.remove("show");
 };
 
-els.verifyBtn.onclick=verifyHost;
-els.eventForm.onsubmit=saveEvent;
-els.resetBtn.onclick=resetForm;
+els.verifyBtn.onclick = verifyHost;
+els.eventForm.onsubmit = saveEvent;
+els.resetBtn.onclick = resetForm;
 
-if(localStorage.getItem("currentMemberId")){
-  els.memberId.value = localStorage.getItem("currentMemberId");
+const storedResident = localStorage.getItem("currentResidentId") || "";
+const storedMember = localStorage.getItem("currentMemberId") || "";
+
+if(storedResident){
+  els.residentRef.value = storedResident;
+}else if(storedMember){
+  els.residentRef.value = residentIdFrom(storedMember, 1);
 }
+
+lockForm();
 </script>
 </body>
 </html>

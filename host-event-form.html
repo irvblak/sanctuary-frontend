@@ -774,7 +774,7 @@ function contactFromResident(resident, memberId, residentId){
     landline: pick(resident.landline, resident.home_phone)
   };
 }
-
+  
 async function getHostContact(memberId, residentIndex, residentId){
   const profile = await fetchMemberProfile(memberId);
   const fromProfile = residentFromList(profileResidents(profile || {}), residentIndex);

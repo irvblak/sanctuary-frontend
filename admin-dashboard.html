@@ -156,14 +156,19 @@
       </div>
 
       <div class="footer-row">
-        <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
-        <a class="home-link" href="members-info.html">Members Hub</a>
-        <a class="home-link" href="index.html">Home</a>
-      </div>
-    </div>
-  </div>
+  <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
+  <a class="home-link" href="members-info.html">Members Hub</a>
+  <a class="home-link" href="index.html">Home</a>
+</div>
+</div>
+</div>
 
-  <!-- Logout handler (centralised) -->
-  
- </body>
+<script>
+  document.getElementById("logoutBtn")?.addEventListener("click", function () {
+    localStorage.removeItem("adminToken");
+    window.location.replace("admin-login.html");
+  });
+</script>
+
+</body>
 </html>

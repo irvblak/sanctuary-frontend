@@ -4,18 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Admin access guard (must be in <head>) -->
- <script>
-  (function () {
-    const token = localStorage.getItem("adminToken");
-    
-    if (!token) {
-      window.location.replace("admin-login.html");
-    }
-  })();
-</script>
-
-  <title>Admin Dashboard — Sanctuary Club</title>
+    <title>Admin Dashboard — Sanctuary Club</title>
 
   <link rel="stylesheet" href="styles-main.css?v=ADMIN_3" />
 

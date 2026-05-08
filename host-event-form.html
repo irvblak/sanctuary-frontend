@@ -811,6 +811,13 @@ function contactFromResident(resident, memberId, residentId){
   
 async function getHostContact(memberId, residentIndex, residentId){
   const profile = await fetchMemberProfile(memberId);
+  console.log("CEN profile lookup", {
+  memberId,
+  residentId,
+  residentIndex,
+  profile,
+  residents: profileResidents(profile || {})
+});
   const fromProfile = residentFromList(profileResidents(profile || {}), residentIndex);
 
   if (fromProfile){

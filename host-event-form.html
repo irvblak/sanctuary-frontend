@@ -860,7 +860,7 @@ async function verifyHost(){
        residentId: normalResidentId,
        pin: pin
      })
-
+});
     authToken = cleanText(data.token || data.access_token || data.authToken || "");
     if (!authToken){
       throw new Error("Verification succeeded but no login token was returned.");

@@ -931,10 +931,20 @@ async function loadEvent(){
     els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
     els.refundCutoffAt.value = e.refund_cutoff_at || "";
 
-    els.hostName.value = e.host_name || els.hostName.value || "";
-    els.hostEmail.value = e.host_email || els.hostEmail.value || "";
-    els.hostMobile.value = e.host_mobile || els.hostMobile.value || "";
-    els.hostLandline.value = e.host_landline || els.hostLandline.value || "";
+    // Do not let old saved event data overwrite freshly verified YI contact details.
+    // Only use saved host fields if verification has not already filled them.
+    if (!els.hostName.value){
+      els.hostName.value = e.host_name || "";
+    }
+    if (!els.hostEmail.value){
+      els.hostEmail.value = e.host_email || "";
+    }
+    if (!els.hostMobile.value){
+      els.hostMobile.value = e.host_mobile || "";
+    }
+    if (!els.hostLandline.value){
+      els.hostLandline.value = e.host_landline || "";
+    }
 
     if (e.host_resident_id){
       els.hostResidentId.textContent = e.host_resident_id;

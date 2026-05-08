@@ -768,10 +768,44 @@ function contactFromResident(resident, memberId, residentId){
   resident = resident || {};
 
   return {
-    name: pick(resident.name, resident.full_name, resident.display_name, residentId),
-    email: pick(resident.email, resident.email_address),
-    mobile: pick(resident.mobile, resident.phone, resident.contact_mobile),
-    landline: pick(resident.landline, resident.home_phone)
+    name: pick(
+      resident.name,
+      resident.full_name,
+      resident.fullName,
+      resident.resident_name,
+      resident.residentName,
+      resident.display_name,
+      resident.displayName,
+      resident.first_name && resident.last_name ? `${resident.first_name} ${resident.last_name}` : "",
+      resident.firstName && resident.lastName ? `${resident.firstName} ${resident.lastName}` : "",
+      residentId
+    ),
+    email: pick(
+      resident.email,
+      resident.email_address,
+      resident.emailAddress,
+      resident.contact_email,
+      resident.contactEmail
+    ),
+    mobile: pick(
+      resident.mobile,
+      resident.mobile_phone,
+      resident.mobilePhone,
+      resident.phone,
+      resident.phone_mobile,
+      resident.contact_mobile,
+      resident.contactMobile
+    ),
+    landline: pick(
+      resident.landline,
+      resident.landline_phone,
+      resident.landlinePhone,
+      resident.home_phone,
+      resident.homePhone,
+      resident.phone_home,
+      resident.contact_landline,
+      resident.contactLandline
+    )
   };
 }
   

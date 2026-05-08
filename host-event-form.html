@@ -896,11 +896,20 @@ async function verifyHost(){
        pin: pin
      })
 });
-    authToken = cleanText(data.token || data.access_token || data.authToken || "");
+        authToken = cleanText(data.token || data.access_token || data.authToken || "");
     if (!authToken){
       throw new Error("Verification succeeded but no login token was returned.");
     }
 
+    const roles = Array.isArray(data.member && data.member.roles)
+      ? data.member.roles
+      : [];
+
+    const canHost = roles.includes("admin") || roles.includes("host");
+
+    if (!canHost){
+      throw new Error("Host or admin authority is required to create an Event Notice.");
+    }
     localStorage.setItem("authToken", authToken);
     localStorage.setItem("currentMemberId", memberId);
     localStorage.setItem("currentResidentId", normalResidentId);

@@ -720,6 +720,43 @@ function profileResidents(profile){
 }
 
 function residentFromList(residents, index){
+  function residentFromListByRef(residents, residentId, index){
+  const wantedRef = cleanResidentId(residentId);
+  const wantedIndex = Number(index || residentIndexFromRef(wantedRef) || 1);
+
+  if (!Array.isArray(residents)) return null;
+
+  const exactRef = residents.find(r => {
+    const rid = cleanResidentId(
+      r && (
+        r.resident_id ||
+        r.residentId ||
+        r.resident_ref ||
+        r.residentRef ||
+        r.id ||
+        ""
+      )
+    );
+    return rid && rid === wantedRef;
+  });
+
+  if (exactRef) return exactRef;
+
+  const exactIndex = residents.find(r => {
+    const raw = r && (
+      r.resident_index ??
+      r.residentIndex ??
+      r.idx ??
+      r.index
+    );
+    const n = parseInt(raw, 10);
+    return Number.isFinite(n) && n === wantedIndex;
+  });
+
+  if (exactIndex) return exactIndex;
+
+  return residents[wantedIndex - 1] || null;
+}
   const wanted = Number(index || 1);
 
   const exact = residents.find(r => {
@@ -819,7 +856,7 @@ async function getHostContact(memberId, residentIndex, residentId){
   }
 
   const local = getStoredMember(memberId);
-  const fromLocal = residentFromList(profileResidents(local || {}), residentIndex);
+  const fromLocal = residentFromListByRef(profileResidents(local || {}), residentId, residentIndex);
 
   if (fromLocal){
     return contactFromResident(fromLocal, memberId, residentId);

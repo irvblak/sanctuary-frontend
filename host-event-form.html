@@ -856,10 +856,10 @@ async function verifyHost(){
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify({
-        memberId: memberId,
-        pin: pin
-      })
-    });
+       memberId: memberId,
+       residentId: normalResidentId,
+       pin: pin
+     })
 
     authToken = cleanText(data.token || data.access_token || data.authToken || "");
     if (!authToken){

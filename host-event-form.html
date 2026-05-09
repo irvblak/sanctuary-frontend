@@ -1105,6 +1105,12 @@ async function saveEvent(e){
   try{
     els.saveBtn.disabled = true;
 
+    const dateWarning = validateDateConsistency();
+if (dateWarning){
+  setStatus(els.saveStatus, "warn", dateWarning);
+  return;
+}
+
     const data = await apiFetch(
       "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
       {

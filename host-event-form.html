@@ -769,18 +769,7 @@ function residentFromListByRef(residents, residentId, index){
 
   return residents[wantedIndex - 1] || null;
 }
-  const wanted = Number(index || 1);
-
-  const exact = residents.find(r => {
-    const raw = r && (r.resident_index ?? r.idx ?? r.index ?? r.residentIndex);
-    const n = parseInt(raw, 10);
-    return Number.isFinite(n) && n === wanted;
-  });
-
-  if (exact) return exact;
-
-  return residents[wanted - 1] || null;
-}
+  
 
 async function apiFetch(path, options = {}){
   const res = await fetch(API_BASE + path, options);

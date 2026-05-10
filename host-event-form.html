@@ -1086,6 +1086,57 @@ function buildPayload(){
   };
 }
 
+function asDateTimeValue(v){
+  const raw = cleanText(v);
+  if (!raw) return 0;
+
+  const d = new Date(raw);
+  const t = d.getTime();
+
+  return Number.isFinite(t) ? t : 0;
+}
+
+function validateDateConsistency(){
+  const eventDate = cleanText(els.eventDate.value);
+  const startTime = cleanText(els.startTime.value);
+
+  const eventStart = eventDate
+    ? asDateTimeValue(eventDate + "T" + (startTime || "00:00"))
+    : 0;
+
+  const membersOpen = asDateTimeValue(els.membersBookingOpenAt.value);
+  const guestsOpen = asDateTimeValue(els.guestsBookingOpenAt.value);
+  const bookingClose = asDateTimeValue(els.bookingCloseAt.value);
+  const cancellationCutoff = asDateTimeValue(els.cancellationCutoffAt.value);
+  const refundCutoff = asDateTimeValue(els.refundCutoffAt.value);
+
+  if (membersOpen && guestsOpen && guestsOpen < membersOpen){
+    return "Guest booking opens before members booking opens. Please check the dates.";
+  }
+
+  if (membersOpen && bookingClose && bookingClose < membersOpen){
+    return "Booking closes before members booking opens. Please check the dates.";
+  }
+
+  if (guestsOpen && bookingClose && bookingClose < guestsOpen){
+    return "Booking closes before guest booking opens. Please check the dates.";
+  }
+
+  if (bookingClose && eventStart && bookingClose > eventStart){
+    return "Booking closes after the event begins. Please check the dates.";
+  }
+
+  if (cancellationCutoff && eventStart && cancellationCutoff > eventStart){
+    return "Cancellation cutoff is after the event begins. Please check the dates.";
+  }
+
+  if (refundCutoff && eventStart && refundCutoff > eventStart){
+    return "Refund cutoff is after the event begins. Please check the dates.";
+  }
+
+  return "";
+}
+  
 async function saveEvent(e){
   e.preventDefault();
   clearStatus(els.saveStatus);

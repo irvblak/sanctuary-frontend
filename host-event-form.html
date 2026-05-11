@@ -101,11 +101,16 @@
       white-space:nowrap;
     }
 
-    a.pill{
+    a.pill,
+    button.pill{
       background:#fff;
       color:var(--accent);
       border:1px solid var(--line);
       box-shadow:0 8px 18px rgba(36,93,139,.1);
+    }
+
+    button.pill{
+      min-height:2.25rem;
     }
 
     button.primary{
@@ -129,7 +134,7 @@
       display:grid;
       grid-template-columns:1fr 2fr;
       gap:1rem;
-      align-items:start;
+      align-items:stretch;
       margin-bottom:1rem;
     }
 
@@ -151,6 +156,22 @@
       font-size:1.12rem;
     }
 
+    .section-head{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:baseline;
+      gap:.65rem;
+      margin-bottom:.55rem;
+    }
+
+    .section-head h2{
+      margin:0;
+    }
+
+    .section-head .help{
+      margin:0;
+    }
+
     .help{
       margin:.15rem 0 .75rem;
       color:var(--muted);
@@ -158,8 +179,11 @@
       line-height:1.35;
     }
 
-    .top-grid .help{
-      display:none;
+    .compact-verify{
+      display:grid;
+      grid-template-columns:minmax(9rem,11rem) minmax(9rem,11rem) auto;
+      gap:.55rem;
+      align-items:end;
     }
 
     .grid{
@@ -168,14 +192,33 @@
       gap:.68rem;
     }
 
-    .grid.three{
-      grid-template-columns:repeat(3,minmax(0,1fr));
-    }
-
     .details-grid{
       display:grid;
-      grid-template-columns:1.3fr 0.7fr 1.6fr 1fr 1fr;
+      grid-template-columns:1.3fr .7fr 1.6fr 1fr 1fr;
       gap:.62rem;
+    }
+
+    .event-grid{
+      display:grid;
+      grid-template-columns:repeat(12,minmax(0,1fr));
+      gap:.68rem;
+      align-items:end;
+    }
+
+    .event-title{grid-column:span 6}
+    .event-venue{grid-column:span 6}
+    .event-category{grid-column:span 4}
+    .event-date{grid-column:span 4}
+    .event-time{grid-column:span 2}
+    .event-summary{grid-column:1 / -1}
+    .event-body{grid-column:1 / -1}
+    .event-path{grid-column:span 6}
+
+    .space-grid{
+      display:grid;
+      grid-template-columns:4.5rem repeat(5,minmax(9.4rem,1fr));
+      gap:.5rem;
+      align-items:end;
     }
 
     .full{grid-column:1 / -1}
@@ -186,6 +229,7 @@
       font-size:.86rem;
       font-weight:800;
       color:#244962;
+      white-space:nowrap;
     }
 
     input,
@@ -203,6 +247,25 @@
 
     #hostResidentId{
       max-width:140px;
+    }
+
+    #capacityTotal{
+      text-align:center;
+      padding-left:.35rem;
+      padding-right:.35rem;
+    }
+
+    input[type="time"]{
+      min-width:7rem;
+    }
+
+    input[type="date"]{
+      min-width:10rem;
+    }
+
+    input[type="datetime-local"]{
+      min-width:9.4rem;
+      font-size:.92rem;
     }
 
     textarea{
@@ -350,12 +413,28 @@
       line-height:1.25;
     }
 
+    @media (max-width:1050px){
+      .space-grid{
+        grid-template-columns:5rem repeat(2,minmax(0,1fr));
+      }
+    }
+
     @media (max-width:920px){
       .top-grid,
       .details-grid,
       .grid,
-      .grid.three{
+      .compact-verify,
+      .space-grid{
         grid-template-columns:1fr;
+      }
+
+      .event-title,
+      .event-venue,
+      .event-category,
+      .event-date,
+      .event-time,
+      .event-path{
+        grid-column:1 / -1;
       }
 
       header{
@@ -374,15 +453,14 @@
     <header>
       <div>
         <h1 id="pageTitle">Create Event Notice</h1>
-        <p class="subtitle">
+        <p class="subtitle" id="pageSubtitle">
           Create or edit an Event Notice for the Sanctuary Club calendar, list view and notice page.
         </p>
       </div>
 
       <nav class="nav" aria-label="Page links">
         <a class="pill" href="members-info.html">Members Hub</a>
-        <a class="pill" href="events-calendar.html">Calendar</a>
-        <a class="pill" href="events.html">Events List</a>
+        <button class="pill" id="logoutBtn" type="button">Logout</button>
       </nav>
     </header>
 
@@ -390,31 +468,29 @@
       <section class="card">
         <h2>Host verification</h2>
 
-        <div class="grid">
+        <div class="compact-verify">
           <div>
             <label for="residentRef">Resident ID</label>
-            <input id="residentRef" autocomplete="username" placeholder="SM55/1" />
-            <p class="small">Use the resident-specific reference, e.g. SM55/1 or SM55/2.</p>
+            <input id="residentRef" autocomplete="username" placeholder="e.g. SM55XX/1" />
           </div>
           <div>
-            <label for="pin">PIN</label>
+            <label for="pin">Membership PIN</label>
             <input id="pin" type="password" autocomplete="current-password" inputmode="numeric" />
           </div>
-        </div>
-
-        <div class="actions">
-          <button class="primary" id="verifyBtn" type="button">Verify host</button>
+          <div>
+            <button class="primary" id="verifyBtn" type="button">Verify host</button>
+          </div>
         </div>
 
         <div id="verifyStatus" class="status"></div>
       </section>
 
       <section class="card">
-        <h2>Details shown on notice</h2>
+        <h2>Host details shown on notice</h2>
 
         <div class="details-grid">
           <div>
-            <label for="hostName">Host</label>
+            <label for="hostName">Name</label>
             <input id="hostName" />
           </div>
           <div>
@@ -441,13 +517,18 @@
       <section class="card">
         <h2>Event Notice</h2>
 
-        <div class="grid">
-          <div>
+        <div class="event-grid">
+          <div class="event-title">
             <label for="title">Event title</label>
             <input id="title" required />
           </div>
 
-          <div>
+          <div class="event-venue">
+            <label for="venue">Venue / location</label>
+            <input id="venue" />
+          </div>
+
+          <div class="event-category">
             <label for="category">Category</label>
             <select id="category" required>
               <option value="">Choose category</option>
@@ -462,37 +543,32 @@
             </select>
           </div>
 
-          <div>
-            <label for="eventDate">Date</label>
+          <div class="event-date">
+            <label for="eventDate">Date (or when Event begins)</label>
             <input id="eventDate" type="date" required />
           </div>
 
-          <div>
-            <label for="venue">Venue / location</label>
-            <input id="venue" />
-          </div>
-
-          <div>
+          <div class="event-time">
             <label for="startTime">Start time</label>
             <input id="startTime" type="time" />
           </div>
 
-          <div>
+          <div class="event-time">
             <label for="endTime">End time</label>
             <input id="endTime" type="time" />
           </div>
 
-          <div class="full">
+          <div class="event-summary">
             <label for="summary">Short summary</label>
             <input id="summary" maxlength="180" />
           </div>
 
-          <div class="full">
+          <div class="event-body">
             <label for="description">Notice wording</label>
             <textarea id="description"></textarea>
           </div>
 
-          <div>
+          <div class="event-path">
             <label for="titleArtUrl">Title art / logo path</label>
             <div class="path-row">
               <input id="titleArtUrl" placeholder="images/..." />
@@ -503,7 +579,7 @@
             <p class="small">Choose from the title-art library, or enter a known image path.</p>
           </div>
 
-          <div>
+          <div class="event-path">
             <label for="imageUrl">Image / poster path</label>
             <div class="path-row">
               <input id="imageUrl" placeholder="images/..." />
@@ -517,22 +593,15 @@
       </section>
 
       <section class="card">
-        <h2>Booking / interest settings</h2>
-        <p class="help">Leave blank if this notice does not require booking or registration.</p>
+        <div class="section-head">
+          <h2>Space &amp; Dates</h2>
+          <p class="help">Leave blank if these details are not needed for this notice.</p>
+        </div>
 
-        <div class="grid three">
+        <div class="space-grid">
           <div>
-            <label for="capacityTotal">Total capacity</label>
-            <input id="capacityTotal" type="number" min="0" step="1" />
-          </div>
-
-          <div>
-            <label for="bookingMode">Booking mode</label>
-            <select id="bookingMode">
-              <option value="">No booking needed</option>
-              <option value="booking">Book places</option>
-              <option value="interest">Register interest</option>
-            </select>
+            <label for="capacityTotal">Places</label>
+            <input id="capacityTotal" type="number" min="0" max="999" step="1" inputmode="numeric" />
           </div>
 
           <div>
@@ -612,6 +681,10 @@ function residentIdFrom(memberId, index){
 let editEventId = cleanText(new URLSearchParams(location.search).get("event_id") || "");
 
 const els = {
+  pageTitle: document.getElementById("pageTitle"),
+  pageSubtitle: document.getElementById("pageSubtitle"),
+  logoutBtn: document.getElementById("logoutBtn"),
+
   residentRef: document.getElementById("residentRef"),
   pin: document.getElementById("pin"),
   verifyBtn: document.getElementById("verifyBtn"),
@@ -636,7 +709,6 @@ const els = {
   imageUrl: document.getElementById("imageUrl"),
 
   capacityTotal: document.getElementById("capacityTotal"),
-  bookingMode: document.getElementById("bookingMode"),
   membersBookingOpenAt: document.getElementById("membersBookingOpenAt"),
   guestsBookingOpenAt: document.getElementById("guestsBookingOpenAt"),
   bookingCloseAt: document.getElementById("bookingCloseAt"),
@@ -719,19 +791,6 @@ function profileResidents(profile){
   return [];
 }
 
-function residentFromList(residents, index){
-  const wanted = Number(index || 1);
-
-  const exact = residents.find(r => {
-    const raw = r && (r.resident_index ?? r.idx ?? r.index ?? r.residentIndex);
-    const n = parseInt(raw, 10);
-    return Number.isFinite(n) && n === wanted;
-  });
-
-  if (exact) return exact;
-
-  return residents[wanted - 1] || null;
-}
 function residentFromListByRef(residents, residentId, index){
   const wantedRef = cleanResidentId(residentId);
   const wantedIndex = Number(index || residentIndexFromRef(wantedRef) || 1);
@@ -769,7 +828,6 @@ function residentFromListByRef(residents, residentId, index){
 
   return residents[wantedIndex - 1] || null;
 }
-  
 
 async function apiFetch(path, options = {}){
   const res = await fetch(API_BASE + path, options);
@@ -846,11 +904,10 @@ function contactFromResident(resident, memberId, residentId){
     )
   };
 }
-  
+
 async function getHostContact(memberId, residentIndex, residentId){
   const profile = await fetchMemberProfile(memberId);
-  console.table(profileResidents(profile || {}));
-  const fromProfile = residentFromList(profileResidents(profile || {}), residentIndex);
+  const fromProfile = residentFromListByRef(profileResidents(profile || {}), residentId, residentIndex);
 
   if (fromProfile){
     return contactFromResident(fromProfile, memberId, residentId);
@@ -904,6 +961,75 @@ function canVerifiedResidentEditEvent(e){
   return true;
 }
 
+function asDateTimeValue(v){
+  const raw = cleanText(v);
+  if (!raw) return 0;
+  const d = new Date(raw);
+  const t = d.getTime();
+  return Number.isFinite(t) ? t : 0;
+}
+
+function validateDateConsistency(){
+  const eventDate = cleanText(els.eventDate.value);
+  const startTime = cleanText(els.startTime.value);
+  const eventStart = eventDate ? asDateTimeValue(eventDate + "T" + (startTime || "00:00")) : 0;
+
+  const membersOpen = asDateTimeValue(els.membersBookingOpenAt.value);
+  const guestsOpen = asDateTimeValue(els.guestsBookingOpenAt.value);
+  const bookingClose = asDateTimeValue(els.bookingCloseAt.value);
+  const cancellationCutoff = asDateTimeValue(els.cancellationCutoffAt.value);
+  const refundCutoff = asDateTimeValue(els.refundCutoffAt.value);
+
+  if (membersOpen && guestsOpen && guestsOpen < membersOpen){
+    return "Guest booking opens before members booking opens. Please check the dates.";
+  }
+
+  if (membersOpen && bookingClose && bookingClose < membersOpen){
+    return "Booking closes before members booking opens. Please check the dates.";
+  }
+
+  if (guestsOpen && bookingClose && bookingClose < guestsOpen){
+    return "Booking closes before guest booking opens. Please check the dates.";
+  }
+
+  if (bookingClose && eventStart && bookingClose > eventStart){
+    return "Booking closes after the event begins. Please check the dates.";
+  }
+
+  if (cancellationCutoff && eventStart && cancellationCutoff > eventStart){
+    return "Cancellation cutoff is after the event begins. Please check the dates.";
+  }
+
+  if (refundCutoff && eventStart && refundCutoff > eventStart){
+    return "Refund cutoff is after the event begins. Please check the dates.";
+  }
+
+  return "";
+}
+
+function logout(){
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("currentMemberId");
+  localStorage.removeItem("currentResidentId");
+  localStorage.removeItem("adminToken");
+  sessionStorage.removeItem("sanctuaryAccess");
+  sessionStorage.removeItem("sanctuaryAccessTime");
+  sessionStorage.removeItem("sanctuaryAccessUntil");
+  sessionStorage.removeItem("sanctuaryMDAccess");
+  sessionStorage.removeItem("sanctuaryMDAccessTime");
+  sessionStorage.removeItem("adminGate");
+  sessionStorage.removeItem("adminGateTime");
+  window.location.href = "index.html";
+}
+
+function setEditModeText(){
+  if (!editEventId) return;
+  document.title = "Edit Event Notice | Sanctuary Club";
+  els.pageTitle.textContent = "Edit Event Notice";
+  els.pageSubtitle.textContent = "Edit this Event Notice. Saving here updates the Notice, Calendar and Events List.";
+  els.saveBtn.textContent = "Update Event Notice";
+}
+
 async function verifyHost(){
   clearStatus(els.verifyStatus);
   clearStatus(els.saveStatus);
@@ -915,7 +1041,7 @@ async function verifyHost(){
   const pin = cleanText(els.pin.value);
 
   if(!normalResidentId || !memberId || !pin){
-    setStatus(els.verifyStatus,"warn","Enter Resident ID and PIN.");
+    setStatus(els.verifyStatus,"warn","Enter Resident ID and Membership PIN.");
     return;
   }
 
@@ -933,8 +1059,9 @@ async function verifyHost(){
        residentId: normalResidentId,
        pin: pin
      })
-});
-        authToken = cleanText(data.token || data.access_token || data.authToken || "");
+    });
+
+    authToken = cleanText(data.token || data.access_token || data.authToken || "");
     if (!authToken){
       throw new Error("Verification succeeded but no login token was returned.");
     }
@@ -946,8 +1073,9 @@ async function verifyHost(){
     const canHost = roles.includes("admin") || roles.includes("host");
 
     if (!canHost){
-      throw new Error("Host or admin authority is required to create an Event Notice.");
+      throw new Error("Host or admin authority is required to create or edit an Event Notice.");
     }
+
     localStorage.setItem("authToken", authToken);
     localStorage.setItem("currentMemberId", memberId);
     localStorage.setItem("currentResidentId", normalResidentId);
@@ -1006,15 +1134,12 @@ async function loadEvent(){
     els.imageUrl.value = e.image_url || e.notice_image_url || "";
 
     els.capacityTotal.value = e.capacity_total || e.capacity || "";
-    els.bookingMode.value = e.booking_mode || "";
     els.membersBookingOpenAt.value = e.members_booking_open_at || "";
     els.guestsBookingOpenAt.value = e.guests_booking_open_at || "";
     els.bookingCloseAt.value = e.booking_close_at || "";
     els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
     els.refundCutoffAt.value = e.refund_cutoff_at || "";
 
-    // Do not let old saved event data overwrite freshly verified YI contact details.
-    // Only use saved host fields if verification has not already filled them.
     if (!els.hostName.value){
       els.hostName.value = e.host_name || "";
     }
@@ -1076,7 +1201,6 @@ function buildPayload(){
     capacity_total: parseInt(els.capacityTotal.value) || 0,
     capacity: parseInt(els.capacityTotal.value) || 0,
     max_places_per_member: 0,
-    booking_mode: cleanText(els.bookingMode.value),
 
     members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
     guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
@@ -1086,57 +1210,6 @@ function buildPayload(){
   };
 }
 
-function asDateTimeValue(v){
-  const raw = cleanText(v);
-  if (!raw) return 0;
-
-  const d = new Date(raw);
-  const t = d.getTime();
-
-  return Number.isFinite(t) ? t : 0;
-}
-
-function validateDateConsistency(){
-  const eventDate = cleanText(els.eventDate.value);
-  const startTime = cleanText(els.startTime.value);
-
-  const eventStart = eventDate
-    ? asDateTimeValue(eventDate + "T" + (startTime || "00:00"))
-    : 0;
-
-  const membersOpen = asDateTimeValue(els.membersBookingOpenAt.value);
-  const guestsOpen = asDateTimeValue(els.guestsBookingOpenAt.value);
-  const bookingClose = asDateTimeValue(els.bookingCloseAt.value);
-  const cancellationCutoff = asDateTimeValue(els.cancellationCutoffAt.value);
-  const refundCutoff = asDateTimeValue(els.refundCutoffAt.value);
-
-  if (membersOpen && guestsOpen && guestsOpen < membersOpen){
-    return "Guest booking opens before members booking opens. Please check the dates.";
-  }
-
-  if (membersOpen && bookingClose && bookingClose < membersOpen){
-    return "Booking closes before members booking opens. Please check the dates.";
-  }
-
-  if (guestsOpen && bookingClose && bookingClose < guestsOpen){
-    return "Booking closes before guest booking opens. Please check the dates.";
-  }
-
-  if (bookingClose && eventStart && bookingClose > eventStart){
-    return "Booking closes after the event begins. Please check the dates.";
-  }
-
-  if (cancellationCutoff && eventStart && cancellationCutoff > eventStart){
-    return "Cancellation cutoff is after the event begins. Please check the dates.";
-  }
-
-  if (refundCutoff && eventStart && refundCutoff > eventStart){
-    return "Refund cutoff is after the event begins. Please check the dates.";
-  }
-
-  return "";
-}
-  
 async function saveEvent(e){
   e.preventDefault();
   clearStatus(els.saveStatus);
@@ -1153,14 +1226,15 @@ async function saveEvent(e){
     return;
   }
 
+  const dateWarning = validateDateConsistency();
+  if (dateWarning){
+    setStatus(els.saveStatus, "warn", dateWarning);
+    return;
+  }
+
   try{
     els.saveBtn.disabled = true;
-
-    const dateWarning = validateDateConsistency();
-if (dateWarning){
-  setStatus(els.saveStatus, "warn", dateWarning);
-  return;
-}
+    setStatus(els.saveStatus,"warn","Saving Event Notice...");
 
     const data = await apiFetch(
       "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
@@ -1179,6 +1253,7 @@ if (dateWarning){
     if(id){
       editEventId = id;
       history.replaceState(null,"","?event_id=" + encodeURIComponent(id));
+      setEditModeText();
       els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(id);
       els.viewNoticeLink.style.display = "inline-flex";
     }
@@ -1204,7 +1279,6 @@ function resetForm(){
   els.titleArtUrl.value = "";
   els.imageUrl.value = "";
   els.capacityTotal.value = "";
-  els.bookingMode.value = "";
   els.membersBookingOpenAt.value = "";
   els.guestsBookingOpenAt.value = "";
   els.bookingCloseAt.value = "";
@@ -1248,6 +1322,7 @@ document.getElementById("libraryCloseBtn").onclick = () => {
 els.verifyBtn.onclick = verifyHost;
 els.eventForm.onsubmit = saveEvent;
 els.resetBtn.onclick = resetForm;
+els.logoutBtn.onclick = logout;
 
 const storedResident = localStorage.getItem("currentResidentId") || "";
 const storedMember = localStorage.getItem("currentMemberId") || "";
@@ -1258,6 +1333,7 @@ if(storedResident){
   els.residentRef.value = residentIdFrom(storedMember, 1);
 }
 
+setEditModeText();
 lockForm();
 </script>
 </body>

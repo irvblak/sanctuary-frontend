@@ -621,10 +621,7 @@
   return [s, e].filter(Boolean).join(" – ") || "—";
 }
 
-      return [startValue, endValue].filter(Boolean).join(" – ") || "—";
-    }
-
-    function getStoredAuthToken(){
+  function getStoredAuthToken(){
       return (
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken") ||
@@ -987,12 +984,13 @@
 
         eventReference.textContent = reference;
         eventDate.textContent = formatDateOnly(
-          pick(eventData.start_at, eventData.starts_at, eventData.date)
-        );
-        eventTime.textContent = formatTimeRange(
-          pick(eventData.start_at, eventData.starts_at, eventData.date),
-          pick(eventData.end_at, eventData.ends_at)
-        );
+         pick(eventData.event_date, eventData.date, eventData.start_date, eventData.start_at, eventData.starts_at)
+       );
+
+       eventTime.textContent = formatTimeRange(
+       pick(eventData.start_time, eventData.time, eventData.start_at, eventData.starts_at),
+       pick(eventData.end_time, eventData.end_at, eventData.ends_at)
+      );
         eventLocation.textContent = pick(eventData.location, "—");
         eventHost.textContent = pick(
           eventData.host_display,

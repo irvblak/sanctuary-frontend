@@ -39,17 +39,45 @@
     .wrap{
       width:min(980px, calc(100% - 24px));
       margin:0 auto;
-      padding:20px 0 42px;
+      padding:18px 0 42px;
     }
 
-    .backlink{
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+
+    .backlink,
+    .toplink{
       display:inline-flex;
       align-items:center;
       gap:8px;
       color:var(--accent);
       text-decoration:none;
+      font-weight:800;
+    }
+
+    .toplinks{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
       font-weight:700;
-      margin-bottom:14px;
+    }
+
+    .toplinks button{
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--accent);
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      border-radius:0;
     }
 
     .grid{
@@ -164,6 +192,7 @@
 
     @media (max-width:680px){
       .field-grid{ grid-template-columns:1fr; }
+      .meta-row{ grid-template-columns:1fr; gap:4px; }
     }
 
     label{
@@ -192,6 +221,31 @@
     input[readonly]{
       background:#f6f9fc;
       color:#4c6276;
+    }
+
+    .pin-wrap{
+      position:relative;
+      display:block;
+    }
+
+    .pin-wrap input{
+      padding-right:46px;
+    }
+
+    .eye-btn{
+      position:absolute;
+      right:8px;
+      top:50%;
+      transform:translateY(-50%);
+      width:34px;
+      height:34px;
+      padding:0;
+      border-radius:999px;
+      background:#eef4fa;
+      color:var(--accent);
+      border:1px solid #d6e3ef;
+      font-size:1rem;
+      line-height:1;
     }
 
     .small{
@@ -302,7 +356,15 @@
 </head>
 <body>
   <div class="wrap">
-    <a id="backLink" class="backlink" href="events-details.html">← Back to event notice</a>
+    <div class="topbar">
+      <a id="backLink" class="backlink" href="events-details.html">← Back to event notice</a>
+
+      <nav class="toplinks" aria-label="Page navigation">
+        <a class="toplink" href="members-info.html">Members Hub</a>
+        <span>|</span>
+        <button id="logoutBtn" type="button">Logout</button>
+      </nav>
+    </div>
 
     <div id="pageMessage" class="message info"></div>
 
@@ -385,7 +447,10 @@
 
             <label>
               PIN
-              <input id="memberPinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+              <span class="pin-wrap">
+                <input id="memberPinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+                <button id="togglePinBtn" class="eye-btn" type="button" aria-label="Show PIN" title="Show PIN">👁</button>
+              </span>
             </label>
           </div>
 
@@ -494,6 +559,8 @@
     const pageMessage = document.getElementById("pageMessage");
 
     const backLink = document.getElementById("backLink");
+    const logoutBtn = document.getElementById("logoutBtn");
+
     const eventTitle = document.getElementById("eventTitle");
     const eventSummary = document.getElementById("eventSummary");
     const eventReference = document.getElementById("eventReference");
@@ -517,6 +584,7 @@
 
     const memberIdInput = document.getElementById("memberIdInput");
     const memberPinInput = document.getElementById("memberPinInput");
+    const togglePinBtn = document.getElementById("togglePinBtn");
 
     const memberNameInput = document.getElementById("memberNameInput");
     const memberIdReadonly = document.getElementById("memberIdReadonly");
@@ -594,34 +662,34 @@
     }
 
     function formatTimeRange(startValue, endValue){
-  if (!startValue && !endValue) return "—";
+      if (!startValue && !endValue) return "—";
 
-  function formatOne(value){
-    const raw = String(value || "").trim();
-    if (!raw) return "";
+      function formatOne(value){
+        const raw = String(value || "").trim();
+        if (!raw) return "";
 
-    if (/^\d{2}:\d{2}$/.test(raw)){
-      return raw;
+        if (/^\d{2}:\d{2}$/.test(raw)){
+          return raw;
+        }
+
+        const d = new Date(raw);
+        if (!Number.isNaN(d.getTime())){
+          return d.toLocaleTimeString("en-GB", {
+            hour:"2-digit",
+            minute:"2-digit"
+          });
+        }
+
+        return raw;
+      }
+
+      const s = formatOne(startValue);
+      const e = formatOne(endValue);
+
+      return [s, e].filter(Boolean).join(" – ") || "—";
     }
 
-    const d = new Date(raw);
-    if (!Number.isNaN(d.getTime())){
-      return d.toLocaleTimeString("en-GB", {
-        hour:"2-digit",
-        minute:"2-digit"
-      });
-    }
-
-    return raw;
-  }
-
-  const s = formatOne(startValue);
-  const e = formatOne(endValue);
-
-  return [s, e].filter(Boolean).join(" – ") || "—";
-}
-
-  function getStoredAuthToken(){
+    function getStoredAuthToken(){
       return (
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken") ||
@@ -660,6 +728,23 @@
       sessionStorage.removeItem("authToken");
       localStorage.removeItem("currentMemberId");
       sessionStorage.removeItem("currentMemberId");
+    }
+
+    function logout(){
+      clearPersistedAuth();
+
+      localStorage.removeItem("adminToken");
+      sessionStorage.removeItem("adminToken");
+      localStorage.removeItem("adminUser");
+      sessionStorage.removeItem("adminUser");
+
+      sessionStorage.removeItem("sanctuaryAccess");
+      sessionStorage.removeItem("sanctuaryAccessTime");
+      sessionStorage.removeItem("sanctuaryAccessUntil");
+      sessionStorage.removeItem("sanctuaryMDAccess");
+      sessionStorage.removeItem("sanctuaryMDAccessTime");
+
+      window.location.href = "index.html";
     }
 
     async function apiFetch(path, options = {}){
@@ -983,14 +1068,16 @@
         );
 
         eventReference.textContent = reference;
-        eventDate.textContent = formatDateOnly(
-         pick(eventData.event_date, eventData.date, eventData.start_date, eventData.start_at, eventData.starts_at)
-       );
 
-       eventTime.textContent = formatTimeRange(
-       pick(eventData.start_time, eventData.time, eventData.start_at, eventData.starts_at),
-       pick(eventData.end_time, eventData.end_at, eventData.ends_at)
-      );
+        eventDate.textContent = formatDateOnly(
+          pick(eventData.event_date, eventData.date, eventData.start_date, eventData.start_at, eventData.starts_at)
+        );
+
+        eventTime.textContent = formatTimeRange(
+          pick(eventData.start_time, eventData.time, eventData.start_at, eventData.starts_at),
+          pick(eventData.end_time, eventData.end_at, eventData.ends_at)
+        );
+
         eventLocation.textContent = pick(eventData.location, "—");
         eventHost.textContent = pick(
           eventData.host_display,
@@ -1035,41 +1122,42 @@
     }
 
     async function login(memberId, pin){
-  const cleanMemberId = baseMemberId(memberId);
+      const cleanMemberId = baseMemberId(memberId);
 
-  const res = await apiFetch(`/auth/login`, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      memberId: cleanMemberId,
-      pin: String(pin || "").trim()
-    })
-  });
+      const res = await apiFetch(`/auth/login`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
+          memberId: cleanMemberId,
+          pin: String(pin || "").trim()
+        })
+      });
 
-  const token = pick(res.token, res.authToken, res.access_token);
-  if (!token) throw new Error("No token returned");
+      const token = pick(res.token, res.authToken, res.access_token);
+      if (!token) throw new Error("No token returned");
 
-  const returnedMemberId = pick(
-    res.member?.memberId,
-    res.member?.member_id,
-    cleanMemberId
-  );
+      const returnedMemberId = pick(
+        res.member?.memberId,
+        res.member?.member_id,
+        cleanMemberId
+      );
 
-  persistAuth(token, returnedMemberId);
-}
+      persistAuth(token, returnedMemberId);
+    }
+
     async function loadMemberProfile(){
-  if (!authToken || !currentMemberId) return null;
+      if (!authToken || !currentMemberId) return null;
 
-  try{
-    const data = await apiFetch(`/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
-      method:"GET"
-    });
+      try{
+        const data = await apiFetch(`/api/member-profile/${encodeURIComponent(currentMemberId)}`, {
+          method:"GET"
+        });
 
-    return data.profile || data.member || data.entry || data || null;
-  }catch(_){
-    return null;
-  }
-}
+        return data.profile || data.member || data.entry || data || null;
+      }catch(_){
+        return null;
+      }
+    }
 
     async function loadMyBooking(showStatusMessage = false){
       if (!authToken || !currentMemberId || !EVENT_ID){
@@ -1219,7 +1307,7 @@
 
       return Date.now() > closeDate.getTime();
     }
-    
+
     async function saveBooking(event){
       event.preventDefault();
 
@@ -1232,7 +1320,7 @@
         showMessage("Booking for this event has now closed.", "warn");
         return;
       }
-      
+
       const payload = makeBookingPayload();
 
       if (payload.response_type !== "interest" && payload.places_total < 1){
@@ -1241,6 +1329,7 @@
       }
 
       saveBtn.disabled = true;
+      showMessage("Saving booking / interest…", "info");
 
       try{
         const endpoint = currentBooking
@@ -1253,7 +1342,7 @@
           body:JSON.stringify(payload)
         });
 
-        showMessage(data.message || (currentBooking ? "Booking / interest updated." : "Booking / interest saved."), "ok");
+        showMessage(data.message || (currentBooking ? "Saved. Booking / interest updated." : "Saved. Booking / interest recorded."), "ok");
 
         await loadMyBooking(false);
         await loadEvent();
@@ -1280,6 +1369,7 @@
       if (!ok) return;
 
       cancelBtn.disabled = true;
+      showMessage("Cancelling booking / interest…", "info");
 
       try{
         const payload = { member_id: currentMemberId };
@@ -1302,7 +1392,7 @@
         guestPlacesInput.value = "0";
         notesInput.value = "";
 
-        showMessage(data.message || "Booking / interest cancelled.", "ok");
+        showMessage(data.message || "Cancelled. Booking / interest removed.", "ok");
 
         await loadEvent();
       }catch(err){
@@ -1319,6 +1409,7 @@
         return;
       }
 
+      showMessage("Reloading saved booking / interest…", "info");
       await loadMyBooking(true);
     }
 
@@ -1371,12 +1462,23 @@
       setActionButtons(!!(authToken && currentMemberId));
     }
 
+    function togglePinVisibility(){
+      const showing = memberPinInput.type === "text";
+      memberPinInput.type = showing ? "password" : "text";
+      togglePinBtn.textContent = showing ? "👁" : "🙈";
+      togglePinBtn.setAttribute("aria-label", showing ? "Show PIN" : "Hide PIN");
+      togglePinBtn.title = showing ? "Show PIN" : "Hide PIN";
+      memberPinInput.focus();
+    }
+
     lookupForm.addEventListener("submit", handleLookupSubmit);
     bookingForm.addEventListener("submit", saveBooking);
     reloadBtn.addEventListener("click", reloadSavedBooking);
     refundBtn.addEventListener("click", requestRefund);
     cancelBtn.addEventListener("click", cancelBooking);
     clearBtn.addEventListener("click", clearLookup);
+    logoutBtn.addEventListener("click", logout);
+    togglePinBtn.addEventListener("click", togglePinVisibility);
 
     (async function init(){
       hydrateStoredSession();

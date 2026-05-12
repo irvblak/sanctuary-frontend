@@ -1210,6 +1210,16 @@
       return payload;
     }
 
+    function bookingCloseHasPassed(){
+      const closeRaw = pick(eventData?.booking_close_at, eventData?.booking_closes_at, eventData?.close_at);
+      if (!closeRaw) return false;
+
+      const closeDate = new Date(closeRaw);
+      if (Number.isNaN(closeDate.getTime())) return false;
+
+      return Date.now() > closeDate.getTime();
+    }
+    
     async function saveBooking(event){
       event.preventDefault();
 

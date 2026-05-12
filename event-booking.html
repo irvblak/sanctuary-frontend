@@ -1228,6 +1228,11 @@
         return;
       }
 
+      if (bookingCloseHasPassed()){
+        showMessage("Booking for this event has now closed.", "warn");
+        return;
+      }
+      
       const payload = makeBookingPayload();
 
       if (payload.response_type !== "interest" && payload.places_total < 1){

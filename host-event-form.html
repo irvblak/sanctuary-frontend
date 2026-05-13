@@ -827,12 +827,28 @@ function profileResidents(profile){
 
   for (const list of lists){
     if (Array.isArray(list)) return list;
+
+    if (list && typeof list === "object"){
+      return Object.entries(list).map(([key,value]) => {
+        if (value && typeof value === "object"){
+          return {
+            ...value,
+            _resident_key: key
+          };
+        }
+
+        return {
+          name:String(value || ""),
+          _resident_key:key
+        };
+      });
+    }
   }
 
   return [];
 }
 
-function getResidentOwnRef(r, fallbackMemberId){
+function getResidentOwnRef(r){
   return cleanResidentId(
     r && (
       r.resident_id ||
@@ -841,13 +857,27 @@ function getResidentOwnRef(r, fallbackMemberId){
       r.residentRef ||
       r.member_ref ||
       r.memberRef ||
+      r.ref ||
       r.id ||
+      r._resident_key ||
       ""
     )
   );
 }
 
 function getResidentOwnIndex(r){
+  const key = cleanText(r && r._resident_key);
+  const keyMatch = key.match(/\/(\d+)$/);
+  if (keyMatch){
+    const keyIndex = parseInt(keyMatch[1], 10);
+    if (Number.isFinite(keyIndex) && keyIndex > 0) return keyIndex;
+  }
+
+  const ref = getResidentOwnRef(r);
+  if (ref && ref.includes("/")){
+    return residentIndexFromRef(ref);
+  }
+
   const raw = r && (
     r.resident_index ??
     r.residentIndex ??
@@ -872,15 +902,15 @@ function residentFromListByRef(residents, residentId, index){
   if (!Array.isArray(residents)) return null;
 
   const exactRef = residents.find(r => {
-    const rid = getResidentOwnRef(r, wantedMember);
+    const rid = getResidentOwnRef(r);
     return rid && rid === wantedRef;
   });
 
   if (exactRef) return exactRef;
 
   const exactCompoundRef = residents.find(r => {
-    const rid = getResidentOwnRef(r, wantedMember);
-    if (!rid) return false;
+    const rid = getResidentOwnRef(r);
+    if (!rid || !rid.includes("/")) return false;
     return baseMemberId(rid) === wantedMember && residentIndexFromRef(rid) === wantedIndex;
   });
 
@@ -895,7 +925,7 @@ function residentFromListByRef(residents, residentId, index){
 
   return null;
 }
-
+  
 async function apiFetch(path, options = {}){
   const res = await fetch(API_BASE + path, options);
   const text = await res.text();

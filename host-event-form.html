@@ -109,10 +109,6 @@
       box-shadow:0 8px 18px rgba(36,93,139,.1);
     }
 
-    button.pill{
-      min-height:2.25rem;
-    }
-
     button.primary{
       background:linear-gradient(135deg,var(--accent),var(--accent2));
       color:white;
@@ -147,9 +143,7 @@
       margin-bottom:1rem;
     }
 
-    .top-grid .card{
-      margin-bottom:0;
-    }
+    .top-grid .card{ margin-bottom:0; }
 
     h2{
       margin:0 0 .55rem;
@@ -164,13 +158,7 @@
       margin-bottom:.55rem;
     }
 
-    .section-head h2{
-      margin:0;
-    }
-
-    .section-head .help{
-      margin:0;
-    }
+    .section-head h2{ margin:0; }
 
     .help{
       margin:.15rem 0 .75rem;
@@ -184,12 +172,6 @@
       grid-template-columns:minmax(9rem,11rem) minmax(9rem,11rem) auto;
       gap:.55rem;
       align-items:end;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:.68rem;
     }
 
     .details-grid{
@@ -221,6 +203,13 @@
       align-items:end;
     }
 
+    .payment-grid{
+      display:grid;
+      grid-template-columns:10rem 10rem 1fr;
+      gap:.68rem;
+      align-items:end;
+    }
+
     .full{grid-column:1 / -1}
 
     label{
@@ -245,29 +234,6 @@
       outline:none;
     }
 
-    #hostResidentId{
-      max-width:140px;
-    }
-
-    #capacityTotal{
-      text-align:center;
-      padding-left:.35rem;
-      padding-right:.35rem;
-    }
-
-    input[type="time"]{
-      min-width:7rem;
-    }
-
-    input[type="date"]{
-      min-width:10rem;
-    }
-
-    input[type="datetime-local"]{
-      min-width:9.4rem;
-      font-size:.92rem;
-    }
-
     textarea{
       min-height:8rem;
       resize:vertical;
@@ -279,6 +245,45 @@
     textarea:focus{
       border-color:#9cc5e6;
       box-shadow:0 0 0 4px rgba(47,122,180,.12);
+    }
+
+    .pin-wrap{
+      position:relative;
+    }
+
+    .pin-wrap input{
+      padding-right:2.7rem;
+    }
+
+    .eye-btn{
+      position:absolute;
+      right:.25rem;
+      top:50%;
+      transform:translateY(-50%);
+      min-height:1.9rem;
+      width:2.1rem;
+      padding:0;
+      border-radius:999px;
+      background:#eef6ff;
+      color:var(--accent);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    #hostResidentId{ max-width:140px; }
+
+    #capacityTotal{
+      text-align:center;
+      padding-left:.35rem;
+      padding-right:.35rem;
+    }
+
+    input[type="time"]{ min-width:7rem; }
+    input[type="date"]{ min-width:10rem; }
+
+    input[type="datetime-local"]{
+      min-width:9.4rem;
+      font-size:.92rem;
     }
 
     .status{
@@ -344,9 +349,7 @@
       padding:1rem;
     }
 
-    .library-modal.show{
-      display:flex;
-    }
+    .library-modal.show{ display:flex; }
 
     .library-panel{
       width:min(880px,100%);
@@ -367,9 +370,7 @@
       margin-bottom:.8rem;
     }
 
-    .library-head h2{
-      margin:0;
-    }
+    .library-head h2{ margin:0; }
 
     .library-grid{
       display:grid;
@@ -422,9 +423,9 @@
     @media (max-width:920px){
       .top-grid,
       .details-grid,
-      .grid,
       .compact-verify,
-      .space-grid{
+      .space-grid,
+      .payment-grid{
         grid-template-columns:1fr;
       }
 
@@ -437,13 +438,8 @@
         grid-column:1 / -1;
       }
 
-      header{
-        flex-direction:column;
-      }
-
-      .nav{
-        justify-content:flex-start;
-      }
+      header{ flex-direction:column; }
+      .nav{ justify-content:flex-start; }
     }
   </style>
 </head>
@@ -471,11 +467,14 @@
         <div class="compact-verify">
           <div>
             <label for="residentRef">Resident ID</label>
-            <input id="residentRef" autocomplete="username" placeholder="e.g. SM55XX/1" />
+            <input id="residentRef" autocomplete="username" placeholder="e.g. SM55/1" />
           </div>
           <div>
             <label for="pin">Membership PIN</label>
-            <input id="pin" type="password" autocomplete="current-password" inputmode="numeric" />
+            <div class="pin-wrap">
+              <input id="pin" type="password" autocomplete="current-password" inputmode="numeric" />
+              <button class="eye-btn" id="pinEyeBtn" type="button" aria-label="Show PIN">👁</button>
+            </div>
           </div>
           <div>
             <button class="primary" id="verifyBtn" type="button">Verify host</button>
@@ -572,9 +571,7 @@
             <label for="titleArtUrl">Title art / logo path</label>
             <div class="path-row">
               <input id="titleArtUrl" placeholder="images/..." />
-              <button class="secondary library-btn" type="button" data-library-target="titleArtUrl" data-library-kind="title">
-                Choose
-              </button>
+              <button class="secondary library-btn" type="button" data-library-target="titleArtUrl" data-library-kind="title">Choose</button>
             </div>
             <p class="small">Choose from the title-art library, or enter a known image path.</p>
           </div>
@@ -583,9 +580,7 @@
             <label for="imageUrl">Image / poster path</label>
             <div class="path-row">
               <input id="imageUrl" placeholder="images/..." />
-              <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">
-                Choose
-              </button>
+              <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">Choose</button>
             </div>
             <p class="small">Choose from the poster/banner library, or enter a known image path.</p>
           </div>
@@ -627,6 +622,38 @@
           <div>
             <label for="refundCutoffAt">Refund cutoff</label>
             <input id="refundCutoffAt" type="datetime-local" />
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Payment</h2>
+          <p class="help">Use this for payable events. Payment collection itself remains outside the website for now.</p>
+        </div>
+
+        <div class="payment-grid">
+          <div>
+            <label for="paymentRequired">Payable event?</label>
+            <select id="paymentRequired">
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="costPerPlace">Cost per place (£)</label>
+            <input id="costPerPlace" type="number" min="0" step="0.01" inputmode="decimal" />
+          </div>
+
+          <div>
+            <label for="paymentInstructions">Payment instructions</label>
+            <input id="paymentInstructions" placeholder="e.g. Cash to Host, bank transfer details, deadline etc." />
+          </div>
+
+          <div class="full">
+            <label for="paymentNote">Payment / refund note</label>
+            <textarea id="paymentNote" placeholder="Optional note about payment timing, refunds, or special arrangements."></textarea>
           </div>
         </div>
       </section>
@@ -678,6 +705,11 @@ function residentIdFrom(memberId, index){
   return `${baseMemberId(memberId)}/${index}`;
 }
 
+function moneyNumber(v){
+  const n = Number(String(v || "").replace(/[£,\s]/g,""));
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
 let editEventId = cleanText(new URLSearchParams(location.search).get("event_id") || "");
 
 const els = {
@@ -687,6 +719,7 @@ const els = {
 
   residentRef: document.getElementById("residentRef"),
   pin: document.getElementById("pin"),
+  pinEyeBtn: document.getElementById("pinEyeBtn"),
   verifyBtn: document.getElementById("verifyBtn"),
   verifyStatus: document.getElementById("verifyStatus"),
   eventForm: document.getElementById("eventForm"),
@@ -714,6 +747,11 @@ const els = {
   bookingCloseAt: document.getElementById("bookingCloseAt"),
   cancellationCutoffAt: document.getElementById("cancellationCutoffAt"),
   refundCutoffAt: document.getElementById("refundCutoffAt"),
+
+  paymentRequired: document.getElementById("paymentRequired"),
+  costPerPlace: document.getElementById("costPerPlace"),
+  paymentInstructions: document.getElementById("paymentInstructions"),
+  paymentNote: document.getElementById("paymentNote"),
 
   saveBtn: document.getElementById("saveBtn"),
   resetBtn: document.getElementById("resetBtn"),
@@ -781,7 +819,10 @@ function profileResidents(profile){
     profile && profile.member && profile.member.residents,
     profile && profile.profile && profile.profile.residents,
     profile && profile.entry && profile.entry.residents,
-    profile && profile.directory_entry && profile.directory_entry.residents
+    profile && profile.directory_entry && profile.directory_entry.residents,
+    profile && profile.people,
+    profile && profile.members,
+    profile && profile.household_members
   ];
 
   for (const list of lists){
@@ -791,37 +832,63 @@ function profileResidents(profile){
   return [];
 }
 
+function getResidentOwnRef(r, fallbackMemberId){
+  return cleanResidentId(
+    r && (
+      r.resident_id ||
+      r.residentId ||
+      r.resident_ref ||
+      r.residentRef ||
+      r.member_ref ||
+      r.memberRef ||
+      r.id ||
+      ""
+    )
+  );
+}
+
+function getResidentOwnIndex(r){
+  const raw = r && (
+    r.resident_index ??
+    r.residentIndex ??
+    r.resident_no ??
+    r.residentNo ??
+    r.person_index ??
+    r.personIndex ??
+    r.idx ??
+    r.index ??
+    r.position
+  );
+
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
 function residentFromListByRef(residents, residentId, index){
   const wantedRef = cleanResidentId(residentId);
+  const wantedMember = baseMemberId(wantedRef);
   const wantedIndex = Number(index || residentIndexFromRef(wantedRef) || 1);
 
   if (!Array.isArray(residents)) return null;
 
   const exactRef = residents.find(r => {
-    const rid = cleanResidentId(
-      r && (
-        r.resident_id ||
-        r.residentId ||
-        r.resident_ref ||
-        r.residentRef ||
-        r.id ||
-        ""
-      )
-    );
+    const rid = getResidentOwnRef(r, wantedMember);
     return rid && rid === wantedRef;
   });
 
   if (exactRef) return exactRef;
 
+  const exactCompoundRef = residents.find(r => {
+    const rid = getResidentOwnRef(r, wantedMember);
+    if (!rid) return false;
+    return baseMemberId(rid) === wantedMember && residentIndexFromRef(rid) === wantedIndex;
+  });
+
+  if (exactCompoundRef) return exactCompoundRef;
+
   const exactIndex = residents.find(r => {
-    const raw = r && (
-      r.resident_index ??
-      r.residentIndex ??
-      r.idx ??
-      r.index
-    );
-    const n = parseInt(raw, 10);
-    return Number.isFinite(n) && n === wantedIndex;
+    const n = getResidentOwnIndex(r);
+    return n && n === wantedIndex;
   });
 
   if (exactIndex) return exactIndex;
@@ -860,7 +927,7 @@ async function fetchMemberProfile(memberId){
   }
 }
 
-function contactFromResident(resident, memberId, residentId){
+function contactFromResident(resident, residentId){
   resident = resident || {};
 
   return {
@@ -907,17 +974,19 @@ function contactFromResident(resident, memberId, residentId){
 
 async function getHostContact(memberId, residentIndex, residentId){
   const profile = await fetchMemberProfile(memberId);
-  const fromProfile = residentFromListByRef(profileResidents(profile || {}), residentId, residentIndex);
+  const profileList = profileResidents(profile || {});
+  const fromProfile = residentFromListByRef(profileList, residentId, residentIndex);
 
   if (fromProfile){
-    return contactFromResident(fromProfile, memberId, residentId);
+    return contactFromResident(fromProfile, residentId);
   }
 
   const local = getStoredMember(memberId);
-  const fromLocal = residentFromListByRef(profileResidents(local || {}), residentId, residentIndex);
+  const localList = profileResidents(local || {});
+  const fromLocal = residentFromListByRef(localList, residentId, residentIndex);
 
   if (fromLocal){
-    return contactFromResident(fromLocal, memberId, residentId);
+    return contactFromResident(fromLocal, residentId);
   }
 
   throw new Error(`Resident ${residentId} was not found in Members Information.`);
@@ -1012,6 +1081,9 @@ function logout(){
   localStorage.removeItem("currentMemberId");
   localStorage.removeItem("currentResidentId");
   localStorage.removeItem("adminToken");
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("currentMemberId");
+  sessionStorage.removeItem("currentResidentId");
   sessionStorage.removeItem("sanctuaryAccess");
   sessionStorage.removeItem("sanctuaryAccessTime");
   sessionStorage.removeItem("sanctuaryAccessUntil");
@@ -1051,6 +1123,9 @@ async function verifyHost(){
   }
 
   try{
+    els.verifyBtn.disabled = true;
+    setStatus(els.verifyStatus,"warn","Verifying host...");
+
     const data = await apiFetch("/auth/login", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
@@ -1079,6 +1154,9 @@ async function verifyHost(){
     localStorage.setItem("authToken", authToken);
     localStorage.setItem("currentMemberId", memberId);
     localStorage.setItem("currentResidentId", normalResidentId);
+    sessionStorage.setItem("authToken", authToken);
+    sessionStorage.setItem("currentMemberId", memberId);
+    sessionStorage.setItem("currentResidentId", normalResidentId);
 
     verified = true;
     verifiedMemberId = memberId;
@@ -1104,6 +1182,8 @@ async function verifyHost(){
     verified = false;
     lockForm();
     setStatus(els.verifyStatus,"err",err.message || "Verification failed.");
+  }finally{
+    els.verifyBtn.disabled = false;
   }
 }
 
@@ -1140,18 +1220,16 @@ async function loadEvent(){
     els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
     els.refundCutoffAt.value = e.refund_cutoff_at || "";
 
-    if (!els.hostName.value){
-      els.hostName.value = e.host_name || "";
-    }
-    if (!els.hostEmail.value){
-      els.hostEmail.value = e.host_email || "";
-    }
-    if (!els.hostMobile.value){
-      els.hostMobile.value = e.host_mobile || "";
-    }
-    if (!els.hostLandline.value){
-      els.hostLandline.value = e.host_landline || "";
-    }
+    const payable = e.payment_required === true || e.payable === true || e.is_payable === true || cleanText(e.payment_required).toLowerCase() === "yes";
+    els.paymentRequired.value = payable ? "yes" : "no";
+    els.costPerPlace.value = pick(e.cost_per_place, e.price_per_place, e.cost, e.price, "");
+    els.paymentInstructions.value = e.payment_instructions || e.payment_note || "";
+    els.paymentNote.value = e.payment_terms || e.refund_note || e.payment_refund_note || "";
+
+    if (!els.hostName.value){ els.hostName.value = e.host_name || ""; }
+    if (!els.hostEmail.value){ els.hostEmail.value = e.host_email || ""; }
+    if (!els.hostMobile.value){ els.hostMobile.value = e.host_mobile || ""; }
+    if (!els.hostLandline.value){ els.hostLandline.value = e.host_landline || ""; }
 
     if (e.host_resident_id){
       els.hostResidentId.textContent = e.host_resident_id;
@@ -1167,6 +1245,8 @@ async function loadEvent(){
 
 function buildPayload(){
   const category = cleanText(els.category.value);
+  const paymentRequired = els.paymentRequired.value === "yes";
+  const costPerPlace = paymentRequired ? moneyNumber(els.costPerPlace.value) : 0;
 
   return {
     event_id: editEventId,
@@ -1206,7 +1286,17 @@ function buildPayload(){
     guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
     booking_close_at: cleanText(els.bookingCloseAt.value),
     cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
-    refund_cutoff_at: cleanText(els.refundCutoffAt.value)
+    refund_cutoff_at: cleanText(els.refundCutoffAt.value),
+
+    payable: paymentRequired,
+    is_payable: paymentRequired,
+    payment_required: paymentRequired,
+    cost_per_place: costPerPlace,
+    price_per_place: costPerPlace,
+    payment_instructions: cleanText(els.paymentInstructions.value),
+    payment_terms: cleanText(els.paymentNote.value),
+    refund_note: cleanText(els.paymentNote.value),
+    payment_refund_note: cleanText(els.paymentNote.value)
   };
 }
 
@@ -1223,6 +1313,11 @@ async function saveEvent(e){
 
   if(!payload.title || !payload.event_date || !payload.category){
     setStatus(els.saveStatus,"warn","Title, date and category are required.");
+    return;
+  }
+
+  if(payload.payment_required && payload.cost_per_place <= 0){
+    setStatus(els.saveStatus,"warn","For a payable event, enter a cost per place.");
     return;
   }
 
@@ -1284,6 +1379,18 @@ function resetForm(){
   els.bookingCloseAt.value = "";
   els.cancellationCutoffAt.value = "";
   els.refundCutoffAt.value = "";
+  els.paymentRequired.value = "no";
+  els.costPerPlace.value = "";
+  els.paymentInstructions.value = "";
+  els.paymentNote.value = "";
+  clearStatus(els.saveStatus);
+}
+
+function togglePin(){
+  const isHidden = els.pin.type === "password";
+  els.pin.type = isHidden ? "text" : "password";
+  els.pinEyeBtn.textContent = isHidden ? "🙈" : "👁";
+  els.pinEyeBtn.setAttribute("aria-label", isHidden ? "Hide PIN" : "Show PIN");
 }
 
 const LIB = {
@@ -1323,9 +1430,10 @@ els.verifyBtn.onclick = verifyHost;
 els.eventForm.onsubmit = saveEvent;
 els.resetBtn.onclick = resetForm;
 els.logoutBtn.onclick = logout;
+els.pinEyeBtn.onclick = togglePin;
 
-const storedResident = localStorage.getItem("currentResidentId") || "";
-const storedMember = localStorage.getItem("currentMemberId") || "";
+const storedResident = localStorage.getItem("currentResidentId") || sessionStorage.getItem("currentResidentId") || "";
+const storedMember = localStorage.getItem("currentMemberId") || sessionStorage.getItem("currentMemberId") || "";
 
 if(storedResident){
   els.residentRef.value = storedResident;

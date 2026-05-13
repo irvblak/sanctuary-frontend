@@ -901,28 +901,7 @@ function getResidentOwnIndex(r){
 
   return 0;
 }
-
-  const ref = getResidentOwnRef(r);
-  if (ref && ref.includes("/")){
-    return residentIndexFromRef(ref);
-  }
-
-  const raw = r && (
-    r.resident_index ??
-    r.residentIndex ??
-    r.resident_no ??
-    r.residentNo ??
-    r.person_index ??
-    r.personIndex ??
-    r.idx ??
-    r.index ??
-    r.position
-  );
-
-  const n = parseInt(raw, 10);
-  return Number.isFinite(n) && n > 0 ? n : 0;
-}
-
+ 
 function residentFromListByRef(residents, residentId, index){
   const wantedRef = cleanResidentId(residentId);
   const wantedMember = baseMemberId(wantedRef);

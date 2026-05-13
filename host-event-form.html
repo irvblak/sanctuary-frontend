@@ -885,6 +885,35 @@ function getResidentOwnIndex(r){
     r.residentNo ??
     r.person_index ??
     r.personIndex ??
+    r.position
+  );
+
+  const n = parseInt(raw, 10);
+  if (Number.isFinite(n) && n > 0) return n;
+
+  const zeroBasedRaw = r && (
+    r.idx ??
+    r.index
+  );
+
+  const z = parseInt(zeroBasedRaw, 10);
+  if (Number.isFinite(z) && z >= 0) return z + 1;
+
+  return 0;
+}
+
+  const ref = getResidentOwnRef(r);
+  if (ref && ref.includes("/")){
+    return residentIndexFromRef(ref);
+  }
+
+  const raw = r && (
+    r.resident_index ??
+    r.residentIndex ??
+    r.resident_no ??
+    r.residentNo ??
+    r.person_index ??
+    r.personIndex ??
     r.idx ??
     r.index ??
     r.position

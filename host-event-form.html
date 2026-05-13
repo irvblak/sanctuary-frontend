@@ -893,7 +893,7 @@ function residentFromListByRef(residents, residentId, index){
 
   if (exactIndex) return exactIndex;
 
-  return residents[wantedIndex - 1] || null;
+  return null;
 }
 
 async function apiFetch(path, options = {}){

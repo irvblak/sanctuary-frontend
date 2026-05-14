@@ -625,7 +625,7 @@
       return "";
     }
 
-    function residentIndexFrom(resident,fallbackIndex){
+   function residentIndexFrom(resident,fallbackIndex){
   const directRef = cleanId(
     resident.resident_id ||
     resident.residentId ||
@@ -640,28 +640,9 @@
     if(Number.isFinite(n) && n > 0) return n;
   }
 
-  const oneBasedRaw =
-  resident.resident_index ??
-  resident.residentIndex ??
-  resident.resident_no ??
-  resident.residentNo ??
-  resident.person_index ??
-  resident.personIndex ??
-  resident.position;
-
-  const oneBased = parseInt(oneBasedRaw,10);
-  if(Number.isFinite(oneBased) && oneBased > 0) return oneBased;
-
-  const zeroBasedRaw =
-    resident.idx ??
-    resident.index;
-
-  const zeroBased = parseInt(zeroBasedRaw,10);
-  if(Number.isFinite(zeroBased) && zeroBased >= 0) return zeroBased + 1;
-
   return fallbackIndex;
 }
-
+  
 function makeResidentId(memberId,index,resident){
   const direct = cleanId(
     resident.resident_id ||

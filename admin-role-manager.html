@@ -626,52 +626,138 @@
     }
 
     function residentIndexFrom(resident,fallbackIndex){
-      const raw = resident.resident_index ?? resident.index ?? resident.residentIndex ?? fallbackIndex;
-      const n = parseInt(raw,10);
-      return Number.isFinite(n) && n > 0 ? n : fallbackIndex;
+  const directRef = cleanId(
+    resident.resident_id ||
+    resident.residentId ||
+    resident.resident_ref ||
+    resident.residentRef ||
+    resident.id ||
+    ""
+  );
+
+  if(directRef.includes("/")){
+    const n = parseInt(directRef.split("/")[1],10);
+    if(Number.isFinite(n) && n > 0) return n;
+  }
+
+  const oneBasedRaw =
+    resident.resident_index ??
+    resident.residentIndex ??
+    resident.resident_no ??
+    resident.residentNo ??
+    resident.person_index ??
+    resident.personIndex ??
+    resident.position;
+
+  const oneBased = parseInt(oneBasedRaw,10);
+  if(Number.isFinite(oneBased) && oneBased > 0) return oneBased;
+
+  const zeroBasedRaw =
+    resident.idx ??
+    resident.index;
+
+  const zeroBased = parseInt(zeroBasedRaw,10);
+  if(Number.isFinite(zeroBased) && zeroBased >= 0) return zeroBased + 1;
+
+  return fallbackIndex;
+}
+
+function makeResidentId(memberId,index,resident){
+  const direct = cleanId(
+    resident.resident_id ||
+    resident.residentId ||
+    resident.resident_ref ||
+    resident.residentRef ||
+    resident.id ||
+    ""
+  );
+
+  if(direct && direct.includes("/")) return direct;
+
+  return `${memberId}/${index}`;
+}
+
+function displayRoles(roles){
+  const cleaned = Array.isArray(roles) ? roles : [];
+  return cleaned.length
+    ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
+    : "No role";
+}
+
+function flattenMembers(members){
+  const out = [];
+
+  members.forEach(member => {
+    const memberId = baseMemberIdFrom(member);
+    if(!memberId) return;
+
+    const memberResidents = Array.isArray(member.residents) ? member.residents : [];
+
+    if(memberResidents.length){
+      memberResidents.forEach((r,arrayIndex) => {
+        if(!r || typeof r !== "object") return;
+
+        const residentIndex = residentIndexFrom(r,arrayIndex + 1);
+        const residentId = makeResidentId(memberId,residentIndex,r);
+
+        out.push({
+          resident_id: residentId,
+          member_id: memberId,
+          resident_index: residentIndex,
+          name: firstNonEmpty(
+            r.name,
+            r.full_name,
+            r.fullName,
+            r.resident_name,
+            r.residentName,
+            r.display_name,
+            r.displayName,
+            member.name,
+            member.primary_name
+          ),
+          email: firstNonEmpty(
+            r.email,
+            r.email_address,
+            r.emailAddress,
+            member.email,
+            member.primary_email
+          ),
+          roles: rolesFor(r),
+          source: "resident"
+        });
+      });
+      return;
     }
 
-    function makeResidentId(memberId,index,resident){
-      const direct = cleanId(resident.resident_id || resident.residentId || resident.id);
-      if(direct && direct.includes("/")) return direct;
-      return `${memberId}/${index}`;
-    }
+    out.push({
+      resident_id: `${memberId}/1`,
+      member_id: memberId,
+      resident_index: 1,
+      name: firstNonEmpty(member.name, member.display_name, member.primary_name),
+      email: firstNonEmpty(member.email, member.email_address, member.primary_email),
+      roles: rolesFor(member),
+      source: "legacy"
+    });
+  });
 
-    function displayRoles(roles){
-      const cleaned = Array.isArray(roles) ? roles : [];
-      return cleaned.length
-        ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
-        : "No role";
-    }
+  const deduped = [];
+  const seen = new Set();
 
-    function flattenMembers(members){
-      const out = [];
+  out.forEach(r => {
+    const key = cleanId(r.resident_id);
+    if(seen.has(key)) return;
+    seen.add(key);
+    deduped.push(r);
+  });
 
-      members.forEach(member => {
-        const memberId = baseMemberIdFrom(member);
-        if(!memberId) return;
+  deduped.sort((a,b) => {
+    const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
+    if(byMember !== 0) return byMember;
+    return Number(a.resident_index || 0) - Number(b.resident_index || 0);
+  });
 
-        const memberResidents = Array.isArray(member.residents) ? member.residents : [];
-
-        if(memberResidents.length){
-          memberResidents.forEach((r,index) => {
-            if(!r || typeof r !== "object") return;
-
-            const residentIndex = residentIndexFrom(r,index + 1);
-            const residentId = makeResidentId(memberId,residentIndex,r);
-
-            out.push({
-              resident_id: residentId,
-              member_id: memberId,
-              resident_index: residentIndex,
-              name: firstNonEmpty(r.name, r.full_name, r.display_name, member.name),
-              email: firstNonEmpty(r.email, r.email_address, member.email),
-              roles: rolesFor(r),
-              source: "resident"
-            });
-          });
-          return;
-        }
+  return deduped;
+}
         
     function resetSelection(){
       selectedResident = null;

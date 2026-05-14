@@ -641,13 +641,13 @@
   }
 
   const oneBasedRaw =
-    resident.resident_index ??
-    resident.residentIndex ??
-    resident.resident_no ??
-    resident.residentNo ??
-    resident.person_index ??
-    resident.personIndex ??
-    resident.position;
+  resident.resident_index ??
+  resident.residentIndex ??
+  resident.resident_no ??
+  resident.residentNo ??
+  resident.person_index ??
+  resident.personIndex ??
+  resident.position;
 
   const oneBased = parseInt(oneBasedRaw,10);
   if(Number.isFinite(oneBased) && oneBased > 0) return oneBased;

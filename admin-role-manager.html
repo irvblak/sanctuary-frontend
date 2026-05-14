@@ -851,30 +851,44 @@ function flattenMembers(members){
     }
 
     function loadResidentByRef(){
-      clearMessages();
+  clearMessages();
 
-      const ref = cleanId(addResidentRefEl.value);
-      if(!ref){
-        showBox(warnBox,"Enter a resident reference such as SM55/1.");
-        return;
-      }
+  const ref = cleanId(addResidentRefEl.value);
+  if(!ref){
+    showBox(warnBox,"Enter a resident reference such as SM55/1.");
+    return;
+  }
 
-      if(!ref.includes("/")){
-        showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
-        return;
-      }
+  if(!ref.includes("/")){
+    showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
+    return;
+  }
 
-      const found = allResidents.find(r => cleanId(r.resident_id) === ref);
+  const parts = ref.split("/");
+  const wantedMemberId = cleanId(parts[0]);
+  const wantedIndex = parseInt(parts[1],10);
 
-      if(!found){
-        showBox(errBox,`Resident ${ref} was not found in Members Information.`);
-        return;
-      }
+  if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
+    showBox(warnBox,"Please use a valid resident reference such as SM55/1.");
+    return;
+  }
 
-      selectResident(found);
-      showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
-    }
+  const matching = allResidents.filter(r => cleanId(r.member_id) === wantedMemberId);
 
+  const found = matching.find(r => Number(r.resident_index) === wantedIndex);
+
+  if(!found){
+    showBox(errBox,`Resident ${ref} was not found in Members Information.`);
+    return;
+  }
+
+  found.resident_id = ref;
+  found.member_id = wantedMemberId;
+  found.resident_index = wantedIndex;
+
+  selectResident(found);
+  showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
+}
     async function saveRoles(){
       clearMessages();
 

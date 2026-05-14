@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -582,9 +583,18 @@
     async function getJson(url,options = {}){
       const res = await fetch(url,options);
       const text = await res.text();
+
       let data = {};
-      try{ data = text ? JSON.parse(text) : {}; }catch{ data = {}; }
-      if(!res.ok || data.success === false) throw new Error(data.message || `HTTP ${res.status}`);
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch(_){
+        data = { success:false, message:text || `HTTP ${res.status}` };
+      }
+
+      if(!res.ok || data.success === false){
+        throw new Error(data.message || `HTTP ${res.status}`);
+      }
+
       return data;
     }
 
@@ -602,19 +612,21 @@
     }
 
     function baseMemberIdFrom(member){
-      const direct = cleanId(member.member_id || member.memberId || member.membership_number);
+      const direct = cleanId(
+        member.member_id ||
+        member.memberId ||
+        member.membership_number ||
+        member.membershipNumber ||
+        member.id ||
+        ""
+      );
+
       if(direct) return direct.split("/")[0];
 
       const props = Array.isArray(member.properties) ? member.properties : [];
       if(props.length) return cleanId(props[0]).split("/")[0];
 
       return "";
-    }
-
-    function rolesFor(obj){
-      return Array.isArray(obj?.roles)
-        ? obj.roles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
-        : [];
     }
 
     function firstNonEmpty(){
@@ -625,121 +637,90 @@
       return "";
     }
 
-   function residentIndexFrom(resident,fallbackIndex){
-  const directRef = cleanId(
-    resident.resident_id ||
-    resident.residentId ||
-    resident.resident_ref ||
-    resident.residentRef ||
-    resident.id ||
-    ""
-  );
-
-  if(directRef.includes("/")){
-    const n = parseInt(directRef.split("/")[1],10);
-    if(Number.isFinite(n) && n > 0) return n;
-  }
-
-  return fallbackIndex;
-}
-  
-function makeResidentId(memberId,index,resident){
-  const direct = cleanId(
-    resident.resident_id ||
-    resident.residentId ||
-    resident.resident_ref ||
-    resident.residentRef ||
-    resident.id ||
-    ""
-  );
-
-  if(direct && direct.includes("/")) return direct;
-
-  return `${memberId}/${index}`;
-}
-
-function displayRoles(roles){
-  const cleaned = Array.isArray(roles) ? roles : [];
-  return cleaned.length
-    ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
-    : "No role";
-}
-
-function flattenMembers(members){
-  const out = [];
-
-  members.forEach(member => {
-    const memberId = baseMemberIdFrom(member);
-    if(!memberId) return;
-
-    const memberResidents = Array.isArray(member.residents) ? member.residents : [];
-
-    if(memberResidents.length){
-      memberResidents.forEach((r,arrayIndex) => {
-        if(!r || typeof r !== "object") return;
-
-        const residentIndex = residentIndexFrom(r,arrayIndex + 1);
-        const residentId = makeResidentId(memberId,residentIndex,r);
-
-        out.push({
-          resident_id: residentId,
-          member_id: memberId,
-          resident_index: residentIndex,
-          name: firstNonEmpty(
-            r.name,
-            r.full_name,
-            r.fullName,
-            r.resident_name,
-            r.residentName,
-            r.display_name,
-            r.displayName,
-            member.name,
-            member.primary_name
-          ),
-          email: firstNonEmpty(
-            r.email,
-            r.email_address,
-            r.emailAddress,
-            member.email,
-            member.primary_email
-          ),
-          roles: rolesFor(r),
-          source: "resident"
-        });
-      });
-      return;
+    function rolesFor(obj){
+      return Array.isArray(obj?.roles)
+        ? obj.roles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
+        : [];
     }
 
-    out.push({
-      resident_id: `${memberId}/1`,
-      member_id: memberId,
-      resident_index: 1,
-      name: firstNonEmpty(member.name, member.display_name, member.primary_name),
-      email: firstNonEmpty(member.email, member.email_address, member.primary_email),
-      roles: rolesFor(member),
-      source: "legacy"
-    });
-  });
+    function displayRoles(roles){
+      const cleaned = Array.isArray(roles) ? roles : [];
+      return cleaned.length
+        ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
+        : "No role";
+    }
 
-  const deduped = [];
-  const seen = new Set();
+    function normaliseResident(member, resident, arrayIndex){
+      const memberId = baseMemberIdFrom(member);
+      const residentIndex = arrayIndex + 1;
+      const residentId = `${memberId}/${residentIndex}`;
 
-  out.forEach(r => {
-    const key = cleanId(r.resident_id);
-    if(seen.has(key)) return;
-    seen.add(key);
-    deduped.push(r);
-  });
+      return {
+        resident_id: residentId,
+        member_id: memberId,
+        resident_index: residentIndex,
+        name: firstNonEmpty(
+          resident.name,
+          resident.full_name,
+          resident.fullName,
+          resident.resident_name,
+          resident.residentName,
+          resident.display_name,
+          resident.displayName,
+          member.primary_name,
+          member.name,
+          member.display_name
+        ),
+        email: firstNonEmpty(
+          resident.email,
+          resident.email_address,
+          resident.emailAddress,
+          member.primary_email,
+          member.email,
+          member.email_address
+        ),
+        roles: rolesFor(resident),
+        source: "resident"
+      };
+    }
 
-  deduped.sort((a,b) => {
-    const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
-    if(byMember !== 0) return byMember;
-    return Number(a.resident_index || 0) - Number(b.resident_index || 0);
-  });
+    function flattenMembers(members){
+      const out = [];
 
-  return deduped;
-}
-        
+      members.forEach(member => {
+        const memberId = baseMemberIdFrom(member);
+        if(!memberId) return;
+
+        const residents = Array.isArray(member.residents) ? member.residents : [];
+
+        if(residents.length){
+          residents.forEach((resident,arrayIndex) => {
+            if(!resident || typeof resident !== "object") return;
+            out.push(normaliseResident(member,resident,arrayIndex));
+          });
+          return;
+        }
+
+        out.push({
+          resident_id:`${memberId}/1`,
+          member_id:memberId,
+          resident_index:1,
+          name:firstNonEmpty(member.primary_name,member.name,member.display_name),
+          email:firstNonEmpty(member.primary_email,member.email,member.email_address),
+          roles:rolesFor(member),
+          source:"legacy"
+        });
+      });
+
+      out.sort((a,b) => {
+        const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
+        if(byMember !== 0) return byMember;
+        return Number(a.resident_index || 0) - Number(b.resident_index || 0);
+      });
+
+      return out;
+    }
+
     function resetSelection(){
       selectedResident = null;
       memberNameEl.value = "";
@@ -834,6 +815,7 @@ function flattenMembers(members){
         });
 
         const rawMembers = Array.isArray(data.members) ? data.members : [];
+
         allResidents = flattenMembers(rawMembers);
         currentRoleHolders = allResidents.filter(r => rolesFor(r).length > 0);
 
@@ -850,45 +832,86 @@ function flattenMembers(members){
       }
     }
 
-    function loadResidentByRef(){
-  clearMessages();
+    async function loadResidentByRef(){
+      clearMessages();
 
-  const ref = cleanId(addResidentRefEl.value);
-  if(!ref){
-    showBox(warnBox,"Enter a resident reference such as SM55/1.");
-    return;
-  }
+      const ref = cleanId(addResidentRefEl.value);
+      if(!ref){
+        showBox(warnBox,"Enter a resident reference such as SM55/1.");
+        return;
+      }
 
-  if(!ref.includes("/")){
-    showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
-    return;
-  }
+      if(!ref.includes("/")){
+        showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
+        return;
+      }
 
-  const parts = ref.split("/");
-  const wantedMemberId = cleanId(parts[0]);
-  const wantedIndex = parseInt(parts[1],10);
+      const parts = ref.split("/");
+      const wantedMemberId = cleanId(parts[0]);
+      const wantedIndex = parseInt(parts[1],10);
 
-  if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
-    showBox(warnBox,"Please use a valid resident reference such as SM55/1.");
-    return;
-  }
+      if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
+        showBox(warnBox,"Please use a valid resident reference such as SM55/1.");
+        return;
+      }
 
-  const matching = allResidents.filter(r => cleanId(r.member_id) === wantedMemberId);
+      try{
+        showBox(infoBox,`Loading ${ref}…`);
 
-  const found = matching.find(r => Number(r.resident_index) === wantedIndex);
+        const data = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(wantedMemberId)}`,{
+          method:"GET",
+          headers:{ "Authorization":`Bearer ${localStorage.getItem("authToken") || adminToken || ""}` }
+        });
 
-  if(!found){
-    showBox(errBox,`Resident ${ref} was not found in Members Information.`);
-    return;
-  }
+        const member = data.member || data.profile || data.entry || data || {};
+        const residents = Array.isArray(member.residents) ? member.residents : [];
+        const resident = residents[wantedIndex - 1];
 
-  found.resident_id = ref;
-  found.member_id = wantedMemberId;
-  found.resident_index = wantedIndex;
+        if(!resident || typeof resident !== "object"){
+          clearBox(infoBox);
+          showBox(errBox,`Resident ${ref} was not found in Members Information.`);
+          return;
+        }
 
-  selectResident(found);
-  showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
-}
+        const existingRoleRecord = allResidents.find(r => cleanId(r.resident_id) === ref);
+
+        const selected = {
+          resident_id: ref,
+          member_id: wantedMemberId,
+          resident_index: wantedIndex,
+          name: firstNonEmpty(
+            resident.name,
+            resident.full_name,
+            resident.fullName,
+            resident.resident_name,
+            resident.residentName,
+            resident.display_name,
+            resident.displayName,
+            member.primary_name,
+            member.name,
+            member.display_name
+          ),
+          email: firstNonEmpty(
+            resident.email,
+            resident.email_address,
+            resident.emailAddress,
+            member.primary_email,
+            member.email,
+            member.email_address
+          ),
+          roles: existingRoleRecord ? rolesFor(existingRoleRecord) : rolesFor(resident),
+          source: "member-profile"
+        };
+
+        clearBox(infoBox);
+        selectResident(selected);
+        showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
+      }catch(err){
+        clearBox(infoBox);
+        showBox(errBox,err.message || `Could not load ${ref}.`);
+      }
+    }
+
     async function saveRoles(){
       clearMessages();
 
@@ -929,6 +952,8 @@ function flattenMembers(members){
         const refreshed = currentRoleHolders.find(r => r.resident_id === keepId);
         if(refreshed){
           selectResident(refreshed);
+        }else{
+          resetSelection();
         }
       }catch(err){
         showBox(errBox,err.message || "Could not save roles.");
@@ -953,8 +978,8 @@ function flattenMembers(members){
         window.scLogout();
         return;
       }
-      try{ localStorage.clear(); }catch{}
-      try{ sessionStorage.clear(); }catch{}
+      try{ localStorage.clear(); }catch(_){}
+      try{ sessionStorage.clear(); }catch(_){}
       window.location.href = "index.html";
     });
 

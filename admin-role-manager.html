@@ -672,27 +672,7 @@
           });
           return;
         }
-
-        out.push({
-          resident_id: `${memberId}/1`,
-          member_id: memberId,
-          resident_index: 1,
-          name: firstNonEmpty(member.name, member.display_name),
-          email: firstNonEmpty(member.email, member.email_address),
-          roles: rolesFor(member),
-          source: "legacy"
-        });
-      });
-
-      out.sort((a,b) => {
-        const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
-        if(byMember !== 0) return byMember;
-        return Number(a.resident_index || 0) - Number(b.resident_index || 0);
-      });
-
-      return out;
-    }
-
+        
     function resetSelection(){
       selectedResident = null;
       memberNameEl.value = "";

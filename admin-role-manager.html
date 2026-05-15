@@ -880,18 +880,12 @@ function normaliseResident(member, resident, arrayIndex){
             resident.resident_name,
             resident.residentName,
             resident.display_name,
-            resident.displayName,
-            member.primary_name,
-            member.name,
-            member.display_name
+            resident.displayName
           ),
           email: firstNonEmpty(
             resident.email,
             resident.email_address,
-            resident.emailAddress,
-            member.primary_email,
-            member.email,
-            member.email_address
+            resident.emailAddress
           ),
           roles: existingRoleRecord ? rolesFor(existingRoleRecord) : rolesFor(resident),
           source: "member-profile"

@@ -650,40 +650,34 @@
         : "No role";
     }
 
-    function normaliseResident(member, resident, arrayIndex){
-      const memberId = baseMemberIdFrom(member);
-      const residentIndex = arrayIndex + 1;
-      const residentId = `${memberId}/${residentIndex}`;
+function normaliseResident(member, resident, arrayIndex){
+  const memberId = baseMemberIdFrom(member);
+  const residentIndex = arrayIndex + 1;
+  const residentId = `${memberId}/${residentIndex}`;
 
-      return {
-        resident_id: residentId,
-        member_id: memberId,
-        resident_index: residentIndex,
-        name: firstNonEmpty(
-          resident.name,
-          resident.full_name,
-          resident.fullName,
-          resident.resident_name,
-          resident.residentName,
-          resident.display_name,
-          resident.displayName,
-          member.primary_name,
-          member.name,
-          member.display_name
-        ),
-        email: firstNonEmpty(
-          resident.email,
-          resident.email_address,
-          resident.emailAddress,
-          member.primary_email,
-          member.email,
-          member.email_address
-        ),
-        roles: rolesFor(resident),
-        source: "resident"
-      };
-    }
-
+  return {
+    resident_id: residentId,
+    member_id: memberId,
+    resident_index: residentIndex,
+    name: firstNonEmpty(
+      resident.name,
+      resident.full_name,
+      resident.fullName,
+      resident.resident_name,
+      resident.residentName,
+      resident.display_name,
+      resident.displayName
+    ),
+    email: firstNonEmpty(
+      resident.email,
+      resident.email_address,
+      resident.emailAddress
+    ),
+    roles: rolesFor(resident),
+    source: "resident"
+  };
+}
+    
     function flattenMembers(members){
       const out = [];
 

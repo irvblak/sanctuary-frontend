@@ -649,7 +649,6 @@
         ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
         : "No role";
     }
-
 function normaliseResident(member, resident, arrayIndex){
   const memberId = baseMemberIdFrom(member);
   const residentIndex = arrayIndex + 1;
@@ -668,12 +667,11 @@ function normaliseResident(member, resident, arrayIndex){
       resident.display_name,
       resident.displayName
     ),
-    email: (
-      email: firstNonEmpty(
-       resident.email,
-       resident.email_address,
-       resident.emailAddress
-     ),
+    email: firstNonEmpty(
+      resident.email,
+      resident.email_address,
+      resident.emailAddress
+    ),
     roles: rolesFor(resident),
     source: "resident"
   };

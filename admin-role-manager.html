@@ -882,11 +882,12 @@ function normaliseResident(member, resident, arrayIndex){
             resident.display_name,
             resident.displayName
           ),
-          email: firstNonEmpty(
-            resident.email,
-            resident.email_address,
-            resident.emailAddress
-          ),
+          email: (
+            firstNonEmpty(resident.email, resident.email_address, resident.emailAddress) &&
+            firstNonEmpty(resident.email, resident.email_address, resident.emailAddress) !== firstNonEmpty(member.primary_email, member.email, member.email_address)
+          )
+            ? firstNonEmpty(resident.email, resident.email_address, resident.emailAddress)
+            : "",
           roles: existingRoleRecord ? rolesFor(existingRoleRecord) : rolesFor(resident),
           source: "member-profile"
         };

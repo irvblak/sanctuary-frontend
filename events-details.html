@@ -594,40 +594,51 @@
     }
 
     function getViewerMemberId(){
-      return normaliseMemberId(
-        localStorage.getItem("currentMemberId") ||
-        sessionStorage.getItem("currentMemberId") ||
-        localStorage.getItem("sanctuaryCurrentMemberId") ||
-        sessionStorage.getItem("sanctuaryCurrentMemberId") ||
-        localStorage.getItem("memberId") ||
-        sessionStorage.getItem("memberId")
-      );
-    }
+  return normaliseMemberId(
+    localStorage.getItem("currentMemberId") ||
+    sessionStorage.getItem("currentMemberId") ||
+    localStorage.getItem("sanctuaryCurrentMemberId") ||
+    sessionStorage.getItem("sanctuaryCurrentMemberId") ||
+    localStorage.getItem("memberId") ||
+    sessionStorage.getItem("memberId") ||
+    localStorage.getItem("sanctuaryMemberId") ||
+    sessionStorage.getItem("sanctuaryMemberId") ||
+    localStorage.getItem("selectedMemberId") ||
+    sessionStorage.getItem("selectedMemberId")
+  );
+}
 
-    function isAdminViewer(){
-      return !!(
-        localStorage.getItem("adminToken") ||
-        sessionStorage.getItem("adminToken")
-      );
-    }
+function isAdminViewer(){
+  return !!(
+    localStorage.getItem("adminToken") ||
+    sessionStorage.getItem("adminToken") ||
+    localStorage.getItem("sanctuaryAdminToken") ||
+    sessionStorage.getItem("sanctuaryAdminToken")
+  );
+}
 
-    function getEventHostMemberId(e){
-      const direct = normaliseMemberId(
-        e.host_member_id ||
-        e.hostMemberId ||
-        e.member_id ||
-        e.created_by ||
-        e.created_by_member_id ||
-        e.owner_member_id
-      );
+function getEventHostMemberId(e){
+  const direct = normaliseMemberId(
+    e.host_member_id ||
+    e.hostMemberId ||
+    e.host_resident_id ||
+    e.hostResidentId ||
+    e.host_ref ||
+    e.hostRef ||
+    e.producer_ref ||
+    e.producerRef ||
+    e.member_id ||
+    e.created_by ||
+    e.created_by_member_id ||
+    e.owner_member_id
+  );
 
-      if (direct) return direct;
+  if (direct) return direct;
 
-      const ref = getEventReference(e);
-      const refMatch = String(ref || "").toUpperCase().match(/^SM\d+/);
-      return refMatch ? refMatch[0] : "";
-    }
-
+  const ref = getEventReference(e);
+  const refMatch = String(ref || "").toUpperCase().match(/SM\d+/);
+  return refMatch ? refMatch[0] : "";
+}
     function viewerCanManageNotice(e){
       const viewer = getViewerMemberId();
       const host = getEventHostMemberId(e);

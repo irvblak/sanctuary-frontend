@@ -171,6 +171,43 @@
       font-size:.86rem;
     }
 
+    .manager-grid{
+      display:grid;
+      grid-template-columns:1.2fr .7fr .7fr .9fr;
+      gap:.65rem;
+      align-items:end;
+    }
+
+    .manager-grid label{
+      display:block;
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .manager-grid input,
+    .manager-grid select{
+      width:100%;
+      margin-top:.25rem;
+      padding:.55rem .6rem;
+      border:1px solid var(--line);
+      border-radius:10px;
+      font:inherit;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .manager-note{
+      grid-column:1 / -1;
+    }
+
+    .manager-actions{
+      grid-column:1 / -1;
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
+
     table{
       width:100%;
       border-collapse:collapse;
@@ -206,6 +243,22 @@
     .status.interested{background:#eef3ff;color:#314d8a}
     .status.cancelled{background:#f8eaea;color:var(--bad)}
 
+    .payment-status{
+      display:inline-block;
+      border-radius:999px;
+      padding:.18rem .48rem;
+      font-size:.78rem;
+      font-weight:800;
+      background:#eef4f7;
+      color:var(--ink);
+    }
+
+    .payment-status.paid{background:#e8f5eb;color:var(--good)}
+    .payment-status.unpaid{background:#fff4db;color:var(--warn)}
+    .payment-status.part-paid{background:#eef3ff;color:#314d8a}
+    .payment-status.refunded{background:#f8eaea;color:var(--bad)}
+    .payment-status.n-a{background:#eef4f7;color:var(--muted)}
+
     .contact{
       color:var(--muted);
       line-height:1.35;
@@ -233,12 +286,13 @@
       .actions{justify-content:flex-start;margin-top:.8rem}
       .event-grid{grid-template-columns:1fr 1fr}
       .summary{grid-template-columns:1fr 1fr 1fr}
+      .manager-grid{grid-template-columns:1fr 1fr}
       table{font-size:.82rem}
     }
 
     @media(max-width:560px){
       .page{padding:.8rem}
-      .event-grid,.summary{grid-template-columns:1fr}
+      .event-grid,.summary,.manager-grid{grid-template-columns:1fr}
       th:nth-child(4),td:nth-child(4),
       th:nth-child(5),td:nth-child(5),
       th:nth-child(6),td:nth-child(6){
@@ -249,7 +303,7 @@
     @media print{
       body{background:#fff}
       .page{max-width:none;padding:0}
-      .actions{display:none}
+      .actions,.manager-card{display:none}
       .card{box-shadow:none;border-color:#bbb;break-inside:avoid}
       a{color:inherit;text-decoration:none}
       th{background:#f2f2f2}
@@ -351,6 +405,50 @@
       </div>
     </section>
 
+    <section class="card manager-card">
+      <div class="section-title">
+        <h2>Host booking manager</h2>
+        <div class="note">Add or update a booking on behalf of a member</div>
+      </div>
+
+      <form id="hostBookingForm">
+        <div class="manager-grid">
+          <label>
+            Membership number
+            <input id="managerMemberId" type="text" placeholder="e.g. SM55" autocomplete="off" />
+          </label>
+
+          <label>
+            Member places
+            <input id="managerMemberPlaces" type="number" min="1" value="1" />
+          </label>
+
+          <label>
+            Guest places
+            <input id="managerGuestPlaces" type="number" min="0" value="0" />
+          </label>
+
+          <label>
+            Response
+            <select id="managerMode">
+              <option value="book">Booking</option>
+              <option value="interest">Interest only</option>
+            </select>
+          </label>
+
+          <label class="manager-note">
+            Note
+            <input id="managerNotes" type="text" placeholder="Optional host note" />
+          </label>
+
+          <div class="manager-actions">
+            <button class="btn" type="submit">Add / update booking</button>
+            <button class="btn secondary" id="managerClearBtn" type="button">Clear</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
     <section class="card">
       <div class="section-title">
         <h2>Responses</h2>
@@ -377,6 +475,16 @@
     function asInt(value, fallback = 0){
       const n = parseInt(value, 10);
       return Number.isFinite(n) ? n : fallback;
+    }
+
+    function asMoney(value, fallback = 0){
+      const n = Number(value);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function formatMoney(value){
+      const n = asMoney(value, 0);
+      return `£${n.toFixed(2)}`;
     }
 
     function getEventId(){
@@ -426,6 +534,13 @@
       return [];
     }
 
+    function normalisePaymentStatus(value){
+      const raw = clean(value, "n/a").toLowerCase();
+      if (raw === "part paid") return "part-paid";
+      if (raw === "na") return "n/a";
+      return raw;
+    }
+
     function normaliseBooking(b){
       const status = clean(b.status || b.booking_status, "booked").toLowerCase();
 
@@ -444,6 +559,10 @@
         0
       );
 
+      const amountDue = asMoney(b.amount_due, 0);
+      const amountPaid = asMoney(b.amount_paid, 0);
+      const paymentStatus = normalisePaymentStatus(b.payment_status);
+
       return {
         status,
         memberId: clean(b.member_id || b.memberId || b.membership_number || b.property_id),
@@ -453,6 +572,10 @@
         memberPlaces,
         guestPlaces,
         totalPlaces: memberPlaces + guestPlaces,
+        amountDue,
+        amountPaid,
+        paymentStatus,
+        notes: clean(b.notes || b.payment_note || "", ""),
         updated: clean(b.updated || b.updated_at || b.created_at || b.timestamp, "")
       };
     }
@@ -469,6 +592,13 @@
       card.textContent = text;
     }
 
+    function clearMessage(){
+      const card = $("messageCard");
+      card.hidden = true;
+      card.className = "card";
+      card.textContent = "";
+    }
+
     function setLinks(eventId){
       $("noticeLink").href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
       $("bookingLink").href = `event-booking.html?event_id=${encodeURIComponent(eventId)}`;
@@ -476,7 +606,7 @@
     }
 
     function renderEvent(event, eventId){
-      const title = clean(event.title || event.event_title, "Untitled event");
+      const title = clean(event.title || event.event_title || event.notice_title, "Untitled event");
       const ref = clean(event.event_ref || event.reference || event.ref || eventId);
       const category = clean(event.category_label || event.category || event.category_key);
       const capacity = asInt(event.capacity_total ?? event.capacity ?? event.places_total, 0);
@@ -528,6 +658,7 @@
       if (row.email) bits.push(`<div>${escapeHtml(row.email)}</div>`);
       if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
       if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
+      if (row.notes) bits.push(`<div>Note: ${escapeHtml(row.notes)}</div>`);
       return bits.length ? bits.join("") : "—";
     }
 
@@ -538,6 +669,10 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
+    }
+
+    function paymentStatusClass(status){
+      return String(status || "n/a").replaceAll("/", "-").replaceAll(" ", "-");
     }
 
     function renderTable(rows){
@@ -566,7 +701,10 @@
               <th>Member places</th>
               <th>Guests</th>
               <th>Total</th>
-              <th>Contact</th>
+              <th>Due</th>
+              <th>Paid</th>
+              <th>Payment</th>
+              <th>Contact / note</th>
             </tr>
           </thead>
           <tbody>
@@ -578,6 +716,13 @@
                 <td>${row.memberPlaces}</td>
                 <td>${row.guestPlaces}</td>
                 <td><strong>${row.totalPlaces}</strong></td>
+                <td>${formatMoney(row.amountDue)}</td>
+                <td>${formatMoney(row.amountPaid)}</td>
+                <td>
+                  <span class="payment-status ${escapeHtml(paymentStatusClass(row.paymentStatus))}">
+                    ${escapeHtml(row.paymentStatus)}
+                  </span>
+                </td>
                 <td class="contact">${contactCell(row)}</td>
               </tr>
             `).join("")}
@@ -590,13 +735,27 @@
 
     function getAuthToken(){
       return (
-      localStorage.getItem("authToken") ||
-      sessionStorage.getItem("authToken") ||
-      localStorage.getItem("sanctuaryAuthToken") ||
-      sessionStorage.getItem("sanctuaryAuthToken") ||
-      ""
-    );
-  }
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken") ||
+        localStorage.getItem("sanctuaryAuthToken") ||
+        sessionStorage.getItem("sanctuaryAuthToken") ||
+        localStorage.getItem("adminToken") ||
+        sessionStorage.getItem("adminToken") ||
+        ""
+      );
+    }
+
+    function authHeaders(){
+      const token = getAuthToken();
+      const headers = { "Content-Type": "application/json" };
+
+      if (token){
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      return headers;
+    }
+
     async function fetchJson(url){
       const token = getAuthToken();
 
@@ -613,18 +772,107 @@
       const text = await res.text();
 
       let data = null;
-      try {
+      try{
         data = text ? JSON.parse(text) : null;
-       } catch {
-         data = { success:false, message:text || "Invalid server response" };
-     }
+      }catch{
+        data = { success:false, message:text || "Invalid server response" };
+      }
 
-     if (!res.ok || data?.success === false){
+      if (!res.ok || data?.success === false){
         throw new Error(data?.message || `Request failed: ${res.status}`);
       }
 
       return data;
     }
+
+    async function postJson(url, payload){
+      const res = await fetch(url, {
+        method:"POST",
+        cache:"no-store",
+        headers:authHeaders(),
+        body:JSON.stringify(payload || {})
+      });
+
+      const text = await res.text();
+
+      let data = null;
+      try{
+        data = text ? JSON.parse(text) : null;
+      }catch{
+        data = { success:false, message:text || "Invalid server response" };
+      }
+
+      if (!res.ok || data?.success === false){
+        throw new Error(data?.message || `Request failed: ${res.status}`);
+      }
+
+      return data;
+    }
+
+    function clearHostBookingForm(){
+      $("managerMemberId").value = "";
+      $("managerMemberPlaces").value = "1";
+      $("managerGuestPlaces").value = "0";
+      $("managerMode").value = "book";
+      $("managerNotes").value = "";
+    }
+
+    async function submitHostBooking(event){
+      event.preventDefault();
+
+      const eventId = getEventId();
+      const memberId = clean($("managerMemberId").value, "");
+      const placesTotal = asInt($("managerMemberPlaces").value, 1);
+      const guestPlaces = asInt($("managerGuestPlaces").value, 0);
+      const mode = $("managerMode").value === "interest" ? "interest" : "book";
+      const notes = clean($("managerNotes").value, "");
+
+      if (!memberId){
+        showMessage("Enter a membership number first.", true);
+        return;
+      }
+
+      if (placesTotal < 1){
+        showMessage("Member places must be at least 1.", true);
+        return;
+      }
+
+      if (guestPlaces < 0){
+        showMessage("Guest places cannot be negative.", true);
+        return;
+      }
+
+      try{
+        const payload = {
+          member_id: memberId,
+          places_total: placesTotal,
+          guest_places: guestPlaces,
+          mode,
+          notes
+        };
+
+        let data;
+
+        try{
+          data = await postJson(`${API_BASE}/api/events/${encodeURIComponent(eventId)}/book`, payload);
+        }catch(err){
+          if (String(err.message || "").toLowerCase().includes("already have an active booking")){
+            data = await postJson(`${API_BASE}/api/events/${encodeURIComponent(eventId)}/update-booking`, payload);
+          }else{
+            throw err;
+          }
+        }
+
+        showMessage(data.message || "Booking saved.");
+        clearHostBookingForm();
+        await init();
+
+      }catch(err){
+        console.error(err);
+        showMessage(err.message || "Could not save booking.", true);
+      }
+    }
+
     async function init(){
       const eventId = getEventId();
 
@@ -655,6 +903,9 @@
         $("tableWrap").innerHTML = `<div class="empty">Booking responses could not be loaded.</div>`;
       }
     }
+
+    $("hostBookingForm")?.addEventListener("submit", submitHostBooking);
+    $("managerClearBtn")?.addEventListener("click", clearHostBookingForm);
 
     init();
   </script>

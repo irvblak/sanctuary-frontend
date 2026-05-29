@@ -609,6 +609,10 @@
     sessionStorage.getItem("currentResidentId") ||
     localStorage.getItem("sanctuaryCurrentResidentId") ||
     sessionStorage.getItem("sanctuaryCurrentResidentId")
+    localStorage.getItem("currentHostMemberId") ||
+    sessionStorage.getItem("currentHostMemberId") ||
+    localStorage.getItem("currentHostResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") ||
   );
 
   if (stored) return stored;

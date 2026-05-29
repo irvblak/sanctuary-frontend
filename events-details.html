@@ -593,8 +593,8 @@
       return raw;
     }
 
-    function getViewerMemberId(){
-  return normaliseMemberId(
+  function getViewerMemberId(){
+  const stored = normaliseMemberId(
     localStorage.getItem("currentMemberId") ||
     sessionStorage.getItem("currentMemberId") ||
     localStorage.getItem("sanctuaryCurrentMemberId") ||
@@ -606,8 +606,26 @@
     localStorage.getItem("selectedMemberId") ||
     sessionStorage.getItem("selectedMemberId")
   );
-}
 
+  if (stored) return stored;
+
+  const token =
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("authToken") ||
+    "";
+
+  try{
+    const payload = JSON.parse(atob(String(token).split(".")[1] || ""));
+    return normaliseMemberId(
+      payload.member_id ||
+      payload.memberId ||
+      payload.sub ||
+      ""
+    );
+  }catch(_){
+    return "";
+  }
+}  
 function isAdminViewer(){
   return !!(
     localStorage.getItem("adminToken") ||

@@ -1195,7 +1195,11 @@ async function verifyHost(){
     sessionStorage.setItem("authToken", authToken);
     sessionStorage.setItem("currentMemberId", memberId);
     sessionStorage.setItem("currentResidentId", normalResidentId);
-
+    localStorage.setItem("currentHostMemberId", memberId);
+    localStorage.setItem("currentHostResidentId", normalResidentId);
+    sessionStorage.setItem("currentHostMemberId", memberId);
+    sessionStorage.setItem("currentHostResidentId", normalResidentId);
+    
     verified = true;
     verifiedMemberId = memberId;
     verifiedResidentIndex = residentIndex;

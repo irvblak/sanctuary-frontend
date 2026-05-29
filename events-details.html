@@ -627,10 +627,16 @@ function getEventHostMemberId(e){
     e.hostRef ||
     e.producer_ref ||
     e.producerRef ||
-    e.member_id ||
-    e.created_by ||
+    e.host_member_id ||
+    e.hostMemberId ||
+    e.host_resident_id ||
+    e.hostResidentId ||
+    e.host_ref ||
+    e.hostRef ||
+    e.producer_ref ||
+    e.producerRef ||
     e.created_by_member_id ||
-    e.owner_member_id
+    e.owner_member_id 
   );
 
   if (direct) return direct;

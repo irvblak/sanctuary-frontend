@@ -33,7 +33,7 @@
     }
 
     .page{
-      max-width:1120px;
+      max-width:1180px;
       margin:0 auto;
       padding:1.2rem;
     }
@@ -211,7 +211,7 @@
     table{
       width:100%;
       border-collapse:collapse;
-      font-size:.9rem;
+      font-size:.88rem;
     }
 
     th,td{
@@ -223,10 +223,17 @@
 
     th{
       color:var(--muted);
-      font-size:.76rem;
+      font-size:.74rem;
       text-transform:uppercase;
       letter-spacing:.04em;
       background:#f7fbfd;
+    }
+
+    tfoot th{
+      background:#eef6fb;
+      color:var(--ink);
+      font-weight:900;
+      border-top:2px solid var(--line);
     }
 
     .status{
@@ -293,19 +300,16 @@
     @media(max-width:560px){
       .page{padding:.8rem}
       .event-grid,.summary,.manager-grid{grid-template-columns:1fr}
-      th:nth-child(4),td:nth-child(4),
-      th:nth-child(5),td:nth-child(5),
-      th:nth-child(6),td:nth-child(6){
-        text-align:center;
-      }
     }
 
     @media print{
       body{background:#fff}
       .page{max-width:none;padding:0}
-      .actions,.manager-card{display:none}
+      .actions,.manager-card{display:none !important}
       .card{box-shadow:none;border-color:#bbb;break-inside:avoid}
       a{color:inherit;text-decoration:none}
+      table{font-size:8.5pt}
+      th,td{padding:4px 5px}
       th{background:#f2f2f2}
     }
   </style>
@@ -336,38 +340,14 @@
       </div>
 
       <div class="event-grid">
-        <div class="field">
-          <span class="label">Reference</span>
-          <div class="value" id="eventRef">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Date</span>
-          <div class="value" id="eventDate">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Time</span>
-          <div class="value" id="eventTime">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Location</span>
-          <div class="value" id="eventLocation">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Category</span>
-          <div class="value" id="eventCategory">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Capacity</span>
-          <div class="value" id="eventCapacity">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Booking mode</span>
-          <div class="value" id="eventMode">—</div>
-        </div>
-        <div class="field">
-          <span class="label">Event ID</span>
-          <div class="value" id="eventIdBox">—</div>
-        </div>
+        <div class="field"><span class="label">Reference</span><div class="value" id="eventRef">—</div></div>
+        <div class="field"><span class="label">Date</span><div class="value" id="eventDate">—</div></div>
+        <div class="field"><span class="label">Time</span><div class="value" id="eventTime">—</div></div>
+        <div class="field"><span class="label">Location</span><div class="value" id="eventLocation">—</div></div>
+        <div class="field"><span class="label">Category</span><div class="value" id="eventCategory">—</div></div>
+        <div class="field"><span class="label">Capacity</span><div class="value" id="eventCapacity">—</div></div>
+        <div class="field"><span class="label">Booking mode</span><div class="value" id="eventMode">—</div></div>
+        <div class="field"><span class="label">Event ID</span><div class="value" id="eventIdBox">—</div></div>
       </div>
     </section>
 
@@ -378,30 +358,12 @@
       </div>
 
       <div class="summary">
-        <div class="metric good">
-          <strong id="bookedMemberPlaces">0</strong>
-          <span>Member places</span>
-        </div>
-        <div class="metric good">
-          <strong id="bookedGuestPlaces">0</strong>
-          <span>Guest places</span>
-        </div>
-        <div class="metric good">
-          <strong id="bookedTotalPlaces">0</strong>
-          <span>Total booked</span>
-        </div>
-        <div class="metric">
-          <strong id="remainingPlaces">—</strong>
-          <span>Remaining</span>
-        </div>
-        <div class="metric warn">
-          <strong id="waitlistPlaces">0</strong>
-          <span>Waitlist places</span>
-        </div>
-        <div class="metric">
-          <strong id="interestedCount">0</strong>
-          <span>Interested</span>
-        </div>
+        <div class="metric good"><strong id="bookedMemberPlaces">0</strong><span>Member places</span></div>
+        <div class="metric good"><strong id="bookedGuestPlaces">0</strong><span>Guest places</span></div>
+        <div class="metric good"><strong id="bookedTotalPlaces">0</strong><span>Total booked</span></div>
+        <div class="metric"><strong id="remainingPlaces">—</strong><span>Remaining</span></div>
+        <div class="metric warn"><strong id="waitlistPlaces">0</strong><span>Waitlist places</span></div>
+        <div class="metric"><strong id="interestedCount">0</strong><span>Interested</span></div>
       </div>
     </section>
 
@@ -451,7 +413,7 @@
 
     <section class="card">
       <div class="section-title">
-        <h2>Responses</h2>
+        <h2>Printable State of Play</h2>
         <div class="note" id="responseCount">—</div>
       </div>
 
@@ -463,7 +425,6 @@
 
   <script>
     const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
-
     const $ = (id) => document.getElementById(id);
 
     function clean(value, fallback = "—"){
@@ -483,18 +444,12 @@
     }
 
     function formatMoney(value){
-      const n = asMoney(value, 0);
-      return `£${n.toFixed(2)}`;
+      return `£${asMoney(value, 0).toFixed(2)}`;
     }
 
     function getEventId(){
       const params = new URLSearchParams(window.location.search);
-      return clean(
-        params.get("event_id") ||
-        params.get("id") ||
-        params.get("eventId"),
-        ""
-      );
+      return clean(params.get("event_id") || params.get("id") || params.get("eventId"), "");
     }
 
     function formatDate(iso){
@@ -522,8 +477,7 @@
     }
 
     function normaliseEvent(payload){
-      const event = payload && payload.event ? payload.event : payload;
-      return event || {};
+      return payload && payload.event ? payload.event : (payload || {});
     }
 
     function normaliseBookings(payload){
@@ -545,23 +499,14 @@
       const status = clean(b.status || b.booking_status, "booked").toLowerCase();
 
       const memberPlaces = asInt(
-        b.places_total ??
-        b.member_places ??
-        b.places ??
-        b.household_places,
+        b.places_total ?? b.member_places ?? b.places ?? b.household_places,
         0
       );
 
       const guestPlaces = asInt(
-        b.guest_places ??
-        b.guests ??
-        b.additional_guest_places,
+        b.guest_places ?? b.guests ?? b.additional_guest_places,
         0
       );
-
-      const amountDue = asMoney(b.amount_due, 0);
-      const amountPaid = asMoney(b.amount_paid, 0);
-      const paymentStatus = normalisePaymentStatus(b.payment_status);
 
       return {
         status,
@@ -572,9 +517,9 @@
         memberPlaces,
         guestPlaces,
         totalPlaces: memberPlaces + guestPlaces,
-        amountDue,
-        amountPaid,
-        paymentStatus,
+        amountDue: asMoney(b.amount_due, 0),
+        amountPaid: asMoney(b.amount_paid, 0),
+        paymentStatus: normalisePaymentStatus(b.payment_status),
         notes: clean(b.notes || b.payment_note || "", ""),
         updated: clean(b.updated || b.updated_at || b.created_at || b.timestamp, "")
       };
@@ -590,13 +535,6 @@
       card.hidden = false;
       card.className = isError ? "card error" : "card";
       card.textContent = text;
-    }
-
-    function clearMessage(){
-      const card = $("messageCard");
-      card.hidden = true;
-      card.className = "card";
-      card.textContent = "";
     }
 
     function setLinks(eventId){
@@ -653,15 +591,6 @@
       $("remainingPlaces").textContent = capacity > 0 ? Math.max(0, capacity - bookedTotal) : "—";
     }
 
-    function contactCell(row){
-      const bits = [];
-      if (row.email) bits.push(`<div>${escapeHtml(row.email)}</div>`);
-      if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
-      if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
-      if (row.notes) bits.push(`<div>Note: ${escapeHtml(row.notes)}</div>`);
-      return bits.length ? bits.join("") : "—";
-    }
-
     function escapeHtml(str){
       return String(str)
         .replaceAll("&","&amp;")
@@ -671,8 +600,25 @@
         .replaceAll("'","&#039;");
     }
 
+    function contactCell(row){
+      const bits = [];
+      if (row.email) bits.push(`<div>${escapeHtml(row.email)}</div>`);
+      if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
+      if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
+      if (row.notes) bits.push(`<div>Note: ${escapeHtml(row.notes)}</div>`);
+      return bits.length ? bits.join("") : "—";
+    }
+
     function paymentStatusClass(status){
       return String(status || "n/a").replaceAll("/", "-").replaceAll(" ", "-");
+    }
+
+    function bookedRows(rows){
+      return rows.filter(r => r.status === "booked");
+    }
+
+    function sumRows(rows, key){
+      return rows.reduce((sum, r) => sum + asMoney(r[key], 0), 0);
     }
 
     function renderTable(rows){
@@ -691,7 +637,15 @@
         return;
       }
 
-      const html = `
+      const confirmed = bookedRows(activeRows);
+      const totalMemberPlaces = sumRows(confirmed, "memberPlaces");
+      const totalGuestPlaces = sumRows(confirmed, "guestPlaces");
+      const totalPlaces = sumRows(confirmed, "totalPlaces");
+      const totalDue = sumRows(confirmed, "amountDue");
+      const totalPaid = sumRows(confirmed, "amountPaid");
+      const totalOutstanding = totalDue - totalPaid;
+
+      $("tableWrap").innerHTML = `
         <table>
           <thead>
             <tr>
@@ -727,10 +681,19 @@
               </tr>
             `).join("")}
           </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3">Booked totals</th>
+              <th>${totalMemberPlaces}</th>
+              <th>${totalGuestPlaces}</th>
+              <th>${totalPlaces}</th>
+              <th>${formatMoney(totalDue)}</th>
+              <th>${formatMoney(totalPaid)}</th>
+              <th colspan="2">Outstanding: ${formatMoney(totalOutstanding)}</th>
+            </tr>
+          </tfoot>
         </table>
       `;
-
-      $("tableWrap").innerHTML = html;
     }
 
     function getAuthToken(){
@@ -748,27 +711,16 @@
     function authHeaders(){
       const token = getAuthToken();
       const headers = { "Content-Type": "application/json" };
-
-      if (token){
-        headers.Authorization = `Bearer ${token}`;
-      }
-
+      if (token) headers.Authorization = `Bearer ${token}`;
       return headers;
     }
 
     async function fetchJson(url){
       const token = getAuthToken();
-
       const headers = {};
-      if (token){
-        headers.Authorization = `Bearer ${token}`;
-      }
+      if (token) headers.Authorization = `Bearer ${token}`;
 
-      const res = await fetch(url, {
-        cache: "no-store",
-        headers
-      });
-
+      const res = await fetch(url, { cache:"no-store", headers });
       const text = await res.text();
 
       let data = null;

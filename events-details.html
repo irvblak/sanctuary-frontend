@@ -665,15 +665,16 @@ function getEventHostMemberId(e){
     }
 
     function setHostControlButtons(e){
-      const canManage = viewerCanManageNotice(e);
+  hsopBtnBottom.href =
+    `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
-      hsopBtnBottom.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+  editBtnBottom.href =
+    `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
-      [hsopBtnBottom, editBtnBottom].forEach(btn => {
-        btn.classList.toggle("hidden", !canManage);
-      });
-    }
+  [hsopBtnBottom, editBtnBottom].forEach(btn => {
+    btn.classList.remove("hidden");
+  });
+}
 
     function showMessage(text, kind = "info"){
       if (!text){

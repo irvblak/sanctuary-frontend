@@ -310,10 +310,19 @@
     }
 
     .host-tools{
-      justify-content:flex-end;
-      padding-top:0;
-      margin-top:-10px;
-    }
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+  padding-top:0;
+  margin-top:-10px;
+}
+
+.host-note{
+  font-size:.78rem;
+  color:#8a96a0;
+  font-style:italic;
+  white-space:nowrap;
+}
 
     .hidden{display:none !important}
 
@@ -532,6 +541,8 @@
       </div>
 
       <div class="bottom-actions host-tools no-print">
+  <div class="host-note">For Event Host use.</div>
+
   <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html">
     State of Play
   </a>
@@ -540,7 +551,6 @@
     Edit Notice
   </a>
 </div>
-
 <div class="host-note no-print">
   For Event Host use.
 </div>

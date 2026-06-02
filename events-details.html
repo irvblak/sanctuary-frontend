@@ -686,12 +686,7 @@ function getEventHostMemberId(e){
 
   editBtnBottom.href =
     `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-
-  [hsopBtnBottom, editBtnBottom].forEach(btn => {
-    btn.classList.remove("hidden");
-  });
 }
-
     function showMessage(text, kind = "info"){
       if (!text){
         pageMessage.className = "message info";

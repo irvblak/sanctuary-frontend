@@ -1276,28 +1276,28 @@
     }
 
     function makeBookingPayload(){
-      const responseType = getResponseType();
-      const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));
-      const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
+  const responseType = getResponseType();
+  const placesTotal = Math.max(0, Number(placesTotalInput.value || 0));
+  const guestPlaces = Math.max(0, Number(guestPlacesInput.value || 0));
 
-      const payload = {
-        member_id: currentMemberId,
-        member_name: memberNameInput.value.trim(),
-        email: memberEmailInput.value.trim(),
-        mobile: memberMobileInput.value.trim(),
-        places_total: responseType === "interest" ? 0 : placesTotal,
-        guest_places: responseType === "interest" ? 0 : guestPlaces,
-        response_type: responseType,
-        notes: notesInput.value.trim()
-      };
+  const payload = {
+    member_id: currentMemberId,
+    member_name: memberNameInput.value.trim(),
+    email: memberEmailInput.value.trim(),
+    mobile: memberMobileInput.value.trim(),
+    places_total: placesTotal,
+    guest_places: guestPlaces,
+    response_type: responseType,
+    mode: responseType === "interest" ? "interest" : "book",
+    notes: notesInput.value.trim()
+  };
 
-      if (currentBooking && currentBooking.booking_id){
-        payload.booking_id = currentBooking.booking_id;
-      }
+  if (currentBooking && currentBooking.booking_id){
+    payload.booking_id = currentBooking.booking_id;
+  }
 
-      return payload;
-    }
-
+  return payload;
+}
     function bookingCloseHasPassed(){
       const closeRaw = pick(eventData?.booking_close_at, eventData?.booking_closes_at, eventData?.close_at);
       if (!closeRaw) return false;

@@ -1323,10 +1323,14 @@
 
       const payload = makeBookingPayload();
 
-      if (payload.response_type !== "interest" && payload.places_total < 1){
-        showMessage("Please request at least one place, or switch to Interest only.", "warn");
-        return;
-      }
+      const totalRequested =
+  Number(payload.places_total || 0) +
+  Number(payload.guest_places || 0);
+
+if (totalRequested < 1){
+  showMessage("Please enter at least one member or guest place.", "warn");
+  return;
+}
 
       saveBtn.disabled = true;
       showMessage("Saving booking / interest…", "info");

@@ -774,7 +774,7 @@
 
       const eventId = getEventId();
       const memberId = clean($("managerMemberId").value, "");
-      const placesTotal = asInt($("managerMemberPlaces").value, 1);
+      const placesTotal = asInt($("managerMemberPlaces").value, 0);
       const guestPlaces = asInt($("managerGuestPlaces").value, 0);
       const mode = $("managerMode").value === "interest" ? "interest" : "book";
       const notes = clean($("managerNotes").value, "");
@@ -784,8 +784,8 @@
         return;
       }
 
-      if (placesTotal < 1){
-        showMessage("Member places must be at least 1.", true);
+      if ((placesTotal + guestPlaces) < 1){
+        showMessage("Enter at least one member or guest place.", true);
         return;
       }
 

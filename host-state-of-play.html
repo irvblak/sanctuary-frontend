@@ -382,7 +382,7 @@
 
           <label>
             Member places
-            <input id="managerMemberPlaces" type="number" min="1" value="1" />
+            <input id="managerMemberPlaces" type="number" min="0" value="0" />
           </label>
 
           <label>
@@ -763,7 +763,7 @@
 
     function clearHostBookingForm(){
       $("managerMemberId").value = "";
-      $("managerMemberPlaces").value = "1";
+      $("managerMemberPlaces").value = "0";
       $("managerGuestPlaces").value = "0";
       $("managerMode").value = "book";
       $("managerNotes").value = "";

@@ -1010,7 +1010,25 @@ function getEventHostMemberId(e){
       bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
       cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
       refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
+      
+     const payable =
+       e.payment_required === true ||
+       String(e.payment_required || "").toLowerCase() === "true";
 
+     const price = Number(e.price_member || e.price_guest || 0);
+
+     eventPrice.textContent =
+       payable && price > 0 ? `£${price.toFixed(2)}` 
+       : "Free / no charge";
+
+     paymentInstructions.textContent =
+       payable ? (e.payment_instructions || "Payment details to be advised.")
+       : "No payment required.";
+
+     paymentNote.textContent =
+       payable ? (e.payment_terms || e.refund_note || "—")
+       : "—";
+      
       bookingDetailsBox.classList.remove("hidden");
     }
 

@@ -57,11 +57,13 @@
       font-size:.95rem;
     }
 
-    .actions{
+    .actions,
+    .section-actions{
       display:flex;
       gap:.5rem;
       flex-wrap:wrap;
       justify-content:flex-end;
+      align-items:center;
     }
 
     a.btn, button.btn{
@@ -128,6 +130,12 @@
       gap:.65rem;
     }
 
+    .payment-summary{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:.65rem;
+    }
+
     .metric{
       border:1px solid var(--line);
       border-radius:16px;
@@ -171,6 +179,12 @@
       font-size:.86rem;
     }
 
+    .report-generated{
+      margin:-.25rem 0 .75rem;
+      color:var(--muted);
+      font-size:.86rem;
+    }
+
     .manager-grid{
       display:grid;
       grid-template-columns:1.2fr .7fr .7fr .9fr;
@@ -199,6 +213,10 @@
 
     .manager-note{
       grid-column:1 / -1;
+    }
+
+    .manager-note input{
+      min-height:2.6rem;
     }
 
     .manager-actions{
@@ -288,29 +306,73 @@
       font-weight:700;
     }
 
+    [hidden]{display:none !important;}
+
     @media(max-width:850px){
       .topbar{display:block}
       .actions{justify-content:flex-start;margin-top:.8rem}
       .event-grid{grid-template-columns:1fr 1fr}
       .summary{grid-template-columns:1fr 1fr 1fr}
+      .payment-summary{grid-template-columns:1fr 1fr 1fr}
       .manager-grid{grid-template-columns:1fr 1fr}
       table{font-size:.82rem}
     }
 
     @media(max-width:560px){
       .page{padding:.8rem}
-      .event-grid,.summary,.manager-grid{grid-template-columns:1fr}
+      .event-grid,.summary,.payment-summary,.manager-grid{grid-template-columns:1fr}
     }
 
     @media print{
-      body{background:#fff}
-      .page{max-width:none;padding:0}
-      .actions,.manager-card{display:none !important}
-      .card{box-shadow:none;border-color:#bbb;break-inside:avoid}
-      a{color:inherit;text-decoration:none}
-      table{font-size:8.5pt}
-      th,td{padding:4px 5px}
-      th{background:#f2f2f2}
+      body{
+        background:#fff !important;
+        color:#000 !important;
+      }
+
+      .page{
+        max-width:none;
+        padding:0;
+      }
+
+      .actions,
+      .manager-card,
+      button.btn{
+        display:none !important;
+      }
+
+      .card{
+        box-shadow:none;
+        border-color:#bbb;
+        break-inside:avoid;
+        page-break-inside:avoid;
+      }
+
+      a{
+        color:inherit;
+        text-decoration:none;
+      }
+
+      table{
+        font-size:8.5pt;
+      }
+
+      th,td{
+        padding:4px 5px;
+      }
+
+      th{
+        background:#f2f2f2 !important;
+      }
+
+      .report-generated{
+        color:#000;
+        font-size:10pt;
+      }
+
+      @page{
+        size:A4;
+        margin:14mm;
+      }
     }
   </style>
 </head>
@@ -327,7 +389,7 @@
         <a class="btn secondary" id="noticeLink" href="#">Open Notice</a>
         <a class="btn secondary" id="bookingLink" href="#">Open Booking Page</a>
         <a class="btn secondary" id="editLink" href="#">Edit Notice</a>
-        <button class="btn" type="button" onclick="window.print()">Print</button>
+        <button class="btn" id="printReportTopBtn" type="button">Print Report</button>
       </div>
     </div>
 
@@ -346,8 +408,8 @@
         <div class="field"><span class="label">Location</span><div class="value" id="eventLocation">—</div></div>
         <div class="field"><span class="label">Category</span><div class="value" id="eventCategory">—</div></div>
         <div class="field"><span class="label">Capacity</span><div class="value" id="eventCapacity">—</div></div>
-        <div class="field"><span class="label">Booking mode</span><div class="value" id="eventMode">—</div></div>
-        <div class="field"><span class="label">Event ID</span><div class="value" id="eventIdBox">—</div></div>
+        <div class="field"><span class="label">Bookings / Interest</span><div class="value" id="bookingInterestBox">—</div></div>
+        <div class="field"><span class="label">Cost per place</span><div class="value" id="eventCostBox">—</div></div>
       </div>
     </section>
 
@@ -364,6 +426,19 @@
         <div class="metric"><strong id="remainingPlaces">—</strong><span>Remaining</span></div>
         <div class="metric warn"><strong id="waitlistPlaces">0</strong><span>Waitlist places</span></div>
         <div class="metric"><strong id="interestedCount">0</strong><span>Interested</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="paymentSummaryCard" hidden>
+      <div class="section-title">
+        <h2>Payment summary</h2>
+        <div class="note">For payable events only</div>
+      </div>
+
+      <div class="payment-summary">
+        <div class="metric"><strong id="amountDueTotal">£0.00</strong><span>Amount due</span></div>
+        <div class="metric good"><strong id="amountPaidTotal">£0.00</strong><span>Amount paid</span></div>
+        <div class="metric warn"><strong id="amountOutstandingTotal">£0.00</strong><span>Outstanding</span></div>
       </div>
     </section>
 
@@ -399,8 +474,8 @@
           </label>
 
           <label class="manager-note">
-            Note
-            <input id="managerNotes" type="text" placeholder="Optional host note" />
+            Info for your Host
+            <input id="managerNotes" type="text" placeholder="Optional information such as menu choice, access needs, transport note, etc." />
           </label>
 
           <div class="manager-actions">
@@ -414,8 +489,13 @@
     <section class="card">
       <div class="section-title">
         <h2>Printable State of Play</h2>
-        <div class="note" id="responseCount">—</div>
+        <div class="section-actions">
+          <div class="note" id="responseCount">—</div>
+          <button class="btn secondary" id="printReportBtn" type="button">Print Report</button>
+        </div>
       </div>
+
+      <div class="report-generated">Generated: <span id="reportGeneratedAt">—</span></div>
 
       <div id="tableWrap">
         <div class="empty">Loading responses…</div>
@@ -426,6 +506,9 @@
   <script>
     const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
     const $ = (id) => document.getElementById(id);
+
+    let currentEvent = null;
+    let lastRows = [];
 
     function clean(value, fallback = "—"){
       if (value === null || value === undefined) return fallback;
@@ -543,6 +626,33 @@
       $("editLink").href = `host-event-form.html?event_id=${encodeURIComponent(eventId)}`;
     }
 
+    function eventIsPayable(event, rows){
+      if (!event) return false;
+
+      const raw = String(
+        event.payment_required ??
+        event.payable ??
+        event.is_payable ??
+        ""
+      ).toLowerCase();
+
+      if (raw === "true" || raw === "yes" || raw === "1") return true;
+      if (asMoney(event.price_member, 0) > 0 || asMoney(event.price_guest, 0) > 0) return true;
+      if (Array.isArray(rows) && rows.some(r => asMoney(r.amountDue, 0) > 0 || asMoney(r.amountPaid, 0) > 0)) return true;
+
+      return false;
+    }
+
+    function costPerPlaceLabel(event){
+      if (!eventIsPayable(event, lastRows)) return "Free";
+
+      const memberPrice = asMoney(event.price_member, 0);
+      const guestPrice = asMoney(event.price_guest, 0);
+      const price = memberPrice || guestPrice;
+
+      return price > 0 ? formatMoney(price) : "Payable";
+    }
+
     function renderEvent(event, eventId){
       const title = clean(event.title || event.event_title || event.notice_title, "Untitled event");
       const ref = clean(event.event_ref || event.reference || event.ref || eventId);
@@ -558,8 +668,7 @@
       $("eventLocation").textContent = clean(event.location);
       $("eventCategory").textContent = category;
       $("eventCapacity").textContent = capacity > 0 ? String(capacity) : "Not set";
-      $("eventMode").textContent = clean(event.booking_mode || event.mode);
-      $("eventIdBox").textContent = eventId;
+      $("eventCostBox").textContent = costPerPlaceLabel(event);
     }
 
     function renderSummary(event, rows){
@@ -569,9 +678,11 @@
       let bookedGuests = 0;
       let waitlistPlaces = 0;
       let interested = 0;
+      let bookedRecords = 0;
 
       rows.forEach(r => {
         if (r.status === "booked"){
+          bookedRecords += 1;
           bookedMember += r.memberPlaces;
           bookedGuests += r.guestPlaces;
         } else if (r.status === "waitlist"){
@@ -589,6 +700,42 @@
       $("waitlistPlaces").textContent = waitlistPlaces;
       $("interestedCount").textContent = interested;
       $("remainingPlaces").textContent = capacity > 0 ? Math.max(0, capacity - bookedTotal) : "—";
+      $("bookingInterestBox").textContent = `${bookedRecords} booked • ${interested} interested`;
+    }
+
+    function renderPaymentSummary(event, rows){
+      const confirmed = bookedRows(rows || []);
+      const totalDue = sumRows(confirmed, "amountDue");
+      const totalPaid = sumRows(confirmed, "amountPaid");
+      const totalOutstanding = Math.max(0, totalDue - totalPaid);
+
+      const show = eventIsPayable(event, rows) || totalDue > 0 || totalPaid > 0;
+      $("paymentSummaryCard").hidden = !show;
+
+      if (!show) return;
+
+      $("amountDueTotal").textContent = formatMoney(totalDue);
+      $("amountPaidTotal").textContent = formatMoney(totalPaid);
+      $("amountOutstandingTotal").textContent = formatMoney(totalOutstanding);
+    }
+
+    function updateReportGeneratedAt(){
+      const el = $("reportGeneratedAt");
+      if (!el) return;
+
+      el.textContent = new Date().toLocaleString("en-GB", {
+        weekday:"short",
+        day:"numeric",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+    }
+
+    function printReport(){
+      updateReportGeneratedAt();
+      window.print();
     }
 
     function escapeHtml(str){
@@ -658,7 +805,7 @@
               <th>Due</th>
               <th>Paid</th>
               <th>Payment</th>
-              <th>Contact / note</th>
+              <th>Member contact / note</th>
             </tr>
           </thead>
           <tbody>
@@ -828,6 +975,8 @@
     async function init(){
       const eventId = getEventId();
 
+      updateReportGeneratedAt();
+
       if (!eventId){
         showMessage("No event_id was supplied in the page address.", true);
         $("tableWrap").innerHTML = `<div class="empty">Open this page from an event link so the host report knows which event to load.</div>`;
@@ -845,9 +994,14 @@
         const event = normaliseEvent(eventPayload);
         const rows = normaliseBookings(bookingsPayload).map(normaliseBooking);
 
+        currentEvent = event;
+        lastRows = rows;
+
         renderEvent(event, eventId);
         renderSummary(event, rows);
+        renderPaymentSummary(event, rows);
         renderTable(rows);
+        updateReportGeneratedAt();
 
       }catch(err){
         console.error(err);
@@ -858,6 +1012,8 @@
 
     $("hostBookingForm")?.addEventListener("submit", submitHostBooking);
     $("managerClearBtn")?.addEventListener("click", clearHostBookingForm);
+    $("printReportBtn")?.addEventListener("click", printReport);
+    $("printReportTopBtn")?.addEventListener("click", printReport);
 
     init();
   </script>

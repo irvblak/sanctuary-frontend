@@ -697,10 +697,8 @@ function getEventHostMemberId(e){
   editBtnBottom.href =
     `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
-  const allowed = viewerCanManageNotice(e);
-
-  hsopBtnBottom.hidden = !allowed;
-  editBtnBottom.hidden = !allowed;
+  hsopBtnBottom.hidden = true;
+  editBtnBottom.hidden = true;
 }
 
     function pick(){

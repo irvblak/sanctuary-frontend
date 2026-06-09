@@ -1,5 +1,6 @@
 // members-directory.js
 // Sanctuary Club – Members Directory (backend-first + local fallback)
+// Contact status colours aligned with Your Information (YI)
 
 const STORAGE_KEY = "sanctuaryMembers";
 const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
@@ -63,6 +64,62 @@ function hasResidents(data) {
   );
 }
 
+function clean(v) {
+  return String(v || "").trim();
+}
+
+function isFilledOrNA(v) {
+  const s = clean(v).toLowerCase();
+  return !!s && (s === "n/a" || s.length > 0);
+}
+
+function hasAnyVisibleContact(data) {
+  if (!hasResidents(data)) return false;
+
+  return data.residents.some((res, idx) => {
+    return (
+      clean(res.name) ||
+      clean(res.email) ||
+      clean(res.mobile) ||
+      (idx === 0 && clean(res.landline))
+    );
+  });
+}
+
+function getContactStatus(data) {
+  if (!data || !data.joined) return "inactive";
+  if (!hasResidents(data)) return "basic";
+
+  let any = false;
+  let all = true;
+
+  data.residents.forEach((res, idx) => {
+    const fields = [
+      res.name,
+      res.email,
+      res.mobile
+    ];
+
+    if (idx === 0) fields.push(res.landline);
+
+    fields.forEach(value => {
+      if (clean(value)) any = true;
+      if (!isFilledOrNA(value)) all = false;
+    });
+  });
+
+  if (all) return "complete";
+  if (any || hasAnyVisibleContact(data)) return "partial";
+  return "basic";
+}
+
+function statusLabel(status) {
+  if (status === "complete") return "🟢 Contact Info Complete";
+  if (status === "partial") return "🟡 Contact Info Partial";
+  if (status === "basic") return "🔵 Basic Member Entry";
+  return "";
+}
+
 // Backwards-compatibility:
 // If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06.
 function resolveSchData(members) {
@@ -104,14 +161,18 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       displayId = resolved.idForDisplay;
     }
 
-    const hasRes = hasResidents(data);
-    const isJoined = !!(data && data.joined);
+    const status = getContactStatus(data);
+    const isUsable = status !== "inactive";
 
-    if (hasRes || isJoined) btn.classList.add("has-data");
+    if (status === "complete") btn.classList.add("contact-complete");
+    else if (status === "partial") btn.classList.add("contact-partial");
+    else if (status === "basic") btn.classList.add("contact-basic");
     else btn.classList.add("inactive");
 
+    btn.title = statusLabel(status);
+
     btn.onclick = () => {
-      if (!hasRes && !isJoined) return;
+      if (!isUsable) return;
 
       if (activeBtn === btn) {
         btn.classList.remove("active");
@@ -125,19 +186,23 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
-      if (isJoined && !hasRes) {
+      if (!hasResidents(data)) {
         const msg = document.createElement("div");
         msg.style.padding = "0.9rem 1rem";
         msg.style.borderRadius = "10px";
         msg.style.background = "#fff";
         msg.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
         msg.style.color = "#444";
-        msg.innerHTML = `<strong>${displayId}</strong><br><span style="color:#666;">Member joined — no contact details shared yet.</span>`;
+        msg.innerHTML = `
+          <strong>${displayId}</strong><br>
+          <span style="color:#666;">${statusLabel(status)}</span><br>
+          <span style="color:#666;">Member joined — no contact details shared yet.</span>
+        `;
         detailArea.appendChild(msg);
         return;
       }
 
-      renderMemberDetail(displayId, data, detailArea);
+      renderMemberDetail(displayId, data, detailArea, status);
     };
 
     container.appendChild(btn);
@@ -145,7 +210,13 @@ function renderGrid(containerId, memberIds, members, detailArea) {
 }
 
 // ---------- Render resident cards
-function renderMemberDetail(memberId, data, container) {
+function renderMemberDetail(memberId, data, container, status) {
+  const heading = document.createElement("div");
+  heading.style.margin = "0 0 0.75rem";
+  heading.style.color = "#555";
+  heading.innerHTML = `<strong>${memberId}</strong> — ${statusLabel(status)}`;
+  container.appendChild(heading);
+
   const wrap = document.createElement("div");
   wrap.className = "member-detail-wrapper";
 

@@ -8,20 +8,6 @@
   <!-- Site access gate (8 hours) -->
   <script src="access.js"></script>
 
-  <!-- 🔒 Must come from Your Information (YI) after PIN check -->
-  <script>
-    const MD_UNTIL_KEY = "sanctuaryMDAccessUntil"; // localStorage
-    try {
-      const until = Number(localStorage.getItem(MD_UNTIL_KEY) || "0");
-      if (!until || Date.now() > until) {
-        localStorage.removeItem(MD_UNTIL_KEY);
-        location.replace("your-info.html");
-      }
-    } catch {
-      location.replace("your-info.html");
-    }
-  </script>
-
   <!-- Logout handler -->
   <script src="logout.js"></script>
 

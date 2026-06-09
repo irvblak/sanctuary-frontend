@@ -548,14 +548,13 @@
       <div class="bottom-actions host-tools no-print">
   <div class="host-note">For Event Host use.</div>
 
-  <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html">
-    State of Play
-  </a>
+  <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html" hidden>
+  State of Play
+</a>
 
-  <a id="editBtnBottom" class="btn btn-discreet" href="host-event-form.html">
-    Edit Notice
-  </a>
-</div>
+<a id="editBtnBottom" class="btn btn-discreet" href="host-event-form.html" hidden>
+  Edit Notice
+</a>
 
   <script>
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
@@ -615,7 +614,33 @@
 
       return raw;
     }
+    
+function getCurrentResidentRef(){
+  try{
+    return String(
+      localStorage.getItem("currentResidentId") ||
+      sessionStorage.getItem("currentResidentId") ||
+      localStorage.getItem("verifiedResidentId") ||
+      sessionStorage.getItem("verifiedResidentId") ||
+      ""
+    ).trim().toUpperCase();
+  }catch(e){
+    return "";
+  }
+}
 
+function getCurrentMemberId(){
+  try{
+    return normaliseMemberId(
+      localStorage.getItem("currentMemberId") ||
+      sessionStorage.getItem("currentMemberId") ||
+      ""
+    );
+  }catch(e){
+    return "";
+  }
+}
+    
   function getViewerMemberId(){
   const stored = normaliseMemberId(
     localStorage.getItem("currentMemberId") ||

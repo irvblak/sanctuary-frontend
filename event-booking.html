@@ -1476,7 +1476,7 @@ if (totalRequested < 1){
     function togglePinVisibility(){
       const showing = memberPinInput.type === "text";
       memberPinInput.type = showing ? "password" : "text";
-      togglePinBtn.textContent = showing ? "👁" : "🙈";
+      togglePinBtn.textContent = showing ? "Show" : "Hide";
       togglePinBtn.setAttribute("aria-label", showing ? "Show PIN" : "Hide PIN");
       togglePinBtn.title = showing ? "Show PIN" : "Hide PIN";
       memberPinInput.focus();

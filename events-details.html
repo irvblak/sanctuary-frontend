@@ -640,34 +640,14 @@ function getCurrentMemberId(){
     return "";
   }
 }
-    
-  function getViewerMemberId(){
-  const stored = normaliseMemberId(
+ function getViewerMemberId(){
+  return normaliseMemberId(
     localStorage.getItem("currentMemberId") ||
     sessionStorage.getItem("currentMemberId") ||
-    localStorage.getItem("sanctuaryCurrentMemberId") ||
-    sessionStorage.getItem("sanctuaryCurrentMemberId") ||
-    localStorage.getItem("memberId") ||
-    sessionStorage.getItem("memberId") ||
-    localStorage.getItem("sanctuaryMemberId") ||
-    sessionStorage.getItem("sanctuaryMemberId") ||
-    localStorage.getItem("selectedMemberId") ||
-    sessionStorage.getItem("selectedMemberId") ||
-    localStorage.getItem("currentResidentId") ||
-    sessionStorage.getItem("currentResidentId") ||
-    localStorage.getItem("sanctuaryCurrentResidentId") ||
-    sessionStorage.getItem("sanctuaryCurrentResidentId") ||
-    localStorage.getItem("currentHostMemberId") ||
-    sessionStorage.getItem("currentHostMemberId") ||
-    localStorage.getItem("currentHostResidentId") ||
-    sessionStorage.getItem("currentHostResidentId") ||
     ""
   );
-
-  if (stored) return stored;
-
-  return "";
-}
+}   
+  
 function isAdminViewer(){
   return !!(
     localStorage.getItem("adminToken") ||

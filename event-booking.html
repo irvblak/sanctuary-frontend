@@ -224,30 +224,36 @@
     }
 
     .pin-wrap{
-      position:relative;
-      display:block;
-    }
+  position:relative;
+  display:flex;
+  align-items:center;
+}
 
-    .pin-wrap input{
-      width:100%;
-      padding-right:46px;
-    }
+.pin-wrap input{
+  width:100%;
+  padding-right:46px;
+}
 
-    .eye-btn{
-      position:absolute;
-      right:8px;
-      top:50%;
-      transform:translateY(-50%);
-      width:34px;
-      height:34px;
-      padding:0;
-      border-radius:999px;
-      background:#eef4fa;
-      color:var(--accent);
-      border:1px solid #d6e3ef;
-      font-size:1rem;
-      line-height:1;
-    }
+.eye-btn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  padding:0;
+  border-radius:999px;
+  background:#eef4fa;
+  color:var(--accent);
+  border:1px solid #d6e3ef;
+  font-size:1rem;
+  line-height:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+  cursor:pointer;
+}
 
     .small{
       font-size:.9rem;

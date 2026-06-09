@@ -651,9 +651,7 @@ function getCurrentMemberId(){
 function isAdminViewer(){
   return !!(
     localStorage.getItem("adminToken") ||
-    sessionStorage.getItem("adminToken") ||
-    localStorage.getItem("sanctuaryAdminToken") ||
-    sessionStorage.getItem("sanctuaryAdminToken")
+    sessionStorage.getItem("adminToken")
   );
 }
 

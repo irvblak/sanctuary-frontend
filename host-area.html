@@ -1,1 +1,456 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Host Area | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <script src="access.js"></script>
+
+  <style>
+    :root{
+      --bg1:#eef6fb;
+      --bg2:#f8fbfd;
+      --card:#ffffff;
+      --ink:#173042;
+      --muted:#607583;
+      --line:#d7e3ea;
+      --accent:#1f6f8b;
+      --accent-dark:#175a72;
+      --soft:#f3f8fb;
+      --good:#216e39;
+      --warn:#8a5a00;
+      --bad:#9e2b2b;
+      --shadow:0 14px 34px rgba(20,60,80,.12);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--ink);
+      min-height:100vh;
+    }
+
+    .page{
+      max-width:920px;
+      margin:0 auto;
+      padding:1.2rem;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:flex-start;
+      margin-bottom:1rem;
+    }
+
+    h1{
+      margin:.1rem 0 .25rem;
+      font-size:1.55rem;
+      line-height:1.15;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.4;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:1rem;
+      margin-bottom:1rem;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.75rem;
+      align-items:end;
+    }
+
+    label{
+      display:block;
+      font-size:.84rem;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    input{
+      width:100%;
+      margin-top:.25rem;
+      padding:.6rem .65rem;
+      border:1px solid var(--line);
+      border-radius:10px;
+      font:inherit;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .actions{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      margin-top:.9rem;
+    }
+
+    a.btn, button.btn{
+      appearance:none;
+      border:1px solid var(--accent);
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      border-radius:999px;
+      padding:.58rem .95rem;
+      font-size:.9rem;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    a.btn.secondary, button.btn.secondary{
+      background:#fff;
+      color:var(--accent);
+    }
+
+    button.btn:disabled{
+      opacity:.6;
+      cursor:wait;
+    }
+
+    .status{
+      margin-top:.8rem;
+      padding:.7rem .8rem;
+      border-radius:12px;
+      font-weight:750;
+      background:var(--soft);
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+
+    .status.good{
+      background:#e8f5eb;
+      color:var(--good);
+      border-color:#b9dfc2;
+    }
+
+    .status.warn{
+      background:#fff4db;
+      color:var(--warn);
+      border-color:#ead49a;
+    }
+
+    .status.err{
+      background:#fff1f1;
+      color:var(--bad);
+      border-color:#e5b8b8;
+    }
+
+    .menu{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.8rem;
+    }
+
+    .menu a{
+      display:block;
+      text-decoration:none;
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:1rem;
+      color:var(--ink);
+    }
+
+    .menu a:hover{
+      border-color:var(--accent);
+      box-shadow:0 8px 20px rgba(20,60,80,.10);
+    }
+
+    .menu strong{
+      display:block;
+      margin-bottom:.2rem;
+      color:var(--accent-dark);
+      font-size:1rem;
+    }
+
+    .menu span{
+      display:block;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.35;
+    }
+
+    .verified-line{
+      margin:0 0 .85rem;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    [hidden]{
+      display:none !important;
+    }
+
+    @media(max-width:700px){
+      .topbar{
+        display:block;
+      }
+
+      .form-grid,
+      .menu{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div>
+        <h1>Host Area</h1>
+        <div class="sub">
+          Authorised Hosts and Admin may create event notices, manage their events,
+          book for members and view State of Play reports.
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:0;">
+        <a class="btn secondary" href="members-info.html">Members Hub</a>
+      </div>
+    </div>
+
+    <section class="card" id="verifyCard">
+      <h2 style="margin-top:0;">Host/Admin verification</h2>
+      <p class="sub">
+        Enter your resident reference and property PIN. Roles are checked at resident level.
+      </p>
+
+      <form id="verifyForm">
+        <div class="form-grid">
+          <label>
+            Resident Ref
+            <input id="residentRefInput" type="text" placeholder="e.g. SM55/1" autocomplete="username" />
+          </label>
+
+          <label>
+            PIN
+            <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="verifyBtn" type="submit">Access Host Area</button>
+        </div>
+
+        <div class="status" id="verifyStatus" hidden></div>
+      </form>
+    </section>
+
+    <section class="card" id="hostMenuCard" hidden>
+      <h2 style="margin-top:0;">Host Area Menu</h2>
+      <p class="verified-line" id="verifiedLine">Verified.</p>
+
+      <div class="menu">
+        <a href="host-event-form.html">
+          <strong>Create Event Notice</strong>
+          <span>Create a new event notice as an authorised Host or Admin.</span>
+        </a>
+
+        <a href="host-my-events.html">
+          <strong>Your Event Notices</strong>
+          <span>See your hosted events and open them for edit, booking management or State of Play.</span>
+        </a>
+
+        <a href="host-my-events.html?mode=booking">
+          <strong>Book for a Member</strong>
+          <span>Select one of your events and add or update a member booking.</span>
+        </a>
+
+        <a href="host-my-events.html?mode=sop">
+          <strong>State of Play</strong>
+          <span>Select one of your events and view the booking register and printable report.</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const els = {
+      verifyCard: document.getElementById("verifyCard"),
+      hostMenuCard: document.getElementById("hostMenuCard"),
+      verifyForm: document.getElementById("verifyForm"),
+      verifyBtn: document.getElementById("verifyBtn"),
+      verifyStatus: document.getElementById("verifyStatus"),
+      residentRefInput: document.getElementById("residentRefInput"),
+      pinInput: document.getElementById("pinInput"),
+      verifiedLine: document.getElementById("verifiedLine")
+    };
+
+    function clean(value){
+      return String(value || "").trim();
+    }
+
+    function normaliseResidentRef(value){
+      const raw = clean(value).toUpperCase();
+      const m = raw.match(/^(SM|SC|SCH)\s*0*(\d+)(?:\s*\/\s*(\d+))?$/);
+      if (!m) return raw;
+
+      if (m[1] === "SCH") return "SCH";
+
+      const prefix = m[1];
+      const num = String(parseInt(m[2], 10)).padStart(2, "0");
+      const idx = m[3] ? `/${parseInt(m[3], 10)}` : "";
+
+      return `${prefix}${num}${idx}`;
+    }
+
+    function memberIdFromResidentRef(ref){
+      const raw = clean(ref).toUpperCase();
+      if (raw === "SCH") return "SCH";
+      const m = raw.match(/^(SM|SC)\d+/);
+      return m ? m[0] : raw.split("/")[0];
+    }
+
+    function setStatus(type, text){
+      els.verifyStatus.hidden = false;
+      els.verifyStatus.className = `status ${type || ""}`.trim();
+      els.verifyStatus.textContent = text;
+    }
+
+    async function apiFetch(path, options){
+      const res = await fetch(`${API_BASE}${path}`, {
+        cache: "no-store",
+        ...(options || {})
+      });
+
+      const text = await res.text();
+
+      let data = null;
+      try{
+        data = text ? JSON.parse(text) : null;
+      }catch{
+        data = { success:false, message:text || "Invalid server response" };
+      }
+
+      if (!res.ok || data?.success === false){
+        throw new Error(data?.message || `Request failed: ${res.status}`);
+      }
+
+      return data || {};
+    }
+
+    function extractRoles(data){
+      const possible =
+        data.roles ||
+        data.resident_roles ||
+        data.user?.roles ||
+        data.member?.roles ||
+        [];
+
+      if (!Array.isArray(possible)) return [];
+
+      return possible.map(r => String(r || "").trim().toLowerCase()).filter(Boolean);
+    }
+
+    function showHostMenu(residentRef, memberId, roles){
+      els.verifyCard.hidden = true;
+      els.hostMenuCard.hidden = false;
+
+      const label = roles.includes("admin") ? "Admin" : "Host";
+      els.verifiedLine.textContent = `${label} verified: ${residentRef} (${memberId})`;
+    }
+
+    function storeHostSession(data, residentRef, memberId, roles){
+      try{
+        const token = data.token || data.authToken || data.access_token || "";
+
+        if (token){
+          localStorage.setItem("authToken", token);
+          sessionStorage.setItem("authToken", token);
+        }
+
+        localStorage.setItem("currentMemberId", memberId);
+        sessionStorage.setItem("currentMemberId", memberId);
+
+        localStorage.setItem("currentResidentId", residentRef);
+        sessionStorage.setItem("currentResidentId", residentRef);
+
+        localStorage.setItem("verifiedResidentId", residentRef);
+        sessionStorage.setItem("verifiedResidentId", residentRef);
+
+        localStorage.setItem("hostAreaVerified", "true");
+        sessionStorage.setItem("hostAreaVerified", "true");
+
+        localStorage.setItem("hostAreaRoles", JSON.stringify(roles));
+        sessionStorage.setItem("hostAreaRoles", JSON.stringify(roles));
+      }catch(e){
+        console.warn("Could not store host session.", e);
+      }
+    }
+
+    async function verifyHost(event){
+      event.preventDefault();
+
+      const residentRef = normaliseResidentRef(els.residentRefInput.value);
+      const memberId = memberIdFromResidentRef(residentRef);
+      const pin = clean(els.pinInput.value);
+
+      if (!residentRef || !memberId || !pin){
+        setStatus("err", "Enter resident reference and PIN.");
+        return;
+      }
+
+      try{
+        els.verifyBtn.disabled = true;
+        setStatus("warn", "Verifying Host/Admin authority...");
+
+        const data = await apiFetch("/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            memberId,
+            residentId: residentRef,
+            pin
+          })
+        });
+
+        const roles = extractRoles(data);
+        const isHost = roles.includes("host");
+        const isAdmin = roles.includes("admin");
+
+        if (!isHost && !isAdmin){
+          setStatus("err", "This resident is not authorised as a Host or Admin.");
+          return;
+        }
+
+        storeHostSession(data, residentRef, memberId, roles);
+        setStatus("good", "Verified.");
+        showHostMenu(residentRef, memberId, roles);
+
+      }catch(err){
+        console.error(err);
+        setStatus("err", err.message || "Host/Admin verification failed.");
+      }finally{
+        els.verifyBtn.disabled = false;
+      }
+    }
+
+    els.verifyForm.addEventListener("submit", verifyHost);
+  </script>
+</body>
+</html>

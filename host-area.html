@@ -246,10 +246,12 @@
           </label>
 
           <label>
-            PIN
-            <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
-          </label>
-        </div>
+  PIN
+  <span class="pin-wrap">
+    <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
+    <button id="togglePinBtn" class="eye-btn" type="button" aria-label="Show PIN" title="Show PIN">Show</button>
+  </span>
+</label>
 
         <div class="actions">
           <button class="btn" id="verifyBtn" type="submit">Access Host Area</button>

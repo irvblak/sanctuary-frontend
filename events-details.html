@@ -1044,8 +1044,7 @@ function getEventHostMemberId(e){
 
       bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      hsopBtnBottom.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      
 
       try{
         const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);

@@ -104,6 +104,21 @@
       line-height:1.58;
     }
 
+    .retention-note{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(15,76,129,0.14);
+      background:rgba(255,255,255,0.72);
+      color:#334155;
+      line-height:1.5;
+      font-size:0.95rem;
+    }
+
+    .retention-note strong{
+      color:var(--brand);
+    }
+
     .toolbar{
       display:flex;
       flex-wrap:wrap;
@@ -325,6 +340,11 @@
       <p>
         Browse event notices, Club information and future News items. Event notices open to the Host Notice page, where members can then continue to booking or register interest.
       </p>
+
+      <div class="retention-note">
+        <strong>Notice retention:</strong>
+        Events, Activities and Services automatically disappear from public view when they become past-date or expire. Hosts or notice instigators wishing to retain a personal record should print or save a PDF copy of the notice and any associated State of Play report before expiry. Committee and News items are retained for archive.
+      </div>
     </section>
 
     <div class="toolbar" id="categoryToolbar">
@@ -341,7 +361,7 @@
           <div>
             <h2 id="panelTitle">Event Notices</h2>
             <div class="panel-sub" id="panelSub">
-              Notices drawn directly from live event records.
+              Current and future event notices drawn directly from live event records.
             </div>
           </div>
         </div>
@@ -369,23 +389,23 @@
       const CATEGORY_META = {
         events: {
           title: "Event Notices",
-          sub: "Notices drawn directly from live event records."
+          sub: "Current and future event notices. Past event notices automatically disappear from this public view."
         },
         committee: {
           title: "Committee Notices",
-          sub: "Committee notices will appear here."
+          sub: "Committee notices are retained for archive."
         },
         activities: {
           title: "Activities",
-          sub: "Activity-related items will appear here."
+          sub: "Current and future activity items. Past activity notices will automatically disappear from this public view."
         },
         services: {
           title: "Services",
-          sub: "Service-related items will appear here."
+          sub: "Current service-related items. Expired service notices will automatically disappear from this public view."
         },
         news: {
           title: "News",
-          sub: "Sanctuary News can be introduced here later."
+          sub: "Sanctuary News items are retained for archive."
         }
       };
 
@@ -437,19 +457,47 @@
         return fallback;
       }
 
+      function localDateOnly(value){
+        if(!value) return null;
+
+        const raw = String(value).trim();
+        if(!raw) return null;
+
+        const datePart = raw.includes("T") ? raw.split("T")[0] : raw.split(" ")[0];
+        const bits = datePart.split("-").map(Number);
+
+        if(bits.length === 3 && bits.every(n => Number.isFinite(n))){
+          return new Date(bits[0], bits[1] - 1, bits[2]);
+        }
+
+        const parsed = new Date(raw);
+        if(Number.isNaN(parsed.getTime())) return null;
+
+        return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+      }
+
+      function todayDateOnly(){
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      }
+
+      function isTodayOrFuture(value){
+        const d = localDateOnly(value);
+        if(!d) return true;
+        return d >= todayDateOnly();
+      }
+
       function formatDate(dateStr){
         if(!dateStr) return "";
-        try{
-          const d = new Date(dateStr);
-          if(!Number.isNaN(d.getTime())){
-            return d.toLocaleDateString("en-GB", {
-              weekday:"short",
-              day:"numeric",
-              month:"short",
-              year:"numeric"
-            });
-          }
-        }catch{}
+        const d = localDateOnly(dateStr);
+        if(d){
+          return d.toLocaleDateString("en-GB", {
+            weekday:"short",
+            day:"numeric",
+            month:"short",
+            year:"numeric"
+          });
+        }
         return String(dateStr);
       }
 
@@ -458,6 +506,30 @@
         const timeVal = getField(ev, ["start_time", "time", "event_time"]);
         const formattedDate = formatDate(dateVal);
         return [formattedDate, timeVal].filter(Boolean).join(" · ");
+      }
+
+      function getEventDate(ev){
+        return getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
+      }
+
+      function getActivityDate(item){
+        return getField(item, ["activity_date", "event_date", "date", "start_date", "start_datetime", "start"]);
+      }
+
+      function getServiceExpiry(item){
+        return getField(item, ["expiry_date", "expires_at", "valid_until", "end_date"]);
+      }
+
+      function isCurrentEvent(ev){
+        return isTodayOrFuture(getEventDate(ev));
+      }
+
+      function isCurrentActivity(item){
+        return isTodayOrFuture(getActivityDate(item));
+      }
+
+      function isCurrentService(item){
+        return isTodayOrFuture(getServiceExpiry(item));
       }
 
       function getEventId(ev){
@@ -488,10 +560,12 @@
 
       function sortEvents(events){
         return [...events].sort((a, b) => {
-          const aVal = getField(a, ["event_date", "date", "start_date", "start_datetime", "start"]);
-          const bVal = getField(b, ["event_date", "date", "start_date", "start_datetime", "start"]);
-          const aTs = Date.parse(aVal);
-          const bTs = Date.parse(bVal);
+          const aVal = getEventDate(a);
+          const bVal = getEventDate(b);
+          const aDate = localDateOnly(aVal);
+          const bDate = localDateOnly(bVal);
+          const aTs = aDate ? aDate.getTime() : NaN;
+          const bTs = bDate ? bDate.getTime() : NaN;
 
           if(Number.isNaN(aTs) && Number.isNaN(bTs)) return 0;
           if(Number.isNaN(aTs)) return 1;
@@ -508,18 +582,20 @@
       function renderPlaceholder(category){
         const messages = {
           committee: "No Committee notices have been published yet.",
-          activities: "No Activity items have been published yet.",
-          services: "No Service items have been published yet.",
+          activities: "No current Activity items have been published yet.",
+          services: "No current Service items have been published yet.",
           news: "No News items have been published yet."
         };
         renderEmpty(messages[category] || "No items are available in this category yet.");
       }
 
       function renderEvents(events){
-        const usable = sortEvents(events).filter(ev => getEventId(ev));
+        const usable = sortEvents(events)
+          .filter(ev => getEventId(ev))
+          .filter(isCurrentEvent);
 
         if(!usable.length){
-          renderEmpty("There are no event notices to show at the moment.");
+          renderEmpty("There are no current or future event notices to show at the moment.");
           return;
         }
 
@@ -606,7 +682,7 @@
           return;
         }
 
-        setStatus("info", "Loading event notices...");
+        setStatus("info", "Loading current event notices...");
         content.innerHTML = "";
 
         try{

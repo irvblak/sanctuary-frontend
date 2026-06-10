@@ -452,7 +452,16 @@
         els.verifyBtn.disabled = false;
       }
     }
+function togglePinVisibility(){
+  const showing = els.pinInput.type === "text";
+  els.pinInput.type = showing ? "password" : "text";
+  els.togglePinBtn.textContent = showing ? "👁" : "🙈";
+  els.togglePinBtn.setAttribute("aria-label", showing ? "Show PIN" : "Hide PIN");
+  els.togglePinBtn.title = showing ? "Show PIN" : "Hide PIN";
+}
 
+els.togglePinBtn.addEventListener("click", togglePinVisibility);
+    
     els.verifyForm.addEventListener("submit", verifyHost);
   </script>
 </body>

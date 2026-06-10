@@ -1,1 +1,486 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Event Notices | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <script src="access.js"></script>
+
+  <style>
+    :root{
+      --bg1:#eef6fb; --bg2:#f8fbfd; --card:#fff; --ink:#173042;
+      --muted:#607583; --line:#d7e3ea; --accent:#1f6f8b;
+      --accent-dark:#175a72; --soft:#f3f8fb; --bad:#9e2b2b;
+      --shadow:0 14px 34px rgba(20,60,80,.12);
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--ink);
+      min-height:100vh;
+    }
+
+    .page{
+      max-width:1040px;
+      margin:0 auto;
+      padding:1.2rem;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:flex-start;
+      margin-bottom:1rem;
+    }
+
+    h1{
+      margin:.1rem 0 .25rem;
+      font-size:1.55rem;
+      line-height:1.15;
+    }
+
+    h2{
+      margin:0 0 .65rem;
+      font-size:1.15rem;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.45;
+    }
+
+    .actions{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
+
+    a.btn, button.btn{
+      appearance:none;
+      border:1px solid var(--accent);
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      border-radius:999px;
+      padding:.58rem .95rem;
+      font-size:.9rem;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    a.btn.secondary, button.btn.secondary{
+      background:#fff;
+      color:var(--accent);
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:1rem;
+      margin-bottom:1rem;
+    }
+
+    .status{
+      padding:.75rem .85rem;
+      border-radius:12px;
+      font-weight:750;
+      background:var(--soft);
+      color:var(--muted);
+      border:1px solid var(--line);
+      margin-bottom:1rem;
+    }
+
+    .status.err{
+      background:#fff1f1;
+      color:var(--bad);
+      border-color:#e5b8b8;
+    }
+
+    .event-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:.8rem;
+    }
+
+    .event-card{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:1rem;
+    }
+
+    .event-head{
+      display:flex;
+      justify-content:space-between;
+      gap:.8rem;
+      flex-wrap:wrap;
+      margin-bottom:.45rem;
+    }
+
+    .event-title{
+      font-weight:900;
+      color:var(--accent-dark);
+      font-size:1.05rem;
+    }
+
+    .ref{
+      color:var(--muted);
+      font-weight:800;
+      font-size:.88rem;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+      margin-bottom:.75rem;
+    }
+
+    .event-actions{
+      display:flex;
+      gap:.45rem;
+      flex-wrap:wrap;
+    }
+
+    .empty{
+      padding:1rem;
+      border:1px dashed var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    [hidden]{display:none !important;}
+
+    @media(max-width:700px){
+      .topbar{display:block;}
+      .topbar .actions{margin-top:.8rem;}
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Your Event Notices</h1>
+        <div class="sub" id="pageSub">
+          Select one of your event notices to view, edit, manage bookings or open State of Play.
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn secondary" href="host-area.html">Host Area</a>
+        <a class="btn secondary" href="members-info.html">Members Hub</a>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>Event notices</h2>
+      <div id="status" class="status">Loading your event notices...</div>
+      <div id="content"></div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+      const status = document.getElementById("status");
+      const content = document.getElementById("content");
+      const pageTitle = document.getElementById("pageTitle");
+      const pageSub = document.getElementById("pageSub");
+
+      const params = new URLSearchParams(window.location.search);
+      const mode = String(params.get("mode") || "").toLowerCase();
+
+      const currentResidentId =
+        sessionStorage.getItem("currentResidentId") ||
+        localStorage.getItem("currentResidentId") ||
+        sessionStorage.getItem("verifiedResidentId") ||
+        localStorage.getItem("verifiedResidentId") ||
+        "";
+
+      const currentMemberId =
+        sessionStorage.getItem("currentMemberId") ||
+        localStorage.getItem("currentMemberId") ||
+        "";
+
+      let roles = [];
+      try{
+        roles = JSON.parse(
+          sessionStorage.getItem("hostAreaRoles") ||
+          localStorage.getItem("hostAreaRoles") ||
+          "[]"
+        ).map(r => String(r).toLowerCase());
+      }catch{
+        roles = [];
+      }
+
+      const isAdmin = roles.includes("admin");
+      const isHost = roles.includes("host");
+
+      function setModeText(){
+        if(mode === "sop"){
+          pageTitle.textContent = "State of Play";
+          pageSub.textContent = "Select an event notice to view its booking register and printable State of Play report.";
+        }else if(mode === "booking"){
+          pageTitle.textContent = "Book for Member";
+          pageSub.textContent = "Select an event notice to add, update or cancel a booking on behalf of a member.";
+        }
+      }
+
+      function clean(v){ return String(v || "").trim(); }
+
+      function escapeHtml(value){
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function getField(obj, names, fallback=""){
+        for(const name of names){
+          if(obj && obj[name] !== undefined && obj[name] !== null && obj[name] !== ""){
+            return obj[name];
+          }
+        }
+        return fallback;
+      }
+
+      function asArray(payload){
+        if(Array.isArray(payload)) return payload;
+        if(Array.isArray(payload?.events)) return payload.events;
+        if(Array.isArray(payload?.items)) return payload.items;
+        if(Array.isArray(payload?.data)) return payload.data;
+        return [];
+      }
+
+      function eventId(ev){
+        return getField(ev, ["event_id", "id"]);
+      }
+
+      function eventTitle(ev){
+        return getField(ev, ["title", "event_title", "name"], "Untitled event");
+      }
+
+      function eventDate(ev){
+        return getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
+      }
+
+      function eventTime(ev){
+        return getField(ev, ["start_time", "time", "event_time"]);
+      }
+
+      function eventLocation(ev){
+        return getField(ev, ["location", "venue", "place"]);
+      }
+
+      function hostResident(ev){
+        return clean(getField(ev, [
+          "host_resident_id",
+          "hostResidentId",
+          "created_by_resident_id",
+          "createdByResidentId",
+          "resident_id",
+          "residentId"
+        ])).toUpperCase();
+      }
+
+      function hostMember(ev){
+        return clean(getField(ev, [
+          "host_member_id",
+          "hostMemberId",
+          "created_by_member_id",
+          "createdByMemberId",
+          "member_id",
+          "memberId"
+        ])).toUpperCase();
+      }
+
+      function formatDate(value){
+        if(!value) return "";
+        const d = new Date(value);
+        if(Number.isNaN(d.getTime())) return String(value);
+        return d.toLocaleDateString("en-GB", {
+          weekday:"short",
+          day:"numeric",
+          month:"short",
+          year:"numeric"
+        });
+      }
+
+      function sortByDate(events){
+        return [...events].sort((a,b) => {
+          const at = Date.parse(eventDate(a));
+          const bt = Date.parse(eventDate(b));
+          if(Number.isNaN(at) && Number.isNaN(bt)) return 0;
+          if(Number.isNaN(at)) return 1;
+          if(Number.isNaN(bt)) return -1;
+          return at - bt;
+        });
+      }
+
+      function eventBelongsToHost(ev){
+        if(isAdmin) return true;
+
+        const hr = hostResident(ev);
+        const hm = hostMember(ev);
+
+        if(currentResidentId && hr && hr === currentResidentId.toUpperCase()) return true;
+        if(currentMemberId && hm && hm === currentMemberId.toUpperCase()) return true;
+
+        return false;
+      }
+
+      async function getJson(url){
+        const token =
+          sessionStorage.getItem("authToken") ||
+          localStorage.getItem("authToken") ||
+          "";
+
+        const headers = { "Accept":"application/json" };
+        if(token) headers.Authorization = `Bearer ${token}`;
+
+        const res = await fetch(url, {
+          cache:"no-store",
+          headers
+        });
+
+        const text = await res.text();
+        let data = {};
+        try{ data = text ? JSON.parse(text) : {}; }
+        catch{ data = {}; }
+
+        if(!res.ok){
+          throw new Error(data.message || `HTTP ${res.status}`);
+        }
+
+        return data;
+      }
+
+      function actionButtons(ev){
+        const id = eventId(ev);
+        const encoded = encodeURIComponent(id);
+
+        if(mode === "sop"){
+          return `
+            <a class="btn" href="host-state-of-play.html?event_id=${encoded}">Open State of Play</a>
+            <a class="btn secondary" href="events-details.html?event_id=${encoded}">View Notice</a>
+          `;
+        }
+
+        if(mode === "booking"){
+          return `
+            <a class="btn" href="event-booking.html?event_id=${encoded}&hostMode=1">Book for Member</a>
+            <a class="btn secondary" href="host-state-of-play.html?event_id=${encoded}">State of Play</a>
+          `;
+        }
+
+        return `
+          <a class="btn" href="events-details.html?event_id=${encoded}">View Notice</a>
+          <a class="btn secondary" href="host-event-form.html?event_id=${encoded}">Edit</a>
+          <a class="btn secondary" href="host-state-of-play.html?event_id=${encoded}">State of Play</a>
+          <a class="btn secondary" href="event-booking.html?event_id=${encoded}&hostMode=1">Book for Member</a>
+        `;
+      }
+
+      function render(events){
+        const usable = sortByDate(events)
+          .filter(ev => eventId(ev))
+          .filter(eventBelongsToHost);
+
+        if(!usable.length){
+          content.innerHTML = `
+            <div class="empty">
+              No event notices were found for this Host/Admin session.
+              Use <strong>Create Event Notice</strong> from the Host Area to create a new notice.
+            </div>
+          `;
+          status.hidden = true;
+          return;
+        }
+
+        content.innerHTML = `
+          <div class="event-list">
+            ${usable.map(ev => {
+              const id = eventId(ev);
+              const title = eventTitle(ev);
+              const d = formatDate(eventDate(ev));
+              const t = eventTime(ev);
+              const loc = eventLocation(ev);
+
+              return `
+                <article class="event-card">
+                  <div class="event-head">
+                    <div class="event-title">${escapeHtml(title)}</div>
+                    <div class="ref">${escapeHtml(id)}</div>
+                  </div>
+
+                  <div class="meta">
+                    ${d ? `<div>${escapeHtml(d)}${t ? " · " + escapeHtml(t) : ""}</div>` : ""}
+                    ${loc ? `<div>${escapeHtml(loc)}</div>` : ""}
+                  </div>
+
+                  <div class="event-actions">
+                    ${actionButtons(ev)}
+                  </div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        `;
+
+        status.hidden = true;
+      }
+
+      async function init(){
+        setModeText();
+
+        if(!currentResidentId && !currentMemberId){
+          status.className = "status err";
+          status.textContent = "Host/Admin verification was not found. Please return to Host Area and verify first.";
+          content.innerHTML = `<div class="actions"><a class="btn" href="host-area.html">Go to Host Area</a></div>`;
+          return;
+        }
+
+        if(!isHost && !isAdmin){
+          status.className = "status err";
+          status.textContent = "This session is not authorised for Host/Admin functions. Please return to Host Area and verify.";
+          content.innerHTML = `<div class="actions"><a class="btn" href="host-area.html">Go to Host Area</a></div>`;
+          return;
+        }
+
+        try{
+          const data = await getJson(`${API_BASE}/api/events`);
+          render(asArray(data));
+        }catch(err){
+          console.error(err);
+          status.className = "status err";
+          status.textContent = err.message || "Could not load event notices.";
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

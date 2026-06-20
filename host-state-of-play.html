@@ -33,7 +33,7 @@
     }
 
     .page{
-      max-width:1180px;
+      max-width:1220px;
       margin:0 auto;
       padding:1.2rem;
     }
@@ -55,6 +55,7 @@
     .sub{
       color:var(--muted);
       font-size:.95rem;
+      line-height:1.4;
     }
 
     .actions,
@@ -66,7 +67,8 @@
       align-items:center;
     }
 
-    a.btn, button.btn{
+    a.btn,
+    button.btn{
       appearance:none;
       border:1px solid var(--accent);
       background:var(--accent);
@@ -78,11 +80,20 @@
       font-weight:700;
       cursor:pointer;
       white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    a.btn.secondary, button.btn.secondary{
+    a.btn.secondary,
+    button.btn.secondary{
       background:#fff;
       color:var(--accent);
+    }
+
+    button.btn:disabled{
+      opacity:.58;
+      cursor:not-allowed;
     }
 
     .card{
@@ -177,6 +188,7 @@
     .note{
       color:var(--muted);
       font-size:.86rem;
+      line-height:1.4;
     }
 
     .report-generated{
@@ -229,19 +241,20 @@
     table{
       width:100%;
       border-collapse:collapse;
-      font-size:.88rem;
+      font-size:.86rem;
     }
 
-    th,td{
+    th,
+    td{
       border-bottom:1px solid var(--line);
-      padding:.55rem .45rem;
+      padding:.52rem .42rem;
       vertical-align:top;
       text-align:left;
     }
 
     th{
       color:var(--muted);
-      font-size:.74rem;
+      font-size:.72rem;
       text-transform:uppercase;
       letter-spacing:.04em;
       background:#f7fbfd;
@@ -254,7 +267,8 @@
       border-top:2px solid var(--line);
     }
 
-    .status{
+    .status,
+    .payment-status{
       display:inline-block;
       border-radius:999px;
       padding:.18rem .48rem;
@@ -268,16 +282,6 @@
     .status.interested{background:#eef3ff;color:#314d8a}
     .status.cancelled{background:#f8eaea;color:var(--bad)}
 
-    .payment-status{
-      display:inline-block;
-      border-radius:999px;
-      padding:.18rem .48rem;
-      font-size:.78rem;
-      font-weight:800;
-      background:#eef4f7;
-      color:var(--ink);
-    }
-
     .payment-status.paid{background:#e8f5eb;color:var(--good)}
     .payment-status.unpaid{background:#fff4db;color:var(--warn)}
     .payment-status.part-paid{background:#eef3ff;color:#314d8a}
@@ -287,6 +291,68 @@
     .contact{
       color:var(--muted);
       line-height:1.35;
+    }
+
+    .pay-edit{
+      min-width:172px;
+    }
+
+    .pay-grid{
+      display:grid;
+      grid-template-columns:6.4rem 8.1rem;
+      gap:.35rem;
+      align-items:center;
+    }
+
+    .pay-grid input,
+    .pay-grid select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:9px;
+      padding:.38rem .45rem;
+      font:inherit;
+      font-size:.82rem;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .pay-note{
+      grid-column:1 / -1;
+    }
+
+    .pay-actions{
+      grid-column:1 / -1;
+      display:flex;
+      gap:.35rem;
+      flex-wrap:wrap;
+    }
+
+    .mini-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--accent);
+      border-radius:999px;
+      padding:.28rem .48rem;
+      font-size:.76rem;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .mini-btn.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+    }
+
+    .local-note{
+      margin-top:.65rem;
+      padding:.65rem .75rem;
+      border-radius:14px;
+      border:1px solid #ead49a;
+      background:#fff8e6;
+      color:#7a5100;
+      line-height:1.4;
+      font-size:.86rem;
     }
 
     .empty{
@@ -306,21 +372,30 @@
       font-weight:700;
     }
 
-    [hidden]{display:none !important;}
+    [hidden]{display:none !important}
 
-    @media(max-width:850px){
+    @media(max-width:900px){
       .topbar{display:block}
-      .actions{justify-content:flex-start;margin-top:.8rem}
+      .actions{
+        justify-content:flex-start;
+        margin-top:.8rem;
+      }
       .event-grid{grid-template-columns:1fr 1fr}
       .summary{grid-template-columns:1fr 1fr 1fr}
       .payment-summary{grid-template-columns:1fr 1fr 1fr}
       .manager-grid{grid-template-columns:1fr 1fr}
       table{font-size:.82rem}
+      .pay-grid{grid-template-columns:1fr}
     }
 
-    @media(max-width:560px){
+    @media(max-width:620px){
       .page{padding:.8rem}
-      .event-grid,.summary,.payment-summary,.manager-grid{grid-template-columns:1fr}
+      .event-grid,
+      .summary,
+      .payment-summary,
+      .manager-grid{
+        grid-template-columns:1fr;
+      }
     }
 
     @media print{
@@ -336,7 +411,10 @@
 
       .actions,
       .manager-card,
-      button.btn{
+      button.btn,
+      .mini-btn,
+      .pay-edit-controls,
+      .local-note{
         display:none !important;
       }
 
@@ -353,11 +431,12 @@
       }
 
       table{
-        font-size:8.5pt;
+        font-size:8.2pt;
       }
 
-      th,td{
-        padding:4px 5px;
+      th,
+      td{
+        padding:3.5px 4px;
       }
 
       th{
@@ -369,9 +448,13 @@
         font-size:10pt;
       }
 
+      .pay-print{
+        display:block !important;
+      }
+
       @page{
-        size:A4;
-        margin:14mm;
+        size:A4 landscape;
+        margin:10mm;
       }
     }
   </style>
@@ -432,13 +515,17 @@
     <section class="card" id="paymentSummaryCard" hidden>
       <div class="section-title">
         <h2>Payment summary</h2>
-        <div class="note">For payable events only</div>
+        <div class="note">Host-updated working payment record</div>
       </div>
 
       <div class="payment-summary">
         <div class="metric"><strong id="amountDueTotal">£0.00</strong><span>Amount due</span></div>
-        <div class="metric good"><strong id="amountPaidTotal">£0.00</strong><span>Amount paid</span></div>
+        <div class="metric good"><strong id="amountPaidTotal">£0.00</strong><span>Amount received</span></div>
         <div class="metric warn"><strong id="amountOutstandingTotal">£0.00</strong><span>Outstanding</span></div>
+      </div>
+
+      <div class="local-note">
+        Payment updates on this page are a Host working record saved in this browser/device and included in the printed State of Play. They are not yet a formal Member Transaction Ledger.
       </div>
     </section>
 
@@ -522,7 +609,7 @@
     }
 
     function asMoney(value, fallback = 0){
-      const n = Number(value);
+      const n = Number(String(value ?? "").replace(/[£,\s]/g, ""));
       return Number.isFinite(n) ? n : fallback;
     }
 
@@ -533,6 +620,26 @@
     function getEventId(){
       const params = new URLSearchParams(window.location.search);
       return clean(params.get("event_id") || params.get("id") || params.get("eventId"), "");
+    }
+
+    function paymentStoreKey(){
+      return `sanctuary:sop-payments:${getEventId()}`;
+    }
+
+    function loadPaymentStore(){
+      try{
+        return JSON.parse(localStorage.getItem(paymentStoreKey()) || "{}") || {};
+      }catch{
+        return {};
+      }
+    }
+
+    function savePaymentStore(store){
+      localStorage.setItem(paymentStoreKey(), JSON.stringify(store || {}));
+    }
+
+    function rowKey(row){
+      return String(row.memberId || "").trim().toUpperCase();
     }
 
     function formatDate(iso){
@@ -573,7 +680,7 @@
 
     function normalisePaymentStatus(value){
       const raw = clean(value, "n/a").toLowerCase();
-      if (raw === "part paid") return "part-paid";
+      if (raw === "part paid" || raw === "part_paid") return "part-paid";
       if (raw === "na") return "n/a";
       return raw;
     }
@@ -591,9 +698,11 @@
         0
       );
 
-      return {
+      const memberId = clean(b.member_id || b.memberId || b.membership_number || b.property_id);
+
+      const base = {
         status,
-        memberId: clean(b.member_id || b.memberId || b.membership_number || b.property_id),
+        memberId,
         name: clean(b.member_name || b.contact_name || b.name || b.resident_name),
         email: clean(b.email || b.contact_email || b.member_email, ""),
         mobile: clean(b.mobile || b.contact_mobile || b.phone || b.member_mobile, ""),
@@ -604,8 +713,26 @@
         amountPaid: asMoney(b.amount_paid, 0),
         paymentStatus: normalisePaymentStatus(b.payment_status),
         notes: clean(b.notes || b.payment_note || "", ""),
+        paymentNote: clean(b.payment_note || b.payment_notes || "", ""),
         updated: clean(b.updated || b.updated_at || b.created_at || b.timestamp, "")
       };
+
+      const local = loadPaymentStore()[rowKey(base)] || {};
+      if (local && Object.keys(local).length){
+        base.amountPaid = asMoney(local.amountPaid, base.amountPaid);
+        base.paymentStatus = normalisePaymentStatus(local.paymentStatus || base.paymentStatus);
+        base.paymentNote = clean(local.paymentNote || base.paymentNote || "", "");
+      }
+
+      if (base.paymentStatus === "n/a" && base.amountDue > 0){
+        base.paymentStatus = base.amountPaid >= base.amountDue
+          ? "paid"
+          : base.amountPaid > 0
+            ? "part-paid"
+            : "unpaid";
+      }
+
+      return base;
     }
 
     function statusOrder(status){
@@ -638,6 +765,7 @@
 
       if (raw === "true" || raw === "yes" || raw === "1") return true;
       if (asMoney(event.price_member, 0) > 0 || asMoney(event.price_guest, 0) > 0) return true;
+      if (asMoney(event.unit_price, 0) > 0 || asMoney(event.cost_per_place, 0) > 0 || asMoney(event.price_per_place, 0) > 0) return true;
       if (Array.isArray(rows) && rows.some(r => asMoney(r.amountDue, 0) > 0 || asMoney(r.amountPaid, 0) > 0)) return true;
 
       return false;
@@ -646,16 +774,21 @@
     function costPerPlaceLabel(event){
       if (!eventIsPayable(event, lastRows)) return "Free";
 
-      const memberPrice = asMoney(event.price_member, 0);
-      const guestPrice = asMoney(event.price_guest, 0);
-      const price = memberPrice || guestPrice;
+      const price = asMoney(
+        event.price_member ??
+        event.price_guest ??
+        event.unit_price ??
+        event.cost_per_place ??
+        event.price_per_place,
+        0
+      );
 
       return price > 0 ? formatMoney(price) : "Payable";
     }
 
     function renderEvent(event, eventId){
       const title = clean(event.title || event.event_title || event.notice_title, "Untitled event");
-      const ref = clean(event.event_ref || event.reference || event.ref || eventId);
+      const ref = clean(event.event_ref || event.reference || event.ref || event.event_id || eventId);
       const category = clean(event.category_label || event.category || event.category_key);
       const capacity = asInt(event.capacity_total ?? event.capacity ?? event.places_total, 0);
 
@@ -685,9 +818,9 @@
           bookedRecords += 1;
           bookedMember += r.memberPlaces;
           bookedGuests += r.guestPlaces;
-        } else if (r.status === "waitlist"){
+        }else if (r.status === "waitlist"){
           waitlistPlaces += r.totalPlaces || r.memberPlaces || 1;
-        } else if (r.status === "interested"){
+        }else if (r.status === "interested"){
           interested += 1;
         }
       });
@@ -703,15 +836,22 @@
       $("bookingInterestBox").textContent = `${bookedRecords} booked • ${interested} interested`;
     }
 
+    function bookedRows(rows){
+      return rows.filter(r => r.status === "booked");
+    }
+
+    function sumRows(rows, key){
+      return rows.reduce((sum, r) => sum + asMoney(r[key], 0), 0);
+    }
+
     function renderPaymentSummary(event, rows){
       const confirmed = bookedRows(rows || []);
       const totalDue = sumRows(confirmed, "amountDue");
       const totalPaid = sumRows(confirmed, "amountPaid");
       const totalOutstanding = Math.max(0, totalDue - totalPaid);
-
       const show = eventIsPayable(event, rows) || totalDue > 0 || totalPaid > 0;
-      $("paymentSummaryCard").hidden = !show;
 
+      $("paymentSummaryCard").hidden = !show;
       if (!show) return;
 
       $("amountDueTotal").textContent = formatMoney(totalDue);
@@ -753,6 +893,7 @@
       if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
       if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
       if (row.notes) bits.push(`<div>Note: ${escapeHtml(row.notes)}</div>`);
+      if (row.paymentNote) bits.push(`<div>Payment note: ${escapeHtml(row.paymentNote)}</div>`);
       return bits.length ? bits.join("") : "—";
     }
 
@@ -760,12 +901,47 @@
       return String(status || "n/a").replaceAll("/", "-").replaceAll(" ", "-");
     }
 
-    function bookedRows(rows){
-      return rows.filter(r => r.status === "booked");
+    function paymentStatusLabel(status){
+      const s = normalisePaymentStatus(status);
+      if (s === "n/a") return "N/A";
+      if (s === "part-paid") return "Part paid";
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : "N/A";
     }
 
-    function sumRows(rows, key){
-      return rows.reduce((sum, r) => sum + asMoney(r[key], 0), 0);
+    function paymentControls(row){
+      const key = escapeHtml(rowKey(row));
+      const paid = asMoney(row.amountPaid, 0);
+      const due = asMoney(row.amountDue, 0);
+      const status = normalisePaymentStatus(row.paymentStatus || (due > 0 ? "unpaid" : "n/a"));
+      const note = row.paymentNote || "";
+
+      return `
+        <div class="pay-edit">
+          <div class="pay-print" hidden>
+            ${formatMoney(paid)} • ${escapeHtml(paymentStatusLabel(status))}
+            ${note ? `<br>Note: ${escapeHtml(note)}` : ""}
+          </div>
+
+          <div class="pay-grid pay-edit-controls" data-pay-key="${key}">
+            <input data-pay-field="amountPaid" type="number" min="0" step="0.01" value="${paid.toFixed(2)}" aria-label="Amount received">
+            <select data-pay-field="paymentStatus" aria-label="Payment status">
+              <option value="n/a"${status === "n/a" ? " selected" : ""}>N/A</option>
+              <option value="unpaid"${status === "unpaid" ? " selected" : ""}>Unpaid</option>
+              <option value="part-paid"${status === "part-paid" ? " selected" : ""}>Part paid</option>
+              <option value="paid"${status === "paid" ? " selected" : ""}>Paid</option>
+              <option value="refunded"${status === "refunded" ? " selected" : ""}>Refunded</option>
+            </select>
+            <div class="pay-note">
+              <input data-pay-field="paymentNote" type="text" value="${escapeHtml(note)}" placeholder="Payment note">
+            </div>
+            <div class="pay-actions">
+              <button class="mini-btn primary" type="button" data-pay-action="save">Save</button>
+              <button class="mini-btn" type="button" data-pay-action="paid">Mark paid</button>
+              <button class="mini-btn" type="button" data-pay-action="clear">Clear</button>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function renderTable(rows){
@@ -803,30 +979,37 @@
               <th>Guests</th>
               <th>Total</th>
               <th>Due</th>
-              <th>Paid</th>
-              <th>Payment</th>
+              <th>Received / status</th>
+              <th>Outstanding</th>
+              <th>Host payment update</th>
               <th>Member contact / note</th>
             </tr>
           </thead>
           <tbody>
-            ${activeRows.map(row => `
-              <tr>
-                <td><span class="status ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span></td>
-                <td>${escapeHtml(row.memberId)}</td>
-                <td>${escapeHtml(row.name)}</td>
-                <td>${row.memberPlaces}</td>
-                <td>${row.guestPlaces}</td>
-                <td><strong>${row.totalPlaces}</strong></td>
-                <td>${formatMoney(row.amountDue)}</td>
-                <td>${formatMoney(row.amountPaid)}</td>
-                <td>
-                  <span class="payment-status ${escapeHtml(paymentStatusClass(row.paymentStatus))}">
-                    ${escapeHtml(row.paymentStatus)}
-                  </span>
-                </td>
-                <td class="contact">${contactCell(row)}</td>
-              </tr>
-            `).join("")}
+            ${activeRows.map(row => {
+              const outstanding = Math.max(0, asMoney(row.amountDue, 0) - asMoney(row.amountPaid, 0));
+              return `
+                <tr>
+                  <td><span class="status ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span></td>
+                  <td>${escapeHtml(row.memberId)}</td>
+                  <td>${escapeHtml(row.name)}</td>
+                  <td>${row.memberPlaces}</td>
+                  <td>${row.guestPlaces}</td>
+                  <td><strong>${row.totalPlaces}</strong></td>
+                  <td>${formatMoney(row.amountDue)}</td>
+                  <td>
+                    ${formatMoney(row.amountPaid)}
+                    <br>
+                    <span class="payment-status ${escapeHtml(paymentStatusClass(row.paymentStatus))}">
+                      ${escapeHtml(paymentStatusLabel(row.paymentStatus))}
+                    </span>
+                  </td>
+                  <td>${formatMoney(outstanding)}</td>
+                  <td>${row.status === "booked" ? paymentControls(row) : "—"}</td>
+                  <td class="contact">${contactCell(row)}</td>
+                </tr>
+              `;
+            }).join("")}
           </tbody>
           <tfoot>
             <tr>
@@ -836,7 +1019,8 @@
               <th>${totalPlaces}</th>
               <th>${formatMoney(totalDue)}</th>
               <th>${formatMoney(totalPaid)}</th>
-              <th colspan="2">Outstanding: ${formatMoney(totalOutstanding)}</th>
+              <th>${formatMoney(totalOutstanding)}</th>
+              <th colspan="2">Host working payment record</th>
             </tr>
           </tfoot>
         </table>
@@ -857,7 +1041,7 @@
 
     function authHeaders(){
       const token = getAuthToken();
-      const headers = { "Content-Type": "application/json" };
+      const headers = { "Content-Type":"application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
       return headers;
     }
@@ -972,9 +1156,61 @@
       }
     }
 
+    function readPaymentControls(container){
+      return {
+        amountPaid: asMoney(container.querySelector('[data-pay-field="amountPaid"]')?.value, 0),
+        paymentStatus: normalisePaymentStatus(container.querySelector('[data-pay-field="paymentStatus"]')?.value || "n/a"),
+        paymentNote: clean(container.querySelector('[data-pay-field="paymentNote"]')?.value || "", "")
+      };
+    }
+
+    function writePaymentRecord(key, record){
+      if (!key) return;
+
+      const store = loadPaymentStore();
+      store[key] = {
+        amountPaid: asMoney(record.amountPaid, 0),
+        paymentStatus: normalisePaymentStatus(record.paymentStatus || "n/a"),
+        paymentNote: clean(record.paymentNote || "", "")
+      };
+      savePaymentStore(store);
+    }
+
+    function clearPaymentRecord(key){
+      const store = loadPaymentStore();
+      delete store[key];
+      savePaymentStore(store);
+    }
+
+    function handlePaymentClick(event){
+      const button = event.target.closest("[data-pay-action]");
+      if (!button) return;
+
+      const container = button.closest("[data-pay-key]");
+      if (!container) return;
+
+      const key = container.dataset.payKey;
+      const action = button.dataset.payAction;
+      const row = lastRows.find(r => rowKey(r) === key);
+      if (!row) return;
+
+      if (action === "paid"){
+        writePaymentRecord(key, {
+          amountPaid: row.amountDue,
+          paymentStatus: row.amountDue > 0 ? "paid" : "n/a",
+          paymentNote: row.paymentNote || ""
+        });
+      }else if (action === "clear"){
+        clearPaymentRecord(key);
+      }else{
+        writePaymentRecord(key, readPaymentControls(container));
+      }
+
+      init();
+    }
+
     async function init(){
       const eventId = getEventId();
-
       updateReportGeneratedAt();
 
       if (!eventId){
@@ -1014,6 +1250,7 @@
     $("managerClearBtn")?.addEventListener("click", clearHostBookingForm);
     $("printReportBtn")?.addEventListener("click", printReport);
     $("printReportTopBtn")?.addEventListener("click", printReport);
+    $("tableWrap")?.addEventListener("click", handlePaymentClick);
 
     init();
   </script>

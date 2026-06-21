@@ -359,6 +359,22 @@
       background:var(--line);
       margin:16px 0;
     }
+
+    .host-mode-note{
+      display:none;
+      margin:0 0 14px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#fff8e6;
+      border:1px solid #ead49a;
+      color:#7a5100;
+      line-height:1.45;
+      font-size:.94rem;
+    }
+
+    .host-mode-note.show{
+      display:block;
+    }
   </style>
 </head>
 <body>
@@ -377,8 +393,8 @@
 
     <div class="grid">
       <section class="card">
-        <h1>Book or register your interest</h1>
-        <p class="subhead">Please begin with Member lookup. If you already have a booking or interest recorded for this event, it should reload automatically so you can edit, cancel, or request a refund (contact host).</p>
+        <h1 id="mainHeading">Book or register interest</h1>
+        <p id="mainIntro" class="subhead">Please begin with Member lookup. If a booking or interest record already exists for this event, it should reload automatically so it can be amended, cancelled, or marked for refund discussion with the Host.</p>
 
         <div class="divider"></div>
 
@@ -443,20 +459,25 @@
       </section>
 
       <section class="card">
-        <h2>Your membership number and PIN</h2>
+        <h2 id="lookupHeading">Member lookup</h2>
+
+        <div id="hostModeNote" class="host-mode-note">
+          <strong>Host booking mode:</strong>
+          you are booking on behalf of another member. Enter the member's membership number and use Lookup member. The member's PIN is not required because Host/Admin authority has already been checked through Host Area.
+        </div>
 
         <form id="lookupForm" autocomplete="on">
           <div class="field-grid">
-            <label>
-              Your membership number
+            <label id="memberLookupLabel">
+              Membership number
               <input id="memberIdInput" type="text" placeholder="e.g. SM70" autocomplete="username" />
             </label>
 
-            <label>
+            <label id="pinLookupLabel">
               PIN
               <span class="pin-wrap">
                 <input id="memberPinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
-                <button id="togglePinBtn" class="eye-btn" type="button" aria-label="Show PIN" title="Show PIN">👁</button>
+                <button id="togglePinBtn" class="eye-btn" type="button" aria-label="Show PIN" title="Show PIN">Show</button>
               </span>
             </label>
           </div>
@@ -469,7 +490,7 @@
 
         <div class="divider"></div>
 
-        <h2>Your booking / interest</h2>
+        <h2 id="bookingHeading">Booking / interest</h2>
 
         <form id="bookingForm" autocomplete="on">
           <div class="field-grid">
@@ -535,7 +556,7 @@
             <button id="cancelBtn" class="btn-danger" type="button" disabled>Cancel</button>
           </div>
 
-          <div class="small">A saved booking should be reloaded after Member lookup. You may then amend the form and save again.</div>
+          <div id="bookingHelpText" class="small">A saved booking should be reloaded after Member lookup. The form can then be amended and saved again.</div>
         </form>
       </section>
     </div>
@@ -547,6 +568,7 @@
     const rawSearch = window.location.search || "";
     const rawHref = window.location.href || "";
     const qs = new URLSearchParams(rawSearch);
+    const HOST_MODE = qs.get("hostMode") === "1" || qs.get("hostmode") === "1";
 
     let EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
 
@@ -568,6 +590,9 @@
     const backLink = document.getElementById("backLink");
     const logoutBtn = document.getElementById("logoutBtn");
 
+    const mainHeading = document.getElementById("mainHeading");
+    const mainIntro = document.getElementById("mainIntro");
+
     const eventTitle = document.getElementById("eventTitle");
     const eventSummary = document.getElementById("eventSummary");
     const eventReference = document.getElementById("eventReference");
@@ -588,6 +613,12 @@
 
     const lookupForm = document.getElementById("lookupForm");
     const bookingForm = document.getElementById("bookingForm");
+    const lookupHeading = document.getElementById("lookupHeading");
+    const bookingHeading = document.getElementById("bookingHeading");
+    const hostModeNote = document.getElementById("hostModeNote");
+    const memberLookupLabel = document.getElementById("memberLookupLabel");
+    const pinLookupLabel = document.getElementById("pinLookupLabel");
+    const bookingHelpText = document.getElementById("bookingHelpText");
 
     const memberIdInput = document.getElementById("memberIdInput");
     const memberPinInput = document.getElementById("memberPinInput");
@@ -704,6 +735,36 @@
       );
     }
 
+    function getHostModeToken(){
+      return (
+        sessionStorage.getItem("authToken") ||
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("adminToken") ||
+        localStorage.getItem("adminToken") ||
+        ""
+      );
+    }
+
+    function getHostModeRoles(){
+      try{
+        return JSON.parse(
+          sessionStorage.getItem("hostAreaRoles") ||
+          localStorage.getItem("hostAreaRoles") ||
+          "[]"
+        ).map(r => String(r || "").toLowerCase());
+      }catch(_){
+        return [];
+      }
+    }
+
+    function hostModeIsAuthorised(){
+      if (!HOST_MODE) return false;
+      const roles = getHostModeRoles();
+      const hasRole = roles.includes("host") || roles.includes("admin");
+      const hasAdminToken = !!(localStorage.getItem("adminToken") || sessionStorage.getItem("adminToken"));
+      return !!getHostModeToken() && (hasRole || hasAdminToken);
+    }
+
     function getStoredMemberId(){
       return (
         localStorage.getItem("currentMemberId") ||
@@ -756,8 +817,9 @@
 
     async function apiFetch(path, options = {}){
       const headers = Object.assign({}, options.headers || {});
-      if (authToken){
-        headers.Authorization = `Bearer ${authToken}`;
+      const requestToken = authToken || (HOST_MODE ? getHostModeToken() : "");
+      if (requestToken){
+        headers.Authorization = `Bearer ${requestToken}`;
       }
 
       const res = await fetch(`${BACKEND_URL}${path}`, {
@@ -1166,7 +1228,77 @@
       }
     }
 
+    async function loadMemberProfileForHost(memberId){
+      if (!HOST_MODE || !memberId) return null;
+
+      const data = await apiFetch(`/api/member-profile/${encodeURIComponent(memberId)}`, {
+        method:"GET"
+      });
+
+      return data.profile || data.member || data.entry || data || null;
+    }
+
+    function bookingMemberId(booking){
+      return baseMemberId(
+        pick(
+          booking?.member_id,
+          booking?.memberId,
+          booking?.membership_number,
+          booking?.property_id,
+          ""
+        )
+      );
+    }
+
+    function bookingsArray(payload){
+      if (Array.isArray(payload)) return payload;
+      if (Array.isArray(payload?.bookings)) return payload.bookings;
+      if (Array.isArray(payload?.items)) return payload.items;
+      if (Array.isArray(payload?.responses)) return payload.responses;
+      return [];
+    }
+
+    async function loadHostBookingForMember(showStatusMessage = false){
+      if (!HOST_MODE || !currentMemberId || !EVENT_ID){
+        currentBooking = null;
+        renderExistingBooking();
+        return;
+      }
+
+      try{
+        const result = await apiFetch(`/api/events/${encodeURIComponent(EVENT_ID)}/bookings`, {
+          method:"GET"
+        });
+
+        currentBooking =
+          bookingsArray(result).find(b => bookingMemberId(b) === currentMemberId) ||
+          null;
+
+        renderExistingBooking();
+
+        if (currentBooking){
+          populateBookingFormFromCurrent();
+          if (showStatusMessage){
+            showMessage("Existing booking / interest for this member has been loaded for Host update.", "ok");
+          }
+        }else if (showStatusMessage){
+          showMessage("No existing booking was found for this member for this event.", "info");
+        }
+      }catch(err){
+        currentBooking = null;
+        renderExistingBooking();
+
+        if (showStatusMessage){
+          showMessage(`Could not reload member booking: ${err.message}`, "err");
+        }
+      }
+    }
+
     async function loadMyBooking(showStatusMessage = false){
+      if (HOST_MODE){
+        return loadHostBookingForMember(showStatusMessage);
+      }
+
       if (!authToken || !currentMemberId || !EVENT_ID){
         currentBooking = null;
         renderExistingBooking();
@@ -1225,29 +1357,51 @@
         showMessage("Please enter a membership number.", "warn");
         return;
       }
-      if (!pin){
+
+      if (HOST_MODE && !hostModeIsAuthorised()){
+        showMessage("Host/Admin authority was not found. Please return to Host Area and verify first.", "err");
+        return;
+      }
+
+      if (!HOST_MODE && !pin){
         showMessage("Please enter your PIN.", "warn");
         return;
       }
 
       lookupBtn.disabled = true;
-      showMessage("Looking up member…", "info");
+      showMessage(HOST_MODE ? "Looking up member for Host booking…" : "Looking up member…", "info");
 
       try{
-        await login(memberIdBase || rawMemberId, pin);
-
         currentMemberId = memberIdBase || rawMemberId;
-        persistAuth(authToken, currentMemberId);
 
-        const profile = await loadMemberProfile();
-        populateMemberForm(profile);
+        if (HOST_MODE){
+          authToken = getHostModeToken();
 
-        await loadMyBooking(false);
+          const profile = await loadMemberProfileForHost(currentMemberId);
+          populateMemberForm(profile);
+
+          await loadMyBooking(false);
+        }else{
+          await login(currentMemberId, pin);
+
+          currentMemberId = memberIdBase || rawMemberId;
+          persistAuth(authToken, currentMemberId);
+
+          const profile = await loadMemberProfile();
+          populateMemberForm(profile);
+
+          await loadMyBooking(false);
+        }
 
         setActionButtons(true);
 
         if (currentBooking){
-          showMessage("Existing booking / interest reloaded. You may now edit, cancel, or request a refund.", "ok");
+          showMessage(
+            HOST_MODE
+              ? "Existing booking / interest for this member has been loaded. You may now amend it on the member's behalf."
+              : "Existing booking / interest reloaded. You may now edit, cancel, or request a refund.",
+            "ok"
+          );
         }else{
           const hasContact = !!pick(
             memberNameInput.value,
@@ -1256,13 +1410,20 @@
           );
 
           if (hasContact){
-            showMessage("Member lookup complete. No existing booking was found for this event.", "info");
+            showMessage(
+              HOST_MODE
+                ? "Member lookup complete. No existing booking was found for this event. You may now create one on the member's behalf."
+                : "Member lookup complete. No existing booking was found for this event.",
+              "info"
+            );
           }else{
             showMessage("Lookup succeeded, but no member contact details were returned. You may fill them in manually.", "warn");
           }
         }
       }catch(err){
-        clearPersistedAuth();
+        if (!HOST_MODE){
+          clearPersistedAuth();
+        }
         currentBooking = null;
 
         memberIdReadonly.value = "";
@@ -1442,7 +1603,11 @@ if (totalRequested < 1){
     }
 
     function clearLookup(){
-      clearPersistedAuth();
+      if (!HOST_MODE){
+        clearPersistedAuth();
+      }else{
+        currentMemberId = "";
+      }
       currentBooking = null;
 
       memberIdInput.value = "";
@@ -1461,9 +1626,41 @@ if (totalRequested < 1){
       showMessage("Member lookup cleared.", "info");
     }
 
+    function applyHostModeDisplay(){
+      if (!HOST_MODE) return;
+
+      document.title = "Book for Member | Sanctuary Club";
+
+      mainHeading.textContent = "Book for Member";
+      mainIntro.textContent =
+        "Host/Admin mode. Look up the member by membership number, then add, update or cancel the booking on that member's behalf.";
+
+      lookupHeading.textContent = "Member lookup";
+      bookingHeading.textContent = "Member booking / interest";
+      hostModeNote.classList.add("show");
+
+      if (memberLookupLabel && memberLookupLabel.firstChild){
+        memberLookupLabel.firstChild.textContent = "Member's membership number";
+      }
+
+      if (pinLookupLabel){
+        pinLookupLabel.hidden = true;
+      }
+
+      if (bookingHelpText){
+        bookingHelpText.textContent =
+          "A saved booking should be reloaded after Member lookup. The Host/Admin may then amend the form and save again on the member's behalf.";
+      }
+
+      memberIdInput.placeholder = "Member to book for, e.g. SM70";
+      lookupBtn.textContent = "Lookup member";
+    }
+
     function hydrateStoredSession(){
-      authToken = getStoredAuthToken();
-      currentMemberId = baseMemberId(getStoredMemberId());
+      applyHostModeDisplay();
+
+      authToken = HOST_MODE ? getHostModeToken() : getStoredAuthToken();
+      currentMemberId = HOST_MODE ? "" : baseMemberId(getStoredMemberId());
 
       if (currentMemberId){
         memberIdInput.value = currentMemberId;
@@ -1495,7 +1692,7 @@ if (totalRequested < 1){
       hydrateStoredSession();
       await loadEvent();
 
-      if (authToken && currentMemberId && EVENT_ID){
+      if (!HOST_MODE && authToken && currentMemberId && EVENT_ID){
         await loadMyBooking(false);
         renderExistingBooking();
       }

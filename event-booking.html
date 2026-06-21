@@ -1643,9 +1643,9 @@ if (totalRequested < 1){
       }
 
       if (pinLookupLabel){
-        pinLookupLabel.hidden = true;
+        pinLookupLabel.style.display = "none";
       }
-
+      
       if (bookingHelpText){
         bookingHelpText.textContent =
           "A saved booking should be reloaded after Member lookup. The Host/Admin may then amend the form and save again on the member's behalf.";

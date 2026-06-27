@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Admin Dashboard — Sanctuary Club</title>
+  <title>Admin Dashboard — Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_3" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_4" />
 
   <style>
     body{
@@ -18,7 +18,7 @@
     }
 
     .wrap{
-      max-width:960px;
+      max-width:980px;
       margin:2.25rem auto;
       padding:0 1rem 2rem;
     }
@@ -43,16 +43,29 @@
       line-height:1.45;
     }
 
+    .section-title{
+      margin:1.35rem 0 .55rem;
+      color:#003366;
+      font-size:1.05rem;
+      border-top:1px solid #e4edf7;
+      padding-top:1rem;
+    }
+
+    .section-title:first-of-type{
+      border-top:0;
+      padding-top:0;
+    }
+
     .admin-list{
       display:flex;
       flex-direction:column;
       gap:.85rem;
-      margin-top:1rem;
+      margin-top:.6rem;
     }
 
     .admin-item{
       display:grid;
-      grid-template-columns:220px 1fr;
+      grid-template-columns:230px 1fr;
       gap:1rem;
       align-items:center;
       padding:.95rem;
@@ -73,11 +86,38 @@
       color:#fff;
       background:#005ea8;
       box-sizing:border-box;
+      text-align:center;
+    }
+
+    .admin-btn:hover{
+      background:#004f8f;
+    }
+
+    .admin-btn.future{
+      background:#6b7886;
+      cursor:not-allowed;
     }
 
     .desc{
       color:#334455;
       line-height:1.38;
+    }
+
+    .status-pill{
+      display:inline-block;
+      margin-left:.4rem;
+      padding:.12rem .45rem;
+      border-radius:999px;
+      font-size:.72rem;
+      font-weight:800;
+      background:#e8f2ff;
+      color:#004f8f;
+      vertical-align:middle;
+    }
+
+    .status-pill.future{
+      background:#f0f1f3;
+      color:#5b6470;
     }
 
     .footer-row{
@@ -86,6 +126,8 @@
       flex-wrap:wrap;
       margin-top:1.2rem;
       align-items:center;
+      border-top:1px solid #e4edf7;
+      padding-top:1rem;
     }
 
     .plain-btn{
@@ -98,6 +140,10 @@
       color:#22384d;
       font-weight:700;
       cursor:pointer;
+    }
+
+    .plain-btn:hover{
+      background:#eef3f8;
     }
 
     .home-link{
@@ -119,24 +165,30 @@
 </head>
 
 <body>
-  
-    <div class="wrap">
+  <div class="wrap">
     <div class="card">
       <h1>Admin Dashboard</h1>
-      <p class="intro">Authorised access only. Use the links below to manage roles, member records, notices and exports.</p>
+      <p class="intro">
+        Authorised access only. Use the links below to manage members, roles,
+        event notices and authorised club administration.
+      </p>
+
+      <h2 class="section-title">Core Administration</h2>
 
       <div class="admin-list">
         <div class="admin-item">
           <a class="admin-btn" href="admin-role-manager.html">Member Roles</a>
           <div class="desc">
-            Grant or remove approved roles such as Host, Committee, Treasurer and Admin.
+            Grant or remove approved resident roles such as Host, Committee,
+            Treasurer, News Contributor and Admin.
           </div>
         </div>
 
         <div class="admin-item">
           <a class="admin-btn" href="admin-members-grid.html">Members Admin</a>
           <div class="desc">
-            View the member/admin grid and check resident information held for administration purposes.
+            View the member/admin grid and check resident information held for
+            administration purposes.
           </div>
         </div>
 
@@ -146,29 +198,90 @@
             Export member email information for authorised club administration.
           </div>
         </div>
+      </div>
 
+      <h2 class="section-title">Events</h2>
+
+      <div class="admin-list">
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-event-notices.html">Event Notices</a>
+          <div class="desc">
+            View, edit and administer all Host-created Event Notices, including
+            State of Play.
+            <span class="status-pill">Next</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Future Administration</h2>
+
+      <div class="admin-list">
         <div class="admin-item">
           <a class="admin-btn" href="admin-notices-moderation.html">Notices Moderation</a>
           <div class="desc">
-            Administrative notices oversight and related maintenance tools.
+            Existing administrative notices oversight and related maintenance tools.
+            This will later sit within the wider Notice Centre.
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Activity Log</span>
+          <div class="desc">
+            Future admin view showing resident sign-ins, bookings, YI updates and
+            other useful platform activity.
+            <span class="status-pill future">Later</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Notice Centre</span>
+          <div class="desc">
+            Future editorial workflow for Club News, residents' articles, Owners
+            Association and Panel communications.
+            <span class="status-pill future">Later</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Services</span>
+          <div class="desc">
+            Future administration area for clubhouse, contractors, visiting
+            services and regular service providers.
+            <span class="status-pill future">Later</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Reports</span>
+          <div class="desc">
+            Future reporting area for platform usage, membership activity and
+            event summaries.
+            <span class="status-pill future">Later</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Settings</span>
+          <div class="desc">
+            Future system settings area for controlled platform configuration.
+            <span class="status-pill future">Later</span>
           </div>
         </div>
       </div>
 
       <div class="footer-row">
-  <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
-  <a class="home-link" href="members-info.html">Members Hub</a>
-  <a class="home-link" href="index.html">Home</a>
-</div>
-</div>
-</div>
+        <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
+        <a class="home-link" href="members-info.html">Members Hub</a>
+        <a class="home-link" href="index.html">Home</a>
+      </div>
+    </div>
+  </div>
 
-<script>
-  document.getElementById("logoutBtn")?.addEventListener("click", function () {
-    localStorage.removeItem("adminToken");
-    window.location.replace("admin-login.html");
-  });
-</script>
-
+  <script>
+    document.getElementById("logoutBtn")?.addEventListener("click", function () {
+      localStorage.removeItem("adminToken");
+      window.location.replace("admin-login.html");
+    });
+  </script>
 </body>
 </html>

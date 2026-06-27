@@ -162,7 +162,7 @@ function renderGrid(containerId, memberIds, members, detailArea) {
     }
 
     const status = getContactStatus(data);
-    const isUsable = status !== "inactive";
+    const isUsable = true;
 
     if (status === "complete") btn.classList.add("contact-complete");
     else if (status === "partial") btn.classList.add("contact-partial");

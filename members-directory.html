@@ -72,39 +72,99 @@
     }
 
     /* ---------- MEMBER GRID ---------- */
-    .member-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
 
-    .member-button {
-      padding: 0.45rem;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      border: 1px solid #bbb;
-      background: #f8f8f8;
-      cursor: pointer;
-      font-weight: 500;
-    }
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
 
-    /* ✅ Joined / has-any-data highlight */
-    .member-button.has-data{
-      background:#e8f2ff;
-      border-color:#005ea8;
-    }
+.member-button {
+  padding: 0.45rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
 
-    .member-button.active {
-      background: #005ea8;
-      color: #fff;
-      border-color: #005ea8;
-    }
+/* Contact sharing levels */
 
-    .member-button.inactive {
-      opacity: 1;
-      cursor: pointer;
-    }
+.member-button.contact-complete {
+  background: #e6f4ea;
+  border-color: #2e7d32;
+}
+
+.member-button.contact-partial {
+  background: #fff4d6;
+  border-color: #b26a00;
+}
+
+.member-button.contact-basic {
+  background: #e8f2ff;
+  border-color: #005ea8;
+}
+
+.member-button.inactive {
+  background: #f3f3f3;
+  border-color: #999;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.member-button.active {
+  background: #005ea8;
+  color: #fff;
+  border-color: #005ea8;
+}
+
+/* ---------- DIRECTORY LEGEND ---------- */
+
+.md-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin: 0.4rem 0 1rem;
+  font-size: 0.92rem;
+  color: #555;
+}
+
+.md-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.blob {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #888;
+}
+
+.blob.complete {
+  background: #e6f4ea;
+  border-color: #2e7d32;
+}
+
+.blob.partial {
+  background: #fff4d6;
+  border-color: #b26a00;
+}
+
+.blob.basic {
+  background: #e8f2ff;
+  border-color: #005ea8;
+}
+
+.blob.inactive {
+  background: #f3f3f3;
+  border-color: #999;
+}
 
     /* ---------- DETAIL PANEL ---------- */
     #member-detail {

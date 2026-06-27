@@ -1,1 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Event Notices — Sanctuary Club</title>
 
+  <link rel="stylesheet" href="styles-main.css" />
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#d9ecff 0%,#f2f7fb 45%,#fff 100%);
+      color:#223;
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:2rem auto;
+      padding:0 1rem 2rem;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid #dbe6f3;
+      border-radius:16px;
+      padding:1.25rem;
+      box-shadow:0 8px 22px rgba(0,0,0,.08);
+    }
+
+    h1{
+      margin:0 0 .35rem;
+      color:#003366;
+      font-size:1.7rem;
+    }
+
+    .intro{
+      margin:0 0 1rem;
+      color:#5b6875;
+      line-height:1.45;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:1rem 0;
+    }
+
+    input, select{
+      padding:.7rem .8rem;
+      border:1px solid #ccd8e5;
+      border-radius:10px;
+      font:inherit;
+    }
+
+    input{
+      flex:1;
+      min-width:230px;
+    }
+
+    .notice-list{
+      display:flex;
+      flex-direction:column;
+      gap:.85rem;
+      margin-top:1rem;
+    }
+
+    .event-card{
+      border:1px solid #dbe6f3;
+      border-radius:14px;
+      background:#fbfdff;
+      padding:1rem;
+    }
+
+    .event-top{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    .event-title{
+      margin:0;
+      color:#003366;
+      font-size:1.15rem;
+    }
+
+    .ref{
+      font-weight:800;
+      color:#005ea8;
+      margin-right:.45rem;
+    }
+
+    .meta{
+      margin:.45rem 0 0;
+      color:#405060;
+      line-height:1.45;
+      font-size:.95rem;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:.22rem .55rem;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:800;
+      background:#e8f2ff;
+      color:#004f8f;
+      white-space:nowrap;
+    }
+
+    .badge.past{
+      background:#f0f1f3;
+      color:#606975;
+    }
+
+    .badge.open{
+      background:#e7f7ec;
+      color:#176a32;
+    }
+
+    .badge.closed{
+      background:#fff3d7;
+      color:#8a5a00;
+    }
+
+    .badge.interest{
+      background:#edf0ff;
+      color:#3647a8;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      margin-top:.85rem;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:.65rem .85rem;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:800;
+      border:1px solid #d6dde6;
+      background:#f8f8f8;
+      color:#22384d;
+    }
+
+    .btn.primary{
+      background:#005ea8;
+      color:#fff;
+      border-color:#005ea8;
+    }
+
+    .btn:hover{
+      filter:brightness(.96);
+    }
+
+    .footer-row{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      margin-top:1.2rem;
+      border-top:1px solid #e4edf7;
+      padding-top:1rem;
+      align-items:center;
+    }
+
+    .status{
+      padding:.8rem;
+      border-radius:10px;
+      background:#f6f9fc;
+      border:1px solid #dbe6f3;
+      color:#4d5c6b;
+      margin-top:1rem;
+    }
+
+    .danger{
+      background:#fff4f4;
+      border-color:#f0caca;
+      color:#8a1f1f;
+    }
+
+    @media(max-width:720px){
+      .event-top{
+        flex-direction:column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Admin Event Notices</h1>
+      <p class="intro">
+        View, edit and administer all Host-created Event Notices. This page is for Event Notices only.
+      </p>
+
+      <div class="toolbar">
+        <input id="searchBox" type="search" placeholder="Search by title, reference, host or venue…" />
+        <select id="filterSelect">
+          <option value="all">All events</option>
+          <option value="future">Future events</option>
+          <option value="past">Past events</option>
+          <option value="open">Booking open</option>
+          <option value="closed">Booking closed</option>
+          <option value="interest">Interest only</option>
+        </select>
+      </div>
+
+      <div id="statusBox" class="status">Loading Event Notices…</div>
+      <div id="eventList" class="notice-list"></div>
+
+      <div class="footer-row">
+        <a class="btn" href="admin-dashboard.html">Admin Dashboard</a>
+        <a class="btn" href="members-info.html">Members Hub</a>
+        <a class="btn" href="index.html">Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const adminToken = localStorage.getItem("adminToken");
+    if (!adminToken) {
+      window.location.replace("admin-login.html");
+    }
+
+    const eventList = document.getElementById("eventList");
+    const statusBox = document.getElementById("statusBox");
+    const searchBox = document.getElementById("searchBox");
+    const filterSelect = document.getElementById("filterSelect");
+
+    let allEvents = [];
+
+    function esc(value){
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function clean(value, fallback=""){
+      const s = String(value ?? "").trim();
+      return s || fallback;
+    }
+
+    function eventId(ev){
+      return clean(ev.event_id || ev.id || ev.ref || ev.reference, "Unknown");
+    }
+
+    function eventTitle(ev){
+      return clean(ev.title || ev.event_title || ev.name, "Untitled Event");
+    }
+
+    function eventDate(ev){
+      return clean(ev.date || ev.event_date || ev.start_date, "");
+    }
+
+    function eventTime(ev){
+      const start = clean(ev.start_time || ev.time || ev.start, "");
+      const end = clean(ev.end_time || ev.end, "");
+      return end ? `${start}–${end}` : start;
+    }
+
+    function eventVenue(ev){
+      return clean(ev.venue || ev.location || ev.place, "Venue not shown");
+    }
+
+    function hostName(ev){
+      return clean(
+        ev.host_name ||
+        ev.hostName ||
+        ev.organiser_name ||
+        ev.organizer_name ||
+        ev.created_by_name ||
+        ev.host ||
+        "Host not shown"
+      );
+    }
+
+    function bookingMode(ev){
+      return clean(ev.booking_mode || ev.bookingMode || ev.mode, "").toLowerCase();
+    }
+
+    function isPast(ev){
+      const d = eventDate(ev);
+      if (!d) return false;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const eventDay = new Date(d + "T00:00:00");
+      return !isNaN(eventDay) && eventDay < today;
+    }
+
+    function bookingClosed(ev){
+      const close = clean(ev.booking_close || ev.bookingClose || ev.close_date, "");
+      if (!close) return false;
+      const now = new Date();
+      const closeDate = new Date(close.includes("T") ? close : close + "T23:59:59");
+      return !isNaN(closeDate) && closeDate < now;
+    }
+
+    function statusBadge(ev){
+      if (isPast(ev)) return `<span class="badge past">Event passed</span>`;
+
+      const mode = bookingMode(ev);
+      if (mode === "interest") return `<span class="badge interest">Interest only</span>`;
+      if (mode === "blank" || mode === "none" || mode === "no_booking") {
+        return `<span class="badge">No booking required</span>`;
+      }
+
+      if (bookingClosed(ev)) return `<span class="badge closed">Booking closed</span>`;
+
+      return `<span class="badge open">Booking open</span>`;
+    }
+
+    function eventMatchesFilter(ev, filter){
+      if (filter === "future") return !isPast(ev);
+      if (filter === "past") return isPast(ev);
+      if (filter === "interest") return bookingMode(ev) === "interest";
+      if (filter === "closed") return bookingClosed(ev) || isPast(ev);
+      if (filter === "open") return !isPast(ev) && !bookingClosed(ev) && bookingMode(ev) !== "interest";
+      return true;
+    }
+
+    function renderEvents(){
+      const q = searchBox.value.trim().toLowerCase();
+      const filter = filterSelect.value;
+
+      const filtered = allEvents.filter(ev => {
+        const haystack = [
+          eventId(ev),
+          eventTitle(ev),
+          eventDate(ev),
+          eventTime(ev),
+          eventVenue(ev),
+          hostName(ev)
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(q) && eventMatchesFilter(ev, filter);
+      });
+
+      eventList.innerHTML = "";
+
+      if (!filtered.length) {
+        statusBox.textContent = "No matching Event Notices found.";
+        statusBox.style.display = "block";
+        return;
+      }
+
+      statusBox.style.display = "none";
+
+      filtered.forEach(ev => {
+        const id = eventId(ev);
+        const viewUrl = `events-details.html?event_id=${encodeURIComponent(id)}`;
+        const editUrl = `host-event-form.html?event_id=${encodeURIComponent(id)}&admin=1`;
+        const sopUrl = `host-state-of-play.html?event_id=${encodeURIComponent(id)}&admin=1`;
+
+        const card = document.createElement("div");
+        card.className = "event-card";
+        card.innerHTML = `
+          <div class="event-top">
+            <div>
+              <h2 class="event-title">
+                <span class="ref">${esc(id)}</span>${esc(eventTitle(ev))}
+              </h2>
+              <div class="meta">
+                <strong>Date:</strong> ${esc(eventDate(ev) || "Not shown")}
+                ${eventTime(ev) ? ` &nbsp; <strong>Time:</strong> ${esc(eventTime(ev))}` : ""}
+                <br>
+                <strong>Venue:</strong> ${esc(eventVenue(ev))}
+                <br>
+                <strong>Host:</strong> ${esc(hostName(ev))}
+              </div>
+            </div>
+            <div>${statusBadge(ev)}</div>
+          </div>
+
+          <div class="actions">
+            <a class="btn primary" href="${viewUrl}">View Notice</a>
+            <a class="btn" href="${editUrl}">Edit</a>
+            <a class="btn" href="${sopUrl}">State of Play</a>
+          </div>
+        `;
+        eventList.appendChild(card);
+      });
+    }
+
+    async function loadEvents(){
+      try {
+        const res = await fetch(`${API_BASE}/api/events`, {
+          headers: {
+            "Authorization": `Bearer ${adminToken}`
+          }
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("adminToken");
+          window.location.replace("admin-login.html");
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        allEvents = Array.isArray(data)
+          ? data
+          : Array.isArray(data.events)
+            ? data.events
+            : [];
+
+        allEvents.sort((a,b) => {
+          const da = eventDate(a) || "9999-12-31";
+          const db = eventDate(b) || "9999-12-31";
+          return da.localeCompare(db);
+        });
+
+        renderEvents();
+
+      } catch (err) {
+        statusBox.className = "status danger";
+        statusBox.textContent = "Unable to load Event Notices. Please check the backend is running and try again.";
+        console.error(err);
+      }
+    }
+
+    searchBox.addEventListener("input", renderEvents);
+    filterSelect.addEventListener("change", renderEvents);
+
+    loadEvents();
+  </script>
+</body>
+</html>

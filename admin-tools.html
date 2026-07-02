@@ -1,1 +1,407 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Tools — Sanctuary Club</title>
+
+  <link rel="stylesheet" href="styles-main.css?v=TOOLS_1" />
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#d9ecff 0%,#f2f7fb 45%,#fff 100%);
+      color:#223;
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1050px;
+      margin:2rem auto;
+      padding:0 1rem 2rem;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid #dbe6f3;
+      border-radius:16px;
+      padding:1.25rem;
+      box-shadow:0 8px 22px rgba(0,0,0,.08);
+    }
+
+    h1{
+      margin:0 0 .35rem;
+      color:#003366;
+      font-size:1.7rem;
+    }
+
+    h2{
+      margin:1.3rem 0 .6rem;
+      color:#003366;
+      font-size:1.15rem;
+      border-top:1px solid #e4edf7;
+      padding-top:1rem;
+    }
+
+    .intro{
+      margin:0 0 1rem;
+      color:#5b6875;
+      line-height:1.45;
+    }
+
+    .tool-box{
+      border:1px solid #dbe6f3;
+      border-radius:14px;
+      background:#fbfdff;
+      padding:1rem;
+      margin-top:.8rem;
+    }
+
+    label{
+      font-weight:800;
+      color:#003366;
+      display:block;
+      margin:.4rem 0;
+    }
+
+    select,input{
+      width:100%;
+      box-sizing:border-box;
+      padding:.7rem .8rem;
+      border:1px solid #ccd8e5;
+      border-radius:10px;
+      font:inherit;
+      margin-bottom:.75rem;
+    }
+
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.65rem;
+      margin-top:.5rem;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:.7rem .95rem;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:800;
+      border:1px solid #d6dde6;
+      background:#f8f8f8;
+      color:#22384d;
+      cursor:pointer;
+    }
+
+    .btn.primary{
+      background:#005ea8;
+      color:#fff;
+      border-color:#005ea8;
+    }
+
+    .btn.danger{
+      background:#b42318;
+      color:#fff;
+      border-color:#b42318;
+    }
+
+    .btn.warning{
+      background:#fff3d7;
+      color:#7a4d00;
+      border-color:#e7c56f;
+    }
+
+    .status{
+      padding:.8rem;
+      border-radius:10px;
+      background:#f6f9fc;
+      border:1px solid #dbe6f3;
+      color:#4d5c6b;
+      margin-top:1rem;
+    }
+
+    .success{
+      background:#f1faf3;
+      border-color:#cfe3d2;
+      color:#176a32;
+    }
+
+    .danger-box{
+      background:#fff4f4;
+      border-color:#f0caca;
+      color:#8a1f1f;
+    }
+
+    .small{
+      font-size:.9rem;
+      color:#5b6875;
+      line-height:1.4;
+    }
+
+    .footer-row{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      margin-top:1.2rem;
+      border-top:1px solid #e4edf7;
+      padding-top:1rem;
+      align-items:center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Admin Tools</h1>
+      <p class="intro">
+        Maintenance tools for controlled housekeeping and demonstration support.
+        Use with care.
+      </p>
+
+      <h2>Event Tools</h2>
+
+      <div class="tool-box">
+        <label for="eventSelect">Select event</label>
+        <select id="eventSelect">
+          <option value="">Loading events…</option>
+        </select>
+
+        <p class="small">
+          Use <strong>Reset Bookings</strong> for demonstration events such as the Space Mission.
+          This keeps the notice intact but clears all bookings so spaces return to full capacity.
+        </p>
+
+        <div class="btn-row">
+          <button class="btn primary" id="refreshBtn" type="button">Refresh Events</button>
+          <button class="btn warning" id="resetBookingsBtn" type="button">Reset Bookings</button>
+          <button class="btn danger" id="deleteEventBtn" type="button">Delete Event</button>
+        </div>
+
+        <div id="eventStatus" class="status">Loading events…</div>
+      </div>
+
+      <div class="tool-box">
+        <h2 style="border-top:0; padding-top:0; margin-top:0;">Bulk Test Clean-up</h2>
+
+        <p class="small">
+          This future tool will remove obvious test/development events in bulk.
+          For now, use the event selector above to remove individual unwanted events.
+        </p>
+
+        <div class="btn-row">
+          <button class="btn danger" type="button" disabled>Delete Test Events — Coming Soon</button>
+        </div>
+      </div>
+
+      <div class="footer-row">
+        <a class="btn" href="admin-dashboard.html">Admin Dashboard</a>
+        <a class="btn" href="admin-event-notices.html">Event Notices</a>
+        <a class="btn" href="members-info.html">Members Hub</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+
+    const adminToken = localStorage.getItem("adminToken");
+    if (!adminToken) {
+      window.location.replace("admin-login.html");
+    }
+
+    const eventSelect = document.getElementById("eventSelect");
+    const eventStatus = document.getElementById("eventStatus");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const resetBookingsBtn = document.getElementById("resetBookingsBtn");
+    const deleteEventBtn = document.getElementById("deleteEventBtn");
+
+    let events = [];
+
+    function esc(value){
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function clean(value, fallback=""){
+      const s = String(value ?? "").trim();
+      return s || fallback;
+    }
+
+    function eventId(ev){
+      return clean(ev.event_id || ev.id || ev.ref || ev.reference, "");
+    }
+
+    function eventTitle(ev){
+      return clean(ev.title || ev.event_title || ev.name, "Untitled Event");
+    }
+
+    function eventDate(ev){
+      return clean(ev.date || ev.event_date || ev.start_date, "");
+    }
+
+    function setStatus(message, type="normal"){
+      eventStatus.className = "status";
+      if (type === "success") eventStatus.classList.add("success");
+      if (type === "danger") eventStatus.classList.add("danger-box");
+      eventStatus.textContent = message;
+    }
+
+    function selectedEventId(){
+      return eventSelect.value;
+    }
+
+    function renderEventOptions(){
+      eventSelect.innerHTML = "";
+
+      if (!events.length) {
+        eventSelect.innerHTML = `<option value="">No events found</option>`;
+        return;
+      }
+
+      events.forEach(ev => {
+        const id = eventId(ev);
+        const title = eventTitle(ev);
+        const date = eventDate(ev);
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = `${id} — ${title}${date ? " — " + date : ""}`;
+        eventSelect.appendChild(opt);
+      });
+    }
+
+    async function loadEvents(){
+      setStatus("Loading events…");
+
+      try {
+        const res = await fetch(`${API_BASE}/api/events`, {
+          headers: {
+            "Authorization": `Bearer ${adminToken}`
+          }
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("adminToken");
+          window.location.replace("admin-login.html");
+          return;
+        }
+
+        const data = await res.json();
+
+        events = Array.isArray(data)
+          ? data
+          : Array.isArray(data.events)
+            ? data.events
+            : [];
+
+        events.sort((a,b) => {
+          const da = eventDate(a) || "9999-12-31";
+          const db = eventDate(b) || "9999-12-31";
+          return da.localeCompare(db);
+        });
+
+        renderEventOptions();
+        setStatus(`${events.length} event(s) loaded.`, "success");
+
+      } catch (err) {
+        console.error(err);
+        setStatus("Unable to load events.", "danger");
+      }
+    }
+
+    async function resetBookings(){
+      const id = selectedEventId();
+      if (!id) {
+        setStatus("Please select an event first.", "danger");
+        return;
+      }
+
+      const ok = confirm(
+        `Reset all bookings for ${id}?\n\n` +
+        `The event notice will remain, but all bookings for this event will be deleted.`
+      );
+
+      if (!ok) return;
+
+      setStatus("Resetting bookings…");
+
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/events/${encodeURIComponent(id)}/reset-bookings`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${adminToken}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Reset failed");
+        }
+
+        setStatus(data.message || "Bookings reset.", "success");
+
+      } catch (err) {
+        console.error(err);
+        setStatus("Unable to reset bookings. Backend endpoint may not yet be installed.", "danger");
+      }
+    }
+
+    async function deleteEvent(){
+      const id = selectedEventId();
+      if (!id) {
+        setStatus("Please select an event first.", "danger");
+        return;
+      }
+
+      const phrase = prompt(
+        `Delete event ${id} permanently?\n\n` +
+        `This may also remove related bookings/notices depending on backend rules.\n\n` +
+        `Type DELETE to continue.`
+      );
+
+      if (phrase !== "DELETE") {
+        setStatus("Delete cancelled.");
+        return;
+      }
+
+      setStatus("Deleting event…");
+
+      try {
+        const res = await fetch(`${API_BASE}/api/events/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${adminToken}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Delete failed");
+        }
+
+        setStatus(data.message || "Event deleted.", "success");
+        await loadEvents();
+
+      } catch (err) {
+        console.error(err);
+        setStatus("Unable to delete event. Backend delete endpoint may not yet be available.", "danger");
+      }
+    }
+
+    refreshBtn.addEventListener("click", loadEvents);
+    resetBookingsBtn.addEventListener("click", resetBookings);
+    deleteEventBtn.addEventListener("click", deleteEvent);
+
+    loadEvents();
+  </script>
+</body>
+</html>

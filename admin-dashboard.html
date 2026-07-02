@@ -6,13 +6,13 @@
 
   <title>Admin Dashboard — Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=ADMIN_4" />
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_5" />
 
   <style>
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: linear-gradient(180deg, #d9ecff 0%, #f2f7fb 45%, #ffffff 100%);
+      background:linear-gradient(180deg,#d9ecff 0%,#f2f7fb 45%,#fff 100%);
       color:#222;
       min-height:100vh;
     }
@@ -32,21 +32,21 @@
     }
 
     h1{
-      margin:0 0 .4rem 0;
+      margin:0 0 .4rem;
       color:#003366;
-      font-size:1.7rem;
+      font-size:1.75rem;
     }
 
     .intro{
-      margin:0 0 1.15rem 0;
+      margin:0 0 1.2rem;
       color:#5b6875;
       line-height:1.45;
     }
 
     .section-title{
-      margin:1.35rem 0 .55rem;
+      margin:1.4rem 0 .65rem;
       color:#003366;
-      font-size:1.05rem;
+      font-size:1.08rem;
       border-top:1px solid #e4edf7;
       padding-top:1rem;
     }
@@ -60,7 +60,6 @@
       display:flex;
       flex-direction:column;
       gap:.85rem;
-      margin-top:.6rem;
     }
 
     .admin-item{
@@ -124,7 +123,7 @@
       display:flex;
       gap:.75rem;
       flex-wrap:wrap;
-      margin-top:1.2rem;
+      margin-top:1.3rem;
       align-items:center;
       border-top:1px solid #e4edf7;
       padding-top:1rem;
@@ -156,7 +155,7 @@
       text-decoration:underline;
     }
 
-    @media (max-width:720px){
+    @media(max-width:720px){
       .admin-item{
         grid-template-columns:1fr;
       }
@@ -169,23 +168,23 @@
     <div class="card">
       <h1>Admin Dashboard</h1>
       <p class="intro">
-        Authorised access only. Use the links below to manage members, roles,
-        event notices and authorised club administration.
+        Authorised access only. Use the sections below to manage members,
+        community activity, communications and system tools.
       </p>
 
-      <h2 class="section-title">Core Administration</h2>
+      <h2 class="section-title">Members</h2>
 
       <div class="admin-list">
         <div class="admin-item">
           <a class="admin-btn" href="admin-role-manager.html">Member Roles</a>
           <div class="desc">
-            Grant or remove approved resident roles such as Host, Committee,
-            Treasurer, News Contributor and Admin.
+            Grant or remove approved resident roles such as Host, Contributor,
+            Editor, Treasurer and Admin.
           </div>
         </div>
 
         <div class="admin-item">
-          <a class="admin-btn" href="admin-members-grid.html">Members Admin</a>
+          <a class="admin-btn" href="admin-members-grid.html">Members Administration</a>
           <div class="desc">
             View the member/admin grid and check resident information held for
             administration purposes.
@@ -193,14 +192,15 @@
         </div>
 
         <div class="admin-item">
-          <a class="admin-btn" href="admin-email-export.html">Email Export</a>
+          <a class="admin-btn" href="admin-email-export.html">Email Broadcast</a>
           <div class="desc">
-            Export member email information for authorised club administration.
+            Export member email information for authorised club or residents'
+            association communications.
           </div>
         </div>
       </div>
 
-      <h2 class="section-title">Events</h2>
+      <h2 class="section-title">Community</h2>
 
       <div class="admin-list">
         <div class="admin-item">
@@ -208,55 +208,50 @@
           <div class="desc">
             View, edit and administer all Host-created Event Notices, including
             State of Play.
-            <span class="status-pill">Next</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Residents' Association News</span>
+          <div class="desc">
+            Future publishing area for resident communications, Panel updates,
+            community news and approved articles.
+            <span class="status-pill future">Coming Soon</span>
           </div>
         </div>
       </div>
 
-      <h2 class="section-title">Future Administration</h2>
+      <h2 class="section-title">Management</h2>
 
       <div class="admin-list">
         <div class="admin-item">
-          <a class="admin-btn" href="admin-notices-moderation.html">Notices Moderation</a>
-          <div class="desc">
-            Existing administrative notices oversight and related maintenance tools.
-            This will later sit within the wider Notice Centre.
-          </div>
-        </div>
-
-        <div class="admin-item">
-          <span class="admin-btn future">Activity Log</span>
-          <div class="desc">
-            Future admin view showing resident sign-ins, bookings, YI updates and
-            other useful platform activity.
-            <span class="status-pill future">Later</span>
-          </div>
-        </div>
-
-        <div class="admin-item">
-          <span class="admin-btn future">Notice Centre</span>
-          <div class="desc">
-            Future editorial workflow for Club News, residents' articles, Owners
-            Association and Panel communications.
-            <span class="status-pill future">Later</span>
-          </div>
-        </div>
-
-        <div class="admin-item">
-          <span class="admin-btn future">Services</span>
-          <div class="desc">
-            Future administration area for clubhouse, contractors, visiting
-            services and regular service providers.
-            <span class="status-pill future">Later</span>
-          </div>
-        </div>
-
-        <div class="admin-item">
           <span class="admin-btn future">Reports</span>
           <div class="desc">
-            Future reporting area for platform usage, membership activity and
-            event summaries.
+            Future reports for membership activity, events, bookings, payments
+            and website usage.
             <span class="status-pill future">Later</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title">System</h2>
+
+      <div class="admin-list">
+        <div class="admin-item">
+          <a class="admin-btn" href="admin-activity-log.html">Activity Log</a>
+          <div class="desc">
+            Prototype audit view showing recent sign-ins, updates and system
+            activity as logging is added.
+            <span class="status-pill">Prototype</span>
+          </div>
+        </div>
+
+        <div class="admin-item">
+          <span class="admin-btn future">Tools</span>
+          <div class="desc">
+            Future maintenance area for event housekeeping, demonstration resets,
+            archive tools and controlled system utilities.
+            <span class="status-pill future">Coming Soon</span>
           </div>
         </div>
 

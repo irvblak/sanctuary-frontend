@@ -375,7 +375,7 @@
       setStatus("Deleting event…");
 
       try {
-        const res = await fetch(`${API_BASE}/api/events/${encodeURIComponent(id)}`, {
+        const res = await fetch(`${API_BASE}/api/admin/events/${encodeURIComponent(id)}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${adminToken}`

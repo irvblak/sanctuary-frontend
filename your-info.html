@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Your Information | Sanctuary Club</title>
+  <title>Your Membership | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -376,6 +376,90 @@
       line-height:1.45;
     }
 
+    .privacy-card{
+      border:1px solid rgba(0,94,168,.18);
+      background:#f5fbff;
+      border-radius:14px;
+      padding:1rem;
+      margin-top:1rem;
+    }
+
+    .locked-note{
+      display:none;
+      border:1px solid rgba(138,91,0,.2);
+      background:var(--warn-bg);
+      color:var(--warn);
+      border-radius:14px;
+      padding:1rem;
+      margin-top:1rem;
+      font-weight:750;
+      line-height:1.45;
+    }
+
+    #memberPanel.locked .locked-note{display:block}
+    #memberPanel.locked .private-section{display:none}
+
+    .membership-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(220px,1fr));
+      gap:.85rem;
+      margin-top:1rem;
+    }
+
+    .service-tile{
+      display:flex;
+      justify-content:space-between;
+      gap:.75rem;
+      align-items:center;
+      text-decoration:none;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:.9rem;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .service-tile strong{
+      display:block;
+      color:var(--accent-dark);
+      margin-bottom:.2rem;
+    }
+
+    .service-tile span{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .service-tile.disabled{
+      opacity:.58;
+      cursor:default;
+      background:#f7f9fb;
+    }
+
+    .booking-list{
+      display:grid;
+      gap:.65rem;
+      margin-top:.75rem;
+    }
+
+    .booking-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:.85rem;
+      background:#fff;
+    }
+
+    .booking-card strong{color:var(--accent-dark)}
+
+    .booking-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.45rem .9rem;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-top:.35rem;
+    }
+
     @media(max-width:760px){
       nav{
         grid-template-columns:1fr;
@@ -386,7 +470,8 @@
       }
       .intro-grid,
       .legend,
-      .change-pin-grid{
+      .change-pin-grid,
+      .membership-grid{
         grid-template-columns:1fr;
       }
       .member-strip{
@@ -408,10 +493,11 @@
 
 <main>
   <section class="card">
-    <h1>Your Information</h1>
+    <h1>Your Membership</h1>
 
     <div class="subtle">
-      <p><strong>Log in below to add or update the contact information your household wishes to share with other Sanctuary Club members.</strong></p>
+      <p><strong>Log in below to open your household membership area.</strong></p>
+      <p>From here you can manage your household information, privacy choices, bookings and member services.</p>
     </div>
 
     <div class="intro-grid">
@@ -429,15 +515,14 @@
 
       <div class="info-box">
         <strong>Membership PIN</strong>
-        <p>All memberships begin with the community default PIN 2468.</p>
-        <p>You may keep it or choose your own 4-digit PIN.</p>
-        <p>If you forget your PIN, you can request a temporary one-time PIN</p>
+        <p>A temporary Starter PIN is provided to help residents join Sanctuary Club.</p>
+        <p>Before accessing member services, you will be asked to replace it with your own household membership PIN.</p>
       </div>
     </div>
 
     <div id="loginPanel" class="login-card">
       <h2>Membership Login</h2>
-      <p class="small-note">Enter your membership number and PIN to open Your Information or the Members Directory.</p>
+      <p class="small-note">Enter your membership number and household PIN to open Your Membership.</p>
 
       <div class="row">
         <div class="field">
@@ -455,12 +540,12 @@
       </div>
 
       <div class="button-row">
-        <button id="openInfoBtn" type="button" disabled>Open Your Information</button>
+        <button id="openInfoBtn" type="button" disabled>Open Your Membership</button>
         <button id="openMDBtn" type="button" class="secondary" disabled>Open Members Directory</button>
       </div>
 
       <p class="small-note">
-        Forgotten PIN? Please contact an Administrator. Your PIN can be reset to the community default PIN.
+        Forgotten PIN? Please contact an Administrator. Your PIN can be reset to the temporary Starter PIN.
       </p>
 
       <div id="loginStatus" class="status info"></div>
@@ -471,13 +556,28 @@
         <div>
           <strong>Membership:</strong>
           <span id="activeMemberId">—</span>
-          <p class="small-note" id="memberHelpText">Add or update the resident contact information for this property.</p>
+          <p class="small-note" id="memberHelpText">Manage the information and services for this household membership.</p>
         </div>
 
         <div>
+          <span id="pinStatusBadge" class="badge partial">🟡 Starter PIN</span>
           <span id="contactStatusBadge" class="badge basic">🔵 Basic</span>
         </div>
       </div>
+
+      <div id="starterPinNotice" class="locked-note">
+        Before accessing member services, please replace the temporary Starter PIN with your own 4-digit household membership PIN. This helps protect the privacy of all residents.
+      </div>
+
+      <div class="privacy-card">
+        <h2>Privacy & PIN</h2>
+        <p class="small-note">Community information is easy to view. Member services and personal information require your household membership PIN.</p>
+        <p class="small-note" id="pinHelpText">PIN status will appear here after login.</p>
+      </div>
+
+      <div class="private-section">
+        <h2>Your Household Information</h2>
+        <p class="small-note">Only information entered here will appear in the Members Directory.</p>
 
       <div class="legend">
         <div class="legend-item">
@@ -529,6 +629,40 @@
         </div>
       </div>
 
+      <section class="card" style="box-shadow:none;margin-top:1rem;">
+        <h2>My Bookings</h2>
+        <p class="small-note">Your current event bookings will appear here. Use Amend / Cancel to return to the booking page for that event.</p>
+        <div class="button-row">
+          <button id="refreshBookingsBtn" type="button" class="soft">Refresh My Bookings</button>
+          <button id="printBookingsBtn" type="button" class="secondary">Print / Save as PDF</button>
+        </div>
+        <div id="bookingsStatus" class="status info"></div>
+        <div id="bookingsList" class="booking-list"></div>
+      </section>
+
+      <section class="card" style="box-shadow:none;margin-top:1rem;">
+        <h2>Member Services</h2>
+        <div class="membership-grid">
+          <a class="service-tile" href="members-directory.html">
+            <div><strong>Members Directory</strong><span>Contact details shared by residents.</span></div>
+            <div>›</div>
+          </a>
+          <a class="service-tile" href="events.html">
+            <div><strong>Events List</strong><span>Browse current events.</span></div>
+            <div>›</div>
+          </a>
+          <a class="service-tile disabled" href="#" aria-disabled="true">
+            <div><strong>My Contributions</strong><span>Future editorial submissions area.</span></div>
+            <div>Later</div>
+          </a>
+          <a class="service-tile disabled" href="#" aria-disabled="true">
+            <div><strong>My Payments</strong><span>Future member transaction ledger.</span></div>
+            <div>Later</div>
+          </a>
+        </div>
+      </section>
+      </div>
+
       <div id="pageStatus" class="status info"></div>
     </div>
   </section>
@@ -560,6 +694,8 @@
 
   const activeMemberId = document.getElementById("activeMemberId");
   const contactStatusBadge = document.getElementById("contactStatusBadge");
+  const pinStatusBadge = document.getElementById("pinStatusBadge");
+  const pinHelpText = document.getElementById("pinHelpText");
 
   const residentsEl = document.getElementById("residents");
   const addResidentBtn = document.getElementById("addResidentBtn");
@@ -573,6 +709,11 @@
   const changePinBtn = document.getElementById("changePinBtn");
   const cancelChangePinBtn = document.getElementById("cancelChangePinBtn");
 
+  const refreshBookingsBtn = document.getElementById("refreshBookingsBtn");
+  const printBookingsBtn = document.getElementById("printBookingsBtn");
+  const bookingsStatus = document.getElementById("bookingsStatus");
+  const bookingsList = document.getElementById("bookingsList");
+
   const logoutLink = document.getElementById("logoutLink");
 
   let authToken = "";
@@ -580,6 +721,7 @@
   let existingResidents = [];
   let shownResidents = 1;
   let latestLookupId = 0;
+  let starterPinRequired = false;
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];
@@ -587,6 +729,33 @@
 
   function onlyDigits4(value){
     return /^[0-9]{4}$/.test(String(value || "").trim());
+  }
+
+  function usingStarterPin(){
+    return String(pinInput.value || "").trim() === "2468";
+  }
+
+  function setStarterMode(isStarter){
+    starterPinRequired = Boolean(isStarter);
+
+    memberPanel.classList.toggle("locked", starterPinRequired);
+
+    if (pinStatusBadge){
+      pinStatusBadge.className = starterPinRequired ? "badge partial" : "badge complete";
+      pinStatusBadge.textContent = starterPinRequired ? "🟡 Starter PIN" : "🟢 Household PIN personalised";
+    }
+
+    if (pinHelpText){
+      pinHelpText.textContent = starterPinRequired
+        ? "This membership is currently using the temporary Starter PIN. Please choose your own household PIN before continuing."
+        : "Household PIN personalised.";
+    }
+
+    if (starterPinRequired){
+      changePinBox.classList.remove("hidden");
+      currentPin.value = pinInput.value.trim();
+      newPin.focus();
+    }
   }
 
   function clean(value, fallback = ""){
@@ -918,8 +1087,16 @@
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
 
+    setStarterMode(usingStarterPin());
+
+    if (starterPinRequired){
+      setStatus(pageStatus, "warn", "Please replace the temporary Starter PIN before accessing member services.");
+      return;
+    }
+
     setStatus(pageStatus, "info", "Loading your information...");
     await loadExistingFor(memberId);
+    await loadMyBookings();
   }
 
   async function openMembersDirectory(){
@@ -927,6 +1104,15 @@
     const data = await loginMember();
 
     if (!data) return;
+
+    if (usingStarterPin()){
+      loginPanel.classList.add("hidden");
+      memberPanel.classList.remove("hidden");
+      activeMemberId.textContent = memberId;
+      setStarterMode(true);
+      setStatus(pageStatus, "warn", "Please replace the temporary Starter PIN before opening the Members Directory.");
+      return;
+    }
 
     localStorage.setItem(MD_UNTIL_KEY, String(Date.now() + MD_TTL_MS));
     localStorage.setItem(ACCESS_UNTIL_KEY, String(Date.now() + ACCESS_TTL_MS));
@@ -1038,11 +1224,143 @@
 
       clearChangePinFields();
       changePinBox.classList.add("hidden");
-      setStatus(pageStatus, "ok", "PIN changed successfully.");
+      pinInput.value = next;
+      setStarterMode(false);
+      setStatus(pageStatus, "ok", "PIN changed successfully. Loading your membership area...");
+      await loadExistingFor(activeMember);
+      await loadMyBookings();
 
     }catch(err){
       setStatus(pageStatus, "err", err.message || "PIN could not be changed.");
     }
+  }
+
+  function eventIdOf(event){
+    return clean(event.event_id || event.eventId || event.id || event.ref || event.reference).toUpperCase();
+  }
+
+  function eventTitleOf(event){
+    return clean(event.title || event.event_title || event.name, "Untitled event");
+  }
+
+  function eventDateText(event){
+    const date = clean(event.date || event.event_date || event.start_date);
+    const start = clean(event.start_time || event.time || event.start);
+    return [date, start].filter(Boolean).join(" ");
+  }
+
+  function bookingPlacesText(booking){
+    const memberPlaces = Number(booking.member_places ?? booking.places ?? booking.places_total ?? 0) || 0;
+    const guestPlaces = Number(booking.guest_places ?? booking.guests ?? 0) || 0;
+    const parts = [];
+    if (memberPlaces) parts.push(`${memberPlaces} member place${memberPlaces === 1 ? "" : "s"}`);
+    if (guestPlaces) parts.push(`${guestPlaces} guest place${guestPlaces === 1 ? "" : "s"}`);
+    return parts.length ? parts.join(" + ") : "Booking recorded";
+  }
+
+  async function fetchJSON(url, options = {}){
+    const res = await fetch(url, {
+      cache:"no-store",
+      ...options,
+      headers:{
+        "Accept":"application/json",
+        ...(options.headers || {})
+      }
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data || data.success === false){
+      throw new Error(data?.message || "Request failed.");
+    }
+
+    return data;
+  }
+
+  async function loadMyBookings(){
+    if (!activeMember || starterPinRequired) return;
+
+    bookingsList.innerHTML = "";
+    setStatus(bookingsStatus, "info", "Loading your bookings...");
+
+    try{
+      const eventsData = await fetchJSON(`${BACKEND}/api/events`, {
+        headers:authToken ? { "Authorization":`Bearer ${authToken}` } : {}
+      });
+
+      const events = Array.isArray(eventsData.events)
+        ? eventsData.events
+        : Array.isArray(eventsData)
+          ? eventsData
+          : [];
+
+      const rows = [];
+
+      for (const event of events){
+        const eid = eventIdOf(event);
+        if (!eid) continue;
+
+        try{
+          const data = await fetchJSON(`${BACKEND}/api/events/${encodeURIComponent(eid)}/my-booking`, {
+            headers:authHeaders()
+          });
+
+          const booking = data.booking || data.my_booking || data;
+          const hasBooking = booking && (
+            booking.booking_id ||
+            booking.event_id ||
+            booking.eventId ||
+            booking.status ||
+            booking.places ||
+            booking.member_places ||
+            booking.guest_places
+          );
+
+          if (hasBooking){
+            rows.push({event, booking});
+          }
+        }catch{
+          // No booking for this event, or endpoint unavailable for this event.
+        }
+      }
+
+      if (!rows.length){
+        setStatus(bookingsStatus, "info", "No current bookings found for this membership.");
+        return;
+      }
+
+      setStatus(bookingsStatus, "ok", `${rows.length} current booking${rows.length === 1 ? "" : "s"} found.`);
+
+      bookingsList.innerHTML = rows.map(({event, booking}) => {
+        const eid = eventIdOf(event);
+        const title = escapeAttr(eventTitleOf(event));
+        const when = escapeAttr(eventDateText(event) || "Date/time to be confirmed");
+        const status = escapeAttr(clean(booking.status || booking.booking_status || "Confirmed"));
+        const places = escapeAttr(bookingPlacesText(booking));
+
+        return `
+          <div class="booking-card">
+            <strong>${title}</strong>
+            <div class="booking-meta">
+              <span>${when}</span>
+              <span>${places}</span>
+              <span>Status: ${status}</span>
+            </div>
+            <div class="button-row">
+              <button type="button" class="soft" onclick="location.href='events-details.html?event_id=${encodeURIComponent(eid)}'">View event</button>
+              <button type="button" onclick="location.href='event-booking.html?event_id=${encodeURIComponent(eid)}'">Amend / Cancel</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+    }catch(err){
+      setStatus(bookingsStatus, "warn", "Bookings could not be loaded yet. This may need a small backend endpoint if the existing booking lookup is not available.");
+    }
+  }
+
+  function printBookings(){
+    window.print();
   }
 
   function logout(){
@@ -1100,6 +1418,9 @@
   });
 
   changePinBtn.addEventListener("click", changePin);
+
+  refreshBookingsBtn.addEventListener("click", loadMyBookings);
+  printBookingsBtn.addEventListener("click", printBookings);
 
   logoutLink.addEventListener("click", function(e){
     e.preventDefault();

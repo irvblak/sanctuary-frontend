@@ -1228,10 +1228,18 @@
 
       clearChangePinFields();
       changePinBox.classList.add("hidden");
+
       pinInput.value = next;
+
+      const freshLogin = await loginMember();
+      if (!freshLogin){
+        setStatus(pageStatus, "err", "PIN changed, but fresh login failed. Please log in again using your new PIN.");
+        return;
+      }
+
       setStarterMode(false);
       memberPanel.classList.remove("locked");
-      
+
       setStatus(pageStatus, "ok", "PIN changed successfully. Loading your membership area...");
       await loadExistingFor(activeMember);
       await loadMyBookings();

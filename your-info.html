@@ -1229,6 +1229,8 @@
       changePinBox.classList.add("hidden");
       pinInput.value = next;
       setStarterMode(false);
+      memberPanel.classList.remove("locked");
+      
       setStatus(pageStatus, "ok", "PIN changed successfully. Loading your membership area...");
       await loadExistingFor(activeMember);
       await loadMyBookings();

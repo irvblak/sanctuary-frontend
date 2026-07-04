@@ -1109,7 +1109,7 @@
 
     if (!data) return;
 
-    if (usingStarterPin()){
+    if (Boolean(data.force_pin_change || data.starter_pin)){
       loginPanel.classList.add("hidden");
       memberPanel.classList.remove("hidden");
       activeMemberId.textContent = memberId;

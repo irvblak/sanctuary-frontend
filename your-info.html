@@ -575,6 +575,13 @@
         <p class="small-note" id="pinHelpText">PIN status will appear here after login.</p>
       </div>
 
+      <div id="changePinBox" class="change-pin-box hidden">
+        <h2>Change PIN</h2>
+        <p class="small-note">Choose a new 4-digit PIN for this membership.</p>
+
+        <div class="change-pin-grid">
+          <div>
+      
       <div class="private-section">
         <h2>Your Household Information</h2>
         <p class="small-note">Only information entered here will appear in the Members Directory.</p>
@@ -601,14 +608,8 @@
         <button id="saveBtn" type="button">Save</button>
         <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
       </div>
-
-      <div id="changePinBox" class="change-pin-box hidden">
-        <h2>Change PIN</h2>
-        <p class="small-note">Choose a new 4-digit PIN for this membership.</p>
-
-        <div class="change-pin-grid">
-          <div>
-            <label for="currentPin">Current PIN</label>
+      
+        <label for="currentPin">Current PIN</label>
             <input id="currentPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
           </div>
 

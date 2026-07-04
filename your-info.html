@@ -575,61 +575,59 @@
         <p class="small-note" id="pinHelpText">PIN status will appear here after login.</p>
       </div>
 
-      <div id="changePinBox" class="change-pin-box hidden">
-        <h2>Change PIN</h2>
-        <p class="small-note">Choose a new 4-digit PIN for this membership.</p>
+ <div id="changePinBox" class="change-pin-box hidden">
+  <h2>Change PIN</h2>
+  <p class="small-note">Choose a new 4-digit PIN for this membership.</p>
 
-        <div class="change-pin-grid">
-          <div>
-      
-      <div class="private-section">
-        <h2>Your Household Information</h2>
-        <p class="small-note">Only information entered here will appear in the Members Directory.</p>
+  <div class="change-pin-grid">
+    <div>
+      <label for="currentPin">Current PIN</label>
+      <input id="currentPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
+    </div>
 
-      <div class="legend">
-        <div class="legend-item">
-          <span class="badge basic">🔵 Basic</span>
-          <p>Some contact fields are still blank.</p>
-        </div>
-        <div class="legend-item">
-          <span class="badge partial">🟡 Partial</span>
-          <p>Some fields have been completed, but others are still blank.</p>
-        </div>
-        <div class="legend-item">
-          <span class="badge complete">🟢 Complete</span>
-          <p>All visible fields contain either contact information or <strong>N/A</strong>.</p>
-        </div>
-      </div>
+    <div>
+      <label for="newPin">New PIN</label>
+      <input id="newPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
+    </div>
 
-      <div class="residents" id="residents"></div>
+    <div>
+      <label for="confirmPin">Confirm new PIN</label>
+      <input id="confirmPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
+    </div>
+  </div>
 
-      <div class="actions">
-        <button id="addResidentBtn" class="secondary" type="button">Add / change resident</button>
-        <button id="saveBtn" type="button">Save</button>
-        <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
-      </div>
-      
-        <label for="currentPin">Current PIN</label>
-            <input id="currentPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
-          </div>
+  <div class="button-row">
+    <button id="changePinBtn" type="button">Update PIN</button>
+    <button id="cancelChangePinBtn" class="secondary" type="button">Cancel</button>
+  </div>
+</div>
 
-          <div>
-            <label for="newPin">New PIN</label>
-            <input id="newPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
-          </div>
+<div class="private-section">
+  <h2>Your Household Information</h2>
+  <p class="small-note">Only information entered here will appear in the Members Directory.</p>
 
-          <div>
-            <label for="confirmPin">Confirm new PIN</label>
-            <input id="confirmPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" />
-          </div>
-        </div>
+  <div class="legend">
+    <div class="legend-item">
+      <span class="badge basic">🔵 Basic</span>
+      <p>Some contact fields are still blank.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge partial">🟡 Partial</span>
+      <p>Some fields have been completed, but others are still blank.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge complete">🟢 Complete</span>
+      <p>All visible fields contain either contact information or <strong>N/A</strong>.</p>
+    </div>
+  </div>
 
-        <div class="button-row">
-          <button id="changePinBtn" type="button">Update PIN</button>
-          <button id="cancelChangePinBtn" class="secondary" type="button">Cancel</button>
-        </div>
-      </div>
+  <div class="residents" id="residents"></div>
 
+  <div class="actions">
+    <button id="addResidentBtn" class="secondary" type="button">Add / change resident</button>
+    <button id="saveBtn" type="button">Save</button>
+    <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
+  </div>
       <section class="card" style="box-shadow:none;margin-top:1rem;">
         <h2>My Bookings</h2>
         <p class="small-note">Your current event bookings will appear here. Use Amend / Cancel to return to the booking page for that event.</p>

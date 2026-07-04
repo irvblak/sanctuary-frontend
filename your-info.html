@@ -1087,9 +1087,12 @@
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
 
-    setStarterMode(usingStarterPin());
+    setStarterMode(
+    Boolean(data.force_pin_change || data.starter_pin)
+);
 
     if (starterPinRequired){
+      changePinBox.classList.remove("hidden"); 
       setStatus(pageStatus, "warn", "Please replace the temporary Starter PIN before accessing member services.");
       return;
     }

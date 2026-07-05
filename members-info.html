@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <!-- 🔒 Access gate -->
-  <script src="access.js?v=MH_3"></script>
+  <script src="access.js?v=MH_4"></script>
 
   <style>
     :root{
@@ -64,9 +64,7 @@
       box-shadow:0 4px 10px rgba(0,0,0,0.12);
     }
 
-    .logout-tab:hover{
-      background:var(--blueHover);
-    }
+    .logout-tab:hover{ background:var(--blueHover); }
 
     .shell{
       max-width:980px;
@@ -87,6 +85,17 @@
       color:var(--muted);
       line-height:1.45;
       font-size:0.98rem;
+    }
+
+    .privacy-note{
+      margin:0 0 1rem;
+      padding:0.85rem 0.95rem;
+      border:1px solid #d7e4f3;
+      border-radius:14px;
+      background:#f7fbff;
+      color:#344054;
+      font-size:0.95rem;
+      line-height:1.42;
     }
 
     .hub-list{
@@ -120,6 +129,8 @@
       transition:background 0.15s ease, transform 0.15s ease;
       text-align:center;
       line-height:1.2;
+      border:none;
+      cursor:pointer;
     }
 
     .hub-btn:hover{
@@ -133,38 +144,40 @@
       line-height:1.38;
     }
 
+    .gate-message{
+      display:none;
+      margin:1rem 0 0;
+      padding:1rem;
+      border:1px solid #f0d49b;
+      border-radius:14px;
+      background:#fff8e8;
+      color:#4b3715;
+      line-height:1.45;
+      font-size:0.96rem;
+    }
+
+    .gate-message strong{
+      display:block;
+      margin-bottom:0.25rem;
+    }
+
     @media (max-width: 760px){
-      .topbar{
-        padding:0.85rem 0.85rem 0.2rem;
-      }
-
-      .brand{
-        font-size:1.3rem;
-      }
-
-      .shell{
-        padding:0 0.85rem 1.5rem;
-      }
-
-      .panel{
-        padding:1rem 0.9rem;
-      }
+      .topbar{ padding:0.85rem 0.85rem 0.2rem; }
+      .brand{ font-size:1.3rem; }
+      .shell{ padding:0 0.85rem 1.5rem; }
+      .panel{ padding:1rem 0.9rem; }
 
       .hub-row{
         grid-template-columns:1fr;
         gap:0.45rem;
       }
 
-      .hub-btn{
-        width:100%;
-      }
-
-      .hub-note{
-        padding-left:0.1rem;
-      }
+      .hub-btn{ width:100%; }
+      .hub-note{ padding-left:0.1rem; }
     }
   </style>
 </head>
+
 <body>
   <div class="topbar">
     <div class="brand">Members Hub</div>
@@ -178,47 +191,57 @@
         browse notices and news, host an event, access archives and, in due course, manage payments.
       </p>
 
+      <p class="privacy-note">
+        Community information remains easy to access. Private member services require each household
+        to replace the temporary Starter PIN with its own household Membership PIN.
+      </p>
+
+      <div id="gateMessage" class="gate-message">
+        <strong>Please change your Starter PIN first.</strong>
+        For your privacy and the privacy of other residents, private member services are available
+        once your household has chosen its own Membership PIN. Calendar, Events List and general
+        Notices remain available while you complete this one-time step.
+      </div>
+
       <div class="hub-list">
 
         <div class="hub-row">
-          <a class="hub-btn" href="your-info.html">Your Information</a>
+          <a class="hub-btn starter-ok" href="your-info.html">Your Information</a>
           <div class="hub-note">View or update your contact information and change your PIN.</div>
         </div>
 
-        
-
         <div class="hub-row">
-          <a class="hub-btn" href="members-directory.html">Members Directory</a>
+          <a class="hub-btn private-link" href="members-directory.html">Members Directory</a>
           <div class="hub-note">Look up fellow members in the private residents directory.</div>
         </div>
 
         <div class="hub-row">
-          <a class="hub-btn" href="events-calendar.html">Events Calendar</a>
+          <a class="hub-btn starter-ok" href="events-calendar.html">Events Calendar</a>
           <div class="hub-note">See events in calendar form by date and time.</div>
         </div>
 
         <div class="hub-row">
-          <a class="hub-btn" href="events.html">Events Diary - List View</a>
+          <a class="hub-btn starter-ok" href="events.html">Events Diary - List View</a>
           <div class="hub-note">Browse upcoming events in a simple date-by-date list.</div>
         </div>
 
         <div class="hub-row">
-          <a class="hub-btn" href="notices-preview.html">Club Notices and News</a>
-          <div class="hub-note">Read notices, announcements and community news items.</div>
+          <a class="hub-btn starter-ok" href="notices-preview.html">Club Notices and News</a>
+          <div class="hub-note">Read general notices, event notices, announcements and community news items.</div>
         </div>
 
         <div class="hub-row">
-        <a class="hub-btn" href="host-area.html">Host an Event</a>  
+          <a class="hub-btn private-link" href="host-area.html">Host an Event</a>
           <div class="hub-note">Create or edit an event notice if you are an authorised host.</div>
         </div>
 
         <div class="hub-row">
-          <a class="hub-btn" href="archives.html">Archives</a>
-          <div class="hub-note">Open the archive sections for past events, committee material and news.</div>
+          <a class="hub-btn private-link" href="archives.html">Archives</a>
+          <div class="hub-note">Open the archive sections for past events, Association material and news.</div>
         </div>
 
         <div class="hub-row">
-          <a class="hub-btn" href="payments.html">Payments</a>
+          <a class="hub-btn private-link" href="payments.html">Payments</a>
           <div class="hub-note">Reserved for future payment-related functions and records.</div>
         </div>
 
@@ -227,6 +250,50 @@
   </div>
 
   <script>
+    function getMemberToken(){
+      return localStorage.getItem("memberToken") ||
+             sessionStorage.getItem("memberToken") ||
+             localStorage.getItem("authToken") ||
+             sessionStorage.getItem("authToken") ||
+             "";
+    }
+
+    function decodeJwtPayload(token){
+      try{
+        const part = token.split(".")[1];
+        return JSON.parse(atob(part.replace(/-/g, "+").replace(/_/g, "/")));
+      }catch(e){
+        return {};
+      }
+    }
+
+    function usingStarterPin(){
+      const data = decodeJwtPayload(getMemberToken());
+      return data.starter_pin === true || data.force_pin_change === true;
+    }
+
+    function showGateMessage(){
+      const box = document.getElementById("gateMessage");
+      if (box){
+        box.style.display = "block";
+        box.scrollIntoView({ behavior:"smooth", block:"center" });
+      }
+    }
+
+    function protectPrivateHubLinks(){
+      document.querySelectorAll(".private-link").forEach(link => {
+        link.addEventListener("click", function(e){
+          if (usingStarterPin()){
+            e.preventDefault();
+            showGateMessage();
+            setTimeout(function(){
+              window.location.href = "your-info.html";
+            }, 2200);
+          }
+        });
+      });
+    }
+
     function memberLogout(){
       try{
         sessionStorage.removeItem("sanctuaryAccess");
@@ -242,6 +309,8 @@
       }catch(e){}
       window.location.href = "index.html";
     }
+
+    protectPrivateHubLinks();
   </script>
 </body>
 </html>

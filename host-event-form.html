@@ -769,6 +769,15 @@ function moneyNumber(v){
 
 let editEventId = cleanText(new URLSearchParams(location.search).get("event_id") || "");
 
+ if (editEventId) {
+  setTimeout(function(){
+    setStatus(
+      els.verifyStatus,
+      "info",
+      "Editing an existing Event Notice. Please verify as the Host resident to load and edit this notice."
+    );
+  }, 0);
+} 
 const els = {
   pageTitle: document.getElementById("pageTitle"),
   pageSubtitle: document.getElementById("pageSubtitle"),

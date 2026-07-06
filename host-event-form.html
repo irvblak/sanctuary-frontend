@@ -567,23 +567,37 @@
             <textarea id="description"></textarea>
           </div>
 
-          <div class="event-path">
-            <label for="titleArtUrl">Title art / logo path</label>
-            <div class="path-row">
-              <input id="titleArtUrl" placeholder="images/..." />
-              <button class="secondary library-btn" type="button" data-library-target="titleArtUrl" data-library-kind="title">Choose</button>
-            </div>
-            <p class="small">Choose from the title-art library, or enter a known image path.</p>
-          </div>
+          <div class="event-publishing">
+  <h3>Notice Publishing</h3>
+  <p class="small">
+    Add an image if you want the notice to have a poster or banner. The image will appear on screen
+    and on the printed Event Notice.
+  </p>
 
-          <div class="event-path">
-            <label for="imageUrl">Image / poster path</label>
-            <div class="path-row">
-              <input id="imageUrl" placeholder="images/..." />
-              <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">Choose</button>
-            </div>
-            <p class="small">Choose from the poster/banner library, or enter a known image path.</p>
-          </div>
+  <div class="poster-preview-box">
+    <div id="posterPreview" class="poster-preview empty">
+      No poster selected
+    </div>
+  </div>
+
+  <div class="path-row">
+    <input id="imageUrl" placeholder="Paste image URL or choose from library" />
+    <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">
+      Choose Poster
+    </button>
+  </div>
+
+  <div class="button-row">
+    <button class="secondary" type="button" id="previewPosterBtn">Preview Poster</button>
+    <button class="secondary" type="button" id="clearPosterBtn">Remove Poster</button>
+  </div>
+
+  <p class="small">
+    Tip: use one clear image. It should still look good when printed on A4.
+  </p>
+
+  <input id="titleArtUrl" type="hidden" />
+</div>
         </div>
       </section>
 

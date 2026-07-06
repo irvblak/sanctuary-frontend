@@ -7,20 +7,23 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <!-- 🔒 Access gate -->
-  <script src="access.js?v=MH_4"></script>
+  <script src="access.js?v=MH_5"></script>
 
   <style>
     :root{
       --bg1:#d9ecff;
-      --bg2:#f2f7fb;
+      --bg2:#f4f8fc;
       --bg3:#ffffff;
       --ink:#1f2a37;
-      --muted:#5b6573;
+      --muted:#52606f;
       --blue:#123a78;
       --blueHover:#0f3166;
+      --softBlue:#eef6ff;
+      --cream:#fff8e8;
+      --green:#eef9f1;
       --panel:#ffffff;
       --line:#d8e1ec;
-      --shadow:0 8px 22px rgba(0,0,0,0.08);
+      --shadow:0 8px 24px rgba(0,0,0,0.08);
     }
 
     *{ box-sizing:border-box; }
@@ -28,109 +31,134 @@
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 42%, var(--bg3) 100%);
+      background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 44%, var(--bg3) 100%);
       color:var(--ink);
       min-height:100vh;
+      font-size:18px;
     }
 
     .topbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      padding:1rem 1.1rem 0.25rem;
-      max-width:980px;
+      padding:1.1rem 1.2rem 0.35rem;
+      max-width:1180px;
       margin:0 auto;
     }
 
     .brand{
-      font-size:1.55rem;
-      font-weight:700;
+      font-size:1.9rem;
+      font-weight:800;
       letter-spacing:0.01em;
     }
 
     .logout-tab{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:96px;
-      padding:0.6rem 0.9rem;
+      min-width:116px;
+      padding:0.72rem 1rem;
       border:none;
-      border-radius:12px 12px 0 0;
+      border-radius:14px 14px 0 0;
       background:var(--blue);
       color:#fff;
-      font-size:0.95rem;
-      font-weight:700;
+      font-size:1.05rem;
+      font-weight:800;
       cursor:pointer;
-      box-shadow:0 4px 10px rgba(0,0,0,0.12);
+      box-shadow:0 4px 10px rgba(0,0,0,0.13);
     }
 
     .logout-tab:hover{ background:var(--blueHover); }
 
     .shell{
-      max-width:980px;
+      max-width:1180px;
       margin:0 auto;
-      padding:0 1rem 2rem;
+      padding:0 1rem 2.25rem;
     }
 
-    .panel{
+    .main-panel{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:18px;
+      border-radius:22px;
       box-shadow:var(--shadow);
-      padding:1.25rem 1rem 1rem;
+      padding:1.35rem;
     }
 
     .intro{
       margin:0 0 1rem;
       color:var(--muted);
-      line-height:1.45;
-      font-size:0.98rem;
+      line-height:1.55;
+      font-size:1.08rem;
+      max-width:980px;
     }
 
-    .privacy-note{
-      margin:0 0 1rem;
-      padding:0.85rem 0.95rem;
+    .comfort-strip{
+      margin:0 0 1.25rem;
+      padding:1rem 1.1rem;
       border:1px solid #d7e4f3;
-      border-radius:14px;
+      border-radius:16px;
       background:#f7fbff;
       color:#344054;
-      font-size:0.95rem;
-      line-height:1.42;
+      font-size:1.05rem;
+      line-height:1.5;
+    }
+
+    .content-grid{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 0.78fr;
+      gap:1.15rem;
+      align-items:start;
+    }
+
+    .hub-card,
+    .info-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      padding:1rem;
+    }
+
+    .hub-card{
+      max-width:720px;
+    }
+
+    .hub-title,
+    .info-title{
+      margin:0 0 0.75rem;
+      font-size:1.32rem;
+      color:var(--blue);
+      font-weight:850;
     }
 
     .hub-list{
       display:flex;
       flex-direction:column;
-      gap:0.8rem;
-      margin-top:0.5rem;
+      gap:0.9rem;
     }
 
     .hub-row{
       display:grid;
-      grid-template-columns:260px minmax(0,1fr);
-      gap:0.9rem;
+      grid-template-columns:230px minmax(0,1fr);
+      gap:0.85rem;
       align-items:center;
-      padding:0.15rem 0;
     }
 
     .hub-btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:260px;
-      min-height:46px;
-      padding:0.72rem 0.9rem;
+      width:230px;
+      min-height:54px;
+      padding:0.82rem 0.9rem;
       background:var(--blue);
       color:#fff;
       text-decoration:none;
-      font-weight:700;
-      border-radius:12px;
+      font-weight:850;
+      border-radius:14px;
       box-shadow:0 4px 12px rgba(18,58,120,0.22);
       transition:background 0.15s ease, transform 0.15s ease;
       text-align:center;
       line-height:1.2;
       border:none;
       cursor:pointer;
+      font-size:1.05rem;
     }
 
     .hub-btn:hover{
@@ -140,40 +168,119 @@
 
     .hub-note{
       color:var(--muted);
-      font-size:0.97rem;
-      line-height:1.38;
+      font-size:1.02rem;
+      line-height:1.42;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:0.3rem;
+      padding:0.28rem 0.55rem;
+      border-radius:999px;
+      font-size:0.92rem;
+      font-weight:800;
+      margin-top:0.25rem;
+    }
+
+    .pill-open{
+      background:var(--green);
+      color:#245b33;
+      border:1px solid #cbe8d2;
+    }
+
+    .pill-private{
+      background:var(--cream);
+      color:#6a4a09;
+      border:1px solid #efd28b;
+    }
+
+    .side-stack{
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+    }
+
+    .info-card{
+      font-size:1.03rem;
+      line-height:1.5;
+    }
+
+    .info-card p{
+      margin:0.35rem 0 0;
+      color:var(--muted);
+    }
+
+    .info-card ul{
+      margin:0.45rem 0 0;
+      padding-left:1.25rem;
+      color:var(--muted);
+    }
+
+    .info-card li{
+      margin:0.35rem 0;
     }
 
     .gate-message{
       display:none;
-      margin:1rem 0 0;
-      padding:1rem;
+      margin:1rem 0;
+      padding:1rem 1.1rem;
       border:1px solid #f0d49b;
-      border-radius:14px;
+      border-radius:16px;
       background:#fff8e8;
       color:#4b3715;
-      line-height:1.45;
-      font-size:0.96rem;
+      line-height:1.5;
+      font-size:1.05rem;
     }
 
     .gate-message strong{
       display:block;
-      margin-bottom:0.25rem;
+      margin-bottom:0.3rem;
+      font-size:1.12rem;
+    }
+
+    @media (max-width: 920px){
+      .content-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hub-card{
+        max-width:none;
+      }
     }
 
     @media (max-width: 760px){
-      .topbar{ padding:0.85rem 0.85rem 0.2rem; }
-      .brand{ font-size:1.3rem; }
-      .shell{ padding:0 0.85rem 1.5rem; }
-      .panel{ padding:1rem 0.9rem; }
+      body{ font-size:17px; }
+
+      .topbar{
+        padding:0.9rem 0.85rem 0.2rem;
+      }
+
+      .brand{
+        font-size:1.55rem;
+      }
+
+      .logout-tab{
+        min-width:104px;
+        font-size:0.98rem;
+      }
+
+      .shell{
+        padding:0 0.85rem 1.5rem;
+      }
+
+      .main-panel{
+        padding:1rem 0.9rem;
+      }
 
       .hub-row{
         grid-template-columns:1fr;
         gap:0.45rem;
       }
 
-      .hub-btn{ width:100%; }
-      .hub-note{ padding-left:0.1rem; }
+      .hub-btn{
+        width:100%;
+      }
     }
   </style>
 </head>
@@ -185,64 +292,130 @@
   </div>
 
   <div class="shell">
-    <div class="panel">
+    <div class="main-panel">
       <p class="intro">
-        Welcome to the Members Hub. From here you can view your details, see what is happening,
-        browse notices and news, host an event, access archives and, in due course, manage payments.
+        Welcome to the Sanctuary Club Members Hub. This is the starting point for seeing what is happening,
+        keeping your own details up to date, finding other residents when appropriate, and using the private
+        member services as they come online.
       </p>
 
-      <p class="privacy-note">
-        Community information remains easy to access. Private member services require each household
-        to replace the temporary Starter PIN with its own household Membership PIN.
-      </p>
+      <div class="comfort-strip">
+        Some community information is open straight away. More private areas become available once your
+        household has replaced the temporary Starter PIN with its own Membership PIN. This protects everyone’s
+        contact details while keeping the Calendar, Events List and general Notices easy to reach.
+      </div>
 
       <div id="gateMessage" class="gate-message">
         <strong>Please change your Starter PIN first.</strong>
-        For your privacy and the privacy of other residents, private member services are available
-        once your household has chosen its own Membership PIN. Calendar, Events List and general
-        Notices remain available while you complete this one-time step.
+        For your privacy and the privacy of other residents, this private area is available once your household
+        has chosen its own Membership PIN. You can do this in <strong>Your Information</strong>. The Calendar,
+        Events List and general Notices remain available while you complete this one-time step.
       </div>
 
-      <div class="hub-list">
+      <div class="content-grid">
 
-        <div class="hub-row">
-          <a class="hub-btn starter-ok" href="your-info.html">Your Information</a>
-          <div class="hub-note">View or update your contact information and change your PIN.</div>
+        <div class="hub-card">
+          <h1 class="hub-title">Where would you like to go?</h1>
+
+          <div class="hub-list">
+
+            <div class="hub-row">
+              <a class="hub-btn starter-ok" href="your-info.html">Your Information</a>
+              <div class="hub-note">
+                Check your household details and replace the temporary Starter PIN.
+                <br><span class="pill pill-open">Available now</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn private-link" href="members-directory.html">Members Directory</a>
+              <div class="hub-note">
+                Look up fellow residents in the private members directory.
+                <br><span class="pill pill-private">Membership PIN required</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn starter-ok" href="events-calendar.html">Events Calendar</a>
+              <div class="hub-note">
+                See events in calendar form by date and time.
+                <br><span class="pill pill-open">Available now</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn starter-ok" href="events.html">Events Diary - List View</a>
+              <div class="hub-note">
+                Browse upcoming events in a simple date-by-date list.
+                <br><span class="pill pill-open">Available now</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn starter-ok" href="notices-preview.html">Club Notices and News</a>
+              <div class="hub-note">
+                Read general notices, event notices, announcements and community news.
+                <br><span class="pill pill-open">Available now</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn private-link" href="host-area.html">Host Area</a>
+              <div class="hub-note">
+                Create or manage event notices if you are an authorised host.
+                <br><span class="pill pill-private">Membership PIN required</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn private-link" href="archives.html">Archives</a>
+              <div class="hub-note">
+                Past events, Association material and news archives.
+                <br><span class="pill pill-private">Membership PIN required</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn private-link" href="payments.html">Payments</a>
+              <div class="hub-note">
+                Reserved for future member payment records and related functions.
+                <br><span class="pill pill-private">Membership PIN required</span>
+              </div>
+            </div>
+
+          </div>
         </div>
 
-        <div class="hub-row">
-          <a class="hub-btn private-link" href="members-directory.html">Members Directory</a>
-          <div class="hub-note">Look up fellow members in the private residents directory.</div>
-        </div>
+        <div class="side-stack">
 
-        <div class="hub-row">
-          <a class="hub-btn starter-ok" href="events-calendar.html">Events Calendar</a>
-          <div class="hub-note">See events in calendar form by date and time.</div>
-        </div>
+          <div class="info-card">
+            <h2 class="info-title">🔒 Your Privacy</h2>
+            <p>
+              The directory and other private services are intended only for Sanctuary residents.
+              That is why we ask each household to move away from the temporary Starter PIN before
+              opening the more private areas.
+            </p>
+          </div>
 
-        <div class="hub-row">
-          <a class="hub-btn starter-ok" href="events.html">Events Diary - List View</a>
-          <div class="hub-note">Browse upcoming events in a simple date-by-date list.</div>
-        </div>
+          <div class="info-card">
+            <h2 class="info-title">🛡 Security & Data Protection</h2>
+            <ul>
+              <li>Administrators cannot view your Membership PIN.</li>
+              <li>If a PIN is forgotten, it can be reset rather than recovered.</li>
+              <li>An automatic forgotten-PIN process is planned for a later stage.</li>
+              <li>Residents Association Panel information will have its own separately protected area.</li>
+            </ul>
+          </div>
 
-        <div class="hub-row">
-          <a class="hub-btn starter-ok" href="notices-preview.html">Club Notices and News</a>
-          <div class="hub-note">Read general notices, event notices, announcements and community news items.</div>
-        </div>
+          <div class="info-card">
+            <h2 class="info-title">🤝 Getting Started</h2>
+            <p>
+              If you are unsure where to begin, start with <strong>Your Information</strong>.
+              Resident helpers will be able to assist anyone who would like a little support getting
+              comfortable with the site.
+            </p>
+          </div>
 
-        <div class="hub-row">
-          <a class="hub-btn private-link" href="host-area.html">Host an Event</a>
-          <div class="hub-note">Create or edit an event notice if you are an authorised host.</div>
-        </div>
-
-        <div class="hub-row">
-          <a class="hub-btn private-link" href="archives.html">Archives</a>
-          <div class="hub-note">Open the archive sections for past events, Association material and news.</div>
-        </div>
-
-        <div class="hub-row">
-          <a class="hub-btn private-link" href="payments.html">Payments</a>
-          <div class="hub-note">Reserved for future payment-related functions and records.</div>
         </div>
 
       </div>
@@ -288,7 +461,7 @@
             showGateMessage();
             setTimeout(function(){
               window.location.href = "your-info.html";
-            }, 2200);
+            }, 2300);
           }
         });
       });

@@ -892,7 +892,7 @@
       if (row.email) bits.push(`<div>${escapeHtml(row.email)}</div>`);
       if (row.mobile) bits.push(`<div>${escapeHtml(row.mobile)}</div>`);
       if (row.updated) bits.push(`<div>Updated: ${escapeHtml(row.updated)}</div>`);
-      if (row.notes) bits.push(`<div>Note: ${escapeHtml(row.notes)}</div>`);
+      if (row.notes) bits.push(`<div class="booking-note"><strong>Member note:</strong> ${escapeHtml(row.notes)}</div>`);
       if (row.paymentNote) bits.push(`<div>Payment note: ${escapeHtml(row.paymentNote)}</div>`);
       return bits.length ? bits.join("") : "—";
     }

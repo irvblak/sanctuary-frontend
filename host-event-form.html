@@ -414,12 +414,55 @@
       line-height:1.25;
     }
 
+.event-publishing{
+  grid-column:1 / -1;
+  border:1px solid #d7e3ea;
+  border-radius:16px;
+  padding:1rem;
+  background:#f8fbfd;
+}
+
+.event-publishing h3{
+  margin:0 0 0.35rem;
+  font-size:1.15rem;
+  color:#173042;
+}
+
+.poster-preview-box{
+  margin:0.8rem 0;
+}
+
+.poster-preview{
+  min-height:140px;
+  border:2px dashed #b9cbd8;
+  border-radius:14px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#607583;
+  font-weight:700;
+  overflow:hidden;
+}
+
+.poster-preview img{
+  display:block;
+  max-width:100%;
+  max-height:260px;
+  object-fit:contain;
+}
+
+.poster-preview.empty{
+  padding:1rem;
+}
+    
     @media (max-width:1050px){
       .space-grid{
         grid-template-columns:5rem repeat(2,minmax(0,1fr));
       }
     }
-
+    
     @media (max-width:920px){
       .top-grid,
       .details-grid,

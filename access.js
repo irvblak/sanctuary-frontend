@@ -1,11 +1,5 @@
 // access.js — Sanctuary Club access control
-// 8-hour member session + Starter PIN protection
-// Policy:
-// - Public pages need no session.
-// - All member pages need the front-page access session.
-// - Starter PIN / default access may only reach:
-//   Members Hub, Your Information, Events Calendar, Events List, Notices.
-// - Everything else requires the household PIN to have been changed.
+// 8-hour front-page session + Starter/default access protection
 
 (function () {
   const KEY = "sanctuaryAccess";
@@ -31,18 +25,28 @@
   function decodeJwtPayload(token){
     try{
       const part = token.split(".")[1];
+      if (!part) return {};
       return JSON.parse(atob(part.replace(/-/g, "+").replace(/_/g, "/")));
     }catch(e){
       return {};
     }
   }
 
-  function usingStarterPin(){
-    const data = decodeJwtPayload(getMemberToken());
-    return data.starter_pin === true || data.force_pin_change === true;
+  function starterOrDefaultAccess(){
+    const token = getMemberToken();
+
+    // Important:
+    // WXYZ front-page access may create a general session but no member token.
+    // That must be treated as default/Starter access.
+    if (!token) return true;
+
+    const data = decodeJwtPayload(token);
+
+    return data.starter_pin === true ||
+           data.force_pin_change === true;
   }
 
-  // No front-page member session required
+  // No member session required
   const PUBLIC = new Set([
     "index.html",
     "about.html",
@@ -50,7 +54,7 @@
     "admin-signin.html"
   ]);
 
-  // Allowed while still using Starter PIN / default access
+  // Allowed with default/Starter access
   const STARTER_ALLOWED = new Set([
     "members-info.html",
     "your-info.html",
@@ -68,7 +72,7 @@
     return;
   }
 
-  if (usingStarterPin() && !STARTER_ALLOWED.has(page)) {
+  if (starterOrDefaultAccess() && !STARTER_ALLOWED.has(page)) {
     sessionStorage.setItem("hubGateReason", "starter-pin");
     location.replace("members-info.html");
     return;

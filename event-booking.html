@@ -1482,55 +1482,75 @@
       return Date.now() > closeDate.getTime();
     }
 
-    async function saveBooking(event){
-      event.preventDefault();
+async function saveBooking(event){
+  event.preventDefault();
 
-      if (!authToken || !currentMemberId){
-        showMessage("Please do Member lookup first.", "warn");
-        return;
-      }
+  if (!authToken || !currentMemberId){
+    showMessage("Please do Member lookup first.", "warn");
+    return;
+  }
 
-      if (bookingCloseHasPassed()){
-        showMessage("Booking for this event has now closed.", "warn");
-        return;
-      }
+  if (bookingCloseHasPassed()){
+    showMessage("Booking for this event has now closed.", "warn");
+    return;
+  }
 
-      const payload = makeBookingPayload();
+  const payload = makeBookingPayload();
 
-      const totalRequested =
-  Number(payload.places_total || 0) +
-  Number(payload.guest_places || 0);
+  const memberPlaces = Number(payload.places_total || 0);
+  const guestPlaces = Number(payload.guest_places || 0);
+  const totalRequested = memberPlaces + guestPlaces;
 
-if (totalRequested < 1){
-  showMessage("Please enter at least one member to be able to book a guest place.", "warn");
-  return;
+  if (memberPlaces < 0 || guestPlaces < 0){
+    showMessage("Places cannot be below zero.", "warn");
+    return;
+  }
+
+  if (totalRequested === 0){
+    const ok = window.confirm(
+      "You have reduced this booking to zero places. Do you want to cancel this booking / interest?"
+    );
+
+    if (!ok) return;
+
+    await cancelBooking();
+    return;
+  }
+
+  if (guestPlaces > 0 && memberPlaces < 1){
+    showMessage("Please enter at least one member place if you wish to book a guest place.", "warn");
+    return;
+  }
+
+  saveBtn.disabled = true;
+  showMessage("Saving booking / interest…", "info");
+
+  try{
+    const endpoint = currentBooking
+      ? `/api/events/${encodeURIComponent(EVENT_ID)}/update-booking`
+      : `/api/events/${encodeURIComponent(EVENT_ID)}/book`;
+
+    const data = await apiFetch(endpoint, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(payload)
+    });
+
+    showMessage(
+      data.message ||
+      (currentBooking ? "Saved. Booking / interest updated." : "Saved. Booking / interest recorded."),
+      "ok"
+    );
+
+    await loadMyBooking(false);
+    await loadEvent();
+  }catch(err){
+    showMessage(`Save failed: ${err.message}`, "err");
+  }finally{
+    saveBtn.disabled = false;
+    setActionButtons(!!(authToken && currentMemberId));
+  }
 }
-
-      saveBtn.disabled = true;
-      showMessage("Saving booking / interest…", "info");
-
-      try{
-        const endpoint = currentBooking
-          ? `/api/events/${encodeURIComponent(EVENT_ID)}/update-booking`
-          : `/api/events/${encodeURIComponent(EVENT_ID)}/book`;
-
-        const data = await apiFetch(endpoint, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body:JSON.stringify(payload)
-        });
-
-        showMessage(data.message || (currentBooking ? "Saved. Booking / interest updated." : "Saved. Booking / interest recorded."), "ok");
-
-        await loadMyBooking(false);
-        await loadEvent();
-      }catch(err){
-        showMessage(`Save failed: ${err.message}`, "err");
-      }finally{
-        saveBtn.disabled = false;
-        setActionButtons(!!(authToken && currentMemberId));
-      }
-    }
 
     async function cancelBooking(){
       if (!authToken || !currentMemberId){

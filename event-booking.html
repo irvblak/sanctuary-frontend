@@ -1483,7 +1483,6 @@
     }
 
     async function saveBooking(event){
-      console.log(">>> saveBooking() called");
       event.preventDefault();
 
       if (!authToken || !currentMemberId){
@@ -1534,7 +1533,6 @@ if (totalRequested < 1){
     }
 
     async function cancelBooking(){
-      console.log(">>> cancelBooking() called");
       if (!authToken || !currentMemberId){
         showMessage("Please do Member lookup first.", "warn");
         return;

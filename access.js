@@ -74,7 +74,7 @@
 
   if (starterOrDefaultAccess() && !STARTER_ALLOWED.has(page)) {
     sessionStorage.setItem("hubGateReason", "starter-pin");
-    location.replace("members-info.html");
+    location.replace("your-info.html?needPin=1");
     return;
   }
 })();

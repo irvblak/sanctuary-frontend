@@ -1099,7 +1099,7 @@
       );
 
       placesTotalInput.value = String(
-        Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 1)) || 0)
+        Math.max(0, Number(pick(currentBooking.places_total, currentBooking.places, 0)) || 0)
       );
 
       guestPlacesInput.value = String(

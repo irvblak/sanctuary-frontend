@@ -1590,8 +1590,17 @@ async function saveBooking(event){
         guestPlacesInput.value = "0";
         notesInput.value = "";
 
+        currentBooking = null;
+        renderExistingBooking();
+
+        setResponseType("booking");
+        placesTotalInput.value = "0";
+        guestPlacesInput.value = "0";
+        notesInput.value = "";
+
         showMessage(data.message || "Cancelled. Booking / interest removed.", "ok");
 
+        await loadMyBooking(false);
         await loadEvent();
       }catch(err){
         showMessage(`Cancel failed: ${err.message}`, "err");

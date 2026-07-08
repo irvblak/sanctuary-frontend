@@ -61,6 +61,7 @@
     "events-calendar.html",
     "events.html",
     "notices-preview.html"
+    "events-details.html"
   ]);
 
   const page = (location.pathname.split("/").pop() || "index.html").toLowerCase();

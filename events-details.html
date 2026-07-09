@@ -505,14 +505,17 @@
     const $ = id => document.getElementById(id);
 
     function getEventId(){
-      const params = new URLSearchParams(window.location.search);
-      return (
-        params.get("event_id") ||
-        params.get("id") ||
-        params.get("ref") ||
-        ""
-      ).trim();
-    }
+  const params = new URLSearchParams(window.location.search);
+  return (
+    params.get("event_id") ||
+    params.get("eventId") ||
+    params.get("id") ||
+    params.get("ref") ||
+    params.get("notice_id") ||
+    params.get("noticeId") ||
+    ""
+  ).trim();
+}
 
     function clean(value, fallback = "—"){
       if(value === null || value === undefined) return fallback;

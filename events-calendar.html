@@ -720,9 +720,13 @@
             pill.className = "pill" + (isPastEvent(ev) ? " past" : "");
             pill.style.background = isPastEvent(ev) ? "" : categoryColor(ev.category);
             pill.href = eventHref(ev);
-            pill.title = `${t} — ${ev.title}`;
-                      
-            pill.innerHTML = `<small>${t}</small><span>${ev.title}</span>`;
+            pill.title = `${ev.id} — ${ev.title} — ${t}${ev.hostName ? " — Host: " + ev.hostName : ""}`;
+            pill.innerHTML = `
+              <span class="pill-ref">${ev.id || "Event"}</span>
+              <span class="pill-title">${ev.title}</span>
+              <span class="pill-meta">${t}${ev.hostName ? " · Host: " + ev.hostName : ""}</span>
+            `;      
+            
             eventsWrap.appendChild(pill);
           }
 

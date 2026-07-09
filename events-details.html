@@ -943,11 +943,39 @@ function getEventHostMemberId(e){
     }
 
     function renderEventLine(e){
-      const dateText = formatDateOnly(getNoticeDateValue(e));
-      const timeText = getNoticeTimeText(e);
-      const locationText = pick(e.location, e.venue);
-      eventLine.textContent = [dateText, timeText !== "—" ? timeText : "", locationText].filter(Boolean).join(" • ");
-    }
+  const dateText = formatDateOnly(getNoticeDateValue(e));
+  const timeText = getNoticeTimeText(e);
+  const locationText = pick(e.location, e.venue);
+
+  const eventRef = getEventReference(e);
+
+  const hostName = pick(
+    e.host_name,
+    e.contact_name,
+    e.author_name,
+    e.producer_name
+  );
+
+  const hostRef = pick(
+    e.host_resident_id,
+    e.hostResidentId,
+    e.host_member_id,
+    e.hostMemberId
+  );
+
+  const firstLine = [dateText, timeText !== "—" ? timeText : "", locationText]
+    .filter(Boolean)
+    .join(" • ");
+
+  eventLine.innerHTML = `
+    <div>${firstLine}</div>
+    <div class="event-hostref">
+      <strong>Event Ref:</strong> ${eventRef}
+      &nbsp;&bull;&nbsp;
+      <strong>Host:</strong> ${hostName || "—"}${hostRef ? ` (${hostRef})` : ""}
+    </div>
+  `;
+}
 
     function renderBodyImage(e){
       const url = pick(e.notice_image_url, e.body_image_url, e.image_url);

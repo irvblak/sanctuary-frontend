@@ -951,40 +951,14 @@ function getEventHostMemberId(e){
     }
 
     function renderEventLine(e){
-
   const dateText = formatDateOnly(getNoticeDateValue(e));
   const timeText = getNoticeTimeText(e);
   const locationText = pick(e.location, e.venue);
 
-  const host =
-    pick(e.host_name, e.host, "Host to be confirmed");
-
-  const ref =
-    pick(e.event_ref, e.reference, e.event_id, "");
-
-  eventLine.innerHTML = `
-    <div class="event-meta">
-      📅 ${escapeHtml(dateText)}
-      &nbsp;&nbsp;&nbsp;
-      🕑 ${escapeHtml(timeText)}
-      &nbsp;&nbsp;&nbsp;
-      📍 ${escapeHtml(locationText)}
-    </div>
-
-    <div class="event-host">
-      👤 Host: ${escapeHtml(host)}
-    </div>
-
-    <div class="event-ref">
-      Reference: ${escapeHtml(ref)}
-    </div>
-
-    <div class="event-ref-note">
-      Please quote this Event Reference in all communications about this event.
-    </div>
-  `;
+  eventLine.textContent = [dateText, timeText !== "—" ? timeText : "", locationText]
+    .filter(Boolean)
+    .join(" • ");
 }
-
     function renderBodyImage(e){
       const url = pick(e.notice_image_url, e.body_image_url, e.image_url);
       if (url){

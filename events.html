@@ -580,6 +580,7 @@
 
           return {
             raw: ev,
+            id: ev.event_ref || ev.event_id || "",
             backendId: ev.event_id || "",
             title: ev.title || "Untitled event",
             category: toCategoryKey(ev.category_key, ev.category_label),

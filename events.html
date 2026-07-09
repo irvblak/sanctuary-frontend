@@ -637,31 +637,32 @@
         const chip = `<span class="chip" style="background:${categoryColor(ev.category)}">${escapeHtml(ev.categoryLabel || ev.category)}</span>`;
 
         tr.innerHTML = `
-          <td>
-            <div><strong>${escapeHtml(dateDisplay(ev.startDateObj))}</strong></div>
-            <div class="muted">${escapeHtml(timeHM(ev.startDateObj))}${ev.endTime ? ` to ${escapeHtml(ev.endTime)}` : ""}</div>
-          </td>
-          <td>
-          <td>
-            <div class="eventTitle">
-            ${ev.id ? `<span class="muted">${escapeHtml(ev.id)} — </span>` : ""}
-            ${escapeHtml(ev.title)}
-          </div>
-          ${ev.where ? `<div class="muted">${escapeHtml(ev.where)}</div>` : `<div class="muted">Location to be confirmed</div>`}
-          ${chip}
-          </td> 
-          </td>
-          <td>
-            <div>${escapeHtml(ev.hostName || "Host")}</div>
-          </td>
-          <td>
-            <div class="summary">${escapeHtml(ev.summary)}</div>
-          </td>
-          <td>
-            <a class="btn primary" href="events-details.html?v=HN_2&event_id=${encodeURIComponent(ev.backendId)}">More Info</a>
-          </td>
-        `;
+         <td>
+           <div><strong>${escapeHtml(dateDisplay(ev.startDateObj))}</strong></div>
+           <div class="muted">${escapeHtml(timeHM(ev.startDateObj))}${ev.endTime ? ` to ${escapeHtml(ev.endTime)}` : ""}</div>
+         </td>
 
+         <td>
+           <div class="eventTitle">
+             ${ev.id ? `<span class="muted">${escapeHtml(ev.id)} — </span>` : ""}
+             ${escapeHtml(ev.title)}
+           </div>
+           ${ev.where ? `<div class="muted">${escapeHtml(ev.where)}</div>` : `<div class="muted">Location to be confirmed</div>`}
+           ${chip}
+         </td>
+
+         <td>
+           <div>${escapeHtml(ev.hostName || "Host")}</div>
+         </td>
+
+         <td>
+           <div class="summary">${escapeHtml(ev.summary)}</div>
+         </td>
+
+         <td>
+           <a class="btn primary" href="events-details.html?v=HN_2&event_id=${encodeURIComponent(ev.backendId)}">More Info</a>
+         </td>
+       `;
         eventsBody.appendChild(tr);
       }
     }

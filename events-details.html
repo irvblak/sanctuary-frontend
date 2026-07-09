@@ -158,37 +158,13 @@
     }
 
     .event-line{
-  margin:18px auto 0;
-  max-width:860px;
-  text-align:center;
-  color:#31506b;
-  line-height:1.65;
-}
-
-.event-meta{
-  font-size:1.08rem;
-  font-weight:700;
-}
-
-.event-host{
-  margin-top:4px;
-  font-size:1.02rem;
-  font-weight:700;
-}
-
-.event-ref{
-  margin-top:8px;
-  font-size:1.08rem;
-  font-weight:900;
-  color:var(--accent);
-}
-
-.event-ref-note{
-  margin-top:2px;
-  font-size:.95rem;
-  color:var(--muted);
-  font-style:italic;
-}
+      margin:14px auto 0;
+      max-width:760px;
+      color:#31506b;
+      font-size:1.05rem;
+      line-height:1.5;
+      font-weight:700;
+    }
 
     .image-wrap{
       padding:18px 26px 0;
@@ -572,14 +548,14 @@
       <div class="bottom-actions host-tools no-print">
   <div class="host-note">For Event Host use.</div>
 
-  <a id="hsopBtnBottom" class="btn btn-discreet" href="host-area.html">
-  State of Play
-</a>
-</a>
+  <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html">
+    State of Play
+  </a>
 
-<a id="editBtnBottom" class="btn btn-discreet" href="host-area.html" hidden>
-  Edit Notice
-</a>
+  <a id="editBtnBottom" class="btn btn-discreet" href="host-event-form.html">
+    Edit Notice
+  </a>
+</div>
 
   <script>
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
@@ -639,44 +615,40 @@
 
       return raw;
     }
-    
-function getCurrentResidentRef(){
-  try{
-    return String(
-      localStorage.getItem("currentResidentId") ||
-      sessionStorage.getItem("currentResidentId") ||
-      localStorage.getItem("verifiedResidentId") ||
-      sessionStorage.getItem("verifiedResidentId") ||
-      ""
-    ).trim().toUpperCase();
-  }catch(e){
-    return "";
-  }
-}
 
-function getCurrentMemberId(){
-  try{
-    return normaliseMemberId(
-      localStorage.getItem("currentMemberId") ||
-      sessionStorage.getItem("currentMemberId") ||
-      ""
-    );
-  }catch(e){
-    return "";
-  }
-}
- function getViewerMemberId(){
-  return normaliseMemberId(
+  function getViewerMemberId(){
+  const stored = normaliseMemberId(
     localStorage.getItem("currentMemberId") ||
     sessionStorage.getItem("currentMemberId") ||
+    localStorage.getItem("sanctuaryCurrentMemberId") ||
+    sessionStorage.getItem("sanctuaryCurrentMemberId") ||
+    localStorage.getItem("memberId") ||
+    sessionStorage.getItem("memberId") ||
+    localStorage.getItem("sanctuaryMemberId") ||
+    sessionStorage.getItem("sanctuaryMemberId") ||
+    localStorage.getItem("selectedMemberId") ||
+    sessionStorage.getItem("selectedMemberId") ||
+    localStorage.getItem("currentResidentId") ||
+    sessionStorage.getItem("currentResidentId") ||
+    localStorage.getItem("sanctuaryCurrentResidentId") ||
+    sessionStorage.getItem("sanctuaryCurrentResidentId") ||
+    localStorage.getItem("currentHostMemberId") ||
+    sessionStorage.getItem("currentHostMemberId") ||
+    localStorage.getItem("currentHostResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") ||
     ""
   );
-}   
-  
+
+  if (stored) return stored;
+
+  return "";
+}
 function isAdminViewer(){
   return !!(
     localStorage.getItem("adminToken") ||
-    sessionStorage.getItem("adminToken")
+    sessionStorage.getItem("adminToken") ||
+    localStorage.getItem("sanctuaryAdminToken") ||
+    sessionStorage.getItem("sanctuaryAdminToken")
   );
 }
 
@@ -715,9 +687,22 @@ function getEventHostMemberId(e){
       return isAdminViewer() || (!!viewer && !!host && viewer === host);
     }
 
-    function setHostControlButtons(e){  
+    function setHostControlButtons(e){
+  hsopBtnBottom.href =
+    `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
+  editBtnBottom.href =
+    `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 }
+    function showMessage(text, kind = "info"){
+      if (!text){
+        pageMessage.className = "message info";
+        pageMessage.textContent = "";
+        return;
+      }
+      pageMessage.textContent = text;
+      pageMessage.className = `message show ${kind}`;
+    }
 
     function pick(){
       for (let i = 0; i < arguments.length; i++){
@@ -1025,25 +1010,7 @@ function getEventHostMemberId(e){
       bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
       cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
       refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
-      
-     const payable =
-       e.payment_required === true ||
-       String(e.payment_required || "").toLowerCase() === "true";
 
-     const price = Number(e.price_member || e.price_guest || 0);
-
-     eventPrice.textContent =
-       payable && price > 0 ? `£${price.toFixed(2)}` 
-       : "Free / no charge";
-
-     paymentInstructions.textContent =
-       payable ? (e.payment_instructions || "Payment details to be advised.")
-       : "No payment required.";
-
-     paymentNote.textContent =
-       payable ? (e.payment_terms || e.refund_note || "—")
-       : "—";
-      
       bookingDetailsBox.classList.remove("hidden");
     }
 
@@ -1066,7 +1033,8 @@ function getEventHostMemberId(e){
 
       bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      
+      editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      hsopBtnBottom.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
       try{
         const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);

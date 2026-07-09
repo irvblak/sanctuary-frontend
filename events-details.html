@@ -568,7 +568,16 @@
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
     const qs = new URLSearchParams(window.location.search);
-    const EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
+    const EVENT_ID = (
+  qs.get("event_id") ||
+  qs.get("eventId") ||
+  qs.get("_id") ||
+  qs.get("id") ||
+  qs.get("ref") ||
+  qs.get("notice_id") ||
+  qs.get("noticeId") ||
+  ""
+).trim();
 
     const pageMessage = document.getElementById("pageMessage");
     const printBtn = document.getElementById("printBtn");

@@ -641,9 +641,14 @@
             <div class="muted">${escapeHtml(timeHM(ev.startDateObj))}${ev.endTime ? ` to ${escapeHtml(ev.endTime)}` : ""}</div>
           </td>
           <td>
-            <div class="eventTitle">${escapeHtml(ev.title)}</div>
-            ${ev.where ? `<div class="muted">${escapeHtml(ev.where)}</div>` : `<div class="muted">Location to be confirmed</div>`}
-            ${chip}
+          <td>
+            <div class="eventTitle">
+            ${ev.id ? `<span class="muted">${escapeHtml(ev.id)} — </span>` : ""}
+            ${escapeHtml(ev.title)}
+          </div>
+          ${ev.where ? `<div class="muted">${escapeHtml(ev.where)}</div>` : `<div class="muted">Location to be confirmed</div>`}
+          ${chip}
+          </td> 
           </td>
           <td>
             <div>${escapeHtml(ev.hostName || "Host")}</div>

@@ -4,1097 +4,705 @@
   <meta charset="UTF-8" />
   <title>Event Notice | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
 
   <script src="access.js?v=PIN_GATE_1"></script>
 
   <style>
     :root{
-      --bg1:#eef6ff;
-      --bg2:#f8fbff;
-      --ink:#19334a;
-      --muted:#607689;
-      --line:#d7e4ef;
-      --panel:#ffffff;
-      --soft:#f4f8fc;
-      --accent:#245d8b;
-      --accent2:#2f7ab4;
-      --ok:#1f6f47;
+      --ink:#24332d;
+      --muted:#5f6f66;
+      --line:#d8e2dc;
+      --soft:#f4f8f5;
+      --cream:#fffdf7;
+      --accent:#2f6f4e;
       --warn:#8a5a00;
-      --err:#9e2b2b;
-      --shadow:0 18px 44px rgba(20,60,100,.12);
-      --radius:28px;
+      --danger:#8a2e2e;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-family: Georgia, "Times New Roman", serif;
+      background:#eef4f0;
       color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1),var(--bg2) 45%,#fff);
-      min-height:100vh;
+      font-size:17px;
+      line-height:1.55;
+      font-weight:500;
     }
 
-    .wrap{
-      width:min(980px,calc(100% - 24px));
-      margin:0 auto;
-      padding:18px 0 42px;
+    .page-wrap{
+      max-width:960px;
+      margin:24px auto;
+      padding:0 14px;
     }
 
-    .topbar{
-      display:flex;
+    .notice-sheet{
+      background:var(--cream);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      padding:22px 28px 20px;
+    }
+
+    .topline{
+      text-align:center;
+      letter-spacing:.08em;
+      font-size:.86rem;
+      font-weight:800;
+      color:var(--accent);
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .notice-header{
+      border-top:2px solid var(--accent);
+      border-bottom:2px solid var(--accent);
+      padding:14px 0 12px;
+      margin-bottom:14px;
+    }
+
+    .header-grid{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:18px;
       align-items:center;
+    }
+
+    h1{
+      margin:0;
+      font-size:2rem;
+      line-height:1.12;
+      font-weight:800;
+      color:var(--ink);
+    }
+
+    .event-ref-box{
+      border:1px solid var(--accent);
+      border-radius:10px;
+      padding:8px 12px;
+      min-width:130px;
+      text-align:center;
+      background:#f7fbf8;
+    }
+
+    .event-ref-label{
+      display:block;
+      font-size:.72rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:2px;
+    }
+
+    .event-ref{
+      display:block;
+      font-size:1.18rem;
+      font-weight:900;
+      color:var(--accent);
+    }
+
+    .facts-row{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:8px;
+      margin:12px 0 10px;
+    }
+
+    .fact{
+      border:1px solid var(--line);
+      background:var(--soft);
+      border-radius:10px;
+      padding:8px 10px;
+      min-height:58px;
+    }
+
+    .fact-label{
+      display:block;
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:2px;
+    }
+
+    .fact-value{
+      font-size:.98rem;
+      font-weight:800;
+      color:var(--ink);
+    }
+
+    .status-strip{
+      display:flex;
       justify-content:space-between;
       gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .backlink{
-      display:inline-flex;
       align-items:center;
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:800;
-    }
-
-    .top-actions,
-    .bottom-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-    }
-
-    .btn,
-    button{
-      appearance:none;
-      border:none;
-      border-radius:999px;
-      padding:11px 16px;
-      font:inherit;
-      font-weight:850;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-
-    .btn-primary{
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#fff;
-      box-shadow:0 10px 22px rgba(36,93,139,.20);
-    }
-
-    .btn-secondary{
-      background:#e8f0f8;
-      color:var(--accent);
-    }
-
-    .btn-soft{
-      background:#f2f6fa;
-      color:var(--ink);
-    }
-
-    .btn-discreet{
-      background:#eef1f4;
-      color:#6f7d88;
-      border:1px solid #d7dee5;
-      box-shadow:none;
-      font-size:.84rem;
-      padding:7px 11px;
-      font-weight:800;
-    }
-
-    .message{
-      display:none;
-      margin-bottom:14px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-size:.97rem;
-      line-height:1.45;
-      border:1px solid transparent;
-    }
-
-    .message.show{display:block}
-    .message.info{background:#eef6ff;border-color:#cfe0f0;color:#20496b}
-    .message.ok{background:#edf8f0;border-color:#cfe7d6;color:var(--ok)}
-    .message.warn{background:#fff7e8;border-color:#eddcab;color:var(--warn)}
-    .message.err{background:#fff1f1;border-color:#efcaca;color:var(--err)}
-
-    .notice-card{
-      background:var(--panel);
       border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      border-radius:10px;
+      background:#fff;
+      padding:9px 12px;
+      margin:10px 0 14px;
+      font-weight:800;
     }
 
-    .poster-head{
-      padding:28px 26px 12px;
+    .status{
+      color:var(--accent);
+    }
+
+    .status.closed{ color:var(--danger); }
+    .status.warning{ color:var(--warn); }
+
+    .poster-wrap{
+      margin:12px 0 14px;
       text-align:center;
     }
 
-    .title-text{
-      margin:0;
-      font-size:clamp(2rem,5vw,3.45rem);
-      line-height:1.05;
-      letter-spacing:-.04em;
-      color:#17314a;
-      word-wrap:break-word;
-    }
-
-    .title-graphic{
-      display:none;
+    .poster-wrap img{
       max-width:100%;
-      max-height:190px;
-      width:auto;
-      height:auto;
-      margin:0 auto;
+      max-height:330px;
       object-fit:contain;
-    }
-
-    .event-line{
-  margin:18px auto 0;
-  max-width:860px;
-  text-align:center;
-  color:#31506b;
-  line-height:1.65;
-}
-
-.event-meta{
-  font-size:1.08rem;
-  font-weight:700;
-}
-
-.event-host{
-  margin-top:4px;
-  font-size:1.02rem;
-  font-weight:700;
-}
-
-.event-ref{
-  margin-top:8px;
-  font-size:1.08rem;
-  font-weight:900;
-  color:var(--accent);
-}
-
-.event-ref-note{
-  margin-top:2px;
-  font-size:.95rem;
-  color:var(--muted);
-  font-style:italic;
-}
-
-    .image-wrap{
-      padding:18px 26px 0;
-      text-align:center;
-    }
-
-    .body-image{
-      display:none;
-      max-width:100%;
-      max-height:390px;
-      width:auto;
-      height:auto;
-      border-radius:20px;
-      object-fit:contain;
-      box-shadow:0 10px 24px rgba(26,59,92,.12);
+      border-radius:10px;
+      border:1px solid var(--line);
       background:#fff;
     }
 
-    .summary-box{
-      margin:20px 26px 0;
-      padding:16px 18px;
-      border-radius:18px;
-      background:#f7fbff;
-      border:1px solid var(--line);
-      color:#31506b;
-      font-size:1.05rem;
-      line-height:1.6;
-      white-space:pre-wrap;
-      word-wrap:break-word;
+    .section{
+      margin-top:12px;
+      padding-top:10px;
+      border-top:1px solid var(--line);
     }
 
-    .body-box{
-      padding:22px 30px 26px;
-      color:#22384d;
-      line-height:1.75;
-      font-size:1.04rem;
-      white-space:pre-wrap;
-      word-wrap:break-word;
-      min-height:120px;
-      text-align:left;
-    }
-
-    .placeholder{
-      color:#71879a;
-      font-style:italic;
-    }
-
-    .panel-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      padding:0 26px 18px;
-    }
-
-    .info-panel{
-      border:1px solid var(--line);
-      background:#f8fbff;
-      border-radius:16px;
-      padding:10px 12px;
-    }
-
-    .info-panel h2{
-      margin:0 0 7px;
-      font-size:.9rem;
-      color:#17314a;
-    }
-
-    .compact-line-panel{
-      padding:8px 10px;
-    }
-
-    .compact-line-panel h2{
+    .section h2{
       margin:0 0 5px;
-      font-size:.82rem;
-    }
-
-    .compact-line{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px 18px;
-      font-size:.8rem;
-      line-height:1.25;
-    }
-
-    .compact-line strong{
-      color:#17314a;
-      text-transform:uppercase;
-      font-size:.68rem;
-      letter-spacing:.03em;
-      margin-right:3px;
-    }
-
-    .detail-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:6px 14px;
-    }
-
-    .detail-row{
-      display:block;
-      font-size:.82rem;
-      line-height:1.28;
-    }
-
-    .detail-row strong{
-      display:block;
-      color:#17314a;
-      font-size:.74rem;
-      text-transform:uppercase;
-      letter-spacing:.03em;
-      margin-bottom:1px;
-    }
-
-    .contact-line{
-      overflow-wrap:anywhere;
-    }
-
-    .pill-row{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:10px;
-      padding:10px 26px 22px;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border-radius:999px;
-      padding:7px 12px;
-      font-weight:850;
-      font-size:.9rem;
-      background:#e8f1fb;
+      font-size:1.08rem;
       color:var(--accent);
+      font-weight:900;
     }
 
-    .pill.ok{background:#e9f6ee;color:#1f6f47}
-    .pill.warn{background:#fff3d9;color:#8a5a00}
-
-    .bottom-actions{
-      padding:0 26px 26px;
+    .section p{
+      margin:0 0 8px;
     }
 
-    .host-tools{
-  justify-content:flex-end;
-  align-items:center;
-  gap:8px;
-  padding-top:0;
-  margin-top:-10px;
-}
+    .notice-body{
+      white-space:pre-wrap;
+    }
 
-.host-note{
-  font-size:.78rem;
-  color:#8a96a0;
-  font-style:italic;
-  white-space:nowrap;
-}
+    .booking-panel{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:8px;
+      margin-top:8px;
+    }
 
-    .hidden{display:none !important}
+    .booking-item{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:7px 9px;
+    }
+
+    .booking-item span{
+      display:block;
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .booking-item strong{
+      display:block;
+      font-size:.95rem;
+      color:var(--ink);
+      margin-top:1px;
+    }
+
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top:18px;
+    }
+
+    button,
+    .button-link{
+      appearance:none;
+      border:0;
+      border-radius:999px;
+      background:var(--accent);
+      color:#fff;
+      padding:10px 18px;
+      font-size:1rem;
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .secondary{
+      background:#66756c;
+    }
+
+    .quiet{
+      background:#dfe8e2;
+      color:var(--ink);
+    }
+
+    .message{
+      text-align:center;
+      padding:28px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      font-weight:800;
+    }
 
     @media (max-width:760px){
-      .panel-grid{
+      .notice-sheet{
+        padding:18px 16px;
+      }
+
+      .header-grid{
         grid-template-columns:1fr;
+        text-align:center;
       }
 
-      .detail-row{
-        grid-template-columns:1fr;
-        gap:2px;
+      .facts-row,
+      .booking-panel{
+        grid-template-columns:1fr 1fr;
       }
 
-      .poster-head{
-        padding:22px 18px 10px;
-      }
-
-      .body-box{
-        padding:18px 20px 22px;
-      }
-
-      .host-tools{
-        justify-content:center;
-        margin-top:0;
+      h1{
+        font-size:1.65rem;
       }
     }
 
     @media print{
       @page{
         size:A4;
-        margin:14mm;
+        margin:11mm;
       }
 
       body{
-        background:#fff !important;
-        color:#111;
-      }
-
-      .wrap{
-        width:100%;
-        padding:0;
-      }
-
-      .no-print,
-      .topbar,
-      .bottom-actions,
-      .message,
-      .btn,
-      button{
-        display:none !important;
-      }
-
-      .notice-card{
-        border:0;
-        box-shadow:none;
-        border-radius:0;
-        overflow:visible;
-      }
-
-      .poster-head{
-        padding:0 0 6mm;
-      }
-
-      .title-text{
-        font-size:26pt;
-      }
-
-      .event-line{
-        font-size:11pt;
-      }
-
-      .body-image{
-        max-height:70mm;
-        box-shadow:none;
-        border-radius:0;
-      }
-
-      .summary-box{
-        margin:3mm 0 0;
-        padding:2.5mm 3mm;
-        font-size:9.5pt;
+        background:#fff;
+        font-size:12.2pt;
         line-height:1.35;
-        background:#fff;
-        border:1px solid #bbb;
       }
 
-      .body-box{
-        max-height:82mm;
-        overflow:hidden;
-        padding:4mm 0;
-        font-size:10pt;
-        line-height:1.45;
-        min-height:0;
-      }
-
-      .pill-row{
-        padding:3mm 0;
-      }
-
-      .panel-grid{
-        grid-template-columns:1fr;
-        gap:2mm;
+      .page-wrap{
+        max-width:none;
+        margin:0;
         padding:0;
-        page-break-inside:avoid;
       }
 
-      .info-panel{
-        padding:2mm 2.5mm;
+      .notice-sheet{
+        box-shadow:none;
+        border:0;
         border-radius:0;
-        background:#fff;
-        border:1px solid #bbb;
+        padding:0;
       }
 
-      .info-panel h2{
-        font-size:7.5pt;
-        margin:0 0 1mm;
+      .topline{
+        font-size:9pt;
+        margin-bottom:5px;
       }
 
-      .compact-line{
-        gap:1mm 4mm;
-        font-size:7.2pt;
-        line-height:1.15;
+      .notice-header{
+        padding:8px 0 7px;
+        margin-bottom:8px;
       }
 
-      .compact-line strong{
-        font-size:6.4pt;
+      h1{
+        font-size:21pt;
       }
 
-      .detail-grid{
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:1.5mm 4mm;
+      .event-ref-box{
+        padding:5px 8px;
+        min-width:105px;
       }
 
-      .detail-row{
-        font-size:7.8pt;
-        line-height:1.2;
+      .event-ref-label{
+        font-size:7pt;
       }
 
-      .detail-row strong{
-        font-size:6.8pt;
-        margin-bottom:.5mm;
+      .event-ref{
+        font-size:13pt;
+      }
+
+      .facts-row{
+        gap:5px;
+        margin:7px 0;
+      }
+
+      .fact{
+        padding:5px 7px;
+        min-height:0;
+        border-radius:6px;
+      }
+
+      .fact-label{
+        font-size:7pt;
+      }
+
+      .fact-value{
+        font-size:10pt;
+      }
+
+      .status-strip{
+        padding:6px 8px;
+        margin:7px 0 8px;
+        border-radius:6px;
+      }
+
+      .poster-wrap{
+        margin:7px 0 8px;
+      }
+
+      .poster-wrap img{
+        max-height:245px;
+        border-radius:4px;
+      }
+
+      .section{
+        margin-top:7px;
+        padding-top:6px;
+      }
+
+      .section h2{
+        font-size:12.5pt;
+        margin-bottom:2px;
+      }
+
+      .section p{
+        margin-bottom:5px;
+      }
+
+      .booking-panel{
+        gap:5px;
+      }
+
+      .booking-item{
+        padding:5px 6px;
+        border-radius:6px;
+      }
+
+      .booking-item span{
+        font-size:7pt;
+      }
+
+      .booking-item strong{
+        font-size:10pt;
+      }
+
+      .button-row{
+        display:none;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar no-print">
-      <a class="backlink" href="events.html">← Back to Events List</a>
+  <div class="page-wrap">
+    <div id="loading" class="message">Loading notice…</div>
 
-      <div class="top-actions">
-        <button id="printBtn" class="btn btn-soft" type="button">Print notice</button>
-        <a id="bookBtnTop" class="btn btn-primary hidden" href="event-booking.html">Book</a>
-      </div>
-    </div>
+    <article id="notice" class="notice-sheet" hidden>
+      <div class="topline">Sanctuary Club Notice</div>
 
-    <div id="pageMessage" class="message info"></div>
+      <header class="notice-header">
+        <div class="header-grid">
+          <div>
+            <h1 id="eventTitle">Event title</h1>
+          </div>
 
-    <article class="notice-card">
-      <header class="poster-head">
-        <h1 id="titleText" class="title-text">Loading notice…</h1>
-        <img id="titleGraphic" class="title-graphic" alt="Graphic title" />
-        <div id="eventLine" class="event-line">Loading details…</div>
+          <div class="event-ref-box">
+            <span class="event-ref-label">Event Reference</span>
+            <span id="eventRef" class="event-ref">EVT-0000</span>
+          </div>
+        </div>
       </header>
 
-      <div class="image-wrap">
-        <img id="bodyImage" class="body-image" alt="Notice image" />
-      </div>
+      <section class="facts-row">
+        <div class="fact">
+          <span class="fact-label">Date</span>
+          <span id="eventDate" class="fact-value">—</span>
+        </div>
 
-      <div id="summaryBox" class="summary-box hidden"></div>
-      <div id="bodyBox" class="body-box"><span class="placeholder">Loading notice…</span></div>
+        <div class="fact">
+          <span class="fact-label">Time</span>
+          <span id="eventTime" class="fact-value">—</span>
+        </div>
 
-      <div class="pill-row">
-        <span id="typePill" class="pill">Event Notice</span>
-        <span id="bookingModePill" class="pill hidden">Booking</span>
-        <span id="availabilityPill" class="pill hidden">Availability</span>
-      </div>
+        <div class="fact">
+          <span class="fact-label">Venue</span>
+          <span id="eventVenue" class="fact-value">—</span>
+        </div>
 
-      <div class="panel-grid">
-        <section class="info-panel compact-line-panel" id="eventDetailsBox">
-          <h2>Event details</h2>
-          <div class="compact-line">
-            <span><strong>Reference</strong> <span id="metaReference">—</span></span>
-            <span><strong>Location</strong> <span id="metaLocation">—</span></span>
-            <span><strong>Date</strong> <span id="metaDate">—</span></span>
-            <span><strong>Time</strong> <span id="metaTime">—</span></span>
+        <div class="fact">
+          <span class="fact-label">Host</span>
+          <span id="eventHost" class="fact-value">—</span>
+        </div>
+      </section>
+
+      <section class="status-strip">
+        <span id="bookingStatus" class="status">Booking status</span>
+        <span id="placesInfo">—</span>
+      </section>
+
+      <section id="posterWrap" class="poster-wrap" hidden>
+        <img id="posterImg" alt="Event poster" />
+      </section>
+
+      <section id="summarySection" class="section" hidden>
+        <h2>Summary</h2>
+        <p id="eventSummary"></p>
+      </section>
+
+      <section id="bodySection" class="section" hidden>
+        <h2>Notice</h2>
+        <div id="eventBody" class="notice-body"></div>
+      </section>
+
+      <section class="section">
+        <h2>Booking Information</h2>
+
+        <div class="booking-panel">
+          <div class="booking-item">
+            <span>Members</span>
+            <strong id="membersOpen">—</strong>
           </div>
-        </section>
 
-        <section id="bookingDetailsBox" class="info-panel hidden">
-          <h2>Booking details</h2>
-          <div class="detail-grid">
-            <div class="detail-row"><strong>Spaces available</strong><span id="spacesAvailable">—</span></div>
-            <div class="detail-row"><strong>Members opens</strong><span id="membersOpen">—</span></div>
-            <div class="detail-row"><strong>Guests opens</strong><span id="guestsOpen">—</span></div>
-            <div class="detail-row"><strong>Booking closes</strong><span id="bookingClose">—</span></div>
-            <div class="detail-row"><strong>Cancellation cutoff</strong><span id="cancelCutoff">—</span></div>
-            <div class="detail-row"><strong>Refund cutoff</strong><span id="refundCutoff">—</span></div>
-
-            <div class="detail-row"><strong>Cost per place</strong><span id="eventPrice">—</span></div>
-            <div class="detail-row"><strong>Payment</strong><span id="paymentInstructions">—</span></div>
-            <div class="detail-row"><strong>Payment / refund note</strong><span id="paymentNote">—</span></div>
-            
+          <div class="booking-item">
+            <span>Guests</span>
+            <strong id="guestsOpen">—</strong>
           </div>
-        </section>
 
-        <section id="contactDetailsBox" class="info-panel compact-line-panel hidden">
-          <h2>Host contact</h2>
-          <div class="compact-line">
-            <span><strong>Name</strong> <span id="contactName" class="contact-line">—</span></span>
-            <span><strong>Email</strong> <span id="contactEmail" class="contact-line">—</span></span>
-            <span><strong>Mobile</strong> <span id="contactMobile" class="contact-line">—</span></span>
-            <span><strong>Landline</strong> <span id="contactLandline" class="contact-line">—</span></span>
+          <div class="booking-item">
+            <span>Booking closes</span>
+            <strong id="bookingClose">—</strong>
           </div>
-        </section>
-      </div>
 
-      <div class="bottom-actions no-print">
-        <a id="bookBtnBottom" class="btn btn-primary hidden" href="event-booking.html">Book</a>
-      </div>
+          <div class="booking-item">
+            <span>Price</span>
+            <strong id="eventPrice">—</strong>
+          </div>
+        </div>
+      </section>
 
-      <div class="bottom-actions host-tools no-print">
-  <div class="host-note">For Event Host use.</div>
+      <nav class="button-row">
+        <a id="bookBtn" class="button-link" href="#">Book Now</a>
+        <a class="button-link secondary" href="events.html">Back to Events Diary</a>
+        <button class="quiet" type="button" onclick="window.print()">Print Notice</button>
+      </nav>
+    </article>
+  </div>
 
-  <a id="hsopBtnBottom" class="btn btn-discreet" href="host-area.html">
-    State of Play
-  </a>
+  <script>
+    const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
 
-  <a id="editBtnBottom" class="btn btn-discreet" href="host-area.html" hidden>
-    Edit Notice
-  </a>
-</div>
+    const $ = id => document.getElementById(id);
 
-</article>
-
-<script>
-    const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-
-    const qs = new URLSearchParams(window.location.search);
-    const EVENT_ID = (qs.get("event_id") || qs.get("_id") || "").trim();
-
-    const pageMessage = document.getElementById("pageMessage");
-    const printBtn = document.getElementById("printBtn");
-
-    const titleText = document.getElementById("titleText");
-    const titleGraphic = document.getElementById("titleGraphic");
-    const eventLine = document.getElementById("eventLine");
-
-    const metaDate = document.getElementById("metaDate");
-    const metaTime = document.getElementById("metaTime");
-    const metaLocation = document.getElementById("metaLocation");
-    const metaReference = document.getElementById("metaReference");
-
-    const bookingDetailsBox = document.getElementById("bookingDetailsBox");
-    const spacesAvailable = document.getElementById("spacesAvailable");
-    const membersOpen = document.getElementById("membersOpen");
-    const guestsOpen = document.getElementById("guestsOpen");
-    const bookingClose = document.getElementById("bookingClose");
-    const cancelCutoff = document.getElementById("cancelCutoff");
-    const refundCutoff = document.getElementById("refundCutoff");
-    const eventPrice = document.getElementById("eventPrice");
-    const paymentInstructions = document.getElementById("paymentInstructions");
-    const paymentNote = document.getElementById("paymentNote");
-    
-
-    const contactDetailsBox = document.getElementById("contactDetailsBox");
-    const contactName = document.getElementById("contactName");
-    const contactEmail = document.getElementById("contactEmail");
-    const contactMobile = document.getElementById("contactMobile");
-    const contactLandline = document.getElementById("contactLandline");
-
-    const typePill = document.getElementById("typePill");
-    const bookingModePill = document.getElementById("bookingModePill");
-    const availabilityPill = document.getElementById("availabilityPill");
-
-    const bodyImage = document.getElementById("bodyImage");
-    const summaryBox = document.getElementById("summaryBox");
-    const bodyBox = document.getElementById("bodyBox");
-
-    const bookBtnTop = document.getElementById("bookBtnTop");
-    const bookBtnBottom = document.getElementById("bookBtnBottom");
-    const editBtnBottom = document.getElementById("editBtnBottom");
-    const hsopBtnBottom = document.getElementById("hsopBtnBottom");
-
-    function normaliseMemberId(value){
-      const raw = String(value || "").trim().toUpperCase();
-      if (!raw) return "";
-
-      const smMatch = raw.match(/SM\d+/);
-      if (smMatch) return smMatch[0];
-
-      return raw;
-    }
-    
-function getCurrentResidentRef(){
-  try{
-    return String(
-      localStorage.getItem("currentResidentId") ||
-      sessionStorage.getItem("currentResidentId") ||
-      localStorage.getItem("verifiedResidentId") ||
-      sessionStorage.getItem("verifiedResidentId") ||
-      ""
-    ).trim().toUpperCase();
-  }catch(e){
-    return "";
-  }
-}
-
-function getCurrentMemberId(){
-  try{
-    return normaliseMemberId(
-      localStorage.getItem("currentMemberId") ||
-      sessionStorage.getItem("currentMemberId") ||
-      ""
-    );
-  }catch(e){
-    return "";
-  }
-}
- function getViewerMemberId(){
-  return normaliseMemberId(
-    localStorage.getItem("currentMemberId") ||
-    sessionStorage.getItem("currentMemberId") ||
-    ""
-  );
-}   
-  
-function isAdminViewer(){
-  return !!(
-    localStorage.getItem("adminToken") ||
-    sessionStorage.getItem("adminToken")
-  );
-}
-
-function getEventHostMemberId(e){
-  const direct = normaliseMemberId(
-    e.host_member_id ||
-    e.hostMemberId ||
-    e.host_resident_id ||
-    e.hostResidentId ||
-    e.host_ref ||
-    e.hostRef ||
-    e.producer_ref ||
-    e.producerRef ||
-    e.host_member_id ||
-    e.hostMemberId ||
-    e.host_resident_id ||
-    e.hostResidentId ||
-    e.host_ref ||
-    e.hostRef ||
-    e.producer_ref ||
-    e.producerRef ||
-    e.created_by_member_id ||
-    e.owner_member_id 
-  );
-
-  if (direct) return direct;
-
-  const ref = getEventReference(e);
-  const refMatch = String(ref || "").toUpperCase().match(/SM\d+/);
-  return refMatch ? refMatch[0] : "";
-}
-    function viewerCanManageNotice(e){
-      const viewer = getViewerMemberId();
-      const host = getEventHostMemberId(e);
-
-      return isAdminViewer() || (!!viewer && !!host && viewer === host);
+    function getEventId(){
+      const params = new URLSearchParams(window.location.search);
+      return (
+        params.get("event_id") ||
+        params.get("id") ||
+        params.get("ref") ||
+        ""
+      ).trim();
     }
 
-    function setHostControlButtons(e){  
-
-}
-
-    function pick(){
-      for (let i = 0; i < arguments.length; i++){
-        const v = arguments[i];
-        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
-      }
-      return "";
+    function clean(value, fallback = "—"){
+      if(value === null || value === undefined) return fallback;
+      const text = String(value).trim();
+      return text || fallback;
     }
 
-    function firstNumber(){
-      for (let i = 0; i < arguments.length; i++){
-        const v = arguments[i];
-        if (v === undefined || v === null || String(v).trim() === "") continue;
-        const n = Number(v);
-        if (Number.isFinite(n)) return n;
-      }
-      return null;
+    function boolText(value){
+      if(value === true || value === "true" || value === 1 || value === "1") return "Yes";
+      if(value === false || value === "false" || value === 0 || value === "0") return "No";
+      return "—";
     }
 
-    function formatDateOnly(value){
-      if (!value) return "—";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value);
+    function formatDate(value){
+      if(!value) return "—";
+
+      const d = new Date(value + "T00:00:00");
+      if(Number.isNaN(d.getTime())) return clean(value);
+
       return d.toLocaleDateString("en-GB", {
-        weekday:"long",
+        weekday:"short",
         day:"numeric",
-        month:"long",
+        month:"short",
         year:"numeric"
       });
     }
 
-    function formatDateTime(value){
-      if (!value) return "—";
+    function formatShortDate(value){
+      if(!value) return "—";
+
       const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value);
-      return d.toLocaleString("en-GB", {
-        weekday:"short",
+      if(Number.isNaN(d.getTime())) return clean(value);
+
+      return d.toLocaleDateString("en-GB", {
         day:"numeric",
         month:"short",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
+        year:"numeric"
       });
     }
 
-    function formatTimeText(start, end){
-      const s = pick(start);
-      const e = pick(end);
-      return [s, e].filter(Boolean).join(" – ") || "—";
+    function formatTime(value){
+      if(!value) return "";
+      const parts = String(value).split(":");
+      if(parts.length < 2) return value;
+
+      let h = Number(parts[0]);
+      const m = parts[1];
+      if(Number.isNaN(h)) return value;
+
+      const suffix = h >= 12 ? "pm" : "am";
+      h = h % 12 || 12;
+      return `${h}:${m} ${suffix}`;
     }
 
-    function getEventReference(e){
-      return pick(e.reference, e.event_reference, e.event_ref, e.ref, e.event_id, e.id, EVENT_ID);
+    function formatTimeRange(start, end){
+      const s = formatTime(start);
+      const e = formatTime(end);
+
+      if(s && e) return `${s} – ${e}`;
+      if(s) return s;
+      return "—";
     }
 
-    function getNoticeDateValue(e){
-      return pick(e.event_date, e.date, e.start_date, e.start_at, e.starts_at);
+    function money(value){
+      if(value === null || value === undefined || value === "") return "Free / N/A";
+
+      const n = Number(value);
+      if(Number.isNaN(n)) return clean(value);
+      if(n === 0) return "Free";
+
+      return `£${n.toFixed(2)}`;
     }
 
-    function getNoticeTimeText(e){
-      return pick(e.time_range, e.event_time_range, e.display_time) || formatTimeText(e.start_time, e.end_time);
-    }
-
-    function getBookingLabel(e){
-      const original = pick(e.booking_label, e.bookingModeLabel, e.booking_mode_label, e.booking_mode, e.bookingMode);
-      const raw = String(original || "").trim().toLowerCase();
-
-      if (!raw) return "";
-      if (raw === "book" || raw === "booking") return "Book";
-      if (raw === "register interest" || raw === "register_interest" || raw === "interest") return "Register interest";
-      if (raw === "book or register interest" || raw === "book_or_register_interest" || raw === "booking_or_interest") return "Book or register interest";
-
-      return String(original).trim();
-    }
-
-    function getSpacesAvailableValue(e){
-      const n = firstNumber(
-        e?.tracking?.places_remaining,
-        e?.spaces_available,
-        e?.available_spaces,
-        e?.available_places,
-        e?.places_available,
-        e?.places_remaining,
-        e?.remaining_places,
-        e?.capacity_remaining,
-        e?.remaining_capacity
-      );
-      if (n !== null) return n;
-
-      const cap = firstNumber(e?.capacity_total, e?.capacity, e?.max_places, e?.total_places, e?.total_capacity);
-      if (cap !== null) return cap;
-
-      return "";
-    }
-
-    function getMembersOpenValue(e){
-      return pick(e.members_booking_open_at, e.members_open_at, e.booking_open_at, e.booking_opens_at, e.open_at);
-    }
-
-    function getGuestsOpenValue(e){
-      return pick(e.guests_booking_open_at, e.guest_booking_open_at, e.guests_open_at, e.guest_open_at);
-    }
-
-    function getBookingCloseValue(e){
-      return pick(e.booking_close_at, e.booking_closes_at, e.close_at);
-    }
-
-    function getCancelCutoffValue(e){
-      return pick(e.cancellation_cutoff_at, e.cancel_cutoff_at);
-    }
-
-    function getRefundCutoffValue(e){
-      return pick(e.refund_cutoff_at, e.refund_closes_at);
-    }
-
-    function hasBookingBehaviour(e){
-      return !!(
-        getBookingLabel(e) ||
-        getMembersOpenValue(e) ||
-        getGuestsOpenValue(e) ||
-        getBookingCloseValue(e) ||
-        getCancelCutoffValue(e) ||
-        getRefundCutoffValue(e) ||
-        getSpacesAvailableValue(e) !== ""
-      );
-    }
-
-    function getNoticeTypeLabel(e){
-      return hasBookingBehaviour(e) ? "Event Notice" : "Notice";
-    }
-
-    function setBookingButtons(label, e){
-      if (!label){
-        bookBtnTop.classList.add("hidden");
-        bookBtnBottom.classList.add("hidden");
-        return;
-      }
-
-      const actionText =
-        label === "Register interest"
-          ? "Register interest"
-          : label === "Book or register interest"
-            ? "Book or register your interest"
-            : "Book";
-
-      const dateText = formatDateOnly(getNoticeDateValue(e));
-      const timeText = getNoticeTimeText(e);
-
-      const whenText = [dateText !== "—" ? dateText : "", timeText !== "—" ? timeText : ""]
-        .filter(Boolean)
-        .join(" • ");
-
-      const buttonText = whenText
-        ? `${actionText} — ${whenText}`
-        : actionText;
-
-      bookBtnTop.textContent = buttonText;
-      bookBtnBottom.textContent = buttonText;
-
-      bookBtnTop.classList.remove("hidden");
-      bookBtnBottom.classList.remove("hidden");
-    }
-
-    function renderAvailability(e){
-      const spaces = getSpacesAvailableValue(e);
-      if (spaces === ""){
-        availabilityPill.classList.add("hidden");
-        return;
-      }
-
-      const n = Number(spaces);
-      availabilityPill.classList.remove("hidden");
-
-      if (Number.isFinite(n)){
-        if (n <= 0){
-          availabilityPill.textContent = "No spaces currently available";
-          availabilityPill.className = "pill warn";
-          return;
+    function pick(event, names, fallback = ""){
+      for(const name of names){
+        if(event[name] !== undefined && event[name] !== null && String(event[name]).trim() !== ""){
+          return event[name];
         }
-        availabilityPill.textContent = `${n} space${n === 1 ? "" : "s"} currently available`;
-        availabilityPill.className = "pill ok";
-        return;
       }
-
-      availabilityPill.textContent = String(spaces);
-      availabilityPill.className = "pill";
+      return fallback;
     }
 
-    function renderBookingModePill(label){
-      if (!label){
-        bookingModePill.classList.add("hidden");
-        return;
+    function calculateBookingStatus(event){
+      const mode = clean(pick(event, ["booking_mode", "bookingMode"], ""), "");
+      const closeValue = pick(event, ["booking_close", "bookingClose"], "");
+      const capacity = Number(pick(event, ["capacity_total", "capacityTotal"], 0));
+      const remaining = Number(pick(event, ["places_remaining", "placesRemaining", "remaining"], NaN));
+
+      if(mode && mode.toLowerCase() === "none"){
+        return { text:"No booking required", className:"warning" };
       }
-      bookingModePill.textContent = label;
-      bookingModePill.className = label === "Register interest" ? "pill warn" : "pill ok";
-      bookingModePill.classList.remove("hidden");
+
+      if(closeValue){
+        const closeDate = new Date(closeValue);
+        const now = new Date();
+        if(!Number.isNaN(closeDate.getTime()) && now > closeDate){
+          return { text:"Booking closed", className:"closed" };
+        }
+      }
+
+      if(!Number.isNaN(remaining) && capacity > 0 && remaining <= 0){
+        return { text:"Waiting list / full", className:"warning" };
+      }
+
+      return { text:"Booking open", className:"" };
     }
 
-    async function getJson(url, options = {}){
-      const res = await fetch(url, options);
-      const text = await res.text();
-
-      let data = {};
-      try{
-        data = text ? JSON.parse(text) : {};
-      }catch(_){
-        data = { success:false, message:text || `HTTP ${res.status}` };
+    async function fetchJson(url){
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok){
+        throw new Error(`Request failed: ${res.status}`);
       }
-
-      if (!res.ok || data.success === false){
-        throw new Error(data.message || `Request failed (${res.status})`);
-      }
-
-      return data;
-    }
-
-    function renderTitle(e){
-      const graphicUrl = pick(e.title_art_url, e.title_graphic_url, e.graphic_title_url);
-      const noticeTitle = pick(e.notice_title, e.title, "Notice");
-
-      if (graphicUrl){
-        titleText.style.display = "none";
-        titleGraphic.style.display = "block";
-        titleGraphic.src = graphicUrl;
-      }else{
-        titleGraphic.style.display = "none";
-        titleGraphic.removeAttribute("src");
-        titleText.style.display = "block";
-        titleText.textContent = noticeTitle;
-      }
-    }
-
-    function renderEventLine(e){
-  const dateText = formatDateOnly(getNoticeDateValue(e));
-  const timeText = getNoticeTimeText(e);
-  const locationText = pick(e.location, e.venue);
-
-  eventLine.textContent = [dateText, timeText !== "—" ? timeText : "", locationText]
-    .filter(Boolean)
-    .join(" • ");
-}
-    function renderBodyImage(e){
-      const url = pick(e.notice_image_url, e.body_image_url, e.image_url);
-      if (url){
-        bodyImage.style.display = "inline-block";
-        bodyImage.src = url;
-      }else{
-        bodyImage.style.display = "none";
-        bodyImage.removeAttribute("src");
-      }
-    }
-
-    function renderSummaryAndBody(e){
-      const summary = pick(e.notice_summary, e.summary);
-      const body = pick(e.notice_body, e.body, e.notice_text, e.details, e.description);
-
-      if (summary){
-        summaryBox.textContent = summary;
-        summaryBox.classList.remove("hidden");
-      }else{
-        summaryBox.textContent = "";
-        summaryBox.classList.add("hidden");
-      }
-
-      if (body){
-        bodyBox.textContent = body;
-      }else{
-        bodyBox.innerHTML = '<span class="placeholder">No further notice text has been added.</span>';
-      }
-    }
-
-    function renderContactDetails(e){
-      const name = pick(e.host_name, e.contact_name, e.author_name, e.producer_name);
-      const email = pick(e.host_email, e.contact_email, e.author_email, e.producer_email, e.email);
-      const mobile = pick(e.host_mobile, e.contact_mobile, e.author_mobile, e.producer_mobile, e.mobile);
-      const landline = pick(e.host_landline, e.contact_landline, e.landline, e.phone);
-
-      if (!name && !email && !mobile && !landline){
-        contactDetailsBox.classList.add("hidden");
-        return;
-      }
-
-      contactName.textContent = name || "—";
-      contactEmail.textContent = email || "—";
-      contactMobile.textContent = mobile || "—";
-      contactLandline.textContent = landline || "—";
-      contactDetailsBox.classList.remove("hidden");
-    }
-
-    function renderBookingDetails(e){
-      const label = getBookingLabel(e);
-      const show = hasBookingBehaviour(e);
-
-      renderBookingModePill(label);
-      setBookingButtons(label || (show ? "Book" : ""), e);
-      renderAvailability(e);
-
-      if (!show){
-        bookingDetailsBox.classList.add("hidden");
-        return;
-      }
-
-      const spacesValue = getSpacesAvailableValue(e);
-      spacesAvailable.textContent = spacesValue === "" ? "—" : String(spacesValue);
-      membersOpen.textContent = formatDateTime(getMembersOpenValue(e));
-      guestsOpen.textContent = formatDateTime(getGuestsOpenValue(e));
-      bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
-      cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
-      refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
-      
-     const payable =
-       e.payment_required === true ||
-       String(e.payment_required || "").toLowerCase() === "true";
-
-     const price = Number(e.price_member || e.price_guest || 0);
-
-     eventPrice.textContent =
-       payable && price > 0 ? `£${price.toFixed(2)}` 
-       : "Free / no charge";
-
-     paymentInstructions.textContent =
-       payable ? (e.payment_instructions || "Payment details to be advised.")
-       : "No payment required.";
-
-     paymentNote.textContent =
-       payable ? (e.payment_terms || e.refund_note || "—")
-       : "—";
-      
-      bookingDetailsBox.classList.remove("hidden");
-    }
-
-    function renderMeta(e){
-      metaDate.textContent = formatDateOnly(getNoticeDateValue(e));
-      metaTime.textContent = getNoticeTimeText(e);
-      metaLocation.textContent = pick(e.location, e.venue, "—");
-      metaReference.textContent = getEventReference(e);
-      typePill.textContent = getNoticeTypeLabel(e);
+      return await res.json();
     }
 
     async function loadNotice(){
-      if (!EVENT_ID){
-        showMessage("This page was opened without an event reference.", "err");
-        titleText.textContent = "Notice not found";
-        eventLine.textContent = "";
-        bodyBox.innerHTML = '<span class="placeholder">This page needs an event_id in the address.</span>';
+      const eventId = getEventId();
+
+      if(!eventId){
+        $("loading").textContent = "No event reference was supplied.";
         return;
       }
 
-      bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      
-
       try{
-        const data = await getJson(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`);
-        const notice = data.event || data || {};
+        const event = await fetchJson(`${API_BASE}/api/events/${encodeURIComponent(eventId)}`);
 
-        renderTitle(notice);
-        renderEventLine(notice);
-        renderMeta(notice);
-        renderBookingDetails(notice);
-        renderContactDetails(notice);
-        renderBodyImage(notice);
-        renderSummaryAndBody(notice);
-        setHostControlButtons(notice);
+        const title = pick(event, ["title", "event_title", "name"], "Untitled Event");
+        const ref = pick(event, ["event_id", "id", "reference"], eventId);
+        const poster = pick(event, ["poster_url", "posterUrl", "image_url", "imageUrl"], "");
+        const summary = pick(event, ["summary", "short_description", "description"], "");
+        const body = pick(event, ["body", "notice_body", "noticeBody", "details", "full_description"], "");
+
+        $("eventTitle").textContent = clean(title, "Untitled Event");
+        $("eventRef").textContent = clean(ref, eventId);
+
+        $("eventDate").textContent = formatDate(pick(event, ["event_date", "eventDate", "date"], ""));
+        $("eventTime").textContent = formatTimeRange(
+          pick(event, ["start_time", "startTime"], ""),
+          pick(event, ["end_time", "endTime"], "")
+        );
+        $("eventVenue").textContent = clean(pick(event, ["venue", "location"], ""));
+        $("eventHost").textContent = clean(
+          pick(event, ["host_name", "hostName", "host_resident_id", "hostResidentId", "host"], "")
+        );
+
+        const status = calculateBookingStatus(event);
+        $("bookingStatus").textContent = status.text;
+        $("bookingStatus").className = `status ${status.className}`;
+
+        const remaining = pick(event, ["places_remaining", "placesRemaining", "remaining"], "");
+        const capacity = pick(event, ["capacity_total", "capacityTotal"], "");
+
+        if(remaining !== "" && capacity !== ""){
+          $("placesInfo").textContent = `${remaining} of ${capacity} places remaining`;
+        }else if(capacity !== ""){
+          $("placesInfo").textContent = `${capacity} places`;
+        }else{
+          $("placesInfo").textContent = "";
+        }
+
+        if(poster){
+          $("posterImg").src = poster;
+          $("posterWrap").hidden = false;
+        }
+
+        if(summary){
+          $("eventSummary").textContent = summary;
+          $("summarySection").hidden = false;
+        }
+
+        if(body){
+          $("eventBody").textContent = body;
+          $("bodySection").hidden = false;
+        }
+
+        $("membersOpen").textContent = boolText(pick(event, ["members_open", "membersOpen"], ""));
+        $("guestsOpen").textContent = boolText(pick(event, ["guests_open", "guestsOpen"], ""));
+        $("bookingClose").textContent = formatShortDate(pick(event, ["booking_close", "bookingClose"], ""));
+        $("eventPrice").textContent = money(pick(event, ["price", "cost", "member_price", "memberPrice"], ""));
+
+        $("bookBtn").href = `event-booking.html?event_id=${encodeURIComponent(ref)}`;
+
+        $("loading").hidden = true;
+        $("notice").hidden = false;
+
       }catch(err){
-        showMessage(err.message || "Unable to load notice.", "err");
-        titleText.textContent = "Unable to load notice";
-        eventLine.textContent = "";
-        bodyBox.innerHTML = '<span class="placeholder">Please try again.</span>';
+        console.error(err);
+        $("loading").textContent = "Sorry, this notice could not be loaded.";
       }
     }
-
-    printBtn.addEventListener("click", function(){
-      window.print();
-    });
 
     loadNotice();
   </script>

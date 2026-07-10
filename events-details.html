@@ -568,6 +568,12 @@
     const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
     const qs = new URLSearchParams(window.location.search);
+
+    // Accept all historic query parameter names used by Sanctuary Club.
+    // Standard for new development is: event_id.
+    // Retain the alternatives for compatibility with older pages, bookmarks and links.
+    // Different pages have used different query names over time.
+    // Do not reduce this list unless every calling page has been updated.
     const EVENT_ID = (
   qs.get("event_id") ||
   qs.get("eventId") ||

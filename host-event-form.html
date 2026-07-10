@@ -555,6 +555,98 @@
   font-weight:700;
 }
     
+
+.appearance-panel{
+  margin-top:.9rem;
+  padding:.85rem;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+}
+
+.appearance-panel h4{
+  margin:0 0 .55rem;
+  font-size:.98rem;
+  color:#173042;
+}
+
+.appearance-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:.75rem;
+  align-items:end;
+}
+
+.colour-options,
+.toggle-options,
+.align-options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.45rem;
+}
+
+.choice-chip{
+  position:relative;
+}
+
+.choice-chip input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.choice-chip label{
+  margin:0;
+  padding:.48rem .68rem;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#f8fbff;
+  color:var(--ink);
+  cursor:pointer;
+  font-size:.8rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.choice-chip input:checked + label{
+  border-color:#7fafd4;
+  background:#eaf4fc;
+  color:var(--accent);
+  box-shadow:0 0 0 3px rgba(47,122,180,.10);
+}
+
+.colour-dot{
+  display:inline-block;
+  width:.72rem;
+  height:.72rem;
+  border-radius:50%;
+  margin-right:.35rem;
+  vertical-align:-.05rem;
+  border:1px solid rgba(0,0,0,.18);
+}
+
+.notice-mini-preview{
+  margin-top:.8rem;
+  padding:.85rem;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#f8fbff;
+  text-align:center;
+}
+
+.notice-mini-preview-title{
+  margin:0;
+  font-size:1.55rem;
+  line-height:1.15;
+  color:#245d8b;
+}
+
+.notice-mini-preview-note{
+  margin:.35rem 0 0;
+  color:var(--muted);
+  font-size:.8rem;
+}
+
     @media (max-width:1050px){
       .space-grid{
         grid-template-columns:5rem repeat(2,minmax(0,1fr));
@@ -570,7 +662,8 @@
         grid-template-columns:1fr;
       }
 
-      .illustration-choice-grid{
+      .illustration-choice-grid,
+      .appearance-grid{
         grid-template-columns:1fr;
       }
 
@@ -593,9 +686,9 @@
   <div class="wrap">
     <header>
       <div>
-        <h1 id="pageTitle">Create Event Notice</h1>
+        <h1 id="pageTitle">Create Your Event Notice</h1>
         <p class="subtitle" id="pageSubtitle">
-          Create or edit an Event Notice for the Sanctuary Club calendar, list view and notice page.
+          Create an Event Notice for the Sanctuary Club Calendar, Events List and Notice page.
         </p>
       </div>
 
@@ -746,6 +839,72 @@
   <p class="small">
     Tip: use one clear landscape image. It will scale down automatically for screen and A4 printing.
   </p>
+
+
+  <div class="appearance-panel">
+    <h4>Notice Appearance</h4>
+
+    <div class="appearance-grid">
+      <div>
+        <label>Title colour</label>
+        <div class="colour-options">
+          <span class="choice-chip">
+            <input id="titleColourBlue" name="titleColour" type="radio" value="#17314a" checked />
+            <label for="titleColourBlue"><span class="colour-dot" style="background:#17314a"></span>Blue</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleColourGreen" name="titleColour" type="radio" value="#2f6f4e" />
+            <label for="titleColourGreen"><span class="colour-dot" style="background:#2f6f4e"></span>Green</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleColourBurgundy" name="titleColour" type="radio" value="#7b3345" />
+            <label for="titleColourBurgundy"><span class="colour-dot" style="background:#7b3345"></span>Burgundy</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleColourPlum" name="titleColour" type="radio" value="#68436f" />
+            <label for="titleColourPlum"><span class="colour-dot" style="background:#68436f"></span>Plum</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleColourCharcoal" name="titleColour" type="radio" value="#30363b" />
+            <label for="titleColourCharcoal"><span class="colour-dot" style="background:#30363b"></span>Charcoal</label>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label>Title style</label>
+        <div class="toggle-options">
+          <span class="choice-chip">
+            <input id="titleBold" type="checkbox" checked />
+            <label for="titleBold"><strong>B</strong> Bold</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleItalic" type="checkbox" />
+            <label for="titleItalic"><em>I</em> Italic</label>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label>Title alignment</label>
+        <div class="align-options">
+          <span class="choice-chip">
+            <input id="titleAlignCentre" name="titleAlign" type="radio" value="center" checked />
+            <label for="titleAlignCentre">Centre</label>
+          </span>
+          <span class="choice-chip">
+            <input id="titleAlignLeft" name="titleAlign" type="radio" value="left" />
+            <label for="titleAlignLeft">Left</label>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice-mini-preview">
+      <h4 id="miniPreviewTitle" class="notice-mini-preview-title">Your Event Title</h4>
+      <p class="notice-mini-preview-note">A simple preview of the title styling.</p>
+    </div>
+  </div>
 
   <input id="titleArtUrl" type="hidden" />
 </div>
@@ -923,6 +1082,9 @@ const els = {
   createOwnBtn: document.getElementById("createOwnBtn"),
   ownImagePanel: document.getElementById("ownImagePanel"),
   libraryActionRow: document.getElementById("libraryActionRow"),
+  miniPreviewTitle: document.getElementById("miniPreviewTitle"),
+  titleBold: document.getElementById("titleBold"),
+  titleItalic: document.getElementById("titleItalic"),
 
   capacityTotal: document.getElementById("capacityTotal"),
   membersBookingOpenAt: document.getElementById("membersBookingOpenAt"),
@@ -1318,8 +1480,8 @@ function logout(){
 function setEditModeText(){
   if (!editEventId) return;
   document.title = "Edit Event Notice | Sanctuary Club";
-  els.pageTitle.textContent = "Edit Event Notice";
-  els.pageSubtitle.textContent = "Edit this Event Notice. Saving here updates the Notice, Calendar and Events List.";
+  els.pageTitle.textContent = "Edit Your Event Notice";
+  els.pageSubtitle.textContent = "Update this Event Notice. Saving here updates the Notice, Calendar and Events List.";
   els.saveBtn.textContent = "Update Event Notice";
 }
 
@@ -1444,6 +1606,12 @@ async function loadEvent(){
     els.titleArtUrl.value = e.title_art_url || "";
     els.imageUrl.value = e.image_url || e.notice_image_url || "";
 
+    setSelectedRadioValue("titleColour", e.notice_title_colour || e.title_colour, "#17314a");
+    setSelectedRadioValue("titleAlign", e.notice_title_align || e.title_align, "center");
+    els.titleBold.checked = e.notice_title_bold !== false && e.title_bold !== false;
+    els.titleItalic.checked = e.notice_title_italic === true || e.title_italic === true;
+    updateMiniPreview();
+
     if(els.imageUrl.value && !els.imageUrl.value.startsWith("images/")){
       setIllustrationMode("own");
     }else{
@@ -1507,6 +1675,11 @@ function buildPayload(){
 
     title_art_url: cleanText(els.titleArtUrl.value),
     image_url: cleanText(els.imageUrl.value),
+
+    notice_title_colour: getSelectedRadioValue("titleColour", "#17314a"),
+    notice_title_bold: !!els.titleBold.checked,
+    notice_title_italic: !!els.titleItalic.checked,
+    notice_title_align: getSelectedRadioValue("titleAlign", "center"),
 
     host_resident_id: verifiedResidentId,
     host_member_id: verifiedMemberId,
@@ -1615,6 +1788,11 @@ function resetForm(){
   els.description.value = "";
   els.titleArtUrl.value = "";
   els.imageUrl.value = "";
+  setSelectedRadioValue("titleColour", "#17314a", "#17314a");
+  setSelectedRadioValue("titleAlign", "center", "center");
+  els.titleBold.checked = true;
+  els.titleItalic.checked = false;
+  updateMiniPreview();
   renderPosterPreview("", false);
   els.capacityTotal.value = "";
   els.membersBookingOpenAt.value = "";
@@ -1634,6 +1812,32 @@ function togglePin(){
   els.pin.type = isHidden ? "text" : "password";
   els.pinEyeBtn.textContent = isHidden ? "🙈" : "👁";
   els.pinEyeBtn.setAttribute("aria-label", isHidden ? "Hide PIN" : "Show PIN");
+}
+
+
+function getSelectedRadioValue(name, fallback){
+  const selected = document.querySelector(`input[name="${name}"]:checked`);
+  return selected ? selected.value : fallback;
+}
+
+function setSelectedRadioValue(name, value, fallback){
+  const wanted = cleanText(value) || fallback;
+  const radios = Array.from(document.querySelectorAll(`input[name="${name}"]`));
+  const exact = radios.find(r => r.value === wanted);
+  const chosen = exact || radios.find(r => r.value === fallback) || radios[0];
+  if(chosen) chosen.checked = true;
+}
+
+function updateMiniPreview(){
+  const title = cleanText(els.title.value) || "Your Event Title";
+  const colour = getSelectedRadioValue("titleColour", "#17314a");
+  const alignment = getSelectedRadioValue("titleAlign", "center");
+
+  els.miniPreviewTitle.textContent = title;
+  els.miniPreviewTitle.style.color = colour;
+  els.miniPreviewTitle.style.textAlign = alignment;
+  els.miniPreviewTitle.style.fontWeight = els.titleBold.checked ? "800" : "500";
+  els.miniPreviewTitle.style.fontStyle = els.titleItalic.checked ? "italic" : "normal";
 }
 
 function setIllustrationMode(mode){
@@ -1764,6 +1968,10 @@ els.imageUrl.addEventListener("change", function(){
   renderPosterPreview(this.value);
 });
 
+els.title.addEventListener("input", updateMiniPreview);
+document.querySelectorAll('input[name="titleColour"], input[name="titleAlign"], #titleBold, #titleItalic')
+  .forEach(control => control.addEventListener("change", updateMiniPreview));
+
 els.verifyBtn.onclick = verifyHost;
 els.eventForm.onsubmit = saveEvent;
 els.resetBtn.onclick = resetForm;
@@ -1781,6 +1989,7 @@ if(storedResident){
 
 setEditModeText();
 setIllustrationMode("library");
+updateMiniPreview();
 renderPosterPreview("", false);
 lockForm();
 </script>

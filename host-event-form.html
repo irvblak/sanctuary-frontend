@@ -127,10 +127,7 @@
     }
 
     .top-grid{
-      display:grid;
-      grid-template-columns:1fr 2fr;
-      gap:1rem;
-      align-items:stretch;
+      display:block;
       margin-bottom:1rem;
     }
 
@@ -144,6 +141,22 @@
     }
 
     .top-grid .card{ margin-bottom:0; }
+
+    .verified-identity{
+      display:none;
+      margin-top:.65rem;
+      padding:.65rem .8rem;
+      border-radius:14px;
+      background:#ecf9f1;
+      border:1px solid #bfe8d1;
+      color:var(--ok);
+      font-weight:850;
+      line-height:1.35;
+    }
+
+    .verified-identity.show{ display:block; }
+
+    .host-data-store{ display:none; }
 
     h2{
       margin:0 0 .55rem;
@@ -456,6 +469,91 @@
 .poster-preview.empty{
   padding:1rem;
 }
+
+.poster-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.55rem;
+  margin-top:.65rem;
+}
+
+.poster-message{
+  min-height:1.2rem;
+  margin-top:.45rem;
+  color:var(--muted);
+  font-size:.82rem;
+  line-height:1.3;
+}
+
+.poster-message.ok{ color:var(--ok); }
+.poster-message.err{ color:var(--err); }
+
+.illustration-choice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.7rem;
+  margin:.85rem 0;
+}
+
+.illustration-choice{
+  min-height:5.4rem;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  color:var(--ink);
+  box-shadow:none;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+  gap:.25rem;
+  padding:.8rem .9rem;
+}
+
+.illustration-choice strong{
+  color:var(--accent);
+  font-size:1rem;
+}
+
+.illustration-choice span{
+  color:var(--muted);
+  font-size:.84rem;
+  line-height:1.3;
+  font-weight:650;
+}
+
+.illustration-choice:hover,
+.illustration-choice.active{
+  border-color:#8fbce0;
+  background:#f2f8fd;
+  box-shadow:0 8px 18px rgba(36,93,139,.12);
+}
+
+.studio-action-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.55rem;
+  margin:.2rem 0 .7rem;
+}
+
+.own-image-panel{
+  margin:.35rem 0 .7rem;
+  padding:.75rem;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+
+.library-empty{
+  grid-column:1 / -1;
+  padding:1.2rem;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  background:#f8fbff;
+  color:var(--muted);
+  text-align:center;
+  font-weight:700;
+}
     
     @media (max-width:1050px){
       .space-grid{
@@ -469,6 +567,10 @@
       .compact-verify,
       .space-grid,
       .payment-grid{
+        grid-template-columns:1fr;
+      }
+
+      .illustration-choice-grid{
         grid-template-columns:1fr;
       }
 
@@ -527,32 +629,15 @@
         <div id="verifyStatus" class="status"></div>
       </section>
 
-      <section class="card">
-        <h2>Host details shown on notice</h2>
+      <div id="verifiedIdentity" class="verified-identity" aria-live="polite"></div>
 
-        <div class="details-grid">
-          <div>
-            <label for="hostName">Name</label>
-            <input id="hostName" />
-          </div>
-          <div>
-            <label for="hostResidentId">Resident Ref</label>
-            <div id="hostResidentId" class="member-pill"></div>
-          </div>
-          <div>
-            <label for="hostEmail">Email</label>
-            <input id="hostEmail" type="email" />
-          </div>
-          <div>
-            <label for="hostMobile">Mobile</label>
-            <input id="hostMobile" />
-          </div>
-          <div>
-            <label for="hostLandline">Landline</label>
-            <input id="hostLandline" />
-          </div>
-        </div>
-      </section>
+      <div class="host-data-store" aria-hidden="true">
+        <input id="hostName" type="hidden" />
+        <span id="hostResidentId"></span>
+        <input id="hostEmail" type="hidden" />
+        <input id="hostMobile" type="hidden" />
+        <input id="hostLandline" type="hidden" />
+      </div>
     </div>
 
     <form id="eventForm" class="locked" novalidate>
@@ -611,11 +696,23 @@
           </div>
 
   <div class="event-publishing">
-  <h3>Notice Publishing</h3>
+  <h3>Notice Design Studio</h3>
   <p class="small">
-    Add an image if you want the notice to have a poster or banner. The image will appear on screen
-    and on the printed Event Notice.
+    Add an illustration only if it enhances the notice. If none is chosen, no image space is reserved
+    on the published or printed Notice.
   </p>
+
+  <div class="illustration-choice-grid">
+    <button class="illustration-choice" type="button" id="useLibraryBtn">
+      <strong>Use a Sanctuary Illustration</strong>
+      <span>Choose from the Club's approved image library.</span>
+    </button>
+
+    <button class="illustration-choice" type="button" id="createOwnBtn">
+      <strong>Create Your Own</strong>
+      <span>Paste the address of an image already available online.</span>
+    </button>
+  </div>
 
   <div class="poster-preview-box">
     <div id="posterPreview" class="poster-preview empty">
@@ -623,20 +720,31 @@
     </div>
   </div>
 
-  <div class="path-row">
-    <input id="imageUrl" placeholder="Paste image URL or choose from library" />
+  <div id="libraryActionRow" class="studio-action-row">
     <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">
-      Choose Poster
+      Open Sanctuary Library
     </button>
   </div>
 
-  <div class="button-row">
-    <button class="secondary" type="button" id="previewPosterBtn">Preview Poster</button>
-    <button class="secondary" type="button" id="clearPosterBtn">Remove Poster</button>
+  <div id="ownImagePanel" class="own-image-panel hidden">
+    <label for="imageUrl">Online image address</label>
+    <div class="path-row">
+      <input id="imageUrl" placeholder="https://example.com/image.jpg" />
+      <button class="secondary" type="button" id="previewPosterBtn">Use this image</button>
+    </div>
+    <p class="small">
+      The image itself will appear on screen and in the printed Notice. Please use an image you are entitled to publish.
+    </p>
   </div>
 
+  <div class="poster-actions">
+    <button class="secondary" type="button" id="clearPosterBtn">Remove illustration</button>
+  </div>
+
+  <div id="posterMessage" class="poster-message" aria-live="polite"></div>
+
   <p class="small">
-    Tip: use one clear image. It should still look good when printed on A4.
+    Tip: use one clear landscape image. It will scale down automatically for screen and A4 printing.
   </p>
 
   <input id="titleArtUrl" type="hidden" />
@@ -790,6 +898,7 @@ const els = {
   verifyStatus: document.getElementById("verifyStatus"),
   eventForm: document.getElementById("eventForm"),
 
+  verifiedIdentity: document.getElementById("verifiedIdentity"),
   hostName: document.getElementById("hostName"),
   hostResidentId: document.getElementById("hostResidentId"),
   hostEmail: document.getElementById("hostEmail"),
@@ -806,6 +915,14 @@ const els = {
   description: document.getElementById("description"),
   titleArtUrl: document.getElementById("titleArtUrl"),
   imageUrl: document.getElementById("imageUrl"),
+  posterPreview: document.getElementById("posterPreview"),
+  posterMessage: document.getElementById("posterMessage"),
+  previewPosterBtn: document.getElementById("previewPosterBtn"),
+  clearPosterBtn: document.getElementById("clearPosterBtn"),
+  useLibraryBtn: document.getElementById("useLibraryBtn"),
+  createOwnBtn: document.getElementById("createOwnBtn"),
+  ownImagePanel: document.getElementById("ownImagePanel"),
+  libraryActionRow: document.getElementById("libraryActionRow"),
 
   capacityTotal: document.getElementById("capacityTotal"),
   membersBookingOpenAt: document.getElementById("membersBookingOpenAt"),
@@ -1279,8 +1396,12 @@ async function verifyHost(){
     els.hostMobile.value = contact.mobile || "";
     els.hostLandline.value = contact.landline || "";
 
+    els.verifiedIdentity.textContent =
+      `Verified as ${els.hostName.value || normalResidentId} (${normalResidentId})`;
+    els.verifiedIdentity.classList.add("show");
+
     unlockForm();
-    setStatus(els.verifyStatus,"ok",`Verified as ${normalResidentId}.`);
+    setStatus(els.verifyStatus,"ok","Host verified. You can now create or edit the Event Notice.");
 
     if(editEventId){
       await loadEvent();
@@ -1288,6 +1409,8 @@ async function verifyHost(){
 
   }catch(err){
     verified = false;
+    els.verifiedIdentity.textContent = "";
+    els.verifiedIdentity.classList.remove("show");
     lockForm();
     setStatus(els.verifyStatus,"err",err.message || "Verification failed.");
   }finally{
@@ -1320,6 +1443,14 @@ async function loadEvent(){
     els.description.value = e.notice_body || e.body || e.description || "";
     els.titleArtUrl.value = e.title_art_url || "";
     els.imageUrl.value = e.image_url || e.notice_image_url || "";
+
+    if(els.imageUrl.value && !els.imageUrl.value.startsWith("images/")){
+      setIllustrationMode("own");
+    }else{
+      setIllustrationMode("library");
+    }
+
+    renderPosterPreview(els.imageUrl.value, false);
 
     els.capacityTotal.value = e.capacity_total || e.capacity || "";
     els.membersBookingOpenAt.value = e.members_booking_open_at || "";
@@ -1484,6 +1615,7 @@ function resetForm(){
   els.description.value = "";
   els.titleArtUrl.value = "";
   els.imageUrl.value = "";
+  renderPosterPreview("", false);
   els.capacityTotal.value = "";
   els.membersBookingOpenAt.value = "";
   els.guestsBookingOpenAt.value = "";
@@ -1504,29 +1636,91 @@ function togglePin(){
   els.pinEyeBtn.setAttribute("aria-label", isHidden ? "Hide PIN" : "Show PIN");
 }
 
+function setIllustrationMode(mode){
+  const ownMode = mode === "own";
+
+  els.useLibraryBtn.classList.toggle("active", !ownMode);
+  els.createOwnBtn.classList.toggle("active", ownMode);
+  els.ownImagePanel.classList.toggle("hidden", !ownMode);
+  els.libraryActionRow.classList.toggle("hidden", ownMode);
+}
+
+// Sanctuary Club Publishing Library.
+// Add future images to /images/notices/ and list them here.
+// Hosts may select from this controlled library or paste their own image URL.
 const LIB = {
-  title:["images/title-art/social.svg","images/title-art/sport.svg"],
-  poster:["images/banners/social.jpg","images/banners/sport.jpg"]
+  poster:[
+    { label:"General Social", category:"Social", path:"images/banners/social.jpg" },
+    { label:"Sport & Activity", category:"Activity", path:"images/banners/sport.jpg" }
+  ]
 };
+
+function setPosterMessage(text, kind = ""){
+  els.posterMessage.textContent = text || "";
+  els.posterMessage.className = "poster-message" + (kind ? " " + kind : "");
+}
+
+function renderPosterPreview(value, showFeedback = true){
+  const url = cleanText(value);
+
+  els.posterPreview.innerHTML = "";
+  els.posterPreview.classList.remove("empty");
+
+  if(!url){
+    els.posterPreview.textContent = "No illustration selected";
+    els.posterPreview.classList.add("empty");
+    if(showFeedback) setPosterMessage("No illustration will appear on the published notice.");
+    return;
+  }
+
+  const img = document.createElement("img");
+  img.alt = "Selected notice illustration";
+
+  img.onload = function(){
+    els.posterPreview.innerHTML = "";
+    els.posterPreview.appendChild(img);
+    if(showFeedback) setPosterMessage("Illustration ready.", "ok");
+  };
+
+  img.onerror = function(){
+    els.posterPreview.textContent = "Image could not be displayed";
+    els.posterPreview.classList.add("empty");
+    setPosterMessage("Check the image address or choose another library image.", "err");
+  };
+
+  img.src = url;
+}
 
 function openLib(kind,targetId){
   const modal = document.getElementById("libraryModal");
   const grid = document.getElementById("libraryGrid");
+  const title = document.getElementById("libraryTitle");
+  const items = LIB[kind] || [];
+
+  title.textContent = "Choose from Sanctuary Library";
   grid.innerHTML = "";
 
-  (LIB[kind] || []).forEach(p => {
+  if(!items.length){
+    grid.innerHTML = '<div class="library-empty">The Sanctuary Library is ready for images to be added.</div>';
+  }
+
+  items.forEach(item => {
     const b = document.createElement("button");
     b.className = "library-card";
     b.type = "button";
-    b.innerHTML = `<img src="${p}" alt=""><span>${p}</span>`;
+    b.innerHTML = `<img src="${item.path}" alt=""><span><strong>${item.label}</strong><br>${item.category}</span>`;
     b.onclick = () => {
-      document.getElementById(targetId).value = p;
+      document.getElementById(targetId).value = item.path;
       modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      setIllustrationMode("library");
+      renderPosterPreview(item.path);
     };
     grid.appendChild(b);
   });
 
   modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
 }
 
 document.querySelectorAll("[data-library-target]").forEach(btn => {
@@ -1534,8 +1728,41 @@ document.querySelectorAll("[data-library-target]").forEach(btn => {
 });
 
 document.getElementById("libraryCloseBtn").onclick = () => {
-  document.getElementById("libraryModal").classList.remove("show");
+  const modal = document.getElementById("libraryModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
 };
+
+document.getElementById("libraryModal").addEventListener("click", function(event){
+  if(event.target === this){
+    this.classList.remove("show");
+    this.setAttribute("aria-hidden", "true");
+  }
+});
+
+els.useLibraryBtn.onclick = function(){
+  setIllustrationMode("library");
+  openLib("poster", "imageUrl");
+};
+
+els.createOwnBtn.onclick = function(){
+  setIllustrationMode("own");
+  els.imageUrl.focus();
+};
+
+els.previewPosterBtn.onclick = function(){
+  renderPosterPreview(els.imageUrl.value);
+};
+
+els.clearPosterBtn.onclick = function(){
+  els.imageUrl.value = "";
+  setIllustrationMode("library");
+  renderPosterPreview("");
+};
+
+els.imageUrl.addEventListener("change", function(){
+  renderPosterPreview(this.value);
+});
 
 els.verifyBtn.onclick = verifyHost;
 els.eventForm.onsubmit = saveEvent;
@@ -1553,6 +1780,8 @@ if(storedResident){
 }
 
 setEditModeText();
+setIllustrationMode("library");
+renderPosterPreview("", false);
 lockForm();
 </script>
 </body>

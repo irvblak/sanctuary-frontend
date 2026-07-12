@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 64 64"
+     width="64"
+     height="64"
+     role="img"
+     aria-labelledby="title">
+
+  <title id="title">Event Host</title>
+
+  <style>
+    .line{
+      fill:none;
+      stroke:#173B63;
+      stroke-width:2.4;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .ink{
+      fill:#173B63;
+    }
+
+    .blue{
+      fill:#A9CBE8;
+      stroke:#173B63;
+      stroke-width:2.4;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .yellow{
+      fill:#F3CE68;
+      stroke:#173B63;
+      stroke-width:2.4;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .coral{
+      fill:#F28D7F;
+      stroke:#173B63;
+      stroke-width:2.4;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+  </style>
+
+  <path
+    class="line"
+    d="M7 18c16 5.2 34 5.2 50 0"
+  />
+
+  <path
+    class="coral"
+    d="M9.5 19.2l10.5 3-7.2 12.5z"
+  />
+
+  <path
+    class="yellow"
+    d="M22.8 22.2h11.4L28.5 35z"
+  />
+
+  <path
+    class="blue"
+    d="M37 22.1l11.5-2.9 2.8 15.5z"
+  />
+
+  <circle
+    class="ink"
+    cx="7"
+    cy="18"
+    r="1.6"
+  />
+
+  <circle
+    class="ink"
+    cx="57"
+    cy="18"
+    r="1.6"
+  />
+
+</svg>

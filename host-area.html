@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Host Area | Sanctuary Club</title>
+  <title>Your Design Studio | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -18,14 +19,18 @@
       --line:#d7e3ea;
       --accent:#1f6f8b;
       --accent-dark:#175a72;
+      --accent-soft:#e8f4f8;
       --soft:#f3f8fb;
       --good:#216e39;
       --warn:#8a5a00;
       --bad:#9e2b2b;
       --shadow:0 14px 34px rgba(20,60,80,.12);
+      --tile-shadow:0 8px 20px rgba(20,60,80,.08);
     }
 
-    *{ box-sizing:border-box; }
+    *{
+      box-sizing:border-box;
+    }
 
     body{
       margin:0;
@@ -36,96 +41,118 @@
     }
 
     .page{
-      max-width:920px;
+      max-width:1040px;
       margin:0 auto;
-      padding:1.2rem;
+      padding:1.3rem;
     }
 
     .topbar{
       display:flex;
       justify-content:space-between;
-      gap:1rem;
+      gap:1.2rem;
       align-items:flex-start;
-      margin-bottom:1rem;
+      margin-bottom:1.1rem;
+    }
+
+    .brand-kicker{
+      margin:0 0 .25rem;
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
     }
 
     h1{
-      margin:.1rem 0 .25rem;
-      font-size:1.55rem;
-      line-height:1.15;
+      margin:.1rem 0 .35rem;
+      font-size:clamp(1.8rem,4vw,2.35rem);
+      line-height:1.12;
+      color:var(--accent-dark);
     }
 
     h2{
-      margin:.1rem 0 .6rem;
-      font-size:1.2rem;
+      margin:.1rem 0 .65rem;
+      font-size:1.35rem;
       line-height:1.2;
+    }
+
+    h3{
+      margin:0;
+      font-size:1.08rem;
+      line-height:1.25;
     }
 
     .sub{
       color:var(--muted);
-      font-size:.95rem;
-      line-height:1.4;
+      font-size:1rem;
+      line-height:1.55;
+      max-width:720px;
     }
 
     .card{
       background:var(--card);
       border:1px solid var(--line);
-      border-radius:18px;
+      border-radius:20px;
       box-shadow:var(--shadow);
-      padding:1rem;
+      padding:1.2rem;
       margin-bottom:1rem;
     }
 
     .form-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:.75rem;
+      gap:.85rem;
       align-items:end;
     }
 
     label{
       display:block;
-      font-size:.84rem;
+      font-size:.9rem;
       color:var(--muted);
-      font-weight:800;
+      font-weight:850;
     }
 
     input{
       width:100%;
-      margin-top:.25rem;
-      padding:.6rem .65rem;
+      margin-top:.3rem;
+      padding:.72rem .75rem;
       border:1px solid var(--line);
-      border-radius:10px;
+      border-radius:11px;
       font:inherit;
+      font-size:1rem;
       background:#fff;
       color:var(--ink);
+    }
+
+    input:focus{
+      outline:3px solid rgba(31,111,139,.14);
+      border-color:var(--accent);
     }
 
     .pin-wrap{
       position:relative;
       display:block;
-      margin-top:.25rem;
+      margin-top:.3rem;
     }
 
     .pin-wrap input{
       margin-top:0;
-      padding-right:3.2rem;
+      padding-right:4rem;
     }
 
     .eye-btn{
       position:absolute;
-      right:.3rem;
+      right:.35rem;
       top:50%;
       transform:translateY(-50%);
       border:1px solid var(--line);
       background:var(--soft);
       color:var(--accent-dark);
       border-radius:999px;
-      padding:.28rem .5rem;
-      font-size:.78rem;
-      font-weight:800;
+      padding:.34rem .62rem;
+      font-size:.8rem;
+      font-weight:850;
       cursor:pointer;
-      min-width:2.25rem;
     }
 
     .eye-btn:hover{
@@ -135,9 +162,9 @@
 
     .actions{
       display:flex;
-      gap:.5rem;
+      gap:.6rem;
       flex-wrap:wrap;
-      margin-top:.9rem;
+      margin-top:1rem;
     }
 
     .topbar .actions{
@@ -145,16 +172,17 @@
       justify-content:flex-end;
     }
 
-    a.btn, button.btn{
+    a.btn,
+    button.btn{
       appearance:none;
       border:1px solid var(--accent);
       background:var(--accent);
       color:#fff;
       text-decoration:none;
       border-radius:999px;
-      padding:.58rem .95rem;
-      font-size:.9rem;
-      font-weight:800;
+      padding:.68rem 1.05rem;
+      font-size:.95rem;
+      font-weight:850;
       cursor:pointer;
       white-space:nowrap;
       display:inline-flex;
@@ -162,9 +190,21 @@
       justify-content:center;
     }
 
-    a.btn.secondary, button.btn.secondary{
+    a.btn:hover,
+    button.btn:hover{
+      background:var(--accent-dark);
+      border-color:var(--accent-dark);
+    }
+
+    a.btn.secondary,
+    button.btn.secondary{
       background:#fff;
       color:var(--accent);
+    }
+
+    a.btn.secondary:hover,
+    button.btn.secondary:hover{
+      background:var(--accent-soft);
     }
 
     button.btn:disabled{
@@ -173,13 +213,14 @@
     }
 
     .status{
-      margin-top:.8rem;
-      padding:.7rem .8rem;
+      margin-top:.9rem;
+      padding:.78rem .88rem;
       border-radius:12px;
       font-weight:750;
       background:var(--soft);
       color:var(--muted);
       border:1px solid var(--line);
+      line-height:1.4;
     }
 
     .status.good{
@@ -200,64 +241,192 @@
       border-color:#e5b8b8;
     }
 
-    .menu{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:.8rem;
+    .studio-welcome{
+      text-align:center;
+      padding:1.35rem 1rem .7rem;
     }
 
-    .menu a{
-      display:block;
-      text-decoration:none;
-      background:var(--soft);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:1rem;
+    .greeting{
+      margin:0 0 .45rem;
+      font-size:clamp(1.45rem,3vw,2rem);
+      line-height:1.2;
+      color:var(--accent-dark);
+    }
+
+    .welcome-line{
+      margin:0 0 1.2rem;
+      color:var(--muted);
+      font-size:1.08rem;
+      line-height:1.5;
+    }
+
+    .studio-question{
+      margin:0;
+      font-size:clamp(1.5rem,3vw,2.1rem);
+      line-height:1.2;
       color:var(--ink);
     }
 
-    .menu a:hover{
-      border-color:var(--accent);
-      box-shadow:0 8px 20px rgba(20,60,80,.10);
-    }
-
-    .menu strong{
-      display:block;
-      margin-bottom:.2rem;
+    .you-may{
+      margin:.55rem 0 0;
       color:var(--accent-dark);
-      font-size:1rem;
-    }
-
-    .menu span{
-      display:block;
-      color:var(--muted);
-      font-size:.9rem;
-      line-height:1.35;
+      font-size:1.14rem;
+      font-weight:900;
     }
 
     .verified-line{
-      margin:0 0 .85rem;
+      margin:1rem 0 0;
       color:var(--muted);
-      font-size:.92rem;
+      font-size:.91rem;
+    }
+
+    .studio-menu{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1rem;
+      margin-top:1.1rem;
+    }
+
+    .studio-tile{
+      min-height:128px;
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      text-decoration:none;
+      background:linear-gradient(145deg,#ffffff,var(--soft));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:1.15rem;
+      color:var(--ink);
+      box-shadow:var(--tile-shadow);
+      transition:
+        transform .16s ease,
+        border-color .16s ease,
+        box-shadow .16s ease;
+    }
+
+    .studio-tile:hover{
+      transform:translateY(-2px);
+      border-color:var(--accent);
+      box-shadow:0 12px 26px rgba(20,60,80,.13);
+    }
+
+    .studio-tile:focus{
+      outline:3px solid rgba(31,111,139,.18);
+      border-color:var(--accent);
+    }
+
+    .tile-icon{
+      width:58px;
+      height:58px;
+      flex:0 0 58px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--accent-soft);
+      color:var(--accent-dark);
+      font-size:1.85rem;
+    }
+
+    .tile-copy strong{
+      display:block;
+      margin-bottom:.28rem;
+      color:var(--accent-dark);
+      font-size:1.12rem;
+      line-height:1.25;
+    }
+
+    .tile-copy span{
+      display:block;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.45;
+    }
+
+    .future-tile{
+      cursor:default;
+      opacity:.72;
+      box-shadow:none;
+      background:#f7fafc;
+    }
+
+    .future-tile:hover{
+      transform:none;
+      border-color:var(--line);
+      box-shadow:none;
+    }
+
+    .coming-soon{
+      display:inline-block;
+      margin-top:.45rem;
+      padding:.22rem .52rem;
+      border-radius:999px;
+      background:#fff4db;
+      color:var(--warn);
+      border:1px solid #ead49a;
+      font-size:.76rem;
+      font-weight:900;
+    }
+
+    .support-note{
+      margin-top:1.15rem;
+      padding:1rem 1.05rem;
+      border-radius:16px;
+      background:var(--accent-soft);
+      border:1px solid #cfe3eb;
+      color:var(--accent-dark);
+      line-height:1.5;
+    }
+
+    .support-note strong{
+      display:block;
+      margin-bottom:.2rem;
     }
 
     [hidden]{
       display:none !important;
     }
 
-    @media(max-width:700px){
+    @media(max-width:760px){
       .topbar{
         display:block;
       }
 
       .topbar .actions{
         justify-content:flex-start;
-        margin-top:.8rem;
+        margin-top:.9rem;
       }
 
       .form-grid,
-      .menu{
+      .studio-menu{
         grid-template-columns:1fr;
+      }
+
+      .studio-tile{
+        min-height:112px;
+      }
+    }
+
+    @media(max-width:480px){
+      .page{
+        padding:.8rem;
+      }
+
+      .card{
+        border-radius:16px;
+        padding:1rem;
+      }
+
+      .studio-tile{
+        align-items:flex-start;
+      }
+
+      .tile-icon{
+        width:50px;
+        height:50px;
+        flex-basis:50px;
+        font-size:1.55rem;
       }
     }
   </style>
@@ -267,73 +436,105 @@
   <main class="page">
     <div class="topbar">
       <div>
-        <h1>Host Area</h1>
+        <p class="brand-kicker">Sanctuary Club</p>
+        <h1>Your Design Studio</h1>
         <div class="sub">
-          Authorised Hosts and Admin may create event notices, manage their own
-          event notices, book for members and view State of Play reports.
+          Your place to create, manage and publish attractive information
+          for Sanctuary Club.
         </div>
       </div>
 
       <div class="actions">
         <a class="btn secondary" href="members-info.html">Members Hub</a>
-        <button class="btn secondary" id="logoutBtn" type="button">Logout</button>
+        <button class="btn secondary" id="logoutBtn" type="button">
+          Logout
+        </button>
       </div>
     </div>
 
     <section class="card" id="verifyCard">
-      <h2>Host/Admin verification</h2>
+      <h2>Open Your Design Studio</h2>
+
       <p class="sub">
-        Enter your resident reference and property PIN. Host and Admin roles are checked at resident level.
+        Enter your resident reference and property PIN. The Studio will then
+        show the publishing choices available to you.
       </p>
 
       <form id="verifyForm">
         <div class="form-grid">
           <label>
             Resident Ref
-            <input id="residentRefInput" type="text" placeholder="e.g. SM55/1" autocomplete="username" />
+            <input
+              id="residentRefInput"
+              type="text"
+              placeholder="e.g. SM55/1"
+              autocomplete="username"
+            />
           </label>
 
           <label>
             PIN
             <span class="pin-wrap">
-              <input id="pinInput" type="password" inputmode="numeric" placeholder="4 digits" autocomplete="current-password" />
-              <button id="togglePinBtn" class="eye-btn" type="button" aria-label="Show PIN" title="Show PIN">Show</button>
+              <input
+                id="pinInput"
+                type="password"
+                inputmode="numeric"
+                maxlength="4"
+                placeholder="4 digits"
+                autocomplete="current-password"
+              />
+              <button
+                id="togglePinBtn"
+                class="eye-btn"
+                type="button"
+                aria-label="Show PIN"
+                title="Show PIN"
+              >
+                Show
+              </button>
             </span>
           </label>
         </div>
 
         <div class="actions">
-          <button class="btn" id="verifyBtn" type="submit">Access Host Area</button>
+          <button class="btn" id="verifyBtn" type="submit">
+            Enter Your Design Studio
+          </button>
         </div>
 
         <div class="status" id="verifyStatus" hidden></div>
       </form>
     </section>
 
-    <section class="card" id="hostMenuCard" hidden>
-      <h2>Host Area Menu</h2>
-      <p class="verified-line" id="verifiedLine">Verified.</p>
+    <section class="card" id="studioCard" hidden>
+      <div class="studio-welcome">
+        <h2 class="greeting" id="greetingLine">
+          Good morning.
+        </h2>
 
-      <div class="menu">
-        <a href="host-event-form.html">
-          <strong>Create Event Notice</strong>
-          <span>Create a new event notice as an authorised Host or Admin.</span>
-        </a>
+        <p class="welcome-line">
+          Welcome to Your Design Studio.
+        </p>
 
-        <a href="host-my-events.html">
-          <strong>Your Event Notices</strong>
-          <span>Open your event notices for viewing, editing, booking management or records.</span>
-        </a>
+        <h3 class="studio-question">
+          What shall we do today?
+        </h3>
 
-        <a href="host-my-events.html?mode=sop">
-          <strong>State of Play</strong>
-          <span>Select one of your event notices and view the booking register and printable report.</span>
-        </a>
+        <p class="you-may">
+          You may:
+        </p>
 
-        <a href="host-my-events.html?mode=booking">
-          <strong>Book for Member</strong>
-          <span>Select one of your event notices and add, update or cancel a member booking.</span>
-        </a>
+        <p class="verified-line" id="verifiedLine">
+          Verified.
+        </p>
+      </div>
+
+      <div class="studio-menu" id="studioMenu"></div>
+
+      <div class="support-note">
+        <strong>Everything starts here.</strong>
+        Choose what you would like to do. Your Design Studio will guide you
+        through the next steps.
       </div>
     </section>
   </main>
@@ -343,16 +544,102 @@
 
     const els = {
       verifyCard: document.getElementById("verifyCard"),
-      hostMenuCard: document.getElementById("hostMenuCard"),
+      studioCard: document.getElementById("studioCard"),
+      studioMenu: document.getElementById("studioMenu"),
       verifyForm: document.getElementById("verifyForm"),
       verifyBtn: document.getElementById("verifyBtn"),
       verifyStatus: document.getElementById("verifyStatus"),
       residentRefInput: document.getElementById("residentRefInput"),
       pinInput: document.getElementById("pinInput"),
       togglePinBtn: document.getElementById("togglePinBtn"),
+      greetingLine: document.getElementById("greetingLine"),
       verifiedLine: document.getElementById("verifiedLine"),
       logoutBtn: document.getElementById("logoutBtn")
     };
+
+    const TILE_DEFINITIONS = [
+      {
+        id: "create-event",
+        roles: ["host", "admin"],
+        href: "host-event-form.html",
+        icon: "🗓️",
+        title: "Create an Event",
+        description:
+          "Create and publish a new Event Notice for Sanctuary Club."
+      },
+      {
+        id: "my-publications",
+        roles: ["host", "admin"],
+        href: "host-my-events.html",
+        icon: "📂",
+        title: "Open Your Event Notices",
+        description:
+          "View, edit or manage the Event Notices you have already created."
+      },
+      {
+        id: "state-of-play",
+        roles: ["host", "admin"],
+        href: "host-my-events.html?mode=sop",
+        icon: "📊",
+        title: "View State of Play",
+        description:
+          "See bookings, places remaining and the printable Host report."
+      },
+      {
+        id: "manage-bookings",
+        roles: ["host", "admin"],
+        href: "host-my-events.html?mode=booking",
+        icon: "👥",
+        title: "Manage Member Bookings",
+        description:
+          "Add, update or cancel a member booking for one of your Events."
+      },
+
+      /*
+        These tiles establish the future role-led structure.
+
+        They appear only when the relevant role is returned by /auth/login,
+        but are deliberately labelled Coming next until their publishing
+        routes have been built and signed off.
+      */
+
+      {
+        id: "activity-news",
+        roles: ["activity", "activity_organiser"],
+        future: true,
+        icon: "🌿",
+        title: "Send Out News About an Activity",
+        description:
+          "Create news or information for one of your regular Activities."
+      },
+      {
+        id: "community-news",
+        roles: ["news_contributor", "editor", "admin"],
+        future: true,
+        icon: "📰",
+        title: "Write Some Community News",
+        description:
+          "Prepare news, information or an update for Sanctuary Club members."
+      },
+      {
+        id: "panel-publication",
+        roles: ["committee", "panel", "admin"],
+        future: true,
+        icon: "🏛️",
+        title: "Publish a Residents Association Update",
+        description:
+          "Prepare Residents Association news, information or meeting material."
+      },
+      {
+        id: "service-publication",
+        roles: ["service_publisher"],
+        future: true,
+        icon: "🛠️",
+        title: "Tell Members About a Service",
+        description:
+          "Create useful information about a service available to members."
+      }
+    ];
 
     function clean(value){
       return String(value || "").trim();
@@ -361,6 +648,7 @@
     function normaliseResidentRef(value){
       const raw = clean(value).toUpperCase();
       const m = raw.match(/^(SM|SC|SCH)\s*0*(\d+)(?:\s*\/\s*(\d+))?$/);
+
       if (!m) return raw;
 
       if (m[1] === "SCH") return "SCH";
@@ -374,7 +662,9 @@
 
     function memberIdFromResidentRef(ref){
       const raw = clean(ref).toUpperCase();
+
       if (raw === "SCH") return "SCH";
+
       const m = raw.match(/^(SM|SC)\d+/);
       return m ? m[0] : raw.split("/")[0];
     }
@@ -394,14 +684,20 @@
       const text = await res.text();
 
       let data = null;
+
       try{
         data = text ? JSON.parse(text) : null;
       }catch{
-        data = { success:false, message:text || "Invalid server response" };
+        data = {
+          success:false,
+          message:text || "Invalid server response"
+        };
       }
 
       if (!res.ok || data?.success === false){
-        throw new Error(data?.message || `Request failed: ${res.status}`);
+        throw new Error(
+          data?.message || `Request failed: ${res.status}`
+        );
       }
 
       return data || {};
@@ -413,24 +709,162 @@
         data.resident_roles ||
         data.user?.roles ||
         data.member?.roles ||
+        data.resident?.roles ||
         [];
 
       if (!Array.isArray(possible)) return [];
 
-      return possible.map(r => String(r || "").trim().toLowerCase()).filter(Boolean);
+      return possible
+        .map(role => String(role || "").trim().toLowerCase())
+        .filter(Boolean);
     }
 
-    function showHostMenu(residentRef, memberId, roles){
+    function firstWord(value){
+      return clean(value).split(/\s+/)[0] || "";
+    }
+
+    function extractDisplayName(data, residentRef){
+      const possibleNames = [
+        data.preferred_name,
+        data.preferredName,
+        data.first_name,
+        data.firstName,
+        data.name,
+
+        data.user?.preferred_name,
+        data.user?.preferredName,
+        data.user?.first_name,
+        data.user?.firstName,
+        data.user?.name,
+
+        data.member?.preferred_name,
+        data.member?.preferredName,
+        data.member?.first_name,
+        data.member?.firstName,
+        data.member?.name,
+
+        data.resident?.preferred_name,
+        data.resident?.preferredName,
+        data.resident?.first_name,
+        data.resident?.firstName,
+        data.resident?.name
+      ];
+
+      for (const value of possibleNames){
+        const name = firstWord(value);
+
+        if (name){
+          return name;
+        }
+      }
+
+      /*
+        Temporary fallback if /auth/login does not yet return a name.
+
+        Once we confirm the precise YI endpoint, this can be replaced by a
+        direct YI lookup. Until then the page remains usable and does not
+        invent a member's name.
+      */
+      return residentRef;
+    }
+
+    function timeGreeting(){
+      const hour = new Date().getHours();
+
+      if (hour < 12) return "Good morning";
+      if (hour < 18) return "Good afternoon";
+      return "Good evening";
+    }
+
+    function roleAllows(tileRoles, memberRoles){
+      if (memberRoles.includes("admin")) return true;
+
+      return tileRoles.some(role => memberRoles.includes(role));
+    }
+
+    function createTile(tile){
+      if (tile.future){
+        const article = document.createElement("article");
+        article.className = "studio-tile future-tile";
+        article.setAttribute("aria-disabled", "true");
+
+        article.innerHTML = `
+          <div class="tile-icon" aria-hidden="true">${tile.icon}</div>
+          <div class="tile-copy">
+            <strong>${tile.title}</strong>
+            <span>${tile.description}</span>
+            <span class="coming-soon">Coming next</span>
+          </div>
+        `;
+
+        return article;
+      }
+
+      const link = document.createElement("a");
+      link.className = "studio-tile";
+      link.href = tile.href;
+
+      link.innerHTML = `
+        <div class="tile-icon" aria-hidden="true">${tile.icon}</div>
+        <div class="tile-copy">
+          <strong>${tile.title}</strong>
+          <span>${tile.description}</span>
+        </div>
+      `;
+
+      return link;
+    }
+
+    function renderStudioMenu(roles){
+      els.studioMenu.innerHTML = "";
+
+      const availableTiles = TILE_DEFINITIONS.filter(tile =>
+        roleAllows(tile.roles, roles)
+      );
+
+      availableTiles.forEach(tile => {
+        els.studioMenu.appendChild(createTile(tile));
+      });
+
+      if (!availableTiles.length){
+        const message = document.createElement("div");
+        message.className = "status warn";
+        message.textContent =
+          "No Design Studio publishing choices are currently assigned to this member.";
+
+        els.studioMenu.appendChild(message);
+      }
+    }
+
+    function showStudio(data, residentRef, memberId, roles){
+      const displayName = extractDisplayName(data, residentRef);
+      const greeting = timeGreeting();
+
       els.verifyCard.hidden = true;
-      els.hostMenuCard.hidden = false;
+      els.studioCard.hidden = false;
 
-      const label = roles.includes("admin") ? "Admin" : "Host";
-      els.verifiedLine.textContent = `${label} verified: ${residentRef} (${memberId})`;
+      els.greetingLine.textContent =
+        `${greeting}, ${displayName}.`;
+
+      els.verifiedLine.textContent =
+        `Signed in as ${residentRef} (${memberId})`;
+
+      renderStudioMenu(roles);
     }
 
-    function storeHostSession(data, residentRef, memberId, roles){
+    function storeStudioSession(
+      data,
+      residentRef,
+      memberId,
+      roles,
+      displayName
+    ){
       try{
-        const token = data.token || data.authToken || data.access_token || "";
+        const token =
+          data.token ||
+          data.authToken ||
+          data.access_token ||
+          "";
 
         if (token){
           localStorage.setItem("authToken", token);
@@ -449,97 +883,187 @@
         localStorage.setItem("hostAreaVerified", "true");
         sessionStorage.setItem("hostAreaVerified", "true");
 
-        localStorage.setItem("hostAreaRoles", JSON.stringify(roles));
-        sessionStorage.setItem("hostAreaRoles", JSON.stringify(roles));
-      }catch(e){
-        console.warn("Could not store host session.", e);
+        localStorage.setItem(
+          "hostAreaRoles",
+          JSON.stringify(roles)
+        );
+
+        sessionStorage.setItem(
+          "hostAreaRoles",
+          JSON.stringify(roles)
+        );
+
+        localStorage.setItem("currentDisplayName", displayName);
+        sessionStorage.setItem("currentDisplayName", displayName);
+
+      }catch(error){
+        console.warn(
+          "Could not store Design Studio session.",
+          error
+        );
       }
     }
 
-    async function verifyHost(event){
+    function recognisedStudioRole(roles){
+      const recognisedRoles = new Set([
+        "admin",
+        "host",
+        "activity",
+        "activity_organiser",
+        "news_contributor",
+        "editor",
+        "committee",
+        "panel",
+        "service_publisher"
+      ]);
+
+      return roles.some(role => recognisedRoles.has(role));
+    }
+
+    async function verifyStudio(event){
       event.preventDefault();
 
-      const residentRef = normaliseResidentRef(els.residentRefInput.value);
-      const memberId = memberIdFromResidentRef(residentRef);
-      const pin = clean(els.pinInput.value);
+      const residentRef =
+        normaliseResidentRef(els.residentRefInput.value);
+
+      const memberId =
+        memberIdFromResidentRef(residentRef);
+
+      const pin =
+        clean(els.pinInput.value);
 
       if (!residentRef || !memberId || !pin){
-        setStatus("err", "Enter resident reference and PIN.");
+        setStatus(
+          "err",
+          "Enter your resident reference and PIN."
+        );
         return;
       }
 
       try{
         els.verifyBtn.disabled = true;
-        setStatus("warn", "Verifying Host/Admin authority...");
+
+        setStatus(
+          "warn",
+          "Opening Your Design Studio..."
+        );
 
         const data = await apiFetch("/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
             memberId,
-            residentId: residentRef,
+            residentId:residentRef,
             pin
           })
         });
 
         const roles = extractRoles(data);
-        const isHost = roles.includes("host");
-        const isAdmin = roles.includes("admin");
 
-        if (!isHost && !isAdmin){
-          setStatus("err", "This resident is not authorised as a Host or Admin.");
+        if (!recognisedStudioRole(roles)){
+          setStatus(
+            "err",
+            "No Design Studio publishing role is currently assigned to this resident."
+          );
           return;
         }
 
-        storeHostSession(data, residentRef, memberId, roles);
-        setStatus("good", "Verified.");
-        showHostMenu(residentRef, memberId, roles);
+        const displayName =
+          extractDisplayName(data, residentRef);
 
-      }catch(err){
-        console.error(err);
-        setStatus("err", err.message || "Host/Admin verification failed.");
+        storeStudioSession(
+          data,
+          residentRef,
+          memberId,
+          roles,
+          displayName
+        );
+
+        setStatus("good", "Welcome.");
+
+        showStudio(
+          data,
+          residentRef,
+          memberId,
+          roles
+        );
+
+      }catch(error){
+        console.error(error);
+
+        setStatus(
+          "err",
+          error.message ||
+          "Your Design Studio could not be opened."
+        );
+
       }finally{
         els.verifyBtn.disabled = false;
       }
     }
 
     function togglePinVisibility(){
-      const showing = els.pinInput.type === "text";
-      els.pinInput.type = showing ? "password" : "text";
-      els.togglePinBtn.textContent = showing ? "Show" : "Hide";
-      els.togglePinBtn.setAttribute("aria-label", showing ? "Show PIN" : "Hide PIN");
-      els.togglePinBtn.title = showing ? "Show PIN" : "Hide PIN";
+      const showing =
+        els.pinInput.type === "text";
+
+      els.pinInput.type =
+        showing ? "password" : "text";
+
+      els.togglePinBtn.textContent =
+        showing ? "Show" : "Hide";
+
+      els.togglePinBtn.setAttribute(
+        "aria-label",
+        showing ? "Show PIN" : "Hide PIN"
+      );
+
+      els.togglePinBtn.title =
+        showing ? "Show PIN" : "Hide PIN";
+    }
+
+    function clearStoredValue(key){
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
     }
 
     function logout(){
       try{
-        localStorage.removeItem("authToken");
-        sessionStorage.removeItem("authToken");
+        [
+          "authToken",
+          "currentMemberId",
+          "currentResidentId",
+          "verifiedResidentId",
+          "hostAreaVerified",
+          "hostAreaRoles",
+          "currentDisplayName"
+        ].forEach(clearStoredValue);
 
-        localStorage.removeItem("currentMemberId");
-        sessionStorage.removeItem("currentMemberId");
-
-        localStorage.removeItem("currentResidentId");
-        sessionStorage.removeItem("currentResidentId");
-
-        localStorage.removeItem("verifiedResidentId");
-        sessionStorage.removeItem("verifiedResidentId");
-
-        localStorage.removeItem("hostAreaVerified");
-        sessionStorage.removeItem("hostAreaVerified");
-
-        localStorage.removeItem("hostAreaRoles");
-        sessionStorage.removeItem("hostAreaRoles");
-      }catch(e){
-        console.warn("Logout cleanup failed.", e);
+      }catch(error){
+        console.warn(
+          "Logout cleanup failed.",
+          error
+        );
       }
 
       window.location.href = "members-info.html";
     }
 
-    els.togglePinBtn.addEventListener("click", togglePinVisibility);
-    els.logoutBtn.addEventListener("click", logout);
-    els.verifyForm.addEventListener("submit", verifyHost);
+    els.togglePinBtn.addEventListener(
+      "click",
+      togglePinVisibility
+    );
+
+    els.logoutBtn.addEventListener(
+      "click",
+      logout
+    );
+
+    els.verifyForm.addEventListener(
+      "submit",
+      verifyStudio
+    );
   </script>
 </body>
 </html>

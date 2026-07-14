@@ -300,7 +300,7 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       const name=resolvedName||extractDisplayName(data);
       els.verifyCard.hidden=true;
       els.studioCard.hidden=false;
-      els.greetingLine.textContent=name?`${timeGreeting()}, ${name}.`:`${timeGreeting()}.`;
+      els.greetingLine.textContent=name?`${timeGreeting()} ${name}.`:`${timeGreeting()}.`;
       els.verifiedLine.textContent=`Signed in as ${residentRef} (${memberId})`;
       renderMemberRoles(roles);
       renderStudio(roles);

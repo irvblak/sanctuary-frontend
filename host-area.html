@@ -58,19 +58,69 @@
     const API_BASE="https://sanctuary-backend-8iqc.onrender.com";
     const els={verifyCard:document.getElementById("verifyCard"),studioCard:document.getElementById("studioCard"),studioGrid:document.getElementById("studioGrid"),memberRoleStrip:document.getElementById("memberRoleStrip"),existingTools:document.getElementById("existingTools"),verifyForm:document.getElementById("verifyForm"),verifyBtn:document.getElementById("verifyBtn"),verifyStatus:document.getElementById("verifyStatus"),residentRefInput:document.getElementById("residentRefInput"),pinInput:document.getElementById("pinInput"),togglePinBtn:document.getElementById("togglePinBtn"),greetingLine:document.getElementById("greetingLine"),verifiedLine:document.getElementById("verifiedLine"),logoutBtn:document.getElementById("logoutBtn")};
     const STUDIO_CHOICES=[
-      {label:"Create an Event",description:"Create and publish a one-off Event Notice for Sanctuary Club.",icon:"assets/icons/role-event-host.svg",fallback:"E",tooltip:"Event Host",roles:["host"],href:"host-event-form.html",ready:true},
-      {label:"Send out News about one of your Activities",description:"Create news or information for one of your regular Activities.",icon:"assets/icons/role-activity-organiser.svg",fallback:"A",tooltip:"Activity Organiser",roles:["activity_organiser"],ready:false},
-      {label:"Write some Community News",description:"Prepare news or useful information for Sanctuary Club members.",icon:"assets/icons/role-community-news.svg",fallback:"N",tooltip:"Community News",roles:["news_contributor"],ready:false},
-      {label:"Publish a Residents Association Panel Update",description:"Prepare Panel news, information, meetings or consultation material.",icon:"assets/icons/role-residents-association.svg",fallback:"P",tooltip:"Residents Association Panel",roles:["committee","residents_association_panel"],ready:false},
-      {label:"Tell Members about a Service",description:"Publish information about services available to members.",icon:"assets/icons/role-services.svg",fallback:"S",tooltip:"Services",roles:["services"],ready:false}
+      {
+        label:"Create an Event",
+        description:"Create and publish a one-off Event Notice for Sanctuary Club.",
+        icon:"assets/icons/role-event-host.svg",
+        fallback:"E",
+        tooltip:"Event Host",
+        roles:["host"],
+        href:"host-event-form.html",
+        ready:true
+      },
+      {
+        label:"Send out News about one of your Activities",
+        description:"Create news or information for one of your regular Activities.",
+        icon:"assets/icons/role-activity-organiser.svg",
+        fallback:"A",
+        tooltip:"Activity Organiser",
+        roles:["activity_organiser"],
+        ready:false
+      },
+      {
+        label:"Write some Community News",
+        description:"Prepare news or useful information for Sanctuary Club members.",
+        icon:"assets/icons/role-community-news.svg",
+        fallback:"N",
+        tooltip:"Community News",
+        roles:["news_contributor"],
+        ready:false
+      },
+      {
+        label:"Publish a Residents Association Panel Update",
+        description:"Prepare Panel news, information, meetings or consultation material.",
+        icon:"assets/icons/role-residents-association.svg",
+        fallback:"P",
+        tooltip:"Residents Association Panel",
+        roles:["committee","residents_association_panel"],
+        ready:false
+      },
+      {
+        label:"Tell Members about a Service",
+        description:"Publish information about services available to members.",
+        icon:"assets/icons/role-services.svg",
+        fallback:"S",
+        tooltip:"Services",
+        roles:["services"],
+        ready:false
+      },
+      {
+        label:"Administrator Publishing",
+        description:"Open the publishing tools and workspaces available to Sanctuary Club Administrators.",
+        icon:"assets/icons/role-administrator.svg",
+        fallback:"A",
+        tooltip:"Administrator",
+        roles:["admin"],
+        ready:false
+      }
     ];
     const MEMBER_ROLE_ICONS=[
       {roles:["host"],icon:"assets/icons/role-event-host.svg",fallback:"E",tooltip:"Event Host"},
-      {roles:["activity_organiser"],icon:"assets/icons/role-activity-organiser.svg",fallback:"A",tooltip:"Activity Organiser"},
-      {roles:["news_contributor"],icon:"assets/icons/role-community-news.svg",fallback:"N",tooltip:"Community News"},
-      {roles:["committee","residents_association_panel"],icon:"assets/icons/role-residents-association.svg",fallback:"P",tooltip:"Residents Association Panel"},
-      {roles:["services"],icon:"assets/icons/role-services.svg",fallback:"S",tooltip:"Services"},
-      {roles:["website_helper"],icon:"assets/icons/role-website-helper.svg",fallback:"W",tooltip:"Website Helper"},
+      {roles:["activity_organiser","activity-organiser","activity"],icon:"assets/icons/role-activity-organiser.svg",fallback:"A",tooltip:"Activity Organiser"},
+      {roles:["news_contributor","news-contributor","editor"],icon:"assets/icons/role-community-news.svg",fallback:"N",tooltip:"Community News"},
+      {roles:["committee","panel","residents_association_panel","residents-association-panel"],icon:"assets/icons/role-residents-association.svg",fallback:"P",tooltip:"Residents Association Panel"},
+      {roles:["service_publisher","service-publisher","services"],icon:"assets/icons/role-services.svg",fallback:"S",tooltip:"Services"},
+      {roles:["website_helper","website-helper","helper"],icon:"assets/icons/role-website-helper.svg",fallback:"W",tooltip:"Website Helper"},
       {roles:["admin"],icon:"assets/icons/role-administrator.svg",fallback:"A",tooltip:"Administrator"}
     ];
     function clean(v){return String(v||"").trim()}
@@ -79,12 +129,7 @@
     function setStatus(type,text){els.verifyStatus.hidden=false;els.verifyStatus.className=`status ${type||""}`.trim();els.verifyStatus.textContent=text}
     async function apiFetch(path,options){const res=await fetch(`${API_BASE}${path}`,{cache:"no-store",...(options||{})});const text=await res.text();let data;try{data=text?JSON.parse(text):null}catch{data={success:false,message:text||"Invalid server response"}}if(!res.ok||data?.success===false)throw new Error(data?.message||`Request failed: ${res.status}`);return data||{}}
     function normaliseRole(value){
-      const raw=clean(
-        typeof value==="object"
-          ? value?.role||value?.name||value?.key||value?.code||value?.value||""
-          : value
-      ).toLowerCase().replace(/[\s-]+/g,"_");
-
+      const raw=clean(value).toLowerCase().replace(/[\s-]+/g,"_");
       const aliases={
         administrator:"admin",
         event_host:"host",
@@ -102,29 +147,57 @@
         website_helper:"website_helper",
         helper:"website_helper"
       };
-
       return aliases[raw]||raw;
     }
 
+    async function loadMemberProfile(memberId,token){
+      if(!memberId)return null;
+
+      try{
+        return await apiFetch(`/api/member-profile/${encodeURIComponent(memberId)}`,{
+          method:"GET",
+          headers:token?{"Authorization":`Bearer ${token}`}:{}
+        });
+      }catch(err){
+        console.warn("Member profile could not be loaded.",err);
+        return null;
+      }
+    }
+
+    function residentIndexFromRef(residentRef){
+      const match=clean(residentRef).match(/\/(\d+)$/);
+      const index=match?parseInt(match[1],10):1;
+      return Number.isFinite(index)&&index>0?index:1;
+    }
+
+    function selectResidentFromProfile(profileData,residentRef){
+      const member=profileData?.member||profileData?.profile||profileData?.entry||profileData||{};
+      const residents=Array.isArray(member?.residents)?member.residents:[];
+      const resident=residents[residentIndexFromRef(residentRef)-1];
+
+      if(resident&&typeof resident==="object"){
+        return {member,resident};
+      }
+
+      return {member,resident:null};
+    }
+
     function extractRoles(data){
-      const found=new Set();
+      const roles=new Set();
 
       function add(source){
         if(!source)return;
-
         if(Array.isArray(source)){
           source.forEach(add);
           return;
         }
-
         if(typeof source==="object"){
-          const direct=normaliseRole(source);
-          if(direct)found.add(direct);
-
+          const direct=normaliseRole(source.role||source.name||source.key||source.code||"");
+          if(direct)roles.add(direct);
           Object.entries(source).forEach(([key,value])=>{
             if(value===true||value===1||value==="true"){
               const role=normaliseRole(key);
-              if(role)found.add(role);
+              if(role)roles.add(role);
             }
           });
           return;
@@ -134,7 +207,7 @@
           .split(/[,;|]/)
           .map(normaliseRole)
           .filter(Boolean)
-          .forEach(role=>found.add(role));
+          .forEach(role=>roles.add(role));
       }
 
       [
@@ -144,45 +217,19 @@
         data?.residentRoles,
         data?.assigned_roles,
         data?.assignedRoles,
-        data?.authorities,
-        data?.permissions,
-        data?.user?.roles,
-        data?.user?.role,
         data?.member?.roles,
         data?.member?.role,
         data?.resident?.roles,
         data?.resident?.role,
+        data?.user?.roles,
+        data?.user?.role,
         data?.profile?.roles,
-        data?.profile?.role,
-        data?.contact?.roles,
-        data?.contact?.role
+        data?.profile?.role
       ].forEach(add);
 
-      return [...found];
+      return [...roles];
     }
     function firstWord(v){return clean(v).split(/\s+/)[0]||""}
-    function storedNameCandidates(){
-      const keys=[
-        "currentDisplayName",
-        "preferredName",
-        "preferred_name",
-        "firstName",
-        "first_name",
-        "residentName",
-        "resident_name",
-        "memberName",
-        "member_name",
-        "currentResidentName"
-      ];
-
-      const values=[];
-      keys.forEach(key=>{
-        values.push(sessionStorage.getItem(key));
-        values.push(localStorage.getItem(key));
-      });
-      return values;
-    }
-
     function extractDisplayName(data){
       const candidates=[
         data?.preferred_name,
@@ -192,31 +239,6 @@
         data?.display_name,
         data?.displayName,
         data?.name,
-
-        data?.profile?.preferred_name,
-        data?.profile?.preferredName,
-        data?.profile?.first_name,
-        data?.profile?.firstName,
-        data?.profile?.display_name,
-        data?.profile?.displayName,
-        data?.profile?.name,
-
-        data?.contact?.preferred_name,
-        data?.contact?.preferredName,
-        data?.contact?.first_name,
-        data?.contact?.firstName,
-        data?.contact?.display_name,
-        data?.contact?.displayName,
-        data?.contact?.name,
-
-        data?.user?.preferred_name,
-        data?.user?.preferredName,
-        data?.user?.first_name,
-        data?.user?.firstName,
-        data?.user?.display_name,
-        data?.user?.displayName,
-        data?.user?.name,
-
         data?.member?.preferred_name,
         data?.member?.preferredName,
         data?.member?.first_name,
@@ -224,7 +246,6 @@
         data?.member?.display_name,
         data?.member?.displayName,
         data?.member?.name,
-
         data?.resident?.preferred_name,
         data?.resident?.preferredName,
         data?.resident?.first_name,
@@ -232,8 +253,15 @@
         data?.resident?.display_name,
         data?.resident?.displayName,
         data?.resident?.name,
-
-        ...storedNameCandidates()
+        data?.profile?.preferred_name,
+        data?.profile?.preferredName,
+        data?.profile?.first_name,
+        data?.profile?.firstName,
+        data?.profile?.display_name,
+        data?.profile?.displayName,
+        data?.profile?.name,
+        sessionStorage.getItem("currentDisplayName"),
+        localStorage.getItem("currentDisplayName")
       ];
 
       for(const value of candidates){
@@ -268,8 +296,71 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       ]);
       return roles.some(role=>recognised.has(role));
     }
-    function showStudio(data,residentRef,memberId,roles){const name=extractDisplayName(data);els.verifyCard.hidden=true;els.studioCard.hidden=false;els.greetingLine.textContent=name?`${timeGreeting()}, ${name}.`:`${timeGreeting()}.`;els.verifiedLine.textContent=`Signed in as ${residentRef} (${memberId})`;renderMemberRoles(roles);renderStudio(roles)}
-    async function verifyStudio(event){event.preventDefault();const residentRef=normaliseResidentRef(els.residentRefInput.value);const memberId=memberIdFromResidentRef(residentRef);const pin=clean(els.pinInput.value);if(!residentRef||!memberId||!pin){setStatus("err","Enter your resident reference and PIN.");return}try{els.verifyBtn.disabled=true;setStatus("warn","Opening Your Design Studio...");const data=await apiFetch("/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({memberId,residentId:residentRef,pin})});const roles=extractRoles(data);if(!recognisedStudioRole(roles)){setStatus("err","No Design Studio role is currently assigned to this resident.");return}const displayName=extractDisplayName(data);storeSession(data,residentRef,memberId,roles,displayName);setStatus("good","Welcome.");showStudio(data,residentRef,memberId,roles)}catch(e){console.error(e);setStatus("err",e.message||"Your Design Studio could not be opened.")}finally{els.verifyBtn.disabled=false}}
+    function showStudio(data,residentRef,memberId,roles,resolvedName=""){
+      const name=resolvedName||extractDisplayName(data);
+      els.verifyCard.hidden=true;
+      els.studioCard.hidden=false;
+      els.greetingLine.textContent=name?`${timeGreeting()}, ${name}.`:`${timeGreeting()}.`;
+      els.verifiedLine.textContent=`Signed in as ${residentRef} (${memberId})`;
+      renderMemberRoles(roles);
+      renderStudio(roles);
+    }
+    async function verifyStudio(event){
+      event.preventDefault();
+
+      const residentRef=normaliseResidentRef(els.residentRefInput.value);
+      const memberId=memberIdFromResidentRef(residentRef);
+      const pin=clean(els.pinInput.value);
+
+      if(!residentRef||!memberId||!pin){
+        setStatus("err","Enter your resident reference and PIN.");
+        return;
+      }
+
+      try{
+        els.verifyBtn.disabled=true;
+        setStatus("warn","Opening Your Design Studio...");
+
+        const loginData=await apiFetch("/auth/login",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({memberId,residentId:residentRef,pin})
+        });
+
+        const token=loginData.token||loginData.authToken||loginData.access_token||"";
+        const profileData=await loadMemberProfile(memberId,token);
+        const selected=selectResidentFromProfile(profileData,residentRef);
+
+        const roles=[
+          ...new Set([
+            ...extractRoles(loginData),
+            ...extractRoles(selected.resident||{}),
+            ...extractRoles(selected.member||{})
+          ])
+        ];
+
+        if(!recognisedStudioRole(roles)){
+          setStatus("err","No Design Studio role is currently assigned to this resident.");
+          return;
+        }
+
+        const displayName=
+          extractDisplayName(selected.resident||{})||
+          extractDisplayName(selected.member||{})||
+          extractDisplayName(loginData);
+
+        storeSession(loginData,residentRef,memberId,roles,displayName);
+        setStatus("good","Welcome.");
+        showStudio(loginData,residentRef,memberId,roles,displayName);
+
+      }catch(err){
+        console.error(err);
+        setStatus("err",err.message||"Your Design Studio could not be opened.");
+      }finally{
+        els.verifyBtn.disabled=false;
+      }
+    }
+
     function togglePinVisibility(){const showing=els.pinInput.type==="text";els.pinInput.type=showing?"password":"text";els.togglePinBtn.textContent=showing?"Show":"Hide";els.togglePinBtn.setAttribute("aria-label",showing?"Show PIN":"Hide PIN");els.togglePinBtn.title=showing?"Show PIN":"Hide PIN"}
     function logout(){try{["authToken","currentMemberId","currentResidentId","verifiedResidentId","hostAreaVerified","hostAreaRoles","currentDisplayName"].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)})}catch(e){console.warn("Logout cleanup failed.",e)}window.location.href="members-info.html"}
     els.togglePinBtn.addEventListener("click",togglePinVisibility);els.logoutBtn.addEventListener("click",logout);els.verifyForm.addEventListener("submit",verifyStudio);

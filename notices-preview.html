@@ -14,7 +14,7 @@
       --bg2:#f8fbff;
       --card:#ffffff;
       --ink:#1f2937;
-      --muted:#667085;
+      --muted:#526474;
       --line:#dbe6f0;
       --brand:#0f4c81;
       --brand2:#1d6ca8;
@@ -43,6 +43,13 @@
       text-decoration:none;
     }
 
+    button,
+    input,
+    textarea,
+    select{
+      font:inherit;
+    }
+
     .page{
       max-width:1120px;
       margin:0 auto;
@@ -64,12 +71,13 @@
       gap:8px;
       align-items:center;
       color:var(--muted);
-      font-size:0.96rem;
+      font-size:1rem;
+      font-weight:650;
     }
 
     .crumbs a{
       color:var(--brand);
-      font-weight:700;
+      font-weight:800;
     }
 
     .back-link{
@@ -77,8 +85,8 @@
       align-items:center;
       gap:8px;
       color:var(--brand);
-      font-weight:700;
-      font-size:0.95rem;
+      font-weight:800;
+      font-size:1rem;
     }
 
     .hero{
@@ -86,37 +94,44 @@
       border:1px solid rgba(15,76,129,0.12);
       border-radius:24px;
       box-shadow:var(--shadow);
-      padding:22px 18px;
+      padding:24px 22px;
       margin-bottom:18px;
     }
 
     .hero h1{
-      margin:0 0 8px;
-      font-size:clamp(1.8rem, 3vw, 2.35rem);
+      margin:0 0 10px;
+      font-size:clamp(2rem, 3vw, 2.55rem);
       line-height:1.12;
       color:var(--brand);
     }
 
-    .hero p{
+    .hero > p{
       margin:0;
-      max-width:860px;
+      max-width:900px;
       color:#334155;
-      line-height:1.58;
+      font-size:1.08rem;
+      font-weight:650;
+      line-height:1.7;
     }
 
     .retention-note{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:16px;
+      margin-top:18px;
+      padding:18px 20px;
+      border-radius:18px;
       border:1px solid rgba(15,76,129,0.14);
-      background:rgba(255,255,255,0.72);
-      color:#334155;
-      line-height:1.5;
-      font-size:0.95rem;
+      background:rgba(255,255,255,0.82);
+      color:#2f4558;
+      font-size:1.08rem;
+      font-weight:700;
+      line-height:1.65;
     }
 
-    .retention-note strong{
-      color:var(--brand);
+    .retention-note p{
+      margin:0;
+    }
+
+    .retention-note p + p{
+      margin-top:10px;
     }
 
     .toolbar{
@@ -132,17 +147,21 @@
       background:#fff;
       color:var(--brand);
       border-radius:999px;
-      padding:10px 16px;
-      font:inherit;
-      font-weight:800;
+      padding:12px 18px;
+      font-weight:850;
+      font-size:1.03rem;
+      line-height:1.15;
       cursor:pointer;
       box-shadow:0 6px 16px rgba(0,0,0,.05);
       transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
     }
 
-    .cat-btn:hover{
+    .cat-btn:hover,
+    .cat-btn:focus-visible{
       transform:translateY(-1px);
       box-shadow:0 10px 20px rgba(15,76,129,0.10);
+      outline:3px solid rgba(29,108,168,.18);
+      outline-offset:2px;
     }
 
     .cat-btn.active{
@@ -160,7 +179,7 @@
     }
 
     .panel-inner{
-      padding:18px;
+      padding:22px;
     }
 
     .panel-head{
@@ -169,27 +188,32 @@
       justify-content:space-between;
       align-items:flex-start;
       gap:12px;
-      margin-bottom:16px;
+      margin-bottom:18px;
     }
 
     .panel-head h2{
-      margin:0 0 6px;
+      margin:0 0 8px;
       color:var(--brand);
-      font-size:1.25rem;
+      font-size:1.48rem;
+      line-height:1.25;
     }
 
     .panel-sub{
-      color:var(--muted);
-      line-height:1.5;
+      color:#475b6c;
+      font-size:1.07rem;
+      font-weight:650;
+      line-height:1.65;
+      max-width:880px;
     }
 
     .status{
       display:none;
       margin-bottom:14px;
-      padding:12px 14px;
+      padding:14px 16px;
       border-radius:14px;
-      font-weight:700;
-      line-height:1.45;
+      font-weight:750;
+      font-size:1.02rem;
+      line-height:1.5;
     }
 
     .status.show{ display:block; }
@@ -212,7 +236,8 @@
       gap:16px;
     }
 
-    .notice-card{
+    .notice-card,
+    .section-card{
       background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
@@ -236,11 +261,12 @@
       border-bottom:1px solid var(--line);
     }
 
-    .notice-body{
-      padding:16px;
+    .notice-body,
+    .section-card-inner{
+      padding:18px;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:11px;
       flex:1;
     }
 
@@ -254,10 +280,10 @@
     .badge{
       display:inline-flex;
       align-items:center;
-      padding:6px 10px;
+      padding:7px 11px;
       border-radius:999px;
-      font-size:0.8rem;
-      font-weight:800;
+      font-size:0.88rem;
+      font-weight:850;
       letter-spacing:0.01em;
     }
 
@@ -269,46 +295,112 @@
 
     .when{
       color:var(--muted);
-      font-size:0.93rem;
-      line-height:1.45;
+      font-size:1rem;
+      font-weight:650;
+      line-height:1.5;
     }
 
-    .title{
+    .title,
+    .section-title{
       margin:0;
-      font-size:1.1rem;
-      line-height:1.3;
+      font-size:1.22rem;
+      line-height:1.32;
       color:#123b62;
     }
 
-    .summary{
+    .summary,
+    .section-copy{
       margin:0;
       color:#334155;
-      line-height:1.55;
-      font-size:0.97rem;
+      line-height:1.65;
+      font-size:1.04rem;
+      font-weight:620;
       white-space:pre-wrap;
+    }
+
+    .section-copy strong{
+      color:#123b62;
     }
 
     .card-footer{
       margin-top:auto;
-      padding-top:4px;
+      padding-top:6px;
     }
 
-    .open-link{
+    .open-link,
+    .helper-link{
       display:inline-flex;
       align-items:center;
       gap:8px;
       color:var(--brand);
-      font-weight:800;
-      font-size:0.95rem;
+      font-weight:850;
+      font-size:1rem;
+    }
+
+    .welcome-box,
+    .planned-box{
+      padding:22px;
+      border:1px solid #c8d9e7;
+      border-radius:18px;
+      background:linear-gradient(135deg, #fbfdff, #f2f8fd);
+      color:#334155;
+    }
+
+    .welcome-box h3,
+    .planned-box h3{
+      margin:0 0 10px;
+      color:#123b62;
+      font-size:1.32rem;
+      line-height:1.3;
+    }
+
+    .welcome-box p,
+    .planned-box p{
+      margin:0;
+      font-size:1.08rem;
+      font-weight:680;
+      line-height:1.68;
+    }
+
+    .welcome-box p + p,
+    .planned-box p + p{
+      margin-top:11px;
+    }
+
+    .planned-list{
+      margin:14px 0 0;
+      padding-left:1.25rem;
+      color:#334155;
+      font-size:1.05rem;
+      font-weight:680;
+      line-height:1.7;
+    }
+
+    .invitation{
+      margin-top:16px;
+      padding:16px 18px;
+      border-radius:16px;
+      background:#f4f9fd;
+      border:1px solid rgba(15,76,129,.13);
+      color:#24445f;
+      font-size:1.06rem;
+      font-weight:750;
+      line-height:1.62;
+    }
+
+    .invitation strong{
+      color:var(--brand);
     }
 
     .empty{
-      padding:18px;
+      padding:20px;
       border:1px dashed #c8d9e7;
       border-radius:16px;
       background:#fbfdff;
       color:#526474;
-      line-height:1.55;
+      font-size:1.05rem;
+      font-weight:650;
+      line-height:1.6;
     }
 
     @media (max-width:680px){
@@ -318,7 +410,12 @@
 
       .hero,
       .panel-inner{
-        padding:16px 14px;
+        padding:18px 15px;
+      }
+
+      .cat-btn{
+        width:100%;
+        justify-content:center;
       }
     }
   </style>
@@ -338,18 +435,18 @@
     <section class="hero">
       <h1>Club Notices and News</h1>
       <p>
-        Browse event notices, Club information and future News items. Event notices open to the Host Notice page, where members can then continue to booking or register interest.
+        Choose a button below to see what is happening now — and what is planned for each part of Sanctuary Club.
       </p>
 
       <div class="retention-note">
-        <strong>Notice retention:</strong>
-        Events, Activities and Services automatically disappear from public view when they become past-date or expire. Hosts or notice instigators wishing to retain a personal record should print or save a PDF copy of the notice and any associated State of Play report before expiry. Committee and News items are retained for archive.
+        <p>Committee &amp; Panel and News items stay on Sanctuary Club, so you can come back and read them whenever you like.</p>
+        <p>Event, Activity and Service notices disappear once they have finished, but you can always download or save a copy on your computer.</p>
       </div>
     </section>
 
-    <div class="toolbar" id="categoryToolbar">
-      <button class="cat-btn active" type="button" data-category="events">Events</button>
-      <button class="cat-btn" type="button" data-category="committee">Committee</button>
+    <div class="toolbar" id="categoryToolbar" aria-label="Notice categories">
+      <button class="cat-btn" type="button" data-category="events">Events</button>
+      <button class="cat-btn" type="button" data-category="committee">Committee &amp; Panel</button>
       <button class="cat-btn" type="button" data-category="activities">Activities</button>
       <button class="cat-btn" type="button" data-category="services">Services</button>
       <button class="cat-btn" type="button" data-category="news">News</button>
@@ -359,9 +456,9 @@
       <div class="panel-inner">
         <div class="panel-head">
           <div>
-            <h2 id="panelTitle">Event Notices</h2>
+            <h2 id="panelTitle">Welcome</h2>
             <div class="panel-sub" id="panelSub">
-              Current and future event notices drawn directly from live event records.
+              Click one of the buttons above to explore Sanctuary Club notices and see how each section will grow.
             </div>
           </div>
         </div>
@@ -384,28 +481,28 @@
       const content = document.getElementById("content");
       const statusBox = document.getElementById("statusBox");
 
-      let currentCategory = "events";
+      let currentCategory = "";
 
       const CATEGORY_META = {
         events: {
-          title: "Event Notices",
-          sub: "Current and future event notices. Past event notices automatically disappear from this public view."
+          title: "Events",
+          sub: "See the current and forthcoming events being arranged for Sanctuary residents."
         },
         committee: {
-          title: "Committee Notices",
-          sub: "Committee notices are retained for archive."
+          title: "Committee & Panel",
+          sub: "Two separate areas for the Club Committee and the Residents Association Panel."
         },
         activities: {
           title: "Activities",
-          sub: "Current and future activity items. Past activity notices will automatically disappear from this public view."
+          sub: "Regular groups and shared interests that help bring neighbours together."
         },
         services: {
           title: "Services",
-          sub: "Current service-related items. Expired service notices will automatically disappear from this public view."
+          sub: "Useful services available to Sanctuary residents."
         },
         news: {
           title: "News",
-          sub: "Sanctuary News items are retained for archive."
+          sub: "Community news, new ideas and the story of Sanctuary Club as it grows."
         }
       };
 
@@ -415,6 +512,7 @@
           statusBox.textContent = "";
           return;
         }
+
         statusBox.className = `status show ${kind}`;
         statusBox.textContent = message;
       }
@@ -424,7 +522,7 @@
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
+          .replace(/\"/g, "&quot;")
           .replace(/'/g, "&#39;");
       }
 
@@ -512,24 +610,8 @@
         return getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
       }
 
-      function getActivityDate(item){
-        return getField(item, ["activity_date", "event_date", "date", "start_date", "start_datetime", "start"]);
-      }
-
-      function getServiceExpiry(item){
-        return getField(item, ["expiry_date", "expires_at", "valid_until", "end_date"]);
-      }
-
       function isCurrentEvent(ev){
         return isTodayOrFuture(getEventDate(ev));
-      }
-
-      function isCurrentActivity(item){
-        return isTodayOrFuture(getActivityDate(item));
-      }
-
-      function isCurrentService(item){
-        return isTodayOrFuture(getServiceExpiry(item));
       }
 
       function getEventId(ev){
@@ -560,33 +642,34 @@
 
       function sortEvents(events){
         return [...events].sort((a, b) => {
-          const aVal = getEventDate(a);
-          const bVal = getEventDate(b);
-          const aDate = localDateOnly(aVal);
-          const bDate = localDateOnly(bVal);
+          const aDate = localDateOnly(getEventDate(a));
+          const bDate = localDateOnly(getEventDate(b));
           const aTs = aDate ? aDate.getTime() : NaN;
           const bTs = bDate ? bDate.getTime() : NaN;
 
           if(Number.isNaN(aTs) && Number.isNaN(bTs)) return 0;
           if(Number.isNaN(aTs)) return 1;
           if(Number.isNaN(bTs)) return -1;
-
           return aTs - bTs;
         });
       }
 
-      function renderEmpty(message){
-        content.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
+      function renderWelcome(){
+        content.innerHTML = `
+          <div class="welcome-box">
+            <h3>What would you like to see?</h3>
+            <p>Choose a button above to see what is happening now and what is planned for each section.</p>
+            <p>Sanctuary Club will grow as residents add events, activities, services, news and community information.</p>
+            <div class="invitation">
+              <strong>Have an idea or need a hand?</strong><br>
+              A Sanctuary Helper will be pleased to help you get started.
+            </div>
+          </div>
+        `;
       }
 
-      function renderPlaceholder(category){
-        const messages = {
-          committee: "No Committee notices have been published yet.",
-          activities: "No current Activity items have been published yet.",
-          services: "No current Service items have been published yet.",
-          news: "No News items have been published yet."
-        };
-        renderEmpty(messages[category] || "No items are available in this category yet.");
+      function renderEmpty(message){
+        content.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
       }
 
       function renderEvents(events){
@@ -595,7 +678,16 @@
           .filter(isCurrentEvent);
 
         if(!usable.length){
-          renderEmpty("There are no current or future event notices to show at the moment.");
+          content.innerHTML = `
+            <div class="planned-box">
+              <h3>Events will appear here</h3>
+              <p>When residents arrange lunches, quizzes, talks, trips or other one-off occasions, their notices will appear in this section.</p>
+              <div class="invitation">
+                <strong>Thinking of organising something?</strong><br>
+                A Sanctuary Helper will be pleased to help you turn your idea into an event notice.
+              </div>
+            </div>
+          `;
           return;
         }
 
@@ -605,7 +697,7 @@
               const eventId = getEventId(ev);
               const title = getTitle(ev);
               const summary = truncate(
-                getSummary(ev) || stripHtml(getBody(ev)) || "Open the Host Notice for full details.",
+                getSummary(ev) || stripHtml(getBody(ev)) || "Open the Event Notice for full details.",
                 220
               );
               const media = getMedia(ev);
@@ -628,19 +720,105 @@
                       </div>
                     ` : ""}
 
-                    <h3 class="title">
-                      <a href="${href}">${escapeHtml(title)}</a>
-                    </h3>
-
+                    <h3 class="title"><a href="${href}">${escapeHtml(title)}</a></h3>
                     <p class="summary">${escapeHtml(summary)}</p>
 
                     <div class="card-footer">
-                      <a class="open-link" href="${href}">Open Host Notice →</a>
+                      <a class="open-link" href="${href}">Open Event Notice →</a>
                     </div>
                   </div>
                 </article>
               `;
             }).join("")}
+          </div>
+        `;
+      }
+
+      function renderCommitteeAndPanel(){
+        content.innerHTML = `
+          <div class="cards">
+            <article class="section-card">
+              <div class="section-card-inner">
+                <div class="badge-row">
+                  <span class="badge committee">Club Committee</span>
+                </div>
+                <h3 class="section-title">Club Committee</h3>
+                <p class="section-copy">
+                  This will be the place for Club Committee news, meetings, volunteer information, documents and other Club matters.
+                </p>
+                <div class="invitation">
+                  <strong>Could you help bring this area to life?</strong><br>
+                  Speak to a Sanctuary Helper if you would like to find out more.
+                </div>
+              </div>
+            </article>
+
+            <article class="section-card">
+              <div class="section-card-inner">
+                <div class="badge-row">
+                  <span class="badge committee">Residents Association Panel</span>
+                </div>
+                <h3 class="section-title">Residents Association Panel</h3>
+                <p class="section-copy">
+                  This area is being prepared for Residents Association information and will gradually grow as Sanctuary Club develops.
+                </p>
+                <p class="section-copy"><strong>In time, you will be able to find things like:</strong></p>
+                <ul class="planned-list">
+                  <li>Meetings with Sanctuary Management</li>
+                  <li>Community Meetings and the AGM</li>
+                  <li>Consultations and elections</li>
+                  <li>News from the Panel</li>
+                  <li>Important documents and earlier information</li>
+                </ul>
+                <p class="section-copy"><strong>We are looking forward to sharing it with you. Watch this space…</strong></p>
+                <div class="invitation">
+                  <strong>Would you like to help pick up the baton?</strong><br>
+                  A Sanctuary Helper will be pleased to help you make a start.
+                </div>
+              </div>
+            </article>
+          </div>
+        `;
+      }
+
+      function renderActivities(){
+        content.innerHTML = `
+          <div class="planned-box">
+            <h3>Activities are the regular things we enjoy together</h3>
+            <p>Coffee mornings, Bridge, Book Club, art, walking and many other shared interests can all find a home here.</p>
+            <p>As activity organisers begin using Sanctuary Club, their current notices and updates will appear in this section.</p>
+            <div class="invitation">
+              <strong>Thinking of starting or helping with an activity?</strong><br>
+              A Sanctuary Helper will be pleased to help you get it under way.
+            </div>
+          </div>
+        `;
+      }
+
+      function renderServices(){
+        content.innerHTML = `
+          <div class="planned-box">
+            <h3>Useful services for Sanctuary residents</h3>
+            <p>Details of visiting services, regular providers and other useful local help will appear here as they become available.</p>
+            <p>Service notices will stay visible while they are current and disappear automatically when they expire.</p>
+            <div class="invitation">
+              <strong>Know of a service that could help other residents?</strong><br>
+              Tell a Sanctuary Helper and we will help prepare the notice.
+            </div>
+          </div>
+        `;
+      }
+
+      function renderNews(){
+        content.innerHTML = `
+          <div class="planned-box">
+            <h3>The community noticeboard</h3>
+            <p>Community news, volunteer opportunities, website improvements and stories from around Sanctuary will appear here.</p>
+            <p><strong>Help Shape Sanctuary Club</strong> will also live in this section, so residents can suggest ideas and see how those ideas are helping the Club grow.</p>
+            <div class="invitation">
+              <strong>Have something worth sharing?</strong><br>
+              A Sanctuary Helper will be pleased to help turn your idea into a news item.
+            </div>
           </div>
         `;
       }
@@ -675,10 +853,25 @@
         const meta = CATEGORY_META[category];
         panelTitle.textContent = meta.title;
         panelSub.textContent = meta.sub;
+        setStatus("", "");
 
-        if(category !== "events"){
-          setStatus("", "");
-          renderPlaceholder(category);
+        if(category === "committee"){
+          renderCommitteeAndPanel();
+          return;
+        }
+
+        if(category === "activities"){
+          renderActivities();
+          return;
+        }
+
+        if(category === "services"){
+          renderServices();
+          return;
+        }
+
+        if(category === "news"){
+          renderNews();
           return;
         }
 
@@ -700,12 +893,13 @@
       toolbar.addEventListener("click", (e) => {
         const btn = e.target.closest(".cat-btn");
         if(!btn) return;
+
         const category = btn.dataset.category;
         if(category === currentCategory) return;
         loadCategory(category);
       });
 
-      loadCategory("events");
+      renderWelcome();
     })();
   </script>
 </body>

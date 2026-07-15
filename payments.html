@@ -1,61 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial | Sanctuary Club</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="styles-main.css?v=2">
+  <title>Financial | Sanctuary Club</title>
+
+  <link rel="stylesheet" href="styles-main.css?v=2" />
+  <script src="access.js?v=PIN_GATE_1"></script>
+
+  <style>
+    :root{
+      --page-bg:#f3f6f8;
+      --card-bg:#ffffff;
+      --ink:#263746;
+      --muted:#5d6e7c;
+      --blue:#315f7d;
+      --blue-dark:#234a65;
+      --blue-soft:#eaf3f8;
+      --green:#416d5a;
+      --green-soft:#edf5f0;
+      --gold:#8a6928;
+      --gold-soft:#faf3df;
+      --border:#d7e0e6;
+      --shadow:0 10px 28px rgba(38,55,70,.09);
+      --radius:18px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at top left, rgba(205,225,236,.45), transparent 34rem),
+        var(--page-bg);
+      color:var(--ink);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+      font-size:18px;
+      font-weight:500;
+      line-height:1.65;
+    }
+
+    a{
+      color:inherit;
+    }
+
+    .page{
+      width:min(1100px, calc(100% - 32px));
+      margin:0 auto;
+      padding:24px 0 48px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:.94rem;
+      font-weight:650;
+    }
+
+    .crumbs a{
+      color:var(--blue-dark);
+      text-decoration:none;
+    }
+
+    .crumbs a:hover,
+    .crumbs a:focus-visible{
+      text-decoration:underline;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:9px 15px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      color:var(--blue-dark);
+      text-decoration:none;
+      font-size:.92rem;
+      font-weight:750;
+      box-shadow:0 3px 10px rgba(38,55,70,.06);
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible{
+      border-color:#9fb8c8;
+      background:var(--blue-soft);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding:36px 38px;
+      border:1px solid var(--border);
+      border-radius:24px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.98), rgba(237,246,250,.98));
+      box-shadow:var(--shadow);
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      right:-85px;
+      top:-105px;
+      width:280px;
+      height:280px;
+      border-radius:50%;
+      background:rgba(116,163,190,.13);
+      pointer-events:none;
+    }
+
+    .hero-kicker{
+      margin:0 0 5px;
+      color:var(--green);
+      font-size:.91rem;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .hero h1{
+      position:relative;
+      z-index:1;
+      margin:0;
+      color:var(--blue-dark);
+      font-size:clamp(2rem, 4vw, 3.15rem);
+      line-height:1.12;
+      letter-spacing:-.025em;
+    }
+
+    .hero-intro{
+      position:relative;
+      z-index:1;
+      max-width:850px;
+      margin:18px 0 0;
+      color:#3e5363;
+      font-size:1.12rem;
+      font-weight:600;
+      line-height:1.68;
+    }
+
+    .content-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:22px;
+      margin-top:24px;
+    }
+
+    .card{
+      padding:28px 30px;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:var(--card-bg);
+      box-shadow:var(--shadow);
+    }
+
+    .card h2{
+      margin:0;
+      color:var(--blue-dark);
+      font-size:1.5rem;
+      line-height:1.3;
+    }
+
+    .card p{
+      margin:12px 0 0;
+      color:var(--muted);
+    }
+
+    .feature-list{
+      margin:18px 0 0;
+      padding:0;
+      list-style:none;
+    }
+
+    .feature-list li{
+      position:relative;
+      margin:11px 0;
+      padding-left:28px;
+      color:#405565;
+      font-weight:650;
+    }
+
+    .feature-list li::before{
+      content:"✓";
+      position:absolute;
+      left:0;
+      top:0;
+      color:var(--green);
+      font-weight:900;
+    }
+
+    .planned-card{
+      background:
+        linear-gradient(135deg, var(--green-soft), #f8fbf9);
+      border-color:#cddfd5;
+    }
+
+    .planned-card h2{
+      color:#315d4d;
+    }
+
+    .planned-card p{
+      color:#486357;
+    }
+
+    .status-box{
+      margin-top:20px;
+      padding:18px;
+      border-radius:15px;
+      background:var(--gold-soft);
+      color:#6f5723;
+    }
+
+    .status-box strong{
+      display:block;
+      margin-bottom:5px;
+      color:#644b18;
+      font-size:1.04rem;
+    }
+
+    .coming-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:58px;
+      margin-top:20px;
+      padding:13px 18px;
+      border:1px solid #cfd7dc;
+      border-radius:13px;
+      background:#eef1f3;
+      color:#6d7b85;
+      font:inherit;
+      font-weight:800;
+      cursor:not-allowed;
+      opacity:1;
+    }
+
+    .privacy{
+      margin-top:24px;
+      padding:25px 28px;
+      border:1px solid #cadde8;
+      border-radius:var(--radius);
+      background:var(--blue-soft);
+      box-shadow:var(--shadow);
+    }
+
+    .privacy h2{
+      margin:0;
+      color:#294f67;
+      font-size:1.4rem;
+    }
+
+    .privacy p{
+      margin:10px 0 0;
+      color:#456171;
+    }
+
+    .footer-note{
+      margin-top:26px;
+      padding:18px 22px;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      text-align:center;
+      font-size:.92rem;
+    }
+
+    .footer-note strong{
+      color:var(--blue-dark);
+    }
+
+    @media (max-width:800px){
+      body{
+        font-size:17px;
+      }
+
+      .page{
+        width:min(100% - 22px, 1100px);
+        padding-top:14px;
+      }
+
+      .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:10px;
+      }
+
+      .hero{
+        padding:27px 23px;
+      }
+
+      .content-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:500px){
+      .card,
+      .privacy{
+        padding:22px 20px;
+      }
+    }
+  </style>
 </head>
 
-<body class="subpage">
+<body>
+  <main class="page">
 
-<div class="top-nav">
-    <a href="members-info.html" class="top-nav-home">← Back to Members Hub</a>
-    <a href="#" id="logout-link" class="top-nav-logout">Logout</a>
-</div>
+    <div class="topbar">
+      <div class="crumbs" aria-label="Breadcrumb">
+        <a href="members-info.html">Members Hub</a>
+        <span aria-hidden="true">›</span>
+        <span>Financial</span>
+      </div>
 
-<div class="page-container">
+      <a class="back-link" href="members-info.html">
+        ← Back to Members Hub
+      </a>
+    </div>
 
-    <h1>Financial</h1>
+    <section class="hero">
+      <p class="hero-kicker">Sanctuary Club</p>
 
-    <p>
-        Financial will gradually bring together the services that help members,
-        Hosts and the Treasurer manage Club finances simply, securely and
-        privately.
-    </p>
+      <h1>Financial</h1>
 
-    <p>
-        As Sanctuary Club develops, this area is expected to include:
-    </p>
+      <p class="hero-intro">
+        This area will explore how Sanctuary Club can help members, Hosts and
+        the Treasurer manage Club finances simply, securely and privately.
+      </p>
+    </section>
 
-    <ul>
-        <li>Event payments</li>
-        <li>Payment confirmations and receipts</li>
-        <li>Your personal transaction history</li>
-        <li>Refund information</li>
-        <li>Host financial summaries</li>
-        <li>Treasurer facilities</li>
-        <li>Future online payment services</li>
-    </ul>
+    <section class="content-grid">
 
-    <p>
-        The links and foundations are already being prepared. New facilities
-        will appear here as they become ready.
-    </p>
+      <article class="card">
+        <h2>What is planned?</h2>
 
-    <p>
-        <strong>Watch this space...</strong>
-    </p>
+        <p>
+          As Sanctuary Club develops, we hope this area will gradually bring
+          together services such as:
+        </p>
 
-    <p>
-        <button disabled>Financial Services – Coming Soon</button>
-    </p>
+        <ul class="feature-list">
+          <li>Event payments</li>
+          <li>Payment confirmations and receipts</li>
+          <li>Personal transaction history</li>
+          <li>Refund information</li>
+          <li>Financial information for Hosts</li>
+          <li>Treasurer facilities</li>
+          <li>Secure payment options, where appropriate</li>
+        </ul>
+      </article>
 
-</div>
+      <article class="card planned-card">
+        <h2>Exploring the best way forward</h2>
 
-<script src="script.js?v=1017"></script>
-<script src="access.js?v=PIN_GATE_1"></script>
+        <p>
+          There is still important investigative work to do, including deciding
+          how Club funds should be held and which external financial arrangements
+          would be suitable.
+        </p>
 
+        <p>
+          Any facilities introduced here will need to be practical, properly
+          authorised and appropriate for Sanctuary Club.
+        </p>
+
+        <div class="status-box">
+          <strong>Watch this space...</strong>
+          Plans will be introduced gradually as suitable arrangements are
+          investigated and agreed.
+        </div>
+
+        <button class="coming-button" type="button" disabled>
+          Financial Services – Coming Soon
+        </button>
+      </article>
+
+    </section>
+
+    <section class="privacy">
+      <h2>🔒 Financial privacy</h2>
+
+      <p>
+        Personal financial information will be treated as private. Any future
+        services will be designed so that members see only the information
+        appropriate to them, while authorised Hosts and the Treasurer have only
+        the access needed for their responsibilities.
+      </p>
+    </section>
+
+    <div class="footer-note">
+      <strong>Sanctuary Club</strong> is designed to support everyone who helps
+      our community.
+    </div>
+
+  </main>
+
+  <script src="script.js?v=1017"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
   <script src="access.js?v=PIN_GATE_1"></script>
   <style>
     :root{--bg1:#eef6fb;--bg2:#f8fbfd;--card:#fff;--ink:#173042;--muted:#607583;--line:#d7e3ea;--accent:#1f6f8b;--accent-dark:#175a72;--accent-soft:#e9f4f8;--soft:#f3f8fb;--good:#216e39;--warn:#8a5a00;--bad:#9e2b2b;--disabled-bg:#f1f3f4;--disabled-ink:#8a969d;--shadow:0 14px 34px rgba(20,60,80,.12);--tile-shadow:0 8px 20px rgba(20,60,80,.09)}
-    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);min-height:100vh}.page{max-width:1040px;margin:0 auto;padding:1.25rem}.topbar{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem}.eyebrow{margin:0 0 .2rem;color:var(--accent);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}h1{margin:.1rem 0 .3rem;color:var(--accent-dark);font-size:clamp(1.8rem,4vw,2.35rem);line-height:1.12}h2{margin:.1rem 0 .65rem;font-size:1.3rem;line-height:1.2}h3{margin:0;font-size:1.1rem;line-height:1.25}.sub{color:var(--muted);font-size:1rem;font-weight:600;line-height:1.5;max-width:730px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:1.2rem;margin-bottom:1rem}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.topbar .actions{margin-top:0;justify-content:flex-end}a.btn,button.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;text-decoration:none;border-radius:999px;padding:.68rem 1.05rem;font-size:.95rem;font-weight:850;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}a.btn:hover,button.btn:hover{background:var(--accent-dark);border-color:var(--accent-dark)}a.btn.secondary,button.btn.secondary{background:#fff;color:var(--accent)}a.btn.secondary:hover,button.btn.secondary:hover{background:var(--accent-soft)}button.btn:disabled{opacity:.6;cursor:wait}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;align-items:end}label{display:block;color:var(--muted);font-weight:850;font-size:.9rem}input{width:100%;margin-top:.28rem;padding:.7rem .75rem;border:1px solid var(--line);border-radius:11px;font:inherit;font-size:1rem;background:#fff;color:var(--ink)}input:focus{outline:3px solid rgba(31,111,139,.14);border-color:var(--accent)}.pin-wrap{position:relative;display:block;margin-top:.28rem}.pin-wrap input{margin-top:0;padding-right:4rem}.eye-btn{position:absolute;right:.35rem;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:999px;padding:.33rem .62rem;font-size:.8rem;font-weight:850;cursor:pointer}.status{margin-top:.85rem;padding:.76rem .86rem;border-radius:12px;border:1px solid var(--line);background:var(--soft);color:var(--muted);font-weight:750;line-height:1.4}.status.good{background:#e8f5eb;color:var(--good);border-color:#b9dfc2}.status.warn{background:#fff4db;color:var(--warn);border-color:#ead49a}.status.err{background:#fff1f1;color:var(--bad);border-color:#e5b8b8}.welcome{text-align:center;padding:1.25rem .9rem .5rem}.greeting{margin:0 0 .35rem;color:var(--accent-dark);font-size:clamp(1.5rem,3vw,2rem)}.welcome-line{margin:0 0 1rem;color:var(--muted);font-size:1.08rem}.question{margin:0;font-size:clamp(1.5rem,3vw,2.05rem);color:var(--ink)}.you-may{margin:.5rem 0 0;color:var(--accent-dark);font-weight:900;font-size:1.12rem}.verified-line{margin:.9rem 0 0;color:var(--muted);font-size:.9rem}.studio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}.studio-tile{min-height:126px;display:flex;align-items:center;gap:1rem;border-radius:18px;padding:1.1rem;border:1px solid var(--line);background:linear-gradient(145deg,#fff,var(--soft));box-shadow:var(--tile-shadow);text-decoration:none;color:var(--ink);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}.studio-tile.active:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 12px 26px rgba(20,60,80,.13)}.studio-tile.active:focus{outline:3px solid rgba(31,111,139,.18);border-color:var(--accent)}.studio-tile.disabled{background:var(--disabled-bg);color:var(--disabled-ink);box-shadow:none;cursor:default}.tile-mark{width:58px;height:58px;flex:0 0 58px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;font-weight:900;background:var(--accent-soft);color:var(--accent-dark)}.disabled .tile-mark{background:#e1e5e7;color:#929ca2;filter:grayscale(1)}.tile-copy strong{display:block;margin-bottom:.25rem;color:var(--accent-dark);font-size:1.1rem;line-height:1.25}.disabled .tile-copy strong{color:#7f8a90}.tile-copy span{display:block;color:var(--muted);font-size:.95rem;line-height:1.42}.disabled .tile-copy span{color:#8a969d}.availability{margin-top:.45rem;font-size:.8rem!important;font-weight:850;color:#7f8a90!important}.existing-tools{margin-top:1.2rem;padding-top:1.1rem;border-top:1px solid var(--line)}.existing-tools h3{margin-bottom:.7rem;color:var(--accent-dark)}.tool-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.tool-links a{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:14px;padding:.9rem}.tool-links a:hover{border-color:var(--accent);background:var(--soft)}.tool-links strong{display:block;color:var(--accent-dark);margin-bottom:.15rem}.tool-links span{display:block;color:var(--muted);font-size:.9rem;line-height:1.35}.help-note{margin-top:1rem;padding:1rem 1.05rem;border-radius:16px;border:1px solid #cfe3eb;background:var(--accent-soft);color:var(--accent-dark);line-height:1.5}.help-note strong{display:block;margin-bottom:.2rem}.member-role-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem;margin:.9rem 0 .2rem;min-height:34px}.member-role-badge{width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 4px 12px rgba(20,60,80,.08);display:inline-flex;align-items:center;justify-content:center;position:relative}.member-role-badge img{width:25px;height:25px;display:block}.tile-mark img{width:42px;height:42px;display:block}.icon-fallback{display:none;font-size:1.25rem;font-weight:950;color:var(--accent-dark)}.studio-tile.preparing{cursor:pointer}.studio-tile.preparing .availability{color:var(--accent-dark)!important;background:var(--accent-soft);border:1px solid #bfdce7;border-radius:999px;display:inline-block;padding:.24rem .5rem}.studio-tile.active .availability{color:var(--good)!important;background:#e8f5eb;border:1px solid #b9dfc2;border-radius:999px;display:inline-block;padding:.24rem .5rem}.role-tooltip::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:max-content;max-width:220px;padding:.45rem .6rem;border-radius:9px;background:var(--ink);color:#fff;font-size:.75rem;line-height:1.25;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:0;visibility:hidden;pointer-events:none;z-index:30}.role-tooltip:hover::after,.role-tooltip:focus-visible::after{opacity:1;visibility:visible}.role-tooltip:focus-visible{outline:3px solid rgba(31,111,139,.2);outline-offset:3px}.studio-tile button{font:inherit}
+    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);min-height:100vh}.page{max-width:1040px;margin:0 auto;padding:1.25rem}.topbar{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem}.eyebrow{margin:0 0 .2rem;color:var(--accent);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}h1{margin:.1rem 0 .3rem;color:var(--accent-dark);font-size:clamp(1.8rem,4vw,2.35rem);line-height:1.12}h2{margin:.1rem 0 .65rem;font-size:1.3rem;line-height:1.2}h3{margin:0;font-size:1.1rem;line-height:1.25}.sub{color:var(--muted);font-size:1rem;font-weight:600;line-height:1.5;max-width:730px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:1.2rem;margin-bottom:1rem}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.topbar .actions{margin-top:0;justify-content:flex-end}a.btn,button.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;text-decoration:none;border-radius:999px;padding:.68rem 1.05rem;font-size:.95rem;font-weight:850;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}a.btn:hover,button.btn:hover{background:var(--accent-dark);border-color:var(--accent-dark)}a.btn.secondary,button.btn.secondary{background:#fff;color:var(--accent)}a.btn.secondary:hover,button.btn.secondary:hover{background:var(--accent-soft)}button.btn:disabled{opacity:.6;cursor:wait}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;align-items:end}label{display:block;color:var(--muted);font-weight:850;font-size:.9rem}input{width:100%;margin-top:.28rem;padding:.7rem .75rem;border:1px solid var(--line);border-radius:11px;font:inherit;font-size:1rem;background:#fff;color:var(--ink)}input:focus{outline:3px solid rgba(31,111,139,.14);border-color:var(--accent)}.pin-wrap{position:relative;display:block;margin-top:.28rem}.pin-wrap input{margin-top:0;padding-right:4rem}.eye-btn{position:absolute;right:.35rem;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:999px;padding:.33rem .62rem;font-size:.8rem;font-weight:850;cursor:pointer}.status{margin-top:.85rem;padding:.76rem .86rem;border-radius:12px;border:1px solid var(--line);background:var(--soft);color:var(--muted);font-weight:750;line-height:1.4}.status.good{background:#e8f5eb;color:var(--good);border-color:#b9dfc2}.status.warn{background:#fff4db;color:var(--warn);border-color:#ead49a}.status.err{background:#fff1f1;color:var(--bad);border-color:#e5b8b8}.welcome{text-align:center;padding:1.25rem .9rem .5rem}.greeting{margin:0 0 .35rem;color:var(--accent-dark);font-size:clamp(1.5rem,3vw,2rem)}.welcome-line{margin:0 0 1rem;color:var(--muted);font-size:1.08rem}.question{margin:0;font-size:clamp(1.5rem,3vw,2.05rem);color:var(--ink)}.you-may{margin:.5rem 0 0;color:var(--accent-dark);font-weight:900;font-size:1.12rem}.verified-line{margin:.9rem 0 0;color:var(--muted);font-size:.9rem}.studio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}.studio-tile{min-height:126px;display:flex;align-items:center;gap:1rem;border-radius:18px;padding:1.1rem;border:1px solid var(--line);background:linear-gradient(145deg,#fff,var(--soft));box-shadow:var(--tile-shadow);text-decoration:none;color:var(--ink);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}.studio-tile.active:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 12px 26px rgba(20,60,80,.13)}.studio-tile.active:focus{outline:3px solid rgba(31,111,139,.18);border-color:var(--accent)}.studio-tile.disabled{background:var(--disabled-bg);color:var(--disabled-ink);box-shadow:none;cursor:default}.tile-mark{width:58px;height:58px;flex:0 0 58px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;font-weight:900;background:var(--accent-soft);color:var(--accent-dark)}.disabled .tile-mark{background:#e1e5e7;color:#929ca2;filter:grayscale(1)}.tile-copy strong{display:block;margin-bottom:.25rem;color:var(--accent-dark);font-size:1.1rem;line-height:1.25}.disabled .tile-copy strong{color:#7f8a90}.tile-copy span{display:block;color:var(--muted);font-size:.95rem;line-height:1.42}.disabled .tile-copy span{color:#8a969d}.availability{margin-top:.45rem;font-size:.8rem!important;font-weight:850;color:#7f8a90!important}.existing-tools{margin-top:1.2rem;padding-top:1.1rem;border-top:1px solid var(--line)}.existing-tools h3{margin-bottom:.7rem;color:var(--accent-dark)}.tool-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.tool-links a{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:14px;padding:.9rem}.tool-links a:hover{border-color:var(--accent);background:var(--soft)}.tool-links strong{display:block;color:var(--accent-dark);margin-bottom:.15rem}.tool-links span{display:block;color:var(--muted);font-size:.9rem;line-height:1.35}.help-note{margin-top:1rem;padding:1rem 1.05rem;border-radius:16px;border:1px solid #cfe3eb;background:var(--accent-soft);color:var(--accent-dark);line-height:1.5}.help-note strong{display:block;margin-bottom:.2rem}.member-role-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem;margin:.9rem 0 .2rem;min-height:34px}.member-role-badge{width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 4px 12px rgba(20,60,80,.08);display:inline-flex;align-items:center;justify-content:center;position:relative}.member-role-badge .role-icon{width:25px;height:25px}.tile-mark .role-icon{width:42px;height:42px}.role-icon{display:block;overflow:visible;color:currentColor}.icon-fallback{display:none;font-size:1.25rem;font-weight:950;color:var(--accent-dark)}.studio-tile.preparing{cursor:pointer}.studio-tile.preparing .availability{color:var(--accent-dark)!important;background:var(--accent-soft);border:1px solid #bfdce7;border-radius:999px;display:inline-block;padding:.24rem .5rem}.studio-tile.active .availability{color:var(--good)!important;background:#e8f5eb;border:1px solid #b9dfc2;border-radius:999px;display:inline-block;padding:.24rem .5rem}.role-tooltip::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:max-content;max-width:220px;padding:.45rem .6rem;border-radius:9px;background:var(--ink);color:#fff;font-size:.75rem;line-height:1.25;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:0;visibility:hidden;pointer-events:none;z-index:30}.role-tooltip:hover::after,.role-tooltip:focus-visible::after{opacity:1;visibility:visible}.role-tooltip:focus-visible{outline:3px solid rgba(31,111,139,.2);outline-offset:3px}.studio-tile button{font:inherit}
 [hidden]{display:none!important}@media(max-width:760px){.topbar{display:block}.topbar .actions{justify-content:flex-start;margin-top:.85rem}.form-grid,.studio-grid,.tool-links{grid-template-columns:1fr}}@media(max-width:480px){.page{padding:.8rem}.card{padding:1rem;border-radius:16px}.studio-tile{align-items:flex-start;min-height:110px}.tile-mark{width:50px;height:50px;flex-basis:50px}}
   </style>
 </head>
@@ -36,6 +36,7 @@
       <div class="welcome">
         <h2 class="greeting" id="greetingLine">Good morning.</h2>
         <p class="welcome-line">Welcome to Your Design Studio.</p>
+        <p class="sub" style="margin:.2rem auto .7rem;">Choose one of the workspaces below to create or manage information for Sanctuary Club.</p>
         <div class="member-role-strip" id="memberRoleStrip" aria-label="Your assigned community roles"></div>
         <h3 class="question">What shall we do today?</h3>
         <p class="you-may">You may:</p>
@@ -43,7 +44,7 @@
       </div>
       <div class="studio-grid" id="studioGrid"></div>
       <div class="existing-tools" id="existingTools" hidden>
-        <h3>Your existing Event tools</h3>
+        <h3>Your Event Workspace</h3>
         <div class="tool-links">
           <a href="host-my-events.html"><strong>Your Event Notices</strong><span>View or edit Event Notices you have already created.</span></a>
           <a href="host-my-events.html?mode=sop"><strong>State of Play</strong><span>View bookings, places remaining and the printable Host report.</span></a>
@@ -58,70 +59,26 @@
     const API_BASE="https://sanctuary-backend-8iqc.onrender.com";
     const els={verifyCard:document.getElementById("verifyCard"),studioCard:document.getElementById("studioCard"),studioGrid:document.getElementById("studioGrid"),memberRoleStrip:document.getElementById("memberRoleStrip"),existingTools:document.getElementById("existingTools"),verifyForm:document.getElementById("verifyForm"),verifyBtn:document.getElementById("verifyBtn"),verifyStatus:document.getElementById("verifyStatus"),residentRefInput:document.getElementById("residentRefInput"),pinInput:document.getElementById("pinInput"),togglePinBtn:document.getElementById("togglePinBtn"),greetingLine:document.getElementById("greetingLine"),verifiedLine:document.getElementById("verifiedLine"),logoutBtn:document.getElementById("logoutBtn")};
     const STUDIO_CHOICES=[
-      {
-        label:"Create an Event",
-        description:"Create and publish a one-off Event Notice for Sanctuary Club.",
-        icon:"assets/icons/role-event-host.svg",
-        fallback:"E",
-        tooltip:"Event Host",
-        roles:["host"],
-        href:"host-event-form.html",
-        ready:true
-      },
-      {
-        label:"Send out News about one of your Activities",
-        description:"Create news or information for one of your regular Activities.",
-        icon:"assets/icons/role-activity-organiser.svg",
-        fallback:"A",
-        tooltip:"Activity Organiser",
-        roles:["activity_organiser"],
-        ready:false
-      },
-      {
-        label:"Write some Community News",
-        description:"Prepare news or useful information for Sanctuary Club members.",
-        icon:"assets/icons/role-community-news.svg",
-        fallback:"N",
-        tooltip:"Community News",
-        roles:["news_contributor"],
-        ready:false
-      },
-      {
-        label:"Publish a Residents Association Panel Update",
-        description:"Prepare Panel news, information, meetings or consultation material.",
-        icon:"assets/icons/role-residents-association.svg",
-        fallback:"P",
-        tooltip:"Residents Association Panel",
-        roles:["committee","residents_association_panel"],
-        ready:false
-      },
-      {
-        label:"Tell Members about a Service",
-        description:"Publish information about services available to members.",
-        icon:"assets/icons/role-services.svg",
-        fallback:"S",
-        tooltip:"Services",
-        roles:["services"],
-        ready:false
-      },
-      {
-        label:"Administrator Publishing",
-        description:"Open the publishing tools and workspaces available to Sanctuary Club Administrators.",
-        icon:"assets/icons/role-administrator.svg",
-        fallback:"A",
-        tooltip:"Administrator",
-        roles:["admin"],
-        ready:false
-      }
+      {label:"Create an Event",description:"Create and publish a one-off Event Notice for Sanctuary Club.",iconId:"role-host",fallback:"E",tooltip:"Event Host",roles:["host"],href:"host-event-form.html",ready:true},
+      {label:"Organise an Activity",description:"Create news or information for one of your regular Activities.",iconId:"role-activity",fallback:"A",tooltip:"Activity Organiser",roles:["activity_organiser"],ready:false},
+      {label:"Write Community News",description:"Prepare news or useful information for Sanctuary Club members.",iconId:"role-news",fallback:"N",tooltip:"Community News",roles:["news_contributor"],ready:false},
+      {label:"Club Committee",description:"Prepare authorised Club Committee news, information or documents.",iconId:"role-committee",fallback:"C",tooltip:"Club Committee",roles:["committee"],ready:false},
+      {label:"Residents Association Panel",description:"Prepare authorised Panel news, meetings, consultations or documents.",iconId:"role-panel",fallback:"P",tooltip:"Residents Association Panel",roles:["residents_association_panel"],ready:false},
+      {label:"Promote a Service",description:"Publish authorised information about services available to members.",iconId:"role-services",fallback:"S",tooltip:"Services",roles:["services"],ready:false},
+      {label:"Financial Information",description:"Prepare authorised financial information for members, Hosts or the Treasurer.",iconId:"role-treasurer",fallback:"T",tooltip:"Treasurer",roles:["treasurer"],ready:false},
+      {label:"Help Another Member",description:"Open the guidance and support tools available to Website Helpers.",iconId:"role-helper",fallback:"H",tooltip:"Website Helper",roles:["website_helper"],ready:false},
+      {label:"Administrator",description:"Open the publishing and management workspaces available to Sanctuary Club Administrators.",iconId:"role-admin",fallback:"A",tooltip:"Administrator",roles:["admin"],ready:false}
     ];
     const MEMBER_ROLE_ICONS=[
-      {roles:["host"],icon:"assets/icons/role-event-host.svg",fallback:"E",tooltip:"Event Host"},
-      {roles:["activity_organiser","activity-organiser","activity"],icon:"assets/icons/role-activity-organiser.svg",fallback:"A",tooltip:"Activity Organiser"},
-      {roles:["news_contributor","news-contributor","editor"],icon:"assets/icons/role-community-news.svg",fallback:"N",tooltip:"Community News"},
-      {roles:["committee","panel","residents_association_panel","residents-association-panel"],icon:"assets/icons/role-residents-association.svg",fallback:"P",tooltip:"Residents Association Panel"},
-      {roles:["service_publisher","service-publisher","services"],icon:"assets/icons/role-services.svg",fallback:"S",tooltip:"Services"},
-      {roles:["website_helper","website-helper","helper"],icon:"assets/icons/role-website-helper.svg",fallback:"W",tooltip:"Website Helper"},
-      {roles:["admin"],icon:"assets/icons/role-administrator.svg",fallback:"A",tooltip:"Administrator"}
+      {roles:["host"],iconId:"role-host",fallback:"E",tooltip:"Event Host"},
+      {roles:["activity_organiser","activity-organiser","activity"],iconId:"role-activity",fallback:"A",tooltip:"Activity Organiser"},
+      {roles:["news_contributor","news-contributor","editor"],iconId:"role-news",fallback:"N",tooltip:"Community News"},
+      {roles:["committee"],iconId:"role-committee",fallback:"C",tooltip:"Club Committee"},
+      {roles:["panel","residents_association_panel","residents-association-panel"],iconId:"role-panel",fallback:"P",tooltip:"Residents Association Panel"},
+      {roles:["service_publisher","service-publisher","services"],iconId:"role-services",fallback:"S",tooltip:"Services"},
+      {roles:["treasurer"],iconId:"role-treasurer",fallback:"T",tooltip:"Treasurer"},
+      {roles:["website_helper","website-helper","helper"],iconId:"role-helper",fallback:"H",tooltip:"Website Helper"},
+      {roles:["admin"],iconId:"role-admin",fallback:"A",tooltip:"Administrator"}
     ];
     function clean(v){return String(v||"").trim()}
     function normaliseResidentRef(v){const raw=clean(v).toUpperCase();const m=raw.match(/^(SM|SC|SCH)\s*0*(\d+)(?:\s*\/\s*(\d+))?$/);if(!m)return raw;if(m[1]==="SCH")return "SCH";return `${m[1]}${String(parseInt(m[2],10)).padStart(2,"0")}${m[3]?`/${parseInt(m[3],10)}`:""}`}
@@ -273,13 +230,14 @@
     function timeGreeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening"}
     function hasAnyRole(memberRoles,requiredRoles){return requiredRoles.some(r=>memberRoles.includes(r))}
     function isChoiceAssigned(c,roles){return roles.includes("admin")||hasAnyRole(roles,c.roles)}
-    function iconMarkup(c){return `<span class="role-tooltip" tabindex="0" data-tooltip="${c.tooltip}"><img src="${c.icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"><span class="icon-fallback" aria-hidden="true">${c.fallback}</span></span>`}
-    function renderMemberRoles(roles){els.memberRoleStrip.innerHTML="";MEMBER_ROLE_ICONS.forEach(c=>{if(!hasAnyRole(roles,c.roles))return;const b=document.createElement("span");b.className="member-role-badge role-tooltip";b.tabIndex=0;b.dataset.tooltip=c.tooltip;b.innerHTML=`<img src="${c.icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"><span class="icon-fallback" aria-hidden="true">${c.fallback}</span>`;els.memberRoleStrip.appendChild(b)});els.memberRoleStrip.hidden=!els.memberRoleStrip.children.length}
+    function roleSvg(iconId){return `<svg class="role-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${iconId}"></use></svg>`}
+    function iconMarkup(c){return `<span class="role-tooltip" tabindex="0" data-tooltip="${c.tooltip}">${roleSvg(c.iconId)}<span class="icon-fallback" aria-hidden="true">${c.fallback}</span></span>`}
+    function renderMemberRoles(roles){els.memberRoleStrip.innerHTML="";MEMBER_ROLE_ICONS.forEach(c=>{if(!hasAnyRole(roles,c.roles))return;const b=document.createElement("span");b.className="member-role-badge role-tooltip";b.tabIndex=0;b.dataset.tooltip=c.tooltip;b.setAttribute("aria-label",c.tooltip);b.innerHTML=roleSvg(c.iconId);els.memberRoleStrip.appendChild(b)});els.memberRoleStrip.hidden=!els.memberRoleStrip.children.length}
     function createActiveTile(c){const a=document.createElement("a");a.className="studio-tile active";a.href=c.href;a.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Available now</span></div>`;return a}
     function createPreparingTile(c){const b=document.createElement("button");b.type="button";b.className="studio-tile active preparing";b.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Workspace in preparation</span></div>`;b.addEventListener("click",()=>alert(`${c.label}
 
 This role is recognised and available to you. Its Design Studio workspace is currently being prepared.`));return b}
-    function createDisabledTile(c){const x=document.createElement("article");x.className="studio-tile disabled";x.setAttribute("aria-disabled","true");x.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Available when this role is assigned.</span></div>`;return x}
+    function createDisabledTile(c){const x=document.createElement("article");x.className="studio-tile disabled";x.setAttribute("aria-disabled","true");x.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">This workspace will become available if this role is assigned to you.</span></div>`;return x}
     function renderStudio(roles){els.studioGrid.innerHTML="";STUDIO_CHOICES.forEach(c=>{const assigned=isChoiceAssigned(c,roles);els.studioGrid.appendChild(!assigned?createDisabledTile(c):(c.ready&&c.href?createActiveTile(c):createPreparingTile(c)))});els.existingTools.hidden=!roles.includes("host")&&!roles.includes("admin")}
     function storeSession(data,residentRef,memberId,roles,displayName){try{const token=data.token||data.authToken||data.access_token||"";if(token){localStorage.setItem("authToken",token);sessionStorage.setItem("authToken",token)}const values={currentMemberId:memberId,currentResidentId:residentRef,verifiedResidentId:residentRef,hostAreaVerified:"true",hostAreaRoles:JSON.stringify(roles),currentDisplayName:displayName||""};Object.entries(values).forEach(([k,v])=>{localStorage.setItem(k,v);sessionStorage.setItem(k,v)})}catch(e){console.warn("Could not store Design Studio session.",e)}}
     function recognisedStudioRole(roles){
@@ -300,7 +258,7 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       const name=resolvedName||extractDisplayName(data);
       els.verifyCard.hidden=true;
       els.studioCard.hidden=false;
-      els.greetingLine.textContent=name?`${timeGreeting()} ${name}.`:`${timeGreeting()}.`;
+      els.greetingLine.textContent=name?`${timeGreeting()}, ${name}.`:`${timeGreeting()}.`;
       els.verifiedLine.textContent=`Signed in as ${residentRef} (${memberId})`;
       renderMemberRoles(roles);
       renderStudio(roles);

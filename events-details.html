@@ -1055,14 +1055,43 @@ function getEventHostMemberId(e){
 
       const spacesValue = getSpacesAvailableValue(e);
       spacesAvailable.textContent = spacesValue === "" ? "—" : String(spacesValue);
-      membersOpen.textContent = formatDateTime(getMembersOpenValue(e));
-      guestsOpen.textContent = formatDateTime(getGuestsOpenValue(e));
-      bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
-      cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
-      refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
+     membersOpen.textContent = formatDateTime(getMembersOpenValue(e));
+guestsOpen.textContent = formatDateTime(getGuestsOpenValue(e));
+bookingClose.textContent = formatDateTime(getBookingCloseValue(e));
+cancelCutoff.textContent = formatDateTime(getCancelCutoffValue(e));
+refundCutoff.textContent = formatDateTime(getRefundCutoffValue(e));
 
-      bookingDetailsBox.classList.remove("hidden");
-    }
+const price = firstNumber(
+  e.cost_per_place,
+  e.price_per_place,
+  e.unit_price,
+  e.price_member,
+  e.price_guest,
+  e.price,
+  e.cost
+);
+
+eventPrice.textContent =
+  price !== null && price > 0
+    ? `£${price.toFixed(2)} per place`
+    : "No charge";
+
+paymentInstructions.textContent = pick(
+  e.payment_instructions,
+  e.paymentInstructions,
+  "—"
+);
+
+paymentNote.textContent = pick(
+  e.payment_terms,
+  e.payment_note,
+  e.refund_note,
+  e.payment_refund_note,
+  "—"
+);
+
+bookingDetailsBox.classList.remove("hidden");
+} 
 
     function renderMeta(e){
       metaDate.textContent = formatDateOnly(getNoticeDateValue(e));

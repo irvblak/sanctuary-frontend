@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  style="display:none"
+>
+
+  <!-- =========================================================
+       SANCTUARY CLUB — SIGNATURE ICON LIBRARY
+
+       Usage:
+
+       <svg class="role-icon" aria-hidden="true">
+         <use href="assets/icons/icons.svg#role-host"></use>
+       </svg>
+
+       All icons use currentColor, allowing each page to control
+       their colour through ordinary CSS.
+       ========================================================= -->
+
+
+  <!-- EVENT HOST
+       Celebration cone with gentle sparkle
+  -->
+  <symbol id="role-host" viewBox="0 0 64 64">
+    <path
+      d="M17 49L29 18L48 37L17 49Z"
+      fill="currentColor"
+      opacity=".18"
+    />
+    <path
+      d="M17 49L29 18L48 37L17 49Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M23 42L38 27"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M28 46L42 32"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M35 14L36.5 9L38 14L43 15.5L38 17L36.5 22L35 17L30 15.5L35 14Z"
+      fill="currentColor"
+    />
+    <path
+      d="M48 18L49 14.5L50 18L53.5 19L50 20L49 23.5L48 20L44.5 19L48 18Z"
+      fill="currentColor"
+    />
+    <circle cx="49" cy="29" r="2.4" fill="currentColor" />
+    <circle cx="25" cy="12" r="2.1" fill="currentColor" />
+  </symbol>
+
+
+  <!-- ACTIVITY ORGANISER
+       Growing plant / new activity
+  -->
+  <symbol id="role-activity" viewBox="0 0 64 64">
+    <path
+      d="M32 51V27"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3.4"
+      stroke-linecap="round"
+    />
+    <path
+      d="M32 36C24 36 18 31 17 23C25 22 31 26 32 36Z"
+      fill="currentColor"
+      opacity=".2"
+    />
+    <path
+      d="M32 36C24 36 18 31 17 23C25 22 31 26 32 36Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M32 31C33 22 39 17 48 18C47 27 41 32 32 31Z"
+      fill="currentColor"
+      opacity=".2"
+    />
+    <path
+      d="M32 31C33 22 39 17 48 18C47 27 41 32 32 31Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M19 52H45"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3.4"
+      stroke-linecap="round"
+    />
+  </symbol>
+
+
+  <!-- COMMUNITY NEWS
+       Folded community newsletter
+  -->
+  <symbol id="role-news" viewBox="0 0 64 64">
+    <path
+      d="M15 14H45V48H19C16.8 48 15 46.2 15 44V14Z"
+      fill="currentColor"
+      opacity=".14"
+    />
+    <path
+      d="M15 14H45V48H19C16.8 48 15 46.2 15 44V14Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M45 22H51V44C51 46.2 49.2 48 47 48H43"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <rect
+      x="21"
+      y="21"
+      width="10"
+      height="9"
+      rx="1.5"
+      fill="currentColor"
+      opacity=".28"
+    />
+    <path
+      d="M35 22H40M35 27H40M21 35H40M21 40H40"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linecap="round"
+    />
+  </symbol>
+
+
+  <!-- RESIDENTS ASSOCIATION PANEL
+       Two equal resident silhouettes
+  -->
+  <symbol id="role-panel" viewBox="0 0 64 64">
+    <circle
+      cx="24"
+      cy="23"
+      r="7"
+      fill="currentColor"
+      opacity=".22"
+    />
+    <circle
+      cx="40"
+      cy="23"
+      r="7"
+      fill="currentColor"
+      opacity=".22"
+    />
+    <circle
+      cx="24"
+      cy="23"
+      r="7"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+    <circle
+      cx="40"
+      cy="23"
+      r="7"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+    <path
+      d="M11 49C12 39 17 34 24 34C31 34 36 39 37 49"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M27 49C28 39 33 34 40 34C47 34 52 39 53 49"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+  </symbol>
+
+
+  <!-- SERVICES
+       Open hands supporting a heart
+  -->
+  <symbol id="role-services" viewBox="0 0 64 64">
+    <path
+      d="M32 31C25 25 20 21 20 15.5C20 11.9 22.8 9 26.4 9C28.8 9 31 10.4 32 12.4C33 10.4 35.2 9 37.6 9C41.2 9 44 11.9 44 15.5C44 21 39 25 32 31Z"
+      fill="currentColor"
+      opacity=".24"
+    />
+    <path
+      d="M32 31C25 25 20 21 20 15.5C20 11.9 22.8 9 26.4 9C28.8 9 31 10.4 32 12.4C33 10.4 35.2 9 37.6 9C41.2 9 44 11.9 44 15.5C44 21 39 25 32 31Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9 37C16 37 20 40 24 45L31 45"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M55 37C48 37 44 40 40 45L33 45"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M10 37L18 53H28C30 53 31 52 32 50C33 52 34 53 36 53H46L54 37"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+  </symbol>
+
+
+  <!-- WEBSITE HELPER
+       Friendly supporting sprig
+  -->
+  <symbol id="role-helper" viewBox="0 0 64 64">
+    <path
+      d="M20 51C29 43 35 34 41 17"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3.2"
+      stroke-linecap="round"
+    />
+    <path
+      d="M30 39C22 39 17 35 16 28C24 27 29 31 30 39Z"
+      fill="currentColor"
+      opacity=".2"
+    />
+    <path
+      d="M30 39C22 39 17 35 16 28C24 27 29 31 30 39Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M35 31C36 23 41 19 49 20C48 28 43 32 35 31Z"
+      fill="currentColor"
+      opacity=".2"
+    />
+    <path
+      d="M35 31C36 23 41 19 49 20C48 28 43 32 35 31Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linejoin="round"
+    />
+    <circle cx="21" cy="50" r="3" fill="currentColor" />
+  </symbol>
+
+
+  <!-- ADMINISTRATOR
+       Cog / system stewardship
+  -->
+  <symbol id="role-admin" viewBox="0 0 64 64">
+    <path
+      d="M28 9H36L38 15C40 15.7 42 16.5 43.7 17.7L49.5 15L55 20.5L52.3 26.3C53.5 28 54.3 30 55 32L61 34V42L55 44C54.3 46 53.5 48 52.3 49.7L55 55.5L49.5 61L43.7 58.3C42 59.5 40 60.3 38 61L36 67H28L26 61C24 60.3 22 59.5 20.3 58.3L14.5 61L9 55.5L11.7 49.7C10.5 48 9.7 46 9 44L3 42V34L9 32C9.7 30 10.5 28 11.7 26.3L9 20.5L14.5 15L20.3 17.7C22 16.5 24 15.7 26 15L28 9Z"
+      transform="translate(0 -6)"
+      fill="currentColor"
+      opacity=".16"
+    />
+    <path
+      d="M28 9H36L38 15C40 15.7 42 16.5 43.7 17.7L49.5 15L55 20.5L52.3 26.3C53.5 28 54.3 30 55 32L61 34V42L55 44C54.3 46 53.5 48 52.3 49.7L55 55.5L49.5 61L43.7 58.3C42 59.5 40 60.3 38 61L36 67H28L26 61C24 60.3 22 59.5 20.3 58.3L14.5 61L9 55.5L11.7 49.7C10.5 48 9.7 46 9 44L3 42V34L9 32C9.7 30 10.5 28 11.7 26.3L9 20.5L14.5 15L20.3 17.7C22 16.5 24 15.7 26 15L28 9Z"
+      transform="translate(0 -6)"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.6"
+      stroke-linejoin="round"
+    />
+    <circle
+      cx="32"
+      cy="32"
+      r="9"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+  </symbol>
+
+
+  <!-- CLUB COMMITTEE
+       Sanctuary home with committee table
+  -->
+  <symbol id="role-committee" viewBox="0 0 64 64">
+    <path
+      d="M11 29L32 12L53 29"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M16 27V52H48V27"
+      fill="currentColor"
+      opacity=".12"
+    />
+    <path
+      d="M16 27V52H48V27"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+    <circle cx="25" cy="35" r="3.3" fill="currentColor" />
+    <circle cx="39" cy="35" r="3.3" fill="currentColor" />
+    <path
+      d="M22 45H42M25 41V48M39 41V48"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linecap="round"
+    />
+  </symbol>
+
+
+  <!-- TREASURER
+       Financial ledger with pound symbol
+  -->
+  <symbol id="role-treasurer" viewBox="0 0 64 64">
+    <rect
+      x="15"
+      y="10"
+      width="34"
+      height="44"
+      rx="5"
+      fill="currentColor"
+      opacity=".13"
+    />
+    <rect
+      x="15"
+      y="10"
+      width="34"
+      height="44"
+      rx="5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+    <path
+      d="M23 10V54"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+    <path
+      d="M32 28C32 23 35 20 40 20C42.5 20 44.5 21 46 22.5M32 32H43M32 38H46M34 38C34 43 31 46 27 47"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </symbol>
+
+</svg>

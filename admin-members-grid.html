@@ -98,7 +98,14 @@
       font-weight:900;
     }
     button.action.secondary{background:#7f97ad;}
+    button.action.danger{background:#9e2b2b;}
     button.action:disabled{opacity:0.45; cursor:default;}
+
+    .reset-panel{margin-top:1rem;padding:1rem;border:1px solid #ead49a;border-radius:14px;background:#fff8e8;}
+    .reset-panel h2{margin:0 0 .35rem;color:#6f4a00;font-size:1.15rem;}
+    .reset-panel p{margin:.25rem 0 .75rem;color:#5b4a2f;line-height:1.5;font-weight:600;}
+    .reset-panel textarea{min-height:82px;background:#fff;}
+    .reset-results{margin-top:.75rem;padding:.75rem;border-radius:12px;background:#fff;border:1px solid #ead49a;line-height:1.55;white-space:pre-wrap;font-weight:700;}
 
     .hidden{display:none;}
 
@@ -240,6 +247,20 @@
 
     <!-- Admin area (hidden until unlocked) -->
     <div id="adminArea" class="hidden">
+
+      <section class="reset-panel" aria-labelledby="resetPinHeading">
+        <h2 id="resetPinHeading">Reset Membership PINs</h2>
+        <p>Enter one or more membership numbers, separated by commas, spaces or new lines. Each selected membership will be returned to the temporary Starter PIN <strong>2468</strong>. The resident must then choose a new private household PIN.</p>
+        <label for="resetMemberIds">Membership numbers</label>
+        <textarea id="resetMemberIds" placeholder="SC25&#10;SM18&#10;SC07"></textarea>
+        <div class="row">
+          <button id="resetPinsBtn" class="action danger" type="button">Reset selected PINs</button>
+          <button id="clearResetListBtn" class="action secondary" type="button">Clear</button>
+          <span class="muted" id="resetPinsStatus"></span>
+        </div>
+        <div id="resetPinsResults" class="reset-results hidden" aria-live="polite"></div>
+      </section>
+
       <div style="font-weight:900; color:#003366; margin:0.9rem 0 0.35rem;">
         Copy-ready email list (per resident, deduped)
       </div>
@@ -294,6 +315,7 @@
 
   // Remember unlocked state for this browser tab only
   const ADMIN_SESSION_KEY = "sanctuaryAdminUnlocked";
+  const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
   const adminMemberIdEl = document.getElementById("adminMemberId");
   const adminPinEl = document.getElementById("adminPin");
@@ -326,6 +348,82 @@
   // Must match YI exactly
   async function pinHash(memberId, pin){
     return sha256Hex(`${memberId}::${pin}::sanctuary`);
+  }
+
+
+  function getAdminToken(){
+    return localStorage.getItem("adminToken") ||
+           sessionStorage.getItem("adminToken") ||
+           localStorage.getItem("sanctuaryAdminToken") ||
+           sessionStorage.getItem("sanctuaryAdminToken") || "";
+  }
+
+  function parseMembershipIds(value){
+    return [...new Set(
+      String(value || "").toUpperCase().split(/[\s,;]+/).map(baseId)
+        .filter(id => /^(SM|SC)\d+$/.test(id))
+    )];
+  }
+
+  async function resetOneMembershipPin(memberId){
+    const token = getAdminToken();
+    if (!token) throw new Error("Admin login token not found. Please log in again.");
+
+    const response = await fetch(`${BACKEND_URL}/api/admin/reset-member-pin`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+      body:JSON.stringify({member_id:memberId})
+    });
+
+    const raw = await response.text();
+    let data = {};
+    try{ data = raw ? JSON.parse(raw) : {}; }
+    catch(_){ data = {success:false,message:raw || `HTTP ${response.status}`}; }
+
+    if (!response.ok || data.success === false){
+      throw new Error(data.message || `Reset failed (${response.status})`);
+    }
+  }
+
+  async function resetSelectedPins(){
+    const input = document.getElementById("resetMemberIds");
+    const button = document.getElementById("resetPinsBtn");
+    const status = document.getElementById("resetPinsStatus");
+    const resultsBox = document.getElementById("resetPinsResults");
+    const ids = parseMembershipIds(input.value);
+
+    resultsBox.classList.add("hidden");
+    resultsBox.textContent = "";
+    status.textContent = "";
+
+    if (!ids.length){
+      status.textContent = "Enter at least one valid membership number.";
+      input.focus();
+      return;
+    }
+
+    if (!window.confirm(`Reset ${ids.length} membership PIN${ids.length === 1 ? "" : "s"} to 2468?\n\n${ids.join(", ")}`)) return;
+
+    button.disabled = true;
+    status.textContent = "Resetting…";
+
+    const lines = [];
+    let succeeded = 0;
+
+    for (const id of ids){
+      try{
+        await resetOneMembershipPin(id);
+        succeeded++;
+        lines.push(`✓ ${id} reset to 2468`);
+      }catch(err){
+        lines.push(`✗ ${id}: ${err.message || "Reset failed"}`);
+      }
+    }
+
+    resultsBox.textContent = lines.join("\n");
+    resultsBox.classList.remove("hidden");
+    status.textContent = `${succeeded} of ${ids.length} reset successfully.`;
+    button.disabled = false;
   }
 
   function fmtDate(ms){
@@ -484,6 +582,14 @@
     const txt = document.getElementById("emailList").value;
     try { await navigator.clipboard.writeText(txt); alert("Copied"); }
     catch { alert("Copy failed (browser blocked). You can manually select & copy."); }
+  });
+
+  document.getElementById("resetPinsBtn").addEventListener("click", resetSelectedPins);
+  document.getElementById("clearResetListBtn").addEventListener("click", () => {
+    document.getElementById("resetMemberIds").value = "";
+    document.getElementById("resetPinsStatus").textContent = "";
+    document.getElementById("resetPinsResults").textContent = "";
+    document.getElementById("resetPinsResults").classList.add("hidden");
   });
 
   document.getElementById("downloadCsv").addEventListener("click", downloadMailMergeCSV);

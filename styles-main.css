@@ -13,6 +13,16 @@ body {
 }
 
 /* =========================================================
+   SANCTUARY NARRATIVE
+   Warm explanatory text used throughout the site
+   ========================================================= */
+
+.narrative {
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* =========================================================
    HERO WRAPPER (owns viewport)
    ========================================================= */
 .hero-wrapper {

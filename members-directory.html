@@ -7,7 +7,7 @@
 
   <script src="access.js?v=PIN_GATE_1"></script>
   <script src="logout.js"></script>
-  <script src="members-directory.js" defer></script>
+  <script src="members-directory.js?v=ROLE_ICONS_1" defer></script>
 
   <style>
     body {
@@ -61,7 +61,7 @@
       color:#555;
       line-height:1.45;
       margin:0.35rem 0 1rem 0;
-      max-width:70ch;
+      max-width:74ch;
     }
 
     .member-grid {
@@ -139,11 +139,6 @@
       border-color:#b26a00;
     }
 
-    .blob.basic {
-      background:#e8f2ff;
-      border-color:#005ea8;
-    }
-
     .blob.inactive {
       background:#f3f3f3;
       border-color:#999;
@@ -155,7 +150,7 @@
 
     .member-detail-wrapper {
       display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
       gap:1rem;
     }
 
@@ -167,20 +162,85 @@
       border-left:4px solid #e3edf7;
     }
 
+    .resident-heading-row {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:.75rem;
+      margin-bottom:.55rem;
+    }
+
     .resident-header {
-      font-weight:600;
-      margin-bottom:0.4rem;
+      font-weight:700;
+      line-height:1.3;
+      color:#24384b;
+    }
+
+    .resident-name {
+      display:block;
+      margin-top:.15rem;
+      font-size:1.02rem;
+      color:#111;
+    }
+
+    .role-icons {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:.34rem;
+      min-height:28px;
+    }
+
+    .role-icon {
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef6ff;
+      border:1px solid #bfd8ef;
+      color:#003f73;
+      cursor:help;
+      flex:0 0 auto;
+    }
+
+    .role-icon svg {
+      width:19px;
+      height:19px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      pointer-events:none;
     }
 
     .resident-row {
       display:flex;
       justify-content:space-between;
+      gap:1rem;
       font-size:0.9rem;
-      margin:0.2rem 0;
+      margin:0.25rem 0;
     }
 
     .resident-row span:first-child {
       color:#555;
+      flex:0 0 auto;
+    }
+
+    .resident-row span:last-child {
+      text-align:right;
+      overflow-wrap:anywhere;
+    }
+
+    .roles-note {
+      margin-top:.7rem;
+      padding-top:.65rem;
+      border-top:1px solid #e7edf3;
+      color:#52606d;
+      font-size:.86rem;
+      line-height:1.4;
     }
 
     @media (max-width:640px) {
@@ -223,7 +283,7 @@
   <h1>Members Directory</h1>
 
   <p class="subtle">
-    Click a member button and scroll down to see any contact details they have chosen to share.
+    Click a member button and scroll down to see any contact details they have chosen to share. Role icons show the ways residents are currently helping Sanctuary Club.
   </p>
 
   <div class="md-legend">

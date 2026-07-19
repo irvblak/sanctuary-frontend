@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Your Membership | Sanctuary Club</title>
+  <title>Your Information | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -10,34 +10,38 @@
 
   <style>
     :root{
-      --bg1:#d9ecff;
-      --bg2:#f2f7fb;
+      --bg1:#cfe6f8;
+      --bg2:#eef5f9;
       --card:#ffffff;
-      --ink:#223344;
-      --muted:#607583;
-      --line:#d7e3ea;
+      --ink:#243746;
+      --muted:#435b6a;
+      --line:#c7d8e3;
       --accent:#005ea8;
-      --accent-dark:#003366;
-      --soft:#f3f8fb;
+      --accent-dark:#003b69;
+      --accent-soft:#edf6fc;
+      --warm:#fff9e8;
+      --warm-line:#ddc979;
       --good:#216e39;
       --good-bg:#e8f5eb;
-      --warn:#8a5a00;
-      --warn-bg:#fff4db;
+      --warn:#7a5200;
+      --warn-bg:#fff4d8;
       --basic:#255f9a;
       --basic-bg:#e8f2fb;
       --bad:#9e2b2b;
       --bad-bg:#fff2f4;
-      --shadow:0 2px 10px rgba(0,0,0,0.06);
+      --shadow:0 5px 18px rgba(34,68,94,.10);
     }
 
     *{box-sizing:border-box}
 
     body{
       margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 45%,#ffffff 100%);
-      color:var(--ink);
       min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 46%,#fff 100%);
+      color:var(--ink);
+      font-size:17px;
+      line-height:1.62;
     }
 
     nav{
@@ -50,8 +54,9 @@
 
     nav a{
       text-decoration:none;
-      font-weight:700;
+      font-weight:800;
       color:var(--accent-dark);
+      font-size:1rem;
     }
 
     .nav-left{justify-self:start}
@@ -65,78 +70,116 @@
     }
 
     main{
-      max-width:980px;
-      margin:0 auto 1.5rem;
+      max-width:1040px;
+      margin:0 auto 2rem;
       padding:0 1rem;
     }
 
     .card{
       background:var(--card);
-      border-radius:16px;
+      border-radius:20px;
       box-shadow:var(--shadow);
-      border:1px solid rgba(215,227,234,.75);
-      padding:1.25rem;
+      border:1px solid rgba(183,207,222,.9);
+      padding:1.45rem;
       margin-bottom:1rem;
     }
 
     h1{
-      margin:0 0 .75rem;
-      font-size:1.65rem;
+      margin:0;
+      font-size:2rem;
+      line-height:1.18;
       color:var(--accent-dark);
-      line-height:1.2;
     }
 
     h2{
-      margin:0 0 .7rem;
-      font-size:1.15rem;
+      margin:0 0 .75rem;
+      font-size:1.35rem;
+      line-height:1.25;
       color:var(--accent-dark);
     }
 
     h3{
       margin:.1rem 0 .55rem;
-      font-size:1.05rem;
-      font-weight:700
+      font-size:1.08rem;
+      font-weight:800;
       color:var(--accent-dark);
     }
 
-    p{
-      margin:.45rem 0;
-      line-height:1.5;
+    p{margin:.5rem 0;line-height:1.62}
+
+    .page-intro{
+      margin-top:.55rem;
+      max-width:830px;
+      color:#304858;
+      font-size:1.08rem;
     }
 
-    .subtle{
-      color:#536a79;
-      font-size:.95rem;
-      line-height:1.5;
+    .identity{
+      margin:1.05rem 0 1.15rem;
+      padding:1rem 1.1rem;
+      text-align:center;
+      border-radius:15px;
+      background:#f5faff;
+      border:2px solid #bcd4e4;
+      color:var(--accent-dark);
+    }
+
+    .identity-main{
+      font-size:1.18rem;
+      font-weight:850;
+      letter-spacing:.01em;
+    }
+
+    .identity-main em{
+      color:#7a5700;
+      font-style:italic;
+    }
+
+    .identity-sub{
+      display:block;
+      margin-top:.25rem;
+      color:#415d6e;
+      font-size:1.02rem;
+      font-weight:750;
     }
 
     .intro-grid{
       display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:.75rem;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:.85rem;
       margin-top:1rem;
     }
 
     .info-box{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fbfdff;
-      padding:.85rem;
-      min-height:118px;
+      border:2px solid #c5d9e6;
+      border-radius:15px;
+      background:#f7fbfe;
+      padding:1rem;
+      min-height:172px;
+      color:#304858;
+      font-size:1rem;
     }
 
     .info-box strong{
       display:block;
       color:var(--accent-dark);
-      margin-bottom:.25rem;
+      margin-bottom:.35rem;
+      font-size:1.1rem;
     }
 
     .login-card{
-      border:1px solid #dbe6f3;
-      border-radius:16px;
-      background:#fbfdff;
-      padding:1rem;
-      margin-top:1rem;
+      border:2px solid #a9c8dc;
+      border-radius:18px;
+      background:#fff;
+      padding:1.2rem;
+      margin-top:1.15rem;
+      box-shadow:0 4px 14px rgba(0,69,114,.08);
+    }
+
+    .sign-in-copy{
+      color:#304858;
+      font-size:1.04rem;
+      margin-top:-.15rem;
     }
 
     .row{
@@ -144,52 +187,51 @@
       gap:1rem;
       flex-wrap:wrap;
       align-items:flex-end;
-      margin-top:.75rem;
+      margin-top:.8rem;
     }
 
     .field label,
     .resident-card label,
     .change-pin-grid label{
       display:block;
-      font-size:.84rem;
-      color:#526979;
-      margin-bottom:.25rem;
-      font-weight:800;
+      font-size:.92rem;
+      color:#405968;
+      margin-bottom:.28rem;
+      font-weight:850;
     }
 
     input{
       width:100%;
-      padding:.6rem;
-      font-size:1rem;
-      border:1px solid #cfd8e3;
+      padding:.68rem;
+      font-size:1.04rem;
+      border:1px solid #bfcfda;
       border-radius:10px;
       background:#fff;
       color:var(--ink);
     }
 
-    input::placeholder{color:#9aa7b4}
-
-    .member-input{width:180px}
-    .pin-input{width:125px}
-
-    .pin-wrap{
-      display:flex;
-      gap:.35rem;
-      align-items:center;
+    input:focus{
+      outline:3px solid rgba(0,94,168,.16);
+      border-color:var(--accent);
     }
 
-    .pin-wrap input{width:125px}
+    input::placeholder{color:#8999a5}
+    .member-input{width:190px}
+    .pin-input{width:130px}
+
+    .pin-wrap{display:flex;gap:.4rem;align-items:center}
+    .pin-wrap input{width:130px}
 
     .eye-btn{
-      min-width:42px;
-      height:42px;
+      min-width:44px;
+      height:44px;
       border-radius:10px;
-      border:1px solid #cfd8e3;
+      border:1px solid #bfcfda;
       background:#fff;
       color:var(--accent-dark);
       cursor:pointer;
       font-size:1rem;
-      font-weight:800;
+      font-weight:850;
       padding:0 .55rem;
     }
 
@@ -197,287 +239,147 @@
       background:var(--accent);
       color:#fff;
       border:none;
-      padding:.65rem 1rem;
+      padding:.72rem 1.05rem;
       border-radius:10px;
       cursor:pointer;
-      font-size:1rem;
-      font-weight:800;
+      font-size:1.02rem;
+      font-weight:850;
     }
 
-    button.secondary{background:#7f97ad}
-    button.soft{
-      background:#fff;
-      color:var(--accent);
-      border:1px solid var(--accent);
-    }
-    button:disabled{
-      opacity:.45;
-      cursor:default;
-    }
+    button.secondary{background:#667f94}
+    button.soft{background:#fff;color:var(--accent);border:2px solid var(--accent)}
+    button:disabled{opacity:.45;cursor:default}
 
-    .button-row,
-    .actions{
+    .button-row,.actions{
       display:flex;
       gap:.75rem;
       flex-wrap:wrap;
-      margin-top:.9rem;
+      margin-top:.95rem;
+    }
+
+    .forgotten-note{
+      margin-top:1rem;
+      padding:.85rem 1rem;
+      border-radius:12px;
+      border:1px solid #c7dbe8;
+      background:var(--accent-soft);
+      color:#314b5b;
+      font-size:.96rem;
+    }
+
+    .forgotten-note strong{color:var(--accent-dark)}
+
+    .community-message{
+      margin-top:1.15rem;
+      padding:1.15rem;
+      border-radius:16px;
+      border:2px solid var(--warm-line);
+      background:var(--warm);
+      color:#3a4650;
+    }
+
+    .community-message h2{color:#5b4b10}
+
+    .community-lead{
+      font-size:1.06rem;
+      color:#384955;
+    }
+
+    .reassurance-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.75rem;
+      margin:1rem 0;
+    }
+
+    .reassurance-item{
+      background:#fff;
+      border:1px solid #dfd29e;
+      border-radius:12px;
+      padding:.9rem;
+    }
+
+    .reassurance-item strong{
+      display:block;
+      color:#574812;
+      margin-bottom:.2rem;
+      font-size:1.02rem;
+    }
+
+    .community-close{
+      margin-top:1rem;
+      padding-top:.9rem;
+      border-top:1px solid #ddcf94;
+      font-size:1.03rem;
+      color:#4a421f;
     }
 
     .status{
       display:none;
-      margin-top:.85rem;
-      padding:.75rem .9rem;
+      margin-top:.9rem;
+      padding:.8rem .95rem;
       border-radius:12px;
-      font-size:.95rem;
+      font-size:.98rem;
       font-weight:750;
       line-height:1.45;
     }
 
     .status.show{display:block}
-    .status.info{
-      background:#eef6ff;
-      border:1px solid rgba(0,94,168,.16);
-      color:#0b4d87;
-    }
-    .status.warn{
-      background:var(--warn-bg);
-      border:1px solid rgba(138,91,0,.18);
-      color:var(--warn);
-    }
-    .status.err{
-      background:var(--bad-bg);
-      border:1px solid rgba(176,0,32,.18);
-      color:var(--bad);
-    }
-    .status.ok{
-      background:var(--good-bg);
-      border:1px solid rgba(22,101,52,.16);
-      color:var(--good);
-    }
+    .status.info{background:#eef6ff;border:1px solid rgba(0,94,168,.16);color:#0b4d87}
+    .status.warn{background:var(--warn-bg);border:1px solid rgba(138,91,0,.18);color:var(--warn)}
+    .status.err{background:var(--bad-bg);border:1px solid rgba(176,0,32,.18);color:var(--bad)}
+    .status.ok{background:var(--good-bg);border:1px solid rgba(22,101,52,.16);color:var(--good)}
 
-    .member-strip{
-      display:flex;
-      justify-content:space-between;
-      gap:1rem;
-      flex-wrap:wrap;
-      align-items:flex-start;
-      border:1px solid var(--line);
-      background:#fbfdff;
-      border-radius:14px;
-      padding:.9rem;
-      margin-top:.75rem;
-    }
+    .member-strip{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;padding:1rem;border-radius:14px;background:#f4f9fc;border:1px solid var(--line)}
 
-    .member-strip strong{
-      color:var(--accent-dark);
-    }
+    .badge{display:inline-block;padding:.38rem .65rem;border-radius:999px;font-size:.88rem;font-weight:850;margin-left:.3rem}
+    .badge.basic{background:var(--basic-bg);color:var(--basic)}
+    .badge.partial{background:var(--warn-bg);color:var(--warn)}
+    .badge.complete{background:var(--good-bg);color:var(--good)}
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:.35rem;
-      border-radius:999px;
-      padding:.32rem .62rem;
-      font-size:.82rem;
-      font-weight:900;
-      border:1px solid transparent;
-      white-space:nowrap;
-    }
+    .legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1rem 0}
+    .legend-item{border:1px solid var(--line);border-radius:12px;background:#f8fbfd;padding:.8rem}
+    .legend-item p{font-size:.94rem;color:var(--muted)}
 
-    .badge.basic{
-      background:var(--basic-bg);
-      color:var(--basic);
-      border-color:rgba(37,95,154,.18);
-    }
+    .residents{display:grid;gap:.85rem}
+    .resident-card{border:1px solid #d0dce5;border-radius:14px;padding:.95rem;background:#fafcfd}
+    .resident-card input{padding:.52rem;font-size:1rem;border-radius:9px;margin-bottom:.4rem}
 
-    .badge.partial{
-      background:var(--warn-bg);
-      color:var(--warn);
-      border-color:rgba(138,91,0,.2);
-    }
-
-    .badge.complete{
-      background:var(--good-bg);
-      color:var(--good);
-      border-color:rgba(33,110,57,.18);
-    }
-
-    .legend{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:.65rem;
-      margin-top:.85rem;
-    }
-
-    .legend-item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:.7rem;
-      background:#fff;
-      font-size:.9rem;
-      line-height:1.4;
-    }
-
-    .residents{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,320px));
-      gap:1rem;
-      margin-top:1rem;
-      justify-content:start;
-    }
-
-    .resident-card{
-      border:1px solid #ddd;
-      border-radius:14px;
-      padding:.9rem;
-      background:#fafafa;
-    }
-
-    .resident-card input{
-      padding:.46rem;
-      font-size:.95rem;
-      border-radius:9px;
-      margin-bottom:.35rem;
-    }
-
-    .placeholder{
-      height:40px;
-      display:flex;
-      align-items:center;
-      color:#999;
-      font-size:.9rem;
-      border:1px dashed #d6dde6;
-      border-radius:9px;
-      padding:0 .6rem;
-      background:#fff;
-      box-sizing:border-box;
-      margin-bottom:.35rem;
-    }
-
+    .placeholder{height:42px;display:flex;align-items:center;color:#7c8992;font-size:.94rem;border:1px dashed #c9d5de;border-radius:9px;padding:0 .65rem;background:#fff;margin-bottom:.4rem}
     .hidden{display:none !important}
 
-    .change-pin-box{
-      margin-top:1rem;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fbfdff;
-      padding:1rem;
-    }
+    .change-pin-box{margin-top:1rem;border:1px solid var(--line);border-radius:14px;background:#fbfdff;padding:1rem}
+    .change-pin-grid{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:.75rem;align-items:end}
 
-    .change-pin-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(120px,1fr));
-      gap:.75rem;
-      align-items:end;
-    }
+    .small-note{font-size:.96rem;color:var(--muted);line-height:1.52}
 
-    .small-note{
-      font-size:.88rem;
-      color:var(--muted);
-      line-height:1.45;
-    }
+    .privacy-card{border:2px solid rgba(0,94,168,.18);background:#f3f9fd;border-radius:14px;padding:1rem;margin-top:1rem}
 
-    .privacy-card{
-      border:1px solid rgba(0,94,168,.18);
-      background:#f5fbff;
-      border-radius:14px;
-      padding:1rem;
-      margin-top:1rem;
-    }
-
-    .locked-note{
-      display:none;
-      border:1px solid rgba(138,91,0,.2);
-      background:var(--warn-bg);
-      color:var(--warn);
-      border-radius:14px;
-      padding:1rem;
-      margin-top:1rem;
-      font-weight:750;
-      line-height:1.45;
-    }
-
+    .locked-note{display:none;border:1px solid rgba(138,91,0,.2);background:var(--warn-bg);color:var(--warn);border-radius:14px;padding:1rem;margin-top:1rem;font-weight:750;line-height:1.5}
     #memberPanel.locked .locked-note{display:block}
     #memberPanel.locked .private-section{display:none}
 
-    .membership-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(220px,1fr));
-      gap:.85rem;
-      margin-top:1rem;
-    }
+    .membership-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:.85rem;margin-top:1rem}
 
-    .service-tile{
-      display:flex;
-      justify-content:space-between;
-      gap:.75rem;
-      align-items:center;
-      text-decoration:none;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:.9rem;
-      background:#fff;
-      color:var(--ink);
-    }
+    .service-tile{display:flex;justify-content:space-between;gap:.75rem;align-items:center;text-decoration:none;border:1px solid var(--line);border-radius:14px;padding:.95rem;background:#fff;color:var(--ink)}
+    .service-tile strong{display:block;color:var(--accent-dark);margin-bottom:.2rem}
+    .service-tile span{color:var(--muted);font-size:.94rem}
+    .service-tile.disabled{opacity:.58;cursor:default;background:#f7f9fb}
 
-    .service-tile strong{
-      display:block;
-      color:var(--accent-dark);
-      margin-bottom:.2rem;
-    }
-
-    .service-tile span{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-
-    .service-tile.disabled{
-      opacity:.58;
-      cursor:default;
-      background:#f7f9fb;
-    }
-
-    .booking-list{
-      display:grid;
-      gap:.65rem;
-      margin-top:.75rem;
-    }
-
-    .booking-card{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:.85rem;
-      background:#fff;
-    }
-
+    .booking-list{display:grid;gap:.65rem;margin-top:.75rem}
+    .booking-card{border:1px solid var(--line);border-radius:14px;padding:.9rem;background:#fff}
     .booking-card strong{color:var(--accent-dark)}
-
-    .booking-meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.45rem .9rem;
-      color:var(--muted);
-      font-size:.9rem;
-      margin-top:.35rem;
-    }
+    .booking-meta{display:flex;flex-wrap:wrap;gap:.45rem .9rem;color:var(--muted);font-size:.94rem;margin-top:.35rem}
 
     @media(max-width:760px){
-      nav{
-        grid-template-columns:1fr;
-        text-align:center;
-      }
-      .nav-left,.nav-center,.nav-right{
-        justify-self:center;
-      }
-      .intro-grid,
-      .legend,
-      .change-pin-grid,
-      .membership-grid{
-        grid-template-columns:1fr;
-      }
-      .member-strip{
-        display:block;
-      }
+      body{font-size:16px}
+      nav{grid-template-columns:1fr;text-align:center}
+      .nav-left,.nav-center,.nav-right{justify-self:center}
+      .intro-grid,.legend,.change-pin-grid,.membership-grid,.reassurance-grid{grid-template-columns:1fr}
+      .member-strip{display:block}
+      .member-strip .badge{margin:.4rem .25rem 0 0}
+      h1{font-size:1.75rem}
+      .card{padding:1.05rem}
     }
   </style>
 </head>
@@ -494,36 +396,38 @@
 
 <main>
   <section class="card">
-    <h1>Your Membership</h1>
+    <h1>Your Information</h1>
 
-    <div class="subtle">
-      <p><strong>Log in below to reach all your club services (plenty of other ways to get around too)</strong></p>
-      <p>From here you can manage your household information, privacy choices, bookings and member services.</p>
+    <p class="page-intro">This is your own private area within Sanctuary Club. From here you can manage the information you choose to share, review your bookings and reach resident-only services.</p>
+
+    <div class="identity" aria-label="Sanctuary Club identity statement">
+      <div class="identity-main">Built by residents. Run by residents. <em>For</em> residents.</div>
+      <span class="identity-sub">Supporting our community.</span>
     </div>
 
     <div class="intro-grid">
       <div class="info-box">
-        <strong>Privacy</strong>
-        <p>You choose how much contact information you want to share with your neighbours.</p>
-        <p>Only the information you enter will appear in the Members Directory.</p>
+        <strong>Here to help, not take over</strong>
+        <p>Sanctuary Club supports the activities, groups and neighbourly efforts that already make Sanctuary special.</p>
+        <p>Nothing already working well has to change.</p>
       </div>
 
       <div class="info-box">
-        <strong>Neighbour contact information</strong>
-        <p>Providing contact information helps residents connect with one another.</p>
-        <p>For contact info you choose not to share enter: <strong>N/A</strong>.</p>
+        <strong>Use what is useful</strong>
+        <p>Residents can use as much—or as little—of the website as suits them.</p>
+        <p>Existing ways of organising and keeping in touch can continue alongside Sanctuary Club for as long as anyone wishes.</p>
       </div>
 
       <div class="info-box">
-        <strong>Membership PIN</strong>
-        <p>A temporary Starter PIN is provided to help all residents join Sanctuary Club and is for first time use only.</p>
-        <p>To access the various private member services, you will need to use your personal private PIN (can be reset if you forget it).</p>
+        <strong>Your privacy, your choice</strong>
+        <p>Only the contact information you choose to enter appears in the Members Directory.</p>
+        <p>Your personal PIN protects resident-only information and cannot be viewed by Administrators or other residents.</p>
       </div>
     </div>
 
     <div id="loginPanel" class="login-card">
-      <h2>Membership Login</h2>
-      <p class="small-note">Type 2468 over this one time temporary PIN, click "Open Your Membership" and input your own Private PIN to reach all parts of the website.</p>
+      <h2>Member Sign In</h2>
+      <p class="sign-in-copy">Enter your Membership number and personal four-digit PIN to open your information and resident-only services.</p>
 
       <div class="row">
         <div class="field">
@@ -541,13 +445,44 @@
       </div>
 
       <div class="button-row">
-        <button id="openInfoBtn" type="button" disabled>Open Your Membership</button>
+        <button id="openInfoBtn" type="button" disabled>Open Your Information</button>
         <button id="openMDBtn" type="button" class="secondary" disabled>Open Members Directory</button>
       </div>
 
-      <p class="small-note">
-        Forgotten PIN? Your PIN will be shortly resetable to the temporary Starter PIN 2468 for you to re-create your personal private PIN.
-      </p>
+      <div class="forgotten-note">
+        <strong>First visit?</strong> Use the temporary Starter PIN provided. You will then be asked to replace it with a personal four-digit PIN.<br />
+        <strong>Forgotten your PIN?</strong> An Administrator member can reset it to a temporary PIN so that you can choose a new one.
+      </div>
+
+      <div class="community-message">
+        <h2>Sanctuary Club and the community</h2>
+        <p class="community-lead">Sanctuary already has residents who organise coffee mornings, bridge, quizzes, lunches, book clubs, walks and many other activities. Sanctuary Club has been created to support that community—not to change it.</p>
+
+        <div class="reassurance-grid">
+          <div class="reassurance-item">
+            <strong>Existing organisers remain in charge</strong>
+            Activities can continue exactly as they do now. The website is simply another helping hand whenever it is useful.
+          </div>
+          <div class="reassurance-item">
+            <strong>Old and new can run together</strong>
+            Paper notices, word of mouth, telephone calls and familiar arrangements can continue alongside the website indefinitely.
+          </div>
+          <div class="reassurance-item">
+            <strong>New ideas are always welcome</strong>
+            Sanctuary Club can help a resident share an idea, find others who are interested and get something new started.
+          </div>
+          <div class="reassurance-item">
+            <strong>Taking part matters too</strong>
+            Organising is only one way to contribute. Coming along, welcoming neighbours and enjoying what others arrange are every bit as important.
+          </div>
+        </div>
+
+        <p>Residents who already organise something are warmly invited to use whatever parts of Sanctuary Club make life easier. There is no pressure to change anything that works well and no need to surrender the identity or independence of an existing activity.</p>
+
+        <p>Anyone with a new idea—or simply a thought worth discussing—can speak to an Administrator member, who will be pleased to help with the practicalities.</p>
+
+        <p class="community-close"><strong>The website does not create the community. Residents do.</strong><br />Sanctuary Club simply helps neighbours find one another, share information and enjoy more of what makes Sanctuary a friendly place to live.</p>
+      </div>
 
       <div id="loginStatus" class="status info"></div>
     </div>
@@ -555,9 +490,9 @@
     <div id="memberPanel" class="hidden">
       <div class="member-strip">
         <div>
-          <strong>Membership:</strong>
+          <strong>Your membership:</strong>
           <span id="activeMemberId">—</span>
-          <p class="small-note" id="memberHelpText">Scroll down to manage your contact information, view your bookings and access club services.</p>
+          <p class="small-note" id="memberHelpText">Manage the information you choose to share, review your bookings and open resident services below.</p>
         </div>
 
         <div>
@@ -567,12 +502,12 @@
       </div>
 
       <div id="starterPinNotice" class="locked-note">
-        Before accessing member services, please replace the temporary Starter PIN with your own 4-digit household membership PIN. This helps protect the privacy of all residents.
+        Please replace the temporary Starter PIN with your own four-digit household PIN before opening private resident services. This small step helps protect everyone’s information.
       </div>
 
       <div class="privacy-card">
-        <h2>Privacy & PIN</h2>
-        <p class="small-note">Community information is easy to view. Member services and personal information require your household membership PIN.</p>
+        <h2>Your Privacy &amp; PIN</h2>
+        <p class="small-note">Public community information remains easy to view. Your household PIN protects personal information and resident-only services.</p>
         <p class="small-note" id="pinHelpText">PIN status will appear here after login.</p>
       </div>
 
@@ -604,8 +539,8 @@
 </div>
 
 <div class="private-section">
-  <h2>Your Household Information</h2>
-  <p class="small-note">Only information entered here will appear in the Members Directory.</p>
+  <h2>Information You Choose to Share</h2>
+  <p class="small-note">Only the information entered here will appear in the Members Directory. Enter <strong>N/A</strong> for anything you prefer not to share.</p>
 
   <div class="legend">
     <div class="legend-item">
@@ -626,7 +561,7 @@
 
   <div class="actions">
     <button id="addResidentBtn" class="secondary" type="button">Add / change resident</button>
-    <button id="saveBtn" type="button">Save</button>
+    <button id="saveBtn" type="button">Save My Information</button>
     <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
   </div>
       <section class="card" style="box-shadow:none;margin-top:1rem;">
@@ -641,7 +576,7 @@
       </section>
 
       <section class="card" style="box-shadow:none;margin-top:1rem;">
-        <h2>Member Services</h2>
+        <h2>Your Resident Services</h2>
         <div class="membership-grid">
           <a class="service-tile" href="members-directory.html">
             <div><strong>Members Directory</strong><span>Contact details shared by residents.</span></div>

@@ -1109,11 +1109,68 @@ button.danger:hover{
       <section class="card">
         <div id="saveStatus" class="status"></div>
 
-        <div class="actions">
-          <button class="primary" id="saveBtn" type="submit">Save Event Notice</button>
-          <button class="secondary" id="resetBtn" type="button">Reset event details</button>
-          <a class="pill" id="viewNoticeLink" href="#" style="display:none;">View Event Notice</a>
-        </div>
+     <div class="actions">
+  <button class="primary" id="saveBtn" type="submit">Save Event Notice</button>
+  <button class="secondary" id="resetBtn" type="button">Reset event details</button>
+  <a class="pill" id="viewNoticeLink" href="#" style="display:none;">View Event Notice</a>
+
+  <button
+    class="scrap-button"
+    id="scrapEventBtn"
+    type="button"
+    style="display:none;"
+  >
+    🗑 Scrap this Event…
+  </button>
+</div>
+
+<div id="scrapPanel" class="scrap-panel" aria-live="polite">
+  <h3>Before this Event is scrapped</h3>
+
+  <p>
+    Scrapping permanently removes the Event, its Notice and its booking records
+    from the live system.
+  </p>
+
+  <p>
+    Before continuing, please open or print the <strong>State of Play</strong>
+    if you may need details of bookings, payments, cancellations or refunds.
+  </p>
+
+  <div id="scrapSummary" class="scrap-summary">
+    Checking the Event records…
+  </div>
+
+  <div class="scrap-acknowledgement">
+    <input id="scrapAcknowledged" type="checkbox" />
+    <label for="scrapAcknowledged">
+      I understand that this action is permanent and confirm that I have saved
+      or printed any booking, payment or refund information that may still be needed.
+    </label>
+  </div>
+
+  <div class="scrap-actions">
+    <button class="danger" id="confirmScrapBtn" type="button" disabled>
+      Permanently Scrap Event
+    </button>
+
+    <button class="secondary" id="cancelScrapBtn" type="button">
+      Keep Event
+    </button>
+
+    <a
+      class="pill"
+      id="scrapStateOfPlayLink"
+      href="#"
+      target="_blank"
+      rel="noopener"
+    >
+      Open State of Play
+    </a>
+  </div>
+
+  <div id="scrapStatus" class="status"></div>
+</div>   
       </section>
     </form>
   </div>

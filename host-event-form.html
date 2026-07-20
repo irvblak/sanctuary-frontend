@@ -1778,7 +1778,16 @@ async function verifyHost(){
 
 async function loadEvent(){
   try{
-    const data = await apiFetch("/api/events/" + encodeURIComponent(editEventId));
+    const data = await apiFetch(
+      "/api/events/" + encodeURIComponent(editEventId),
+      {
+        method:"GET",
+        headers: authToken
+          ? { "Authorization":"Bearer " + authToken }
+          : {}
+      }
+    );
+
     const e = data.event || data || {};
 
     if(!canVerifiedResidentEditEvent(e)){
@@ -1791,6 +1800,41 @@ async function loadEvent(){
       return;
     }
 
+    loadedEventHost = {
+      host_resident_id: cleanResidentId(
+        e.host_resident_id ||
+        e.hostResidentId ||
+        e.host_resident_ref ||
+        e.hostResidentRef ||
+        ""
+      ),
+
+      host_member_id: baseMemberId(
+        e.host_member_id ||
+        e.hostMemberId ||
+        e.member_id ||
+        e.created_by ||
+        ""
+      ),
+
+      host_resident_index:
+        parseInt(
+          e.host_resident_index ||
+          e.hostResidentIndex ||
+          residentIndexFromRef(
+            e.host_resident_id ||
+            e.hostResidentId ||
+            ""
+          ),
+          10
+        ) || 1,
+
+      host_name: cleanText(e.host_name),
+      host_email: cleanText(e.host_email),
+      host_mobile: cleanText(e.host_mobile),
+      host_landline: cleanText(e.host_landline)
+    };
+
     els.title.value = e.title || e.notice_title || "";
     els.category.value = e.category_label || e.category || "";
     els.eventDate.value = e.event_date || e.date || "";
@@ -1798,17 +1842,44 @@ async function loadEvent(){
     els.startTime.value = e.start_time || "";
     els.endTime.value = e.end_time || "";
     els.summary.value = e.notice_summary || e.summary || "";
-    els.description.value = e.notice_body || e.body || e.description || "";
-    els.titleArtUrl.value = e.title_art_url || "";
-    els.imageUrl.value = e.image_url || e.notice_image_url || "";
+    els.description.value =
+      e.notice_body ||
+      e.body ||
+      e.description ||
+      "";
 
-    setSelectedRadioValue("titleColour", e.notice_title_colour || e.title_colour, "#17314a");
-    setSelectedRadioValue("titleAlign", e.notice_title_align || e.title_align, "center");
-    els.titleBold.checked = e.notice_title_bold !== false && e.title_bold !== false;
-    els.titleItalic.checked = e.notice_title_italic === true || e.title_italic === true;
+    els.titleArtUrl.value = e.title_art_url || "";
+    els.imageUrl.value =
+      e.image_url ||
+      e.notice_image_url ||
+      "";
+
+    setSelectedRadioValue(
+      "titleColour",
+      e.notice_title_colour || e.title_colour,
+      "#17314a"
+    );
+
+    setSelectedRadioValue(
+      "titleAlign",
+      e.notice_title_align || e.title_align,
+      "center"
+    );
+
+    els.titleBold.checked =
+      e.notice_title_bold !== false &&
+      e.title_bold !== false;
+
+    els.titleItalic.checked =
+      e.notice_title_italic === true ||
+      e.title_italic === true;
+
     updateMiniPreview();
 
-    if(els.imageUrl.value && els.imageUrl.value.startsWith("data:image/")){
+    if(
+      els.imageUrl.value &&
+      els.imageUrl.value.startsWith("data:image/")
+    ){
       setIllustrationMode("own");
       els.selectedFileName.textContent = "Saved image";
     }else{
@@ -1817,101 +1888,99 @@ async function loadEvent(){
 
     renderPosterPreview(els.imageUrl.value, false);
 
-    els.capacityTotal.value = e.capacity_total || e.capacity || "";
-    els.membersBookingOpenAt.value = e.members_booking_open_at || "";
-    els.guestsBookingOpenAt.value = e.guests_booking_open_at || "";
-    els.bookingCloseAt.value = e.booking_close_at || "";
-    els.cancellationCutoffAt.value = e.cancellation_cutoff_at || "";
-    els.refundCutoffAt.value = e.refund_cutoff_at || "";
+    els.capacityTotal.value =
+      e.capacity_total ??
+      e.capacity ??
+      "";
 
-    const payable = e.payment_required === true || e.payable === true || e.is_payable === true || cleanText(e.payment_required).toLowerCase() === "yes";
+    els.membersBookingOpenAt.value =
+      e.members_booking_open_at || "";
+
+    els.guestsBookingOpenAt.value =
+      e.guests_booking_open_at || "";
+
+    els.bookingCloseAt.value =
+      e.booking_close_at || "";
+
+    els.cancellationCutoffAt.value =
+      e.cancellation_cutoff_at || "";
+
+    els.refundCutoffAt.value =
+      e.refund_cutoff_at || "";
+
+    const payable =
+      e.payment_required === true ||
+      e.payable === true ||
+      e.is_payable === true ||
+      cleanText(e.payment_required).toLowerCase() === "yes";
+
     els.paymentRequired.value = payable ? "yes" : "no";
-    els.costPerPlace.value = pick(e.cost_per_place, e.price_per_place, e.cost, e.price, "");
-    els.paymentInstructions.value = e.payment_instructions || e.payment_note || "";
-    els.paymentNote.value = e.payment_terms || e.refund_note || e.payment_refund_note || "";
 
-    if (!els.hostName.value){ els.hostName.value = e.host_name || ""; }
-    if (!els.hostEmail.value){ els.hostEmail.value = e.host_email || ""; }
-    if (!els.hostMobile.value){ els.hostMobile.value = e.host_mobile || ""; }
-    if (!els.hostLandline.value){ els.hostLandline.value = e.host_landline || ""; }
+    els.costPerPlace.value = pick(
+      e.cost_per_place,
+      e.price_per_place,
+      e.cost,
+      e.price,
+      ""
+    );
 
-    if (e.host_resident_id){
-      els.hostResidentId.textContent = e.host_resident_id;
+    els.paymentInstructions.value =
+      e.payment_instructions ||
+      e.payment_note ||
+      "";
+
+    els.paymentNote.value =
+      e.payment_terms ||
+      e.refund_note ||
+      e.payment_refund_note ||
+      "";
+
+    /*
+      When Admin edits another resident's Event, retain the Event's
+      original Host rather than replacing the Host with Admin.
+    */
+    if(loadedEventHost.host_resident_id){
+      els.hostResidentId.textContent =
+        loadedEventHost.host_resident_id;
     }
 
-    els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(editEventId);
+    if(loadedEventHost.host_name){
+      els.hostName.value = loadedEventHost.host_name;
+    }
+
+    if(loadedEventHost.host_email){
+      els.hostEmail.value = loadedEventHost.host_email;
+    }
+
+    if(loadedEventHost.host_mobile){
+      els.hostMobile.value = loadedEventHost.host_mobile;
+    }
+
+    if(loadedEventHost.host_landline){
+      els.hostLandline.value = loadedEventHost.host_landline;
+    }
+
+    els.viewNoticeLink.href =
+      "events-details.html?event_id=" +
+      encodeURIComponent(editEventId);
+
     els.viewNoticeLink.style.display = "inline-flex";
 
+    els.scrapStateOfPlayLink.href =
+      "host-state-of-play.html?event_id=" +
+      encodeURIComponent(editEventId);
+
+    els.scrapEventBtn.style.display = "inline-flex";
+
   }catch(err){
-    setStatus(els.verifyStatus,"err",err.message || "Could not load Event Notice.");
+    setStatus(
+      els.verifyStatus,
+      "err",
+      err.message || "Could not load Event Notice."
+    );
   }
 }
-
-function buildPayload(){
-  const category = cleanText(els.category.value);
-  const paymentRequired = els.paymentRequired.value === "yes";
-  const costPerPlace = paymentRequired ? moneyNumber(els.costPerPlace.value) : 0;
-
-  return {
-    event_id: editEventId,
-    title: cleanText(els.title.value),
-
-    category,
-    category_key: category,
-    category_label: category,
-
-    event_date: cleanText(els.eventDate.value),
-
-    start_time: cleanText(els.startTime.value),
-    end_time: cleanText(els.endTime.value),
-    location: cleanText(els.venue.value),
-
-    notice_title: cleanText(els.title.value),
-    notice_summary: cleanText(els.summary.value),
-    notice_body: cleanText(els.description.value),
-
-    title_art_url: cleanText(els.titleArtUrl.value),
-    image_url: cleanText(els.imageUrl.value),
-
-    notice_title_colour: getSelectedRadioValue("titleColour", "#17314a"),
-    notice_title_bold: !!els.titleBold.checked,
-    notice_title_italic: !!els.titleItalic.checked,
-    notice_title_align: getSelectedRadioValue("titleAlign", "center"),
-
-    host_resident_id: verifiedResidentId,
-    host_member_id: verifiedMemberId,
-    host_resident_index: verifiedResidentIndex,
-
-    host_name: cleanText(els.hostName.value),
-    host_email: cleanText(els.hostEmail.value),
-    host_mobile: cleanText(els.hostMobile.value),
-    host_landline: cleanText(els.hostLandline.value),
-
-    capacity_total: parseInt(els.capacityTotal.value) || 0,
-    capacity: parseInt(els.capacityTotal.value) || 0,
-    max_places_per_member: 0,
-
-    members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
-    guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
-    booking_close_at: cleanText(els.bookingCloseAt.value),
-    cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
-    refund_cutoff_at: cleanText(els.refundCutoffAt.value),
-
-    payable: paymentRequired,
-    is_payable: paymentRequired,
-    payment_required: paymentRequired,
-    price_member: costPerPlace,
-    price_guest: costPerPlace,
-    unit_price: costPerPlace,
-    cost_per_place: costPerPlace,
-    price_per_place: costPerPlace,
-    payment_instructions: cleanText(els.paymentInstructions.value),
-    payment_terms: cleanText(els.paymentNote.value),
-    refund_note: cleanText(els.paymentNote.value),
-    payment_refund_note: cleanText(els.paymentNote.value)
-  };
-}
-
+  
 async function saveEvent(e){
   e.preventDefault();
   clearStatus(els.saveStatus);

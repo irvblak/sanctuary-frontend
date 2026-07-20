@@ -1773,15 +1773,74 @@ async function loadEvent(){
 
     const e = data.event || data || {};
 
-    if(!canVerifiedResidentEditEvent(e)){
-      lockForm();
-      setStatus(
-        els.verifyStatus,
-        "err",
-        "This Event Notice is tied to a different host resident. Please verify as that resident, or ask Admin to make the change."
+    const eventHostResidentId = cleanResidentId(
+  e.host_resident_id ||
+  e.hostResidentId ||
+  e.host_resident_ref ||
+  e.hostResidentRef ||
+  ""
+);
+
+let editorIsAdmin = false;
+
+try{
+  if(authToken){
+    const tokenParts = authToken.split(".");
+
+    if(tokenParts.length === 3){
+      const tokenPayload = JSON.parse(
+        decodeURIComponent(
+          atob(
+            tokenParts[1]
+              .replace(/-/g, "+")
+              .replace(/_/g, "/")
+              .padEnd(
+                tokenParts[1].length + (4 - tokenParts[1].length % 4) % 4,
+                "="
+              )
+          )
+          .split("")
+          .map(function(character){
+            return "%" + character.charCodeAt(0)
+              .toString(16)
+              .padStart(2, "0");
+          })
+          .join("")
+        )
       );
-      return;
+
+      const tokenRoles = Array.isArray(tokenPayload.roles)
+        ? tokenPayload.roles.map(function(role){
+            return String(role).trim().toLowerCase();
+          })
+        : [];
+
+      editorIsAdmin = tokenRoles.includes("admin");
     }
+  }
+}catch(err){
+  console.warn("Could not read Admin role from login token.", err);
+}
+
+const verifiedHostResidentId = cleanResidentId(
+  verifiedResidentId || ""
+);
+
+if(
+  !editorIsAdmin &&
+  eventHostResidentId &&
+  eventHostResidentId !== verifiedHostResidentId
+){
+  lockForm();
+
+  setStatus(
+    els.verifyStatus,
+    "err",
+    "This Event Notice is tied to a different host resident. Please verify as that resident, or ask Admin to make the change."
+  );
+
+  return;
+}
 
     loadedEventHost = {
       host_resident_id: cleanResidentId(

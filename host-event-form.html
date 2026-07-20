@@ -1591,23 +1591,6 @@ function getEventHostMemberId(e){
   );
 }
 
-function canVerifiedResidentEditEvent(event){
-
-  /* Administrators may edit and scrap any Event. */
-  if (isAdmin) return true;
-
-  const eventResidentId = cleanResidentId(
-    event.host_resident_id ||
-    event.hostResidentId ||
-    event.host_resident_ref ||
-    event.hostResidentRef ||
-    ""
-  );
-
-  if (!eventResidentId) return true;
-
-  return eventResidentId === verifiedResidentId;
-}
 
 function asDateTimeValue(v){
   const raw = cleanText(v);

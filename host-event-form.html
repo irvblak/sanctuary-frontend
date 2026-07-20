@@ -2308,6 +2308,16 @@ function resetForm(){
   clearStatus(els.saveStatus);
 }
 
+els.scrapEventBtn.onclick = beginScrapEvent;
+els.cancelScrapBtn.onclick = closeScrapPanel;
+els.confirmScrapBtn.onclick = permanentlyScrapEvent;
+
+els.scrapAcknowledged.addEventListener("change", function(){
+  els.confirmScrapBtn.disabled =
+    !this.checked ||
+    !currentScrapCheck;
+});
+  
 function togglePin(){
   const isHidden = els.pin.type === "password";
   els.pin.type = isHidden ? "text" : "password";

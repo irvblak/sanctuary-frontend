@@ -2043,6 +2043,238 @@ async function saveEvent(e){
   }
 }
 
+function integerValue(){
+  for(const value of arguments){
+    const n = Number(value);
+    if(Number.isFinite(n)) return Math.trunc(n);
+  }
+  return 0;
+}
+
+function decimalValue(){
+  for(const value of arguments){
+    const n = Number(
+      String(value == null ? "" : value)
+        .replace(/[£,\s]/g, "")
+    );
+
+    if(Number.isFinite(n)) return n;
+  }
+
+  return 0;
+}
+
+function formatMoney(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP"
+  }).format(decimalValue(value));
+}
+
+function scrapSummaryHtml(data){
+  const summary =
+    data.summary ||
+    data.scrap_summary ||
+    data.booking_summary ||
+    data.finance_summary ||
+    data;
+
+  const bookingCount = integerValue(
+    summary.booking_count,
+    summary.bookings_count,
+    summary.total_bookings,
+    summary.bookings,
+    summary.active_bookings
+  );
+
+  const places = integerValue(
+    summary.places,
+    summary.places_total,
+    summary.booked_places,
+    summary.total_places
+  );
+
+  const paidCount = integerValue(
+    summary.paid_count,
+    summary.payments_count,
+    summary.paid_bookings
+  );
+
+  const paymentTotal = decimalValue(
+    summary.payment_total,
+    summary.amount_paid,
+    summary.total_paid,
+    summary.money_received
+  );
+
+  const refundCount = integerValue(
+    summary.refund_count,
+    summary.refunds_count,
+    summary.refund_bookings
+  );
+
+  const refundTotal = decimalValue(
+    summary.refund_total,
+    summary.amount_refunded,
+    summary.total_refunded,
+    summary.refunds_due
+  );
+
+  const payable =
+    summary.payment_required === true ||
+    summary.payable === true ||
+    summary.is_payable === true;
+
+  return `
+    <strong>Event records found</strong><br>
+    Bookings: ${bookingCount}<br>
+    Places recorded: ${places}<br>
+    Payable Event: ${payable ? "Yes" : "No"}<br>
+    Paid bookings recorded: ${paidCount}<br>
+    Payments recorded: ${formatMoney(paymentTotal)}<br>
+    Refund records: ${refundCount}<br>
+    Refund value recorded: ${formatMoney(refundTotal)}
+  `;
+}
+
+function closeScrapPanel(){
+  els.scrapPanel.classList.remove("show");
+  els.scrapAcknowledged.checked = false;
+  els.confirmScrapBtn.disabled = true;
+  currentScrapCheck = null;
+  clearStatus(els.scrapStatus);
+}
+
+async function beginScrapEvent(){
+  if(!editEventId){
+    setStatus(
+      els.saveStatus,
+      "warn",
+      "Save the Event before attempting to scrap it."
+    );
+    return;
+  }
+
+  clearStatus(els.scrapStatus);
+
+  els.scrapPanel.classList.add("show");
+  els.scrapSummary.textContent =
+    "Checking bookings, payments and refunds…";
+
+  els.scrapAcknowledged.checked = false;
+  els.confirmScrapBtn.disabled = true;
+  els.scrapEventBtn.disabled = true;
+
+  try{
+    const data = await apiFetch(
+      "/api/events/" +
+      encodeURIComponent(editEventId) +
+      "/scrap-check",
+      {
+        method:"GET",
+        headers:{
+          "Authorization":"Bearer " + authToken
+        }
+      }
+    );
+
+    currentScrapCheck = data;
+    els.scrapSummary.innerHTML = scrapSummaryHtml(data);
+
+    setStatus(
+      els.scrapStatus,
+      "warn",
+      "Please review the records above before deciding whether to continue."
+    );
+
+    els.scrapPanel.scrollIntoView({
+      behavior:"smooth",
+      block:"nearest"
+    });
+
+  }catch(err){
+    currentScrapCheck = null;
+    els.scrapSummary.textContent =
+      "The Event records could not be checked.";
+
+    setStatus(
+      els.scrapStatus,
+      "err",
+      err.message || "Could not check the Event before scrapping."
+    );
+
+  }finally{
+    els.scrapEventBtn.disabled = false;
+  }
+}
+
+async function permanentlyScrapEvent(){
+  if(!editEventId || !currentScrapCheck){
+    setStatus(
+      els.scrapStatus,
+      "warn",
+      "The Event must be checked before it can be scrapped."
+    );
+    return;
+  }
+
+  if(!els.scrapAcknowledged.checked){
+    setStatus(
+      els.scrapStatus,
+      "warn",
+      "Please tick the acknowledgement before continuing."
+    );
+    return;
+  }
+
+  try{
+    els.confirmScrapBtn.disabled = true;
+    els.cancelScrapBtn.disabled = true;
+
+    setStatus(
+      els.scrapStatus,
+      "warn",
+      "Permanently scrapping the Event…"
+    );
+
+    await apiFetch(
+      "/api/events/" + encodeURIComponent(editEventId),
+      {
+        method:"DELETE",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + authToken
+        },
+        body:JSON.stringify({
+          confirm_delete:true
+        })
+      }
+    );
+
+    setStatus(
+      els.scrapStatus,
+      "ok",
+      "The Event has been scrapped."
+    );
+
+    window.setTimeout(function(){
+      window.location.href = "host-my-events.html";
+    }, 700);
+
+  }catch(err){
+    els.confirmScrapBtn.disabled =
+      !els.scrapAcknowledged.checked;
+
+    els.cancelScrapBtn.disabled = false;
+
+    setStatus(
+      els.scrapStatus,
+      "err",
+      err.message || "The Event could not be scrapped."
+    );
+  }
+}
+  
 function resetForm(){
   els.title.value = "";
   els.category.value = "";

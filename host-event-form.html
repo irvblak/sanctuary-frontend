@@ -1303,6 +1303,8 @@ let verified = false;
 let verifiedResidentId = "";
 let verifiedMemberId = "";
 let verifiedResidentIndex = 1;
+let loadedEventHost = null;
+let currentScrapCheck = null;
 
 function setStatus(el,type,msg){
   el.className = "status show " + type;

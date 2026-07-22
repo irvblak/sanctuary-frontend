@@ -952,54 +952,73 @@ function normaliseResident(member, resident, arrayIndex){
     }
 
     async function saveRoles(){
-      clearMessages();
+  console.log("Save roles clicked", selectedResident);
 
-      if(!selectedResident){
-        showBox(errBox,"Select or load a resident first.");
-        return;
-      }
+  try{
+    clearMessages();
 
-      const roles = selectedRoles();
-      btnSaveRoles.disabled = true;
-
-      try{
-        await getJson(`${BACKEND_URL}/api/admin/set-roles`,{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${adminToken}`
-          },
-          body:JSON.stringify({
-            resident_id:selectedResident.resident_id,
-            member_id:selectedResident.member_id,
-            resident_index:selectedResident.resident_index,
-            name:selectedResident.name,
-            email:memberEmailEl.value.trim(),
-            roles:roles
-          })
-        });
-
-        if(roles.length){
-          showBox(okBox,`Roles updated for ${selectedResident.resident_id}.`);
-        }else{
-          showBox(okBox,`${selectedResident.resident_id} has been unassigned and removed from the current role-holder list.`);
-        }
-
-        const keepId = selectedResident.resident_id;
-        await loadMembers();
-
-        const refreshed = currentRoleHolders.find(r => r.resident_id === keepId);
-        if(refreshed){
-          selectResident(refreshed);
-        }else{
-          resetSelection();
-        }
-      }catch(err){
-        showBox(errBox,err.message || "Could not save roles.");
-        btnSaveRoles.disabled = false;
-      }
+    if(!selectedResident){
+      showBox(errBox,"Select or load a resident first.");
+      return;
     }
 
+    const roles = selectedRoles();
+    console.log("Selected roles:", roles);
+
+    btnSaveRoles.disabled = true;
+
+    const response = await getJson(`${BACKEND_URL}/api/admin/set-roles`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${adminToken}`
+      },
+      body:JSON.stringify({
+        resident_id:selectedResident.resident_id,
+        member_id:selectedResident.member_id,
+        resident_index:selectedResident.resident_index,
+        name:selectedResident.name,
+        email:memberEmailEl.value.trim(),
+        roles:roles
+      })
+    });
+
+    console.log("Set roles response:", response);
+
+    if(roles.length){
+      showBox(okBox,`Roles updated for ${selectedResident.resident_id}.`);
+    }else{
+      showBox(
+        okBox,
+        `${selectedResident.resident_id} has been unassigned and removed from the current role-holder list.`
+      );
+    }
+
+    const keepId = selectedResident.resident_id;
+
+    await loadMembers();
+
+    const refreshed = currentRoleHolders.find(
+      resident => resident.resident_id === keepId
+    );
+
+    if(refreshed){
+      selectResident(refreshed);
+    }else{
+      resetSelection();
+    }
+
+  }catch(err){
+    console.error("Save roles failed:", err);
+
+    showBox(
+      errBox,
+      err?.message || "Could not save roles."
+    );
+
+    btnSaveRoles.disabled = false;
+  }
+}
     btnRefresh.addEventListener("click",loadMembers);
     btnLoadResident.addEventListener("click",loadResidentByRef);
     btnSaveRoles.addEventListener("click",saveRoles);

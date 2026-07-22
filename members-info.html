@@ -224,6 +224,32 @@
       margin:0.45rem 0;
     }
 
+    .charter-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:54px;
+      margin-top:1rem;
+      padding:0.82rem 1rem;
+      border:none;
+      border-radius:14px;
+      background:var(--blue);
+      color:#fff;
+      text-decoration:none;
+      text-align:center;
+      font-size:1.02rem;
+      font-weight:850;
+      line-height:1.25;
+      box-shadow:0 4px 12px rgba(18,58,120,0.22);
+      transition:background 0.15s ease, transform 0.15s ease;
+    }
+
+    .charter-btn:hover{
+      background:var(--blueHover);
+      transform:translateY(-1px);
+    }
+
     .gate-message{
       display:none;
       margin:1.15rem 0;
@@ -390,33 +416,35 @@
 
         <div class="side-stack">
           <div class="info-card">
-            <h2 class="info-title">🔒 Your Privacy</h2>
+            <h2 class="info-title">🔒 Privacy &amp; Security</h2>
             <p>
-              The directory and other private services are intended only for Sanctuary residents.
-              That is why we ask you to replace the temporary 2468 Starter PIN to your personal Private PIN before accessing these areas.
-              The 2468 Starter PIN is used only to help new residents join Sanctuary Club and to help existing residents if their PIN ever needs to be reset. 
-              Once you have chosen your own Private PIN, only that PIN will provide access to your private member services.
-              Only the minimum personal information needed to operate Sanctuary Club is held, and it is used solelyfor the benefit of our residents and community.
-              
+              Sanctuary Club holds only the minimum personal information needed to provide its
+              community services, and uses it solely for the benefit of residents.
             </p>
-          </div>
-
-          <div class="info-card">
-            <h2 class="info-title">🛡 Security & Data Protection</h2>
             <ul>
-              <li>Administrators cannot view your personal Membership PIN.</li>
-              <li>If a PIN is forgotten, it can be reset but never recovered.</li>
-              <li>An automatic forgotten-PIN process is planned for a later stage.</li>
-              <li>Residents Association Panel information will have its own separately protected area where appropriate.</li>
+              <li>
+                The temporary <strong>2468 Starter PIN</strong> is used only for new registrations
+                and authorised PIN resets.
+              </li>
+              <li>
+                Once you choose your own Private PIN, Administrators cannot view, recover or tell
+                you what it is. A forgotten PIN can only be reset.
+              </li>
+              <li>
+                Residents Association Panel information will have its own separately protected
+                area where appropriate.
+              </li>
             </ul>
+            <a class="charter-btn" href="privacy-charter.html">
+              Privacy, Security &amp; Data Protection Charter
+            </a>
           </div>
 
           <div class="info-card">
             <h2 class="info-title">🤝 Getting Started</h2>
             <p>
-              If you are unsure where to begin, start with <strong>Your Information</strong>.
-              Resident helpers will be able to assist anyone who would like a little support getting
-              comfortable with the site.
+              If you're unsure where to begin, start with <em>Your Information</em>.
+              If you need a little help, there's a list of lovely members who are only too willing to assist.
             </p>
           </div>
         </div>

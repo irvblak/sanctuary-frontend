@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=MH_5"></script>
+  <script src="access.js?v=MH_6"></script>
 
   <style>
     :root{
@@ -174,6 +174,25 @@
       line-height:1.55;
     }
 
+    .quick-links{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:0.5rem;
+      margin-top:0.35rem;
+      font-size:1rem;
+      font-weight:800;
+    }
+
+    .quick-links a{
+      color:var(--blue);
+      text-underline-offset:3px;
+    }
+
+    .quick-links a:hover{
+      color:var(--blueHover);
+    }
+
     .pill{
       display:inline-flex;
       align-items:center;
@@ -324,15 +343,14 @@
   <div class="shell">
     <div class="main-panel">
       <p class="intro">
-        Welcome to the Sanctuary Club Members Hub. This is the starting point for seeing what is happening,
-        keeping your own details up to date, finding other members and using the private
-        member services as they come online.
+        Welcome to the Sanctuary Club Members Hub — the starting point for your information,
+        fellow members, events and activities, and useful Club information.
       </p>
 
       <div class="comfort-strip">
-        Some community information is open straight away. More private areas become available once your
-        household has replaced the temporary Starter PIN with its own Membership PIN. This protects everyone’s
-        contact details while keeping the Calendar, Events List and general Notices easy to reach.
+        The Calendar, Events List and published Club information are easy to reach. More private
+        information and services become available once your household has replaced the temporary
+        Starter PIN with its own Membership PIN.
       </div>
 
       <div id="gateMessage" class="gate-message">
@@ -344,13 +362,13 @@
 
       <div class="content-grid">
         <div class="hub-card">
-          <h1 class="hub-title">Where would you like to go?</h1>
+          <h1 class="hub-title">How can we help today?</h1>
 
           <div class="hub-list">
             <div class="hub-row">
               <a class="hub-btn starter-ok" href="your-info.html">Your Information</a>
               <div class="hub-note">
-                Check your household details and replace the temporary Starter PIN.
+                View or update your household details, manage your Membership PIN and see your own services.
                 <br><span class="pill pill-open">Available now</span>
               </div>
             </div>
@@ -358,57 +376,29 @@
             <div class="hub-row">
               <a class="hub-btn private-link" href="members-directory.html">Members Directory</a>
               <div class="hub-note">
-                Look up fellow residents in the private members directory.
-                <br><span class="pill pill-private">Membership PIN required</span>
+                Find the contact information that fellow residents have chosen to share.
+                <br><span class="pill pill-private">Personal Membership PIN required</span>
               </div>
             </div>
 
             <div class="hub-row">
-              <a class="hub-btn starter-ok" href="events-calendar.html">Events Calendar</a>
+              <a class="hub-btn starter-ok" href="events-calendar.html">Events &amp; Activities</a>
               <div class="hub-note">
-                See events in calendar form by date and time.
+                See what is happening, browse forthcoming events and activities, and make bookings.
+                <div class="quick-links">
+                  <a href="events-calendar.html">Calendar</a>
+                  <span aria-hidden="true">•</span>
+                  <a href="events.html">Events List</a>
+                </div>
+                <span class="pill pill-open">Available now</span>
+              </div>
+            </div>
+
+            <div class="hub-row">
+              <a class="hub-btn starter-ok" href="notices-preview.html">Club Information</a>
+              <div class="hub-note">
+                Read Club and community news, notices and useful information. This will grow into the Club's library.
                 <br><span class="pill pill-open">Available now</span>
-              </div>
-            </div>
-
-            <div class="hub-row">
-              <a class="hub-btn starter-ok" href="events.html">Events Diary - List View</a>
-              <div class="hub-note">
-                Browse upcoming events in a simple date-by-date list.
-                <br><span class="pill pill-open">Available now</span>
-              </div>
-            </div>
-
-            <div class="hub-row">
-              <a class="hub-btn starter-ok" href="notices-preview.html">Club Notices and News</a>
-              <div class="hub-note">
-                Read general notices, event notices, announcements and community news.
-                <br><span class="pill pill-open">Available now</span>
-              </div>
-            </div>
-
-            <div class="hub-row">
-              <a class="hub-btn private-link" href="host-area.html">Host Area</a>
-              <div class="hub-note">
-                Create or manage event notices if you are an authorised host.
-                <br><span class="pill pill-private">Membership PIN required</span>
-              </div>
-            </div>
-
-            <div class="hub-row">
-              <a class="hub-btn private-link" href="archives.html">Archives</a>
-              <div class="hub-note">
-                Past events, Association material and news archives.
-                <br><span class="pill pill-private">Membership PIN required</span>
-              </div>
-              
-            </div>
-            <div class="hub-row">
-              <a class="hub-btn private-link" href="payments.html">Financial</a>
-              <div class="hub-note">
-                Financial will gradually bring together event payments, receipts,
-                transaction history and other services for members, Hosts and the Treasurer.
-                <br><span class="pill pill-private">Coming soon • Membership PIN required</span>
               </div>
             </div>
           </div>
@@ -418,33 +408,29 @@
           <div class="info-card">
             <h2 class="info-title">🔒 Privacy &amp; Security</h2>
             <p>
-              Sanctuary Club holds only the minimum personal information needed to provide its
-              community services, and uses it solely for the benefit of residents.
+              Sanctuary Club holds only the information needed to provide its community services
+              and uses it solely for the benefit of residents.
             </p>
-            <ul>
-              <li>
-                The temporary <strong>2468 Starter PIN</strong> is used only for new registrations
-                and authorised PIN resets.
-              </li>
-              <li>
-                Once you choose your own Private PIN, Administrators cannot view, recover or tell
-                you what it is. A forgotten PIN can only be reset.
-              </li>
-              <li>
-                Residents Association Panel information will have its own separately protected
-                area where appropriate.
-              </li>
-            </ul>
-            <a class="charter-btn" href="privacy-charter.html">
-              Privacy, Security &amp; Data Protection Charter
-            </a>
+            <p>
+              Your personal Membership PIN cannot be viewed or recovered by an Administrator.
+              If it is forgotten, it can only be reset safely.
+            </p>
           </div>
 
           <div class="info-card">
             <h2 class="info-title">🤝 Getting Started</h2>
             <p>
-              If you're unsure where to begin, start with <em>Your Information</em>.
-              If you need a little help, there's a list of lovely members who are only too willing to assist.
+              Begin with <strong>Your Information</strong> if you need to replace the temporary Starter PIN
+              or check your household details. Resident Helpers will be available for anyone who would
+              appreciate a little support.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h2 class="info-title">🌿 Our Aim</h2>
+            <p>
+              Sanctuary Club has been designed by members for members. We believe the computer should
+              do the thinking so that members can simply enjoy being part of the community.
             </p>
           </div>
         </div>

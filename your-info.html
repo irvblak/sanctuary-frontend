@@ -507,7 +507,7 @@
       <div id="roleStrip" class="role-strip" aria-live="polite">
         <div class="role-heading">
           <strong>Your Club Roles</strong>
-          <a class="role-register-link" href="club-information.html#role-register">View the Club Role Register →</a>
+          <a class="role-register-link" href="club-roles.html">View the Club Role Register →</a>
         </div>
         <div id="roleBadges" class="role-badges"></div>
       </div>
@@ -551,7 +551,6 @@
 
 <section class="personal-dashboard" aria-labelledby="personalServicesHeading">
   <h2 id="personalServicesHeading">Your Personal Services</h2>
-  <p class="small-note">Open your bookings or the events already associated with this membership.</p>
 
   <div class="dashboard-grid">
     <a class="dashboard-tile" href="my-bookings.html">
@@ -562,13 +561,25 @@
       <div class="dashboard-symbol" aria-hidden="true">🎟️</div>
     </a>
 
-    <a id="myEventsTile" class="dashboard-tile" href="host-my-events.html">
+    <a class="dashboard-tile" href="events.html">
       <div>
-        <strong>My Events</strong>
-        <span>View the events already associated with this membership, including current and past events.</span>
+        <strong>Events List</strong>
+        <span>Browse all current Sanctuary events and activities.</span>
       </div>
-      <div class="dashboard-symbol" aria-hidden="true">🎉</div>
+      <div class="dashboard-symbol" aria-hidden="true">📅</div>
     </a>
+  </div>
+
+  <div class="my-events-panel" aria-labelledby="myEventsHeading">
+    <div class="my-events-head">
+      <div>
+        <h3 id="myEventsHeading">My Events</h3>
+        <div class="small-note">Your own published event notices, ready to open at a glance.</div>
+      </div>
+      <a class="role-register-link" href="events.html">View all events →</a>
+    </div>
+    <div id="myEventsStatus" class="my-events-empty">Loading your events…</div>
+    <div id="myEventsList" class="my-events-list" hidden></div>
   </div>
 </section>
 
@@ -622,7 +633,8 @@
   const pinHelpText = document.getElementById("pinHelpText");
   const roleStrip = document.getElementById("roleStrip");
   const roleBadges = document.getElementById("roleBadges");
-  const myEventsTile = document.getElementById("myEventsTile");
+  const myEventsStatus = document.getElementById("myEventsStatus");
+  const myEventsList = document.getElementById("myEventsList");
 
   const residentsEl = document.getElementById("residents");
   const addResidentBtn = document.getElementById("addResidentBtn");
@@ -725,6 +737,24 @@
         .map(normaliseRole)
         .filter(Boolean)
     )];
+  }
+
+  function rolesFromResidents(residents){
+    if (!Array.isArray(residents)) return [];
+
+    return [...new Set(
+      residents
+        .flatMap(resident => Array.isArray(resident?.roles) ? resident.roles : [])
+        .map(normaliseRole)
+        .filter(Boolean)
+    )];
+  }
+
+  function mergeActiveRoles(...roleGroups){
+    activeRoles = [...new Set(
+      roleGroups.flat().map(normaliseRole).filter(Boolean)
+    )];
+    renderRoles();
   }
 
   function renderRoles(){
@@ -1003,6 +1033,141 @@
       : [];
   }
 
+  function eventField(event, names, fallback=""){
+    for (const name of names){
+      if (event && event[name] !== undefined && event[name] !== null && event[name] !== ""){
+        return event[name];
+      }
+    }
+    return fallback;
+  }
+
+  function eventMemberId(event){
+    return baseId(eventField(event, [
+      "host_member_id",
+      "hostMemberId",
+      "created_by_member_id",
+      "createdByMemberId",
+      "member_id",
+      "memberId"
+    ]));
+  }
+
+  function eventResidentId(event){
+    return String(eventField(event, [
+      "host_resident_id",
+      "hostResidentId",
+      "created_by_resident_id",
+      "createdByResidentId",
+      "resident_id",
+      "residentId"
+    ]) || "").trim().toUpperCase();
+  }
+
+  function eventArray(payload){
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.events)) return payload.events;
+    if (Array.isArray(payload?.items)) return payload.items;
+    if (Array.isArray(payload?.data)) return payload.data;
+    return [];
+  }
+
+  function eventDateValue(event){
+    return eventField(event, ["event_date","date","start_date","start_datetime","start"]);
+  }
+
+  function formatEventDate(value){
+    if (!value) return "Date to be confirmed";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return String(value);
+    return d.toLocaleDateString("en-GB", {weekday:"short",day:"numeric",month:"short",year:"numeric"});
+  }
+
+  function escapeHtml(value){
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;");
+  }
+
+  function renderMyEvents(events, memberId, residents){
+    const residentIds = new Set(
+      (Array.isArray(residents) ? residents : [])
+        .map(r => String(r?.resident_id || r?.residentId || "").trim().toUpperCase())
+        .filter(Boolean)
+    );
+
+    const mine = events
+      .filter(event => {
+        if (eventMemberId(event) === memberId) return true;
+        const residentId = eventResidentId(event);
+        return residentId && residentIds.has(residentId);
+      })
+      .filter(event => eventField(event,["event_id","id"]))
+      .sort((a,b) => {
+        const at = Date.parse(eventDateValue(a));
+        const bt = Date.parse(eventDateValue(b));
+        if (Number.isNaN(at) && Number.isNaN(bt)) return 0;
+        if (Number.isNaN(at)) return 1;
+        if (Number.isNaN(bt)) return -1;
+        return at - bt;
+      });
+
+    if (!mine.length){
+      myEventsList.hidden = true;
+      myEventsList.innerHTML = "";
+      myEventsStatus.hidden = false;
+      myEventsStatus.textContent = "You do not currently have any published event notices.";
+      return;
+    }
+
+    const visible = mine.slice(0,4);
+    myEventsList.innerHTML = visible.map(event => {
+      const id = String(eventField(event,["event_id","id"]));
+      const title = eventField(event,["title","event_title","name"],"Untitled event");
+      const time = eventField(event,["start_time","time","event_time"]);
+      const venue = eventField(event,["venue","location","place"]);
+      const details = [formatEventDate(eventDateValue(event)), time, venue, id].filter(Boolean).join(" · ");
+
+      return `
+        <a class="my-event-link" href="events-details.html?event_id=${encodeURIComponent(id)}">
+          <span>
+            <span class="my-event-title">${escapeHtml(title)}</span>
+            <span class="my-event-meta">${escapeHtml(details)}</span>
+          </span>
+          <span class="my-event-open">Open notice →</span>
+        </a>
+      `;
+    }).join("");
+
+    myEventsStatus.hidden = true;
+    myEventsList.hidden = false;
+  }
+
+  async function loadMyEvents(memberId, residents = []){
+    myEventsList.hidden = true;
+    myEventsStatus.hidden = false;
+    myEventsStatus.textContent = "Loading your events…";
+
+    try{
+      const headers = {"Accept":"application/json"};
+      if (authToken) headers.Authorization = `Bearer ${authToken}`;
+
+      const res = await fetch(`${BACKEND}/api/events`, {cache:"no-store",headers});
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || "Events could not be loaded.");
+
+      renderMyEvents(eventArray(data), memberId, residents);
+    }catch(err){
+      console.warn(err);
+      myEventsList.hidden = true;
+      myEventsStatus.hidden = false;
+      myEventsStatus.textContent = "Your event notices could not be loaded just now.";
+    }
+  }
+
   async function loadExistingFor(memberId){
     const lookupId = ++latestLookupId;
 
@@ -1011,6 +1176,7 @@
 
     if (backendResidents.length){
       existingResidents = backendResidents;
+      mergeActiveRoles(activeRoles, rolesFromResidents(backendResidents));
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
 
       const store = loadStore();
@@ -1022,6 +1188,7 @@
       saveStore(store);
 
       renderResidents();
+      await loadMyEvents(memberId, backendResidents);
       setStatus(pageStatus, "ok", "Existing information loaded.");
       return;
     }
@@ -1030,8 +1197,10 @@
 
     if (localResidents.length){
       existingResidents = localResidents;
+      mergeActiveRoles(activeRoles, rolesFromResidents(localResidents));
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
       renderResidents();
+      await loadMyEvents(memberId, localResidents);
       setStatus(pageStatus, "ok", "Existing locally saved information loaded.");
       return;
     }
@@ -1039,6 +1208,7 @@
     existingResidents = [];
     shownResidents = 1;
     renderResidents();
+    await loadMyEvents(memberId, []);
     setStatus(pageStatus, "warn", "No saved information found yet for this membership number.");
   }
 
@@ -1093,8 +1263,7 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
-    activeRoles = rolesFromLogin(data);
-    renderRoles();
+    mergeActiveRoles(rolesFromLogin(data));
 
     setStarterMode(
     Boolean(data.force_pin_change || data.starter_pin)

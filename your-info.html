@@ -1472,10 +1472,62 @@
     localStorage.removeItem("hostToken");
     localStorage.removeItem("hostMember");
     localStorage.removeItem("currentMemberId");
+
+    sessionStorage.removeItem("sanctuaryAccess");
+    sessionStorage.removeItem("sanctuaryAccessTime");
     sessionStorage.removeItem("authToken");
     sessionStorage.removeItem("currentMemberId");
+    sessionStorage.removeItem("currentResidentId");
+    sessionStorage.removeItem("verifiedResidentId");
+    sessionStorage.removeItem("currentHostMemberId");
+    sessionStorage.removeItem("currentHostResidentId");
+    sessionStorage.removeItem("hostAreaVerified");
+    sessionStorage.removeItem("hostAreaRoles");
 
     location.href = "index.html";
+  }
+
+  function hasActiveClubSession(){
+    const now = Date.now();
+    const accessUntil = Number(localStorage.getItem(ACCESS_UNTIL_KEY) || 0);
+
+    if (accessUntil > now) return true;
+
+    const granted = sessionStorage.getItem("sanctuaryAccess") === "granted";
+    const accessTime = Number(sessionStorage.getItem("sanctuaryAccessTime") || 0);
+
+    return granted && accessTime > 0 && (now - accessTime) < ACCESS_TTL_MS;
+  }
+
+  async function restoreClubSession(){
+    if (!hasActiveClubSession()) return;
+
+    const memberId = baseId(
+      sessionStorage.getItem("currentMemberId") ||
+      sessionStorage.getItem("currentHostMemberId") ||
+      localStorage.getItem("currentMemberId")
+    );
+
+    if (!memberId) return;
+
+    authToken =
+      sessionStorage.getItem("authToken") ||
+      localStorage.getItem("authToken") ||
+      "";
+
+    activeMember = memberId;
+    memberIdEl.value = memberId;
+    activeMemberId.textContent = memberId;
+
+    loginPanel.classList.add("hidden");
+    memberPanel.classList.remove("hidden");
+    memberPanel.classList.remove("locked");
+
+    mergeActiveRoles(rolesFromHostSession(memberId));
+    setStarterMode(false);
+
+    setStatus(pageStatus, "info", "Welcome back. Loading your information...");
+    await loadExistingFor(memberId);
   }
 
   pinEyeBtn.addEventListener("click", function(){
@@ -1525,6 +1577,7 @@
   });
 
   updateButtonsEnabled();
+  restoreClubSession();
 </script>
 
 </body>

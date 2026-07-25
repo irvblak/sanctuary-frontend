@@ -750,6 +750,42 @@
     )];
   }
 
+  function rolesFromHostSession(memberId){
+    const wantedMember = baseId(memberId);
+    const storedMember = baseId(
+      sessionStorage.getItem("currentHostMemberId") ||
+      sessionStorage.getItem("currentMemberId") ||
+      localStorage.getItem("currentHostMemberId") ||
+      localStorage.getItem("currentMemberId")
+    );
+
+    if (!wantedMember || !storedMember || wantedMember !== storedMember){
+      return [];
+    }
+
+    const sources = [
+      sessionStorage.getItem("hostAreaRoles"),
+      localStorage.getItem("hostAreaRoles")
+    ];
+
+    for (const source of sources){
+      if (!source) continue;
+
+      try{
+        const parsed = JSON.parse(source);
+        if (Array.isArray(parsed)){
+          return [...new Set(
+            parsed.map(normaliseRole).filter(Boolean)
+          )];
+        }
+      }catch(err){
+        console.warn("Could not read host-area roles:", err);
+      }
+    }
+
+    return [];
+  }
+
   function mergeActiveRoles(...roleGroups){
     activeRoles = [...new Set(
       roleGroups.flat().map(normaliseRole).filter(Boolean)
@@ -1263,7 +1299,10 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
-    mergeActiveRoles(rolesFromLogin(data));
+    mergeActiveRoles(
+      rolesFromLogin(data),
+      rolesFromHostSession(memberId)
+    );
 
     setStarterMode(
     Boolean(data.force_pin_change || data.starter_pin)

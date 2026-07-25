@@ -70,7 +70,7 @@
     }
 
     main{
-      max-width:1040px;
+      max-width:1180px;
       margin:0 auto 2rem;
       padding:0 1rem;
     }
@@ -267,6 +267,16 @@
       font-size:.96rem;
     }
 
+    .forgotten-link{
+      color:var(--accent-dark);
+      text-decoration:underline;
+      text-underline-offset:2px;
+    }
+
+    .forgotten-link:hover{
+      color:var(--accent);
+    }
+
     .forgotten-note strong{color:var(--accent-dark)}
 
     .community-message{
@@ -341,7 +351,7 @@
     .legend-item{border:1px solid var(--line);border-radius:12px;background:#f8fbfd;padding:.8rem}
     .legend-item p{font-size:.94rem;color:var(--muted)}
 
-    .residents{display:grid;gap:.85rem}
+    .residents{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.85rem}
     .resident-card{border:1px solid #d0dce5;border-radius:14px;padding:.95rem;background:#fafcfd}
     .resident-card input{padding:.52rem;font-size:1rem;border-radius:9px;margin-bottom:.4rem}
 
@@ -359,23 +369,63 @@
     #memberPanel.locked .locked-note{display:block}
     #memberPanel.locked .private-section{display:none}
 
-    .membership-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:.85rem;margin-top:1rem}
+    .role-strip{
+      display:none;
+      margin-top:.85rem;
+      padding:.85rem 1rem;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+    }
 
-    .service-tile{display:flex;justify-content:space-between;gap:.75rem;align-items:center;text-decoration:none;border:1px solid var(--line);border-radius:14px;padding:.95rem;background:#fff;color:var(--ink)}
-    .service-tile strong{display:block;color:var(--accent-dark);margin-bottom:.2rem}
-    .service-tile span{color:var(--muted);font-size:.94rem}
-    .service-tile.disabled{opacity:.58;cursor:default;background:#f7f9fb}
+    .role-strip.show{display:block}
+    .role-strip strong{display:block;color:var(--accent-dark);margin-bottom:.5rem}
+    .role-badges{display:flex;flex-wrap:wrap;gap:.55rem}
+    .role-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.42rem;
+      padding:.48rem .7rem;
+      border-radius:999px;
+      border:1px solid #c7d8e3;
+      background:#fff;
+      color:#31506b;
+      font-size:.93rem;
+      font-weight:850;
+    }
+    .role-icon{font-size:1.12rem;line-height:1}
 
-    .booking-list{display:grid;gap:.65rem;margin-top:.75rem}
-    .booking-card{border:1px solid var(--line);border-radius:14px;padding:.9rem;background:#fff}
-    .booking-card strong{color:var(--accent-dark)}
-    .booking-meta{display:flex;flex-wrap:wrap;gap:.45rem .9rem;color:var(--muted);font-size:.94rem;margin-top:.35rem}
+    .personal-dashboard{margin-top:1.2rem}
+    .personal-dashboard h2{margin-bottom:.25rem}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:.9rem;margin-top:.85rem}
+
+    .dashboard-tile{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:center;
+      min-height:112px;
+      text-decoration:none;
+      border:2px solid #c5d9e6;
+      border-radius:16px;
+      padding:1rem 1.05rem;
+      background:#f8fcff;
+      color:var(--ink);
+      transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+    }
+    .dashboard-tile:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(34,68,94,.10);border-color:#8db9d5}
+    .dashboard-tile strong{display:block;color:var(--accent-dark);font-size:1.12rem;margin-bottom:.25rem}
+    .dashboard-tile span{display:block;color:var(--muted);font-size:.96rem;line-height:1.42}
+    .dashboard-symbol{font-size:1.8rem;line-height:1;flex:0 0 auto}
+    .dashboard-tile[hidden]{display:none}
+
+    .section-rule{border:0;border-top:1px solid var(--line);margin:1.25rem 0}
 
     @media(max-width:760px){
       body{font-size:16px}
       nav{grid-template-columns:1fr;text-align:center}
       .nav-left,.nav-center,.nav-right{justify-self:center}
-      .intro-grid,.legend,.change-pin-grid,.membership-grid,.reassurance-grid{grid-template-columns:1fr}
+      .intro-grid,.legend,.change-pin-grid,.membership-grid,.reassurance-grid,.dashboard-grid,.residents{grid-template-columns:1fr}
       .member-strip{display:block}
       .member-strip .badge{margin:.4rem .25rem 0 0}
       h1{font-size:1.75rem}
@@ -398,31 +448,11 @@
   <section class="card">
     <h1>Your Information</h1>
 
-    <p class="page-intro">This is your own private area within Sanctuary Club. From here you can manage the information you choose to share, review your bookings and reach resident-only services.</p>
+    <p class="page-intro">Manage the contact information you choose to share, your household PIN and your personal Sanctuary Club services.</p>
 
     <div class="identity" aria-label="Sanctuary Club identity statement">
       <div class="identity-main">Built by residents. Run by residents. <em>For</em> residents.</div>
       <span class="identity-sub">Supporting our community.</span>
-    </div>
-
-    <div class="intro-grid">
-      <div class="info-box">
-        <strong>Here to help, not take over</strong>
-        <p>Sanctuary Club supports the activities, groups and neighbourly efforts that already make Sanctuary special.</p>
-        <p>Nothing already working well has to change.</p>
-      </div>
-
-      <div class="info-box">
-        <strong>Use what is useful</strong>
-        <p>Residents can use as much—or as little—of the website as suits them.</p>
-        <p>Existing ways of organising and keeping in touch can continue alongside Sanctuary Club for as long as anyone wishes.</p>
-      </div>
-
-      <div class="info-box">
-        <strong>Your privacy, your choice</strong>
-        <p>Only the contact information you choose to enter appears in the Members Directory.</p>
-        <p>Your personal PIN protects resident-only information and cannot be viewed by Administrators or other residents.</p>
-      </div>
     </div>
 
     <div id="loginPanel" class="login-card">
@@ -451,37 +481,7 @@
 
       <div class="forgotten-note">
         <strong>First visit?</strong> Use the temporary Starter PIN provided. You will then be asked to replace it with a personal four-digit PIN.<br />
-        <strong>Forgotten your PIN?</strong> An Administrator member can reset it to a temporary PIN so that you can choose a new one.
-      </div>
-
-      <div class="community-message">
-        <h2>Sanctuary Club and the community</h2>
-        <p class="community-lead">Sanctuary already has residents who organise coffee mornings, bridge, quizzes, lunches, book clubs, walks and many other activities. Sanctuary Club has been created to support that community—not to change it.</p>
-
-        <div class="reassurance-grid">
-          <div class="reassurance-item">
-            <strong>Existing organisers remain in charge</strong>
-            Activities can continue exactly as they do now. The website is simply another helping hand whenever it is useful.
-          </div>
-          <div class="reassurance-item">
-            <strong>Old and new can run together</strong>
-            Paper notices, word of mouth, telephone calls and familiar arrangements can continue alongside the website indefinitely.
-          </div>
-          <div class="reassurance-item">
-            <strong>New ideas are always welcome</strong>
-            Sanctuary Club can help a resident share an idea, find others who are interested and get something new started.
-          </div>
-          <div class="reassurance-item">
-            <strong>Taking part matters too</strong>
-            Organising is only one way to contribute. Coming along, welcoming neighbours and enjoying what others arrange are every bit as important.
-          </div>
-        </div>
-
-        <p>Residents who already organise something are warmly invited to use whatever parts of Sanctuary Club make life easier. There is no pressure to change anything that works well and no need to surrender the identity or independence of an existing activity.</p>
-
-        <p>Anyone with a new idea—or simply a thought worth discussing—can speak to an Administrator member, who will be pleased to help with the practicalities.</p>
-
-        <p class="community-close"><strong>The website does not create the community. Residents do.</strong><br />Sanctuary Club simply helps neighbours find one another, share information and enjoy more of what makes Sanctuary a friendly place to live.</p>
+        <a class="forgotten-link" href="quick-pin-reset.html"><strong>Forgotten your PIN?</strong></a> Arrange a quick household PIN reset.
       </div>
 
       <div id="loginStatus" class="status info"></div>
@@ -492,13 +492,18 @@
         <div>
           <strong>Your membership:</strong>
           <span id="activeMemberId">—</span>
-          <p class="small-note" id="memberHelpText">Manage the information you choose to share, review your bookings and open resident services below.</p>
+          <p class="small-note" id="memberHelpText">Manage the information you choose to share and open your personal services below.</p>
         </div>
 
         <div>
           <span id="pinStatusBadge" class="badge partial">🟡 Starter PIN</span>
           <span id="contactStatusBadge" class="badge basic">🔵 Basic</span>
         </div>
+      </div>
+
+      <div id="roleStrip" class="role-strip" aria-live="polite">
+        <strong>Your authorised roles</strong>
+        <div id="roleBadges" class="role-badges"></div>
       </div>
 
       <div id="starterPinNotice" class="locked-note">
@@ -542,21 +547,6 @@
   <h2>Information You Choose to Share</h2>
   <p class="small-note">Only the information entered here will appear in the Members Directory. Enter <strong>N/A</strong> for anything you prefer not to share.</p>
 
-  <div class="legend">
-    <div class="legend-item">
-      <span class="badge basic">🔵 Basic</span>
-      <p>Some contact fields are still blank.</p>
-    </div>
-    <div class="legend-item">
-      <span class="badge partial">🟡 Partial</span>
-      <p>Some fields have been completed, but others are still blank.</p>
-    </div>
-    <div class="legend-item">
-      <span class="badge complete">🟢 Complete</span>
-      <p>All visible fields contain either contact information or <strong>N/A</strong>.</p>
-    </div>
-  </div>
-
   <div class="residents" id="residents"></div>
 
   <div class="actions">
@@ -564,35 +554,43 @@
     <button id="saveBtn" type="button">Save My Information</button>
     <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
   </div>
-      <section class="card" style="box-shadow:none;margin-top:1rem;">
-        <h2>My Bookings</h2>
-        <p class="small-note">Your current event bookings will appear here. Use Amend / Cancel to return to the booking page for that event.</p>
-        <div class="button-row">
-          <button id="refreshBookingsBtn" type="button" class="soft">Refresh My Bookings</button>
-          <button id="printBookingsBtn" type="button" class="secondary">Print / Save as PDF</button>
-        </div>
-        <div id="bookingsStatus" class="status info"></div>
-        <div id="bookingsList" class="booking-list"></div>
-      </section>
+      <hr class="section-rule" />
 
-      <section class="card" style="box-shadow:none;margin-top:1rem;">
-        <h2>Your Resident Services</h2>
-        <div class="membership-grid">
-          <a class="service-tile" href="members-directory.html">
-            <div><strong>Members Directory</strong><span>Contact details shared by residents.</span></div>
-            <div>›</div>
+      <section class="personal-dashboard" aria-labelledby="personalServicesHeading">
+        <h2 id="personalServicesHeading">Your Personal Services</h2>
+        <p class="small-note">Open the area you need. Your bookings and any events you organise are kept on their own clear pages.</p>
+
+        <div class="dashboard-grid">
+          <a class="dashboard-tile" href="my-bookings.html">
+            <div>
+              <strong>My Bookings</strong>
+              <span>View upcoming and past bookings, places, payment position and booking status.</span>
+            </div>
+            <div class="dashboard-symbol" aria-hidden="true">🎟️</div>
           </a>
-          <a class="service-tile" href="events.html">
-            <div><strong>Events List</strong><span>Browse current events.</span></div>
-            <div>›</div>
+
+          <a id="myEventsTile" class="dashboard-tile" href="host-my-events.html" hidden>
+            <div>
+              <strong>My Events</strong>
+              <span>Open events you host, including anything still being prepared or requiring attention.</span>
+            </div>
+            <div class="dashboard-symbol" aria-hidden="true">🎉</div>
           </a>
-          <a class="service-tile disabled" href="#" aria-disabled="true">
-            <div><strong>My Contributions</strong><span>Future editorial submissions area.</span></div>
-            <div>Later</div>
+
+          <a class="dashboard-tile" href="members-directory.html">
+            <div>
+              <strong>Members Directory</strong>
+              <span>Find contact details that residents have chosen to share.</span>
+            </div>
+            <div class="dashboard-symbol" aria-hidden="true">📒</div>
           </a>
-          <a class="service-tile disabled" href="#" aria-disabled="true">
-            <div><strong>My Payments</strong><span>Future member transaction ledger.</span></div>
-            <div>Later</div>
+
+          <a class="dashboard-tile" href="events-activities.html">
+            <div>
+              <strong>Events &amp; Activities</strong>
+              <span>Browse events or open the organising area available to your role.</span>
+            </div>
+            <div class="dashboard-symbol" aria-hidden="true">🌱</div>
           </a>
         </div>
       </section>
@@ -631,6 +629,9 @@
   const contactStatusBadge = document.getElementById("contactStatusBadge");
   const pinStatusBadge = document.getElementById("pinStatusBadge");
   const pinHelpText = document.getElementById("pinHelpText");
+  const roleStrip = document.getElementById("roleStrip");
+  const roleBadges = document.getElementById("roleBadges");
+  const myEventsTile = document.getElementById("myEventsTile");
 
   const residentsEl = document.getElementById("residents");
   const addResidentBtn = document.getElementById("addResidentBtn");
@@ -644,11 +645,6 @@
   const changePinBtn = document.getElementById("changePinBtn");
   const cancelChangePinBtn = document.getElementById("cancelChangePinBtn");
 
-  const refreshBookingsBtn = document.getElementById("refreshBookingsBtn");
-  const printBookingsBtn = document.getElementById("printBookingsBtn");
-  const bookingsStatus = document.getElementById("bookingsStatus");
-  const bookingsList = document.getElementById("bookingsList");
-
   const logoutLink = document.getElementById("logoutLink");
 
   let authToken = "";
@@ -657,6 +653,22 @@
   let shownResidents = 1;
   let latestLookupId = 0;
   let starterPinRequired = false;
+  let activeRoles = [];
+
+  const ROLE_DETAILS = {
+    host:{label:"Host",icon:"🎉"},
+    activity:{label:"Activity",icon:"🌱"},
+    activity_organiser:{label:"Activity",icon:"🌱"},
+    news_contributor:{label:"News",icon:"📰"},
+    news:{label:"News",icon:"📰"},
+    committee:{label:"Panel",icon:"👥"},
+    panel:{label:"Panel",icon:"👥"},
+    website_helper:{label:"Helper",icon:"🌿"},
+    helper:{label:"Helper",icon:"🌿"},
+    admin:{label:"Admin",icon:"⚙️"},
+    treasurer:{label:"Treasurer",icon:"£"},
+    services:{label:"Services",icon:"🤲"}
+  };
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];
@@ -668,6 +680,34 @@
 
   function usingStarterPin(){
     return String(pinInput.value || "").trim() === "2468";
+  }
+
+  function rolesFromLogin(data){
+    const candidates = [
+      data?.roles,
+      data?.member?.roles,
+      data?.resident?.roles,
+      data?.user?.roles
+    ];
+
+    const roles = candidates.find(Array.isArray) || [];
+    return [...new Set(roles.map(role => String(role || "").trim().toLowerCase()).filter(Boolean))];
+  }
+
+  function renderRoles(){
+    roleBadges.innerHTML = "";
+
+    activeRoles.forEach(role => {
+      const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:"•"};
+      const badge = document.createElement("span");
+      badge.className = "role-badge";
+      badge.title = detail.label;
+      badge.innerHTML = `<span class="role-icon" aria-hidden="true">${detail.icon}</span><span>${detail.label}</span>`;
+      roleBadges.appendChild(badge);
+    });
+
+    roleStrip.classList.toggle("show", activeRoles.length > 0);
+    myEventsTile.hidden = !(activeRoles.includes("host") || activeRoles.includes("admin"));
   }
 
   function setStarterMode(isStarter){
@@ -1021,6 +1061,8 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
+    activeRoles = rolesFromLogin(data);
+    renderRoles();
 
     setStarterMode(
     Boolean(data.force_pin_change || data.starter_pin)
@@ -1034,7 +1076,6 @@
 
     setStatus(pageStatus, "info", "Loading your information...");
     await loadExistingFor(memberId);
-    await loadMyBookings();
   }
 
   async function openMembersDirectory(){
@@ -1176,139 +1217,10 @@
 
       setStatus(pageStatus, "ok", "PIN changed successfully. Loading your membership area...");
       await loadExistingFor(activeMember);
-      await loadMyBookings();
 
     }catch(err){
       setStatus(pageStatus, "err", err.message || "PIN could not be changed.");
     }
-  }
-
-  function eventIdOf(event){
-    return clean(event.event_id || event.eventId || event.id || event.ref || event.reference).toUpperCase();
-  }
-
-  function eventTitleOf(event){
-    return clean(event.title || event.event_title || event.name, "Untitled event");
-  }
-
-  function eventDateText(event){
-    const date = clean(event.date || event.event_date || event.start_date);
-    const start = clean(event.start_time || event.time || event.start);
-    return [date, start].filter(Boolean).join(" ");
-  }
-
-  function bookingPlacesText(booking){
-    const memberPlaces = Number(booking.member_places ?? booking.places ?? booking.places_total ?? 0) || 0;
-    const guestPlaces = Number(booking.guest_places ?? booking.guests ?? 0) || 0;
-    const parts = [];
-    if (memberPlaces) parts.push(`${memberPlaces} member place${memberPlaces === 1 ? "" : "s"}`);
-    if (guestPlaces) parts.push(`${guestPlaces} guest place${guestPlaces === 1 ? "" : "s"}`);
-    return parts.length ? parts.join(" + ") : "Booking recorded";
-  }
-
-  async function fetchJSON(url, options = {}){
-    const res = await fetch(url, {
-      cache:"no-store",
-      ...options,
-      headers:{
-        "Accept":"application/json",
-        ...(options.headers || {})
-      }
-    });
-
-    const data = await res.json().catch(() => null);
-
-    if (!res.ok || !data || data.success === false){
-      throw new Error(data?.message || "Request failed.");
-    }
-
-    return data;
-  }
-
-  async function loadMyBookings(){
-    if (!activeMember || starterPinRequired) return;
-
-    bookingsList.innerHTML = "";
-    setStatus(bookingsStatus, "info", "Loading your bookings...");
-
-    try{
-      const eventsData = await fetchJSON(`${BACKEND}/api/events`, {
-        headers:authToken ? { "Authorization":`Bearer ${authToken}` } : {}
-      });
-
-      const events = Array.isArray(eventsData.events)
-        ? eventsData.events
-        : Array.isArray(eventsData)
-          ? eventsData
-          : [];
-
-      const rows = [];
-
-      for (const event of events){
-        const eid = eventIdOf(event);
-        if (!eid) continue;
-
-        try{
-          const data = await fetchJSON(`${BACKEND}/api/events/${encodeURIComponent(eid)}/my-booking`, {
-            headers:authHeaders()
-          });
-
-          const booking = data.booking || data.my_booking || data;
-          const hasBooking = booking && (
-            booking.booking_id ||
-            booking.event_id ||
-            booking.eventId ||
-            booking.status ||
-            booking.places ||
-            booking.member_places ||
-            booking.guest_places
-          );
-
-          if (hasBooking){
-            rows.push({event, booking});
-          }
-        }catch{
-          // No booking for this event, or endpoint unavailable for this event.
-        }
-      }
-
-      if (!rows.length){
-        setStatus(bookingsStatus, "info", "No current bookings found for this membership.");
-        return;
-      }
-
-      setStatus(bookingsStatus, "ok", `${rows.length} current booking${rows.length === 1 ? "" : "s"} found.`);
-
-      bookingsList.innerHTML = rows.map(({event, booking}) => {
-        const eid = eventIdOf(event);
-        const title = escapeAttr(eventTitleOf(event));
-        const when = escapeAttr(eventDateText(event) || "Date/time to be confirmed");
-        const status = escapeAttr(clean(booking.status || booking.booking_status || "Confirmed"));
-        const places = escapeAttr(bookingPlacesText(booking));
-
-        return `
-          <div class="booking-card">
-            <strong>${title}</strong>
-            <div class="booking-meta">
-              <span>${when}</span>
-              <span>${places}</span>
-              <span>Status: ${status}</span>
-            </div>
-            <div class="button-row">
-              <button type="button" class="soft" onclick="location.href='events-details.html?event_id=${encodeURIComponent(eid)}'">View event</button>
-              <button type="button" onclick="location.href='event-booking.html?event_id=${encodeURIComponent(eid)}'">Amend / Cancel</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-    }catch(err){
-      setStatus(bookingsStatus, "warn", "Bookings could not be loaded yet. This may need a small backend endpoint if the existing booking lookup is not available.");
-    }
-  }
-
-  function printBookings(){
-    window.print();
   }
 
   function logout(){
@@ -1366,9 +1278,6 @@
   });
 
   changePinBtn.addEventListener("click", changePin);
-
-  refreshBookingsBtn.addEventListener("click", loadMyBookings);
-  printBookingsBtn.addEventListener("click", printBookings);
 
   logoutLink.addEventListener("click", function(e){
     e.preventDefault();

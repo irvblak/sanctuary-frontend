@@ -379,7 +379,10 @@
     }
 
     .role-strip.show{display:block}
-    .role-strip strong{display:block;color:var(--accent-dark);margin-bottom:.5rem}
+    .role-heading{display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:.55rem}
+    .role-heading strong{display:block;color:var(--accent-dark)}
+    .role-register-link{color:var(--accent-dark);font-size:.93rem;font-weight:800;text-underline-offset:2px}
+    .role-register-link:hover{color:var(--accent)}
     .role-badges{display:flex;flex-wrap:wrap;gap:.55rem}
     .role-badge{
       display:inline-flex;
@@ -502,7 +505,10 @@
       </div>
 
       <div id="roleStrip" class="role-strip" aria-live="polite">
-        <strong>Your authorised roles</strong>
+        <div class="role-heading">
+          <strong>Your Club Roles</strong>
+          <a class="role-register-link" href="club-information.html#role-register">View the Club Role Register →</a>
+        </div>
         <div id="roleBadges" class="role-badges"></div>
       </div>
 
@@ -543,6 +549,31 @@
   </div>
 </div>
 
+<section class="personal-dashboard" aria-labelledby="personalServicesHeading">
+  <h2 id="personalServicesHeading">Your Personal Services</h2>
+  <p class="small-note">Open your bookings or the events already associated with this membership.</p>
+
+  <div class="dashboard-grid">
+    <a class="dashboard-tile" href="my-bookings.html">
+      <div>
+        <strong>My Bookings</strong>
+        <span>View upcoming and past bookings, places, payment position and booking status.</span>
+      </div>
+      <div class="dashboard-symbol" aria-hidden="true">🎟️</div>
+    </a>
+
+    <a id="myEventsTile" class="dashboard-tile" href="host-my-events.html">
+      <div>
+        <strong>My Events</strong>
+        <span>View the events already associated with this membership, including current and past events.</span>
+      </div>
+      <div class="dashboard-symbol" aria-hidden="true">🎉</div>
+    </a>
+  </div>
+</section>
+
+<hr class="section-rule" />
+
 <div class="private-section">
   <h2>Information You Choose to Share</h2>
   <p class="small-note">Only the information entered here will appear in the Members Directory. Enter <strong>N/A</strong> for anything you prefer not to share.</p>
@@ -554,47 +585,7 @@
     <button id="saveBtn" type="button">Save My Information</button>
     <button id="showChangePinBtn" class="soft" type="button">Change PIN</button>
   </div>
-      <hr class="section-rule" />
-
-      <section class="personal-dashboard" aria-labelledby="personalServicesHeading">
-        <h2 id="personalServicesHeading">Your Personal Services</h2>
-        <p class="small-note">Open the area you need. Your bookings and any events you organise are kept on their own clear pages.</p>
-
-        <div class="dashboard-grid">
-          <a class="dashboard-tile" href="my-bookings.html">
-            <div>
-              <strong>My Bookings</strong>
-              <span>View upcoming and past bookings, places, payment position and booking status.</span>
-            </div>
-            <div class="dashboard-symbol" aria-hidden="true">🎟️</div>
-          </a>
-
-          <a id="myEventsTile" class="dashboard-tile" href="host-my-events.html" hidden>
-            <div>
-              <strong>My Events</strong>
-              <span>Open events you host, including anything still being prepared or requiring attention.</span>
-            </div>
-            <div class="dashboard-symbol" aria-hidden="true">🎉</div>
-          </a>
-
-          <a class="dashboard-tile" href="members-directory.html">
-            <div>
-              <strong>Members Directory</strong>
-              <span>Find contact details that residents have chosen to share.</span>
-            </div>
-            <div class="dashboard-symbol" aria-hidden="true">📒</div>
-          </a>
-
-          <a class="dashboard-tile" href="events-activities.html">
-            <div>
-              <strong>Events &amp; Activities</strong>
-              <span>Browse events or open the organising area available to your role.</span>
-            </div>
-            <div class="dashboard-symbol" aria-hidden="true">🌱</div>
-          </a>
-        </div>
-      </section>
-      </div>
+</div>
 
       <div id="pageStatus" class="status info"></div>
     </div>
@@ -682,16 +673,58 @@
     return String(pinInput.value || "").trim() === "2468";
   }
 
+  function normaliseRole(role){
+    const key = String(role || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g,"_");
+
+    const aliases = {
+      administrator:"admin",
+      event_host:"host",
+      organiser:"activity_organiser",
+      activity_organizer:"activity_organiser",
+      community_news:"news_contributor",
+      residents_association_panel:"panel",
+      residents_panel:"panel",
+      website_helper_role:"website_helper",
+      service_provider:"services"
+    };
+
+    return aliases[key] || key;
+  }
+
   function rolesFromLogin(data){
-    const candidates = [
+    const roleLists = [
       data?.roles,
       data?.member?.roles,
       data?.resident?.roles,
       data?.user?.roles
     ];
 
-    const roles = candidates.find(Array.isArray) || [];
-    return [...new Set(roles.map(role => String(role || "").trim().toLowerCase()).filter(Boolean))];
+    const residentLists = [
+      data?.residents,
+      data?.member?.residents,
+      data?.contacts,
+      data?.member?.contacts
+    ];
+
+    residentLists.forEach(list => {
+      if (!Array.isArray(list)) return;
+      list.forEach(resident => {
+        if (Array.isArray(resident?.roles)){
+          roleLists.push(resident.roles);
+        }
+      });
+    });
+
+    return [...new Set(
+      roleLists
+        .filter(Array.isArray)
+        .flat()
+        .map(normaliseRole)
+        .filter(Boolean)
+    )];
   }
 
   function renderRoles(){
@@ -707,7 +740,6 @@
     });
 
     roleStrip.classList.toggle("show", activeRoles.length > 0);
-    myEventsTile.hidden = !(activeRoles.includes("host") || activeRoles.includes("admin"));
   }
 
   function setStarterMode(isStarter){

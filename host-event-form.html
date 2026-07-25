@@ -2023,6 +2023,94 @@ if(
   }
 }
   
+function buildPayload(){
+  const category = cleanText(els.category.value);
+  const paymentRequired = els.paymentRequired.value === "yes";
+  const costPerPlace = paymentRequired ? moneyNumber(els.costPerPlace.value) : 0;
+
+  /*
+    When Admin edits another resident's Event, preserve the Event's
+    existing Host. For a new Event, or when the Host edits their own
+    Event, use the currently verified resident.
+  */
+  const hostResidentId = cleanResidentId(
+    editEventId && loadedEventHost && loadedEventHost.host_resident_id
+      ? loadedEventHost.host_resident_id
+      : verifiedResidentId
+  );
+
+  const hostMemberId = baseMemberId(
+    editEventId && loadedEventHost && loadedEventHost.host_member_id
+      ? loadedEventHost.host_member_id
+      : verifiedMemberId
+  );
+
+  const hostResidentIndex = parseInt(
+    editEventId && loadedEventHost && loadedEventHost.host_resident_index
+      ? loadedEventHost.host_resident_index
+      : verifiedResidentIndex,
+    10
+  ) || residentIndexFromRef(hostResidentId) || 1;
+
+  return {
+    event_id: editEventId,
+    title: cleanText(els.title.value),
+
+    category,
+    category_key: category,
+    category_label: category,
+
+    event_date: cleanText(els.eventDate.value),
+    start_time: cleanText(els.startTime.value),
+    end_time: cleanText(els.endTime.value),
+    location: cleanText(els.venue.value),
+
+    notice_title: cleanText(els.title.value),
+    notice_summary: cleanText(els.summary.value),
+    notice_body: cleanText(els.description.value),
+
+    title_art_url: cleanText(els.titleArtUrl.value),
+    image_url: cleanText(els.imageUrl.value),
+
+    notice_title_colour: getSelectedRadioValue("titleColour", "#17314a"),
+    notice_title_bold: !!els.titleBold.checked,
+    notice_title_italic: !!els.titleItalic.checked,
+    notice_title_align: getSelectedRadioValue("titleAlign", "center"),
+
+    host_resident_id: hostResidentId,
+    host_member_id: hostMemberId,
+    host_resident_index: hostResidentIndex,
+
+    host_name: cleanText(els.hostName.value),
+    host_email: cleanText(els.hostEmail.value),
+    host_mobile: cleanText(els.hostMobile.value),
+    host_landline: cleanText(els.hostLandline.value),
+
+    capacity_total: parseInt(els.capacityTotal.value, 10) || 0,
+    capacity: parseInt(els.capacityTotal.value, 10) || 0,
+    max_places_per_member: 0,
+
+    members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
+    guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
+    booking_close_at: cleanText(els.bookingCloseAt.value),
+    cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
+    refund_cutoff_at: cleanText(els.refundCutoffAt.value),
+
+    payable: paymentRequired,
+    is_payable: paymentRequired,
+    payment_required: paymentRequired,
+    price_member: costPerPlace,
+    price_guest: costPerPlace,
+    unit_price: costPerPlace,
+    cost_per_place: costPerPlace,
+    price_per_place: costPerPlace,
+    payment_instructions: cleanText(els.paymentInstructions.value),
+    payment_terms: cleanText(els.paymentNote.value),
+    refund_note: cleanText(els.paymentNote.value),
+    payment_refund_note: cleanText(els.paymentNote.value)
+  };
+}
+
 async function saveEvent(e){
   e.preventDefault();
   clearStatus(els.saveStatus);

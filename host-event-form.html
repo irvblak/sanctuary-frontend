@@ -7,6 +7,28 @@
   <meta name="robots" content="noindex, nofollow" />
 
   <script src="access.js"></script>
+  <script>
+    window.addEventListener("error", function(event){
+      console.error("Host Event Form error:", event.error || event.message);
+      window.setTimeout(function(){
+        const box = document.getElementById("saveStatus") || document.getElementById("verifyStatus");
+        if(box){
+          box.className = "status show err";
+          box.textContent = "The Event form has encountered a technical error. Please report: " + (event.message || "Unknown error");
+        }
+      }, 0);
+    });
+    window.addEventListener("unhandledrejection", function(event){
+      console.error("Host Event Form promise error:", event.reason);
+      window.setTimeout(function(){
+        const box = document.getElementById("saveStatus") || document.getElementById("verifyStatus");
+        if(box){
+          box.className = "status show err";
+          box.textContent = "The Event form could not complete that action. " + ((event.reason && event.reason.message) || event.reason || "Please try again.");
+        }
+      }, 0);
+    });
+  </script>
 
   <style>
     :root{
@@ -1110,7 +1132,7 @@ button.danger:hover{
         <div id="saveStatus" class="status"></div>
 
      <div class="actions">
-  <button class="primary" id="saveBtn" type="submit">Save Event Notice</button>
+  <button class="primary" id="saveBtn" type="button">Save Event Notice</button>
   <button class="secondary" id="resetBtn" type="button">Reset event details</button>
   <a class="pill" id="viewNoticeLink" href="#" style="display:none;">View Event Notice</a>
 
@@ -2120,7 +2142,14 @@ async function saveEvent(e){
     return;
   }
 
-  const payload = buildPayload();
+  let payload;
+  try{
+    payload = buildPayload();
+  }catch(err){
+    setStatus(els.saveStatus, "err", "The Event details could not be prepared for saving. " + (err.message || err));
+    console.error("buildPayload failed", err);
+    return;
+  }
 
   if(!payload.title || !payload.event_date || !payload.category){
     setStatus(els.saveStatus,"warn","Title, date and category are required.");
@@ -2682,6 +2711,7 @@ document.querySelectorAll('input[name="titleColour"], input[name="titleAlign"], 
   .forEach(control => control.addEventListener("change", updateMiniPreview));
 
 els.verifyBtn.onclick = verifyHost;
+els.saveBtn.onclick = saveEvent;
 els.eventForm.onsubmit = saveEvent;
 els.resetBtn.onclick = resetForm;
 els.logoutBtn.onclick = logout;

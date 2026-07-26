@@ -440,12 +440,9 @@
     <section class="hero">
       <p class="eyebrow">Sanctuary Club</p>
       <h1>My Bookings</h1>
-      <p>
-        Sign in with your membership number and PIN to view your bookings, their current status,
-        places reserved, payment position and links back to the event notice or booking page.
-      </p>
+      <p>View your bookings, their current status, places reserved, payment position and links back to the Event Notice or booking page.</p>
 
-      <div class="login-grid">
+      <div class="login-grid" id="loginGrid">
         <div class="field">
           <label for="memberIdInput">Membership number</label>
           <input id="memberIdInput" type="text" placeholder="e.g. SM55" autocomplete="username" />
@@ -503,6 +500,7 @@
     const memberIdInput = document.getElementById("memberIdInput");
     const pinInput = document.getElementById("pinInput");
     const lookupBtn = document.getElementById("lookupBtn");
+    const loginGrid = document.getElementById("loginGrid");
 
     const messageArea = document.getElementById("messageArea");
     const bookingsArea = document.getElementById("bookingsArea");
@@ -801,6 +799,23 @@
       }
     }
 
+
+    async function restoreYiSession(){
+      const storedToken = sessionStorage.getItem("authToken") || localStorage.getItem("authToken") || "";
+      const storedMember = (sessionStorage.getItem("currentMemberId") || localStorage.getItem("currentMemberId") || "").trim().toUpperCase();
+      if (!storedToken || !storedMember){
+        setMessage("Please return to Your Information and verify your membership first.", "error");
+        return;
+      }
+      authToken = storedToken;
+      currentMemberId = storedMember;
+      memberIdInput.value = storedMember;
+      loginGrid.style.display = "none";
+      setMessage("Loading your bookings…", "");
+      try{ await loadMyBookings(); }
+      catch(err){ setMessage(err && err.message ? err.message : "Could not load your bookings.", "error"); }
+    }
+
     lookupBtn.addEventListener("click", signInAndLoad);
 
     pinInput.addEventListener("keydown", function(e){
@@ -810,6 +825,8 @@
     memberIdInput.addEventListener("keydown", function(e){
       if (e.key === "Enter") signInAndLoad();
     });
+
+    restoreYiSession();
   </script>
 </body>
 </html>

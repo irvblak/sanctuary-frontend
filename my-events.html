@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>My Events | Sanctuary Club</title>
+<style>
+:root{--bg:#eef6fb;--card:#fff;--ink:#243746;--muted:#526b79;--line:#c9dce8;--accent:#005ea8;--dark:#003b69;--shadow:0 6px 20px rgba(34,68,94,.11)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#cfe6f8,var(--bg) 45%,#fff);min-height:100vh}.wrap{width:min(980px,calc(100% - 28px));margin:auto;padding:24px 0 42px}.back{display:inline-block;margin-bottom:16px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--dark);font-weight:700;text-decoration:none}.hero,.event{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.hero{padding:22px;margin-bottom:18px}.hero h1{margin:0 0 8px;color:var(--dark)}.hero p{margin:0;color:var(--muted);line-height:1.55}.status{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid var(--line);margin-bottom:14px}.list{display:grid;gap:14px}.event{padding:18px}.head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.event h2{margin:0;color:var(--dark);font-size:1.2rem}.ref{font-weight:800;color:var(--accent);white-space:nowrap}.meta{margin-top:9px;color:var(--muted);line-height:1.5}.actions{margin-top:14px}.btn{display:inline-block;padding:9px 13px;border-radius:10px;background:var(--accent);color:#fff;font-weight:750;text-decoration:none}.empty{background:#fff;border:1px dashed var(--line);border-radius:16px;padding:22px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body><main class="wrap"><a class="back" href="your-info.html">← Back to Your Information</a><section class="hero"><h1>My Events</h1><p>Events hosted by your household. Open an Event Notice to view its published details.</p></section><div id="status" class="status">Loading your events…</div><div id="list" class="list"></div></main>
+<script>
+const API="https://sanctuary-backend-8iqc.onrender.com";
+const member=(sessionStorage.getItem("currentMemberId")||localStorage.getItem("currentMemberId")||"").trim().toUpperCase();
+const statusEl=document.getElementById("status"),list=document.getElementById("list");
+const clean=v=>String(v??"").trim();
+const base=v=>{const m=clean(v).toUpperCase().match(/^(SM|SC)0*(\d+)/);return m?m[1]+String(parseInt(m[2],10)).padStart(2,"0"):clean(v).toUpperCase()};
+const eventId=e=>clean(e.event_id||e.eventId||e.id||e.event_ref||e.reference);
+const hostMember=e=>base(e.host_member_id||e.member_id||e.host_member||e.organiser_member_id||e.created_by_member_id||e.host_resident_id||e.resident_id);
+const esc=s=>clean(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function arr(d){return Array.isArray(d)?d:Array.isArray(d.events)?d.events:Array.isArray(d.items)?d.items:[]}
+function date(v){if(!v)return "";const d=new Date(v.length===10?v+"T00:00:00":v);return isNaN(d)?clean(v):d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+async function init(){if(!member){statusEl.textContent="Please return to Your Information and verify your membership first.";return}try{const r=await fetch(API+"/api/events",{headers:{Accept:"application/json"}});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||"Could not load events.");const events=arr(d).filter(e=>hostMember(e)===base(member)).sort((a,b)=>clean(a.event_date||a.start_at).localeCompare(clean(b.event_date||b.start_at)));statusEl.remove();if(!events.length){list.innerHTML='<div class="empty">No events are currently recorded for this household.</div>';return}list.innerHTML=events.map(e=>{const id=eventId(e),title=clean(e.title||e.event_title||e.notice_title)||"Untitled event",dt=date(clean(e.event_date||e.start_at)),time=clean(e.start_time),venue=clean(e.venue||e.location);return `<article class="event"><div class="head"><h2>${esc(title)}</h2><div class="ref">${esc(id)}</div></div><div class="meta">${esc([dt,time,venue].filter(Boolean).join(" • "))}</div><div class="actions"><a class="btn" href="events-details.html?event_id=${encodeURIComponent(id)}">View Event Notice</a></div></article>`}).join("");}catch(e){statusEl.textContent=e.message||"Could not load your events."}}
+init();
+</script></body></html>

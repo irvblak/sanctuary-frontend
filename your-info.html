@@ -383,7 +383,22 @@
     .role-heading strong{display:block;color:var(--accent-dark)}
     .role-register-link{color:var(--accent-dark);font-size:.93rem;font-weight:800;text-underline-offset:2px}
     .role-register-link:hover{color:var(--accent)}
-    .role-badges{display:flex;flex-wrap:wrap;gap:.55rem}
+    .role-badges{display:flex;flex-direction:column;gap:.55rem}
+    .household-role-row{
+      display:grid;
+      grid-template-columns:72px minmax(0,1fr);
+      gap:.65rem;
+      align-items:start;
+    }
+    .household-role-label{
+      padding:.48rem 0;
+      color:var(--accent-dark);
+      font-size:.93rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .household-role-badges{display:flex;flex-wrap:wrap;gap:.45rem}
+    .household-no-roles{padding:.48rem 0;color:var(--muted);font-size:.93rem}
     .role-badge{
       display:inline-flex;
       align-items:center;
@@ -401,6 +416,7 @@
     .personal-dashboard{margin-top:1.2rem}
     .personal-dashboard h2{margin-bottom:.25rem}
     .dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:.9rem;margin-top:.85rem}
+    .dashboard-tile-wide{grid-column:1 / -1;max-width:560px;width:100%;justify-self:center}
 
     .dashboard-tile{
       display:flex;
@@ -506,7 +522,7 @@
 
       <div id="roleStrip" class="role-strip" aria-live="polite">
         <div class="role-heading">
-          <strong>Your Club Roles</strong>
+          <strong>Your Household Club Roles</strong>
           <a class="role-register-link" href="club-roles.html">View the Club Role Register →</a>
         </div>
         <div id="roleBadges" class="role-badges"></div>
@@ -556,30 +572,26 @@
     <a class="dashboard-tile" href="my-bookings.html">
       <div>
         <strong>My Bookings</strong>
-        <span>View upcoming and past bookings, places, payment position and booking status.</span>
+        <span>View my bookings →</span>
       </div>
       <div class="dashboard-symbol" aria-hidden="true">🎟️</div>
     </a>
 
-    <a class="dashboard-tile" href="events.html">
+    <a class="dashboard-tile" href="host-my-events.html">
+      <div>
+        <strong>My Events</strong>
+        <span>View my events →</span>
+      </div>
+      <div class="dashboard-symbol" aria-hidden="true">🎉</div>
+    </a>
+
+    <a class="dashboard-tile dashboard-tile-wide" href="events.html">
       <div>
         <strong>Events List</strong>
-        <span>Browse all current Sanctuary events and activities.</span>
+        <span>Browse all events →</span>
       </div>
       <div class="dashboard-symbol" aria-hidden="true">📅</div>
     </a>
-  </div>
-
-  <div class="my-events-panel" aria-labelledby="myEventsHeading">
-    <div class="my-events-head">
-      <div>
-        <h3 id="myEventsHeading">My Events</h3>
-        <div class="small-note">Your own published event notices, ready to open at a glance.</div>
-      </div>
-      <a class="role-register-link" href="events.html">View all events →</a>
-    </div>
-    <div id="myEventsStatus" class="my-events-empty">Loading your events…</div>
-    <div id="myEventsList" class="my-events-list" hidden></div>
   </div>
 </section>
 
@@ -633,8 +645,6 @@
   const pinHelpText = document.getElementById("pinHelpText");
   const roleStrip = document.getElementById("roleStrip");
   const roleBadges = document.getElementById("roleBadges");
-  const myEventsStatus = document.getElementById("myEventsStatus");
-  const myEventsList = document.getElementById("myEventsList");
 
   const residentsEl = document.getElementById("residents");
   const addResidentBtn = document.getElementById("addResidentBtn");
@@ -657,6 +667,7 @@
   let latestLookupId = 0;
   let starterPinRequired = false;
   let activeRoles = [];
+  let householdRoleResidents = [];
 
   const ROLE_DETAILS = {
     host:{label:"Host",icon:"🎉"},
@@ -793,19 +804,66 @@
     renderRoles();
   }
 
+  function residentRoleLabel(resident, index){
+    const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
+    if (Number.isFinite(explicitIndex) && explicitIndex > 0) return `Res ${explicitIndex}`;
+
+    const residentId = String(resident?.resident_id || resident?.residentId || "");
+    const match = residentId.match(/\/(\d+)$/);
+    if (match) return `Res ${match[1]}`;
+
+    return `Res ${index + 1}`;
+  }
+
+  function setHouseholdRoleResidents(residents){
+    householdRoleResidents = (Array.isArray(residents) ? residents : [])
+      .map((resident,index) => ({
+        resident,
+        index,
+        roles:[...new Set(
+          (Array.isArray(resident?.roles) ? resident.roles : [])
+            .map(normaliseRole)
+            .filter(Boolean)
+        )]
+      }))
+      .filter(entry => entry.roles.length > 0);
+
+    renderRoles();
+  }
+
+  function roleBadgeHtml(role){
+    const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:"•"};
+    return `<span class="role-badge" title="${escapeHtml(detail.label)}"><span class="role-icon" aria-hidden="true">${detail.icon}</span><span>${escapeHtml(detail.label)}</span></span>`;
+  }
+
   function renderRoles(){
     roleBadges.innerHTML = "";
 
-    activeRoles.forEach(role => {
-      const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:"•"};
-      const badge = document.createElement("span");
-      badge.className = "role-badge";
-      badge.title = detail.label;
-      badge.innerHTML = `<span class="role-icon" aria-hidden="true">${detail.icon}</span><span>${detail.label}</span>`;
-      roleBadges.appendChild(badge);
+    let rows = householdRoleResidents;
+
+    // Older login responses may provide roles without a resident record.
+    // Keep them visible as Resident 1 until the household residents load.
+    if (!rows.length && activeRoles.length){
+      rows = [{resident:{resident_index:1},index:0,roles:activeRoles}];
+    }
+
+    rows.forEach(entry => {
+      const row = document.createElement("div");
+      row.className = "household-role-row";
+
+      const label = document.createElement("div");
+      label.className = "household-role-label";
+      label.textContent = residentRoleLabel(entry.resident, entry.index);
+
+      const badges = document.createElement("div");
+      badges.className = "household-role-badges";
+      badges.innerHTML = entry.roles.map(roleBadgeHtml).join("");
+
+      row.append(label,badges);
+      roleBadges.appendChild(row);
     });
 
-    roleStrip.classList.toggle("show", activeRoles.length > 0);
+    roleStrip.classList.toggle("show", rows.length > 0);
   }
 
   function setStarterMode(isStarter){
@@ -1069,56 +1127,6 @@
       : [];
   }
 
-  function eventField(event, names, fallback=""){
-    for (const name of names){
-      if (event && event[name] !== undefined && event[name] !== null && event[name] !== ""){
-        return event[name];
-      }
-    }
-    return fallback;
-  }
-
-  function eventMemberId(event){
-    return baseId(eventField(event, [
-      "host_member_id",
-      "hostMemberId",
-      "created_by_member_id",
-      "createdByMemberId",
-      "member_id",
-      "memberId"
-    ]));
-  }
-
-  function eventResidentId(event){
-    return String(eventField(event, [
-      "host_resident_id",
-      "hostResidentId",
-      "created_by_resident_id",
-      "createdByResidentId",
-      "resident_id",
-      "residentId"
-    ]) || "").trim().toUpperCase();
-  }
-
-  function eventArray(payload){
-    if (Array.isArray(payload)) return payload;
-    if (Array.isArray(payload?.events)) return payload.events;
-    if (Array.isArray(payload?.items)) return payload.items;
-    if (Array.isArray(payload?.data)) return payload.data;
-    return [];
-  }
-
-  function eventDateValue(event){
-    return eventField(event, ["event_date","date","start_date","start_datetime","start"]);
-  }
-
-  function formatEventDate(value){
-    if (!value) return "Date to be confirmed";
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return String(value);
-    return d.toLocaleDateString("en-GB", {weekday:"short",day:"numeric",month:"short",year:"numeric"});
-  }
-
   function escapeHtml(value){
     return String(value ?? "")
       .replace(/&/g,"&amp;")
@@ -1126,82 +1134,6 @@
       .replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;")
       .replace(/'/g,"&#39;");
-  }
-
-  function renderMyEvents(events, memberId, residents){
-    const residentIds = new Set(
-      (Array.isArray(residents) ? residents : [])
-        .map(r => String(r?.resident_id || r?.residentId || "").trim().toUpperCase())
-        .filter(Boolean)
-    );
-
-    const mine = events
-      .filter(event => {
-        if (eventMemberId(event) === memberId) return true;
-        const residentId = eventResidentId(event);
-        return residentId && residentIds.has(residentId);
-      })
-      .filter(event => eventField(event,["event_id","id"]))
-      .sort((a,b) => {
-        const at = Date.parse(eventDateValue(a));
-        const bt = Date.parse(eventDateValue(b));
-        if (Number.isNaN(at) && Number.isNaN(bt)) return 0;
-        if (Number.isNaN(at)) return 1;
-        if (Number.isNaN(bt)) return -1;
-        return at - bt;
-      });
-
-    if (!mine.length){
-      myEventsList.hidden = true;
-      myEventsList.innerHTML = "";
-      myEventsStatus.hidden = false;
-      myEventsStatus.textContent = "You do not currently have any published event notices.";
-      return;
-    }
-
-    const visible = mine.slice(0,4);
-    myEventsList.innerHTML = visible.map(event => {
-      const id = String(eventField(event,["event_id","id"]));
-      const title = eventField(event,["title","event_title","name"],"Untitled event");
-      const time = eventField(event,["start_time","time","event_time"]);
-      const venue = eventField(event,["venue","location","place"]);
-      const details = [formatEventDate(eventDateValue(event)), time, venue, id].filter(Boolean).join(" · ");
-
-      return `
-        <a class="my-event-link" href="events-details.html?event_id=${encodeURIComponent(id)}">
-          <span>
-            <span class="my-event-title">${escapeHtml(title)}</span>
-            <span class="my-event-meta">${escapeHtml(details)}</span>
-          </span>
-          <span class="my-event-open">Open notice →</span>
-        </a>
-      `;
-    }).join("");
-
-    myEventsStatus.hidden = true;
-    myEventsList.hidden = false;
-  }
-
-  async function loadMyEvents(memberId, residents = []){
-    myEventsList.hidden = true;
-    myEventsStatus.hidden = false;
-    myEventsStatus.textContent = "Loading your events…";
-
-    try{
-      const headers = {"Accept":"application/json"};
-      if (authToken) headers.Authorization = `Bearer ${authToken}`;
-
-      const res = await fetch(`${BACKEND}/api/events`, {cache:"no-store",headers});
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.message || "Events could not be loaded.");
-
-      renderMyEvents(eventArray(data), memberId, residents);
-    }catch(err){
-      console.warn(err);
-      myEventsList.hidden = true;
-      myEventsStatus.hidden = false;
-      myEventsStatus.textContent = "Your event notices could not be loaded just now.";
-    }
   }
 
   async function loadExistingFor(memberId){
@@ -1212,7 +1144,7 @@
 
     if (backendResidents.length){
       existingResidents = backendResidents;
-      mergeActiveRoles(activeRoles, rolesFromResidents(backendResidents));
+      setHouseholdRoleResidents(backendResidents);
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
 
       const store = loadStore();
@@ -1224,7 +1156,6 @@
       saveStore(store);
 
       renderResidents();
-      await loadMyEvents(memberId, backendResidents);
       setStatus(pageStatus, "ok", "Existing information loaded.");
       return;
     }
@@ -1233,18 +1164,17 @@
 
     if (localResidents.length){
       existingResidents = localResidents;
-      mergeActiveRoles(activeRoles, rolesFromResidents(localResidents));
+      setHouseholdRoleResidents(localResidents);
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
       renderResidents();
-      await loadMyEvents(memberId, localResidents);
       setStatus(pageStatus, "ok", "Existing locally saved information loaded.");
       return;
     }
 
     existingResidents = [];
+    setHouseholdRoleResidents([]);
     shownResidents = 1;
     renderResidents();
-    await loadMyEvents(memberId, []);
     setStatus(pageStatus, "warn", "No saved information found yet for this membership number.");
   }
 
@@ -1387,6 +1317,7 @@
       }
 
       existingResidents = residents;
+      setHouseholdRoleResidents(residents);
       shownResidents = Math.min(Math.max(residents.length, 1), 4);
       renderResidents();
 

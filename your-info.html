@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -667,7 +667,7 @@
   let starterPinRequired = false;
   let activeRoles = [];
   let householdRoleResidents = [];
-  let loginRoleResidents = [];
+  let loginHouseholdRoleResidents = [];
 
   const ROLE_DETAILS = {
     host:{label:"Host",icon:"🎉"},
@@ -761,44 +761,6 @@
     )];
   }
 
-  function residentKey(resident, fallbackIndex = 0){
-    const residentId = String(resident?.resident_id || resident?.residentId || "").trim().toUpperCase();
-    if (residentId) return residentId;
-
-    const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
-    if (Number.isFinite(explicitIndex) && explicitIndex > 0) return `INDEX:${explicitIndex}`;
-
-    return `INDEX:${fallbackIndex + 1}`;
-  }
-
-  function residentRoleRecordsFromLogin(data){
-    const lists = [
-      data?.residents,
-      data?.member?.residents,
-      data?.contacts,
-      data?.member?.contacts
-    ];
-
-    const records = [];
-
-    lists.forEach(list => {
-      if (!Array.isArray(list)) return;
-      list.forEach((resident,index) => {
-        const roles = [...new Set(
-          (Array.isArray(resident?.roles) ? resident.roles : [])
-            .map(normaliseRole)
-            .filter(Boolean)
-        )];
-
-        if (roles.length){
-          records.push({...resident, roles, __sourceIndex:index});
-        }
-      });
-    });
-
-    return records;
-  }
-
   function rolesFromHostSession(memberId){
     const wantedMember = baseId(memberId);
     const storedMember = baseId(
@@ -853,51 +815,74 @@
     return `Res ${index + 1}`;
   }
 
-  function setHouseholdRoleResidents(residents, supplementalResidents = []){
-    const primary = Array.isArray(residents) ? residents : [];
-    const supplemental = Array.isArray(supplementalResidents) ? supplementalResidents : [];
-    const supplementalByKey = new Map();
+  function residentKey(resident, fallbackIndex = 0){
+    const residentId = String(resident?.resident_id || resident?.residentId || "").trim().toUpperCase();
+    if (residentId) return residentId;
 
-    supplemental.forEach((resident,index) => {
-      supplementalByKey.set(residentKey(resident,index), resident);
+    const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
+    if (Number.isFinite(explicitIndex) && explicitIndex > 0){
+      return `${activeMember || baseId(memberIdEl.value)}/${explicitIndex}`;
+    }
+
+    return `${activeMember || baseId(memberIdEl.value)}/${fallbackIndex + 1}`;
+  }
+
+  function residentRecordsFromLogin(data){
+    const candidates = [
+      data?.residents,
+      data?.member?.residents,
+      data?.contacts,
+      data?.member?.contacts
+    ];
+
+    for (const list of candidates){
+      if (Array.isArray(list) && list.length) return list;
+    }
+
+    return [];
+  }
+
+  function mergeResidentRoleRecords(...residentGroups){
+    const merged = new Map();
+
+    residentGroups.forEach(group => {
+      if (!Array.isArray(group)) return;
+
+      group.forEach((resident,index) => {
+        const key = residentKey(resident,index);
+        const previous = merged.get(key) || {};
+        const previousRoles = Array.isArray(previous.roles) ? previous.roles : [];
+        const nextRoles = Array.isArray(resident?.roles) ? resident.roles : [];
+
+        merged.set(key,{
+          ...previous,
+          ...resident,
+          resident_id: resident?.resident_id || resident?.residentId || previous.resident_id || key,
+          resident_index: resident?.resident_index ?? resident?.residentIndex ?? previous.resident_index ?? (index + 1),
+          roles:[...new Set([...previousRoles,...nextRoles].map(normaliseRole).filter(Boolean))]
+        });
+      });
     });
 
-    const merged = primary.map((resident,index) => {
-      const supplement = supplementalByKey.get(residentKey(resident,index));
-      const roles = [
-        ...(Array.isArray(resident?.roles) ? resident.roles : []),
-        ...(Array.isArray(supplement?.roles) ? supplement.roles : [])
-      ];
-
-      supplementalByKey.delete(residentKey(resident,index));
-
-      return {
-        resident:{...supplement, ...resident},
-        index,
-        roles:[...new Set(roles.map(normaliseRole).filter(Boolean))]
-      };
+    return [...merged.values()].sort((a,b) => {
+      const ai = Number(a?.resident_index ?? 999);
+      const bi = Number(b?.resident_index ?? 999);
+      return ai - bi;
     });
+  }
 
-    supplementalByKey.forEach((resident,key) => {
-      const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
-      const fallbackIndex = Number.isFinite(explicitIndex) && explicitIndex > 0
-        ? explicitIndex - 1
-        : merged.length;
-
-      merged.push({
+  function setHouseholdRoleResidents(residents){
+    householdRoleResidents = (Array.isArray(residents) ? residents : [])
+      .map((resident,index) => ({
         resident,
-        index:fallbackIndex,
+        index,
         roles:[...new Set(
           (Array.isArray(resident?.roles) ? resident.roles : [])
             .map(normaliseRole)
             .filter(Boolean)
         )]
-      });
-    });
-
-    householdRoleResidents = merged
-      .filter(entry => entry.roles.length > 0)
-      .sort((a,b) => a.index - b.index);
+      }))
+      .filter(entry => entry.roles.length > 0);
 
     renderRoles();
   }
@@ -1215,7 +1200,7 @@
 
     if (backendResidents.length){
       existingResidents = backendResidents;
-      setHouseholdRoleResidents(backendResidents, loginRoleResidents);
+      setHouseholdRoleResidents(mergeResidentRoleRecords(backendResidents, loginHouseholdRoleResidents));
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
 
       const store = loadStore();
@@ -1235,7 +1220,7 @@
 
     if (localResidents.length){
       existingResidents = localResidents;
-      setHouseholdRoleResidents(localResidents, loginRoleResidents);
+      setHouseholdRoleResidents(mergeResidentRoleRecords(localResidents, loginHouseholdRoleResidents));
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
       renderResidents();
       setStatus(pageStatus, "ok", "Existing locally saved information loaded.");
@@ -1243,7 +1228,7 @@
     }
 
     existingResidents = [];
-    setHouseholdRoleResidents([], loginRoleResidents);
+    setHouseholdRoleResidents(loginHouseholdRoleResidents);
     shownResidents = 1;
     renderResidents();
     setStatus(pageStatus, "warn", "No saved information found yet for this membership number.");
@@ -1300,9 +1285,8 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
-    loginRoleResidents = residentRoleRecordsFromLogin(data);
-    setHouseholdRoleResidents(loginRoleResidents);
-
+    loginHouseholdRoleResidents = residentRecordsFromLogin(data);
+    setHouseholdRoleResidents(loginHouseholdRoleResidents);
     mergeActiveRoles(
       rolesFromLogin(data),
       rolesFromHostSession(memberId)
@@ -1390,13 +1374,8 @@
         throw new Error(data?.message || "Backend save failed.");
       }
 
-      const retainedRoleResidents = householdRoleResidents.map(entry => ({
-        ...entry.resident,
-        roles:entry.roles
-      }));
-
       existingResidents = residents;
-      setHouseholdRoleResidents(residents, retainedRoleResidents);
+      setHouseholdRoleResidents(mergeResidentRoleRecords(residents, householdRoleResidents, loginHouseholdRoleResidents));
       shownResidents = Math.min(Math.max(residents.length, 1), 4);
       renderResidents();
 
@@ -1509,35 +1488,33 @@
     return granted && accessTime > 0 && (now - accessTime) < ACCESS_TTL_MS;
   }
 
-  async function restoreClubSession(){
-    if (!hasActiveClubSession()) return;
-
-    const memberId = baseId(
+  function prepareLoginAfterRefresh(){
+    // A refresh must always return to the gate. Automatically reopening the
+    // editable household form allowed stale browser data and partial role data
+    // to appear before a fresh authentication had completed.
+    const rememberedMember = baseId(
       sessionStorage.getItem("currentMemberId") ||
       sessionStorage.getItem("currentHostMemberId") ||
       localStorage.getItem("currentMemberId")
     );
 
-    if (!memberId) return;
+    if (rememberedMember){
+      memberIdEl.value = rememberedMember;
+    }
 
-    authToken =
-      sessionStorage.getItem("authToken") ||
-      localStorage.getItem("authToken") ||
-      "";
+    authToken = "";
+    activeMember = "";
+    activeRoles = [];
+    householdRoleResidents = [];
+    loginHouseholdRoleResidents = [];
 
-    activeMember = memberId;
-    memberIdEl.value = memberId;
-    activeMemberId.textContent = memberId;
-
-    loginPanel.classList.add("hidden");
-    memberPanel.classList.remove("hidden");
+    memberPanel.classList.add("hidden");
     memberPanel.classList.remove("locked");
+    loginPanel.classList.remove("hidden");
+    roleBadges.innerHTML = "";
+    roleStrip.classList.remove("show");
 
-    mergeActiveRoles(rolesFromHostSession(memberId));
-    setStarterMode(false);
-
-    setStatus(pageStatus, "info", "Welcome back. Loading your information...");
-    await loadExistingFor(memberId);
+    updateButtonsEnabled();
   }
 
   pinEyeBtn.addEventListener("click", function(){
@@ -1587,7 +1564,7 @@
   });
 
   updateButtonsEnabled();
-  restoreClubSession();
+  prepareLoginAfterRefresh();
 </script>
 
 </body>

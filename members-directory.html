@@ -6,7 +6,11 @@ def _member_directory_entry(member_id):
         conn = _db_connect()
         try:
             prop = conn.execute(
-                "SELECT member_id, joined, updated_at FROM properties WHERE member_id=?",
+                """
+                SELECT member_id, joined, updated_at
+                FROM properties
+                WHERE member_id=?
+                """,
                 (mid,)
             ).fetchone()
 
@@ -21,38 +25,6 @@ def _member_directory_entry(member_id):
             ).fetchall()
         finally:
             conn.close()
-
-        # Build a resident-level role lookup from the roles store.
-        roles_by_resident_id = {}
-
-        for role_record in load_members():
-            if not isinstance(role_record, dict):
-                continue
-
-            resident_id = str(
-                role_record.get("resident_id")
-                or role_record.get("residentId")
-                or ""
-            ).strip().upper()
-
-            if not resident_id:
-                continue
-
-            roles = (
-                role_record.get("roles")
-                if isinstance(role_record.get("roles"), list)
-                else []
-            )
-
-            cleaned_roles = []
-
-            for role in roles:
-                cleaned_role = str(role or "").strip().lower()
-
-                if cleaned_role and cleaned_role not in cleaned_roles:
-                    cleaned_roles.append(cleaned_role)
-
-            roles_by_resident_id[resident_id] = cleaned_roles
 
         if not prop and not rows:
             if not re.fullmatch(r"(SM|SC)\d{2}", mid):
@@ -71,21 +43,57 @@ def _member_directory_entry(member_id):
                 "primary_landline": "",
             }
 
+        # Build a lookup of roles using the same resident references
+        # as the Admin Role Manager: SM55/1, SM55/2, etc.
+        roles_by_resident_id = {}
+
+        role_members = load_members()
+
+        for role_member in role_members:
+            if not isinstance(role_member, dict):
+                continue
+
+            resident_id = (
+                role_member.get("resident_id")
+                or role_member.get("residentId")
+                or ""
+            ).strip().upper()
+
+            roles = (
+                role_member.get("roles")
+                if isinstance(role_member.get("roles"), list)
+                else []
+            )
+
+            if not resident_id:
+                continue
+
+            if resident_id not in roles_by_resident_id:
+                roles_by_resident_id[resident_id] = []
+
+            for role in roles:
+                cleaned_role = str(role or "").strip().lower()
+
+                if (
+                    cleaned_role
+                    and cleaned_role not in roles_by_resident_id[resident_id]
+                ):
+                    roles_by_resident_id[resident_id].append(cleaned_role)
+
         residents = []
 
-        for array_index, r in enumerate(rows, start=1):
-            resident_index = int(r["idx"] or array_index)
+        for resident_index, row in enumerate(rows, start=1):
             resident_id = f"{mid}/{resident_index}".upper()
 
             residents.append({
-                "idx": resident_index,
-                "resident_index": resident_index,
+                "idx": row["idx"],
                 "resident_id": resident_id,
                 "member_id": mid,
-                "name": r["name"] or "",
-                "email": r["email"] or "",
-                "mobile": r["mobile"] or "",
-                "landline": r["landline"] or "",
+                "resident_index": resident_index,
+                "name": row["name"] or "",
+                "email": row["email"] or "",
+                "mobile": row["mobile"] or "",
+                "landline": row["landline"] or "",
                 "roles": roles_by_resident_id.get(resident_id, []),
             })
 
@@ -94,7 +102,11 @@ def _member_directory_entry(member_id):
         return {
             "member_id": mid,
             "joined": bool(prop["joined"]) if prop else True,
-            "updated": prop["updated_at"] if prop else int(time.time() * 1000),
+            "updated": (
+                prop["updated_at"]
+                if prop
+                else int(time.time() * 1000)
+            ),
             "residents": residents,
             "primary_name": primary.get("name", ""),
             "primary_email": primary.get("email", ""),

@@ -667,6 +667,7 @@
   let starterPinRequired = false;
   let activeRoles = [];
   let householdRoleResidents = [];
+  let loginRoleResidents = [];
 
   const ROLE_DETAILS = {
     host:{label:"Host",icon:"🎉"},
@@ -760,6 +761,44 @@
     )];
   }
 
+  function residentKey(resident, fallbackIndex = 0){
+    const residentId = String(resident?.resident_id || resident?.residentId || "").trim().toUpperCase();
+    if (residentId) return residentId;
+
+    const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
+    if (Number.isFinite(explicitIndex) && explicitIndex > 0) return `INDEX:${explicitIndex}`;
+
+    return `INDEX:${fallbackIndex + 1}`;
+  }
+
+  function residentRoleRecordsFromLogin(data){
+    const lists = [
+      data?.residents,
+      data?.member?.residents,
+      data?.contacts,
+      data?.member?.contacts
+    ];
+
+    const records = [];
+
+    lists.forEach(list => {
+      if (!Array.isArray(list)) return;
+      list.forEach((resident,index) => {
+        const roles = [...new Set(
+          (Array.isArray(resident?.roles) ? resident.roles : [])
+            .map(normaliseRole)
+            .filter(Boolean)
+        )];
+
+        if (roles.length){
+          records.push({...resident, roles, __sourceIndex:index});
+        }
+      });
+    });
+
+    return records;
+  }
+
   function rolesFromHostSession(memberId){
     const wantedMember = baseId(memberId);
     const storedMember = baseId(
@@ -814,18 +853,51 @@
     return `Res ${index + 1}`;
   }
 
-  function setHouseholdRoleResidents(residents){
-    householdRoleResidents = (Array.isArray(residents) ? residents : [])
-      .map((resident,index) => ({
-        resident,
+  function setHouseholdRoleResidents(residents, supplementalResidents = []){
+    const primary = Array.isArray(residents) ? residents : [];
+    const supplemental = Array.isArray(supplementalResidents) ? supplementalResidents : [];
+    const supplementalByKey = new Map();
+
+    supplemental.forEach((resident,index) => {
+      supplementalByKey.set(residentKey(resident,index), resident);
+    });
+
+    const merged = primary.map((resident,index) => {
+      const supplement = supplementalByKey.get(residentKey(resident,index));
+      const roles = [
+        ...(Array.isArray(resident?.roles) ? resident.roles : []),
+        ...(Array.isArray(supplement?.roles) ? supplement.roles : [])
+      ];
+
+      supplementalByKey.delete(residentKey(resident,index));
+
+      return {
+        resident:{...supplement, ...resident},
         index,
+        roles:[...new Set(roles.map(normaliseRole).filter(Boolean))]
+      };
+    });
+
+    supplementalByKey.forEach((resident,key) => {
+      const explicitIndex = Number(resident?.resident_index ?? resident?.residentIndex);
+      const fallbackIndex = Number.isFinite(explicitIndex) && explicitIndex > 0
+        ? explicitIndex - 1
+        : merged.length;
+
+      merged.push({
+        resident,
+        index:fallbackIndex,
         roles:[...new Set(
           (Array.isArray(resident?.roles) ? resident.roles : [])
             .map(normaliseRole)
             .filter(Boolean)
         )]
-      }))
-      .filter(entry => entry.roles.length > 0);
+      });
+    });
+
+    householdRoleResidents = merged
+      .filter(entry => entry.roles.length > 0)
+      .sort((a,b) => a.index - b.index);
 
     renderRoles();
   }
@@ -1143,7 +1215,7 @@
 
     if (backendResidents.length){
       existingResidents = backendResidents;
-      setHouseholdRoleResidents(backendResidents);
+      setHouseholdRoleResidents(backendResidents, loginRoleResidents);
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
 
       const store = loadStore();
@@ -1163,7 +1235,7 @@
 
     if (localResidents.length){
       existingResidents = localResidents;
-      setHouseholdRoleResidents(localResidents);
+      setHouseholdRoleResidents(localResidents, loginRoleResidents);
       shownResidents = Math.min(Math.max(existingResidents.length, 1), 4);
       renderResidents();
       setStatus(pageStatus, "ok", "Existing locally saved information loaded.");
@@ -1171,7 +1243,7 @@
     }
 
     existingResidents = [];
-    setHouseholdRoleResidents([]);
+    setHouseholdRoleResidents([], loginRoleResidents);
     shownResidents = 1;
     renderResidents();
     setStatus(pageStatus, "warn", "No saved information found yet for this membership number.");
@@ -1228,6 +1300,9 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
+    loginRoleResidents = residentRoleRecordsFromLogin(data);
+    setHouseholdRoleResidents(loginRoleResidents);
+
     mergeActiveRoles(
       rolesFromLogin(data),
       rolesFromHostSession(memberId)
@@ -1315,8 +1390,13 @@
         throw new Error(data?.message || "Backend save failed.");
       }
 
+      const retainedRoleResidents = householdRoleResidents.map(entry => ({
+        ...entry.resident,
+        roles:entry.roles
+      }));
+
       existingResidents = residents;
-      setHouseholdRoleResidents(residents);
+      setHouseholdRoleResidents(residents, retainedRoleResidents);
       shownResidents = Math.min(Math.max(residents.length, 1), 4);
       renderResidents();
 

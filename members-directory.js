@@ -6,7 +6,7 @@
 
 const STORAGE_KEY = "sanctuaryMembers";
 const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
-const ICON_SPRITE = "assets/icons/icons.svg";
+const ICON_SPRITE = "assets/icons/icons.svg?v=ROLE_ICONS_2";
 
 // ---------- Role definitions
 const ROLE_DEFINITIONS = {

@@ -1,9 +1,64 @@
 // members-directory.js
-// Sanctuary Club – Members Directory (backend-first + local fallback)
+// Sanctuary Club – Members Directory
+// Backend-first + local fallback
 // Contact status colours aligned with Your Information (YI)
+// Resident-level multi-role icons
 
 const STORAGE_KEY = "sanctuaryMembers";
 const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
+const ICON_SPRITE = "assets/icons/icons.svg";
+
+// ---------- Role definitions
+const ROLE_DEFINITIONS = {
+  host: {
+    label: "Event Host",
+    icon: "role-host"
+  },
+  activity_organiser: {
+    label: "Activity Organiser",
+    icon: "role-activity"
+  },
+  committee: {
+    label: "Committee",
+    icon: "role-committee"
+  },
+  panel: {
+    label: "Residents Association Panel",
+    icon: "role-panel"
+  },
+  residents_association_panel: {
+    label: "Residents Association Panel",
+    icon: "role-panel"
+  },
+  treasurer: {
+    label: "Treasurer",
+    icon: "role-treasurer"
+  },
+  news_contributor: {
+    label: "News Contributor",
+    icon: "role-news"
+  },
+  editor: {
+    label: "Editor",
+    icon: "role-editor"
+  },
+  artist: {
+    label: "Artist",
+    icon: "role-artist"
+  },
+  website_helper: {
+    label: "Website Helper",
+    icon: "role-helper"
+  },
+  services: {
+    label: "Services",
+    icon: "role-services"
+  },
+  admin: {
+    label: "Administrator",
+    icon: "role-admin"
+  }
+};
 
 // ---------- Load members safely (local fallback)
 function loadMembersLocal() {
@@ -25,11 +80,20 @@ async function loadMembers() {
 
     const data = await res.json().catch(() => null);
 
-    if (res.ok && data && data.success && data.members && typeof data.members === "object") {
+    if (
+      res.ok &&
+      data &&
+      data.success &&
+      data.members &&
+      typeof data.members === "object"
+    ) {
       return data.members;
     }
   } catch (err) {
-    console.warn("Members Directory backend load failed; using local fallback.", err);
+    console.warn(
+      "Members Directory backend load failed; using local fallback.",
+      err
+    );
   }
 
   return loadMembersLocal();
@@ -66,6 +130,88 @@ function hasResidents(data) {
 
 function clean(v) {
   return String(v || "").trim();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function normaliseRole(role) {
+  return clean(role).toLowerCase().replace(/[\s-]+/g, "_");
+}
+
+function residentRoles(resident) {
+  if (!resident || !Array.isArray(resident.roles)) return [];
+
+  return [
+    ...new Set(
+      resident.roles
+        .map(normaliseRole)
+        .filter(Boolean)
+    )
+  ];
+}
+
+function roleIconsHtml(resident) {
+  const roles = residentRoles(resident);
+
+  if (!roles.length) return "";
+
+  const icons = roles
+    .map(role => {
+      const def = ROLE_DEFINITIONS[role];
+      if (!def) return "";
+
+      return `
+        <span
+          title="${escapeHtml(def.label)}"
+          aria-label="${escapeHtml(def.label)}"
+          style="
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            background:#f3f8fc;
+            color:#31506b;
+            margin-right:5px;
+          "
+        >
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            viewBox="0 0 64 64"
+            style="width:22px;height:22px;display:block;"
+          >
+            <use href="${ICON_SPRITE}#${def.icon}"></use>
+          </svg>
+        </span>
+      `;
+    })
+    .filter(Boolean)
+    .join("");
+
+  if (!icons) return "";
+
+  return `
+    <div
+      class="resident-role-icons"
+      style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:2px;
+        margin:0.55rem 0 0.25rem;
+      "
+    >
+      ${icons}
+    </div>
+  `;
 }
 
 function isFilledOrNA(v) {
@@ -124,19 +270,33 @@ function statusLabel(status) {
 // If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06.
 function resolveSchData(members) {
   const direct = members["SCH"];
+
   if (direct && (hasResidents(direct) || direct.joined)) {
-    return { idForDisplay: "SCH", data: direct, sourceId: "SCH" };
+    return {
+      idForDisplay: "SCH",
+      data: direct,
+      sourceId: "SCH"
+    };
   }
 
   for (let i = 1; i <= 6; i++) {
     const legacyId = "SCH" + pad(i);
     const legacy = members[legacyId];
+
     if (legacy && (hasResidents(legacy) || legacy.joined)) {
-      return { idForDisplay: "SCH", data: legacy, sourceId: legacyId };
+      return {
+        idForDisplay: "SCH",
+        data: legacy,
+        sourceId: legacyId
+      };
     }
   }
 
-  return { idForDisplay: "SCH", data: null, sourceId: null };
+  return {
+    idForDisplay: "SCH",
+    data: null,
+    sourceId: null
+  };
 }
 
 // ---------- Render grid
@@ -164,10 +324,15 @@ function renderGrid(containerId, memberIds, members, detailArea) {
     const status = getContactStatus(data);
     const isUsable = true;
 
-    if (status === "complete") btn.classList.add("contact-complete");
-    else if (status === "partial") btn.classList.add("contact-partial");
-    else if (status === "basic") btn.classList.add("contact-basic");
-    else btn.classList.add("inactive");
+    if (status === "complete") {
+      btn.classList.add("contact-complete");
+    } else if (status === "partial") {
+      btn.classList.add("contact-partial");
+    } else if (status === "basic") {
+      btn.classList.add("contact-basic");
+    } else {
+      btn.classList.add("inactive");
+    }
 
     btn.title = statusLabel(status);
 
@@ -182,22 +347,28 @@ function renderGrid(containerId, memberIds, members, detailArea) {
       }
 
       if (activeBtn) activeBtn.classList.remove("active");
+
       activeBtn = btn;
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
       if (!hasResidents(data)) {
         const msg = document.createElement("div");
+
         msg.style.padding = "0.9rem 1rem";
         msg.style.borderRadius = "10px";
         msg.style.background = "#fff";
         msg.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
         msg.style.color = "#444";
+
         msg.innerHTML = `
-          <strong>${displayId}</strong><br>
-          <span style="color:#666;">${statusLabel(status)}</span><br>
-          <span style="color:#666;">Member joined — no contact details shared yet.</span>
+          <strong>${escapeHtml(displayId)}</strong><br>
+          <span style="color:#666;">${escapeHtml(statusLabel(status))}</span><br>
+          <span style="color:#666;">
+            Member joined — no contact details shared yet.
+          </span>
         `;
+
         detailArea.appendChild(msg);
         return;
       }
@@ -212,9 +383,15 @@ function renderGrid(containerId, memberIds, members, detailArea) {
 // ---------- Render resident cards
 function renderMemberDetail(memberId, data, container, status) {
   const heading = document.createElement("div");
+
   heading.style.margin = "0 0 0.75rem";
   heading.style.color = "#555";
-  heading.innerHTML = `<strong>${memberId}</strong> — ${statusLabel(status)}`;
+
+  heading.innerHTML = `
+    <strong>${escapeHtml(memberId)}</strong>
+    — ${escapeHtml(statusLabel(status))}
+  `;
+
   container.appendChild(heading);
 
   const wrap = document.createElement("div");
@@ -226,12 +403,32 @@ function renderMemberDetail(memberId, data, container, status) {
 
     card.innerHTML = `
       <div class="resident-header">Resident ${idx + 1}</div>
-      <div class="resident-row"><span>Name</span><span>${res.name || "—"}</span></div>
-      <div class="resident-row"><span>Email</span><span>${res.email || "—"}</span></div>
-      <div class="resident-row"><span>Mobile</span><span>${res.mobile || "—"}</span></div>
+
+      ${roleIconsHtml(res)}
+
+      <div class="resident-row">
+        <span>Name</span>
+        <span>${escapeHtml(res.name || "—")}</span>
+      </div>
+
+      <div class="resident-row">
+        <span>Email</span>
+        <span>${escapeHtml(res.email || "—")}</span>
+      </div>
+
+      <div class="resident-row">
+        <span>Mobile</span>
+        <span>${escapeHtml(res.mobile || "—")}</span>
+      </div>
+
       ${
         idx === 0
-          ? `<div class="resident-row"><span>Landline</span><span>${res.landline || "—"}</span></div>`
+          ? `
+            <div class="resident-row">
+              <span>Landline</span>
+              <span>${escapeHtml(res.landline || "—")}</span>
+            </div>
+          `
           : ""
       }
     `;

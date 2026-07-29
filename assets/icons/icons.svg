@@ -383,4 +383,14 @@
     />
   </symbol>
 
+  <!-- EDITOR -->
+  <symbol id="role-editor" ...>
+    ...
+  </symbol>
+
+  <!-- ARTIST -->
+  <symbol id="role-artist" ...>
+    ...
+  </symbol>
+ 
 </svg>

@@ -478,7 +478,7 @@
                 <span>Can organise and publish regular or continuing Club activities.</span>
               </div>
             </label>
-
+.......................
             <label class="roleBox">
               <input type="checkbox" id="roleCommittee" />
               <div class="roleText">
@@ -508,6 +508,22 @@
               <div class="roleText">
                 <strong>News Contributor</strong>
                 <span>Can prepare and publish Club news and standing community material.</span>
+              </div>
+            </label>
+
+            <label class="roleBox">
+              <input type="checkbox" id="roleEditor" />
+              <div class="roleText">
+                <strong>Editor</strong>
+                <span>Manages News Contributors and editorial publishing, including review, approval, publication and withdrawal.</span>
+              </div>
+            </label>
+
+            <label class="roleBox">
+              <input type="checkbox" id="roleArtist" />
+              <div class="roleText">
+                <strong>Artist</strong>
+                <span>Can create free-form publications and designs using the Creative Canvas.</span>
               </div>
             </label>
 
@@ -578,6 +594,8 @@
     const rolePanelEl = $("rolePanel");
     const roleTreasurerEl = $("roleTreasurer");
     const roleNewsContributorEl = $("roleNewsContributor");
+    const roleEditorEl = $("roleEditor");
+    const roleArtistEl = $("roleArtist");
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
     const roleAdminEl = $("roleAdmin");
@@ -597,6 +615,8 @@
       panel: "Residents Association Panel",
       treasurer: "Treasurer",
       news_contributor: "News Contributor",
+      editor: "Editor",
+      artist: "Artist",
       website_helper: "Website Helper",
       services: "Services",
       admin: "Administrator"
@@ -791,6 +811,8 @@
       rolePanelEl.checked = false;
       roleTreasurerEl.checked = false;
       roleNewsContributorEl.checked = false;
+      roleEditorEl.checked = false;
+      roleArtistEl.checked = false;
       roleWebsiteHelperEl.checked = false;
       roleServicesEl.checked = false;
       roleAdminEl.checked = false;
@@ -839,6 +861,8 @@
       rolePanelEl.checked = roles.includes("panel");
       roleTreasurerEl.checked = roles.includes("treasurer");
       roleNewsContributorEl.checked = roles.includes("news_contributor");
+      roleEditorEl.checked = roles.includes("editor");
+      roleArtistEl.checked = roles.includes("artist");
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
       roleAdminEl.checked = roles.includes("admin");
@@ -857,6 +881,8 @@
       if(rolePanelEl.checked) roles.push("panel");
       if(roleTreasurerEl.checked) roles.push("treasurer");
       if(roleNewsContributorEl.checked) roles.push("news_contributor");
+      if(roleEditorEl.checked) roles.push("editor");
+      if(roleArtistEl.checked) roles.push("artist");
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");
       if(roleAdminEl.checked) roles.push("admin");

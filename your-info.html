@@ -961,11 +961,15 @@
     renderRoles();
   }
 
-  function roleIconSvg(iconId){
-    if (!iconId) return `<span class="role-icon" aria-hidden="true">•</span>`;
+ function roleIconSvg(iconId, colourClass = ""){
+  if (!iconId) return `<span class="role-icon" aria-hidden="true">•</span>`;
 
-    return `<svg class="role-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${escapeHtml(iconId)}"></use></svg>`;
-  }
+  return `
+    <svg class="role-icon ${colourClass}" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <use href="assets/icons/icons.svg#${escapeHtml(iconId)}"></use>
+    </svg>
+  `;
+}
 
   function roleBadgeHtml(role){
     const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:""};

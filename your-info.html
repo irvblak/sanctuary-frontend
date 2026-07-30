@@ -972,9 +972,19 @@
 }
 
   function roleBadgeHtml(role){
-    const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:""};
-    return `<span class="role-badge" title="${escapeHtml(detail.label)}">${roleIconSvg(detail.icon)}<span>${escapeHtml(detail.label)}</span></span>`;
-  }
+  const detail = ROLE_DETAILS[role] || {
+    label:role.replace(/_/g," "),
+    icon:"",
+    colour:""
+  };
+
+  return `
+    <span class="role-badge" title="${escapeHtml(detail.label)}">
+      ${roleIconSvg(detail.icon, detail.colour)}
+      <span>${escapeHtml(detail.label)}</span>
+    </span>
+  `;
+}
 
   function renderRoles(){
     roleBadges.innerHTML = "";

@@ -670,19 +670,21 @@
   let loginHouseholdRoleResidents = [];
 
   const ROLE_DETAILS = {
-    host:{label:"Host",icon:"🎉"},
-    activity:{label:"Activity",icon:"🌱"},
-    activity_organiser:{label:"Activity",icon:"🌱"},
-    news_contributor:{label:"News",icon:"📰"},
-    news:{label:"News",icon:"📰"},
-    committee:{label:"Committee",icon:"🏛️"},
-    panel:{label:"Panel",icon:"👥"},
-    website_helper:{label:"Helper",icon:"🌿"},
-    helper:{label:"Helper",icon:"🌿"},
-    admin:{label:"Admin",icon:"⚙️"},
-    treasurer:{label:"Treasurer",icon:"£"},
-    services:{label:"Services",icon:"🤲"}
-  };
+  host:{label:"Host",icon:"🎉"},
+  activity:{label:"Activity",icon:"🌱"},
+  activity_organiser:{label:"Activity",icon:"🌱"},
+  news_contributor:{label:"News",icon:"📰"},
+  news:{label:"News",icon:"📰"},
+  editor:{label:"Editor",icon:"✒️"},
+  artist:{label:"Artist",icon:"🎨"},
+  committee:{label:"Committee",icon:"🏛️"},
+  panel:{label:"Panel",icon:"👥"},
+  website_helper:{label:"Helper",icon:"🌿"},
+  helper:{label:"Helper",icon:"🌿"},
+  admin:{label:"Admin",icon:"⚙️"},
+  treasurer:{label:"Treasurer",icon:"£"},
+  services:{label:"Services",icon:"🤲"}
+};
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];

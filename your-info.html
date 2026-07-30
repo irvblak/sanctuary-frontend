@@ -410,7 +410,13 @@
       font-size:.93rem;
       font-weight:850;
     }
-    .role-icon{font-size:1.12rem;line-height:1}
+    .role-icon{
+      width:20px;
+      height:20px;
+      display:block;
+      flex:0 0 auto;
+      color:currentColor;
+    }
 
     .personal-dashboard{margin-top:1.2rem}
     .personal-dashboard h2{margin-bottom:.25rem}
@@ -670,21 +676,21 @@
   let loginHouseholdRoleResidents = [];
 
   const ROLE_DETAILS = {
-  host:{label:"Host",icon:"🎉"},
-  activity:{label:"Activity",icon:"🌱"},
-  activity_organiser:{label:"Activity",icon:"🌱"},
-  news_contributor:{label:"News",icon:"📰"},
-  news:{label:"News",icon:"📰"},
-  editor:{label:"Editor",icon:"✒️"},
-  artist:{label:"Artist",icon:"🎨"},
-  committee:{label:"Committee",icon:"🏛️"},
-  panel:{label:"Panel",icon:"👥"},
-  website_helper:{label:"Helper",icon:"🌿"},
-  helper:{label:"Helper",icon:"🌿"},
-  admin:{label:"Admin",icon:"⚙️"},
-  treasurer:{label:"Treasurer",icon:"£"},
-  services:{label:"Services",icon:"🤲"}
-};
+    host:{label:"Host",icon:"role-host"},
+    activity:{label:"Activity",icon:"role-activity"},
+    activity_organiser:{label:"Activity",icon:"role-activity"},
+    news_contributor:{label:"News",icon:"role-news"},
+    news:{label:"News",icon:"role-news"},
+    editor:{label:"Editor",icon:"role-editor"},
+    artist:{label:"Artist",icon:"role-artist"},
+    committee:{label:"Committee",icon:"role-committee"},
+    panel:{label:"Panel",icon:"role-panel"},
+    website_helper:{label:"Helper",icon:"role-helper"},
+    helper:{label:"Helper",icon:"role-helper"},
+    admin:{label:"Admin",icon:"role-admin"},
+    treasurer:{label:"Treasurer",icon:"role-treasurer"},
+    services:{label:"Services",icon:"role-services"}
+  };
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];
@@ -889,9 +895,15 @@
     renderRoles();
   }
 
+  function roleIconSvg(iconId){
+    if (!iconId) return `<span class="role-icon" aria-hidden="true">•</span>`;
+
+    return `<svg class="role-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${escapeHtml(iconId)}"></use></svg>`;
+  }
+
   function roleBadgeHtml(role){
-    const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:"•"};
-    return `<span class="role-badge" title="${escapeHtml(detail.label)}"><span class="role-icon" aria-hidden="true">${detail.icon}</span><span>${escapeHtml(detail.label)}</span></span>`;
+    const detail = ROLE_DETAILS[role] || {label:role.replace(/_/g," "),icon:""};
+    return `<span class="role-badge" title="${escapeHtml(detail.label)}">${roleIconSvg(detail.icon)}<span>${escapeHtml(detail.label)}</span></span>`;
   }
 
   function renderRoles(){

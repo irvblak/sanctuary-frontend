@@ -4,17 +4,17 @@
   <symbol id="role-host" viewBox="0 0 64 64">
     <path d="M8 18c11 7 21 8 32 2 6-3 11-6 16-11"
           fill="none"
-          stroke="currentColor"
+          stroke="#6f7f8c"
           stroke-width="3"
           stroke-linecap="round"/>
     <path d="M13 21l8 11 7-9 8 7 8-12"
           fill="none"
-          stroke="currentColor"
+          stroke="#d97b29"
           stroke-width="3"
           stroke-linejoin="round"/>
-    <circle cx="15" cy="45" r="3" fill="currentColor"/>
-    <circle cx="31" cy="42" r="3" fill="currentColor"/>
-    <circle cx="47" cy="45" r="3" fill="currentColor"/>
+    <circle cx="15" cy="45" r="3" fill="#e45b4f"/>
+    <circle cx="31" cy="42" r="3" fill="#f2b632"/>
+    <circle cx="47" cy="45" r="3" fill="#4f9b68"/>
   </symbol>
 
 
@@ -22,44 +22,42 @@
   <symbol id="role-activity" viewBox="0 0 64 64">
     <path d="M32 53V28"
           fill="none"
-          stroke="currentColor"
+          stroke="#6d7d3d"
           stroke-width="3"
           stroke-linecap="round"/>
     <path d="M32 34C23 33 17 28 15 20c9-1 16 3 17 14Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#78b75b"
+          stroke="#4f8a45"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M32 27c8 0 15-5 18-13-9-2-17 2-18 13Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#9dcc6a"
+          stroke="#4f8a45"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M23 53h18"
           fill="none"
-          stroke="currentColor"
+          stroke="#7a6a48"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
 
 
-  <!-- COMMITTEE
-       Committee / governance building
-  -->
+  <!-- COMMITTEE -->
   <symbol id="role-committee" viewBox="0 0 64 64">
     <path d="M10 24 32 10l22 14H10Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#e3bf62"
+          stroke="#9a7427"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M14 27h36M17 50h30M13 55h38"
           fill="none"
-          stroke="currentColor"
+          stroke="#8b6b31"
           stroke-width="3"
           stroke-linecap="round"/>
     <path d="M20 27v23M28 27v23M36 27v23M44 27v23"
           fill="none"
-          stroke="currentColor"
+          stroke="#b58a37"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
@@ -68,16 +66,21 @@
   <!-- RESIDENTS ASSOCIATION PANEL -->
   <symbol id="role-panel" viewBox="0 0 64 64">
     <circle cx="24" cy="23" r="8"
-            fill="none"
-            stroke="currentColor"
+            fill="#6fa8c2"
+            stroke="#3f718a"
             stroke-width="3"/>
     <circle cx="42" cy="25" r="7"
-            fill="none"
-            stroke="currentColor"
+            fill="#8ab8a2"
+            stroke="#4f7f6b"
             stroke-width="3"/>
-    <path d="M10 50c1-10 7-15 14-15s13 5 14 15M33 49c1-8 5-12 10-12 6 0 10 4 11 12"
-          fill="none"
-          stroke="currentColor"
+    <path d="M10 50c1-10 7-15 14-15s13 5 14 15"
+          fill="#d8eef8"
+          stroke="#3f718a"
+          stroke-width="3"
+          stroke-linecap="round"/>
+    <path d="M33 49c1-8 5-12 10-12 6 0 10 4 11 12"
+          fill="#e1f1e8"
+          stroke="#4f7f6b"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
@@ -86,18 +89,18 @@
   <!-- TREASURER -->
   <symbol id="role-treasurer" viewBox="0 0 64 64">
     <path d="M18 18h28v30H18z"
-          fill="none"
-          stroke="currentColor"
+          fill="#f5e6a6"
+          stroke="#9d7a24"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M24 26h16M24 33h16M24 40h8"
           fill="none"
-          stroke="currentColor"
+          stroke="#6f7f58"
           stroke-width="3"
           stroke-linecap="round"/>
     <path d="M35 37c4-2 9 0 9 4 0 5-8 6-8 10"
           fill="none"
-          stroke="currentColor"
+          stroke="#4f8a45"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
@@ -106,53 +109,59 @@
   <!-- COMMUNITY NEWS -->
   <symbol id="role-news" viewBox="0 0 64 64">
     <path d="M12 16h34v34H16a4 4 0 0 1-4-4V16Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#d9ecf8"
+          stroke="#3976a8"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M46 23h7v23a4 4 0 0 1-4 4h-3"
-          fill="none"
-          stroke="currentColor"
+          fill="#eef6fb"
+          stroke="#3976a8"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M19 24h18M19 31h18M19 38h8M31 38h6"
           fill="none"
-          stroke="currentColor"
+          stroke="#31506b"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
 
 
-  <!-- EDITOR
-       Pen nib
-  -->
+  <!-- EDITOR -->
   <symbol id="role-editor" viewBox="0 0 64 64">
     <path d="M15 49 22 30 42 10l12 12-20 20-19 7Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#ead4df"
+          stroke="#7e3f60"
           stroke-width="3"
           stroke-linejoin="round"/>
-    <path d="m22 30 12 12M16 48l10-10M40 12l12 12"
+    <path d="m22 30 12 12"
           fill="none"
-          stroke="currentColor"
+          stroke="#b56a8b"
+          stroke-width="3"
+          stroke-linecap="round"/>
+    <path d="M16 48l10-10"
+          fill="none"
+          stroke="#d7a441"
+          stroke-width="3"
+          stroke-linecap="round"/>
+    <path d="M40 12l12 12"
+          fill="none"
+          stroke="#8e4b6b"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
 
 
-  <!-- ARTIST
-       Artist's palette
-  -->
+  <!-- ARTIST -->
   <symbol id="role-artist" viewBox="0 0 64 64">
     <path d="M32 10c-13 0-23 9-23 21 0 11 9 20 20 20h4c4 0 6-2 6-5 0-2-1-4-3-5-2-1-3-3-3-5 0-4 3-7 7-7h6c6 0 9-4 9-8 0-7-9-11-23-11Z"
-          fill="none"
-          stroke="currentColor"
+          fill="#eadff1"
+          stroke="#805394"
           stroke-width="3"
           stroke-linejoin="round"/>
-    <circle cx="21" cy="24" r="2.7" fill="currentColor"/>
-    <circle cx="31" cy="19" r="2.7" fill="currentColor"/>
-    <circle cx="42" cy="21" r="2.7" fill="currentColor"/>
-    <circle cx="18" cy="34" r="2.7" fill="currentColor"/>
+    <circle cx="21" cy="24" r="3" fill="#e45b4f"/>
+    <circle cx="31" cy="19" r="3" fill="#f1b735"/>
+    <circle cx="42" cy="21" r="3" fill="#4f91c2"/>
+    <circle cx="18" cy="34" r="3" fill="#62a865"/>
   </symbol>
 
 
@@ -160,17 +169,22 @@
   <symbol id="role-helper" viewBox="0 0 64 64">
     <path d="M32 51V28"
           fill="none"
-          stroke="currentColor"
+          stroke="#64864e"
           stroke-width="3"
           stroke-linecap="round"/>
-    <path d="M32 35c-8-2-13-7-15-15 8 0 14 5 15 15ZM32 29c7-1 13-6 15-14-8 0-14 5-15 14Z"
-          fill="none"
-          stroke="currentColor"
+    <path d="M32 35c-8-2-13-7-15-15 8 0 14 5 15 15Z"
+          fill="#8fc86d"
+          stroke="#5f9451"
+          stroke-width="3"
+          stroke-linejoin="round"/>
+    <path d="M32 29c7-1 13-6 15-14-8 0-14 5-15 14Z"
+          fill="#b0d882"
+          stroke="#5f9451"
           stroke-width="3"
           stroke-linejoin="round"/>
     <path d="M25 51h14"
           fill="none"
-          stroke="currentColor"
+          stroke="#8b7955"
           stroke-width="3"
           stroke-linecap="round"/>
   </symbol>
@@ -178,14 +192,19 @@
 
   <!-- SERVICES -->
   <symbol id="role-services" viewBox="0 0 64 64">
-    <path d="M8 31c6 0 10 3 14 8l5 6M56 31c-6 0-10 3-14 8l-5 6"
+    <path d="M8 31c6 0 10 3 14 8l5 6"
           fill="none"
-          stroke="currentColor"
+          stroke="#c27a4a"
+          stroke-width="3"
+          stroke-linecap="round"/>
+    <path d="M56 31c-6 0-10 3-14 8l-5 6"
+          fill="none"
+          stroke="#c27a4a"
           stroke-width="3"
           stroke-linecap="round"/>
     <path d="M17 27c4 0 7 2 10 6l5 7 5-7c3-4 6-6 10-6"
-          fill="none"
-          stroke="currentColor"
+          fill="#f4d7c5"
+          stroke="#ad6540"
           stroke-width="3"
           stroke-linecap="round"
           stroke-linejoin="round"/>
@@ -195,14 +214,15 @@
   <!-- ADMINISTRATOR -->
   <symbol id="role-admin" viewBox="0 0 64 64">
     <circle cx="32" cy="32" r="8"
-            fill="none"
-            stroke="currentColor"
+            fill="#d9e4ec"
+            stroke="#52697a"
             stroke-width="3"/>
     <path d="M32 10v7M32 47v7M10 32h7M47 32h7M16.5 16.5l5 5M42.5 42.5l5 5M47.5 16.5l-5 5M21.5 42.5l-5 5"
           fill="none"
-          stroke="currentColor"
+          stroke="#52697a"
           stroke-width="3"
           stroke-linecap="round"/>
+    <circle cx="32" cy="32" r="3.5" fill="#8aa3b5"/>
   </symbol>
 
 </svg>

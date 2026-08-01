@@ -481,18 +481,18 @@
 
 <main>
   <section class="card">
-    <h1>Your Information</h1>
+    <h1>Login Below</h1>
 
-    <p class="page-intro">Manage the contact information you choose to share, your household PIN and your personal Sanctuary Club services.</p>
+    <p class="page-intro"><strong>Change the temporary 2468 PIN to your own Personal Private PIN.</strong></p>
+    <p class="sign-in-copy">If you have already done this, simply enter your Membership Number and Personal PIN below.</p>
 
     <div class="identity" aria-label="Sanctuary Club identity statement">
-      <div class="identity-main">Built by residents. Run by residents. <em>For</em> residents.</div>
+      <div class="identity-main">Built by members. Run by members. <em>For</em> members.</div>
       <span class="identity-sub">Supporting our community.</span>
     </div>
 
     <div id="loginPanel" class="login-card">
-      <h2>Member Sign In</h2>
-      <p class="sign-in-copy">Enter your Membership number and personal four-digit PIN to open your information and resident-only services.</p>
+      <h2>Member Login</h2>
 
       <div class="row">
         <div class="field">
@@ -510,8 +510,7 @@
       </div>
 
       <div class="button-row">
-        <button id="openInfoBtn" type="button" disabled>Open Your Information</button>
-        <button id="openMDBtn" type="button" class="secondary" disabled>Open Members Directory</button>
+        <button id="openHubBtn" type="button" disabled>Open Members Hub</button>
       </div>
 
       <div class="forgotten-note">
@@ -545,12 +544,12 @@
       </div>
 
       <div id="starterPinNotice" class="locked-note">
-        Please replace the temporary Starter PIN with your own four-digit household PIN before opening private resident services. This small step helps protect everyone’s information.
+        Please replace the temporary Starter PIN with your own four-digit household PIN before opening private member services. This small step helps protect everyone’s information.
       </div>
 
       <div class="privacy-card">
         <h2>Your Privacy &amp; PIN</h2>
-        <p class="small-note">Public community information remains easy to view. Your household PIN protects personal information and resident-only services.</p>
+        <p class="small-note">Public community information remains easy to view. Your household PIN protects personal information and member-only services.</p>
         <p class="small-note" id="pinHelpText">PIN status will appear here after login.</p>
       </div>
 
@@ -642,12 +641,16 @@
   const ACCESS_TTL_MS = 8 * 60 * 60 * 1000;
   const MD_TTL_MS = 30 * 60 * 1000;
 
+  const PAGE_PARAMS = new URLSearchParams(window.location.search);
+  const OPEN_YI_AFTER_LOGIN =
+    PAGE_PARAMS.get("manage") === "1" ||
+    /\/members-info\.html(?:$|[?#])/i.test(document.referrer || "");
+
   const memberIdEl = document.getElementById("memberId");
   const pinInput = document.getElementById("pinInput");
   const pinEyeBtn = document.getElementById("pinEyeBtn");
 
-  const openInfoBtn = document.getElementById("openInfoBtn");
-  const openMDBtn = document.getElementById("openMDBtn");
+  const openHubBtn = document.getElementById("openHubBtn");
 
   const loginPanel = document.getElementById("loginPanel");
   const memberPanel = document.getElementById("memberPanel");
@@ -1119,8 +1122,7 @@
 
     const pinOK = onlyDigits4(pinInput.value);
 
-    openInfoBtn.disabled = !(memberId && pinOK);
-    openMDBtn.disabled = !(memberId && pinOK);
+    openHubBtn.disabled = !(memberId && pinOK);
   }
 
   function makeResidentCard(index, data = {}){
@@ -1370,15 +1372,12 @@
     }
   }
 
-  async function openYourInformation(){
+  async function openHubOrInformation(){
     const memberId = baseId(memberIdEl.value);
     const data = await loginMember();
 
     if (!data) return;
 
-    loginPanel.classList.add("hidden");
-    memberPanel.classList.remove("hidden");
-    activeMemberId.textContent = memberId;
     loginHouseholdRoleResidents = residentRecordsFromLogin(data);
     setHouseholdRoleResidents(loginHouseholdRoleResidents);
     mergeActiveRoles(
@@ -1386,40 +1385,27 @@
       rolesFromHostSession(memberId)
     );
 
-    setStarterMode(
-    Boolean(data.force_pin_change || data.starter_pin)
-);
+    setStarterMode(Boolean(data.force_pin_change || data.starter_pin));
 
     if (starterPinRequired){
-      changePinBox.classList.remove("hidden"); 
-      setStatus(pageStatus, "warn", "Please replace the temporary Starter PIN before accessing member services.");
-      return;
-    }
-
-    setStatus(pageStatus, "info", "Loading your information...");
-    await loadExistingFor(memberId);
-  }
-
-  async function openMembersDirectory(){
-    const memberId = baseId(memberIdEl.value);
-    const data = await loginMember();
-
-    if (!data) return;
-
-    if (Boolean(data.force_pin_change || data.starter_pin)){
       loginPanel.classList.add("hidden");
       memberPanel.classList.remove("hidden");
       activeMemberId.textContent = memberId;
-      setStarterMode(true);
-      setStatus(pageStatus, "warn", "Please replace the temporary Starter PIN before opening the Members Directory.");
+      changePinBox.classList.remove("hidden");
+      setStatus(pageStatus, "warn", "Please replace the temporary 2468 PIN with your own Personal Private PIN.");
       return;
     }
 
-    localStorage.setItem(MD_UNTIL_KEY, String(Date.now() + MD_TTL_MS));
-    localStorage.setItem(ACCESS_UNTIL_KEY, String(Date.now() + ACCESS_TTL_MS));
-    localStorage.setItem("currentMemberId", memberId);
+    if (!OPEN_YI_AFTER_LOGIN){
+      location.href = "members-info.html";
+      return;
+    }
 
-    location.href = "members-directory.html";
+    loginPanel.classList.add("hidden");
+    memberPanel.classList.remove("hidden");
+    activeMemberId.textContent = memberId;
+    setStatus(pageStatus, "info", "Loading your information...");
+    await loadExistingFor(memberId);
   }
 
   async function saveInformation(){
@@ -1538,8 +1524,10 @@
       setStarterMode(false);
       memberPanel.classList.remove("locked");
 
-      setStatus(pageStatus, "ok", "PIN changed successfully. Loading your membership area...");
-      await loadExistingFor(activeMember);
+      setStatus(pageStatus, "ok", "PIN changed successfully. Opening the Members Hub...");
+      window.setTimeout(() => {
+        location.href = "members-info.html";
+      }, 450);
 
     }catch(err){
       setStatus(pageStatus, "err", err.message || "PIN could not be changed.");
@@ -1622,13 +1610,12 @@
   pinInput.addEventListener("input", updateButtonsEnabled);
 
   pinInput.addEventListener("keydown", function(e){
-    if (e.key === "Enter" && !openInfoBtn.disabled){
-      openYourInformation();
+    if (e.key === "Enter" && !openHubBtn.disabled){
+      openHubOrInformation();
     }
   });
 
-  openInfoBtn.addEventListener("click", openYourInformation);
-  openMDBtn.addEventListener("click", openMembersDirectory);
+  openHubBtn.addEventListener("click", openHubOrInformation);
 
   addResidentBtn.addEventListener("click", function(){
     if (shownResidents < 4){

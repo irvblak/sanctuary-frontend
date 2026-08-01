@@ -16,6 +16,35 @@
     /* Creative Canvas — common YDS production engine */
     .canvas-shell{margin-top:.8rem}.canvas-toolbar{display:grid;gap:.7rem;margin:.85rem 0}.toolbar-row{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;padding:.7rem;border:1px solid var(--line);border-radius:14px;background:#fff}.toolbar-label{font-size:.82rem;font-weight:900;color:var(--accent-dark);margin-right:.2rem;text-transform:uppercase;letter-spacing:.04em}.toolbar-row button,.toolbar-row select,.toolbar-row input[type="number"]{border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:10px;padding:.46rem .62rem;font:inherit;font-size:.88rem;font-weight:800}.toolbar-row button{cursor:pointer}.toolbar-row button:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.toolbar-row button:disabled{opacity:.42;cursor:not-allowed}.toolbar-row select{background:#fff}.toolbar-row input[type="number"]{width:72px;background:#fff}.toolbar-row input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}.toolbar-check{display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);font-size:.88rem;font-weight:800}.toolbar-check input{width:auto;margin:0}.format-toolbar[hidden],.image-toolbar[hidden]{display:none!important}.page-tabs{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.7rem 0}.page-tab{border:1px solid var(--line);background:#fff;color:var(--accent-dark);border-radius:999px;padding:.42rem .72rem;font-weight:850;cursor:pointer}.page-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.canvas-stage{background:#dfe8ed;border-radius:18px;padding:1rem;overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:500px}.canvas-pages{width:100%;display:flex;justify-content:center}.canvas-page{position:relative;background:#fff;box-shadow:0 14px 32px rgba(0,0,0,.16);overflow:hidden;flex:0 0 auto}.canvas-page.portrait{width:min(100%,680px);aspect-ratio:210/297}.canvas-page.landscape{width:min(100%,860px);aspect-ratio:297/210}.canvas-page[hidden]{display:none}.canvas-safe-area{position:absolute;inset:3.5%;border:1px dashed rgba(31,111,139,.16);pointer-events:none}.canvas-guide{position:absolute;background:rgba(31,111,139,.45);pointer-events:none;z-index:900;display:none}.canvas-guide.v{top:0;bottom:0;width:1px}.canvas-guide.h{left:0;right:0;height:1px}.canvas-item{position:absolute;left:8%;top:8%;width:55%;height:18%;min-width:70px;min-height:42px;border:1px solid transparent;background:transparent;overflow:visible;z-index:10}.canvas-item.selected{border:1px dashed #4c93ad}.canvas-item .item-content{position:absolute;inset:0;overflow:hidden;outline:none;white-space:pre-wrap;word-break:break-word;padding:.45rem;background:transparent}.canvas-item[data-kind="title"] .item-content{font-size:30px;font-weight:900;text-align:center;color:#17314a}.canvas-item[data-kind="text"] .item-content{font-size:18px;color:#173042}.canvas-item[data-kind="image"] .item-content{padding:0;display:flex;align-items:center;justify-content:center;background:transparent}.canvas-item[data-kind="image"] img{width:100%;height:100%;object-fit:contain;display:block}.canvas-item.fill img{object-fit:cover}.drag-handle{position:absolute;right:3px;top:3px;height:24px;min-width:46px;padding:1px 8px;border:1px solid #4c93ad;border-radius:8px;background:rgba(233,244,248,.94);color:#175a72;font-size:13px;font-weight:900;cursor:move;display:none;align-items:center;justify-content:center;user-select:none;z-index:5}.canvas-item.selected .drag-handle{display:flex}.resize-handle{position:absolute;width:11px;height:11px;background:#fff;border:2px solid #4c93ad;border-radius:50%;display:none;z-index:4}.canvas-item.selected .resize-handle{display:block}.resize-handle.nw{left:-6px;top:-6px;cursor:nwse-resize}.resize-handle.n{left:50%;top:-6px;transform:translateX(-50%);cursor:ns-resize}.resize-handle.ne{right:-6px;top:-6px;cursor:nesw-resize}.resize-handle.e{right:-6px;top:50%;transform:translateY(-50%);cursor:ew-resize}.resize-handle.se{right:-6px;bottom:-6px;cursor:nwse-resize}.resize-handle.s{left:50%;bottom:-6px;transform:translateX(-50%);cursor:ns-resize}.resize-handle.sw{left:-6px;bottom:-6px;cursor:nesw-resize}.resize-handle.w{left:-6px;top:50%;transform:translateY(-50%);cursor:ew-resize}.page-number{position:absolute;bottom:1.3%;font-size:12px;color:#61727e;z-index:950;pointer-events:none}.page-number.center{left:50%;transform:translateX(-50%)}.page-number.right{right:3.5%}.canvas-note{margin-top:.8rem;padding:.75rem;border:1px solid #cfe3eb;background:#eef7fa;color:#315c6d;border-radius:12px;font-weight:700}.selected-note{font-size:.85rem;color:var(--muted);font-weight:750}.canvas-empty-hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#8a9aa4;text-align:center;font-weight:750;pointer-events:none;max-width:70%}
 
+
+    /* Creative Canvas drawing, help and clearer selection */
+    .canvas-toolbar{position:sticky;top:.35rem;z-index:980;background:rgba(238,246,251,.96);padding:.35rem;border-radius:16px;backdrop-filter:blur(4px)}
+    .canvas-help-toggle{margin-left:auto}
+    .canvas-help{
+      margin:.75rem 0 1rem;padding:1rem;border:1px solid #cfe3eb;border-radius:16px;
+      background:#f7fbfd;color:#31506b;
+    }
+    .canvas-help h3{margin:0 0 .55rem;color:var(--accent-dark)}
+    .canvas-help p{margin:.35rem 0}
+    .canvas-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem 1rem;margin-top:.7rem}
+    .canvas-help-item{padding:.6rem .7rem;border-radius:11px;background:#fff;border:1px solid var(--line)}
+    .canvas-help-item strong{display:block;color:var(--accent-dark);margin-bottom:.12rem}
+    .canvas-tip{font-size:.84rem;color:var(--muted);font-weight:750}
+    .drawing-toolbar[hidden]{display:none!important}
+    .drawing-toolbar button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .drawing-toolbar .draw-colour{display:inline-flex;align-items:center;gap:.3rem}
+    .drawing-toolbar input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}
+    .drawing-toolbar select{min-width:105px}
+    .canvas-item[data-kind="drawing"] .item-content{padding:0;overflow:hidden;background:transparent}
+    .drawing-surface{display:block;width:100%;height:100%;touch-action:none;background:transparent}
+    .canvas-item.drawing-edit{border:2px solid var(--accent)}
+    .canvas-item.drawing-edit .drag-handle,.canvas-item.drawing-edit .resize-handle{display:none!important}
+    .canvas-item.drawing-edit .drawing-surface{cursor:crosshair}
+    .draw-mode-note{font-size:.85rem;color:var(--accent-dark);font-weight:850}
+    .swatch-row{display:inline-flex;gap:.25rem;align-items:center}
+    .mini-swatch{width:25px;height:25px!important;padding:0!important;border-radius:50%!important;border:2px solid #fff!important;box-shadow:0 0 0 1px var(--line)}
+    .mini-swatch.selected{box-shadow:0 0 0 3px rgba(31,111,139,.23)}
+    @media(max-width:760px){.canvas-help-grid{grid-template-columns:1fr}.canvas-toolbar{position:static}}
     @media print{
       body.print-canvas{background:#fff!important}
       body.print-canvas .topbar,body.print-canvas #verifyCard,body.print-canvas #studioCard,body.print-canvas #publishWorkspace,body.print-canvas .workspace-head,body.print-canvas .canvas-toolbar,body.print-canvas .page-tabs,body.print-canvas .canvas-note{display:none!important}
@@ -106,10 +135,25 @@
         </div>
         <div class="actions" style="margin-top:0">
           <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio choices</button>
-          <button class="btn secondary" id="loadCanvasBtn" type="button">Load Draft</button>
-          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
+          <button class="btn secondary" id="quickGuideBtn" type="button">Quick Guide</button>
+          <button class="btn secondary" id="loadCanvasBtn" type="button">Load Test Draft</button>
+          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Test Draft</button>
           <button class="btn" id="printCanvasBtn" type="button">Print</button>
         </div>
+      </div>
+
+      <div class="canvas-help" id="canvasHelp" hidden>
+        <h3>Creative Canvas — quick guide</h3>
+        <p>There is no wrong order. Add something, click it, then change or move it.</p>
+        <div class="canvas-help-grid">
+          <div class="canvas-help-item"><strong>Title or Text</strong>Click inside the words to type or edit. The Text tools appear automatically.</div>
+          <div class="canvas-help-item"><strong>Move</strong>Select a box, then drag its <em>Move</em> tab. Blue guide lines briefly appear when centred.</div>
+          <div class="canvas-help-item"><strong>Resize</strong>Drag any dot on a selected box — corners resize both ways; side dots resize one way.</div>
+          <div class="canvas-help-item"><strong>Illustrations</strong>Add up to two per A4 page. Use Fit whole image or Fill box.</div>
+          <div class="canvas-help-item"><strong>Draw / Paint</strong>Add a drawing, choose Pencil, Line, Rectangle, Oval, Fill or Eraser, then choose line colour and thickness.</div>
+          <div class="canvas-help-item"><strong>Pages</strong>Every page stays A4. Add, duplicate, reorder and optionally number pages automatically.</div>
+        </div>
+        <p class="canvas-tip"><strong>Tip:</strong> click a blank part of the page when you have finished with a box. The selection handles disappear, but your work stays exactly where you put it.</p>
       </div>
 
       <div class="canvas-toolbar">
@@ -139,7 +183,8 @@
           <button id="addCanvasTitleBtn" type="button">Add Title</button>
           <button id="addCanvasTextBtn" type="button">Add Text</button>
           <button id="addCanvasImageBtn" type="button">Add Illustration</button>
-          <span class="selected-note">Up to two illustrations per page.</span>
+          <button id="addCanvasDrawingBtn" type="button">✏️ Draw / Paint</button>
+          <span class="canvas-tip">Click inside Title/Text to edit. Up to two illustrations per page.</span>
           <input id="canvasImageFileInput" type="file" accept="image/*" hidden>
         </div>
 
@@ -172,6 +217,41 @@
           <button id="replaceCanvasImageBtn" type="button">Replace</button>
         </div>
 
+        <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
+          <span class="toolbar-label">Draw / Paint</span>
+          <button id="drawPencilBtn" type="button">✏️ Pencil</button>
+          <button id="drawLineBtn" type="button">Line</button>
+          <button id="drawRectBtn" type="button">Rectangle</button>
+          <button id="drawOvalBtn" type="button">Oval</button>
+          <button id="drawFillBtn" type="button">🪣 Fill</button>
+          <button id="drawEraserBtn" type="button">Eraser</button>
+          <label class="toolbar-check">Line
+            <input id="drawLineColour" type="color" value="#173042" aria-label="Line colour">
+          </label>
+          <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
+            <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
+            <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
+            <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
+            <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
+            <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
+            <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
+          </span>
+          <label class="toolbar-check">Thickness
+            <select id="drawThickness">
+              <option value="2">Fine</option>
+              <option value="5" selected>Medium</option>
+              <option value="9">Thick</option>
+              <option value="15">Very thick</option>
+            </select>
+          </label>
+          <label class="toolbar-check">Shape fill
+            <input id="drawFillColour" type="color" value="#d9ecff" aria-label="Shape fill colour">
+          </label>
+          <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
+          <button id="finishDrawingBtn" type="button">Finish Drawing</button>
+          <span class="draw-mode-note" id="drawModeNote">Choose a tool, then draw inside the selected drawing box.</span>
+        </div>
+
         <div class="toolbar-row" id="objectToolbar" hidden>
           <span class="toolbar-label">Selected box</span>
           <button id="bringForwardBtn" type="button">Bring Forward</button>
@@ -190,7 +270,7 @@
           <div class="canvas-pages" id="creativePages"></div>
         </div>
       </div>
-      <div class="canvas-note">Click a box to select it. Type directly into title and text boxes. Use the small handle above a selected box to move it; drag any edge or corner handle to resize it in that direction. Page size always remains A4.</div>
+      <div class="canvas-note"><strong>Hands-on is the quickest way to learn:</strong> click a box to select it; click inside Title/Text to type; use <em>Move</em> to position it; drag any edge or corner dot to resize. Drawings have their own Pencil/Paint tools. Page size always remains A4.</div>
     </section>
   </main>
 
@@ -466,10 +546,11 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       }
     }
 
-    const publishWorkspace=document.getElementById("publishWorkspace"),creativeWorkspace=document.getElementById("creativeWorkspace"),publishHeading=document.getElementById("publishHeading"),publicationPreview=document.getElementById("publicationPreview"),pubTitleInput=document.getElementById("pubTitleInput"),pubInfoInput=document.getElementById("pubInfoInput"),pubBodyInput=document.getElementById("pubBodyInput"),pubTitlePanel=document.getElementById("pubTitlePanel"),pubInfoPanel=document.getElementById("pubInfoPanel"),pubBodyPanel=document.getElementById("pubBodyPanel"),pubImagePanel=document.getElementById("pubImagePanel"),imageStatus=document.getElementById("imageStatus"),imageFileInput=document.getElementById("imageFileInput"),libraryPathBox=document.getElementById("libraryPathBox"),libraryPathInput=document.getElementById("libraryPathInput"),creativePages=document.getElementById("creativePages"),pageTabs=document.getElementById("pageTabs"),formatToolbar=document.getElementById("formatToolbar"),imageToolbar=document.getElementById("imageToolbar"),objectToolbar=document.getElementById("objectToolbar"),canvasImageFileInput=document.getElementById("canvasImageFileInput"),orientationSelect=document.getElementById("orientationSelect"),pageNumbersCheck=document.getElementById("pageNumbersCheck"),numberFirstPageCheck=document.getElementById("numberFirstPageCheck"),pageNumberPosition=document.getElementById("pageNumberPosition"),creativeHeading=document.getElementById("creativeHeading"),selectedObjectNote=document.getElementById("selectedObjectNote"),fontFamilySelect=document.getElementById("fontFamilySelect"),fontSizeInput=document.getElementById("fontSizeInput"),textColourInput=document.getElementById("textColourInput"),backgroundColourInput=document.getElementById("backgroundColourInput");
+    const publishWorkspace=document.getElementById("publishWorkspace"),creativeWorkspace=document.getElementById("creativeWorkspace"),publishHeading=document.getElementById("publishHeading"),publicationPreview=document.getElementById("publicationPreview"),pubTitleInput=document.getElementById("pubTitleInput"),pubInfoInput=document.getElementById("pubInfoInput"),pubBodyInput=document.getElementById("pubBodyInput"),pubTitlePanel=document.getElementById("pubTitlePanel"),pubInfoPanel=document.getElementById("pubInfoPanel"),pubBodyPanel=document.getElementById("pubBodyPanel"),pubImagePanel=document.getElementById("pubImagePanel"),imageStatus=document.getElementById("imageStatus"),imageFileInput=document.getElementById("imageFileInput"),libraryPathBox=document.getElementById("libraryPathBox"),libraryPathInput=document.getElementById("libraryPathInput"),creativePages=document.getElementById("creativePages"),pageTabs=document.getElementById("pageTabs"),formatToolbar=document.getElementById("formatToolbar"),imageToolbar=document.getElementById("imageToolbar"),drawingToolbar=document.getElementById("drawingToolbar"),objectToolbar=document.getElementById("objectToolbar"),canvasImageFileInput=document.getElementById("canvasImageFileInput"),orientationSelect=document.getElementById("orientationSelect"),pageNumbersCheck=document.getElementById("pageNumbersCheck"),numberFirstPageCheck=document.getElementById("numberFirstPageCheck"),pageNumberPosition=document.getElementById("pageNumberPosition"),creativeHeading=document.getElementById("creativeHeading"),selectedObjectNote=document.getElementById("selectedObjectNote"),fontFamilySelect=document.getElementById("fontFamilySelect"),fontSizeInput=document.getElementById("fontSizeInput"),textColourInput=document.getElementById("textColourInput"),backgroundColourInput=document.getElementById("backgroundColourInput"),drawLineColour=document.getElementById("drawLineColour"),drawFillColour=document.getElementById("drawFillColour"),drawThickness=document.getElementById("drawThickness"),drawNoFill=document.getElementById("drawNoFill"),drawModeNote=document.getElementById("drawModeNote");
     let titleColour="#17314a",titleBold=true,titleItalic=false,titleAlign="center",publicationImage="",currentCanvasMode="artist",selectedItem=null,currentPageIndex=0,pendingImageAction="add",zCounter=20;
     let undoStack=[],redoStack=[],typingSnapshotTaken=false;
-    const DRAFT_KEY="sanctuaryCreativeCanvasDraftV2";
+    let drawingTool="pencil",drawingEditingItem=null,drawingPointerActive=false;
+    const DRAFT_KEY="sanctuaryCreativeCanvasDraftV3";
 
     function openPublishingWorkspace(mode,label){
       currentCanvasMode=mode||"publication";
@@ -494,19 +575,28 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     function pct(n,total){return total?`${(n/total)*100}%`:"0%"}
     function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 
+    function syncDrawingData(){
+      pages().forEach(p=>p.querySelectorAll('.canvas-item[data-kind="drawing"]').forEach(d=>{
+        const canvas=d.querySelector(".drawing-surface");
+        if(canvas){
+          try{d.dataset.drawingData=canvas.toDataURL("image/png")}catch(err){console.warn("Drawing could not be captured.",err)}
+        }
+      }));
+    }
     function snapshotState(){
+      syncDrawingData();
       return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter});
     }
     function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
     function restoreState(raw){
-      const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();selectItem(null)
+      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();selectItem(null)
     }
     function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
     function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
     function updateUndoRedo(){document.getElementById("undoCanvasBtn").disabled=!undoStack.length;document.getElementById("redoCanvasBtn").disabled=!redoStack.length}
 
     function createPage(copyHtml=""){
-      const p=document.createElement("div");p.className=`canvas-page ${orientationSelect.value}`;p.innerHTML=copyHtml||`<div class="canvas-safe-area"></div><div class="canvas-guide v"></div><div class="canvas-guide h"></div><div class="canvas-empty-hint">Add a title, text or illustration to begin.</div><div class="page-number center"></div>`;creativePages.appendChild(p);bindPageItems(p);return p
+      const p=document.createElement("div");p.className=`canvas-page ${orientationSelect.value}`;p.innerHTML=copyHtml||`<div class="canvas-safe-area"></div><div class="canvas-guide v"></div><div class="canvas-guide h"></div><div class="canvas-empty-hint">Add a title, text, illustration or drawing to begin.</div><div class="page-number center"></div>`;creativePages.appendChild(p);bindPageItems(p);return p
     }
     function ensurePage(){if(!pages().length){createPage();currentPageIndex=0;renderPageTabs();showCurrentPage();updatePageNumbers()}}
     function addPage(){pushUndo();createPage();currentPageIndex=pages().length-1;renderPageTabs();showCurrentPage();updatePageNumbers()}
@@ -526,10 +616,14 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       const content=document.createElement("div");content.className="item-content";
       if(kind==="image"){
         const img=new Image();img.alt="Publication illustration";img.src=src||publicationImage||"";if(!img.src){undoStack.pop();updateUndoRedo();alert("Choose an illustration first.");return null}content.appendChild(img);
+      }else if(kind==="drawing"){
+        d.style.width=opts.width||"70%";d.style.height=opts.height||"42%";
+        const canvas=document.createElement("canvas");canvas.className="drawing-surface";canvas.width=1400;canvas.height=840;content.appendChild(canvas);
+        d.dataset.drawingData="";
       }else{
         content.contentEditable="true";content.spellcheck=true;content.textContent=text||(kind==="title"?"Type your title":"Type or paste text");
       }
-      d.appendChild(content);addItemChrome(d);p.appendChild(d);bindCanvasItem(d);updateEmptyHint();selectItem(d);return d
+      d.appendChild(content);addItemChrome(d);p.appendChild(d);bindCanvasItem(d);updateEmptyHint();selectItem(d);if(kind==="drawing")beginDrawingEdit(d);return d
     }
     function addItemChrome(d){if(d.querySelector(".drag-handle"))return;const drag=document.createElement("div");drag.className="drag-handle";drag.textContent="Move";drag.setAttribute("contenteditable","false");d.appendChild(drag);["nw","n","ne","e","se","s","sw","w"].forEach(pos=>{const h=document.createElement("span");h.className=`resize-handle ${pos}`;h.dataset.resize=pos;h.setAttribute("contenteditable","false");d.appendChild(h)})}
     function bindPageItems(p){p.querySelectorAll(".canvas-item").forEach(d=>{d.dataset.bound="";addItemChrome(d);bindCanvasItem(d)})}
@@ -537,25 +631,174 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     function bindCanvasItem(d){
       if(d.dataset.bound==="1")return;d.dataset.bound="1";
       d.addEventListener("pointerdown",e=>{if(!e.target.closest(".resize-handle")&&!e.target.closest(".drag-handle"))selectItem(d)});
-      const content=d.querySelector(".item-content");if(content&&d.dataset.kind!=="image"){
+      const content=d.querySelector(".item-content");
+      if(content&&d.dataset.kind!=="image"&&d.dataset.kind!=="drawing"){
         content.addEventListener("focus",()=>{selectItem(d);typingSnapshotTaken=false});
         content.addEventListener("beforeinput",()=>{if(!typingSnapshotTaken){pushUndo();typingSnapshotTaken=true}});
         content.addEventListener("blur",()=>{typingSnapshotTaken=false});
       }
+      if(d.dataset.kind==="drawing"){
+        const canvas=d.querySelector(".drawing-surface");
+        if(canvas){
+          hydrateDrawingCanvas(d);
+          canvas.addEventListener("pointerdown",e=>drawingPointerDown(e,d));
+          canvas.addEventListener("pointermove",e=>drawingPointerMove(e,d));
+          canvas.addEventListener("pointerup",e=>drawingPointerUp(e,d));
+          canvas.addEventListener("pointercancel",e=>drawingPointerUp(e,d));
+        }
+      }
       const drag=d.querySelector(".drag-handle");drag.addEventListener("pointerdown",e=>startDrag(e,d));
       d.querySelectorAll(".resize-handle").forEach(h=>h.addEventListener("pointerdown",e=>startResize(e,d,h.dataset.resize)));
     }
-    function selectItem(d){if(selectedItem)selectedItem.classList.remove("selected");selectedItem=d||null;if(selectedItem)selectedItem.classList.add("selected");const kind=selectedItem?.dataset.kind||"";objectToolbar.hidden=!selectedItem;formatToolbar.hidden=!selectedItem||kind==="image";imageToolbar.hidden=!selectedItem||kind!=="image";selectedObjectNote.textContent=selectedItem?`${kind==="image"?"Illustration":kind==="title"?"Title":"Text"} box selected.`:"Nothing selected.";if(selectedItem&&kind!=="image")syncFormatControls();}
+    function selectItem(d){
+      if(selectedItem&&selectedItem!==d)selectedItem.classList.remove("selected");
+      if(drawingEditingItem&&drawingEditingItem!==d)finishDrawingEdit();
+      selectedItem=d||null;
+      if(selectedItem)selectedItem.classList.add("selected");
+      const kind=selectedItem?.dataset.kind||"";
+      objectToolbar.hidden=!selectedItem;
+      formatToolbar.hidden=!selectedItem||kind==="image"||kind==="drawing";
+      imageToolbar.hidden=!selectedItem||kind!=="image";
+      drawingToolbar.hidden=!selectedItem||kind!=="drawing";
+      const names={image:"Illustration",title:"Title",text:"Text",drawing:"Drawing"};
+      selectedObjectNote.textContent=selectedItem?`${names[kind]||"Box"} selected.`:"Nothing selected.";
+      if(selectedItem&&kind!=="image"&&kind!=="drawing")syncFormatControls();
+      if(selectedItem&&kind==="drawing")setDrawingTool(drawingTool);
+    }
     function syncFormatControls(){const c=selectedItem?.querySelector(".item-content");if(!c)return;fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";const bg=getComputedStyle(c).backgroundColor;backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff"}
     function rgbToHex(rgb){const m=String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);return m?"#"+m.slice(1,4).map(x=>Number(x).toString(16).padStart(2,"0")).join(""):""}
 
-    function startDrag(e,d){e.preventDefault();selectItem(d);pushUndo();const p=currentPage(),pr=p.getBoundingClientRect(),dr=d.getBoundingClientRect(),startX=e.clientX,startY=e.clientY,startL=dr.left-pr.left,startT=dr.top-pr.top;const guideV=p.querySelector(".canvas-guide.v"),guideH=p.querySelector(".canvas-guide.h");e.currentTarget.setPointerCapture(e.pointerId);const move=ev=>{let l=startL+(ev.clientX-startX),t=startT+(ev.clientY-startY);l=clamp(l,0,pr.width-dr.width);t=clamp(t,0,pr.height-dr.height);const cx=l+dr.width/2,cy=t+dr.height/2,snap=7;guideV.style.display="none";guideH.style.display="none";if(Math.abs(cx-pr.width/2)<snap){l=pr.width/2-dr.width/2;guideV.style.left="50%";guideV.style.display="block"}if(Math.abs(cy-pr.height/2)<snap){t=pr.height/2-dr.height/2;guideH.style.top="50%";guideH.style.display="block"}d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height)};const up=()=>{guideV.style.display="none";guideH.style.display="none";e.currentTarget.removeEventListener("pointermove",move);e.currentTarget.removeEventListener("pointerup",up);e.currentTarget.removeEventListener("pointercancel",up)};e.currentTarget.addEventListener("pointermove",move);e.currentTarget.addEventListener("pointerup",up);e.currentTarget.addEventListener("pointercancel",up)}
-    function startResize(e,d,dir){e.preventDefault();e.stopPropagation();selectItem(d);pushUndo();const p=currentPage(),pr=p.getBoundingClientRect(),dr=d.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,base={l:dr.left-pr.left,t:dr.top-pr.top,w:dr.width,h:dr.height},minW=70,minH=42;e.currentTarget.setPointerCapture(e.pointerId);const move=ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;let {l,t,w,h}=base;if(dir.includes("e"))w=clamp(base.w+dx,minW,pr.width-base.l);if(dir.includes("s"))h=clamp(base.h+dy,minH,pr.height-base.t);if(dir.includes("w")){const nl=clamp(base.l+dx,0,base.l+base.w-minW);w=base.w+(base.l-nl);l=nl}if(dir.includes("n")){const nt=clamp(base.t+dy,0,base.t+base.h-minH);h=base.h+(base.t-nt);t=nt}d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height);d.style.width=pct(w,pr.width);d.style.height=pct(h,pr.height)};const up=()=>{e.currentTarget.removeEventListener("pointermove",move);e.currentTarget.removeEventListener("pointerup",up);e.currentTarget.removeEventListener("pointercancel",up)};e.currentTarget.addEventListener("pointermove",move);e.currentTarget.addEventListener("pointerup",up);e.currentTarget.addEventListener("pointercancel",up)}
 
-    function applyTextStyle(prop,value){if(!selectedItem||selectedItem.dataset.kind==="image")return;pushUndo();selectedItem.querySelector(".item-content").style[prop]=value;syncFormatControls()}
+    function hydrateDrawingCanvas(d){
+      const canvas=d.querySelector(".drawing-surface");
+      if(!canvas)return;
+      const saved=d.dataset.drawingData||"";
+      if(!saved)return;
+      const img=new Image();
+      img.onload=()=>{
+        const ctx=canvas.getContext("2d");
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      };
+      img.src=saved;
+    }
+    function beginDrawingEdit(d){
+      if(!d||d.dataset.kind!=="drawing")return;
+      drawingEditingItem=d;
+      d.classList.add("drawing-edit");
+      selectItem(d);
+      drawModeNote.textContent="Drawing mode is on. Draw inside the box; choose Finish Drawing when you want to move or resize it.";
+    }
+    function finishDrawingEdit(){
+      if(!drawingEditingItem)return;
+      syncDrawingData();
+      drawingEditingItem.classList.remove("drawing-edit");
+      drawingEditingItem=null;
+      drawingPointerActive=false;
+      drawModeNote.textContent="Choose a tool, then draw inside the selected drawing box.";
+    }
+    function setDrawingTool(tool){
+      drawingTool=tool;
+      ["drawPencilBtn","drawLineBtn","drawRectBtn","drawOvalBtn","drawFillBtn","drawEraserBtn"].forEach(id=>{
+        const b=document.getElementById(id);
+        if(!b)return;
+        const map={drawPencilBtn:"pencil",drawLineBtn:"line",drawRectBtn:"rect",drawOvalBtn:"oval",drawFillBtn:"fill",drawEraserBtn:"eraser"};
+        b.classList.toggle("active",map[id]===tool);
+      });
+      if(selectedItem?.dataset.kind==="drawing"&&!drawingEditingItem)beginDrawingEdit(selectedItem);
+    }
+    function drawingPoint(e,canvas){
+      const r=canvas.getBoundingClientRect();
+      return {
+        x:(e.clientX-r.left)*(canvas.width/r.width),
+        y:(e.clientY-r.top)*(canvas.height/r.height)
+      };
+    }
+    function drawingStyle(ctx){
+      ctx.lineCap="round";
+      ctx.lineJoin="round";
+      ctx.lineWidth=Number(drawThickness.value)||5;
+      ctx.strokeStyle=drawLineColour.value;
+      ctx.fillStyle=drawFillColour.value;
+    }
+    let drawStart=null,drawSavedImage=null,lastDrawPoint=null;
+    function drawingPointerDown(e,d){
+      if(drawingEditingItem!==d){beginDrawingEdit(d);return}
+      e.preventDefault();
+      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
+      pushUndo();
+      drawingPointerActive=true;drawStart=pt;lastDrawPoint=pt;
+      try{canvas.setPointerCapture(e.pointerId)}catch{}
+      if(drawingTool==="fill"){floodFillCanvas(canvas,Math.round(pt.x),Math.round(pt.y),hexToRgba(drawFillColour.value,255));drawingPointerActive=false;syncDrawingData();return}
+      if(["line","rect","oval"].includes(drawingTool))drawSavedImage=ctx.getImageData(0,0,canvas.width,canvas.height);
+      drawingStyle(ctx);
+      if(drawingTool==="pencil"){ctx.globalCompositeOperation="source-over";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
+      if(drawingTool==="eraser"){ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
+    }
+    function drawingPointerMove(e,d){
+      if(!drawingPointerActive||drawingEditingItem!==d)return;
+      e.preventDefault();
+      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
+      drawingStyle(ctx);
+      if(drawingTool==="pencil"){
+        ctx.globalCompositeOperation="source-over";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
+      }else if(drawingTool==="eraser"){
+        ctx.globalCompositeOperation="destination-out";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
+      }else if(["line","rect","oval"].includes(drawingTool)&&drawSavedImage){
+        ctx.globalCompositeOperation="source-over";ctx.putImageData(drawSavedImage,0,0);drawingStyle(ctx);
+        const x=drawStart.x,y=drawStart.y,w=pt.x-x,h=pt.y-y;
+        ctx.beginPath();
+        if(drawingTool==="line"){ctx.moveTo(x,y);ctx.lineTo(pt.x,pt.y);ctx.stroke()}
+        else if(drawingTool==="rect"){
+          if(!drawNoFill.checked)ctx.fillRect(x,y,w,h);
+          ctx.strokeRect(x,y,w,h);
+        }else{
+          ctx.ellipse(x+w/2,y+h/2,Math.abs(w/2),Math.abs(h/2),0,0,Math.PI*2);
+          if(!drawNoFill.checked)ctx.fill();
+          ctx.stroke();
+        }
+      }
+    }
+    function drawingPointerUp(e,d){
+      if(!drawingPointerActive)return;
+      drawingPointerActive=false;
+      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d");
+      try{ctx.closePath()}catch{}
+      ctx.globalCompositeOperation="source-over";
+      drawSavedImage=null;drawStart=null;lastDrawPoint=null;
+      syncDrawingData();
+    }
+    function hexToRgba(hex,a=255){
+      const h=String(hex||"#000000").replace("#","");
+      return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16),a];
+    }
+    function samePixel(data,i,target){
+      return data[i]===target[0]&&data[i+1]===target[1]&&data[i+2]===target[2]&&data[i+3]===target[3];
+    }
+    function floodFillCanvas(canvas,startX,startY,fill){
+      const ctx=canvas.getContext("2d"),img=ctx.getImageData(0,0,canvas.width,canvas.height),data=img.data,w=canvas.width,h=canvas.height;
+      if(startX<0||startY<0||startX>=w||startY>=h)return;
+      const si=(startY*w+startX)*4,target=[data[si],data[si+1],data[si+2],data[si+3]];
+      if(target.every((v,i)=>v===fill[i]))return;
+      const stack=[[startX,startY]],seen=new Uint8Array(w*h);
+      while(stack.length){
+        const [x,y]=stack.pop(),pi=y*w+x;
+        if(seen[pi])continue;seen[pi]=1;
+        const i=pi*4;
+        if(!samePixel(data,i,target))continue;
+        data[i]=fill[0];data[i+1]=fill[1];data[i+2]=fill[2];data[i+3]=fill[3];
+        if(x>0)stack.push([x-1,y]);if(x<w-1)stack.push([x+1,y]);if(y>0)stack.push([x,y-1]);if(y<h-1)stack.push([x,y+1]);
+      }
+      ctx.putImageData(img,0,0);
+    }
+
+    function startDrag(e,d){e.preventDefault();if(d.dataset.kind==="drawing")finishDrawingEdit();selectItem(d);pushUndo();const p=currentPage(),pr=p.getBoundingClientRect(),dr=d.getBoundingClientRect(),startX=e.clientX,startY=e.clientY,startL=dr.left-pr.left,startT=dr.top-pr.top;const guideV=p.querySelector(".canvas-guide.v"),guideH=p.querySelector(".canvas-guide.h");e.currentTarget.setPointerCapture(e.pointerId);const move=ev=>{let l=startL+(ev.clientX-startX),t=startT+(ev.clientY-startY);l=clamp(l,0,pr.width-dr.width);t=clamp(t,0,pr.height-dr.height);const cx=l+dr.width/2,cy=t+dr.height/2,snap=7;guideV.style.display="none";guideH.style.display="none";if(Math.abs(cx-pr.width/2)<snap){l=pr.width/2-dr.width/2;guideV.style.left="50%";guideV.style.display="block"}if(Math.abs(cy-pr.height/2)<snap){t=pr.height/2-dr.height/2;guideH.style.top="50%";guideH.style.display="block"}d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height)};const up=()=>{guideV.style.display="none";guideH.style.display="none";e.currentTarget.removeEventListener("pointermove",move);e.currentTarget.removeEventListener("pointerup",up);e.currentTarget.removeEventListener("pointercancel",up)};e.currentTarget.addEventListener("pointermove",move);e.currentTarget.addEventListener("pointerup",up);e.currentTarget.addEventListener("pointercancel",up)}
+    function startResize(e,d,dir){e.preventDefault();e.stopPropagation();if(d.dataset.kind==="drawing")finishDrawingEdit();selectItem(d);pushUndo();const p=currentPage(),pr=p.getBoundingClientRect(),dr=d.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,base={l:dr.left-pr.left,t:dr.top-pr.top,w:dr.width,h:dr.height},minW=70,minH=42;e.currentTarget.setPointerCapture(e.pointerId);const move=ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;let {l,t,w,h}=base;if(dir.includes("e"))w=clamp(base.w+dx,minW,pr.width-base.l);if(dir.includes("s"))h=clamp(base.h+dy,minH,pr.height-base.t);if(dir.includes("w")){const nl=clamp(base.l+dx,0,base.l+base.w-minW);w=base.w+(base.l-nl);l=nl}if(dir.includes("n")){const nt=clamp(base.t+dy,0,base.t+base.h-minH);h=base.h+(base.t-nt);t=nt}d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height);d.style.width=pct(w,pr.width);d.style.height=pct(h,pr.height)};const up=()=>{e.currentTarget.removeEventListener("pointermove",move);e.currentTarget.removeEventListener("pointerup",up);e.currentTarget.removeEventListener("pointercancel",up)};e.currentTarget.addEventListener("pointermove",move);e.currentTarget.addEventListener("pointerup",up);e.currentTarget.addEventListener("pointercancel",up)}
+
+    function applyTextStyle(prop,value){if(!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing")return;pushUndo();selectedItem.querySelector(".item-content").style[prop]=value;syncFormatControls()}
     function toggleTextStyle(prop,onValue="normal",offValue="normal"){if(!selectedItem||selectedItem.dataset.kind==="image")return;const c=selectedItem.querySelector(".item-content"),current=getComputedStyle(c)[prop];pushUndo();c.style[prop]=current===onValue?offValue:onValue}
     function deleteSelected(){if(!selectedItem)return;pushUndo();const p=currentPage();selectedItem.remove();selectedItem=null;selectItem(null);updateEmptyHint()}
-    function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="image"&&currentPage().querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return}pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);updateEmptyHint()}
+    function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="image"&&currentPage().querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return}if(kind==="drawing")syncDrawingData();pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);updateEmptyHint()}
     function layerSelected(delta){if(!selectedItem)return;pushUndo();let z=parseInt(selectedItem.style.zIndex)||10;z=clamp(z+delta,1,999);selectedItem.style.zIndex=String(z);zCounter=Math.max(zCounter,z)}
 
     function openCreativeWorkspace(fresh=false,label="Creative Canvas"){
@@ -563,7 +806,7 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     }
     function importGuidedToCanvas(){openCreativeWorkspace(true,publishHeading.textContent||"Creative Canvas");const title=clean(pubTitleInput.value),info=clean(pubInfoInput.value),body=clean(pubBodyInput.value);if(title){const d=makeCanvasItem("title",title,"",{left:"10%",top:"7%",width:"80%",height:"12%"});if(d){const c=d.querySelector(".item-content");c.style.color=titleColour;c.style.fontWeight=titleBold?"900":"600";c.style.fontStyle=titleItalic?"italic":"normal";c.style.textAlign=titleAlign}}if(publicationImage)makeCanvasItem("image","",publicationImage,{left:"8%",top:"22%",width:"40%",height:"30%"});if(info)makeCanvasItem("text",info,"",{left:"52%",top:"22%",width:"40%",height:"30%"});if(body)makeCanvasItem("text",body,"",{left:"8%",top:"57%",width:"84%",height:"32%"});undoStack=[];redoStack=[];updateUndoRedo();selectItem(null)}
 
-    function saveDraft(){try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Creative Canvas draft saved on this device.")}catch(err){console.error(err);alert("This draft could not be saved. Large photographs can exceed the browser's local storage allowance. Printing or reducing image sizes first may help.")}}
+    function saveDraft(){try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so residents will not need to manage image sizes themselves.")}}
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
 
@@ -571,12 +814,21 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{creativeWorkspace.hidden=true;publishWorkspace.hidden=true;els.studioCard.hidden=false;selectItem(null);window.scrollTo({top:0,behavior:"smooth"})});
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
     orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});
-    document.getElementById("addCanvasTitleBtn").addEventListener("click",()=>makeCanvasItem("title"));document.getElementById("addCanvasTextBtn").addEventListener("click",()=>makeCanvasItem("text"));document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
+    document.getElementById("quickGuideBtn").addEventListener("click",()=>{const box=document.getElementById("canvasHelp");box.hidden=!box.hidden;document.getElementById("quickGuideBtn").textContent=box.hidden?"Quick Guide":"Hide Guide"});
+    document.getElementById("addCanvasTitleBtn").addEventListener("click",()=>makeCanvasItem("title"));document.getElementById("addCanvasTextBtn").addEventListener("click",()=>makeCanvasItem("text"));document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"}));document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
     canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
     fontFamilySelect.addEventListener("change",()=>applyTextStyle("fontFamily",fontFamilySelect.value));fontSizeInput.addEventListener("change",()=>applyTextStyle("fontSize",`${clamp(parseInt(fontSizeInput.value)||18,8,96)}px`));document.getElementById("formatBoldBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.fontWeight=parseInt(getComputedStyle(c).fontWeight)>=700?"400":"700"});document.getElementById("formatItalicBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.fontStyle=getComputedStyle(c).fontStyle==="italic"?"normal":"italic"});document.getElementById("formatUnderlineBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.textDecoration=getComputedStyle(c).textDecorationLine.includes("underline")?"none":"underline"});document.getElementById("alignLeftBtn").addEventListener("click",()=>applyTextStyle("textAlign","left"));document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));textColourInput.addEventListener("input",()=>applyTextStyle("color",textColourInput.value));backgroundColourInput.addEventListener("input",()=>applyTextStyle("backgroundColor",backgroundColourInput.value));document.getElementById("transparentBackgroundBtn").addEventListener("click",()=>applyTextStyle("backgroundColor","transparent"));
+    document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));
+    document.getElementById("drawLineBtn").addEventListener("click",()=>setDrawingTool("line"));
+    document.getElementById("drawRectBtn").addEventListener("click",()=>setDrawingTool("rect"));
+    document.getElementById("drawOvalBtn").addEventListener("click",()=>setDrawingTool("oval"));
+    document.getElementById("drawFillBtn").addEventListener("click",()=>setDrawingTool("fill"));
+    document.getElementById("drawEraserBtn").addEventListener("click",()=>setDrawingTool("eraser"));
+    document.getElementById("finishDrawingBtn").addEventListener("click",finishDrawingEdit);
+    document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
     document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("bringForwardBtn").addEventListener("click",()=>layerSelected(1));document.getElementById("sendBackwardBtn").addEventListener("click",()=>layerSelected(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Open the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be opened.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);document.getElementById("printCanvasBtn").addEventListener("click",printCanvas);
-    document.addEventListener("keydown",e=>{if(creativeWorkspace.hidden)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redoCanvas():undoCanvas()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redoCanvas()}else if(e.key==="Delete"&&selectedItem&&!document.activeElement?.isContentEditable){deleteSelected()}});
-    creativePages.addEventListener("pointerdown",e=>{if(e.target.classList.contains("canvas-page")||e.target.classList.contains("canvas-safe-area")||e.target.classList.contains("canvas-empty-hint"))selectItem(null)});
+    document.addEventListener("keydown",e=>{if(creativeWorkspace.hidden)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redoCanvas():undoCanvas()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redoCanvas()}else if(e.key==="Delete"&&selectedItem&&!drawingEditingItem&&!document.activeElement?.isContentEditable){deleteSelected()}});
+    creativePages.addEventListener("pointerdown",e=>{if(e.target.classList.contains("canvas-page")||e.target.classList.contains("canvas-safe-area")||e.target.classList.contains("canvas-empty-hint")){finishDrawingEdit();selectItem(null)}});
     window.addEventListener("afterprint",()=>{document.body.classList.remove("print-canvas");showCurrentPage()});
     refreshPublication();updateUndoRedo();
 
@@ -585,4 +837,4 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     els.togglePinBtn.addEventListener("click",togglePinVisibility);els.logoutBtn.addEventListener("click",logout);els.verifyForm.addEventListener("submit",verifyStudio);
   </script>
 </body>
-</html>
+</html>host-area.html

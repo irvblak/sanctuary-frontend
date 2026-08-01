@@ -189,6 +189,39 @@
       width:130px;
     }
 
+    .select-cell{
+      width:48px;
+      text-align:center;
+    }
+
+    .select-cell input{
+      width:auto;
+      transform:scale(1.15);
+      cursor:pointer;
+    }
+
+    tr.no-email{
+      color:#7b8790;
+      background:#fafafa;
+    }
+
+    .selection-bar{
+      display:flex;
+      gap:.6rem;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:.8rem 0 0;
+      padding:.75rem;
+      border:1px solid #dbe6f3;
+      border-radius:12px;
+      background:#f7fbff;
+    }
+
+    .selection-status{
+      color:#40586a;
+      font-weight:800;
+    }
+
     @media (max-width:720px){
       nav{grid-template-columns:1fr; row-gap:0.65rem; text-align:center;}
       .nav-left,.nav-center,.nav-right{justify-self:center;}
@@ -272,9 +305,18 @@
       <textarea id="emailList" readonly></textarea>
 
       <div class="row" style="margin-top:0.6rem;">
-        <button id="copyEmails" class="action" type="button">Copy emails (comma-separated)</button>
+        <button id="copyEmails" class="action" type="button">Copy all shown emails</button>
+        <button id="emailAllShown" class="action secondary" type="button">Email all shown (BCC)</button>
         <button id="downloadCsv" class="action secondary" type="button">Download mail-merge CSV</button>
         <span class="muted" id="stats"></span>
+      </div>
+
+      <div class="selection-bar">
+        <button id="selectAllEmails" class="action secondary" type="button">Select all with email</button>
+        <button id="clearEmailSelection" class="action secondary" type="button">Clear selection</button>
+        <button id="copySelectedEmails" class="action" type="button">Copy selected emails</button>
+        <button id="emailSelected" class="action" type="button">Email selected (BCC)</button>
+        <span id="selectionStatus" class="selection-status">0 selected</span>
       </div>
 
       <div class="panel">
@@ -286,6 +328,9 @@
           <table>
             <thead>
               <tr>
+                <th class="select-cell">
+                  <input id="selectAllHeader" type="checkbox" aria-label="Select all residents with email">
+                </th>
                 <th style="width:130px;"></th>
                 <th>Name</th>
                 <th>Email</th>
@@ -328,6 +373,8 @@
   }
 
   let currentStore = {};
+  let currentRows = [];
+  const selectedResidentIds = new Set();
 
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -494,17 +541,21 @@
         const mobile = String(r?.mobile || "").trim();
         const landline = (idx === 0 ? String(r?.landline || "").trim() : "");
 
-        if (isEmailLike(email)) emails.add(email.toLowerCase());
+        if (isEmailLike(email)) emails.add(email);
 
         rows.push({
           rid, name, email, mobile, landline,
+          hasEmail:isEmailLike(email),
           joined: joined ? "Yes" : "No",
           updated: fmtDate(updated)
         });
       });
     });
 
-    return { rows, emails: [...emails].sort() };
+    return {
+      rows,
+      emails:[...emails].sort((a,b) => a.localeCompare(b, "en-GB", {sensitivity:"base"}))
+    };
   }
 
   function escapeHtml(value){
@@ -516,6 +567,83 @@
       .replace(/'/g,"&#39;");
   }
 
+  function uniqueEmails(rows){
+    const seen = new Set();
+    const out = [];
+
+    rows.forEach(row => {
+      if (!row.hasEmail) return;
+      const key = row.email.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(row.email);
+    });
+
+    return out;
+  }
+
+  function selectedRows(){
+    return currentRows.filter(row => selectedResidentIds.has(row.rid) && row.hasEmail);
+  }
+
+  function updateSelectionStatus(){
+    const selected = selectedRows();
+    const emails = uniqueEmails(selected);
+    const availableCount = currentRows.filter(row => row.hasEmail).length;
+
+    document.getElementById("selectionStatus").textContent =
+      `${selected.length} resident${selected.length === 1 ? "" : "s"} selected • ${emails.length} unique email${emails.length === 1 ? "" : "s"}`;
+
+    const header = document.getElementById("selectAllHeader");
+    if (header){
+      header.checked = availableCount > 0 && selected.length === availableCount;
+      header.indeterminate = selected.length > 0 && selected.length < availableCount;
+    }
+
+    document.getElementById("copySelectedEmails").disabled = emails.length === 0;
+    document.getElementById("emailSelected").disabled = emails.length === 0;
+  }
+
+  function setAllVisibleSelected(selected){
+    currentRows.forEach(row => {
+      if (!row.hasEmail) return;
+      if (selected) selectedResidentIds.add(row.rid);
+      else selectedResidentIds.delete(row.rid);
+    });
+
+    document.querySelectorAll(".resident-select").forEach(box => {
+      box.checked = selected;
+    });
+
+    updateSelectionStatus();
+  }
+
+  async function copyEmailList(emails){
+    const text = emails.join(", ");
+    if (!text){
+      alert("No email addresses selected.");
+      return;
+    }
+
+    try{
+      await navigator.clipboard.writeText(text);
+      alert(`${emails.length} email address${emails.length === 1 ? "" : "es"} copied.`);
+    }catch{
+      alert("Copy failed (browser blocked). You can manually select and copy the email list.");
+    }
+  }
+
+  function openBccEmail(emails){
+    const unique = [...new Set(emails.filter(isEmailLike))];
+    if (!unique.length){
+      alert("No valid email addresses selected.");
+      return;
+    }
+
+    const href = `mailto:?bcc=${encodeURIComponent(unique.join(","))}`;
+    window.location.href = href;
+  }
+
   async function render(){
     document.getElementById("stats").textContent = "Loading members…";
     document.getElementById("gridRows").innerHTML = "";
@@ -523,6 +651,13 @@
     const store = await getCurrentStore();
     const onlyJoined = document.getElementById("onlyJoined").checked;
     const out = buildRows(store, onlyJoined);
+    currentRows = out.rows;
+
+    // Remove selections that are no longer visible after filtering/reloading.
+    const visibleIds = new Set(currentRows.map(row => row.rid));
+    [...selectedResidentIds].forEach(id => {
+      if (!visibleIds.has(id)) selectedResidentIds.delete(id);
+    });
 
     document.getElementById("emailList").value = out.emails.join(", ");
     document.getElementById("stats").textContent =
@@ -530,7 +665,17 @@
 
     const tbody = document.getElementById("gridRows");
     tbody.innerHTML = out.rows.map(r => `
-      <tr>
+      <tr class="${r.hasEmail ? "" : "no-email"}">
+        <td class="select-cell">
+          <input
+            class="resident-select"
+            type="checkbox"
+            data-rid="${escapeHtml(r.rid)}"
+            ${selectedResidentIds.has(r.rid) ? "checked" : ""}
+            ${r.hasEmail ? "" : "disabled"}
+            aria-label="${r.hasEmail ? `Select ${escapeHtml(r.name || r.rid)} for email` : "No valid email address"}"
+          >
+        </td>
         <td class="idcell">${escapeHtml(r.rid)}</td>
         <td>${escapeHtml(r.name)}</td>
         <td>${escapeHtml(r.email)}</td>
@@ -540,6 +685,17 @@
         <td>${escapeHtml(r.updated)}</td>
       </tr>
     `).join("");
+
+    tbody.querySelectorAll(".resident-select").forEach(box => {
+      box.addEventListener("change", () => {
+        const rid = box.dataset.rid;
+        if (box.checked) selectedResidentIds.add(rid);
+        else selectedResidentIds.delete(rid);
+        updateSelectionStatus();
+      });
+    });
+
+    updateSelectionStatus();
   }
 
   async function downloadMailMergeCSV(){
@@ -625,9 +781,31 @@
   });
 
   document.getElementById("copyEmails").addEventListener("click", async () => {
-    const txt = document.getElementById("emailList").value;
-    try { await navigator.clipboard.writeText(txt); alert("Copied"); }
-    catch { alert("Copy failed (browser blocked). You can manually select & copy."); }
+    await copyEmailList(uniqueEmails(currentRows));
+  });
+
+  document.getElementById("emailAllShown").addEventListener("click", () => {
+    openBccEmail(uniqueEmails(currentRows));
+  });
+
+  document.getElementById("selectAllEmails").addEventListener("click", () => {
+    setAllVisibleSelected(true);
+  });
+
+  document.getElementById("clearEmailSelection").addEventListener("click", () => {
+    setAllVisibleSelected(false);
+  });
+
+  document.getElementById("selectAllHeader").addEventListener("change", event => {
+    setAllVisibleSelected(event.currentTarget.checked);
+  });
+
+  document.getElementById("copySelectedEmails").addEventListener("click", async () => {
+    await copyEmailList(uniqueEmails(selectedRows()));
+  });
+
+  document.getElementById("emailSelected").addEventListener("click", () => {
+    openBccEmail(uniqueEmails(selectedRows()));
   });
 
   document.getElementById("resetPinsBtn").addEventListener("click", resetSelectedPins);

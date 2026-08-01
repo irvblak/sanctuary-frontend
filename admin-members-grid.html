@@ -217,8 +217,8 @@
   <div class="card">
     <h1>Admin – Members emails & grid</h1>
     <p class="sub">
-      This page shows a consolidated view of the same contact details residents enter in <strong>Your Information</strong>.
-      It reads <strong>browser-local</strong> data on this device only.
+      This page shows a consolidated Club-wide view of the same contact details members enter in <strong>Your Information</strong>.
+      It loads the current information from the Sanctuary backend and uses browser-local data only as a fallback.
     </p>
 
     <!-- PIN gate (reuse YI PIN store) -->
@@ -280,7 +280,7 @@
       <div class="panel">
         <div class="panel-head">
           <span>Full grid (one row per resident)</span>
-          <span class="muted">Local data</span>
+          <span class="muted" id="dataSourceLabel">Loading…</span>
         </div>
         <div class="panel-body">
           <table>
@@ -302,8 +302,8 @@
     </div>
 
     <p class="muted" style="margin-top:0.85rem;">
-      Note: This is stored in your browser on this device. When you move to a shared members database,
-      this can become a true club-wide admin view.
+      The grid normally loads the current Club-wide information from the Sanctuary backend.
+      Browser-local information is used only if the backend is temporarily unavailable.
     </p>
   </div>
 </main>
@@ -327,9 +327,45 @@
     return String(raw || "").trim().split("/")[0]; // SM55/1 -> SM55
   }
 
+  let currentStore = {};
+
   function loadStore(){
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
+  }
+
+  async function loadBackendStore(){
+    const token = getAdminToken();
+    const headers = { "Accept":"application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const response = await fetch(`${BACKEND_URL}/api/members-directory`, {
+      method:"GET",
+      cache:"no-store",
+      headers
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || !data || data.success === false || !data.members || typeof data.members !== "object"){
+      throw new Error(data?.message || `Members could not be loaded (${response.status}).`);
+    }
+
+    return data.members;
+  }
+
+  async function getCurrentStore(){
+    try{
+      const backendStore = await loadBackendStore();
+      currentStore = backendStore;
+      document.getElementById("dataSourceLabel").textContent = "Live backend data";
+      return currentStore;
+    }catch(err){
+      console.warn("Backend members load failed; using local fallback.", err);
+      currentStore = loadStore();
+      document.getElementById("dataSourceLabel").textContent = "Local fallback data";
+      return currentStore;
+    }
   }
 
   function loadPins(){
@@ -471,8 +507,20 @@
     return { rows, emails: [...emails].sort() };
   }
 
-  function render(){
-    const store = loadStore();
+  function escapeHtml(value){
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#39;");
+  }
+
+  async function render(){
+    document.getElementById("stats").textContent = "Loading members…";
+    document.getElementById("gridRows").innerHTML = "";
+
+    const store = await getCurrentStore();
     const onlyJoined = document.getElementById("onlyJoined").checked;
     const out = buildRows(store, onlyJoined);
 
@@ -483,19 +531,19 @@
     const tbody = document.getElementById("gridRows");
     tbody.innerHTML = out.rows.map(r => `
       <tr>
-        <td class="idcell">${r.rid}</td>
-        <td>${r.name}</td>
-        <td>${r.email}</td>
-        <td>${r.mobile}</td>
-        <td>${r.landline}</td>
-        <td>${r.joined}</td>
-        <td>${r.updated}</td>
+        <td class="idcell">${escapeHtml(r.rid)}</td>
+        <td>${escapeHtml(r.name)}</td>
+        <td>${escapeHtml(r.email)}</td>
+        <td>${escapeHtml(r.mobile)}</td>
+        <td>${escapeHtml(r.landline)}</td>
+        <td>${escapeHtml(r.joined)}</td>
+        <td>${escapeHtml(r.updated)}</td>
       </tr>
     `).join("");
   }
 
-  function downloadMailMergeCSV(){
-    const store = loadStore();
+  async function downloadMailMergeCSV(){
+    const store = Object.keys(currentStore).length ? currentStore : await getCurrentStore();
     const onlyJoined = document.getElementById("onlyJoined").checked;
     const out = buildRows(store, onlyJoined);
 

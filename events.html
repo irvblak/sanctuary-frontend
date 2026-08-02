@@ -6,9 +6,8 @@
   <title>Events List – The Sanctuary Club</title>
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
-  <script src="logout.js?v=LO_3"></script>
-
+  <script src="access.js?v=PUBLIC_MEMBER_ROUTE_2"></script>
+  
   <style>
     :root{
       --bg1:#d9ecff;
@@ -304,15 +303,16 @@
 <body>
   <nav>
     <div class="nav-left">
-      <a class="btn" href="events-calendar.html">← Calendar</a>
-      <a class="btn" href="members-info.html">Members Hub</a>
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" id="membersHubLink" href="members-info.html">Members Hub</a>
     </div>
 
     <div class="brand">Sanctuary Club — Events List</div>
 
     <div class="nav-right">
-      <a class="btn" href="index.html">Home</a>
-      <button class="btn primary" id="logoutBtn" type="button">Logout</button>
+      <a class="btn" href="events-calendar.html">Calendar</a>
+      <a class="btn primary" id="createEventLink" href="host-event-form.html?v=ED_REF_2">Create Event</a>
+      <button class="btn" id="closePageBtn" type="button">× Close Page</button>
     </div>
   </nav>
 
@@ -385,7 +385,9 @@
     const infoBox = document.getElementById("infoBox");
     const warnBox = document.getElementById("warnBox");
     const errBox = document.getElementById("errBox");
-    const logoutBtn = document.getElementById("logoutBtn");
+    const membersHubLink = document.getElementById("membersHubLink");
+    const createEventLink = document.getElementById("createEventLink");
+    const closePageBtn = document.getElementById("closePageBtn");
 
     function parseYMD(dateStr){
       const text = String(dateStr || "").trim();
@@ -698,16 +700,41 @@
       }
     }
 
-    logoutBtn.addEventListener("click", () => {
-      if (typeof window.scLogout === "function"){
-        window.scLogout();
-        return;
-      }
-      try{ localStorage.clear(); }catch{}
-      try{ sessionStorage.clear(); }catch{}
-      window.location.href = "index.html";
+    function applyRouteNavigation(){
+      const access = window.SanctuaryAccess;
+      const onWhatsOnRoute = access?.isWhatsOnRoute?.() === true;
+
+      if (!onWhatsOnRoute) return;
+
+      [membersHubLink, createEventLink].forEach(link => {
+        if (!link) return;
+
+        if (!link.textContent.trim().startsWith("🔒")) {
+          link.textContent = `🔒 ${link.textContent.trim()}`;
+        }
+
+        link.setAttribute("data-private-route", "true");
+        link.setAttribute("aria-label", `${link.textContent.trim()} — available through Info`);
+      });
+
+      access?.protectPrivateLinks?.();
+    }
+
+    closePageBtn.addEventListener("click", () => {
+      window.close();
+
+      window.setTimeout(() => {
+        if (window.closed) return;
+
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "index.html";
+        }
+      }, 120);
     });
 
+    applyRouteNavigation();
     renderFilters();
     renderTable();
     loadEvents();

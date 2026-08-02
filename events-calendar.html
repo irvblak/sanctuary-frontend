@@ -7,7 +7,7 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=AC_1"></script>
+  <script src="access.js?v=PUBLIC_MEMBER_ROUTE_1"></script>
 
   <style>
     :root{
@@ -351,6 +351,31 @@
   opacity:.72;
   filter:grayscale(.18);
 }
+
+    .route-lock{
+      display:inline-block;
+      margin-left:.28rem;
+      font-size:.88em;
+      vertical-align:baseline;
+    }
+
+    .public-route-note{
+      display:none;
+      margin-top:1rem;
+      padding:.85rem 1rem;
+      border:1px solid rgba(0,94,168,.18);
+      border-radius:14px;
+      background:#eef6ff;
+      color:#0b4d87;
+      font-weight:700;
+      line-height:1.55;
+      text-align:center;
+    }
+
+    .public-route-note.show{ display:block; }
+
+    .route-hidden{ display:none !important; }
+
     @media (max-width:900px){
       .day{ min-height:100px; }
     }
@@ -372,14 +397,18 @@
   <nav>
     <div class="nav-left">
       <a class="btn" href="index.html">Home</a>
-      <a class="btn" href="members-info.html">Members Hub</a>
+      <a class="btn" id="hubLink" href="members-info.html" data-private-route>
+        Members Hub<span class="route-lock" id="hubLock" aria-hidden="true"></span>
+      </a>
     </div>
 
     <div class="brand">Sanctuary Club — Calendar</div>
 
     <div class="nav-right">
       <a class="btn" href="events.html">Events List</a>
-      <a class="btn primary" href="host-event-form.html?v=ED_REF_2">Create Event</a>
+      <a class="btn primary" id="createEventLink" href="host-event-form.html?v=ED_REF_2" data-private-route>
+        Create Event<span class="route-lock" id="createLock" aria-hidden="true"></span>
+      </a>
     </div>
   </nav>
 
@@ -415,6 +444,10 @@
         <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
       </div>
       <div class="grid" id="grid"></div>
+
+      <div class="public-route-note" id="publicRouteNote">
+        You are viewing the public What’s On pages. Calendar, Events List and Event Notices remain available here.
+      </div>
     </div>
   </main>
 
@@ -452,6 +485,31 @@
     const infoBox = document.getElementById("infoBox");
     const warnBox = document.getElementById("warnBox");
     const errBox = document.getElementById("errBox");
+
+    const hubLink = document.getElementById("hubLink");
+    const hubLock = document.getElementById("hubLock");
+    const createEventLink = document.getElementById("createEventLink");
+    const createLock = document.getElementById("createLock");
+    const publicRouteNote = document.getElementById("publicRouteNote");
+
+    function applyRoutePresentation(){
+      const access = window.SanctuaryAccess;
+      const onPublicRoute = Boolean(access?.isWhatsOnRoute?.());
+
+      hubLock.textContent = onPublicRoute ? "🔒" : "";
+      createLock.textContent = onPublicRoute ? "🔒" : "";
+      publicRouteNote.classList.toggle("show", onPublicRoute);
+
+      if (onPublicRoute){
+        hubLink.title = "Available through Home → Info";
+        createEventLink.title = "Available through Home → Info";
+      } else {
+        hubLink.removeAttribute("title");
+        createEventLink.removeAttribute("title");
+      }
+
+      access?.protectPrivateLinks?.();
+    }
 
     function pad2(n){
       return String(n).padStart(2, "0");
@@ -798,6 +856,7 @@
       renderCalendar();
     };
 
+    applyRoutePresentation();
     renderLegend();
     renderCalendar();
     loadEvents();

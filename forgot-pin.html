@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Forgotten Membership PIN | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div class="page-shell">
+
+  <div class="page-card">
+
+    <h1>🔐 Forgotten your Membership PIN?</h1>
+
+    <p class="lead">
+      Don't worry.
+    </p>
+
+    <p>
+      Sanctuary Club can safely issue a temporary
+      <strong>Starter PIN</strong> to allow you to regain access.
+    </p>
+
+    <p>
+      After signing in with the temporary Starter PIN, you'll be
+      asked immediately to choose a new personal Membership PIN.
+    </p>
+
+    <hr>
+
+    <h2>Confirm your membership</h2>
+
+    <p>
+      Please enter the information below.
+    </p>
+
+    <form id="forgotPinForm">
+
+      <label>
+        Membership Reference
+        <input
+          id="memberId"
+          type="text"
+          placeholder="e.g. SM55"
+          autocomplete="off"
+          required
+        >
+      </label>
+
+      <label>
+        Surname
+        <input
+          id="surname"
+          type="text"
+          autocomplete="family-name"
+          required
+        >
+      </label>
+
+      <div class="button-row">
+
+        <button
+          type="submit"
+          class="primary"
+        >
+          Reset my PIN
+        </button>
+
+        <button
+          type="button"
+          onclick="history.back()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </form>
+
+    <div id="statusBox"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+document
+.getElementById("forgotPinForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    /*
+      Next phase:
+
+      POST /api/request-pin-reset
+
+      Body:
+
+      {
+        member_id,
+        surname
+      }
+
+      Backend:
+
+      ✓ verify resident
+      ✓ temporarily enable Starter PIN (2468)
+      ✓ expiry (e.g. 30 minutes)
+      ✓ force PIN change on next login
+    */
+
+});
+
+</script>
+
+</body>
+</html>

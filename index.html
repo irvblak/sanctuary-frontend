@@ -5,48 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=PUBLIC_MEMBER_ROUTE_1" />
+  <link rel="stylesheet" href="styles-main.css?v=PUBLIC_MEMBER_ROUTE_2" />
 
   <style>
     #access-gate {
-      display:none;
-      margin-top:1rem;
+      display: none;
+      margin-top: 1rem;
     }
 
     .hero-button {
-      cursor:pointer;
+      cursor: pointer;
+    }
+
+    .hero-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left-panel {
+      position: relative;
+      padding-bottom: 5rem;
+    }
+
+    .panel-message {
+      text-align: center;
+    }
+
+    .panel-message h3 {
+      margin: 0 0 0.75rem;
+      font-weight: 700;
+    }
+
+    .panel-message p {
+      margin: 0;
+      line-height: 1.6;
     }
 
     .privacy-link-wrap {
-      margin-top:1rem;
-      text-align:center;
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      text-align: center;
     }
 
     .privacy-link-button {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:0.68rem 1rem;
-      border:1px solid rgba(255,255,255,0.78);
-      border-radius:999px;
-      background:rgba(255,255,255,0.88);
-      color:#123a78;
-      font-size:0.94rem;
-      font-weight:700;
-      line-height:1.25;
-      text-decoration:none;
-      box-shadow:0 3px 10px rgba(0,0,0,0.10);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.7rem;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.78;
       transition:
-        background 0.15s ease,
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+        opacity 0.15s ease,
+        background 0.15s ease;
     }
 
     .privacy-link-button:hover,
     .privacy-link-button:focus {
-      background:#ffffff;
-      transform:translateY(-1px);
-      box-shadow:0 5px 14px rgba(0,0,0,0.14);
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 1;
+    }
+
+    .action-stack {
+      padding-top: 4.5rem;
+    }
+
+    @media (max-width: 850px) {
+      .left-panel {
+        padding-bottom: 1rem;
+      }
+
+      .privacy-link-wrap {
+        position: static;
+        margin-top: 1.5rem;
+      }
+
+      .action-stack {
+        padding-top: 1rem;
+      }
     }
   </style>
 </head>
@@ -55,17 +101,31 @@
   <div class="hero-wrapper">
 
     <!-- LEFT PANEL -->
-    <div class="hero-panel">
-      <h3>Welcome to your club</h3>
-      <p>
-        <em>
-          The Sanctuary Club is a residents’ club for Sanctuary Mews
-          and Sanctuary Court.
-        </em>
-      </p>
+    <div class="hero-panel left-panel">
+
+      <div class="panel-message">
+        <h3>Welcome to your club</h3>
+
+        <p>
+          <em>
+            The Sanctuary Club is exclusively for residents of
+            Sanctuary Mews and Sanctuary Court.
+          </em>
+        </p>
+      </div>
+
+      <div class="privacy-link-wrap">
+        <a
+          class="privacy-link-button"
+          href="privacy-charter.html"
+        >
+          Privacy, Security &amp; Data Protection
+        </a>
+      </div>
+
     </div>
 
-    <!-- HERO -->
+    <!-- CENTRE HERO -->
     <section class="hero">
       <div class="hero-overlay">
 
@@ -77,6 +137,7 @@
 
           <!-- ACCESS GATE -->
           <div id="access-gate">
+
             <div class="access-input-wrapper">
               <input
                 type="password"
@@ -101,9 +162,10 @@
             >
               Continue
             </button>
+
           </div>
 
-          <!-- HOME ROUTES -->
+          <!-- MAIN HOME ROUTES -->
           <div class="hero-buttons">
 
             <button
@@ -124,16 +186,6 @@
               Info
             </button>
 
-          </div>
-
-          <!-- PRIVACY CHARTER -->
-          <div class="privacy-link-wrap">
-            <a
-              class="privacy-link-button"
-              href="privacy-charter.html"
-            >
-              Privacy, Security &amp; Data Protection
-            </a>
           </div>
 
         </div>
@@ -164,14 +216,14 @@
         Logout
       </a>
 
-      <p>
-        <strong>
+      <div class="panel-message">
+        <p>
           <em>
-            For residents only.
-            Access to events, information and the members’ directory.
+            Find out what’s going on, get to know your neighbours,
+            contribute to community life, and so much more.
           </em>
-        </strong>
-      </p>
+        </p>
+      </div>
 
     </div>
 
@@ -201,7 +253,7 @@
     const ACCESS_UNTIL_KEY = "sanctuaryAccessUntil";
     const ACCESS_TTL_MS = 8 * 60 * 60 * 1000;
 
-    // New public/member route marker.
+    // Public/member route marker.
     const ROUTE_KEY = "sanctuaryEntryRoute";
 
     const ROUTE_WHATS_ON = "whats-on";
@@ -294,13 +346,6 @@
 
       sessionStorage.removeItem("sanctuaryAccess");
       sessionStorage.removeItem("sanctuaryAccessTime");
-
-      /*
-        Remove member-authentication values that may have been
-        created during the current Club visit.
-
-        This does not alter the household PIN or any backend data.
-      */
       sessionStorage.removeItem("authToken");
       sessionStorage.removeItem("currentMemberId");
 
@@ -311,9 +356,9 @@
     /*
       WHAT'S ON / INFO
 
-      The route marker is set every time one of the two home
-      entrances is selected, including when the eight-hour
-      access period is already active.
+      The route marker is set whenever one of the two home
+      entrances is selected, including while the existing
+      eight-hour access period remains active.
     */
     document.querySelectorAll(".route-button").forEach(button => {
       button.addEventListener("click", () => {
@@ -345,10 +390,7 @@
         return;
       }
 
-      if (
-        !pendingTarget ||
-        !validRoute(pendingRoute)
-      ) {
+      if (!pendingTarget || !validRoute(pendingRoute)) {
         hideGate();
         clearPendingJourney();
         return;
@@ -396,9 +438,9 @@
     /*
       LOGOUT
 
-      The public/member route marker is deliberately cleared
-      here so that every new visit begins from a fresh choice
-      between What's On and Info.
+      The public/member route marker is deliberately cleared,
+      so a later visit begins with a fresh choice between
+      What's On and Info.
     */
     logoutLink.addEventListener("click", event => {
       event.preventDefault();
@@ -408,6 +450,7 @@
 
       logoutLink.style.display = "none";
       input.type = "password";
+
       eyeButton.setAttribute(
         "aria-label",
         "Show or hide access code"
@@ -421,10 +464,6 @@
       logoutLink.style.display = "inline";
       refreshSessionAccess();
     } else {
-      /*
-        Remove any expired access remnants and any route left
-        behind by an earlier expired visit.
-      */
       clearAccess();
       logoutLink.style.display = "none";
     }

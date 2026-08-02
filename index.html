@@ -5,11 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Sanctuary Club</title>
 
-  <link rel="stylesheet" href="styles-main.css?v=HOME_RESTORE_2" />
+  <link rel="stylesheet" href="styles-main.css?v=PUBLIC_MEMBER_ROUTE_1" />
 
   <style>
-    #access-gate { display:none; margin-top:1rem; }
-    .hero-button { cursor:pointer; }
+    #access-gate {
+      display:none;
+      margin-top:1rem;
+    }
+
+    .hero-button {
+      cursor:pointer;
+    }
+
+    .privacy-link-wrap {
+      margin-top:1rem;
+      text-align:center;
+    }
+
+    .privacy-link-button {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0.68rem 1rem;
+      border:1px solid rgba(255,255,255,0.78);
+      border-radius:999px;
+      background:rgba(255,255,255,0.88);
+      color:#123a78;
+      font-size:0.94rem;
+      font-weight:700;
+      line-height:1.25;
+      text-decoration:none;
+      box-shadow:0 3px 10px rgba(0,0,0,0.10);
+      transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .privacy-link-button:hover,
+    .privacy-link-button:focus {
+      background:#ffffff;
+      transform:translateY(-1px);
+      box-shadow:0 5px 14px rgba(0,0,0,0.14);
+    }
   </style>
 </head>
 
@@ -19,17 +57,25 @@
     <!-- LEFT PANEL -->
     <div class="hero-panel">
       <h3>Welcome to your club</h3>
-      <p><em>The Sanctuary Club is a residents’ club for Sanctuary Mews and Sanctuary Court.</em></p>
+      <p>
+        <em>
+          The Sanctuary Club is a residents’ club for Sanctuary Mews
+          and Sanctuary Court.
+        </em>
+      </p>
     </div>
 
     <!-- HERO -->
     <section class="hero">
       <div class="hero-overlay">
-        <h1 class="hero-title" style="margin-top:0.5rem;">The Sanctuary Club</h1>
+
+        <h1 class="hero-title" style="margin-top:0.5rem;">
+          The Sanctuary Club
+        </h1>
 
         <div class="action-stack">
 
-          <!-- ACCESS GATE (deferred) -->
+          <!-- ACCESS GATE -->
           <div id="access-gate">
             <div class="access-input-wrapper">
               <input
@@ -38,15 +84,56 @@
                 placeholder="Access code"
                 autocomplete="off"
               />
-              <button type="button" id="access-eye">👁</button>
+
+              <button
+                type="button"
+                id="access-eye"
+                aria-label="Show or hide access code"
+              >
+                👁
+              </button>
             </div>
-            <button id="access-submit" class="hero-button" type="button">Continue</button>
+
+            <button
+              id="access-submit"
+              class="hero-button"
+              type="button"
+            >
+              Continue
+            </button>
           </div>
 
-          <!-- HOME BUTTONS -->
+          <!-- HOME ROUTES -->
           <div class="hero-buttons">
-            <button class="hero-button" data-target="events-calendar.html" type="button">What’s On</button>
-            <button class="hero-button" data-target="members-info.html" type="button">Info</button>
+
+            <button
+              class="hero-button route-button"
+              data-route="whats-on"
+              data-target="events-calendar.html"
+              type="button"
+            >
+              What’s On
+            </button>
+
+            <button
+              class="hero-button route-button"
+              data-route="info"
+              data-target="members-info.html"
+              type="button"
+            >
+              Info
+            </button>
+
+          </div>
+
+          <!-- PRIVACY CHARTER -->
+          <div class="privacy-link-wrap">
+            <a
+              class="privacy-link-button"
+              href="privacy-charter.html"
+            >
+              Privacy, Security &amp; Data Protection
+            </a>
           </div>
 
         </div>
@@ -54,11 +141,13 @@
         <footer class="site-footer">
           <p>© The Sanctuary Club. All rights reserved.</p>
         </footer>
+
       </div>
     </section>
 
     <!-- RIGHT PANEL -->
     <div class="hero-panel" style="position:relative;">
+
       <a
         href="#"
         id="logout-link"
@@ -71,209 +160,355 @@
           cursor:pointer;
           display:none;
         "
-      >Logout</a>
+      >
+        Logout
+      </a>
 
-      <p><strong><em>
-        For residents only.
-        Access to events, information and the members’ directory.
-      </em></strong></p>
+      <p>
+        <strong>
+          <em>
+            For residents only.
+            Access to events, information and the members’ directory.
+          </em>
+        </strong>
+      </p>
+
     </div>
 
   </div>
 
   <script>
-    // 🔑 CHANGE THIS to your real access code (e.g. WXYZ)
+    /*
+      SANCTUARY CLUB HOME PAGE
+
+      Two distinct routes begin here:
+
+      whats-on
+        Public, view-only journey through the Calendar,
+        Events List and Event Notices.
+
+      info
+        Member journey beginning at the Members Hub.
+
+      The selected route is remembered in sessionStorage
+      while the resident moves around the website.
+    */
+
+    // Change only if the Sanctuary access code changes.
     const ACCESS_CODE = "WXYZ";
 
-    // 8-hour access model
+    // Existing eight-hour access model.
     const ACCESS_UNTIL_KEY = "sanctuaryAccessUntil";
-    const ACCESS_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+    const ACCESS_TTL_MS = 8 * 60 * 60 * 1000;
+
+    // New public/member route marker.
+    const ROUTE_KEY = "sanctuaryEntryRoute";
+
+    const ROUTE_WHATS_ON = "whats-on";
+    const ROUTE_INFO = "info";
 
     const gate = document.getElementById("access-gate");
     const logoutLink = document.getElementById("logout-link");
     const input = document.getElementById("access-code-input");
-    let pendingTarget = null;
+    const submitButton = document.getElementById("access-submit");
+    const eyeButton = document.getElementById("access-eye");
+
+    let pendingTarget = "";
+    let pendingRoute = "";
 
     function hasValidAccess() {
-      const until = Number(localStorage.getItem(ACCESS_UNTIL_KEY) || "0");
-      return until && Date.now() < until;
+      const until = Number(
+        localStorage.getItem(ACCESS_UNTIL_KEY) || "0"
+      );
+
+      return Boolean(until && Date.now() < until);
+    }
+
+    function refreshSessionAccess() {
+      sessionStorage.setItem("sanctuaryAccess", "granted");
+      sessionStorage.setItem(
+        "sanctuaryAccessTime",
+        String(Date.now())
+      );
     }
 
     function grantAccess() {
       const until = Date.now() + ACCESS_TTL_MS;
 
-      // Remember for 8 hours (survives a tab close)
-      localStorage.setItem(ACCESS_UNTIL_KEY, String(until));
+      localStorage.setItem(
+        ACCESS_UNTIL_KEY,
+        String(until)
+      );
 
-      // ALSO satisfy pages that check sessionStorage (Calendar / Hub etc.)
-      sessionStorage.setItem("sanctuaryAccess", "granted");
-      sessionStorage.setItem("sanctuaryAccessTime", String(Date.now()));
+      refreshSessionAccess();
     }
 
-    function showGateFor(target) {
+    function validRoute(route) {
+      return (
+        route === ROUTE_WHATS_ON ||
+        route === ROUTE_INFO
+      );
+    }
+
+    function setEntryRoute(route) {
+      if (!validRoute(route)) {
+        sessionStorage.removeItem(ROUTE_KEY);
+        return;
+      }
+
+      sessionStorage.setItem(ROUTE_KEY, route);
+    }
+
+    function clearEntryRoute() {
+      sessionStorage.removeItem(ROUTE_KEY);
+    }
+
+    function clearPendingJourney() {
+      pendingTarget = "";
+      pendingRoute = "";
+    }
+
+    function continueToTarget(target, route) {
+      if (!target || !validRoute(route)) return;
+
+      setEntryRoute(route);
+      window.location.href = target;
+    }
+
+    function showGateFor(target, route) {
       pendingTarget = target;
+      pendingRoute = route;
+
       gate.style.display = "block";
+      input.value = "";
       input.focus();
     }
 
-    // Buttons: if already granted -> go; else show gate
-    document.querySelectorAll(".hero-button[data-target]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.dataset.target;
-        if (hasValidAccess()) {
-          location.href = target;
-        } else {
-          showGateFor(target);
-        }
-      });
-    });
-
-    // Submit code
-    document.getElementById("access-submit").addEventListener("click", () => {
-      const val = (input.value || "").trim().toUpperCase();
-      if (val !== ACCESS_CODE) return;
-
-      grantAccess();
-      logoutLink.style.display = "inline";
+    function hideGate() {
       gate.style.display = "none";
+      input.value = "";
+    }
 
-      if (pendingTarget) location.href = pendingTarget;
-    });
-
-    // Eye toggle
-    document.getElementById("access-eye").addEventListener("click", () => {
-      input.type = input.type === "password" ? "text" : "password";
-    });
-
-    // Enter key submits
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") document.getElementById("access-submit").click();
-    });
-
-    // Logout (clears both local and session)
-    logoutLink.addEventListener("click", (e) => {
-      e.preventDefault();
+    function clearAccess() {
       localStorage.removeItem(ACCESS_UNTIL_KEY);
+
       sessionStorage.removeItem("sanctuaryAccess");
       sessionStorage.removeItem("sanctuaryAccessTime");
 
-      gate.style.display = "none";
-      logoutLink.style.display = "none";
-      pendingTarget = null;
-      input.value = "";
+      /*
+        Remove member-authentication values that may have been
+        created during the current Club visit.
+
+        This does not alter the household PIN or any backend data.
+      */
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("currentMemberId");
+
+      clearEntryRoute();
+      clearPendingJourney();
+    }
+
+    /*
+      WHAT'S ON / INFO
+
+      The route marker is set every time one of the two home
+      entrances is selected, including when the eight-hour
+      access period is already active.
+    */
+    document.querySelectorAll(".route-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.target || "";
+        const route = button.dataset.route || "";
+
+        if (!target || !validRoute(route)) return;
+
+        if (hasValidAccess()) {
+          refreshSessionAccess();
+          continueToTarget(target, route);
+          return;
+        }
+
+        showGateFor(target, route);
+      });
     });
 
-    // INIT: show logout if already granted
+    /*
+      ACCESS CODE SUBMISSION
+    */
+    submitButton.addEventListener("click", () => {
+      const enteredCode = String(input.value || "")
+        .trim()
+        .toUpperCase();
+
+      if (enteredCode !== ACCESS_CODE) {
+        input.select();
+        return;
+      }
+
+      if (
+        !pendingTarget ||
+        !validRoute(pendingRoute)
+      ) {
+        hideGate();
+        clearPendingJourney();
+        return;
+      }
+
+      const target = pendingTarget;
+      const route = pendingRoute;
+
+      grantAccess();
+      logoutLink.style.display = "inline";
+
+      hideGate();
+      clearPendingJourney();
+
+      continueToTarget(target, route);
+    });
+
+    /*
+      SHOW / HIDE ACCESS CODE
+    */
+    eyeButton.addEventListener("click", () => {
+      const showing = input.type === "text";
+
+      input.type = showing ? "password" : "text";
+
+      eyeButton.setAttribute(
+        "aria-label",
+        showing
+          ? "Show access code"
+          : "Hide access code"
+      );
+
+      input.focus();
+    });
+
+    /*
+      ENTER KEY
+    */
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        submitButton.click();
+      }
+    });
+
+    /*
+      LOGOUT
+
+      The public/member route marker is deliberately cleared
+      here so that every new visit begins from a fresh choice
+      between What's On and Info.
+    */
+    logoutLink.addEventListener("click", event => {
+      event.preventDefault();
+
+      clearAccess();
+      hideGate();
+
+      logoutLink.style.display = "none";
+      input.type = "password";
+      eyeButton.setAttribute(
+        "aria-label",
+        "Show or hide access code"
+      );
+    });
+
+    /*
+      INITIAL PAGE STATE
+    */
     if (hasValidAccess()) {
       logoutLink.style.display = "inline";
-      // refresh sessionStorage for this tab so gated pages work immediately
-      sessionStorage.setItem("sanctuaryAccess", "granted");
-      sessionStorage.setItem("sanctuaryAccessTime", String(Date.now()));
+      refreshSessionAccess();
+    } else {
+      /*
+        Remove any expired access remnants and any route left
+        behind by an earlier expired visit.
+      */
+      clearAccess();
+      logoutLink.style.display = "none";
     }
   </script>
 
-  <footer style="
-    padding:16px 22px;
-    font-size:0.85rem;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    color:#666;
-    border-top:1px solid #e6edf5;
-    margin-top:40px;
-  ">
+  <footer
+    style="
+      padding:16px 22px;
+      font-size:0.85rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:#666;
+      border-top:1px solid #e6edf5;
+      margin-top:40px;
+    "
+  >
     <span>© Sanctuary Club</span>
 
-    <a href="admin-dashboard.html?v=AD_4"
-   style="
-     text-decoration:none;
-     color:#666;
-     opacity:0.6;
-     font-weight:500;
-   "
-   onmouseover="this.style.opacity='1'"
-   onmouseout="this.style.opacity='0.6'">
-   Admin
-</a>
+    <a
+      href="admin-dashboard.html?v=AD_4"
+      style="
+        text-decoration:none;
+        color:#666;
+        opacity:0.6;
+        font-weight:500;
+      "
+      onmouseover="this.style.opacity='1'"
+      onmouseout="this.style.opacity='0.6'"
+    >
+      Admin
+    </a>
   </footer>
 
-  <!-- Prominent Privacy entry -->
+  <!-- Discreet Admin + Service entry -->
   <div
     style="
       position:fixed;
-      left:12px;
+      right:12px;
       bottom:10px;
+      display:flex;
+      gap:8px;
+      align-items:center;
       z-index:9999;
     "
   >
-    <a href="privacy-charter.html"
-       aria-label="Privacy"
-       style="
-         display:inline-flex;
-         align-items:center;
-         justify-content:center;
-         font-size:0.82rem;
-         font-weight:700;
-         text-decoration:none;
-         color:#fff;
-         padding:6px 10px;
-         border-radius:999px;
-         background:#123a78;
-         border:1px solid #123a78;
-         box-shadow:0 2px 6px rgba(0,0,0,0.18);
-       "
-       onmouseover="this.style.background='#0f3166'; this.style.borderColor='#0f3166'"
-       onmouseout="this.style.background='#123a78'; this.style.borderColor='#123a78'">
-      Privacy
+    <a
+      href="service-access.html"
+      aria-label="Service access"
+      style="
+        font-size:0.82rem;
+        text-decoration:none;
+        color:#666;
+        opacity:0.55;
+        padding:6px 10px;
+        border-radius:999px;
+        background:rgba(255,255,255,0.85);
+        border:1px solid rgba(230,237,245,0.9);
+      "
+      onmouseover="this.style.opacity='1'"
+      onmouseout="this.style.opacity='0.55'"
+    >
+      Service Access
+    </a>
+
+    <a
+      href="admin-dashboard.html?v=AD_4"
+      aria-label="Admin access"
+      style="
+        font-size:0.82rem;
+        text-decoration:none;
+        color:#666;
+        opacity:0.55;
+        padding:6px 10px;
+        border-radius:999px;
+        background:rgba(255,255,255,0.85);
+        border:1px solid rgba(230,237,245,0.9);
+      "
+      onmouseover="this.style.opacity='1'"
+      onmouseout="this.style.opacity='0.55'"
+    >
+      Admin
     </a>
   </div>
-
-  <!-- Discreet Admin + Service entry -->
-<div
-  style="
-    position:fixed;
-    right:12px;
-    bottom:10px;
-    display:flex;
-    gap:8px;
-    align-items:center;
-    z-index:9999;
-  "
->
-  <a href="service-access.html"
-     aria-label="Service access"
-     style="
-       font-size:0.82rem;
-       text-decoration:none;
-       color:#666;
-       opacity:0.55;
-       padding:6px 10px;
-       border-radius:999px;
-       background:rgba(255,255,255,0.85);
-       border:1px solid rgba(230,237,245,0.9);
-     "
-     onmouseover="this.style.opacity='1'"
-     onmouseout="this.style.opacity='0.55'">
-    Service Access
-  </a>
-
-  <a href="admin-dashboard.html?v=AD_4"
-     aria-label="Admin access"
-     style="
-       font-size:0.82rem;
-       text-decoration:none;
-       color:#666;
-       opacity:0.55;
-       padding:6px 10px;
-       border-radius:999px;
-       background:rgba(255,255,255,0.85);
-       border:1px solid rgba(230,237,245,0.9);
-     "
-     onmouseover="this.style.opacity='1'"
-     onmouseout="this.style.opacity='0.55'">
-    Admin
-  </a>
-</div>
 
 </body>
 </html>

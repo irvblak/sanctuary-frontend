@@ -737,6 +737,50 @@ function isAdminViewer(){
   return tokenRoles().includes("admin");
 }
 
+
+function normaliseResidentId(value){
+  const raw = String(value || "").trim().toUpperCase();
+  if (!raw) return "";
+  const match = raw.match(/(?:SM|SC)\d+\/\d+/);
+  return match ? match[0] : "";
+}
+
+function getViewerResidentId(){
+  const stored = normaliseResidentId(
+    localStorage.getItem("currentResidentId") ||
+    sessionStorage.getItem("currentResidentId") ||
+    localStorage.getItem("sanctuaryCurrentResidentId") ||
+    sessionStorage.getItem("sanctuaryCurrentResidentId") ||
+    localStorage.getItem("currentHostResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") ||
+    ""
+  );
+  if (stored) return stored;
+
+  const data = decodeJwtPayload(getWorkingToken());
+  return normaliseResidentId(
+    data.resident_id ||
+    data.residentId ||
+    data.rid ||
+    data.sub ||
+    ""
+  );
+}
+
+function getEventHostResidentId(e){
+  return normaliseResidentId(
+    e.host_resident_id ||
+    e.hostResidentId ||
+    e.host_resident_ref ||
+    e.hostResidentRef ||
+    e.host_ref ||
+    e.hostRef ||
+    e.producer_ref ||
+    e.producerRef ||
+    ""
+  );
+}
+
 function getEventHostMemberId(e){
   const direct = normaliseMemberId(
     e.host_member_id ||
@@ -789,10 +833,23 @@ function getEventHostMemberId(e){
       */
       if (window.SanctuaryAccess?.isWhatsOnRoute?.()) return false;
 
-      const viewer = getViewerMemberId();
-      const host = getEventHostMemberId(e);
+      if (isAdminViewer()) return true;
 
-      return isAdminViewer() || (!!viewer && !!host && viewer === host);
+      const viewerResident = getViewerResidentId();
+      const hostResident = getEventHostResidentId(e);
+
+      if (viewerResident && hostResident && viewerResident === hostResident){
+        return true;
+      }
+
+      const viewerMember = getViewerMemberId();
+      const hostMember = getEventHostMemberId(e);
+
+      return Boolean(
+        viewerMember &&
+        hostMember &&
+        viewerMember === hostMember
+      );
     }
 
     function setHostControlButtons(e){
@@ -813,8 +870,15 @@ function getEventHostMemberId(e){
         token instead of putting the resident through another gate.
       */
       const viewerMemberId = getViewerMemberId();
+      const viewerResidentId = getViewerResidentId();
+
       if (viewerMemberId){
         sessionStorage.setItem("currentMemberId", viewerMemberId);
+      }
+
+      if (viewerResidentId){
+        sessionStorage.setItem("currentResidentId", viewerResidentId);
+        sessionStorage.setItem("currentHostResidentId", viewerResidentId);
       }
 
       sessionStorage.setItem("sanctuaryHostEventId", EVENT_ID);

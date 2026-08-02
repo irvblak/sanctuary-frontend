@@ -1320,7 +1320,14 @@ scrapStateOfPlayLink: document.getElementById("scrapStateOfPlayLink"),
 scrapStatus: document.getElementById("scrapStatus")
 };
 
-let authToken = localStorage.getItem("authToken") || "";
+let authToken =
+  localStorage.getItem("authToken") ||
+  sessionStorage.getItem("authToken") ||
+  localStorage.getItem("adminToken") ||
+  sessionStorage.getItem("adminToken") ||
+  localStorage.getItem("sanctuaryAdminToken") ||
+  sessionStorage.getItem("sanctuaryAdminToken") ||
+  "";
 let verified = false;
 let verifiedResidentId = "";
 let verifiedMemberId = "";
@@ -1684,6 +1691,141 @@ function setEditModeText(){
   els.pageTitle.textContent = "Edit Your Event Notice";
   els.pageSubtitle.textContent = "Update this Event Notice. Saving here updates the Notice, Calendar and Events List.";
   els.saveBtn.textContent = "Update Event Notice";
+}
+
+
+function decodeTokenPayload(token){
+  try{
+    const part = cleanText(token).split(".")[1];
+    if(!part) return {};
+
+    let normalised = part
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
+    while(normalised.length % 4){
+      normalised += "=";
+    }
+
+    const binary = atob(normalised);
+    const encoded = Array.from(binary)
+      .map(function(character){
+        return "%" + character.charCodeAt(0)
+          .toString(16)
+          .padStart(2, "0");
+      })
+      .join("");
+
+    return JSON.parse(decodeURIComponent(encoded));
+  }catch(_){
+    return {};
+  }
+}
+
+function tokenRoles(token){
+  const payload = decodeTokenPayload(token);
+  const rawRoles = Array.isArray(payload.roles)
+    ? payload.roles
+    : Array.isArray(payload.role)
+      ? payload.role
+      : payload.role
+        ? [payload.role]
+        : [];
+
+  return rawRoles
+    .map(function(role){ return cleanText(role).toLowerCase(); })
+    .filter(Boolean);
+}
+
+function tokenMemberId(token){
+  const payload = decodeTokenPayload(token);
+  return baseMemberId(
+    payload.member_id ||
+    payload.memberId ||
+    payload.mid ||
+    payload.membership_id ||
+    payload.membershipId ||
+    ""
+  );
+}
+
+function tokenResidentId(token){
+  const payload = decodeTokenPayload(token);
+  return cleanResidentId(
+    payload.resident_id ||
+    payload.residentId ||
+    payload.rid ||
+    payload.resident_ref ||
+    payload.residentRef ||
+    ""
+  );
+}
+
+async function resumeExistingAuthority(){
+  if(!editEventId || !authToken) return false;
+
+  const roles = tokenRoles(authToken);
+  const isAdmin = roles.includes("admin") || !!(
+    localStorage.getItem("adminToken") ||
+    sessionStorage.getItem("adminToken") ||
+    localStorage.getItem("sanctuaryAdminToken") ||
+    sessionStorage.getItem("sanctuaryAdminToken")
+  );
+  const isHost = roles.includes("host");
+
+  if(!isAdmin && !isHost) return false;
+
+  const storedResidentId = cleanResidentId(
+    localStorage.getItem("currentResidentId") ||
+    sessionStorage.getItem("currentResidentId") ||
+    localStorage.getItem("currentHostResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") ||
+    tokenResidentId(authToken) ||
+    ""
+  );
+
+  const storedMemberId = baseMemberId(
+    localStorage.getItem("currentMemberId") ||
+    sessionStorage.getItem("currentMemberId") ||
+    localStorage.getItem("currentHostMemberId") ||
+    sessionStorage.getItem("currentHostMemberId") ||
+    tokenMemberId(authToken) ||
+    storedResidentId ||
+    ""
+  );
+
+  /*
+    An Administrator can edit while retaining the Event's original Host.
+    A Host still needs a resident identity so loadEvent() can confirm that
+    the Event belongs to them.
+  */
+  if(!isAdmin && !storedResidentId) return false;
+
+  verified = true;
+  verifiedMemberId = storedMemberId;
+  verifiedResidentId = storedResidentId;
+  verifiedResidentIndex = residentIndexFromRef(storedResidentId || "");
+
+  if(storedResidentId){
+    els.residentRef.value = storedResidentId;
+  }
+
+  els.verifiedIdentity.textContent = isAdmin
+    ? `Administrator session recognised${storedResidentId ? ` (${storedResidentId})` : ""}`
+    : `Host session recognised (${storedResidentId})`;
+  els.verifiedIdentity.classList.add("show");
+
+  unlockForm();
+  setStatus(
+    els.verifyStatus,
+    "ok",
+    isAdmin
+      ? "Administrator session recognised. The Event Notice is ready to edit."
+      : "Host session recognised. Your Event Notice is ready to edit."
+  );
+
+  await loadEvent();
+  return true;
 }
 
 async function verifyHost(){
@@ -2731,6 +2873,30 @@ setIllustrationMode("library");
 updateMiniPreview();
 renderPosterPreview("", false);
 lockForm();
+
+(async function initialiseHostEventForm(){
+  if(editEventId){
+    try{
+      const resumed = await resumeExistingAuthority();
+      if(resumed) return;
+    }catch(err){
+      console.warn("Existing Host/Admin session could not be resumed.", err);
+    }
+
+    setStatus(
+      els.verifyStatus,
+      "info",
+      "Please verify as the Event Host or an Administrator to edit this Event Notice."
+    );
+    return;
+  }
+
+  setStatus(
+    els.verifyStatus,
+    "info",
+    "Verify as an Event Host or Administrator to create an Event Notice."
+  );
+})();
 </script>
 </body>
 </html>

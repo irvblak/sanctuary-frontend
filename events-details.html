@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js"></script>
+  <script src="access.js?v=PUBLIC_MEMBER_ROUTE_1"></script>
 
   <style>
     :root{
@@ -482,6 +482,7 @@
       <a class="backlink" href="events.html">← Back to Events List</a>
 
       <div class="top-actions">
+        <button id="closePageBtn" class="btn btn-soft" type="button">× Close Page</button>
         <button id="printBtn" class="btn btn-soft" type="button">Print notice</button>
         <a id="bookBtnTop" class="btn btn-primary hidden" href="event-booking.html">Book</a>
       </div>
@@ -552,7 +553,7 @@
         <a id="bookBtnBottom" class="btn btn-primary hidden" href="event-booking.html">Book</a>
       </div>
 
-      <div class="bottom-actions host-tools no-print">
+      <div id="hostTools" class="bottom-actions host-tools no-print hidden">
   <div class="host-note">For Event Host use.</div>
 
   <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html">
@@ -587,6 +588,7 @@
 
     const pageMessage = document.getElementById("pageMessage");
     const printBtn = document.getElementById("printBtn");
+    const closePageBtn = document.getElementById("closePageBtn");
 
     const titleText = document.getElementById("titleText");
     const titleGraphic = document.getElementById("titleGraphic");
@@ -627,6 +629,7 @@
     const bookBtnBottom = document.getElementById("bookBtnBottom");
     const editBtnBottom = document.getElementById("editBtnBottom");
     const hsopBtnBottom = document.getElementById("hsopBtnBottom");
+    const hostTools = document.getElementById("hostTools");
 
     function normaliseMemberId(value){
       const raw = String(value || "").trim().toUpperCase();
@@ -703,6 +706,17 @@ function getEventHostMemberId(e){
   return refMatch ? refMatch[0] : "";
 }
     function viewerCanManageNotice(e){
+      /*
+        Host tools are private working controls.
+
+        They are never shown while the visitor is following the
+        public What's On route.  Through Info they are available to:
+
+          • any signed-in Administrator; or
+          • the Host membership that owns this event.
+      */
+      if (window.SanctuaryAccess?.isWhatsOnRoute?.()) return false;
+
       const viewer = getViewerMemberId();
       const host = getEventHostMemberId(e);
 
@@ -710,12 +724,30 @@ function getEventHostMemberId(e){
     }
 
     function setHostControlButtons(e){
-  hsopBtnBottom.href =
-    `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      hsopBtnBottom.href =
+        `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
-  editBtnBottom.href =
-    `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-}
+      editBtnBottom.href =
+        `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+
+      const mayManage = viewerCanManageNotice(e);
+      hostTools.classList.toggle("hidden", !mayManage);
+
+      if (!mayManage) return;
+
+      /*
+        Carry the already established working identity into the Host
+        pages.  The receiving pages can use the existing member/admin
+        token instead of putting the resident through another gate.
+      */
+      const viewerMemberId = getViewerMemberId();
+      if (viewerMemberId){
+        sessionStorage.setItem("currentMemberId", viewerMemberId);
+      }
+
+      sessionStorage.setItem("sanctuaryHostEventId", EVENT_ID);
+      sessionStorage.setItem("sanctuaryHostAccessSource", "event-notice");
+    }
     function showMessage(text, kind = "info"){
       if (!text){
         pageMessage.className = "message info";
@@ -1134,6 +1166,19 @@ bookingDetailsBox.classList.remove("hidden");
         bodyBox.innerHTML = '<span class="placeholder">Please try again.</span>';
       }
     }
+
+    closePageBtn.addEventListener("click", function(){
+      window.close();
+
+      window.setTimeout(function(){
+        if (window.closed) return;
+        if (window.history.length > 1){
+          window.history.back();
+        }else{
+          window.location.href = "index.html";
+        }
+      }, 120);
+    });
 
     printBtn.addEventListener("click", function(){
       window.print();

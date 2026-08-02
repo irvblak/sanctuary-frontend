@@ -666,15 +666,75 @@
 
   if (stored) return stored;
 
-  return "";
+  return tokenMemberId();
 }
+function getWorkingToken(){
+  return (
+    localStorage.getItem("adminToken") ||
+    sessionStorage.getItem("adminToken") ||
+    localStorage.getItem("sanctuaryAdminToken") ||
+    sessionStorage.getItem("sanctuaryAdminToken") ||
+    localStorage.getItem("memberToken") ||
+    sessionStorage.getItem("memberToken") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("authToken") ||
+    ""
+  );
+}
+
+function decodeJwtPayload(token){
+  try{
+    const part = String(token || "").split(".")[1];
+    if (!part) return {};
+
+    let normalised = part.replace(/-/g, "+").replace(/_/g, "/");
+    while (normalised.length % 4) normalised += "=";
+
+    return JSON.parse(atob(normalised));
+  }catch(_){
+    return {};
+  }
+}
+
+function tokenRoles(){
+  const data = decodeJwtPayload(getWorkingToken());
+  const roles = Array.isArray(data.roles)
+    ? data.roles
+    : Array.isArray(data.role)
+      ? data.role
+      : data.role
+        ? [data.role]
+        : [];
+
+  return roles.map(role => String(role || "").trim().toLowerCase());
+}
+
+function tokenMemberId(){
+  const data = decodeJwtPayload(getWorkingToken());
+  return normaliseMemberId(
+    data.member_id ||
+    data.memberId ||
+    data.mid ||
+    data.membership_id ||
+    data.membershipId ||
+    data.resident_id ||
+    data.residentId ||
+    data.sub ||
+    ""
+  );
+}
+
 function isAdminViewer(){
-  return !!(
+  if (
     localStorage.getItem("adminToken") ||
     sessionStorage.getItem("adminToken") ||
     localStorage.getItem("sanctuaryAdminToken") ||
     sessionStorage.getItem("sanctuaryAdminToken")
-  );
+  ) {
+    return true;
+  }
+
+  return tokenRoles().includes("admin");
 }
 
 function getEventHostMemberId(e){

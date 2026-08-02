@@ -635,8 +635,8 @@
       const raw = String(value || "").trim().toUpperCase();
       if (!raw) return "";
 
-      const smMatch = raw.match(/SM\d+/);
-      if (smMatch) return smMatch[0];
+      const memberMatch = raw.match(/(?:SM|SC)\d+/);
+      if (memberMatch) return memberMatch[0];
 
       return raw;
     }
@@ -756,13 +756,25 @@ function getEventHostMemberId(e){
     e.producer_ref ||
     e.producerRef ||
     e.created_by_member_id ||
-    e.owner_member_id 
+    e.createdByMemberId ||
+    e.owner_member_id ||
+    e.ownerMemberId ||
+    e.member_id ||
+    e.memberId ||
+    e.created_by ||
+    e.createdBy ||
+    e.host_id ||
+    e.hostId ||
+    e.author_member_id ||
+    e.authorMemberId ||
+    e.producer_member_id ||
+    e.producerMemberId
   );
 
   if (direct) return direct;
 
   const ref = getEventReference(e);
-  const refMatch = String(ref || "").toUpperCase().match(/SM\d+/);
+  const refMatch = String(ref || "").toUpperCase().match(/(?:SM|SC)\d+/);
   return refMatch ? refMatch[0] : "";
 }
     function viewerCanManageNotice(e){

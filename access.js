@@ -77,6 +77,29 @@
     }
   }
 
+  function tokenHasExpired(data) {
+    const exp = Number(data && data.exp);
+
+    /*
+      JWT expiry is expressed in seconds since 1 January 1970.
+      Tokens without an exp value are left for the backend to judge.
+    */
+    return Boolean(exp && Date.now() >= exp * 1000);
+  }
+
+  function hasUsablePersonalMemberToken() {
+    const token = getMemberToken();
+    if (!token) return false;
+
+    const data = decodeJwtPayload(token);
+    if (!data || tokenHasExpired(data)) return false;
+
+    return !(
+      data.starter_pin === true ||
+      data.force_pin_change === true
+    );
+  }
+
   function starterOrDefaultAccess() {
     const token = getMemberToken();
 
@@ -90,6 +113,10 @@
     if (!token) return true;
 
     const data = decodeJwtPayload(token);
+
+    if (!data || tokenHasExpired(data)) {
+      return true;
+    }
 
     return (
       data.starter_pin === true ||
@@ -148,6 +175,9 @@
   /*
     Pages available with general/Starter access.
 
+    Club Information is deliberately excluded because it is a
+    private member section requiring a completed personal PIN.
+
     This remains the existing Starter-PIN architecture.
     It is separate from the What's On / Info route distinction.
   */
@@ -156,17 +186,17 @@
     "your-info.html",
     "events-calendar.html",
     "events.html",
-    "notices-preview.html",
     "events-details.html"
   ]);
 
   /*
     Pages forming the public, view-only What's On journey.
+
+    Club Information is deliberately excluded.
   */
   const WHATS_ON_ALLOWED = new Set([
     "events-calendar.html",
     "events.html",
-    "notices-preview.html",
     "events-details.html"
   ]);
 
@@ -179,6 +209,7 @@
     "members-info.html",
     "your-info.html",
     "members-directory.html",
+    "notices-preview.html",
 
     "events-activities.html",
     "host-area.html",
@@ -255,8 +286,7 @@
       destination.startsWith("payment")
     );
   }
-
-  /*
+    /*
     FRIENDLY PUBLIC-ROUTE MESSAGE
   */
   function ensureRouteMessageStyles() {
@@ -276,67 +306,67 @@
         align-items: center;
         justify-content: center;
         padding: 1.25rem;
-        background: rgba(27, 43, 57, 0.56);
+        background: rgba(27,43,57,.56);
       }
 
       .sanctuary-route-dialog {
-        width: min(540px, 100%);
-        padding: 1.6rem;
-        border: 1px solid #d9e1e7;
-        border-radius: 18px;
-        background: #ffffff;
-        color: #243746;
-        text-align: center;
-        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+        width: min(540px,100%);
+        padding:1.6rem;
+        border:1px solid #d9e1e7;
+        border-radius:18px;
+        background:#fff;
+        color:#243746;
+        text-align:center;
+        box-shadow:0 18px 48px rgba(0,0,0,.24);
       }
 
-      .sanctuary-route-lock {
-        margin-bottom: 0.5rem;
-        font-size: 2rem;
-        line-height: 1;
+      .sanctuary-route-lock{
+        margin-bottom:.5rem;
+        font-size:2rem;
+        line-height:1;
       }
 
-      .sanctuary-route-dialog h2 {
-        margin: 0 0 0.8rem;
-        color: #254d70;
-        font-size: 1.45rem;
+      .sanctuary-route-dialog h2{
+        margin:0 0 .8rem;
+        color:#254d70;
+        font-size:1.45rem;
       }
 
-      .sanctuary-route-dialog p {
-        margin: 0;
-        font-size: 1.05rem;
-        font-weight: 500;
-        line-height: 1.65;
+      .sanctuary-route-dialog p{
+        margin:0;
+        font-size:1.05rem;
+        font-weight:500;
+        line-height:1.65;
       }
 
-      .sanctuary-route-actions {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.75rem;
-        margin-top: 1.25rem;
+      .sanctuary-route-actions{
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:.75rem;
+        margin-top:1.25rem;
       }
 
       .sanctuary-route-actions button,
-      .sanctuary-route-actions a {
-        min-width: 130px;
-        padding: 0.72rem 1rem;
-        border: 1px solid #315f82;
-        border-radius: 999px;
-        font: inherit;
-        font-weight: 700;
-        text-decoration: none;
-        cursor: pointer;
+      .sanctuary-route-actions a{
+        min-width:130px;
+        padding:.72rem 1rem;
+        border:1px solid #315f82;
+        border-radius:999px;
+        font:inherit;
+        font-weight:700;
+        text-decoration:none;
+        cursor:pointer;
       }
 
-      .sanctuary-route-home {
-        background: #315f82;
-        color: #ffffff;
+      .sanctuary-route-home{
+        background:#315f82;
+        color:#fff;
       }
 
-      .sanctuary-route-close {
-        background: #ffffff;
-        color: #315f82;
+      .sanctuary-route-close{
+        background:#fff;
+        color:#315f82;
       }
     `;
 
@@ -350,14 +380,15 @@
   }
 
   function showRouteMessage() {
+
     closeRouteMessage();
     ensureRouteMessageStyles();
 
     const shade = document.createElement("div");
     shade.id = "sanctuary-route-message";
     shade.className = "sanctuary-route-shade";
-    shade.setAttribute("role", "dialog");
-    shade.setAttribute("aria-modal", "true");
+    shade.setAttribute("role","dialog");
+    shade.setAttribute("aria-modal","true");
     shade.setAttribute(
       "aria-labelledby",
       "sanctuary-route-heading"
@@ -365,7 +396,11 @@
 
     shade.innerHTML = `
       <div class="sanctuary-route-dialog">
-        <div class="sanctuary-route-lock" aria-hidden="true">🔒</div>
+
+        <div
+          class="sanctuary-route-lock"
+          aria-hidden="true"
+        >🔒</div>
 
         <h2 id="sanctuary-route-heading">
           Other Club facilities
@@ -374,6 +409,7 @@
         <p>${ROUTE_MESSAGE}</p>
 
         <div class="sanctuary-route-actions">
+
           <a
             class="sanctuary-route-home"
             href="index.html"
@@ -387,7 +423,9 @@
           >
             Stay here
           </button>
+
         </div>
+
       </div>
     `;
 
@@ -409,36 +447,42 @@
 
     document.addEventListener(
       "keydown",
-      function escapeHandler(event) {
-        if (event.key !== "Escape") return;
+      function escapeHandler(event){
+
+        if(event.key !== "Escape") return;
 
         closeRouteMessage();
+
         document.removeEventListener(
           "keydown",
           escapeHandler
         );
+
       }
     );
 
     closeButton?.focus();
+
   }
 
   /*
     LINK PROTECTION
 
-    On What's On pages, any link leading to a known private
-    member facility is stopped and replaced by the friendly
-    explanation.
-
-    The next three replacement pages will also add the visible
-    lock symbol beside those destinations.
+    On What's On pages, any link leading to a known
+    private member facility is stopped and replaced
+    by the friendly explanation.
   */
-  function protectPrivateLinks() {
-    if (!isWhatsOnRoute()) return;
+
+  function protectPrivateLinks(){
+
+    if(!isWhatsOnRoute()) return;
 
     document
-      .querySelectorAll("a[href], [data-private-destination]")
+      .querySelectorAll(
+        "a[href],[data-private-destination]"
+      )
       .forEach(element => {
+
         const target =
           element.getAttribute("href") ||
           element.getAttribute("data-private-destination") ||
@@ -447,10 +491,10 @@
         const explicitlyPrivate =
           element.hasAttribute("data-private-route");
 
-        if (
+        if(
           !explicitlyPrivate &&
           !isInfoOnlyDestination(target)
-        ) {
+        ){
           return;
         }
 
@@ -459,22 +503,30 @@
           `${element.textContent.trim()} — available through Info`
         );
 
-        element.addEventListener("click", event => {
-          event.preventDefault();
-          event.stopPropagation();
-          showRouteMessage();
-        });
+        element.addEventListener(
+          "click",
+          event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            showRouteMessage();
+
+          }
+        );
+
       });
+
   }
 
   /*
     SHARED PAGE API
-
-    Calendar, Events List and Event Notice can now use the same
-    route information without duplicating the underlying logic.
   */
+
   window.SanctuaryAccess = Object.freeze({
+
     routeKey: ROUTE_KEY,
+
     routes: Object.freeze({
       whatsOn: ROUTE_WHATS_ON,
       info: ROUTE_INFO
@@ -484,33 +536,60 @@
 
     validSession,
     starterOrDefaultAccess,
+    hasUsablePersonalMemberToken,
+
     currentRoute,
     isWhatsOnRoute,
     isInfoRoute,
+
     setRoute,
     clearRoute,
 
     isInfoOnlyDestination,
     protectPrivateLinks,
+
     showRouteMessage,
     closeRouteMessage
+
   });
 
   /*
     COMPLETELY UNGATED PAGES
   */
+
   if (UNGATED_PAGES.has(page)) {
     return;
   }
-
-  /*
+    /*
     ALL OTHER SANCTUARY PAGES REQUIRE THE EXISTING
     FRONT-PAGE SESSION.
   */
+
   if (!validSession()) {
     clearRoute();
     location.replace("index.html");
     return;
+  }
+
+  /*
+    MISSING ROUTE MARKER
+
+    A page opened from an old bookmark or restored browser tab may
+    have a valid eight-hour session but no remembered entry route.
+
+    A verified personal member session may safely continue as Info.
+    Otherwise the visitor must begin again from Home and choose the
+    appropriate route deliberately.
+  */
+
+  if (!currentRoute()) {
+    if (hasUsablePersonalMemberToken()) {
+      setRoute(ROUTE_INFO);
+    } else {
+      clearRoute();
+      location.replace("index.html");
+      return;
+    }
   }
 
   /*
@@ -523,6 +602,7 @@
     Administrative and service-provider areas retain their own
     separate protection.
   */
+
   if (
     isWhatsOnRoute() &&
     !WHATS_ON_ALLOWED.has(page) &&
@@ -543,10 +623,11 @@
     Starter/default access may view only the permitted pages.
 
     All other member pages — including Members Directory,
-    Archives and later private services — require successful
-    member-PIN verification and completion of any compulsory
-    PIN change.
+    Club Information, Archives and later private services —
+    require successful member-PIN verification and completion
+    of any compulsory PIN change.
   */
+
   if (
     starterOrDefaultAccess() &&
     !STARTER_ALLOWED.has(page) &&
@@ -569,6 +650,7 @@
   /*
     Apply link protection after the page markup is available.
   */
+
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
@@ -578,4 +660,4 @@
   } else {
     protectPrivateLinks();
   }
-})();
+  })();

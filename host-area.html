@@ -278,7 +278,8 @@
     const API_BASE="https://sanctuary-backend-8iqc.onrender.com";
     const els={verifyCard:document.getElementById("verifyCard"),studioCard:document.getElementById("studioCard"),studioGrid:document.getElementById("studioGrid"),memberRoleStrip:document.getElementById("memberRoleStrip"),existingTools:document.getElementById("existingTools"),verifyForm:document.getElementById("verifyForm"),verifyBtn:document.getElementById("verifyBtn"),verifyStatus:document.getElementById("verifyStatus"),residentRefInput:document.getElementById("residentRefInput"),pinInput:document.getElementById("pinInput"),togglePinBtn:document.getElementById("togglePinBtn"),greetingLine:document.getElementById("greetingLine"),verifiedLine:document.getElementById("verifiedLine"),logoutBtn:document.getElementById("logoutBtn")};
     const STUDIO_CHOICES=[
-      {label:"Create an Event",description:"Create and publish a one-off Event Notice for Sanctuary Club.",iconId:"role-host",fallback:"E",tooltip:"Event Host",roles:["host"],href:"host-event-form.html",ready:true},
+      {label:"Host an Event",description:"Create a fully bookable Event with its Notice, Calendar entry, Events List entry and State of Play.",iconId:"role-host",fallback:"H",tooltip:"Host an Event",roles:["host"],href:"host-event-form.html?mode=host",ready:true},
+      {label:"Post an Event",description:"Create a non-bookable Event Notice for the Calendar and Events List.",iconId:"role-news",fallback:"P",tooltip:"Post an Event",roles:["panel","committee","services","activity_organiser","news_contributor","editor"],href:"host-event-form.html?mode=post",ready:true},
       {label:"Organise an Activity",description:"Create news or information for one of your regular Activities.",iconId:"role-activity",fallback:"A",tooltip:"Activity Organiser",roles:["activity_organiser"],mode:"activity",ready:true},
       {label:"Write Community News",description:"Prepare news or useful information for Sanctuary Club members.",iconId:"role-news",fallback:"N",tooltip:"Community News",roles:["news_contributor"],mode:"news",ready:true},
       {label:"Editorial Publishing",description:"Review, edit and publish Community News and other editorial material.",iconId:"role-editor",fallback:"E",tooltip:"Editor",roles:["editor"],mode:"editor",ready:true},
@@ -546,6 +547,22 @@ This role is recognised and available to you. Its Design Studio workspace is cur
       }
     }
 
+    async function restoreExistingStudioSession(){
+      try{
+        const residentRef=normaliseResidentRef(sessionStorage.getItem("currentResidentId")||localStorage.getItem("currentResidentId")||sessionStorage.getItem("verifiedResidentId")||localStorage.getItem("verifiedResidentId")||"");
+        const memberId=memberIdFromResidentRef(sessionStorage.getItem("currentMemberId")||localStorage.getItem("currentMemberId")||residentRef);
+        const token=sessionStorage.getItem("authToken")||localStorage.getItem("authToken")||"";
+        let roles=[]; try{roles=JSON.parse(sessionStorage.getItem("hostAreaRoles")||localStorage.getItem("hostAreaRoles")||"[]").map(normaliseRole)}catch(_){}
+        const profileData=memberId?await loadMemberProfile(memberId,token):null;
+        const selected=selectResidentFromProfile(profileData,residentRef);
+        roles=[...new Set([...roles,...extractRoles(selected.resident||{}),...extractRoles(selected.member||{})])];
+        if(!residentRef||!memberId||!recognisedStudioRole(roles))return false;
+        const name=extractDisplayName(selected.resident||{})||extractDisplayName(selected.member||{})||sessionStorage.getItem("currentDisplayName")||localStorage.getItem("currentDisplayName")||"";
+        showStudio(profileData||{},residentRef,memberId,roles,name);
+        return true;
+      }catch(err){console.warn("Could not restore Studio session.",err);return false}
+    }
+
     const publishWorkspace=document.getElementById("publishWorkspace"),creativeWorkspace=document.getElementById("creativeWorkspace"),publishHeading=document.getElementById("publishHeading"),publicationPreview=document.getElementById("publicationPreview"),pubTitleInput=document.getElementById("pubTitleInput"),pubInfoInput=document.getElementById("pubInfoInput"),pubBodyInput=document.getElementById("pubBodyInput"),pubTitlePanel=document.getElementById("pubTitlePanel"),pubInfoPanel=document.getElementById("pubInfoPanel"),pubBodyPanel=document.getElementById("pubBodyPanel"),pubImagePanel=document.getElementById("pubImagePanel"),imageStatus=document.getElementById("imageStatus"),imageFileInput=document.getElementById("imageFileInput"),libraryPathBox=document.getElementById("libraryPathBox"),libraryPathInput=document.getElementById("libraryPathInput"),creativePages=document.getElementById("creativePages"),pageTabs=document.getElementById("pageTabs"),formatToolbar=document.getElementById("formatToolbar"),imageToolbar=document.getElementById("imageToolbar"),drawingToolbar=document.getElementById("drawingToolbar"),objectToolbar=document.getElementById("objectToolbar"),canvasImageFileInput=document.getElementById("canvasImageFileInput"),orientationSelect=document.getElementById("orientationSelect"),pageNumbersCheck=document.getElementById("pageNumbersCheck"),numberFirstPageCheck=document.getElementById("numberFirstPageCheck"),pageNumberPosition=document.getElementById("pageNumberPosition"),creativeHeading=document.getElementById("creativeHeading"),selectedObjectNote=document.getElementById("selectedObjectNote"),fontFamilySelect=document.getElementById("fontFamilySelect"),fontSizeInput=document.getElementById("fontSizeInput"),textColourInput=document.getElementById("textColourInput"),backgroundColourInput=document.getElementById("backgroundColourInput"),drawLineColour=document.getElementById("drawLineColour"),drawFillColour=document.getElementById("drawFillColour"),drawThickness=document.getElementById("drawThickness"),drawNoFill=document.getElementById("drawNoFill"),drawModeNote=document.getElementById("drawModeNote");
     let titleColour="#17314a",titleBold=true,titleItalic=false,titleAlign="center",publicationImage="",currentCanvasMode="artist",selectedItem=null,currentPageIndex=0,pendingImageAction="add",zCounter=20;
     let undoStack=[],redoStack=[],typingSnapshotTaken=false;
@@ -801,6 +818,42 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="image"&&currentPage().querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return}if(kind==="drawing")syncDrawingData();pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);updateEmptyHint()}
     function layerSelected(delta){if(!selectedItem)return;pushUndo();let z=parseInt(selectedItem.style.zIndex)||10;z=clamp(z+delta,1,999);selectedItem.style.zIndex=String(z);zCounter=Math.max(zCounter,z)}
 
+    function friendlyDateTime(value){
+      const raw=clean(value); if(!raw)return ""; const d=new Date(raw); if(Number.isNaN(d.getTime()))return raw;
+      return d.toLocaleString("en-GB",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    }
+    function eventNoticeFacts(e){
+      const time=[e.start_time,e.end_time].filter(Boolean).join(" – ");
+      const contact=[e.producer_email,e.producer_mobile,e.producer_landline].filter(Boolean).join(" • ");
+      const lines=[
+        e.event_date?`Date: ${friendlyDateTime(e.event_date+"T00:00") .replace(/,? 00:00$/,"")}`:"",
+        time?`Time: ${time}`:"", e.venue?`Venue: ${e.venue}`:"",
+        e.producer_name?`Produced by: ${e.producer_name} (${e.producer_resident_id||e.producer_member_id||""})`:"",
+        contact?`Contact: ${contact}`:"", e.event_id?`Event Ref: ${e.event_id}`:""
+      ];
+      if(e.event_mode!=="post") lines.push(
+        e.capacity_total?`Places available: ${e.capacity_total}`:"",
+        e.members_booking_open_at?`Members booking opens: ${friendlyDateTime(e.members_booking_open_at)}`:"",
+        e.guests_booking_open_at?`Guest booking opens: ${friendlyDateTime(e.guests_booking_open_at)}`:"",
+        e.booking_close_at?`Booking closes: ${friendlyDateTime(e.booking_close_at)}`:"",
+        e.cancellation_cutoff_at?`Cancellation cutoff: ${friendlyDateTime(e.cancellation_cutoff_at)}`:"",
+        e.refund_cutoff_at?`Refund cutoff: ${friendlyDateTime(e.refund_cutoff_at)}`:"",
+        e.payment_required&&e.cost_per_place?`Cost: £${Number(e.cost_per_place).toFixed(2)} per place`:"",
+        e.payment_instructions?`Payment: ${e.payment_instructions}`:"", e.payment_note||""
+      );
+      return lines.filter(Boolean).join("\n");
+    }
+    function openEventCanvasFromHandoff(){
+      let e=null; try{e=JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null")}catch(_){}
+      if(!e)return false;
+      openCreativeWorkspace(true,e.event_mode==="post"?"Post an Event — Event Notice":"Host an Event — Event Notice");
+      makeCanvasItem("title",e.title||"Event Notice","",{left:"8%",top:"6%",width:"84%",height:"12%"});
+      makeCanvasItem("text",eventNoticeFacts(e),"",{left:"8%",top:"22%",width:"84%",height:"34%"});
+      makeCanvasItem("text","Add your invitation, description or other wording here.","",{left:"8%",top:"61%",width:"84%",height:"27%"});
+      undoStack=[];redoStack=[];updateUndoRedo();selectItem(null);
+      return true;
+    }
+
     function openCreativeWorkspace(fresh=false,label="Creative Canvas"){
       els.studioCard.hidden=true;publishWorkspace.hidden=true;creativeWorkspace.hidden=false;creativeHeading.textContent=label||"My Own Design";if(fresh||!pages().length){creativePages.innerHTML="";currentPageIndex=0;undoStack=[];redoStack=[];createPage();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();selectItem(null);updateUndoRedo()}window.scrollTo({top:0,behavior:"smooth"})
     }
@@ -832,9 +885,17 @@ This role is recognised and available to you. Its Design Studio workspace is cur
     window.addEventListener("afterprint",()=>{document.body.classList.remove("print-canvas");showCurrentPage()});
     refreshPublication();updateUndoRedo();
 
+    async function initialiseStudioPage(){
+      const restored=await restoreExistingStudioSession();
+      const params=new URLSearchParams(location.search);
+      if(restored && params.get("open")==="event-canvas") openEventCanvasFromHandoff();
+      else if(!restored) els.verifyCard.hidden=false;
+    }
+    initialiseStudioPage();
+
     function togglePinVisibility(){const showing=els.pinInput.type==="text";els.pinInput.type=showing?"password":"text";els.togglePinBtn.textContent=showing?"Show":"Hide";els.togglePinBtn.setAttribute("aria-label",showing?"Show PIN":"Hide PIN");els.togglePinBtn.title=showing?"Show PIN":"Hide PIN"}
     function logout(){try{["authToken","currentMemberId","currentResidentId","verifiedResidentId","hostAreaVerified","hostAreaRoles","currentDisplayName"].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)})}catch(e){console.warn("Logout cleanup failed.",e)}window.location.href="members-info.html"}
     els.togglePinBtn.addEventListener("click",togglePinVisibility);els.logoutBtn.addEventListener("click",logout);els.verifyForm.addEventListener("submit",verifyStudio);
   </script>
 </body>
-</html>host-area.html
+</html>

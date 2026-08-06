@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create an Event | Your Design Studio | Sanctuary Club</title>
+  <title>Host or Post an Event | Your Design Studio | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -775,6 +775,20 @@ button.danger:hover{
   background:#842323;
 }
     
+
+    .event-grid{grid-template-columns:repeat(16,minmax(0,1fr));}
+    .event-title{grid-column:span 8}
+    .event-venue{grid-column:span 8}
+    .event-category{grid-column:span 6}
+    .event-date{grid-column:span 4}
+    .event-time{grid-column:span 3}
+    .event-summary,.event-body{display:none}
+    .producer-card{display:grid;grid-template-columns:minmax(11rem,1.2fr) minmax(8rem,.7fr) minmax(13rem,1.2fr) minmax(10rem,1fr);gap:.65rem;align-items:end}
+    .producer-card .wide{grid-column:span 2}
+    .event-ref-box{margin-top:.65rem;padding:.65rem .8rem;border-radius:14px;background:#eef6ff;border:1px solid var(--line);font-weight:850;color:var(--accent)}
+    .yds-note{padding:.85rem 1rem;border:1px solid #cfe3eb;border-radius:15px;background:#eef7fa;color:#315c6d;line-height:1.45}
+    .mode-disabled{opacity:.48;filter:grayscale(.25);pointer-events:none}
+    .mode-badge{display:inline-flex;align-items:center;padding:.35rem .65rem;border-radius:999px;background:#eef6ff;border:1px solid var(--line);color:var(--accent);font-size:.82rem;font-weight:900;margin-top:.45rem}
     @media (max-width:1050px){
       .space-grid{
         grid-template-columns:5rem repeat(2,minmax(0,1fr));
@@ -814,9 +828,9 @@ button.danger:hover{
   <div class="wrap">
     <header>
       <div>
-        <h1 id="pageTitle">Create an Event</h1>
+        <h1 id="pageTitle">Host an Event</h1>
         <p class="subtitle" id="pageSubtitle">
-          Create and design an Event Notice for the Sanctuary Club Calendar, Events List and Notice page.
+          Add the practical details needed to place your Studio creation in the Calendar, Events List and Event Notice.
         </p>
       </div>
 
@@ -828,7 +842,7 @@ button.danger:hover{
 
     <div class="top-grid">
       <section class="card">
-        <h2>Host verification</h2>
+        <h2 id="verificationHeading">Event authority</h2>
 
         <div class="compact-verify">
           <div>
@@ -843,7 +857,7 @@ button.danger:hover{
             </div>
           </div>
           <div>
-            <button class="primary" id="verifyBtn" type="button">Verify host</button>
+            <button class="primary" id="verifyBtn" type="button">Verify authority</button>
           </div>
         </div>
 
@@ -851,6 +865,8 @@ button.danger:hover{
       </section>
 
       <div id="verifiedIdentity" class="verified-identity" aria-live="polite"></div>
+
+      <div id="eventRefBox" class="event-ref-box" style="display:none;">Event Ref: <span id="eventRefValue"></span></div>
 
       <div class="host-data-store" aria-hidden="true">
         <input id="hostName" type="hidden" />
@@ -860,6 +876,17 @@ button.danger:hover{
         <input id="hostLandline" type="hidden" />
       </div>
     </div>
+
+    <section class="card" id="producerSection">
+      <h2>Producer</h2>
+      <div class="producer-card">
+        <div><label>Producer name</label><input id="producerNameDisplay" readonly /></div>
+        <div><label>Membership ID</label><input id="producerMemberDisplay" readonly /></div>
+        <div><label>Email</label><input id="producerEmailDisplay" readonly /></div>
+        <div><label>Telephone</label><input id="producerPhoneDisplay" readonly /></div>
+      </div>
+      <div id="modeBadge" class="mode-badge">Host an Event</div>
+    </section>
 
     <form id="eventForm" class="locked" novalidate>
       <section class="card">
@@ -906,160 +933,39 @@ button.danger:hover{
             <input id="endTime" type="time" />
           </div>
 
-          <div class="event-summary">
-            <label for="summary">Short summary</label>
-            <input id="summary" maxlength="180" />
-          </div>
-
-          <div class="event-body">
-            <label for="description">Notice wording</label>
-            <textarea id="description"></textarea>
-          </div>
+          <input id="summary" type="hidden" />
+          <textarea id="description" hidden></textarea>
 
   <div class="event-publishing">
-  <h3>Notice Design Studio</h3>
-  <p class="small">
-    Add an illustration only if it enhances the notice. If none is chosen, no image space is reserved
-    on the published or printed Notice.
-  </p>
-
-  <div class="illustration-choice-grid">
-    <button class="illustration-choice" type="button" id="useLibraryBtn">
-      <strong>Sanctuary Illustration Library</strong>
-      <span>Choose from the Club's growing collection of approved illustrations.</span>
-    </button>
-
-    <button class="illustration-choice" type="button" id="useOwnImageBtn">
-      <strong>Use Your Own Image</strong>
-      <span>Choose a photograph or picture already saved on your computer.</span>
-    </button>
-
-    <button class="illustration-choice" type="button" id="useAiImageBtn">
-      <strong>AI Generated Illustration</strong>
-      <span>Describe what you would like and let AI create something especially for you.</span>
-    </button>
-  </div>
-
-  <div class="poster-preview-box">
-    <div id="posterPreview" class="poster-preview empty">
-      No illustration selected
+    <h3>Your Design Studio creation</h3>
+    <div class="yds-note">
+      The poster or notice is created in <strong>Your Design Studio</strong>. This page records only the practical event details needed for the Calendar, Events List and Event Notice.
     </div>
+    <input id="titleArtUrl" type="hidden" />
+    <input id="imageUrl" type="hidden" />
+    <input id="imageFile" type="file" accept="image/*" hidden />
+    <input id="titleBold" type="checkbox" hidden checked />
+    <input id="titleItalic" type="checkbox" hidden />
+    <input id="titleColourBlue" name="titleColour" type="radio" value="#17314a" hidden checked />
+    <input id="titleAlignCentre" name="titleAlign" type="radio" value="center" hidden checked />
+    <span id="selectedFileName" hidden></span>
+    <div id="posterPreview" hidden></div>
+    <div id="posterMessage" hidden></div>
+    <button id="clearPosterBtn" type="button" hidden></button>
+    <button id="useLibraryBtn" type="button" hidden></button>
+    <button id="useOwnImageBtn" type="button" hidden></button>
+    <button id="useAiImageBtn" type="button" hidden></button>
+    <div id="ownImagePanel" hidden></div>
+    <div id="aiImagePanel" hidden></div>
+    <div id="libraryActionRow" hidden></div>
+    <div id="miniPreviewTitle" hidden></div>
   </div>
-
-  <div id="libraryActionRow" class="studio-action-row">
-    <button class="secondary library-btn" type="button" data-library-target="imageUrl" data-library-kind="poster">
-      Open Sanctuary Library
-    </button>
-  </div>
-
-  <div id="ownImagePanel" class="own-image-panel hidden">
-    <label for="imageFile">Choose an image from your computer</label>
-    <div class="file-choice-row">
-      <input id="imageFile" type="file" accept="image/*" class="hidden" />
-      <button class="secondary" type="button" id="chooseImageBtn">Choose Image...</button>
-      <span class="file-name" id="selectedFileName">No image chosen</span>
-    </div>
-    <p class="small">
-      This may be your own photograph, something you created, or an image you downloaded and saved.
-      Please use only an image you are entitled to publish.
-    </p>
-  </div>
-
-  <div id="aiImagePanel" class="ai-image-panel hidden">
-    <strong>AI illustration is ready for future connection.</strong>
-    <p class="small">
-      The Studio will keep this choice in the same place while the AI service behind it can be added or changed later.
-      For now, create the illustration with your preferred AI service, save it to your computer, then choose it under
-      <strong>Use Your Own Image</strong>.
-    </p>
-  </div>
-
-  <input id="imageUrl" type="hidden" />
-
-  <div class="poster-actions">
-    <button class="secondary" type="button" id="clearPosterBtn">Remove illustration</button>
-  </div>
-
-  <div id="posterMessage" class="poster-message" aria-live="polite"></div>
-
-  <p class="small">
-    Tip: use one clear landscape image. It will scale down automatically for screen and A4 printing.
-  </p>
-
-
-  <div class="appearance-panel">
-    <h4>Notice Appearance</h4>
-
-    <div class="appearance-grid">
-      <div>
-        <label>Title colour</label>
-        <div class="colour-options">
-          <span class="choice-chip">
-            <input id="titleColourBlue" name="titleColour" type="radio" value="#17314a" checked />
-            <label for="titleColourBlue"><span class="colour-dot" style="background:#17314a"></span>Blue</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleColourGreen" name="titleColour" type="radio" value="#2f6f4e" />
-            <label for="titleColourGreen"><span class="colour-dot" style="background:#2f6f4e"></span>Green</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleColourBurgundy" name="titleColour" type="radio" value="#7b3345" />
-            <label for="titleColourBurgundy"><span class="colour-dot" style="background:#7b3345"></span>Burgundy</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleColourPlum" name="titleColour" type="radio" value="#68436f" />
-            <label for="titleColourPlum"><span class="colour-dot" style="background:#68436f"></span>Plum</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleColourCharcoal" name="titleColour" type="radio" value="#30363b" />
-            <label for="titleColourCharcoal"><span class="colour-dot" style="background:#30363b"></span>Charcoal</label>
-          </span>
-        </div>
-      </div>
-
-      <div>
-        <label>Title style</label>
-        <div class="toggle-options">
-          <span class="choice-chip">
-            <input id="titleBold" type="checkbox" checked />
-            <label for="titleBold"><strong>B</strong> Bold</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleItalic" type="checkbox" />
-            <label for="titleItalic"><em>I</em> Italic</label>
-          </span>
-        </div>
-      </div>
-
-      <div>
-        <label>Title alignment</label>
-        <div class="align-options">
-          <span class="choice-chip">
-            <input id="titleAlignCentre" name="titleAlign" type="radio" value="center" checked />
-            <label for="titleAlignCentre">Centre</label>
-          </span>
-          <span class="choice-chip">
-            <input id="titleAlignLeft" name="titleAlign" type="radio" value="left" />
-            <label for="titleAlignLeft">Left</label>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="notice-mini-preview">
-      <h4 id="miniPreviewTitle" class="notice-mini-preview-title">Your Event Title</h4>
-      <p class="notice-mini-preview-note">A simple preview of the title styling.</p>
-    </div>
-  </div>
-
-  <input id="titleArtUrl" type="hidden" />
-</div>
         </div>
       </section>
 
-      <section class="card">
+      <section class="card" id="bookingSection">
         <div class="section-head">
-          <h2>Space &amp; Dates</h2>
+          <h2>Bookings, guests &amp; cut-off dates</h2>
           <p class="help">Leave blank if these details are not needed for this notice.</p>
         </div>
 
@@ -1096,7 +1002,7 @@ button.danger:hover{
         </div>
       </section>
 
-      <section class="card">
+      <section class="card" id="paymentSection">
         <div class="section-head">
           <h2>Payment</h2>
           <p class="help">Use this for payable events. Payment collection itself remains outside the website for now.</p>
@@ -1209,6 +1115,8 @@ button.danger:hover{
 
 <script>
 const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
+const EVENT_MODE = (new URLSearchParams(location.search).get("mode") || "host").toLowerCase() === "post" ? "post" : "host";
+const POST_EVENT_ROLES = new Set(["admin","committee","panel","services","news_contributor","activity_organiser","editor"]);
 
 function cleanText(v){ return String(v == null ? "" : v).trim(); }
 
@@ -1252,6 +1160,16 @@ const els = {
   pageTitle: document.getElementById("pageTitle"),
   pageSubtitle: document.getElementById("pageSubtitle"),
   logoutBtn: document.getElementById("logoutBtn"),
+  verificationHeading: document.getElementById("verificationHeading"),
+  bookingSection: document.getElementById("bookingSection"),
+  paymentSection: document.getElementById("paymentSection"),
+  producerNameDisplay: document.getElementById("producerNameDisplay"),
+  producerMemberDisplay: document.getElementById("producerMemberDisplay"),
+  producerEmailDisplay: document.getElementById("producerEmailDisplay"),
+  producerPhoneDisplay: document.getElementById("producerPhoneDisplay"),
+  modeBadge: document.getElementById("modeBadge"),
+  eventRefBox: document.getElementById("eventRefBox"),
+  eventRefValue: document.getElementById("eventRefValue"),
 
   residentRef: document.getElementById("residentRef"),
   pin: document.getElementById("pin"),
@@ -1685,8 +1603,68 @@ function logout(){
   window.location.href = "index.html";
 }
 
+function storedRoles(){
+  const values = [
+    localStorage.getItem("hostAreaRoles"),
+    sessionStorage.getItem("hostAreaRoles")
+  ];
+  for(const value of values){
+    try{
+      const parsed = JSON.parse(value || "[]");
+      if(Array.isArray(parsed)) return parsed.map(r => cleanText(r).toLowerCase());
+    }catch(_){ }
+  }
+  return [];
+}
+
+function currentAuthorityRoles(){
+  return [...new Set([...tokenRoles(authToken), ...storedRoles()])];
+}
+
+function roleAllowsMode(roles){
+  if(EVENT_MODE === "host") return roles.includes("admin") || roles.includes("host");
+  return roles.some(role => POST_EVENT_ROLES.has(role));
+}
+
+function applyModePresentation(){
+  if(EVENT_MODE === "post"){
+    document.title = editEventId ? "Edit Posted Event | Sanctuary Club" : "Post an Event | Sanctuary Club";
+    els.pageTitle.textContent = editEventId ? "Edit Posted Event" : "Post an Event";
+    els.pageSubtitle.textContent = "Add the details needed for the Calendar, Events List and Event Notice. No booking or payment facilities are created.";
+    els.modeBadge.textContent = "Post an Event (PanE)";
+    els.verificationHeading.textContent = "Posting authority";
+    els.bookingSection.classList.add("mode-disabled");
+    els.paymentSection.classList.add("mode-disabled");
+  }else{
+    els.modeBadge.textContent = "Host an Event (HanE)";
+    els.verificationHeading.textContent = "Host authority";
+  }
+}
+
+function fillProducerDisplays(){
+  els.producerNameDisplay.value = cleanText(els.hostName.value);
+  els.producerMemberDisplay.value = cleanText(verifiedResidentId || verifiedMemberId);
+  els.producerEmailDisplay.value = cleanText(els.hostEmail.value);
+  els.producerPhoneDisplay.value = pick(els.hostMobile.value, els.hostLandline.value);
+}
+
+function showEventReference(id){
+  const ref = cleanText(id);
+  if(!ref){ els.eventRefBox.style.display = "none"; return; }
+  els.eventRefValue.textContent = ref;
+  els.eventRefBox.style.display = "block";
+}
+
 function setEditModeText(){
   if (!editEventId) return;
+  if(EVENT_MODE === "post"){
+    document.title = "Edit Posted Event | Sanctuary Club";
+    els.pageTitle.textContent = "Edit Posted Event";
+    els.pageSubtitle.textContent = "Update the Calendar, Events List and Event Notice entry.";
+    els.saveBtn.textContent = "Update Posted Event";
+    showEventReference(editEventId);
+    return;
+  }
   document.title = "Edit Event Notice | Sanctuary Club";
   els.pageTitle.textContent = "Edit Your Event Notice";
   els.pageSubtitle.textContent = "Update this Event Notice. Saving here updates the Notice, Calendar and Events List.";
@@ -1762,9 +1740,9 @@ function tokenResidentId(token){
 }
 
 async function resumeExistingAuthority(){
-  if(!editEventId || !authToken) return false;
+  if(!authToken) return false;
 
-  const roles = tokenRoles(authToken);
+  const roles = currentAuthorityRoles();
   const isAdmin = roles.includes("admin") || !!(
     localStorage.getItem("adminToken") ||
     sessionStorage.getItem("adminToken") ||
@@ -1773,7 +1751,7 @@ async function resumeExistingAuthority(){
   );
   const isHost = roles.includes("host");
 
-  if(!isAdmin && !isHost) return false;
+  if(!roleAllowsMode(roles)) return false;
 
   const storedResidentId = cleanResidentId(
     localStorage.getItem("currentResidentId") ||
@@ -1799,7 +1777,7 @@ async function resumeExistingAuthority(){
     A Host still needs a resident identity so loadEvent() can confirm that
     the Event belongs to them.
   */
-  if(!isAdmin && !storedResidentId) return false;
+  if(!storedResidentId) return false;
 
   verified = true;
   verifiedMemberId = storedMemberId;
@@ -1815,6 +1793,14 @@ async function resumeExistingAuthority(){
     : `Host session recognised (${storedResidentId})`;
   els.verifiedIdentity.classList.add("show");
 
+  const contact = await getHostContact(storedMemberId, verifiedResidentIndex, storedResidentId);
+  els.hostResidentId.textContent = storedResidentId;
+  els.hostName.value = contact.name || storedResidentId;
+  els.hostEmail.value = contact.email || "";
+  els.hostMobile.value = contact.mobile || "";
+  els.hostLandline.value = contact.landline || "";
+  fillProducerDisplays();
+
   unlockForm();
   setStatus(
     els.verifyStatus,
@@ -1824,7 +1810,10 @@ async function resumeExistingAuthority(){
       : "Host session recognised. Your Event Notice is ready to edit."
   );
 
-  await loadEvent();
+  if(editEventId){
+    await loadEvent();
+    showEventReference(editEventId);
+  }
   return true;
 }
 
@@ -1871,10 +1860,11 @@ async function verifyHost(){
       ? data.member.roles
       : [];
 
-    const canHost = roles.includes("admin") || roles.includes("host");
-
-    if (!canHost){
-      throw new Error("Host or admin authority is required to create or edit an Event Notice.");
+    const normalRoles = roles.map(role => cleanText(role).toLowerCase());
+    if (!roleAllowsMode(normalRoles)){
+      throw new Error(EVENT_MODE === "host"
+        ? "Host or Administrator authority is required to Host an Event."
+        : "An appropriate publishing role is required to Post an Event.");
     }
 
     localStorage.setItem("authToken", authToken);
@@ -1902,7 +1892,9 @@ async function verifyHost(){
     els.hostLandline.value = contact.landline || "";
 
     els.verifiedIdentity.textContent =
-      `Verified as ${els.hostName.value || normalResidentId} (${normalResidentId})`;
+      `${EVENT_MODE === "host" ? "Host" : "Producer"} recognised: ${els.hostName.value || normalResidentId} (${normalResidentId})`;
+    els.verifiedIdentity.classList.add("show");
+    fillProducerDisplays();
     els.verifiedIdentity.classList.add("show");
 
     unlockForm();
@@ -2216,8 +2208,12 @@ function buildPayload(){
     10
   ) || residentIndexFromRef(hostResidentId) || 1;
 
+  const isPostedEvent = EVENT_MODE === "post";
+
   return {
     event_id: editEventId,
+    event_mode: EVENT_MODE,
+    bookings_enabled: !isPostedEvent,
     title: cleanText(els.title.value),
 
     category,
@@ -2250,28 +2246,28 @@ function buildPayload(){
     host_mobile: cleanText(els.hostMobile.value),
     host_landline: cleanText(els.hostLandline.value),
 
-    capacity_total: parseInt(els.capacityTotal.value, 10) || 0,
-    capacity: parseInt(els.capacityTotal.value, 10) || 0,
+    capacity_total: isPostedEvent ? 0 : (parseInt(els.capacityTotal.value, 10) || 0),
+    capacity: isPostedEvent ? 0 : (parseInt(els.capacityTotal.value, 10) || 0),
     max_places_per_member: 0,
 
-    members_booking_open_at: cleanText(els.membersBookingOpenAt.value),
-    guests_booking_open_at: cleanText(els.guestsBookingOpenAt.value),
-    booking_close_at: cleanText(els.bookingCloseAt.value),
-    cancellation_cutoff_at: cleanText(els.cancellationCutoffAt.value),
-    refund_cutoff_at: cleanText(els.refundCutoffAt.value),
+    members_booking_open_at: isPostedEvent ? "" : cleanText(els.membersBookingOpenAt.value),
+    guests_booking_open_at: isPostedEvent ? "" : cleanText(els.guestsBookingOpenAt.value),
+    booking_close_at: isPostedEvent ? "" : cleanText(els.bookingCloseAt.value),
+    cancellation_cutoff_at: isPostedEvent ? "" : cleanText(els.cancellationCutoffAt.value),
+    refund_cutoff_at: isPostedEvent ? "" : cleanText(els.refundCutoffAt.value),
 
-    payable: paymentRequired,
-    is_payable: paymentRequired,
-    payment_required: paymentRequired,
-    price_member: costPerPlace,
-    price_guest: costPerPlace,
-    unit_price: costPerPlace,
-    cost_per_place: costPerPlace,
-    price_per_place: costPerPlace,
-    payment_instructions: cleanText(els.paymentInstructions.value),
-    payment_terms: cleanText(els.paymentNote.value),
-    refund_note: cleanText(els.paymentNote.value),
-    payment_refund_note: cleanText(els.paymentNote.value)
+    payable: isPostedEvent ? false : paymentRequired,
+    is_payable: isPostedEvent ? false : paymentRequired,
+    payment_required: isPostedEvent ? false : paymentRequired,
+    price_member: isPostedEvent ? 0 : costPerPlace,
+    price_guest: isPostedEvent ? 0 : costPerPlace,
+    unit_price: isPostedEvent ? 0 : costPerPlace,
+    cost_per_place: isPostedEvent ? 0 : costPerPlace,
+    price_per_place: isPostedEvent ? 0 : costPerPlace,
+    payment_instructions: isPostedEvent ? "" : cleanText(els.paymentInstructions.value),
+    payment_terms: isPostedEvent ? "" : cleanText(els.paymentNote.value),
+    refund_note: isPostedEvent ? "" : cleanText(els.paymentNote.value),
+    payment_refund_note: isPostedEvent ? "" : cleanText(els.paymentNote.value)
   };
 }
 
@@ -2298,12 +2294,12 @@ async function saveEvent(e){
     return;
   }
 
-  if(payload.payment_required && payload.cost_per_place <= 0){
+  if(EVENT_MODE === "host" && payload.payment_required && payload.cost_per_place <= 0){
     setStatus(els.saveStatus,"warn","For a payable event, enter a cost per place.");
     return;
   }
 
-  const dateWarning = validateDateConsistency();
+  const dateWarning = EVENT_MODE === "host" ? validateDateConsistency() : "";
   if (dateWarning){
     setStatus(els.saveStatus, "warn", dateWarning);
     return;
@@ -2329,13 +2325,14 @@ async function saveEvent(e){
 
     if(id){
       editEventId = id;
-      history.replaceState(null,"","?event_id=" + encodeURIComponent(id));
+      history.replaceState(null,"","?mode=" + EVENT_MODE + "&event_id=" + encodeURIComponent(id));
+      showEventReference(id);
       setEditModeText();
       els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(id);
       els.viewNoticeLink.style.display = "inline-flex";
     }
 
-    setStatus(els.saveStatus,"ok","Event Notice saved.");
+    setStatus(els.saveStatus,"ok", EVENT_MODE === "host" ? "Hosted Event saved." : "Posted Event saved to Calendar, Events List and Event Notice.");
 
   }catch(err){
     setStatus(els.saveStatus,"err",err.message || "Save failed.");
@@ -2868,6 +2865,7 @@ if(storedResident){
   els.residentRef.value = residentIdFrom(storedMember, 1);
 }
 
+applyModePresentation();
 setEditModeText();
 setIllustrationMode("library");
 updateMiniPreview();
@@ -2875,26 +2873,19 @@ renderPosterPreview("", false);
 lockForm();
 
 (async function initialiseHostEventForm(){
-  if(editEventId){
-    try{
-      const resumed = await resumeExistingAuthority();
-      if(resumed) return;
-    }catch(err){
-      console.warn("Existing Host/Admin session could not be resumed.", err);
-    }
-
-    setStatus(
-      els.verifyStatus,
-      "info",
-      "Please verify as the Event Host or an Administrator to edit this Event Notice."
-    );
-    return;
+  try{
+    const resumed = await resumeExistingAuthority();
+    if(resumed) return;
+  }catch(err){
+    console.warn("Existing member authority could not be resumed.", err);
   }
 
   setStatus(
     els.verifyStatus,
     "info",
-    "Verify as an Event Host or Administrator to create an Event Notice."
+    EVENT_MODE === "host"
+      ? "Please verify as an Event Host or Administrator."
+      : "Please verify with an appropriate publishing role."
   );
 })();
 </script>

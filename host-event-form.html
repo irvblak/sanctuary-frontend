@@ -1791,19 +1791,47 @@ function tokenResidentId(token){
   );
 }
 
-async function resumeExistingAuthority(){
-  if(!authToken) return false;
+function storedSessionRoles(){
+  const roles = new Set(tokenRoles(authToken));
 
-  const roles = tokenRoles(authToken);
+  [
+    sessionStorage.getItem("hostAreaRoles"),
+    localStorage.getItem("hostAreaRoles"),
+    sessionStorage.getItem("currentRoles"),
+    localStorage.getItem("currentRoles")
+  ].forEach(function(raw){
+    if(!raw) return;
+    try{
+      const parsed = JSON.parse(raw);
+      const list = Array.isArray(parsed) ? parsed : [parsed];
+      list.forEach(function(role){
+        const normal = cleanText(role).toLowerCase().replace(/[\s-]+/g,"_");
+        if(normal) roles.add(normal === "residents_association_panel" ? "panel" : normal);
+      });
+    }catch(_){
+      String(raw).split(/[,;|]/).forEach(function(role){
+        const normal = cleanText(role).toLowerCase().replace(/[\s-]+/g,"_");
+        if(normal) roles.add(normal === "residents_association_panel" ? "panel" : normal);
+      });
+    }
+  });
+
+  return [...roles];
+}
+
+async function resumeExistingAuthority(){
+  const roles = storedSessionRoles();
   if(!roleAllowsMode(roles)) return false;
 
   const storedResidentId = cleanResidentId(
     sessionStorage.getItem("currentResidentId") || localStorage.getItem("currentResidentId") ||
     sessionStorage.getItem("verifiedResidentId") || localStorage.getItem("verifiedResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") || localStorage.getItem("currentHostResidentId") ||
     tokenResidentId(authToken) || ""
   );
   const storedMemberId = baseMemberId(
     sessionStorage.getItem("currentMemberId") || localStorage.getItem("currentMemberId") ||
+    sessionStorage.getItem("currentHostMemberId") || localStorage.getItem("currentHostMemberId") ||
     tokenMemberId(authToken) || storedResidentId || ""
   );
   if(!storedResidentId || !storedMemberId) return false;
@@ -2905,12 +2933,8 @@ lockForm();
   }
 
   lockForm();
-  els.verifiedIdentity.textContent =
-    `This page must be opened from Your Design Studio by a member with the appropriate ${eventMode === "post" ? "publishing" : "Host"} role.`;
-  els.verifiedIdentity.classList.add("show");
-  setStatus(els.verifyStatus,"err","Your current member session or role authority could not be confirmed. Please return to the Members Hub and open Your Design Studio.");
+  window.location.replace("host-area.html");
 })();
 </script>
 </body>
 </html>
-

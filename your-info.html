@@ -1414,16 +1414,15 @@
     );
 
     setStarterMode(Boolean(data.force_pin_change || data.starter_pin));
-
     if (starterPinRequired){
-  loginPanel.classList.add("hidden");
-  memberPanel.classList.remove("hidden");
-  activeMemberId.textContent = memberId;
-  setInformationIntro();
-  changePinBox.classList.remove("hidden");
-  setStatus(pageStatus, "warn", "Please replace the temporary 2468 PIN with your own Personal Private PIN.");
-  return;
-}
+      loginPanel.classList.add("hidden");
+      memberPanel.classList.remove("hidden");
+      activeMemberId.textContent = memberId;
+      setInformationIntro();
+      changePinBox.classList.remove("hidden");
+      setStatus(pageStatus, "warn", "Please replace the temporary 2468 PIN with your own Personal Private PIN.");
+    return;
+  }
     if (!OPEN_YI_AFTER_LOGIN){
       location.href = "members-info.html";
       return;

@@ -766,7 +766,7 @@ function applyMode(){
 
   els.modeNote.textContent = isPost
     ? "PanE is for non-bookable events. Booking and payment controls are not used."
-    : "HanE is the full hosted-event route, including member and guest bookings, payments and State of Play.";
+    : "Enter your event details then go to your studio to create your poster";
 
   [els.bookingSection,els.paymentSection].forEach(section=>{
     section.classList.toggle("pan-e-disabled",isPost);

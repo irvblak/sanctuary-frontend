@@ -1136,7 +1136,7 @@ button.danger:hover{
         <div id="saveStatus" class="status"></div>
 
      <div class="actions">
-  <button class="primary" id="saveBtn" type="button">Save Event Notice</button>
+  <button class="primary" id="saveBtn" type="button">Save Event Details &amp; Continue to Notice Design</button>
   <button class="secondary" id="resetBtn" type="button">Reset event details</button>
   <a class="pill" id="viewNoticeLink" href="#" style="display:none;">View Event Notice</a>
 
@@ -1245,15 +1245,6 @@ const EVENT_PARAMS = new URLSearchParams(location.search);
 let editEventId = cleanText(EVENT_PARAMS.get("event_id") || "");
 const eventMode = cleanText(EVENT_PARAMS.get("mode") || "host").toLowerCase() === "post" ? "post" : "host";
 
- if (editEventId) {
-  setTimeout(function(){
-    setStatus(
-      els.verifyStatus,
-      "info",
-      "Editing an existing Event Notice. Please verify as the Host resident to load and edit this notice."
-    );
-  }, 0);
-} 
 const els = {
   pageTitle: document.getElementById("pageTitle"),
   pageSubtitle: document.getElementById("pageSubtitle"),
@@ -1699,7 +1690,7 @@ function applyEventMode(){
     els.pageSubtitle.textContent = isPost
       ? "Add the facts needed to place this non-bookable event in the Calendar, Events List and Event Notice."
       : "Add the facts needed for the Event Notice, Calendar, Events List, bookings and State of Play.";
-    els.saveBtn.textContent = isPost ? "Continue to Event Notice" : "Continue to Event Notice";
+    els.saveBtn.textContent = "Save Event Details & Continue to Notice Design";
   }
   const booking = document.getElementById("bookingSection");
   const payment = document.getElementById("paymentSection");
@@ -1718,9 +1709,9 @@ function roleAllowsMode(roles){
 function setEditModeText(){
   if (!editEventId) return;
   document.title = "Edit Event Notice | Sanctuary Club";
-  els.pageTitle.textContent = "Edit Your Event Notice";
-  els.pageSubtitle.textContent = "Update this Event Notice. Saving here updates the Notice, Calendar and Events List.";
-  els.saveBtn.textContent = "Update Event Notice";
+  els.pageTitle.textContent = eventMode === "post" ? "Edit Posted Event" : "Edit Hosted Event";
+  els.pageSubtitle.textContent = eventMode === "post" ? "Update the event facts used by the Calendar, Events List and Event Notice." : "Update the event facts used by the Notice, Calendar, Events List, bookings and State of Play.";
+  els.saveBtn.textContent = "Save Changes & Continue to Notice Design";
 }
 
 
@@ -1791,22 +1782,92 @@ function tokenResidentId(token){
   );
 }
 
-async function resumeExistingAuthority(){
-  if(!authToken) return false;
+function normaliseAuthorityRole(role){
+  const key = cleanText(role).toLowerCase().replace(/[\s-]+/g,"_");
+  const aliases = {
+    administrator:"admin",
+    event_host:"host",
+    organiser:"activity_organiser",
+    activity_organizer:"activity_organiser",
+    community_news:"news_contributor",
+    residents_association_panel:"panel",
+    residents_panel:"panel",
+    service_provider:"services"
+  };
+  return aliases[key] || key;
+}
 
-  const roles = tokenRoles(authToken);
-  if(!roleAllowsMode(roles)) return false;
+function storedSessionRoles(){
+  const roles = new Set(tokenRoles(authToken).map(normaliseAuthorityRole));
+
+  [
+    sessionStorage.getItem("hostAreaRoles"),
+    localStorage.getItem("hostAreaRoles"),
+    sessionStorage.getItem("currentRoles"),
+    localStorage.getItem("currentRoles")
+  ].forEach(function(raw){
+    if(!raw) return;
+    try{
+      const parsed = JSON.parse(raw);
+      const list = Array.isArray(parsed) ? parsed : [parsed];
+      list.forEach(function(role){
+        const normal = normaliseAuthorityRole(role);
+        if(normal) roles.add(normal);
+      });
+    }catch(_){
+      String(raw).split(/[,;|]/).forEach(function(role){
+        const normal = normaliseAuthorityRole(role);
+        if(normal) roles.add(normal);
+      });
+    }
+  });
+
+  return [...roles];
+}
+
+async function resumeExistingAuthority(){
+  let roles = storedSessionRoles();
 
   const storedResidentId = cleanResidentId(
     sessionStorage.getItem("currentResidentId") || localStorage.getItem("currentResidentId") ||
     sessionStorage.getItem("verifiedResidentId") || localStorage.getItem("verifiedResidentId") ||
+    sessionStorage.getItem("currentHostResidentId") || localStorage.getItem("currentHostResidentId") ||
     tokenResidentId(authToken) || ""
   );
   const storedMemberId = baseMemberId(
     sessionStorage.getItem("currentMemberId") || localStorage.getItem("currentMemberId") ||
+    sessionStorage.getItem("currentHostMemberId") || localStorage.getItem("currentHostMemberId") ||
     tokenMemberId(authToken) || storedResidentId || ""
   );
   if(!storedResidentId || !storedMemberId) return false;
+
+  // A restored Club/YDS session may have identity and token but no hostAreaRoles
+  // yet. Refresh roles from the member profile before deciding authority.
+  if(!roleAllowsMode(roles)){
+    try{
+      const profile = await fetchMemberProfile(storedMemberId);
+      const residents = profileResidents(profile || {});
+      const resident = residentFromListByRef(residents, storedResidentId, residentIndexFromRef(storedResidentId));
+      const profileRoles = [];
+      [resident, profile, profile && profile.member].forEach(function(source){
+        if(!source || !Array.isArray(source.roles)) return;
+        source.roles.forEach(function(role){
+          const normal = normaliseAuthorityRole(role);
+          if(normal) profileRoles.push(normal);
+        });
+      });
+      roles = [...new Set([...roles,...profileRoles])];
+      if(roles.length){
+        const encoded = JSON.stringify(roles);
+        sessionStorage.setItem("hostAreaRoles",encoded);
+        localStorage.setItem("hostAreaRoles",encoded);
+      }
+    }catch(err){
+      console.warn("Could not refresh event authority roles.",err);
+    }
+  }
+
+  if(!roleAllowsMode(roles)) return false;
 
   verified = true;
   verifiedMemberId = storedMemberId;
@@ -1814,20 +1875,31 @@ async function resumeExistingAuthority(){
   verifiedResidentIndex = residentIndexFromRef(storedResidentId);
   els.residentRef.value = storedResidentId;
 
-  try{
-    const contact = await getHostContact(storedMemberId, verifiedResidentIndex, storedResidentId);
-    els.hostName.value = contact.name || storedResidentId;
-    els.hostEmail.value = contact.email || "";
-    els.hostMobile.value = contact.mobile || "";
-    els.hostLandline.value = contact.landline || "";
-  }catch(_){
-    els.hostName.value = sessionStorage.getItem("currentDisplayName") || localStorage.getItem("currentDisplayName") || storedResidentId;
-  }
+  const storedName =
+    sessionStorage.getItem("currentDisplayName") ||
+    localStorage.getItem("currentDisplayName") ||
+    storedResidentId;
 
-  els.verifiedIdentity.textContent = `${eventMode === "post" ? "Authorised producer" : "Host"} recognised: ${els.hostName.value} (${storedResidentId})`;
+  els.hostName.value = storedName;
+  els.verifiedIdentity.textContent = `${eventMode === "post" ? "Authorised producer" : "Host"} recognised: ${storedName} (${storedResidentId})`;
   els.verifiedIdentity.classList.add("show");
   unlockForm();
   clearStatus(els.verifyStatus);
+
+  // Do not hold the page open while Render wakes up. Refresh contact details
+  // quietly after the form is already usable.
+  getHostContact(storedMemberId, verifiedResidentIndex, storedResidentId)
+    .then(function(contact){
+      els.hostName.value = contact.name || storedName;
+      els.hostEmail.value = contact.email || "";
+      els.hostMobile.value = contact.mobile || "";
+      els.hostLandline.value = contact.landline || "";
+      els.verifiedIdentity.textContent = `${eventMode === "post" ? "Authorised producer" : "Host"} recognised: ${els.hostName.value} (${storedResidentId})`;
+    })
+    .catch(function(err){
+      console.warn("Producer contact details could not be refreshed.", err);
+    });
+
   if(editEventId) await loadEvent();
   return true;
 }
@@ -2269,11 +2341,11 @@ function buildPayload(){
     payable: eventMode === "post" ? false : paymentRequired,
     is_payable: eventMode === "post" ? false : paymentRequired,
     payment_required: eventMode === "post" ? false : paymentRequired,
-    price_member: costPerPlace,
-    price_guest: costPerPlace,
-    unit_price: costPerPlace,
-    cost_per_place: costPerPlace,
-    price_per_place: costPerPlace,
+    price_member: eventMode === "post" ? 0 : costPerPlace,
+    price_guest: eventMode === "post" ? 0 : costPerPlace,
+    unit_price: eventMode === "post" ? 0 : costPerPlace,
+    cost_per_place: eventMode === "post" ? 0 : costPerPlace,
+    price_per_place: eventMode === "post" ? 0 : costPerPlace,
     payment_instructions: cleanText(els.paymentInstructions.value),
     payment_terms: cleanText(els.paymentNote.value),
     refund_note: cleanText(els.paymentNote.value),
@@ -2286,7 +2358,7 @@ async function saveEvent(e){
   clearStatus(els.saveStatus);
 
   if(!verified || !verifiedResidentId){
-    setStatus(els.saveStatus,"warn","Verify host resident first.");
+    setStatus(els.saveStatus,"warn","Your signed-in member session is no longer available. Please return to Your Design Studio.");
     return;
   }
 
@@ -2317,7 +2389,7 @@ async function saveEvent(e){
 
   try{
     els.saveBtn.disabled = true;
-    setStatus(els.saveStatus,"warn","Saving Event Notice...");
+    setStatus(els.saveStatus,"warn","Saving event details...");
 
     const data = await apiFetch(
       "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
@@ -2333,15 +2405,22 @@ async function saveEvent(e){
 
     const id = data.event?.event_id || data.event_id || editEventId;
 
+    if(!id){
+      throw new Error("The Event details were saved but no Event Reference was returned. Please try again before continuing to Notice design.");
+    }
+
     if(id){
       editEventId = id;
-      history.replaceState(null,"","?event_id=" + encodeURIComponent(id));
+      history.replaceState(null,"",`?mode=${encodeURIComponent(eventMode)}&event_id=${encodeURIComponent(id)}`);
       setEditModeText();
       els.viewNoticeLink.href = "events-details.html?event_id=" + encodeURIComponent(id);
       els.viewNoticeLink.style.display = "inline-flex";
     }
 
     const eventHandoff = {
+      handoff_version:1,
+      handoff_type:"event_notice",
+      saved_at:new Date().toISOString(),
       event_id:id, event_mode:eventMode,
       title:payload.title, category:payload.category, event_date:payload.event_date,
       start_time:payload.start_time, end_time:payload.end_time, venue:payload.location,
@@ -2355,7 +2434,7 @@ async function saveEvent(e){
       payment_instructions:payload.payment_instructions, payment_note:payload.payment_refund_note
     };
     sessionStorage.setItem("sanctuaryEventCanvasHandoff", JSON.stringify(eventHandoff));
-    setStatus(els.saveStatus,"ok","Event details saved. Opening the Event Notice canvas…");
+    setStatus(els.saveStatus,"ok",`Event details saved as ${id}. Returning to Your Design Studio to complete the Notice…`);
     window.setTimeout(()=>{
       window.location.href = `host-area.html?open=event-canvas&event_id=${encodeURIComponent(id||"")}&mode=${encodeURIComponent(eventMode)}`;
     },350);
@@ -2905,10 +2984,7 @@ lockForm();
   }
 
   lockForm();
-  els.verifiedIdentity.textContent =
-    `This page must be opened from Your Design Studio by a member with the appropriate ${eventMode === "post" ? "publishing" : "Host"} role.`;
-  els.verifiedIdentity.classList.add("show");
-  setStatus(els.verifyStatus,"err","Your current member session or role authority could not be confirmed. Please return to the Members Hub and open Your Design Studio.");
+  window.location.replace("host-area.html");
 })();
 </script>
 </body>

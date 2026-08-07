@@ -1026,8 +1026,9 @@
   }
 
   function setLoginIntro(){
-    document.getElementById("yiPageHeading").textContent = "Login Below";
-    
+    const heading = document.getElementById("yiPageHeading");
+    if (heading) heading.textContent = "Login Below";
+
     if (pageIntro){
       pageIntro.innerHTML = "<strong>Welcome to Your Information.</strong>";
     }
@@ -1037,8 +1038,8 @@
   }
 
   function setInformationIntro(){
-    document.getElementById("yiPageHeading").textContent = "Your Information";
-
+    const heading = document.getElementById("yiPageHeading");
+    if (heading) heading.textContent = "Your Information";
     if (pageIntro){
       pageIntro.innerHTML = "<strong>This page contains all your personal Sanctuary Club information.</strong>";
     }

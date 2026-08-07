@@ -481,8 +481,11 @@
 
 <main>
   <section class="card">
-    <p class="page-intro"><strong>This page contains all your personal Sanctuary Club information.</strong></p>
-    <p class="sign-in-copy">If you haven't already done so, please use <strong>Change PIN</strong> at the foot of this page to replace the temporary <strong>2468</strong> PIN with your own personal four-digit PIN. Thereafter, simply enter your Membership Number and Personal PIN whenever you wish to access or update your information.</p>
+    <h1>Login Below</h1>
+
+    <p class="page-intro" id="pageIntro"><strong>Welcome to Your Information.</strong></p>
+    <p class="sign-in-copy" id="signInCopy">Please enter your Membership Number and Personal PIN to access your household information. If you are still using the temporary <strong>2468</strong> PIN, you can change it after signing in.</p>
+
     <div class="identity" aria-label="Sanctuary Club identity statement">
       <div class="identity-main">Built by members. Run by members. <em>For</em> members.</div>
       <span class="identity-sub">Supporting our community.</span>
@@ -657,6 +660,8 @@
   const memberPanel = document.getElementById("memberPanel");
 
   const loginStatus = document.getElementById("loginStatus");
+  const pageIntro = document.getElementById("pageIntro");
+  const signInCopy = document.getElementById("signInCopy");
   const pageStatus = document.getElementById("pageStatus");
 
   const activeMemberId = document.getElementById("activeMemberId");
@@ -1018,6 +1023,24 @@
     });
 
     roleStrip.classList.toggle("show", rows.length > 0);
+  }
+
+  function setLoginIntro(){
+    if (pageIntro){
+      pageIntro.innerHTML = "<strong>Welcome to Your Information.</strong>";
+    }
+    if (signInCopy){
+      signInCopy.innerHTML = 'Please enter your Membership Number and Personal PIN to access your household information. If you are still using the temporary <strong>2468</strong> PIN, you can change it after signing in.';
+    }
+  }
+
+  function setInformationIntro(){
+    if (pageIntro){
+      pageIntro.innerHTML = "<strong>This page contains all your personal Sanctuary Club information.</strong>";
+    }
+    if (signInCopy){
+      signInCopy.innerHTML = 'You can update your household details here whenever you wish. If you have not already done so, use <strong>Change PIN</strong> at the foot of this page to replace the temporary <strong>2468</strong> PIN with your own personal four-digit PIN.';
+    }
   }
 
   function setStarterMode(isStarter){
@@ -1405,6 +1428,7 @@
     loginPanel.classList.add("hidden");
     memberPanel.classList.remove("hidden");
     activeMemberId.textContent = memberId;
+    setInformationIntro();
     setStatus(pageStatus, "info", "Loading your information...");
     await loadExistingFor(memberId);
   }
@@ -1573,7 +1597,7 @@
 
   async function restoreYiAfterPersonalService(){
     if (!RETURNING_FROM_PERSONAL_SERVICE || !hasActiveClubSession()){
-      prepareLoginAfterRefresh();
+      await prepareLoginAfterRefresh();
       return;
     }
 
@@ -1589,7 +1613,7 @@
       "";
 
     if (!rememberedMember || !rememberedToken){
-      prepareLoginAfterRefresh();
+      await prepareLoginAfterRefresh();
       return;
     }
 
@@ -1601,26 +1625,43 @@
     memberPanel.classList.remove("hidden");
     memberPanel.classList.remove("locked");
     activeMemberId.textContent = rememberedMember;
+    setInformationIntro();
 
-    // A member can only reach these personal-service return routes after
-    // completing the personal-PIN gate, so do not ask for that PIN again.
     setStarterMode(false);
-
     mergeActiveRoles(rolesFromHostSession(rememberedMember));
 
     setStatus(pageStatus, "info", "Loading your information...");
     await loadExistingFor(rememberedMember);
   }
 
-  function prepareLoginAfterRefresh(){
-    // A refresh must always return to the gate. Automatically reopening the
-    // editable household form allowed stale browser data and partial role data
-    // to appear before a fresh authentication had completed.
+  async function prepareLoginAfterRefresh(){
     const rememberedMember = baseId(
       sessionStorage.getItem("currentMemberId") ||
       sessionStorage.getItem("currentHostMemberId") ||
       localStorage.getItem("currentMemberId")
     );
+
+    const rememberedToken =
+      sessionStorage.getItem("authToken") ||
+      localStorage.getItem("authToken") ||
+      "";
+
+    if (hasActiveClubSession() && rememberedMember && rememberedToken){
+      authToken = rememberedToken;
+      activeMember = rememberedMember;
+      memberIdEl.value = rememberedMember;
+
+      loginPanel.classList.add("hidden");
+      memberPanel.classList.remove("hidden");
+      memberPanel.classList.remove("locked");
+      activeMemberId.textContent = rememberedMember;
+      setInformationIntro();
+
+      mergeActiveRoles(rolesFromHostSession(rememberedMember));
+      setStatus(pageStatus, "info", "Loading your information...");
+      await loadExistingFor(rememberedMember);
+      return;
+    }
 
     if (rememberedMember){
       memberIdEl.value = rememberedMember;
@@ -1637,6 +1678,7 @@
     loginPanel.classList.remove("hidden");
     roleBadges.innerHTML = "";
     roleStrip.classList.remove("show");
+    setLoginIntro();
 
     updateButtonsEnabled();
   }
@@ -1687,8 +1729,13 @@
   });
 
   updateButtonsEnabled();
-  restoreYiAfterPersonalService();
+  if (RETURNING_FROM_PERSONAL_SERVICE){
+    restoreYiAfterPersonalService();
+  } else {
+    prepareLoginAfterRefresh();
+  }
 </script>
 
 </body>
 </html>
+

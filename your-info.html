@@ -646,6 +646,10 @@
     PAGE_PARAMS.get("manage") === "1" ||
     /\/members-info\.html(?:$|[?#])/i.test(document.referrer || "");
 
+  const RETURNING_FROM_PERSONAL_SERVICE =
+    PAGE_PARAMS.get("return") === "personal" ||
+    /\/(?:my-bookings|my-events)\.html(?:$|[?#])/i.test(document.referrer || "");
+
   const memberIdEl = document.getElementById("memberId");
   const pinInput = document.getElementById("pinInput");
   const pinEyeBtn = document.getElementById("pinEyeBtn");
@@ -1570,6 +1574,47 @@
     return granted && accessTime > 0 && (now - accessTime) < ACCESS_TTL_MS;
   }
 
+  async function restoreYiAfterPersonalService(){
+    if (!RETURNING_FROM_PERSONAL_SERVICE || !hasActiveClubSession()){
+      prepareLoginAfterRefresh();
+      return;
+    }
+
+    const rememberedMember = baseId(
+      sessionStorage.getItem("currentMemberId") ||
+      sessionStorage.getItem("currentHostMemberId") ||
+      localStorage.getItem("currentMemberId")
+    );
+
+    const rememberedToken =
+      sessionStorage.getItem("authToken") ||
+      localStorage.getItem("authToken") ||
+      "";
+
+    if (!rememberedMember || !rememberedToken){
+      prepareLoginAfterRefresh();
+      return;
+    }
+
+    authToken = rememberedToken;
+    activeMember = rememberedMember;
+    memberIdEl.value = rememberedMember;
+
+    loginPanel.classList.add("hidden");
+    memberPanel.classList.remove("hidden");
+    memberPanel.classList.remove("locked");
+    activeMemberId.textContent = rememberedMember;
+
+    // A member can only reach these personal-service return routes after
+    // completing the personal-PIN gate, so do not ask for that PIN again.
+    setStarterMode(false);
+
+    mergeActiveRoles(rolesFromHostSession(rememberedMember));
+
+    setStatus(pageStatus, "info", "Loading your information...");
+    await loadExistingFor(rememberedMember);
+  }
+
   function prepareLoginAfterRefresh(){
     // A refresh must always return to the gate. Automatically reopening the
     // editable household form allowed stale browser data and partial role data
@@ -1645,7 +1690,7 @@
   });
 
   updateButtonsEnabled();
-  prepareLoginAfterRefresh();
+  restoreYiAfterPersonalService();
 </script>
 
 </body>

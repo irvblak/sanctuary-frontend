@@ -1,1 +1,741 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Library | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <script src="access.js?v=LIB_1"></script>
+
+  <style>
+    :root{
+      --bg1:#d9ecff;
+      --bg2:#f4f8fc;
+      --bg3:#ffffff;
+      --ink:#1f2a37;
+      --muted:#52606f;
+      --blue:#123a78;
+      --blue-hover:#0f3166;
+      --soft-blue:#f7fbff;
+      --panel:#ffffff;
+      --line:#d8e1ec;
+      --green:#eef9f1;
+      --green-ink:#245b33;
+      --shadow:0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:18px;
+      font-weight:500;
+      line-height:1.55;
+      color:var(--ink);
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg1) 0%,
+          var(--bg2) 44%,
+          var(--bg3) 100%
+        );
+    }
+
+    button,
+    a{
+      font:inherit;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      max-width:1180px;
+      margin:0 auto;
+      padding:1.2rem 1.2rem .45rem;
+    }
+
+    .brand{
+      color:var(--blue);
+      font-size:2rem;
+      font-weight:850;
+      letter-spacing:.01em;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:46px;
+      padding:.65rem 1rem;
+      border-radius:14px 14px 0 0;
+      color:#fff;
+      background:var(--blue);
+      box-shadow:0 4px 10px rgba(0,0,0,.13);
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible{
+      background:var(--blue-hover);
+    }
+
+    .shell{
+      max-width:1180px;
+      margin:0 auto;
+      padding:0 1rem 2.5rem;
+    }
+
+    .main-panel{
+      padding:1.5rem;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .intro{
+      max-width:900px;
+      margin:0 0 1.35rem;
+      color:var(--muted);
+      font-size:1.08rem;
+      line-height:1.6;
+    }
+
+    .intro strong{
+      color:var(--blue);
+    }
+
+    .library-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1rem;
+      align-items:start;
+    }
+
+    details.library-branch{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 5px 16px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+
+    details.library-branch[open]{
+      box-shadow:0 8px 22px rgba(18,58,120,.11);
+    }
+
+    summary.branch-heading{
+      display:flex;
+      align-items:center;
+      gap:.85rem;
+      min-height:78px;
+      padding:1rem 1.1rem;
+      color:#fff;
+      background:var(--blue);
+      cursor:pointer;
+      list-style:none;
+      user-select:none;
+    }
+
+    summary.branch-heading::-webkit-details-marker{
+      display:none;
+    }
+
+    summary.branch-heading:hover,
+    summary.branch-heading:focus-visible{
+      background:var(--blue-hover);
+    }
+
+    .branch-icon{
+      flex:0 0 auto;
+      font-size:1.7rem;
+      line-height:1;
+    }
+
+    .branch-title-wrap{
+      flex:1;
+      min-width:0;
+    }
+
+    .branch-title{
+      display:block;
+      font-size:1.16rem;
+      font-weight:850;
+      line-height:1.2;
+    }
+
+    .branch-subtitle{
+      display:block;
+      margin-top:.18rem;
+      color:#e9f2ff;
+      font-size:.88rem;
+      font-weight:650;
+      line-height:1.3;
+    }
+
+    .arrow{
+      flex:0 0 auto;
+      font-size:1.25rem;
+      font-weight:900;
+      transition:transform .18s ease;
+    }
+
+    details[open] .arrow{
+      transform:rotate(90deg);
+    }
+
+    .branch-body{
+      padding:1rem;
+      background:var(--soft-blue);
+    }
+
+    .branch-note{
+      margin:0 0 .8rem;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.5;
+    }
+
+    .sub-list{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.65rem;
+    }
+
+    .sub-item{
+      display:block;
+      min-height:54px;
+      padding:.72rem .8rem;
+      border:1px solid #d5e2ef;
+      border-radius:13px;
+      color:var(--blue);
+      background:#fff;
+      text-decoration:none;
+      font-weight:800;
+      line-height:1.3;
+    }
+
+    a.sub-item:hover,
+    a.sub-item:focus-visible{
+      border-color:#9ebadb;
+      background:#f1f7ff;
+    }
+
+    .sub-item small{
+      display:block;
+      margin-top:.2rem;
+      color:var(--muted);
+      font-size:.78rem;
+      font-weight:600;
+      line-height:1.3;
+    }
+
+    .future{
+      color:#687786;
+      background:#f7f9fb;
+    }
+
+    .available{
+      display:inline-flex;
+      align-items:center;
+      margin-top:.35rem;
+      padding:.22rem .55rem;
+      border:1px solid #cbe8d2;
+      border-radius:999px;
+      color:var(--green-ink);
+      background:var(--green);
+      font-size:.76rem;
+      font-weight:850;
+    }
+
+    .personal-note{
+      margin-top:1.25rem;
+      padding:1rem 1.1rem;
+      border:1px solid #d7e4f3;
+      border-radius:16px;
+      color:#344054;
+      background:var(--soft-blue);
+      font-size:.98rem;
+    }
+
+    .personal-note strong{
+      color:var(--blue);
+    }
+
+    @media(max-width:850px){
+      .library-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:620px){
+      body{
+        font-size:17px;
+      }
+
+      .topbar{
+        padding:.9rem .8rem .25rem;
+      }
+
+      .brand{
+        font-size:1.65rem;
+      }
+
+      .shell{
+        padding:0 .8rem 1.5rem;
+      }
+
+      .main-panel{
+        padding:1rem .85rem;
+      }
+
+      .sub-list{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="brand">The Library</div>
+    <a class="back-link" href="members-info.html">Members Hub</a>
+  </div>
+
+  <div class="shell">
+
+    <main class="main-panel">
+
+      <p class="intro">
+        <strong>Welcome to the Sanctuary Club Library.</strong>
+        Choose a section below. Each section can grow naturally as members
+        add news, information, articles, artwork and other material.
+      </p>
+
+      <div class="library-grid">
+
+        <!-- NEWS & NOTICES -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">📰</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">News &amp; Notices</span>
+              <span class="branch-subtitle">
+                News, Club notices and information for everyone
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Current and standing news, notices and Club information.
+            </p>
+
+            <div class="sub-list">
+
+              <a class="sub-item" href="notices-preview.html">
+                Daily News Letter
+                <small>Current Club and community news.</small>
+                <span class="available">Available now</span>
+              </a>
+
+              <a class="sub-item" href="notices-preview.html">
+                Club Notices
+                <small>General Club notices and announcements.</small>
+              </a>
+
+              <div class="sub-item future">
+                Privacy &amp; Security
+                <small>
+                  Privacy, security and data protection information.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                General Meetings
+                <small>
+                  Notices and information for meetings open to members.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                How-to Manuals
+                <small>
+                  Simple guides explaining how to use Club facilities.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Community News
+                <small>
+                  News contributed for the Sanctuary community.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+
+        <!-- THE GALLERY -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">🎨</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">The Gallery</span>
+              <span class="branch-subtitle">
+                Art, illustrations and creative work
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Creative work made or shared by Sanctuary members.
+            </p>
+
+            <div class="sub-list">
+
+              <div class="sub-item future">
+                Members' Art
+                <small>
+                  Paintings, drawings and other artwork.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Poster &amp; Notice Illustrations
+                <small>
+                  Illustrations available for future Club creations.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Members' Photography
+                <small>
+                  Photographs contributed by members.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Creative Projects
+                <small>
+                  Other creative work and exhibitions.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+
+        <!-- MEMBERS ARTICLES & STORIES -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">✍️</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">Members' Articles &amp; Stories</span>
+              <span class="branch-subtitle">
+                Writing, memories and contributions from members
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Articles, stories and recollections written by members.
+            </p>
+
+            <div class="sub-list">
+
+              <div class="sub-item future">
+                Members' Articles
+                <small>
+                  Articles on subjects members would like to share.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Stories &amp; Recollections
+                <small>
+                  Personal stories and experiences.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                History &amp; Memories
+                <small>
+                  Sanctuary, local and personal history.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Reviews &amp; Recommendations
+                <small>
+                  Books, films, places and other recommendations.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+
+        <!-- USEFUL INFORMATION -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">💡</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">Useful Information</span>
+              <span class="branch-subtitle">
+                Practical information worth keeping
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Useful information collected for easy reference.
+            </p>
+
+            <div class="sub-list">
+
+              <div class="sub-item future">
+                Useful Numbers
+                <small>
+                  Contact numbers members may find useful.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Workmen &amp; Trades
+                <small>
+                  Local trades and services recommended or used by residents.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                External Services
+                <small>
+                  Services and activities available to residents.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Places to Eat
+                <small>
+                  Restaurants, cafés and other recommendations.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Places to Visit
+                <small>
+                  Days out, attractions and interesting places.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Gardening
+                <small>
+                  Gardening information, ideas and useful contacts.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+
+        <!-- COMMITTEE & PANEL -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">👥</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">Committee &amp; Panel</span>
+              <span class="branch-subtitle">
+                Association and Panel information
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Committee and Residents Association Panel material remains
+              within its own controlled area. Access to protected material
+              will depend upon the member's authorised role.
+            </p>
+
+            <div class="sub-list">
+
+              <div class="sub-item future">
+                Panel News &amp; Notices
+                <small>
+                  Published information for members.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Meetings
+                <small>
+                  Meeting information and papers.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Minutes &amp; Decisions
+                <small>
+                  Records made available for members.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                Protected Panel Material
+                <small>
+                  Available only to appropriately authorised roles.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+
+        <!-- ALL YOUR STUFF -->
+        <details class="library-branch">
+          <summary class="branch-heading">
+            <span class="branch-icon">📂</span>
+
+            <span class="branch-title-wrap">
+              <span class="branch-title">All Your Stuff</span>
+              <span class="branch-subtitle">
+                Continue working or find your own creations
+              </span>
+            </span>
+
+            <span class="arrow">›</span>
+          </summary>
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              Your own working and published material will appear here
+              automatically according to your signed-in membership.
+            </p>
+
+            <div class="sub-list">
+
+              <div class="sub-item future">
+                Continue Working
+                <small>
+                  Reopen work you have saved but not yet finished.
+                </small>
+              </div>
+
+              <a class="sub-item" href="my-events.html">
+                My Event Notices
+                <small>
+                  Events associated with your household.
+                </small>
+                <span class="available">Available now</span>
+              </a>
+
+              <div class="sub-item future">
+                My Posters &amp; Illustrations
+                <small>
+                  Posters and artwork you have created.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                My Articles &amp; Stories
+                <small>
+                  Your own written contributions.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                My Gallery Items
+                <small>
+                  Your artwork and other creative contributions.
+                </small>
+              </div>
+
+              <div class="sub-item future">
+                My Published Work
+                <small>
+                  Everything you have published through the Studio.
+                </small>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <div class="personal-note">
+        <strong>The Library grows with the Club.</strong>
+        New sections and sub-sections can be added beneath these main
+        headings without making the Library front page more complicated.
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    (function protectLibrary(){
+      const ttl = 8 * 60 * 60 * 1000;
+
+      const granted =
+        sessionStorage.getItem("sanctuaryAccess");
+
+      const accessTime =
+        Number(
+          sessionStorage.getItem("sanctuaryAccessTime") || 0
+        );
+
+      const active =
+        Boolean(granted) &&
+        accessTime > 0 &&
+        (Date.now() - accessTime) < ttl;
+
+      if(!active){
+        window.location.replace("members-info.html");
+      }
+    })();
+  </script>
+
+</body>
+</html>

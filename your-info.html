@@ -1023,16 +1023,17 @@
   }
 
   function setLoginIntro(){
-    const heading = document.getElementById("yiPageHeading");
-    if (heading) heading.textContent = "Login Below";
+  const heading = document.getElementById("yiPageHeading");
+  if (heading) heading.textContent = "Member Login";
 
-    if (pageIntro){
-      pageIntro.innerHTML = "<strong>Welcome to Your Information.</strong>";
-    }
-    if (signInCopy){
-      signInCopy.innerHTML = 'Please enter your Membership Number and Personal PIN to access your household information. If you are still using the temporary <strong>2468</strong> PIN, you can change it after signing in.';
-    }
+  if (pageIntro){
+    pageIntro.innerHTML = "<strong>Welcome to the private members' area of Sanctuary Club.</strong>";
   }
+
+  if (signInCopy){
+    signInCopy.innerHTML = "After signing in, the Members Hub gives you access to Your Information, the Members Directory, My Studio and the Library.";
+  }
+}
 
   function setInformationIntro(){
     const heading = document.getElementById("yiPageHeading");

@@ -124,7 +124,60 @@
       .canvas-toolbar button,.canvas-toolbar select,.canvas-toolbar .toolbar-check{width:auto;}
     }
 
-  </style>
+  
+
+    /* Creative Canvas: compact three-column working layout */
+    #creativeWorkspace{width:min(1560px,calc(100vw - 1.2rem));margin-left:50%;transform:translateX(-50%);padding:1rem;}
+    .canvas-compact-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .55rem;}
+    .canvas-compact-head h2{margin:0;font-size:1.18rem;white-space:nowrap;}
+    .canvas-head-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.38rem;}
+    .canvas-head-actions .btn{padding:.46rem .72rem;font-size:.84rem;}
+    .canvas-three-column{display:grid;grid-template-columns:225px minmax(520px,1fr) 255px;gap:.65rem;align-items:start;}
+    .canvas-side{position:sticky;top:.4rem;max-height:calc(100vh - .8rem);overflow:auto;display:flex;flex-direction:column;gap:.55rem;padding:.45rem;border:1px solid var(--line);border-radius:15px;background:rgba(247,251,253,.98);box-shadow:0 7px 18px rgba(20,60,80,.08);}
+    .canvas-side .toolbar-row{display:flex;flex-direction:column;align-items:stretch;gap:.34rem;padding:.5rem;margin:0;border-radius:11px;}
+    .canvas-side .toolbar-label{margin:0 0 .05rem;padding-bottom:.22rem;border-bottom:1px solid var(--line);}
+    .canvas-side button,.canvas-side select,.canvas-side .toolbar-check{width:100%;}
+    .canvas-side .toolbar-check{justify-content:space-between;gap:.35rem;}
+    .canvas-side input[type="number"]{width:68px;}
+    .canvas-side input[type="color"]{width:40px;flex:0 0 40px;}
+    .compact-button-row{display:flex;gap:.3rem;}
+    .compact-button-row button{flex:1 1 0;width:auto;min-width:0;}
+    .compact-button-row.wrap-buttons{flex-wrap:wrap;}
+    .compact-button-row.wrap-buttons button{flex:1 1 46%;}
+    .canvas-main-panel{min-width:0;}
+    .compact-page-tabs{min-height:34px;margin:0 0 .35rem;justify-content:center;}
+    .compact-page-tabs .page-tab{padding:.3rem .62rem;font-size:.82rem;}
+    .canvas-shell{margin-top:0;}
+    .canvas-stage{min-height:0;padding:.55rem;border-radius:14px;}
+    .canvas-help{margin:.25rem 0 .55rem;max-height:38vh;overflow:auto;}
+    .canvas-note{display:none;}
+    .object-move-grid{grid-template-columns:repeat(3,1fr);gap:.28rem;}
+    .object-move-grid button{min-height:34px;padding:.32rem .38rem;}
+    .object-size-actions{display:flex;gap:.3rem;}
+    .object-size-actions button{flex:1;}
+    @media(max-width:1100px){
+      .canvas-three-column{grid-template-columns:190px minmax(430px,1fr) 220px;gap:.45rem;}
+      .canvas-side{padding:.3rem;}
+    }
+    @media print{
+      body.print-canvas .canvas-compact-head,
+      body.print-canvas .canvas-side,
+      body.print-canvas .canvas-help,
+      body.print-canvas .compact-page-tabs{display:none!important;}
+      body.print-canvas .canvas-three-column{display:block!important;}
+      body.print-canvas .canvas-main-panel{display:block!important;width:auto!important;}
+    }
+    @media(max-width:850px){
+      #creativeWorkspace{width:100%;margin-left:0;transform:none;}
+      .canvas-compact-head{align-items:flex-start;flex-direction:column;}
+      .canvas-head-actions{justify-content:flex-start;}
+      .canvas-three-column{grid-template-columns:1fr;}
+      .canvas-side{position:static;max-height:none;overflow:visible;}
+      .canvas-side-left{order:1}.canvas-main-panel{order:2}.canvas-side-right{order:3}
+      .canvas-side .toolbar-row{flex-direction:row;flex-wrap:wrap;align-items:center;}
+      .canvas-side button,.canvas-side select,.canvas-side .toolbar-check{width:auto;}
+    }
+</style>
 </head>
 <body>
   <main class="page">
@@ -192,166 +245,167 @@
     </section>
 
     <section class="card" id="creativeWorkspace" hidden>
-      <div class="workspace-head">
-        <div>
-          <p class="eyebrow">Creative Canvas</p>
-          <h2 id="creativeHeading">My Own Design</h2>
-          <p class="sub">Every page is A4. Add only what you need, then move, resize and style it freely.</p>
-        </div>
-        <div class="actions" style="margin-top:0">
+      <div class="canvas-compact-head">
+        <h2 id="creativeHeading">My Own Design</h2>
+        <div class="canvas-head-actions">
           <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio choices</button>
           <button class="btn secondary" id="quickGuideBtn" type="button">Quick Guide</button>
-          <button class="btn secondary" id="loadCanvasBtn" type="button">Load Test Draft</button>
-          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Test Draft</button>
+          <button class="btn secondary" id="loadCanvasBtn" type="button">Load Draft</button>
+          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
           <button class="btn" id="printCanvasBtn" type="button">Print</button>
         </div>
       </div>
 
-      <div class="canvas-work-area">
-        <div class="canvas-main-panel">
-          <div class="canvas-help" id="canvasHelp" hidden>
-            <h3>Creative Canvas — quick guide</h3>
-            <p>There is no wrong order. Add something, click it, then change or move it.</p>
-            <div class="canvas-help-grid">
-              <div class="canvas-help-item"><strong>Title or Text</strong>Click inside the words to type or edit. The Text tools appear automatically.</div>
-              <div class="canvas-help-item"><strong>Move</strong>Select a box, then use the arrow buttons for small, controlled movements. You can still drag its <em>Move</em> tab for larger moves.</div>
-              <div class="canvas-help-item"><strong>Resize</strong>Text boxes can be resized with their dots. Illustrations keep their shape: use a corner dot or the Smaller / Larger buttons.</div>
-              <div class="canvas-help-item"><strong>Illustrations</strong>Add up to two per A4 page from your computer. They stay within the A4 page and keep their proportions when resized.</div>
-              <div class="canvas-help-item"><strong>Draw / Paint</strong>Add a drawing, choose Pencil, Line, Rectangle, Oval, Fill or Eraser, then choose line colour and thickness.</div>
-              <div class="canvas-help-item"><strong>Pages</strong>Every page stays A4. Add, duplicate, reorder and optionally number pages automatically.</div>
-            </div>
-            <p class="canvas-tip"><strong>Tip:</strong> click a blank part of the page when you have finished with a box. The selection handles disappear, but your work stays exactly where you put it.</p>
+      <div class="canvas-help" id="canvasHelp" hidden>
+        <h3>Creative Canvas — quick guide</h3>
+        <p>There is no wrong order. Add something, click it, then change or move it.</p>
+        <div class="canvas-help-grid">
+          <div class="canvas-help-item"><strong>Title or Text</strong>Click inside the words to type or edit. The Text tools appear automatically.</div>
+          <div class="canvas-help-item"><strong>Move</strong>Select a box, then use the arrow buttons for small, controlled movements. You can still drag its <em>Move</em> tab for larger moves.</div>
+          <div class="canvas-help-item"><strong>Resize</strong>Text boxes can be resized with their dots. Illustrations keep their shape: use a corner dot or the Smaller / Larger buttons.</div>
+          <div class="canvas-help-item"><strong>Illustrations</strong>Add up to two per A4 page from your computer. They stay within the A4 page and keep their proportions when resized.</div>
+          <div class="canvas-help-item"><strong>Draw / Paint</strong>Add a drawing, choose Pencil, Line, Rectangle, Oval, Fill or Eraser, then choose line colour and thickness.</div>
+          <div class="canvas-help-item"><strong>Pages</strong>Every page stays A4. Add, duplicate, reorder and optionally number pages automatically.</div>
+        </div>
+        <p class="canvas-tip"><strong>Tip:</strong> click a blank part of the page when you have finished with a box. The selection handles disappear, but your work stays exactly where you put it.</p>
+      </div>
+
+      <div class="canvas-three-column">
+        <aside class="canvas-side canvas-side-left" aria-label="Page and add tools">
+          <div class="toolbar-row">
+            <span class="toolbar-label">Pages</span>
+            <button id="addPageBtn" type="button">+ Add Page</button>
+            <button id="duplicatePageBtn" type="button">Duplicate Page</button>
+            <button id="movePageLeftBtn" type="button">← Move Page</button>
+            <button id="movePageRightBtn" type="button">Move Page →</button>
+            <button id="deletePageBtn" type="button">Delete Page</button>
+            <label class="toolbar-check">A4 orientation
+              <select id="orientationSelect"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
+            </label>
           </div>
-          <div class="page-tabs" id="pageTabs"></div>
+
+          <div class="toolbar-row">
+            <span class="toolbar-label">Page numbers</span>
+            <label class="toolbar-check"><input id="pageNumbersCheck" type="checkbox"> Automatic</label>
+            <label class="toolbar-check"><input id="numberFirstPageCheck" type="checkbox" checked> Number first page</label>
+            <label class="toolbar-check">Position
+              <select id="pageNumberPosition"><option value="center">Bottom centre</option><option value="right">Bottom right</option></select>
+            </label>
+          </div>
+
+          <div class="toolbar-row">
+            <span class="toolbar-label">Add</span>
+            <button id="addCanvasTitleBtn" type="button">Add Title</button>
+            <button id="addCanvasTextBtn" type="button">Add Text</button>
+            <button id="addCanvasImageBtn" type="button">Add Illustration</button>
+            <button id="addCanvasDrawingBtn" type="button">✏️ Draw / Paint</button>
+            <input id="canvasImageFileInput" type="file" accept="image/*" hidden>
+          </div>
+        </aside>
+
+        <div class="canvas-main-panel">
+          <div class="page-tabs compact-page-tabs" id="pageTabs"></div>
           <div class="canvas-shell">
             <div class="canvas-stage">
               <div class="canvas-pages" id="creativePages"></div>
             </div>
           </div>
-          <div class="canvas-note"><strong>Hands-on is the quickest way to learn:</strong> click a box to select it; click inside Title/Text to type; use the arrow buttons for precise movement or <em>Move</em> for larger moves. Illustrations keep their shape when resized. Drawings have their own Pencil/Paint tools. Page size always remains A4.</div>
         </div>
 
-          <div class="canvas-toolbar">
-            <div class="toolbar-row">
-              <span class="toolbar-label">Pages</span>
-              <button id="addPageBtn" type="button">+ Add Page</button>
-              <button id="duplicatePageBtn" type="button">Duplicate Page</button>
-              <button id="movePageLeftBtn" type="button">← Move Page</button>
-              <button id="movePageRightBtn" type="button">Move Page →</button>
-              <button id="deletePageBtn" type="button">Delete Page</button>
-              <label class="toolbar-check">A4 orientation
-                <select id="orientationSelect"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
-              </label>
-            </div>
-    
-            <div class="toolbar-row">
-              <span class="toolbar-label">Page numbers</span>
-              <label class="toolbar-check"><input id="pageNumbersCheck" type="checkbox"> Automatic</label>
-              <label class="toolbar-check"><input id="numberFirstPageCheck" type="checkbox" checked> Number first page</label>
-              <label class="toolbar-check">Position
-                <select id="pageNumberPosition"><option value="center">Bottom centre</option><option value="right">Bottom right</option></select>
-              </label>
-            </div>
-    
-            <div class="toolbar-row">
-              <span class="toolbar-label">Add</span>
-              <button id="addCanvasTitleBtn" type="button">Add Title</button>
-              <button id="addCanvasTextBtn" type="button">Add Text</button>
-              <button id="addCanvasImageBtn" type="button">Add Illustration</button>
-              <button id="addCanvasDrawingBtn" type="button">✏️ Draw / Paint</button>
-              <span class="canvas-tip">Click inside Title/Text to edit. Up to two illustrations per page.</span>
-              <input id="canvasImageFileInput" type="file" accept="image/*" hidden>
-            </div>
-    
-            <div class="toolbar-row format-toolbar" id="formatToolbar" hidden>
-              <span class="toolbar-label">Text</span>
-              <select id="fontFamilySelect" aria-label="Font">
-                <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
-                <option value="Georgia,serif">Georgia</option>
-                <option value="'Times New Roman',serif">Times New Roman</option>
-                <option value="Arial,sans-serif">Arial</option>
-                <option value="Verdana,sans-serif">Verdana</option>
-                <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
-              </select>
-              <label class="toolbar-check">Size <input id="fontSizeInput" type="number" min="8" max="96" step="1" value="18"></label>
+        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
+          <div class="toolbar-row format-toolbar" id="formatToolbar" hidden>
+            <span class="toolbar-label">Text</span>
+            <select id="fontFamilySelect" aria-label="Font">
+              <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="'Times New Roman',serif">Times New Roman</option>
+              <option value="Arial,sans-serif">Arial</option>
+              <option value="Verdana,sans-serif">Verdana</option>
+              <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
+            </select>
+            <label class="toolbar-check">Size <input id="fontSizeInput" type="number" min="8" max="96" step="1" value="18"></label>
+            <div class="compact-button-row">
               <button id="formatBoldBtn" type="button"><strong>B</strong></button>
               <button id="formatItalicBtn" type="button"><em>I</em></button>
               <button id="formatUnderlineBtn" type="button"><u>U</u></button>
+            </div>
+            <div class="compact-button-row">
               <button id="alignLeftBtn" type="button">Left</button>
               <button id="alignCentreBtn" type="button">Centre</button>
               <button id="alignRightBtn" type="button">Right</button>
-              <label class="toolbar-check">Text <input id="textColourInput" type="color" value="#173042"></label>
-              <label class="toolbar-check">Panel <input id="backgroundColourInput" type="color" value="#ffffff"></label>
-              <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
             </div>
-    
-            <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
-              <span class="toolbar-label">Illustration</span>
-              <button id="imageFitBtn" type="button">Fit whole image</button>
-              <button id="imageFillBtn" type="button">Fill box</button>
-              <button id="replaceCanvasImageBtn" type="button">Replace</button>
-            </div>
-    
-            <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
-              <span class="toolbar-label">Draw / Paint</span>
+            <label class="toolbar-check">Text colour <input id="textColourInput" type="color" value="#173042"></label>
+            <label class="toolbar-check">Panel colour <input id="backgroundColourInput" type="color" value="#ffffff"></label>
+            <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
+          </div>
+
+          <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
+            <span class="toolbar-label">Illustration</span>
+            <button id="imageFitBtn" type="button">Fit whole image</button>
+            <button id="imageFillBtn" type="button">Fill box</button>
+            <button id="replaceCanvasImageBtn" type="button">Replace</button>
+          </div>
+
+          <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
+            <span class="toolbar-label">Draw / Paint</span>
+            <div class="compact-button-row wrap-buttons">
               <button id="drawPencilBtn" type="button">✏️ Pencil</button>
               <button id="drawLineBtn" type="button">Line</button>
               <button id="drawRectBtn" type="button">Rectangle</button>
               <button id="drawOvalBtn" type="button">Oval</button>
               <button id="drawFillBtn" type="button">🪣 Fill</button>
               <button id="drawEraserBtn" type="button">Eraser</button>
-              <label class="toolbar-check">Line
-                <input id="drawLineColour" type="color" value="#173042" aria-label="Line colour">
-              </label>
-              <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
-                <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
-                <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
-                <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
-                <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
-                <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
-                <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
-              </span>
-              <label class="toolbar-check">Thickness
-                <select id="drawThickness">
-                  <option value="2">Fine</option>
-                  <option value="5" selected>Medium</option>
-                  <option value="9">Thick</option>
-                  <option value="15">Very thick</option>
-                </select>
-              </label>
-              <label class="toolbar-check">Shape fill
-                <input id="drawFillColour" type="color" value="#d9ecff" aria-label="Shape fill colour">
-              </label>
-              <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
-              <button id="finishDrawingBtn" type="button">Finish Drawing</button>
-              <span class="draw-mode-note" id="drawModeNote">Choose a tool, then draw inside the selected drawing box.</span>
             </div>
-    
-            <div class="toolbar-row" id="objectToolbar" hidden>
-              <span class="toolbar-label">Selected box</span>
-              <div class="object-move-grid" aria-label="Move selected box">
-                <button class="move-up" id="nudgeUpBtn" type="button" title="Move up">↑</button>
-                <button class="move-left" id="nudgeLeftBtn" type="button" title="Move left">←</button>
-                <button class="move-centre" id="centreObjectBtn" type="button" title="Centre horizontally">Centre</button>
-                <button class="move-right" id="nudgeRightBtn" type="button" title="Move right">→</button>
-                <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
+            <label class="toolbar-check">Line <input id="drawLineColour" type="color" value="#173042" aria-label="Line colour"></label>
+            <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
+              <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
+              <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
+              <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
+              <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
+              <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
+              <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
+            </span>
+            <label class="toolbar-check">Thickness
+              <select id="drawThickness">
+                <option value="2">Fine</option>
+                <option value="5" selected>Medium</option>
+                <option value="9">Thick</option>
+                <option value="15">Very thick</option>
+              </select>
+            </label>
+            <label class="toolbar-check">Shape fill <input id="drawFillColour" type="color" value="#d9ecff" aria-label="Shape fill colour"></label>
+            <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
+            <button id="finishDrawingBtn" type="button">Finish Drawing</button>
+            <span class="draw-mode-note" id="drawModeNote">Choose a tool, then draw inside the selected drawing box.</span>
+          </div>
+
+          <div class="toolbar-row" id="objectToolbar" hidden>
+            <span class="toolbar-label">Selected box</span>
+            <div class="object-move-grid" aria-label="Move selected box">
+              <button class="move-up" id="nudgeUpBtn" type="button" title="Move up">↑</button>
+              <button class="move-left" id="nudgeLeftBtn" type="button" title="Move left">←</button>
+              <button class="move-centre" id="centreObjectBtn" type="button" title="Centre horizontally">Centre</button>
+              <button class="move-right" id="nudgeRightBtn" type="button" title="Move right">→</button>
+              <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
+            </div>
+            <div class="image-size-controls" id="imageSizeControls" hidden>
+              <span class="canvas-tip">Illustration size</span>
+              <div class="object-size-actions">
+                <button id="imageSmallerBtn" type="button">Smaller</button>
+                <button id="imageLargerBtn" type="button">Larger</button>
               </div>
-              <div class="image-size-controls" id="imageSizeControls" hidden>
-                <span class="canvas-tip">Illustration size</span>
-                <div class="object-size-actions">
-                  <button id="imageSmallerBtn" type="button">Smaller</button>
-                  <button id="imageLargerBtn" type="button">Larger</button>
-                </div>
-              </div>
+            </div>
+            <div class="compact-button-row wrap-buttons">
               <button id="bringForwardBtn" type="button">Bring Forward</button>
               <button id="sendBackwardBtn" type="button">Send Backward</button>
               <button id="duplicateObjectBtn" type="button">Duplicate</button>
               <button id="deleteObjectBtn" type="button">Delete</button>
               <button id="undoCanvasBtn" type="button">Undo</button>
               <button id="redoCanvasBtn" type="button">Redo</button>
-              <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
             </div>
+            <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
           </div>
+        </aside>
       </div>
     </section>
   </main>

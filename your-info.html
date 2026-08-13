@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
+  <script src="access.js?v=PRIVATE_GATE_1"></script>
+
 
   <style>
     :root{
@@ -716,6 +718,39 @@
   let activeRoles = [];
   let householdRoleResidents = [];
   let loginHouseholdRoleResidents = [];
+
+  function grantPrivateAccess(){
+    window.SanctuaryAccess?.grantPrivateSession?.();
+  }
+
+  function hasPrivateAccess(){
+    return Boolean(window.SanctuaryAccess?.verifiedPrivateAccess?.());
+  }
+
+  function clearPrivateAccess(){
+    window.SanctuaryAccess?.clearPrivateSession?.();
+  }
+
+  function pendingPrivateDestination(){
+    const destination = sessionStorage.getItem("hubGateDestination") || "";
+    if (!destination) return "";
+
+    try{
+      const url = new URL(destination, location.href);
+      const page = (url.pathname.split("/").pop() || "").toLowerCase();
+
+      // Never redirect YI back to itself.
+      if (!page || page === "your-info.html") return "";
+      return url.pathname + url.search + url.hash;
+    }catch{
+      return "";
+    }
+  }
+
+  function clearPendingPrivateDestination(){
+    sessionStorage.removeItem("hubGateReason");
+    sessionStorage.removeItem("hubGateDestination");
+  }
 
   const ROLE_DETAILS = {
     host:{
@@ -1443,6 +1478,15 @@
       setStatus(pageStatus, "warn", "Please replace the temporary 2468 PIN with your own Personal Private PIN.");
     return;
   }
+    grantPrivateAccess();
+
+    const destination = pendingPrivateDestination();
+    if (destination){
+      clearPendingPrivateDestination();
+      location.href = destination;
+      return;
+    }
+
     if (!OPEN_YI_AFTER_LOGIN){
       location.href = "members-info.html";
       return;
@@ -1571,6 +1615,7 @@
 
       setStarterMode(false);
       memberPanel.classList.remove("locked");
+      grantPrivateAccess();
 
       setStatus(pageStatus, "ok", "PIN changed successfully. Opening the Members Hub...");
       window.setTimeout(() => {
@@ -1583,6 +1628,9 @@
   }
 
   function logout(){
+    clearPrivateAccess();
+    clearPendingPrivateDestination();
+
     localStorage.removeItem(ACCESS_UNTIL_KEY);
     localStorage.removeItem(MD_UNTIL_KEY);
     localStorage.removeItem("token");
@@ -1619,7 +1667,11 @@
   }
 
   async function restoreYiAfterPersonalService(){
-    if (!RETURNING_FROM_PERSONAL_SERVICE || !hasActiveClubSession()){
+    if (
+      !RETURNING_FROM_PERSONAL_SERVICE ||
+      !hasActiveClubSession() ||
+      !hasPrivateAccess()
+    ){
       await prepareLoginAfterRefresh();
       return;
     }
@@ -1669,7 +1721,12 @@
       localStorage.getItem("authToken") ||
       "";
 
-    if (hasActiveClubSession() && rememberedMember && rememberedToken){
+    if (
+      hasActiveClubSession() &&
+      hasPrivateAccess() &&
+      rememberedMember &&
+      rememberedToken
+    ){
       authToken = rememberedToken;
       activeMember = rememberedMember;
       memberIdEl.value = rememberedMember;
@@ -1752,6 +1809,16 @@
   });
 
   updateButtonsEnabled();
+
+  if (PAGE_PARAMS.get("needPin") === "1"){
+    setLoginIntro();
+    setStatus(
+      loginStatus,
+      "info",
+      "Please enter your Membership Number and Personal PIN to open this private Club facility."
+    );
+  }
+
   if (RETURNING_FROM_PERSONAL_SERVICE){
     restoreYiAfterPersonalService();
   } else {
@@ -1761,4 +1828,3 @@
 
 </body>
 </html>
-

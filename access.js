@@ -5,25 +5,19 @@
 (function () {
   "use strict";
 
-  /*
-    EXISTING EIGHT-HOUR FRONT-PAGE SESSION
-  */
   const KEY = "sanctuaryAccess";
   const TIME_KEY = "sanctuaryAccessTime";
-  const TTL = 8 * 60 * 60 * 1000; // 8 hours
+  const TTL = 8 * 60 * 60 * 1000;
 
   /*
-    PUBLIC / MEMBER ROUTE
-
-    Set by index.html:
-
-      whats-on
-        Public, view-only access to Calendar,
-        Events List and Event Notices.
-
-      info
-        Member route beginning at Members Hub.
+    Resident-specific private access is deliberately separate from the
+    general 8-hour Sanctuary session. It is granted only after a successful
+    Membership Number + Personal PIN login during this browser session.
   */
+  const PRIVATE_KEY = "sanctuaryPrivateAccess";
+  const PRIVATE_TIME_KEY = "sanctuaryPrivateAccessTime";
+  const PRIVATE_TTL = 8 * 60 * 60 * 1000;
+
   const ROUTE_KEY = "sanctuaryEntryRoute";
   const ROUTE_WHATS_ON = "whats-on";
   const ROUTE_INFO = "info";
@@ -34,15 +28,40 @@
 
   function validSession() {
     const value = sessionStorage.getItem(KEY);
+    const time = parseInt(sessionStorage.getItem(TIME_KEY) || "0", 10);
+
+    if (value !== "granted") return false;
+    if (!time) return false;
+
+    return (Date.now() - time) < TTL;
+  }
+
+  function validPrivateSession() {
+    const value = sessionStorage.getItem(PRIVATE_KEY);
     const time = parseInt(
-      sessionStorage.getItem(TIME_KEY) || "0",
+      sessionStorage.getItem(PRIVATE_TIME_KEY) || "0",
       10
     );
 
     if (value !== "granted") return false;
     if (!time) return false;
 
-    return (Date.now() - time) < TTL;
+    if ((Date.now() - time) >= PRIVATE_TTL) {
+      clearPrivateSession();
+      return false;
+    }
+
+    return true;
+  }
+
+  function grantPrivateSession() {
+    sessionStorage.setItem(PRIVATE_KEY, "granted");
+    sessionStorage.setItem(PRIVATE_TIME_KEY, String(Date.now()));
+  }
+
+  function clearPrivateSession() {
+    sessionStorage.removeItem(PRIVATE_KEY);
+    sessionStorage.removeItem(PRIVATE_TIME_KEY);
   }
 
   function getMemberToken() {
@@ -64,9 +83,6 @@
         .replace(/-/g, "+")
         .replace(/_/g, "/");
 
-      /*
-        Restore omitted Base64 padding where necessary.
-      */
       while (normalised.length % 4) {
         normalised += "=";
       }
@@ -79,11 +95,6 @@
 
   function tokenHasExpired(data) {
     const exp = Number(data && data.exp);
-
-    /*
-      JWT expiry is expressed in seconds since 1 January 1970.
-      Tokens without an exp value are left for the backend to judge.
-    */
     return Boolean(exp && Date.now() >= exp * 1000);
   }
 
@@ -101,36 +112,17 @@
   }
 
   function starterOrDefaultAccess() {
-    const token = getMemberToken();
+    return !hasUsablePersonalMemberToken();
+  }
 
-    /*
-      Front-page access may create a general Sanctuary session
-      without verifying a particular membership.
-
-      No member token must therefore continue to be treated as
-      Starter/default access.
-    */
-    if (!token) return true;
-
-    const data = decodeJwtPayload(token);
-
-    if (!data || tokenHasExpired(data)) {
-      return true;
-    }
-
-    return (
-      data.starter_pin === true ||
-      data.force_pin_change === true
-    );
+  function verifiedPrivateAccess() {
+    return validPrivateSession() && hasUsablePersonalMemberToken();
   }
 
   function currentRoute() {
     const route = sessionStorage.getItem(ROUTE_KEY);
 
-    if (
-      route === ROUTE_WHATS_ON ||
-      route === ROUTE_INFO
-    ) {
+    if (route === ROUTE_WHATS_ON || route === ROUTE_INFO) {
       return route;
     }
 
@@ -146,10 +138,7 @@
   }
 
   function setRoute(route) {
-    if (
-      route !== ROUTE_WHATS_ON &&
-      route !== ROUTE_INFO
-    ) {
+    if (route !== ROUTE_WHATS_ON && route !== ROUTE_INFO) {
       return false;
     }
 
@@ -161,9 +150,6 @@
     sessionStorage.removeItem(ROUTE_KEY);
   }
 
-  /*
-    Pages needing no Sanctuary front-page session.
-  */
   const UNGATED_PAGES = new Set([
     "index.html",
     "about.html",
@@ -173,26 +159,23 @@
   ]);
 
   /*
-    Pages available with general/Starter access.
+    Pages available before a personal Membership PIN has been completed.
 
-    Club Information is deliberately excluded because it is a
-    private member section requiring a completed personal PIN.
-
-    This remains the existing Starter-PIN architecture.
-    It is separate from the What's On / Info route distinction.
+    Members Directory and Club Information are deliberately absent:
+    both now require a valid personal-PIN member session.
   */
   const STARTER_ALLOWED = new Set([
     "members-info.html",
     "your-info.html",
     "events-calendar.html",
     "events.html",
-    "events-details.html"
+    "events-details.html",
+    "forgot-pin.html"
   ]);
 
   /*
-    Pages forming the public, view-only What's On journey.
-
-    Club Information is deliberately excluded.
+    The public What's On journey contains only the Calendar,
+    Events List and individual Event Notices.
   */
   const WHATS_ON_ALLOWED = new Set([
     "events-calendar.html",
@@ -200,15 +183,12 @@
     "events-details.html"
   ]);
 
-  /*
-    Explicit member facilities.
-
-    When reached during a What's On journey, these must not open.
-  */
   const INFO_ONLY_PAGES = new Set([
     "members-info.html",
     "your-info.html",
     "members-directory.html",
+    "library.html",
+    "library-publication.html",
     "notices-preview.html",
 
     "events-activities.html",
@@ -234,12 +214,6 @@
     (location.pathname.split("/").pop() || "index.html")
       .toLowerCase();
 
-  /*
-    ADMINISTRATIVE AND SERVICE-PROVIDER AREAS
-
-    These have their own access arrangements and must not be
-    affected merely because the browser previously used What's On.
-  */
   function independentlyProtectedPage(pageName) {
     return (
       pageName.startsWith("admin-") ||
@@ -264,16 +238,8 @@
     const destination = destinationPage(url);
 
     if (!destination) return false;
+    if (INFO_ONLY_PAGES.has(destination)) return true;
 
-    if (INFO_ONLY_PAGES.has(destination)) {
-      return true;
-    }
-
-    /*
-      These filename patterns cover the existing private member
-      facilities and allow later related pages to inherit the
-      same protection without changing this file immediately.
-    */
     return (
       destination.startsWith("members-") ||
       destination.startsWith("your-info") ||
@@ -282,21 +248,18 @@
       destination.startsWith("creative-canvas") ||
       destination.startsWith("event-booking") ||
       destination.startsWith("booking-") ||
+      destination.startsWith("notices-preview") ||
+      destination.startsWith("library") ||
       destination.startsWith("archive") ||
       destination.startsWith("payment")
     );
   }
-    /*
-    FRIENDLY PUBLIC-ROUTE MESSAGE
-  */
+
   function ensureRouteMessageStyles() {
-    if (document.getElementById("sanctuary-route-style")) {
-      return;
-    }
+    if (document.getElementById("sanctuary-route-style")) return;
 
     const style = document.createElement("style");
     style.id = "sanctuary-route-style";
-
     style.textContent = `
       .sanctuary-route-shade {
         position: fixed;
@@ -306,67 +269,67 @@
         align-items: center;
         justify-content: center;
         padding: 1.25rem;
-        background: rgba(27,43,57,.56);
+        background: rgba(27, 43, 57, 0.56);
       }
 
       .sanctuary-route-dialog {
-        width: min(540px,100%);
-        padding:1.6rem;
-        border:1px solid #d9e1e7;
-        border-radius:18px;
-        background:#fff;
-        color:#243746;
-        text-align:center;
-        box-shadow:0 18px 48px rgba(0,0,0,.24);
+        width: min(540px, 100%);
+        padding: 1.6rem;
+        border: 1px solid #d9e1e7;
+        border-radius: 18px;
+        background: #ffffff;
+        color: #243746;
+        text-align: center;
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
       }
 
-      .sanctuary-route-lock{
-        margin-bottom:.5rem;
-        font-size:2rem;
-        line-height:1;
+      .sanctuary-route-lock {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+        line-height: 1;
       }
 
-      .sanctuary-route-dialog h2{
-        margin:0 0 .8rem;
-        color:#254d70;
-        font-size:1.45rem;
+      .sanctuary-route-dialog h2 {
+        margin: 0 0 0.8rem;
+        color: #254d70;
+        font-size: 1.45rem;
       }
 
-      .sanctuary-route-dialog p{
-        margin:0;
-        font-size:1.05rem;
-        font-weight:500;
-        line-height:1.65;
+      .sanctuary-route-dialog p {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.65;
       }
 
-      .sanctuary-route-actions{
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:.75rem;
-        margin-top:1.25rem;
+      .sanctuary-route-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
       }
 
       .sanctuary-route-actions button,
-      .sanctuary-route-actions a{
-        min-width:130px;
-        padding:.72rem 1rem;
-        border:1px solid #315f82;
-        border-radius:999px;
-        font:inherit;
-        font-weight:700;
-        text-decoration:none;
-        cursor:pointer;
+      .sanctuary-route-actions a {
+        min-width: 130px;
+        padding: 0.72rem 1rem;
+        border: 1px solid #315f82;
+        border-radius: 999px;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
       }
 
-      .sanctuary-route-home{
-        background:#315f82;
-        color:#fff;
+      .sanctuary-route-home {
+        background: #315f82;
+        color: #ffffff;
       }
 
-      .sanctuary-route-close{
-        background:#fff;
-        color:#315f82;
+      .sanctuary-route-close {
+        background: #ffffff;
+        color: #315f82;
       }
     `;
 
@@ -374,115 +337,59 @@
   }
 
   function closeRouteMessage() {
-    document
-      .getElementById("sanctuary-route-message")
-      ?.remove();
+    document.getElementById("sanctuary-route-message")?.remove();
   }
 
   function showRouteMessage() {
-
     closeRouteMessage();
     ensureRouteMessageStyles();
 
     const shade = document.createElement("div");
     shade.id = "sanctuary-route-message";
     shade.className = "sanctuary-route-shade";
-    shade.setAttribute("role","dialog");
-    shade.setAttribute("aria-modal","true");
-    shade.setAttribute(
-      "aria-labelledby",
-      "sanctuary-route-heading"
-    );
+    shade.setAttribute("role", "dialog");
+    shade.setAttribute("aria-modal", "true");
+    shade.setAttribute("aria-labelledby", "sanctuary-route-heading");
 
     shade.innerHTML = `
       <div class="sanctuary-route-dialog">
-
-        <div
-          class="sanctuary-route-lock"
-          aria-hidden="true"
-        >🔒</div>
-
-        <h2 id="sanctuary-route-heading">
-          Other Club facilities
-        </h2>
-
+        <div class="sanctuary-route-lock" aria-hidden="true">🔒</div>
+        <h2 id="sanctuary-route-heading">Other Club facilities</h2>
         <p>${ROUTE_MESSAGE}</p>
-
         <div class="sanctuary-route-actions">
-
-          <a
-            class="sanctuary-route-home"
-            href="index.html"
-          >
-            Return Home
-          </a>
-
-          <button
-            class="sanctuary-route-close"
-            type="button"
-          >
-            Stay here
-          </button>
-
+          <a class="sanctuary-route-home" href="index.html">Return Home</a>
+          <button class="sanctuary-route-close" type="button">Stay here</button>
         </div>
-
       </div>
     `;
 
     document.body.appendChild(shade);
 
-    const closeButton =
-      shade.querySelector(".sanctuary-route-close");
-
-    closeButton?.addEventListener(
-      "click",
-      closeRouteMessage
-    );
+    const closeButton = shade.querySelector(".sanctuary-route-close");
+    closeButton?.addEventListener("click", closeRouteMessage);
 
     shade.addEventListener("click", event => {
-      if (event.target === shade) {
-        closeRouteMessage();
-      }
+      if (event.target === shade) closeRouteMessage();
     });
 
     document.addEventListener(
       "keydown",
-      function escapeHandler(event){
-
-        if(event.key !== "Escape") return;
-
+      function escapeHandler(event) {
+        if (event.key !== "Escape") return;
         closeRouteMessage();
-
-        document.removeEventListener(
-          "keydown",
-          escapeHandler
-        );
-
+        document.removeEventListener("keydown", escapeHandler);
       }
     );
 
     closeButton?.focus();
-
   }
 
-  /*
-    LINK PROTECTION
-
-    On What's On pages, any link leading to a known
-    private member facility is stopped and replaced
-    by the friendly explanation.
-  */
-
-  function protectPrivateLinks(){
-
-    if(!isWhatsOnRoute()) return;
+  function protectPrivateLinks() {
+    if (!isWhatsOnRoute()) return;
 
     document
-      .querySelectorAll(
-        "a[href],[data-private-destination]"
-      )
+      .querySelectorAll("a[href], [data-private-destination]")
       .forEach(element => {
-
         const target =
           element.getAttribute("href") ||
           element.getAttribute("data-private-destination") ||
@@ -491,10 +398,10 @@
         const explicitlyPrivate =
           element.hasAttribute("data-private-route");
 
-        if(
+        if (
           !explicitlyPrivate &&
           !isInfoOnlyDestination(target)
-        ){
+        ) {
           return;
         }
 
@@ -503,28 +410,15 @@
           `${element.textContent.trim()} — available through Info`
         );
 
-        element.addEventListener(
-          "click",
-          event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            showRouteMessage();
-
-          }
-        );
-
+        element.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          showRouteMessage();
+        });
       });
-
   }
 
-  /*
-    SHARED PAGE API
-  */
-
   window.SanctuaryAccess = Object.freeze({
-
     routeKey: ROUTE_KEY,
 
     routes: Object.freeze({
@@ -535,8 +429,12 @@
     routeMessage: ROUTE_MESSAGE,
 
     validSession,
-    starterOrDefaultAccess,
+    validPrivateSession,
+    grantPrivateSession,
+    clearPrivateSession,
     hasUsablePersonalMemberToken,
+    verifiedPrivateAccess,
+    starterOrDefaultAccess,
 
     currentRoute,
     isWhatsOnRoute,
@@ -550,58 +448,17 @@
 
     showRouteMessage,
     closeRouteMessage
-
   });
-
-  /*
-    COMPLETELY UNGATED PAGES
-  */
 
   if (UNGATED_PAGES.has(page)) {
     return;
   }
-    /*
-    ALL OTHER SANCTUARY PAGES REQUIRE THE EXISTING
-    FRONT-PAGE SESSION.
-  */
 
   if (!validSession()) {
     clearRoute();
     location.replace("index.html");
     return;
   }
-
-  /*
-    MISSING ROUTE MARKER
-
-    A page opened from an old bookmark or restored browser tab may
-    have a valid eight-hour session but no remembered entry route.
-
-    A verified personal member session may safely continue as Info.
-    Otherwise the visitor must begin again from Home and choose the
-    appropriate route deliberately.
-  */
-
-  if (!currentRoute()) {
-    if (hasUsablePersonalMemberToken()) {
-      setRoute(ROUTE_INFO);
-    } else {
-      clearRoute();
-      location.replace("index.html");
-      return;
-    }
-  }
-
-  /*
-    DIRECT PRIVATE-PAGE PROTECTION
-
-    A resident browsing through What's On must not be able to
-    reach a private member page by typing its address or using
-    an old bookmark.
-
-    Administrative and service-provider areas retain their own
-    separate protection.
-  */
 
   if (
     isWhatsOnRoute() &&
@@ -618,24 +475,44 @@
   }
 
   /*
-    EXISTING STARTER/DEFAULT PIN PROTECTION
+    PRIVATE MEMBER FACILITIES
 
-    Starter/default access may view only the permitted pages.
-
-    All other member pages — including Members Directory,
-    Club Information, Archives and later private services —
-    require successful member-PIN verification and completion
-    of any compulsory PIN change.
+    A token left in localStorage from an earlier visit is NOT enough.
+    The resident must have deliberately verified with Membership Number
+    and Personal PIN during the present private session.
   */
+  const PRIVATE_MEMBER_PAGES = new Set([
+    "members-directory.html",
+    "library.html",
+    "library-publication.html",
+
+    "events-activities.html",
+    "host-area.html",
+    "host-my-events.html",
+    "host-event-form.html",
+    "host-state-of-play.html",
+
+    "your-design-studio.html",
+    "design-studio.html",
+    "creative-canvas.html",
+
+    "event-booking.html",
+    "booking-management.html",
+
+    "club-roles.html",
+    "archives.html",
+    "payments.html",
+    "services.html"
+  ]);
 
   if (
-    starterOrDefaultAccess() &&
-    !STARTER_ALLOWED.has(page) &&
+    PRIVATE_MEMBER_PAGES.has(page) &&
+    !verifiedPrivateAccess() &&
     !independentlyProtectedPage(page)
   ) {
     sessionStorage.setItem(
       "hubGateReason",
-      "starter-pin"
+      "personal-pin"
     );
 
     sessionStorage.setItem(
@@ -647,10 +524,6 @@
     return;
   }
 
-  /*
-    Apply link protection after the page markup is available.
-  */
-
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
@@ -660,4 +533,5 @@
   } else {
     protectPrivateLinks();
   }
-  })();
+
+})();

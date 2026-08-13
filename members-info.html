@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=MH_8"></script>
+  <script src="access.js?v=PRIVATE_GATE_2"></script>
 
   <style>
     :root{
@@ -313,12 +313,13 @@
 
       <div class="access-strip">
         <p>
-          <strong>Your personal PIN opens the Members Hub.</strong>
-          Once you are signed in, all four principal sections below are available to you.
+          <strong>Your personal PIN protects the private sections of Sanctuary Club.</strong>
+          The Members Hub is your starting point; when you first open a private section,
+          enter your Membership Number and Personal PIN.
         </p>
         <p>
-          You’ll then be able to see everything that’s going on. To find out more about
-          the ways you can take part yourself, visit
+          Once verified, the private sections remain available during your current session.
+          To find out more about the ways you can take part yourself, visit
           <a class="role-link" href="club-roles.html">Club Roles</a>.
         </p>
       </div>
@@ -329,7 +330,7 @@
 
           <div class="hub-list">
             <div class="hub-row">
-              <a class="hub-btn" href="your-info.html">Your Information</a>
+              <a class="hub-btn private-hub-link" data-private-target="yi" href="your-info.html?manage=1">Your Information</a>
               <div class="hub-note">
                 View or update the information your household has chosen to share
                 and manage your personal Membership PIN.
@@ -337,7 +338,7 @@
             </div>
 
             <div class="hub-row">
-              <a class="hub-btn" href="members-directory.html">Members Directory</a>
+              <a class="hub-btn private-hub-link" data-private-target="other" href="members-directory.html">Members Directory</a>
               <div class="hub-note">
                 Find the contact information that fellow residents have chosen
                 to share with other Sanctuary Club members.
@@ -345,7 +346,7 @@
             </div>
 
             <div class="hub-row">
-              <a class="hub-btn" href="host-area.html">My Studio</a>
+              <a class="hub-btn private-hub-link" data-private-target="other" href="host-area.html">My Studio</a>
               <div class="hub-note">
                 Create, edit and manage publications for your chosen roles. 
                 Your Design Studio provides everything you need to produce attractive, 
@@ -361,7 +362,7 @@
             </div>
 
             <div class="hub-row">
-              <a class="hub-btn" href="library.html">Library</a>
+              <a class="hub-btn private-hub-link" data-private-target="other" href="library.html">Library</a>
               <div class="hub-note">
                 Browse Club and community news, notices, useful information,
                 articles, creative collections and more.
@@ -398,16 +399,83 @@
   </div>
 
   <script>
+    function privateSessionIsOpen(){
+      return Boolean(
+        window.SanctuaryAccess &&
+        typeof window.SanctuaryAccess.verifiedPrivateAccess === "function" &&
+        window.SanctuaryAccess.verifiedPrivateAccess()
+      );
+    }
+
+    function openPrivateDestination(event){
+      const link = event.currentTarget;
+
+      if (privateSessionIsOpen()){
+        return;
+      }
+
+      event.preventDefault();
+
+      const target = link.getAttribute("href") || "";
+      const targetType = link.dataset.privateTarget || "other";
+
+      sessionStorage.setItem("hubGateReason", "personal-pin");
+
+      /*
+        Your Information is itself the verification page, so it does not
+        need a stored return destination. manage=1 tells YI to remain open
+        after successful verification.
+      */
+      if (targetType === "yi"){
+        sessionStorage.removeItem("hubGateDestination");
+        window.location.href = "your-info.html?manage=1&needPin=1";
+        return;
+      }
+
+      sessionStorage.setItem("hubGateDestination", target);
+      window.location.href = "your-info.html?needPin=1";
+    }
+
+    document
+      .querySelectorAll(".private-hub-link")
+      .forEach(link => {
+        link.addEventListener("click", openPrivateDestination);
+      });
+
     function memberLogout(){
       try{
+        if (
+          window.SanctuaryAccess &&
+          typeof window.SanctuaryAccess.clearPrivateSession === "function"
+        ){
+          window.SanctuaryAccess.clearPrivateSession();
+        }
+
         sessionStorage.removeItem("sanctuaryAccess");
         sessionStorage.removeItem("sanctuaryAccessTime");
+        sessionStorage.removeItem("sanctuaryPrivateAccess");
+        sessionStorage.removeItem("sanctuaryPrivateAccessTime");
+
         sessionStorage.removeItem("sanctuaryMDAccess");
         sessionStorage.removeItem("sanctuaryMDAccessTime");
+
+        sessionStorage.removeItem("hubGateReason");
+        sessionStorage.removeItem("hubGateDestination");
+
         localStorage.removeItem("authToken");
         sessionStorage.removeItem("authToken");
         localStorage.removeItem("memberToken");
         sessionStorage.removeItem("memberToken");
+
+        localStorage.removeItem("currentMemberId");
+        sessionStorage.removeItem("currentMemberId");
+        sessionStorage.removeItem("currentResidentId");
+        sessionStorage.removeItem("verifiedResidentId");
+
+        sessionStorage.removeItem("currentHostMemberId");
+        sessionStorage.removeItem("currentHostResidentId");
+        sessionStorage.removeItem("hostAreaVerified");
+        sessionStorage.removeItem("hostAreaRoles");
       }catch(e){}
 
       window.location.href = "index.html";

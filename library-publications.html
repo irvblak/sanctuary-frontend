@@ -1,319 +1,627 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Library Publication | Sanctuary Club</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
+/*
+  Sanctuary Club
+  library-publications-data.js
 
-  <script src="access.js?v=LIB_1"></script>
-  <script src="library-publications-data.js"></script>
+  CONTENT SOURCE FOR LIBRARY ITEMS
 
-  <style>
-    :root{
-      --bg1:#d9ecff;
-      --bg2:#f4f8fc;
-      --ink:#1f2a37;
-      --muted:#52606f;
-      --blue:#123a78;
-      --blue-hover:#0f3166;
-      --line:#d8e1ec;
-      --soft:#f7fbff;
-      --panel:#fff;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
-    }
+  Members do not need to know whether an item is technically
+  a Notice or a maintained Publication.
 
-    *{box-sizing:border-box}
+  The Library simply indexes the title and opens the item.
 
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      font-size:18px;
-      font-weight:500;
-      line-height:1.55;
-      color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1),var(--bg2) 45%,#fff 100%);
-    }
+  Internal "kind" is retained because it may later help the
+  system decide how an item is maintained, archived or withdrawn.
 
-    .topbar{
-      max-width:940px;
-      margin:0 auto;
-      padding:1rem 1rem .45rem;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:.75rem;
-      flex-wrap:wrap;
-    }
+  privacy:
+    "access" = available through What's On / Library
+    "pin"    = Personal PIN required
+    "role"   = appropriate additional authority required
 
-    .brand{
-      color:var(--blue);
-      font-size:1.75rem;
-      font-weight:850;
-    }
+  Published material is Withdrawn rather than Deleted.
 
-    .actions{
-      display:flex;
-      gap:.5rem;
-      flex-wrap:wrap;
-    }
+  One item — one source.
+*/
 
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:44px;
-      padding:.6rem .9rem;
-      border:1px solid var(--blue);
-      border-radius:12px;
-      color:#fff;
-      background:var(--blue);
-      text-decoration:none;
-      font:inherit;
-      font-weight:800;
-      cursor:pointer;
-    }
+window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
-    .btn.secondary{
-      color:var(--blue);
-      background:#fff;
-      border-color:var(--line);
-    }
+  /*
+    =========================================================
+    WELCOME TO SANCTUARY CLUB
+    =========================================================
+  */
 
-    .btn:hover{
-      background:var(--blue-hover);
-      color:#fff;
-    }
+  "welcome": {
+    kind: "notice",
 
-    .shell{
-      max-width:940px;
-      margin:0 auto;
-      padding:0 1rem 2rem;
-    }
+    title: "Welcome to Sanctuary Club",
 
-    article{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      padding:1.5rem 1.7rem;
-    }
+    privacy: "access",
 
-    .doc-kicker{
-      display:flex;
-      align-items:center;
-      gap:.55rem;
-      flex-wrap:wrap;
-      margin-bottom:.45rem;
-    }
+    approval: "direct",
 
-    .np-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:2rem;
-      height:2rem;
-      padding:0 .5rem;
-      border-radius:999px;
-      font-size:.8rem;
-      font-weight:900;
-      color:#174f68;
-      background:#e9f4f8;
-      border:1px solid #bfdce7;
-    }
+    owner: "Sanctuary Club",
 
-    .doc-label{
-      color:var(--muted);
-      font-size:.85rem;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
+    updated: "14 August 2026",
 
-    h1{
-      margin:.1rem 0 .35rem;
-      color:var(--blue);
-      font-size:2rem;
-      line-height:1.15;
-    }
+    summary:
+      "A short introduction to Sanctuary Club and the different ways in.",
 
-    h2{
-      margin:1.35rem 0 .4rem;
-      color:var(--blue);
-      font-size:1.25rem;
-    }
+    body: `
+      <p class="lead">
+        Welcome. Have a look around and see what’s happening at Sanctuary.
+      </p>
 
-    h3{
-      margin:1rem 0 .25rem;
-      color:#244962;
-      font-size:1.03rem;
-    }
+      <p>
+        Through <strong>What’s On / Library</strong> you can see Events,
+        News &amp; Notices and generally available Library material.
+      </p>
 
-    p{margin:.35rem 0 .7rem}
+      <p>
+        <strong>There’s more inside.</strong>
+        Some Club information and facilities are private to Sanctuary members.
+      </p>
 
-    ul,ol{
-      margin:.35rem 0 .75rem 1.4rem;
-      padding:0;
-    }
+      <p>
+        To see these, return Home, choose <strong>Info</strong>,
+        and enter your Membership Number and Personal PIN.
+      </p>
 
-    .summary{
-      margin:.2rem 0 .65rem;
-      color:var(--muted);
-      font-size:1.04rem;
-      line-height:1.5;
-    }
+      <p>
+        Not quite ready for that yet?
+        If you would like a little help getting started,
+        just ask one of our Website Helpers.
+      </p>
+    `
+  },
 
-    .meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.4rem 1rem;
-      padding:.65rem 0 .9rem;
-      margin-bottom:.9rem;
-      border-bottom:1px solid var(--line);
-      color:var(--muted);
-      font-size:.84rem;
-    }
 
-    .lead{
-      color:#344054;
-      font-size:1.03rem;
-    }
+  /*
+    =========================================================
+    SANCTUARY ETHOS
+    Previously developed as Sanctuary Creed
+    =========================================================
+  */
 
-    .tip{
-      margin:.9rem 0 1rem;
-      padding:.75rem .9rem;
-      border:1px solid #cfe0ed;
-      border-radius:13px;
-      background:var(--soft);
-      color:#244962;
-    }
+  "sanctuary-ethos": {
+    kind: "publication",
 
-    .motto{
-      margin-top:1.4rem;
-      padding-top:1rem;
-      border-top:1px solid var(--line);
-      color:var(--blue);
-      font-weight:900;
-      text-align:center;
-    }
+    title: "Sanctuary Ethos",
 
-    .missing{
-      padding:1rem;
-      border:1px solid #ead49a;
-      border-radius:13px;
-      background:#fff8e6;
-      color:#7a4c00;
-      font-weight:750;
-    }
+    privacy: "access",
 
-    @media(max-width:620px){
-      body{font-size:17px}
-      article{padding:1.1rem 1rem}
-      h1{font-size:1.7rem}
-    }
+    approval: "direct",
 
-    @media print{
-      @page{size:A4 portrait;margin:15mm}
+    owner: "Sanctuary Club",
 
-      body{
-        background:#fff;
-        font-size:12pt;
-      }
+    updated: "14 August 2026",
 
-      .topbar{
-        display:none!important;
-      }
+    summary:
+      "The principles and spirit that guide Sanctuary Club.",
 
-      .shell{
-        max-width:none;
-        padding:0;
-      }
+    body: `
+      <p class="lead">
+        Sanctuary Club is designed by residents, for residents,
+        to make community life easier, friendlier and more enjoyable.
+      </p>
 
-      article{
-        border:0;
-        box-shadow:none;
-        border-radius:0;
-        padding:0;
-      }
+      <h2>Neighbourly before technical</h2>
 
-      h1{font-size:21pt}
-      h2{font-size:14pt;break-after:avoid}
-      h3{font-size:12pt;break-after:avoid}
-      .tip{background:#fff}
-    }
-  </style>
-</head>
+      <p>
+        Technology should help people take part in Club life,
+        not get in their way.
+      </p>
 
-<body>
-  <div class="topbar">
-    <div class="brand">News &amp; Publications</div>
+      <h2>Explain why</h2>
 
-    <div class="actions">
-      <a class="btn secondary" href="library.html">← Library</a>
-      <button class="btn" id="printBtn" type="button">Print</button>
-    </div>
-  </div>
+      <p>
+        When something is protected or unavailable,
+        the Club should explain why rather than simply say “No”.
+      </p>
 
-  <main class="shell">
-    <article id="publication">
-      <div class="missing">Loading publication…</div>
-    </article>
-  </main>
+      <h2>One obvious way</h2>
 
-  <script>
-    (function protectPublication(){
-      const ttl = 8 * 60 * 60 * 1000;
-      const granted = sessionStorage.getItem("sanctuaryAccess");
-      const accessTime = Number(sessionStorage.getItem("sanctuaryAccessTime") || 0);
+      <p>
+        Members should be able to find what they want
+        without needing to understand how the website works.
+      </p>
 
-      const active =
-        Boolean(granted) &&
-        accessTime > 0 &&
-        (Date.now() - accessTime) < ttl;
+      <h2>People before features</h2>
 
-      if(!active){
-        window.location.replace("members-info.html");
-      }
-    })();
+      <p>
+        New facilities should earn their place by making life
+        easier or more enjoyable for residents.
+      </p>
 
-    const params = new URLSearchParams(location.search);
-    const id = params.get("id") || "";
-    const item = window.SANCTUARY_LIBRARY_PUBLICATIONS?.[id];
-    const root = document.getElementById("publication");
+      <h2>Privacy by design</h2>
 
-    if(!item){
-      root.innerHTML = `
-        <div class="missing">
-          This Library publication could not be found.
-        </div>
-      `;
-      document.getElementById("printBtn").disabled = true;
-    }else{
-      document.title = `${item.title} | Sanctuary Club`;
+      <p>
+        Information should be available to the people who need it,
+        while personal and protected material remains private.
+      </p>
+    `
+  },
 
-      root.innerHTML = `
-        <div class="doc-kicker">
-          <span class="np-badge">${item.type || "P"}</span>
-          <span class="doc-label">${item.type === "N" ? "Notice" : "Publication"}</span>
-        </div>
 
-        <h1>${item.title}</h1>
+  /*
+    =========================================================
+    YOUR PRIVACY AT SANCTUARY
+    Short signpost to the fuller Privacy & Security publication
+    =========================================================
+  */
 
-        ${item.summary ? `<p class="summary">${item.summary}</p>` : ""}
+  "privacy-intro": {
+    kind: "notice",
 
-        <div class="meta">
-          ${item.updated ? `<span><strong>Last updated:</strong> ${item.updated}</span>` : ""}
-          ${item.owner ? `<span><strong>Maintained by:</strong> ${item.owner}</span>` : ""}
-        </div>
+    title: "Your Privacy at Sanctuary",
 
-        <div class="publication-body">
-          ${item.body || ""}
-        </div>
-      `;
-    }
+    privacy: "access",
 
-    document.getElementById("printBtn").addEventListener("click",()=>window.print());
-  </script>
-</body>
-</html>
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "A short introduction to privacy and protected information around Sanctuary Club.",
+
+    body: `
+      <p class="lead">
+        Your privacy matters.
+      </p>
+
+      <p>
+        Sanctuary Club is designed so that generally useful information
+        remains easy to see, while personal and protected material
+        requires the appropriate access.
+      </p>
+
+      <p>
+        Your Personal PIN protects member-only information and facilities.
+        Where information needs an even smaller audience,
+        appropriate additional authority can be required.
+      </p>
+
+      <p>
+        Administrators do not need to know your Personal PIN,
+        and privacy is intended to be built into the way the Club works
+        rather than added afterwards.
+      </p>
+
+      <p>
+        For the fuller explanation, return to the Library and choose
+        <strong>Privacy &amp; Security</strong>.
+      </p>
+    `
+  },
+
+
+  /*
+    =========================================================
+    TAKING PART IN SANCTUARY CLUB
+    =========================================================
+  */
+
+  "taking-part": {
+    kind: "notice",
+
+    title: "Taking Part in Sanctuary Club",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "There are many ways to take part — as much or as little as you wish.",
+
+    body: `
+      <p class="lead">
+        Sanctuary Club works best when residents use it
+        in whatever way suits them.
+      </p>
+
+      <p>
+        You might Host an Event, organise an Activity,
+        contribute news, write something, create artwork,
+        help with the website — or simply enjoy what
+        other members provide.
+      </p>
+
+      <p>
+        There is no obligation to take on a role.
+      </p>
+
+      <p>
+        If something interests you, the Club Roles section
+        explains the possibilities and who can help.
+      </p>
+    `
+  },
+
+
+  /*
+    =========================================================
+    PLEASE CHECK YOUR INFORMATION
+    Intended particularly for the hand-over period
+    =========================================================
+  */
+
+  "check-information": {
+    kind: "notice",
+
+    title: "Please Check Your Information",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "A quick hand-over reminder for Sanctuary members.",
+
+    body: `
+      <p class="lead">
+        When you are ready to use the private member facilities,
+        please enter through <strong>Info</strong> and check that
+        Your Information is up to date.
+      </p>
+
+      <p>
+        If you are still using the temporary Starter PIN,
+        you will be asked to replace it with your own Personal PIN
+        before opening private member services.
+      </p>
+
+      <p>
+        Your Personal PIN is there to protect your information
+        and the member-only parts of Sanctuary Club.
+      </p>
+
+      <p>
+        If you would like a little help getting started,
+        ask one of our Website Helpers.
+      </p>
+    `
+  },
+
+
+  /*
+    =========================================================
+    YOUR DESIGN STUDIO — QUICK GUIDE
+    =========================================================
+  */
+
+  "design-studio-guide": {
+    kind: "publication",
+
+    title: "Your Design Studio — Quick Guide",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "A printable guide to creating and arranging publications in Your Design Studio.",
+
+    body: `
+      <p class="lead">
+        Your Design Studio is designed to let you create a publication
+        by placing and arranging items directly on the page.
+      </p>
+
+      <p>
+        You do not need publishing or technical experience.
+        Try things, move them around and change them
+        until the page looks the way you want.
+      </p>
+
+      <div class="tip">
+        <strong>Tip:</strong>
+        Print this guide and keep it beside you while you are working.
+      </div>
+
+
+      <h2>Creating your publication</h2>
+
+
+      <h3>Add Text</h3>
+
+      <p>
+        Choose <strong>Add Text</strong> whenever you want words on the page.
+      </p>
+
+      <p>The same text box can be used for:</p>
+
+      <ul>
+        <li>a main title</li>
+        <li>a heading</li>
+        <li>ordinary text</li>
+        <li>a short announcement</li>
+        <li>captions or other wording</li>
+      </ul>
+
+      <p>
+        Once the text box is selected, use the appearance controls
+        to change its size, style, colour and alignment.
+      </p>
+
+      <p>
+        There is no separate <strong>Add Title</strong> button.
+        A title is simply a text box styled as a title
+        and placed wherever you want it on the page.
+      </p>
+
+
+      <h3>Add Illustration</h3>
+
+      <p>
+        Choose <strong>Add Illustration</strong> when you want a picture.
+      </p>
+
+      <p>
+        Illustrations come from your own saved files.
+        This might be a photograph, something you have created yourself,
+        or an illustration you have generated or downloaded
+        and saved on your computer.
+      </p>
+
+      <p>
+        If you would like something special, it is well worth learning
+        how to use AI — or another image-creation method —
+        to make an illustration, save it to your computer,
+        and then bring it into the Studio.
+      </p>
+
+      <p>
+        The illustration appears as an object on your publication
+        and can then be positioned wherever you wish.
+      </p>
+
+
+      <h2>Moving things around</h2>
+
+      <p>
+        Text and illustration boxes are movable.
+      </p>
+
+      <p>To reposition something:</p>
+
+      <ol>
+        <li>Click and hold the box.</li>
+        <li>Drag it to the position you want.</li>
+        <li>Release the mouse button.</li>
+        <li>The box stays where you leave it.</li>
+      </ol>
+
+
+      <h2>Selecting a box</h2>
+
+      <p>
+        Click a box to select it.
+      </p>
+
+      <p>
+        The editing controls then apply to
+        <strong>that selected box only</strong>.
+      </p>
+
+      <p>
+        You can select another box simply by clicking it.
+      </p>
+
+
+      <h2>Overlay and Underlay</h2>
+
+      <p>
+        Sometimes two boxes may overlap.
+      </p>
+
+      <p>
+        Select the box you want to alter, then choose:
+      </p>
+
+      <p>
+        <strong>Overlay</strong><br>
+        Moves the selected box above the overlapping box.
+      </p>
+
+      <p>
+        <strong>Underlay</strong><br>
+        Moves the selected box underneath the overlapping box.
+      </p>
+
+      <p>
+        Overlay and Underlay do not change the position
+        or size of the box.
+        They change only which item appears on top.
+      </p>
+
+
+      <h2>Delete</h2>
+
+      <p>
+        <strong>Delete</strong> removes the box
+        you currently have selected.
+      </p>
+
+      <p>
+        Because this cannot be undone accidentally,
+        the Studio will ask you to confirm:
+      </p>
+
+      <p>
+        <strong>Remove this item?</strong>
+      </p>
+
+      <p>
+        Choose <strong>Remove</strong> to delete it
+        or <strong>Keep</strong> to leave it unchanged.
+      </p>
+
+
+      <h2>Recover Draft</h2>
+
+      <p>
+        If you previously started a publication but did not finish it,
+        choose <strong>Recover Draft</strong>.
+      </p>
+
+      <p>
+        This brings your unfinished work back into the Studio
+        so that you can continue where you left off.
+      </p>
+
+
+      <h2>Save to my computer</h2>
+
+      <p>
+        Choose <strong>Save to my computer</strong>
+        when you want to keep an editable copy
+        of your Design Studio work on your own computer.
+      </p>
+
+      <p>
+        You can later open that saved work again
+        in Your Design Studio and continue editing it.
+      </p>
+
+      <p>
+        Work created through <strong>Just for fun</strong>
+        can also be saved this way.
+        If it is later opened through full YDS after entering through
+        <strong>Info</strong>, it is treated as a new Writer or Artist
+        creation and will require editorial approval before publication.
+      </p>
+
+
+      <h2>Preview</h2>
+
+      <p>
+        Choose <strong>Preview</strong> to see the publication
+        without the Design Studio editing controls.
+      </p>
+
+      <p>
+        This lets you check the finished appearance
+        before printing or publishing.
+      </p>
+
+
+      <h2>Print</h2>
+
+      <p>
+        Choose <strong>Print</strong> when you want a paper copy.
+      </p>
+
+      <p>
+        The publication is designed to print cleanly on A4.
+      </p>
+
+
+      <h2>Publish</h2>
+
+      <p>
+        When you are satisfied with the finished publication,
+        choose <strong>Publish</strong>.
+      </p>
+
+      <p>
+        The Studio will give you a final opportunity
+        to check your work.
+      </p>
+
+      <p>
+        For most Club material, you will then be asked
+        to choose the <strong>Privacy Level</strong>:
+      </p>
+
+      <ul>
+        <li>
+          <strong>Access Code</strong> —
+          available to anyone who has entered Sanctuary Club
+          through <strong>What’s On / Library</strong>.
+        </li>
+
+        <li>
+          <strong>Personal PIN</strong> —
+          available only to verified Sanctuary members.
+        </li>
+      </ul>
+
+      <p>
+        If your role gives you authority to publish more restricted material,
+        the appropriate additional privacy choice will also be available.
+      </p>
+
+      <p>
+        You may make your work more widely available,
+        but you cannot publish into a more restricted area
+        than your role permits.
+      </p>
+
+      <p>
+        Some material already has a natural destination.
+        For example, an Event may also appear automatically
+        in the Calendar, Events List and Notices.
+      </p>
+
+      <p>
+        In those cases the computer will do what it already knows
+        needs to be done rather than ask you unnecessary questions.
+      </p>
+
+
+      <h3>Writers and Artists</h3>
+
+      <p>
+        Work created as a <strong>Writer</strong> or
+        <strong>Artist</strong> remains behind closed doors
+        while it is being prepared.
+      </p>
+
+      <p>
+        It is not offered a Privacy Level at this stage.
+      </p>
+
+      <p>
+        When it is ready, choose
+        <strong>Submit for Publication</strong>.
+      </p>
+
+      <p>
+        The work then goes for editorial approval
+        before it is made available in the Library.
+      </p>
+
+      <p>
+        The Editor may return the work for changes
+        or approve and publish it.
+      </p>
+
+      <p>
+        Once it is published, the contributor should receive
+        an automatic confirmation.
+      </p>
+
+
+      <div class="motto">
+        <strong>
+          The computer does the thinking.<br>
+          You do the creating.
+        </strong>
+      </div>
+    `
+  }
+
+};

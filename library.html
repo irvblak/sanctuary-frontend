@@ -10,113 +10,389 @@
 
   <style>
     :root{
-      --bg1:#d9ecff; --bg2:#f4f8fc; --ink:#1f2a37; --muted:#52606f;
-      --blue:#123a78; --blue2:#0f3166; --line:#d8e1ec; --soft:#f7fbff;
-      --panel:#fff; --shadow:0 8px 24px rgba(0,0,0,.08);
+      --bg1:#d9ecff;
+      --bg2:#f4f8fc;
+      --ink:#1f2a37;
+      --muted:#52606f;
+      --blue:#123a78;
+      --blue2:#0f3166;
+      --line:#d8e1ec;
+      --soft:#f7fbff;
+      --panel:#fff;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
     }
-    *{box-sizing:border-box}
+
+    *{
+      box-sizing:border-box;
+    }
+
     body{
-      margin:0; min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      font-size:18px; font-weight:500; line-height:1.55; color:var(--ink);
-      background:linear-gradient(180deg,var(--bg1),var(--bg2) 44%,#fff 100%);
+      margin:0;
+      min-height:100vh;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size:18px;
+      font-weight:500;
+      line-height:1.55;
+      color:var(--ink);
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg1),
+          var(--bg2) 44%,
+          #fff 100%
+        );
     }
-    a,button{font:inherit}
+
+    a,
+    button{
+      font:inherit;
+    }
+
     .topbar{
-      max-width:1180px; margin:0 auto; padding:1.15rem 1rem .45rem;
-      display:flex; justify-content:space-between; align-items:center; gap:1rem;
+      max-width:1180px;
+      margin:0 auto;
+      padding:1.15rem 1rem .45rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
     }
-    .brand{color:var(--blue);font-size:2rem;font-weight:850}
-    .top-actions{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}
+
+    .brand{
+      color:var(--blue);
+      font-size:2rem;
+      font-weight:850;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
     .top-link{
-      display:inline-flex;align-items:center;justify-content:center;min-height:44px;
-      padding:.6rem .9rem;border-radius:13px 13px 0 0;background:var(--blue);
-      color:#fff;text-decoration:none;font-weight:800;box-shadow:0 4px 10px rgba(0,0,0,.12)
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:.6rem .9rem;
+      border-radius:13px 13px 0 0;
+      background:var(--blue);
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+      box-shadow:0 4px 10px rgba(0,0,0,.12);
     }
-    .top-link:hover,.top-link:focus-visible{background:var(--blue2)}
-    .shell{max-width:1180px;margin:0 auto;padding:0 1rem 2.4rem}
+
+    .top-link:hover,
+    .top-link:focus-visible{
+      background:var(--blue2);
+    }
+
+    .shell{
+      max-width:1180px;
+      margin:0 auto;
+      padding:0 1rem 2.4rem;
+    }
+
     .panel{
-      padding:1.45rem;border:1px solid var(--line);border-radius:22px;
-      background:var(--panel);box-shadow:var(--shadow)
+      padding:1.45rem;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--panel);
+      box-shadow:var(--shadow);
     }
-    .intro{margin:0;color:var(--muted);font-size:1.08rem}
+
+    .intro{
+      margin:0;
+      color:var(--muted);
+      font-size:1.08rem;
+    }
+
     .privacy-note{
-      margin:.75rem 0 1.25rem;padding:.8rem 1rem;border:1px solid #d7e4f3;
-      border-radius:14px;background:var(--soft);color:#344054;font-size:.97rem
+      margin:.75rem 0 1.25rem;
+      padding:.8rem 1rem;
+      border:1px solid #d7e4f3;
+      border-radius:14px;
+      background:var(--soft);
+      color:#344054;
+      font-size:.97rem;
     }
-    .index-title{margin:0 0 .75rem;color:var(--blue);font-size:1.4rem}
-    .index-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-bottom:1.35rem}
+
+    .index-title{
+      margin:0 0 .75rem;
+      color:var(--blue);
+      font-size:1.4rem;
+    }
+
+    .index-grid{
+      display:grid;
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
+      gap:.7rem;
+      margin-bottom:1.35rem;
+    }
+
     .index-item{
-      position:relative;display:block;min-height:76px;padding:.8rem .9rem;
-      border:1px solid #d5e2ef;border-radius:14px;background:#fff;
-      color:var(--blue);text-decoration:none;font-weight:850;box-shadow:0 3px 10px rgba(0,0,0,.04)
+      position:relative;
+      display:block;
+      min-height:76px;
+      padding:.8rem .9rem;
+      border:1px solid #d5e2ef;
+      border-radius:14px;
+      background:#fff;
+      color:var(--blue);
+      text-decoration:none;
+      font-weight:850;
+      box-shadow:
+        0 3px 10px rgba(0,0,0,.04);
     }
-    .index-item:hover,.index-item:focus-visible{background:#f1f7ff;border-color:#9ebadb}
-    .index-item small{display:block;margin-top:.18rem;color:var(--muted);font-size:.8rem;font-weight:600;line-height:1.35}
-    .tag{
-      display:inline-block;margin-top:.35rem;padding:.18rem .48rem;border:1px solid #d2dfeb;
-      border-radius:999px;color:#4d6376;background:#f8fbfe;font-size:.72rem;font-weight:800
+
+    .index-item:hover,
+    .index-item:focus-visible{
+      background:#f1f7ff;
+      border-color:#9ebadb;
     }
-    .section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+
+    .index-item small{
+      display:block;
+      margin-top:.18rem;
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:600;
+      line-height:1.35;
+    }
+
+    .section-grid{
+      display:grid;
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
+      gap:1rem;
+    }
+
     details{
-      border:1px solid var(--line);border-radius:18px;background:#fff;
-      overflow:hidden;box-shadow:0 5px 16px rgba(0,0,0,.06)
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:
+        0 5px 16px rgba(0,0,0,.06);
     }
+
     summary{
-      display:flex;align-items:center;gap:.8rem;min-height:76px;padding:.9rem 1rem;
-      list-style:none;cursor:pointer;background:var(--blue);color:#fff
+      display:flex;
+      align-items:center;
+      gap:.8rem;
+      min-height:76px;
+      padding:.9rem 1rem;
+      list-style:none;
+      cursor:pointer;
+      background:var(--blue);
+      color:#fff;
     }
-    summary::-webkit-details-marker{display:none}
-    summary:hover,summary:focus-visible{background:var(--blue2)}
-    .section-icon{font-size:1.55rem}
-    .section-name{flex:1;font-size:1.1rem;font-weight:850}
-    .section-name small{display:block;color:#e9f2ff;font-size:.78rem;font-weight:650}
-    .arrow{font-size:1.2rem;font-weight:900;transition:transform .18s ease}
-    details[open] .arrow{transform:rotate(90deg)}
-    .section-body{padding:.9rem;background:var(--soft)}
-    .section-body p{margin:0 0 .65rem;color:var(--muted);font-size:.93rem}
-    .shelf-list{display:grid;gap:.55rem}
+
+    summary::-webkit-details-marker{
+      display:none;
+    }
+
+    summary:hover,
+    summary:focus-visible{
+      background:var(--blue2);
+    }
+
+    .section-icon{
+      font-size:1.55rem;
+    }
+
+    .section-name{
+      flex:1;
+      font-size:1.1rem;
+      font-weight:850;
+    }
+
+    .section-name small{
+      display:block;
+      color:#e9f2ff;
+      font-size:.78rem;
+      font-weight:650;
+    }
+
+    .arrow{
+      font-size:1.2rem;
+      font-weight:900;
+      transition:transform .18s ease;
+    }
+
+    details[open] .arrow{
+      transform:rotate(90deg);
+    }
+
+    .section-body{
+      padding:.9rem;
+      background:var(--soft);
+    }
+
+    .section-body p{
+      margin:0 0 .65rem;
+      color:var(--muted);
+      font-size:.93rem;
+    }
+
+    .shelf-list{
+      display:grid;
+      gap:.55rem;
+    }
+
     .shelf{
-      position:relative;display:block;padding:.68rem .78rem;border:1px solid #d5e2ef;
-      border-radius:12px;background:#fff;color:var(--blue);font-weight:800;text-decoration:none
+      position:relative;
+      display:block;
+      padding:.68rem .78rem;
+      border:1px solid #d5e2ef;
+      border-radius:12px;
+      background:#fff;
+      color:var(--blue);
+      font-weight:800;
+      text-decoration:none;
     }
-    .shelf small{display:block;color:var(--muted);font-size:.77rem;font-weight:600}
-    .future{color:#687786;background:#f7f9fb}
-    .lock{position:absolute;right:.6rem;top:.55rem}
+
+    .shelf small{
+      display:block;
+      color:var(--muted);
+      font-size:.77rem;
+      font-weight:600;
+    }
+
+    .future{
+      color:#687786;
+      background:#f7f9fb;
+    }
+
+    .lock{
+      position:absolute;
+      right:.6rem;
+      top:.55rem;
+    }
+
     .your-library{
-      margin-top:1.25rem;padding:1.1rem 1.15rem;border:2px solid #b8cee0;
-      border-radius:18px;background:#f8fcff
+      margin-top:1.25rem;
+      padding:1.1rem 1.15rem;
+      border:2px solid #b8cee0;
+      border-radius:18px;
+      background:#f8fcff;
     }
-    .your-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap}
-    .your-library h2{margin:0;color:var(--blue);font-size:1.35rem}
-    .your-library p{margin:.25rem 0 0;color:var(--muted)}
+
+    .your-head{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .your-library h2{
+      margin:0;
+      color:var(--blue);
+      font-size:1.35rem;
+    }
+
+    .your-library p{
+      margin:.25rem 0 0;
+      color:var(--muted);
+    }
+
     .your-btn{
-      border:0;border-radius:12px;padding:.62rem .9rem;background:var(--blue);
-      color:#fff;font-weight:850;cursor:pointer
+      border:0;
+      border-radius:12px;
+      padding:.62rem .9rem;
+      background:var(--blue);
+      color:#fff;
+      font-weight:850;
+      cursor:pointer;
     }
-    .your-btn:hover{background:var(--blue2)}
-    .actions{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.8rem}
+
+    .your-btn:hover{
+      background:var(--blue2);
+    }
+
+    .actions{
+      display:flex;
+      gap:.45rem;
+      flex-wrap:wrap;
+      margin-top:.8rem;
+    }
+
     .pill{
-      padding:.35rem .62rem;border:1px solid #c9d9e6;border-radius:999px;
-      background:#fff;color:#31506b;font-size:.82rem;font-weight:800
+      padding:.35rem .62rem;
+      border:1px solid #c9d9e6;
+      border-radius:999px;
+      background:#fff;
+      color:#31506b;
+      font-size:.82rem;
+      font-weight:800;
     }
+
     .shade{
-      position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
-      padding:1rem;background:rgba(27,43,57,.56)
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:1rem;
+      background:rgba(27,43,57,.56);
     }
+
     .dialog{
-      width:min(520px,100%);padding:1.3rem;border:1px solid var(--line);
-      border-radius:18px;background:#fff;text-align:center;box-shadow:0 18px 48px rgba(0,0,0,.24)
+      width:min(520px,100%);
+      padding:1.3rem;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      text-align:center;
+      box-shadow:
+        0 18px 48px rgba(0,0,0,.24);
     }
-    .dialog h2{margin:.2rem 0 .6rem;color:var(--blue)}
-    .dialog-actions{display:flex;justify-content:center;gap:.55rem;flex-wrap:wrap;margin-top:1rem}
-    .dialog-actions a,.dialog-actions button{
-      min-width:120px;padding:.62rem .85rem;border:1px solid var(--blue);
-      border-radius:999px;font-weight:800;text-decoration:none;cursor:pointer
+
+    .dialog h2{
+      margin:.2rem 0 .6rem;
+      color:var(--blue);
     }
-    .dialog-actions a{background:var(--blue);color:#fff}
-    .dialog-actions button{background:#fff;color:var(--blue)}
-    
+
+    .dialog-actions{
+      display:flex;
+      justify-content:center;
+      gap:.55rem;
+      flex-wrap:wrap;
+      margin-top:1rem;
+    }
+
+    .dialog-actions a,
+    .dialog-actions button{
+      min-width:120px;
+      padding:.62rem .85rem;
+      border:1px solid var(--blue);
+      border-radius:999px;
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+    }
+
+    .dialog-actions a{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .dialog-actions button{
+      background:#fff;
+      color:var(--blue);
+    }
+
     .doorstep{
       margin:.75rem 0 1rem;
       padding:1rem 1.05rem;
@@ -126,8 +402,15 @@
       color:#315c6d;
       line-height:1.5;
     }
-    .doorstep strong{color:var(--blue)}
-    .doorstep p{margin:.25rem 0}
+
+    .doorstep strong{
+      color:var(--blue);
+    }
+
+    .doorstep p{
+      margin:.25rem 0;
+    }
+
     .fun-zone{
       margin:0 0 1.25rem;
       padding:1rem;
@@ -135,194 +418,634 @@
       border-radius:17px;
       background:#fffaf1;
     }
-    .fun-zone h2{margin:0 0 .25rem;color:var(--blue);font-size:1.25rem}
-    .fun-zone p{margin:.2rem 0 .7rem;color:var(--muted);font-size:.94rem}
-    .fun-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
-    .fun-link{
-      display:block;padding:.8rem .9rem;border:1px solid #dccfae;border-radius:13px;
-      background:#fff;color:var(--blue);text-decoration:none;font-weight:850
-    }
-    .fun-link:hover,.fun-link:focus-visible{background:#fff6df;border-color:#c7b476}
-    .fun-link small{display:block;margin-top:.2rem;color:var(--muted);font-size:.79rem;font-weight:600}
 
-    @media(max-width:820px){.index-grid,.section-grid,.fun-grid{grid-template-columns:1fr}}
-    @media(max-width:620px){body{font-size:17px}.panel{padding:1rem}.brand{font-size:1.65rem}}
+    .fun-zone h2{
+      margin:0 0 .25rem;
+      color:var(--blue);
+      font-size:1.25rem;
+    }
+
+    .fun-zone p{
+      margin:.2rem 0 .7rem;
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .fun-grid{
+      display:grid;
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
+      gap:.65rem;
+    }
+
+    .fun-link{
+      display:block;
+      padding:.8rem .9rem;
+      border:1px solid #dccfae;
+      border-radius:13px;
+      background:#fff;
+      color:var(--blue);
+      text-decoration:none;
+      font-weight:850;
+    }
+
+    .fun-link:hover,
+    .fun-link:focus-visible{
+      background:#fff6df;
+      border-color:#c7b476;
+    }
+
+    .fun-link small{
+      display:block;
+      margin-top:.2rem;
+      color:var(--muted);
+      font-size:.79rem;
+      font-weight:600;
+    }
+
+    @media(max-width:820px){
+      .index-grid,
+      .section-grid,
+      .fun-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:620px){
+      body{
+        font-size:17px;
+      }
+
+      .panel{
+        padding:1rem;
+      }
+
+      .brand{
+        font-size:1.65rem;
+      }
+    }
   </style>
 </head>
+
 <body>
 
   <div class="topbar">
-    <div class="brand">The Library</div>
-    <div class="top-actions">
-      <a class="top-link" href="events-calendar.html">Calendar</a>
-      <a class="top-link" href="events.html">Events List</a>
-      <a class="top-link" href="members-info.html">Members Hub</a>
+
+    <div class="brand">
+      The Library
     </div>
+
+    <div class="top-actions">
+
+      <a
+        class="top-link"
+        href="events-calendar.html"
+      >
+        Calendar
+      </a>
+
+      <a
+        class="top-link"
+        href="events.html"
+      >
+        Events List
+      </a>
+
+      <a
+        class="top-link"
+        href="members-info.html"
+      >
+        Members Hub
+      </a>
+
+    </div>
+
   </div>
+
 
   <div class="shell">
+
     <main class="panel">
-      <p class="intro"><strong>News, information, pictures, writing and useful things from around Sanctuary.</strong></p>
+
+      <p class="intro">
+        <strong>
+          News, information, pictures, writing and useful things
+          from around Sanctuary.
+        </strong>
+      </p>
+
       <div class="privacy-note">
-        Some material may be available to everyone; other material may require your
-        Personal PIN or appropriate authority for privacy reasons.
+        Some material may be available to everyone;
+        other material may require your Personal PIN
+        or appropriate authority for privacy reasons.
       </div>
 
-      <section class="doorstep" id="doorstepMessage" hidden>
-        <p><strong>Welcome to Sanctuary Club.</strong> You can see what’s happening, read News &amp; Notices and browse generally available Library material.</p>
-        <p><strong>There’s more inside.</strong> To see private member information and facilities, return Home, choose <strong>Info</strong>, and enter your Membership Number and Personal PIN.</p>
-        <p>Not quite ready for that yet? Ask one of our Website Helpers for a little help getting started.</p>
+
+      <section
+        class="doorstep"
+        id="doorstepMessage"
+        hidden
+      >
+
+        <p>
+          <strong>Welcome to Sanctuary Club.</strong>
+          You can see what’s happening, read News &amp; Notices
+          and browse generally available Library material.
+        </p>
+
+        <p>
+          <strong>There’s more inside.</strong>
+          To see private member information and facilities,
+          return Home, choose <strong>Info</strong>,
+          and enter your Membership Number and Personal PIN.
+        </p>
+
+        <p>
+          Not quite ready for that yet?
+          Ask one of our Website Helpers
+          for a little help getting started.
+        </p>
+
       </section>
 
-      <section class="fun-zone" id="justForFun">
-        <h2>Just for fun</h2>
-        <p>Have a go in Your Design Studio. Your work stays private and cannot be published from here.</p>
+
+      <section
+        class="fun-zone"
+        id="justForFun"
+      >
+
+        <h2>
+          Just for fun
+        </h2>
+
+        <p>
+          Have a go in Your Design Studio.
+          Your work stays private and cannot be published from here.
+        </p>
+
         <div class="fun-grid">
-          <a class="fun-link" href="host-area.html?fun=write">
+
+          <a
+            class="fun-link"
+            href="host-area.html?fun=write"
+          >
             ✍️ Write Something
-            <small>Write, arrange, preview, print or save your work to your own computer.</small>
+
+            <small>
+              Write, arrange, preview, print
+              or save your work to your own computer.
+            </small>
           </a>
-          <a class="fun-link" href="host-area.html?fun=create">
+
+          <a
+            class="fun-link"
+            href="host-area.html?fun=create"
+          >
             🎨 Create Something
-            <small>Play with words, pictures and drawing, then print or save your creation.</small>
+
+            <small>
+              Play with words, pictures and drawing,
+              then print or save your creation.
+            </small>
           </a>
+
         </div>
+
       </section>
 
-      <h1 class="index-title">News &amp; Notices</h1>
+
+      <h1 class="index-title">
+        News &amp; Notices
+      </h1>
+
 
       <div class="index-grid">
-        <a class="index-item" href="library-publication.html?id=welcome">
+
+        <a
+          class="index-item"
+          href="library-publications.html?id=welcome"
+        >
           Welcome to Sanctuary Club
-          <small>A short introduction to the Club and the different ways in.</small>
+
+          <small>
+            A short introduction to the Club
+            and the different ways in.
+          </small>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=sanctuary-ethos">
+
+        <a
+          class="index-item"
+          href="library-publications.html?id=sanctuary-ethos"
+        >
           Sanctuary Ethos
-          <small>The principles and spirit that guide Sanctuary Club.</small>
+
+          <small>
+            The principles and spirit
+            that guide Sanctuary Club.
+          </small>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=privacy-intro">
+
+        <a
+          class="index-item"
+          href="library-publications.html?id=privacy-intro"
+        >
           Your Privacy at Sanctuary
-          <small>A short introduction to how privacy works around the Club.</small>
+
+          <small>
+            A short introduction to how privacy
+            works around the Club.
+          </small>
         </a>
 
-        <a class="index-item" href="privacy-charter.html">
+
+        <a
+          class="index-item"
+          href="privacy-charter.html"
+        >
           Privacy &amp; Security
-          <small>How Sanctuary Club protects privacy, security and personal information.</small>
+
+          <small>
+            How Sanctuary Club protects privacy,
+            security and personal information.
+          </small>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=taking-part">
+
+        <a
+          class="index-item"
+          href="library-publications.html?id=taking-part"
+        >
           Taking Part in Sanctuary Club
-          <small>Ways to organise, contribute, create and help.</small>
+
+          <small>
+            Ways to organise, contribute,
+            create and help.
+          </small>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=design-studio-intro">
-          Your Design Studio
-          <small>A short invitation to create something of your own.</small>
-        </a>
 
-        <a class="index-item" href="library-publication.html?id=design-studio-guide">
+        <a
+          class="index-item"
+          href="library-publications.html?id=design-studio-guide"
+        >
           Your Design Studio Guide
-          <small>A printable guide to creating publications in Your Design Studio.</small>
+
+          <small>
+            A printable guide to creating publications
+            in Your Design Studio.
+          </small>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=check-information">
+
+        <a
+          class="index-item"
+          href="library-publications.html?id=check-information"
+        >
           Please Check Your Information
-          <small>A quick hand-over reminder about your details and Personal PIN.</small>
+
+          <small>
+            A quick hand-over reminder
+            about your details and Personal PIN.
+          </small>
         </a>
 
-        <a class="index-item" href="notices-preview.html">
+
+        <a
+          class="index-item"
+          href="notices-preview.html"
+        >
           Current Club Notices
-          <small>Current notices and announcements from around Sanctuary.</small>
+
+          <small>
+            Current notices and announcements
+            from around Sanctuary.
+          </small>
         </a>
+
       </div>
+
 
       <div class="section-grid">
-        <details>
-          <summary>
-            <span class="section-icon">🖼️</span>
-            <span class="section-name">The Gallery<small>Photographs, artwork and creative work</small></span>
-            <span class="arrow">›</span>
-          </summary>
-          <div class="section-body">
-            <p>Creative work members would like to share.</p>
-            <div class="shelf-list">
-              <button class="shelf protected" type="button" data-privacy="pin">Members’ Art <span class="lock">🔒</span><small>Published artwork approved for the Gallery.</small></button>
-              <button class="shelf protected" type="button" data-privacy="pin">Members’ Photography <span class="lock">🔒</span><small>Photographs contributed by members.</small></button>
-            </div>
-          </div>
-        </details>
 
         <details>
-          <summary>
-            <span class="section-icon">✍️</span>
-            <span class="section-name">Members’ Articles &amp; Stories<small>Writing contributed by Sanctuary members</small></span>
-            <span class="arrow">›</span>
-          </summary>
-          <div class="section-body">
-            <p>Writer contributions appear here after editorial approval.</p>
-            <div class="shelf-list">
-              <button class="shelf protected" type="button" data-privacy="pin">Articles <span class="lock">🔒</span><small>Published articles from Sanctuary writers.</small></button>
-              <button class="shelf protected" type="button" data-privacy="pin">Stories &amp; Recollections <span class="lock">🔒</span><small>Stories, memories and experiences.</small></button>
-            </div>
-          </div>
-        </details>
 
-        <details>
           <summary>
-            <span class="section-icon">📌</span>
-            <span class="section-name">Useful Information<small>Useful local information and contacts</small></span>
-            <span class="arrow">›</span>
-          </summary>
-          <div class="section-body">
-            <p>Information worth keeping handy.</p>
-            <div class="shelf-list">
-              <div class="shelf future">Useful Numbers<small>Contact numbers members may find useful.</small></div>
-              <div class="shelf future">Workmen &amp; Trades<small>Local trades and services.</small></div>
-              <div class="shelf future">Places to Eat &amp; Visit<small>Members’ recommendations.</small></div>
-            </div>
-          </div>
-        </details>
 
-        <details>
-          <summary>
-            <span class="section-icon">🏛️</span>
-            <span class="section-name">Residents Association<small>Association news, information and documents</small></span>
-            <span class="arrow">›</span>
+            <span class="section-icon">
+              🖼️
+            </span>
+
+            <span class="section-name">
+              The Gallery
+
+              <small>
+                Photographs, artwork and creative work
+              </small>
+            </span>
+
+            <span class="arrow">
+              ›
+            </span>
+
           </summary>
+
           <div class="section-body">
+
             <p>
-              Some material may be available to everyone; other material may require your
-              Personal PIN or appropriate authority for privacy reasons.
+              Creative work members would like to share.
             </p>
+
             <div class="shelf-list">
-              <div class="shelf future">Association News<small>Published information for Sanctuary residents.</small></div>
-              <button class="shelf protected" type="button" data-privacy="pin">General Meetings <span class="lock">🔒</span><small>Notices, agendas and retained meeting information.</small></button>
-              <button class="shelf protected" type="button" data-privacy="role">Panel Area <span class="lock">🔒</span><small>Detailed structure to be agreed with the Panel.</small></button>
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="pin"
+              >
+                Members’ Art
+                <span class="lock">🔒</span>
+
+                <small>
+                  Published artwork approved for the Gallery.
+                </small>
+              </button>
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="pin"
+              >
+                Members’ Photography
+                <span class="lock">🔒</span>
+
+                <small>
+                  Photographs contributed by members.
+                </small>
+              </button>
+
             </div>
+
           </div>
+
         </details>
+
+
+        <details>
+
+          <summary>
+
+            <span class="section-icon">
+              ✍️
+            </span>
+
+            <span class="section-name">
+              Members’ Articles &amp; Stories
+
+              <small>
+                Writing contributed by Sanctuary members
+              </small>
+            </span>
+
+            <span class="arrow">
+              ›
+            </span>
+
+          </summary>
+
+          <div class="section-body">
+
+            <p>
+              Writer contributions appear here
+              after editorial approval.
+            </p>
+
+            <div class="shelf-list">
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="pin"
+              >
+                Articles
+                <span class="lock">🔒</span>
+
+                <small>
+                  Published articles from Sanctuary writers.
+                </small>
+              </button>
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="pin"
+              >
+                Stories &amp; Recollections
+                <span class="lock">🔒</span>
+
+                <small>
+                  Stories, memories and experiences.
+                </small>
+              </button>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+        <details>
+
+          <summary>
+
+            <span class="section-icon">
+              📌
+            </span>
+
+            <span class="section-name">
+              Useful Information
+
+              <small>
+                Useful local information and contacts
+              </small>
+            </span>
+
+            <span class="arrow">
+              ›
+            </span>
+
+          </summary>
+
+          <div class="section-body">
+
+            <p>
+              Information worth keeping handy.
+            </p>
+
+            <div class="shelf-list">
+
+              <div class="shelf future">
+                Useful Numbers
+
+                <small>
+                  Contact numbers members may find useful.
+                </small>
+              </div>
+
+              <div class="shelf future">
+                Workmen &amp; Trades
+
+                <small>
+                  Local trades and services.
+                </small>
+              </div>
+
+              <div class="shelf future">
+                Places to Eat &amp; Visit
+
+                <small>
+                  Members’ recommendations.
+                </small>
+              </div>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+        <details>
+
+          <summary>
+
+            <span class="section-icon">
+              🏛️
+            </span>
+
+            <span class="section-name">
+              Residents Association
+
+              <small>
+                Association news, information and documents
+              </small>
+            </span>
+
+            <span class="arrow">
+              ›
+            </span>
+
+          </summary>
+
+          <div class="section-body">
+
+            <p>
+              Some material may be available to everyone;
+              other material may require your Personal PIN
+              or appropriate authority for privacy reasons.
+            </p>
+
+            <div class="shelf-list">
+
+              <div class="shelf future">
+                Association News
+
+                <small>
+                  Published information for Sanctuary residents.
+                </small>
+              </div>
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="pin"
+              >
+                General Meetings
+                <span class="lock">🔒</span>
+
+                <small>
+                  Notices, agendas and retained meeting information.
+                </small>
+              </button>
+
+              <button
+                class="shelf protected"
+                type="button"
+                data-privacy="role"
+              >
+                Panel Area
+                <span class="lock">🔒</span>
+
+                <small>
+                  Detailed structure to be agreed with the Panel.
+                </small>
+              </button>
+
+            </div>
+
+          </div>
+
+        </details>
+
       </div>
 
+
       <section class="your-library">
+
         <div class="your-head">
+
           <div>
-            <h2>📂 Your Library</h2>
-            <p>Everything you are working on or have contributed, in one place.</p>
+
+            <h2>
+              📂 Your Library
+            </h2>
+
+            <p>
+              Everything you are working on or have contributed,
+              in one place.
+            </p>
+
           </div>
-          <button class="your-btn protected" type="button" data-privacy="pin">Open Your Library 🔒</button>
+
+          <button
+            class="your-btn protected"
+            type="button"
+            data-privacy="pin"
+          >
+            Open Your Library 🔒
+          </button>
+
         </div>
 
+
         <div class="actions">
-          <span class="pill">Drafts — Delete</span>
-          <span class="pill">Published Work — Edit</span>
-          <span class="pill">Save to my computer</span>
-          <span class="pill">Withdraw</span>
+
+          <span class="pill">
+            Drafts — Delete
+          </span>
+
+          <span class="pill">
+            Published Work — Edit
+          </span>
+
+          <span class="pill">
+            Save to my computer
+          </span>
+
+          <span class="pill">
+            Withdraw
+          </span>
+
         </div>
+
       </section>
+
     </main>
+
   </div>
+
 
   <script>
     function privateAccessOpen(){
@@ -333,80 +1056,174 @@
       );
     }
 
+
     function closeMessage(){
-      document.getElementById("libraryMessage")?.remove();
+      document
+        .getElementById("libraryMessage")
+        ?.remove();
     }
 
-    function showMessage(text, returnHome){
+
+    function showMessage(
+      text,
+      returnHome
+    ){
       closeMessage();
 
-      const shade = document.createElement("div");
-      shade.id = "libraryMessage";
-      shade.className = "shade";
+      const shade =
+        document.createElement("div");
+
+      shade.id =
+        "libraryMessage";
+
+      shade.className =
+        "shade";
+
       shade.innerHTML = `
-        <div class="dialog" role="dialog" aria-modal="true">
-          <div style="font-size:2rem" aria-hidden="true">🔒</div>
-          <h2>Private Library material</h2>
-          <p>${text}</p>
-          <div class="dialog-actions">
-            ${returnHome ? '<a href="index.html">Return Home</a>' : ''}
-            <button id="stayLibrary" type="button">Stay in Library</button>
+        <div
+          class="dialog"
+          role="dialog"
+          aria-modal="true"
+        >
+
+          <div
+            style="font-size:2rem"
+            aria-hidden="true"
+          >
+            🔒
           </div>
+
+          <h2>
+            Private Library material
+          </h2>
+
+          <p>
+            ${text}
+          </p>
+
+          <div class="dialog-actions">
+
+            ${
+              returnHome
+                ? '<a href="index.html">Return Home</a>'
+                : ''
+            }
+
+            <button
+              id="stayLibrary"
+              type="button"
+            >
+              Stay in Library
+            </button>
+
+          </div>
+
         </div>
       `;
 
-      document.body.appendChild(shade);
-      document.getElementById("stayLibrary")?.addEventListener("click",closeMessage);
-      shade.addEventListener("click",e=>{ if(e.target===shade) closeMessage(); });
+      document.body.appendChild(
+        shade
+      );
+
+      document
+        .getElementById("stayLibrary")
+        ?.addEventListener(
+          "click",
+          closeMessage
+        );
+
+      shade.addEventListener(
+        "click",
+        event => {
+
+          if (event.target === shade) {
+            closeMessage();
+          }
+
+        }
+      );
     }
 
-    document.querySelectorAll(".protected").forEach(item=>{
-      item.addEventListener("click",()=>{
-        const privacy = item.dataset.privacy || "pin";
 
-        if(privacy === "pin"){
-          if(!privateAccessOpen()){
-            showMessage(
-              "To see member information and private Library material, please return Home, choose Info and enter your Personal PIN.",
-              true
-            );
-            return;
+    document
+      .querySelectorAll(".protected")
+      .forEach(item => {
+
+        item.addEventListener(
+          "click",
+          () => {
+
+            const privacy =
+              item.dataset.privacy ||
+              "pin";
+
+            if (privacy === "pin") {
+
+              if (!privateAccessOpen()) {
+
+                showMessage(
+                  "To see member information and private Library material, please return Home, choose Info and enter your Personal PIN.",
+                  true
+                );
+
+                return;
+              }
+
+              showMessage(
+                "This Library section is ready for its published material.",
+                false
+              );
+
+              return;
+            }
+
+
+            if (privacy === "role") {
+
+              if (!privateAccessOpen()) {
+
+                showMessage(
+                  "Please return Home, choose Info and enter your Personal PIN before opening protected Association material.",
+                  true
+                );
+
+                return;
+              }
+
+              showMessage(
+                "This protected area is ready for the Residents Association structure once it has been agreed.",
+                false
+              );
+            }
+
           }
-
-          showMessage("This Library section is ready for its published material.",false);
-          return;
-        }
-
-        if(privacy === "role"){
-          if(!privateAccessOpen()){
-            showMessage(
-              "Please return Home, choose Info and enter your Personal PIN before opening protected Association material.",
-              true
-            );
-            return;
-          }
-
-          showMessage(
-            "This protected area is ready for the Residents Association structure once it has been agreed.",
-            false
-          );
-        }
+        );
       });
-    });
   </script>
+
 
   <script>
     (function(){
-      const doorstep=document.getElementById("doorstepMessage");
-      if(!doorstep)return;
 
-      const fromWhatsOn=Boolean(
-        window.SanctuaryAccess &&
-        typeof window.SanctuaryAccess.isWhatsOnRoute==="function" &&
-        window.SanctuaryAccess.isWhatsOnRoute()
-      );
+      const doorstep =
+        document.getElementById(
+          "doorstepMessage"
+        );
 
-      doorstep.hidden=!fromWhatsOn;
+      if (!doorstep) {
+        return;
+      }
+
+      const fromWhatsOn =
+        Boolean(
+          window.SanctuaryAccess &&
+          typeof window.SanctuaryAccess.isWhatsOnRoute === "function" &&
+          window.SanctuaryAccess.isWhatsOnRoute()
+        );
+
+      doorstep.hidden =
+        !fromWhatsOn;
+
     })();
   </script>
 

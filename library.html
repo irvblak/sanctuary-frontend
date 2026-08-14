@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=LIB_INDEX_2"></script>
+  <script src="access.js?v=FUN_LIBRARY_1"></script>
 
   <style>
     :root{
@@ -116,7 +116,36 @@
     }
     .dialog-actions a{background:var(--blue);color:#fff}
     .dialog-actions button{background:#fff;color:var(--blue)}
-    @media(max-width:820px){.index-grid,.section-grid{grid-template-columns:1fr}}
+    
+    .doorstep{
+      margin:.75rem 0 1rem;
+      padding:1rem 1.05rem;
+      border:1px solid #bfdce7;
+      border-radius:15px;
+      background:#eef7fa;
+      color:#315c6d;
+      line-height:1.5;
+    }
+    .doorstep strong{color:var(--blue)}
+    .doorstep p{margin:.25rem 0}
+    .fun-zone{
+      margin:0 0 1.25rem;
+      padding:1rem;
+      border:1px solid #d6dfeb;
+      border-radius:17px;
+      background:#fffaf1;
+    }
+    .fun-zone h2{margin:0 0 .25rem;color:var(--blue);font-size:1.25rem}
+    .fun-zone p{margin:.2rem 0 .7rem;color:var(--muted);font-size:.94rem}
+    .fun-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+    .fun-link{
+      display:block;padding:.8rem .9rem;border:1px solid #dccfae;border-radius:13px;
+      background:#fff;color:var(--blue);text-decoration:none;font-weight:850
+    }
+    .fun-link:hover,.fun-link:focus-visible{background:#fff6df;border-color:#c7b476}
+    .fun-link small{display:block;margin-top:.2rem;color:var(--muted);font-size:.79rem;font-weight:600}
+
+    @media(max-width:820px){.index-grid,.section-grid,.fun-grid{grid-template-columns:1fr}}
     @media(max-width:620px){body{font-size:17px}.panel{padding:1rem}.brand{font-size:1.65rem}}
   </style>
 </head>
@@ -139,31 +168,73 @@
         Personal PIN or appropriate authority for privacy reasons.
       </div>
 
+      <section class="doorstep" id="doorstepMessage" hidden>
+        <p><strong>Welcome to Sanctuary Club.</strong> You can see what’s happening, read News &amp; Notices and browse generally available Library material.</p>
+        <p><strong>There’s more inside.</strong> To see private member information and facilities, return Home, choose <strong>Info</strong>, and enter your Membership Number and Personal PIN.</p>
+        <p>Not quite ready for that yet? Ask one of our Website Helpers for a little help getting started.</p>
+      </section>
+
+      <section class="fun-zone" id="justForFun">
+        <h2>Just for fun</h2>
+        <p>Have a go in Your Design Studio. Your work stays private and cannot be published from here.</p>
+        <div class="fun-grid">
+          <a class="fun-link" href="host-area.html?fun=write">
+            ✍️ Write Something
+            <small>Write, arrange, preview, print or save your work to your own computer.</small>
+          </a>
+          <a class="fun-link" href="host-area.html?fun=create">
+            🎨 Create Something
+            <small>Play with words, pictures and drawing, then print or save your creation.</small>
+          </a>
+        </div>
+      </section>
+
       <h1 class="index-title">News &amp; Notices</h1>
 
       <div class="index-grid">
+        <a class="index-item" href="library-publication.html?id=welcome">
+          Welcome to Sanctuary Club
+          <small>A short introduction to the Club and the different ways in.</small>
+        </a>
+
         <a class="index-item" href="library-publication.html?id=sanctuary-ethos">
           Sanctuary Ethos
           <small>The principles and spirit that guide Sanctuary Club.</small>
-          <span class="tag">Publication</span>
         </a>
 
-        <a class="index-item" href="library-publication.html?id=design-studio-guide">
-          Your Design Studio Guide
-          <small>A printable guide to creating publications in Your Design Studio.</small>
-          <span class="tag">Publication</span>
+        <a class="index-item" href="library-publication.html?id=privacy-intro">
+          Your Privacy at Sanctuary
+          <small>A short introduction to how privacy works around the Club.</small>
         </a>
 
         <a class="index-item" href="privacy-charter.html">
           Privacy &amp; Security
           <small>How Sanctuary Club protects privacy, security and personal information.</small>
-          <span class="tag">Publication</span>
+        </a>
+
+        <a class="index-item" href="library-publication.html?id=taking-part">
+          Taking Part in Sanctuary Club
+          <small>Ways to organise, contribute, create and help.</small>
+        </a>
+
+        <a class="index-item" href="library-publication.html?id=design-studio-intro">
+          Your Design Studio
+          <small>A short invitation to create something of your own.</small>
+        </a>
+
+        <a class="index-item" href="library-publication.html?id=design-studio-guide">
+          Your Design Studio Guide
+          <small>A printable guide to creating publications in Your Design Studio.</small>
+        </a>
+
+        <a class="index-item" href="library-publication.html?id=check-information">
+          Please Check Your Information
+          <small>A quick hand-over reminder about your details and Personal PIN.</small>
         </a>
 
         <a class="index-item" href="notices-preview.html">
           Current Club Notices
           <small>Current notices and announcements from around Sanctuary.</small>
-          <span class="tag">Notices</span>
         </a>
       </div>
 
@@ -323,5 +394,21 @@
       });
     });
   </script>
+
+  <script>
+    (function(){
+      const doorstep=document.getElementById("doorstepMessage");
+      if(!doorstep)return;
+
+      const fromWhatsOn=Boolean(
+        window.SanctuaryAccess &&
+        typeof window.SanctuaryAccess.isWhatsOnRoute==="function" &&
+        window.SanctuaryAccess.isWhatsOnRoute()
+      );
+
+      doorstep.hidden=!fromWhatsOn;
+    })();
+  </script>
+
 </body>
 </html>

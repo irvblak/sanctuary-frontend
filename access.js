@@ -1,6 +1,6 @@
 // access.js — Sanctuary Club access control
-// 8-hour front-page session, Personal PIN protection,
-// public What's On / Library route, and private Info route
+// 8-hour front-page session, Starter/default PIN protection
+// and public What's On / private Info route awareness
 
 (function () {
   "use strict";
@@ -11,7 +11,8 @@
 
   /*
     Resident-specific private access is deliberately separate from the
-    general Sanctuary session.
+    general 8-hour Sanctuary session. It is granted only after a successful
+    Membership Number + Personal PIN login during this browser session.
   */
   const PRIVATE_KEY = "sanctuaryPrivateAccess";
   const PRIVATE_TIME_KEY = "sanctuaryPrivateAccessTime";
@@ -23,14 +24,11 @@
 
   const ROUTE_MESSAGE =
     "To use the other Club facilities, please return Home, " +
-    "choose Info and enter your Membership Number and Personal PIN.";
+    "choose Info and enter or create your personal PIN.";
 
   function validSession() {
     const value = sessionStorage.getItem(KEY);
-    const time = parseInt(
-      sessionStorage.getItem(TIME_KEY) || "0",
-      10
-    );
+    const time = parseInt(sessionStorage.getItem(TIME_KEY) || "0", 10);
 
     if (value !== "granted") return false;
     if (!time) return false;
@@ -79,10 +77,7 @@
   function decodeJwtPayload(token) {
     try {
       const part = token.split(".")[1];
-
-      if (!part) {
-        return {};
-      }
+      if (!part) return {};
 
       let normalised = part
         .replace(/-/g, "+")
@@ -93,7 +88,6 @@
       }
 
       return JSON.parse(atob(normalised));
-
     } catch (error) {
       return {};
     }
@@ -101,25 +95,15 @@
 
   function tokenHasExpired(data) {
     const exp = Number(data && data.exp);
-
-    return Boolean(
-      exp &&
-      Date.now() >= exp * 1000
-    );
+    return Boolean(exp && Date.now() >= exp * 1000);
   }
 
   function hasUsablePersonalMemberToken() {
     const token = getMemberToken();
-
-    if (!token) {
-      return false;
-    }
+    if (!token) return false;
 
     const data = decodeJwtPayload(token);
-
-    if (!data || tokenHasExpired(data)) {
-      return false;
-    }
+    if (!data || tokenHasExpired(data)) return false;
 
     return !(
       data.starter_pin === true ||
@@ -132,19 +116,13 @@
   }
 
   function verifiedPrivateAccess() {
-    return (
-      validPrivateSession() &&
-      hasUsablePersonalMemberToken()
-    );
+    return validPrivateSession() && hasUsablePersonalMemberToken();
   }
 
   function currentRoute() {
     const route = sessionStorage.getItem(ROUTE_KEY);
 
-    if (
-      route === ROUTE_WHATS_ON ||
-      route === ROUTE_INFO
-    ) {
+    if (route === ROUTE_WHATS_ON || route === ROUTE_INFO) {
       return route;
     }
 
@@ -160,18 +138,11 @@
   }
 
   function setRoute(route) {
-    if (
-      route !== ROUTE_WHATS_ON &&
-      route !== ROUTE_INFO
-    ) {
+    if (route !== ROUTE_WHATS_ON && route !== ROUTE_INFO) {
       return false;
     }
 
-    sessionStorage.setItem(
-      ROUTE_KEY,
-      route
-    );
-
+    sessionStorage.setItem(ROUTE_KEY, route);
     return true;
   }
 
@@ -179,9 +150,6 @@
     sessionStorage.removeItem(ROUTE_KEY);
   }
 
-  /*
-    Pages that need no Sanctuary front-page session.
-  */
   const UNGATED_PAGES = new Set([
     "index.html",
     "about.html",
@@ -191,21 +159,10 @@
   ]);
 
   /*
-    Pages forming the What's On / Library route.
+    Pages available before a personal Membership PIN has been completed.
 
-    These remain available without Personal PIN verification.
-  */
-  const WHATS_ON_ALLOWED = new Set([
-    "events-calendar.html",
-    "events.html",
-    "events-details.html",
-    "notices-preview.html",
-    "library.html",
-    "library-publication.html"
-  ]);
-
-  /*
-    Pages available before personal PIN verification.
+    Members Directory and Club Information are deliberately absent:
+    both now require a valid personal-PIN member session.
   */
   const STARTER_ALLOWED = new Set([
     "members-info.html",
@@ -213,19 +170,26 @@
     "events-calendar.html",
     "events.html",
     "events-details.html",
-    "notices-preview.html",
-    "library.html",
-    "library-publication.html",
     "forgot-pin.html"
   ]);
 
   /*
-    Explicit member/private facilities.
+    The public What's On journey contains only the Calendar,
+    Events List and individual Event Notices.
   */
+  const WHATS_ON_ALLOWED = new Set([
+    "events-calendar.html",
+    "events.html",
+    "events-details.html"
+  ]);
+
   const INFO_ONLY_PAGES = new Set([
     "members-info.html",
     "your-info.html",
     "members-directory.html",
+    "library.html",
+    "library-publication.html",
+    "notices-preview.html",
 
     "events-activities.html",
     "host-area.html",
@@ -247,66 +211,8 @@
   ]);
 
   const page =
-    (
-      location.pathname.split("/").pop() ||
-      "index.html"
-    ).toLowerCase();
-
-  /*
-    JUST FOR FUN
-
-    The normal Your Design Studio page is private.
-    The two explicit fun URLs are deliberately allowed through
-    What's On / Library without Personal PIN verification.
-
-      your-design-studio.html?fun=write
-      your-design-studio.html?fun=create
-  */
-  function isFunStudioUrl(url = location.href) {
-    try {
-      const parsed =
-        new URL(
-          url,
-          location.href
-        );
-
-      const destination =
-        (
-          parsed.pathname
-            .split("/")
-            .pop() ||
-          "index.html"
-        ).toLowerCase();
-
-      if (
-        destination !==
-        "your-design-studio.html"
-      ) {
-        return false;
-      }
-
-      const fun =
-        (
-          parsed.searchParams.get("fun") ||
-          ""
-        ).toLowerCase();
-
-      return (
-        fun === "write" ||
-        fun === "create"
-      );
-
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function isFunStudioPage() {
-    return (
-      page === "your-design-studio.html" &&
-      isFunStudioUrl(location.href)
-    );
-  }
+    (location.pathname.split("/").pop() || "index.html")
+      .toLowerCase();
 
   function independentlyProtectedPage(pageName) {
     return (
@@ -318,42 +224,21 @@
   function destinationPage(url) {
     try {
       return (
-        new URL(
-          url,
-          location.href
-        )
+        new URL(url, location.href)
           .pathname
           .split("/")
-          .pop() ||
-        "index.html"
+          .pop() || "index.html"
       ).toLowerCase();
-
     } catch (error) {
       return "";
     }
   }
 
   function isInfoOnlyDestination(url) {
-    const destination =
-      destinationPage(url);
+    const destination = destinationPage(url);
 
-    if (!destination) {
-      return false;
-    }
-
-    /*
-      Explicit fun Studio links must not be treated
-      as private member destinations.
-    */
-    if (isFunStudioUrl(url)) {
-      return false;
-    }
-
-    if (
-      INFO_ONLY_PAGES.has(destination)
-    ) {
-      return true;
-    }
+    if (!destination) return false;
+    if (INFO_ONLY_PAGES.has(destination)) return true;
 
     return (
       destination.startsWith("members-") ||
@@ -363,26 +248,18 @@
       destination.startsWith("creative-canvas") ||
       destination.startsWith("event-booking") ||
       destination.startsWith("booking-") ||
+      destination.startsWith("notices-preview") ||
+      destination.startsWith("library") ||
       destination.startsWith("archive") ||
       destination.startsWith("payment")
     );
   }
 
   function ensureRouteMessageStyles() {
-    if (
-      document.getElementById(
-        "sanctuary-route-style"
-      )
-    ) {
-      return;
-    }
+    if (document.getElementById("sanctuary-route-style")) return;
 
-    const style =
-      document.createElement("style");
-
-    style.id =
-      "sanctuary-route-style";
-
+    const style = document.createElement("style");
+    style.id = "sanctuary-route-style";
     style.textContent = `
       .sanctuary-route-shade {
         position: fixed;
@@ -460,114 +337,47 @@
   }
 
   function closeRouteMessage() {
-    document
-      .getElementById(
-        "sanctuary-route-message"
-      )
-      ?.remove();
+    document.getElementById("sanctuary-route-message")?.remove();
   }
 
   function showRouteMessage() {
     closeRouteMessage();
     ensureRouteMessageStyles();
 
-    const shade =
-      document.createElement("div");
-
-    shade.id =
-      "sanctuary-route-message";
-
-    shade.className =
-      "sanctuary-route-shade";
-
-    shade.setAttribute(
-      "role",
-      "dialog"
-    );
-
-    shade.setAttribute(
-      "aria-modal",
-      "true"
-    );
-
-    shade.setAttribute(
-      "aria-labelledby",
-      "sanctuary-route-heading"
-    );
+    const shade = document.createElement("div");
+    shade.id = "sanctuary-route-message";
+    shade.className = "sanctuary-route-shade";
+    shade.setAttribute("role", "dialog");
+    shade.setAttribute("aria-modal", "true");
+    shade.setAttribute("aria-labelledby", "sanctuary-route-heading");
 
     shade.innerHTML = `
       <div class="sanctuary-route-dialog">
-        <div
-          class="sanctuary-route-lock"
-          aria-hidden="true"
-        >
-          🔒
-        </div>
-
-        <h2 id="sanctuary-route-heading">
-          There’s more inside
-        </h2>
-
-        <p>
-          ${ROUTE_MESSAGE}
-          If you would like a little help getting started,
-          ask one of our Website Helpers.
-        </p>
-
+        <div class="sanctuary-route-lock" aria-hidden="true">🔒</div>
+        <h2 id="sanctuary-route-heading">Other Club facilities</h2>
+        <p>${ROUTE_MESSAGE}</p>
         <div class="sanctuary-route-actions">
-          <a
-            class="sanctuary-route-home"
-            href="index.html"
-          >
-            Return Home
-          </a>
-
-          <button
-            class="sanctuary-route-close"
-            type="button"
-          >
-            Stay here
-          </button>
+          <a class="sanctuary-route-home" href="index.html">Return Home</a>
+          <button class="sanctuary-route-close" type="button">Stay here</button>
         </div>
       </div>
     `;
 
     document.body.appendChild(shade);
 
-    const closeButton =
-      shade.querySelector(
-        ".sanctuary-route-close"
-      );
+    const closeButton = shade.querySelector(".sanctuary-route-close");
+    closeButton?.addEventListener("click", closeRouteMessage);
 
-    closeButton?.addEventListener(
-      "click",
-      closeRouteMessage
-    );
-
-    shade.addEventListener(
-      "click",
-      event => {
-        if (event.target === shade) {
-          closeRouteMessage();
-        }
-      }
-    );
+    shade.addEventListener("click", event => {
+      if (event.target === shade) closeRouteMessage();
+    });
 
     document.addEventListener(
       "keydown",
       function escapeHandler(event) {
-        if (
-          event.key !== "Escape"
-        ) {
-          return;
-        }
-
+        if (event.key !== "Escape") return;
         closeRouteMessage();
-
-        document.removeEventListener(
-          "keydown",
-          escapeHandler
-        );
+        document.removeEventListener("keydown", escapeHandler);
       }
     );
 
@@ -575,35 +385,18 @@
   }
 
   function protectPrivateLinks() {
-    if (!isWhatsOnRoute()) {
-      return;
-    }
+    if (!isWhatsOnRoute()) return;
 
     document
-      .querySelectorAll(
-        "a[href], [data-private-destination]"
-      )
+      .querySelectorAll("a[href], [data-private-destination]")
       .forEach(element => {
-
         const target =
           element.getAttribute("href") ||
-          element.getAttribute(
-            "data-private-destination"
-          ) ||
+          element.getAttribute("data-private-destination") ||
           "";
 
-        /*
-          Never interfere with the two explicit
-          Just for fun YDS links.
-        */
-        if (isFunStudioUrl(target)) {
-          return;
-        }
-
         const explicitlyPrivate =
-          element.hasAttribute(
-            "data-private-route"
-          );
+          element.hasAttribute("data-private-route");
 
         if (
           !explicitlyPrivate &&
@@ -614,97 +407,62 @@
 
         element.setAttribute(
           "aria-label",
-          `${
-            element.textContent.trim()
-          } — available through Info`
+          `${element.textContent.trim()} — available through Info`
         );
 
-        element.addEventListener(
-          "click",
-          event => {
-            event.preventDefault();
-            event.stopPropagation();
-            showRouteMessage();
-          }
-        );
+        element.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          showRouteMessage();
+        });
       });
   }
 
-  window.SanctuaryAccess =
-    Object.freeze({
+  window.SanctuaryAccess = Object.freeze({
+    routeKey: ROUTE_KEY,
 
-      routeKey: ROUTE_KEY,
+    routes: Object.freeze({
+      whatsOn: ROUTE_WHATS_ON,
+      info: ROUTE_INFO
+    }),
 
-      routes:
-        Object.freeze({
-          whatsOn:
-            ROUTE_WHATS_ON,
+    routeMessage: ROUTE_MESSAGE,
 
-          info:
-            ROUTE_INFO
-        }),
+    validSession,
+    validPrivateSession,
+    grantPrivateSession,
+    clearPrivateSession,
+    hasUsablePersonalMemberToken,
+    verifiedPrivateAccess,
+    starterOrDefaultAccess,
 
-      routeMessage:
-        ROUTE_MESSAGE,
+    currentRoute,
+    isWhatsOnRoute,
+    isInfoRoute,
 
-      validSession,
-      validPrivateSession,
-      grantPrivateSession,
-      clearPrivateSession,
-      hasUsablePersonalMemberToken,
-      verifiedPrivateAccess,
-      starterOrDefaultAccess,
+    setRoute,
+    clearRoute,
 
-      currentRoute,
-      isWhatsOnRoute,
-      isInfoRoute,
+    isInfoOnlyDestination,
+    protectPrivateLinks,
 
-      setRoute,
-      clearRoute,
+    showRouteMessage,
+    closeRouteMessage
+  });
 
-      isInfoOnlyDestination,
-
-      isFunStudioUrl,
-      isFunStudioPage,
-
-      protectPrivateLinks,
-
-      showRouteMessage,
-      closeRouteMessage
-    });
-
-  /*
-    Pages that need no general Sanctuary session.
-  */
-  if (
-    UNGATED_PAGES.has(page)
-  ) {
+  if (UNGATED_PAGES.has(page)) {
     return;
   }
 
-  /*
-    All other pages need a valid Sanctuary session first.
-  */
   if (!validSession()) {
     clearRoute();
-
-    location.replace(
-      "index.html"
-    );
-
+    location.replace("index.html");
     return;
   }
 
-  /*
-    WHAT'S ON / LIBRARY ROUTE
-
-    Calendar, Events, Notices, Library and the two
-    explicit Just for fun YDS routes are allowed.
-  */
   if (
     isWhatsOnRoute() &&
     !WHATS_ON_ALLOWED.has(page) &&
-    !isFunStudioPage() &&
     !independentlyProtectedPage(page)
   ) {
     sessionStorage.setItem(
@@ -712,48 +470,43 @@
       ROUTE_MESSAGE
     );
 
-    location.replace(
-      "index.html"
-    );
-
+    location.replace("index.html");
     return;
   }
 
   /*
     PRIVATE MEMBER FACILITIES
 
-    A stored token alone is not enough.
-    Personal PIN verification must have established
-    the private Sanctuary session.
-
-    The explicit Just for fun YDS route is exempt.
+    A token left in localStorage from an earlier visit is NOT enough.
+    The resident must have deliberately verified with Membership Number
+    and Personal PIN during the present private session.
   */
-  const PRIVATE_MEMBER_PAGES =
-    new Set([
-      "members-directory.html",
+  const PRIVATE_MEMBER_PAGES = new Set([
+    "members-directory.html",
+    "library.html",
+    "library-publication.html",
 
-      "events-activities.html",
-      "host-area.html",
-      "host-my-events.html",
-      "host-event-form.html",
-      "host-state-of-play.html",
+    "events-activities.html",
+    "host-area.html",
+    "host-my-events.html",
+    "host-event-form.html",
+    "host-state-of-play.html",
 
-      "your-design-studio.html",
-      "design-studio.html",
-      "creative-canvas.html",
+    "your-design-studio.html",
+    "design-studio.html",
+    "creative-canvas.html",
 
-      "event-booking.html",
-      "booking-management.html",
+    "event-booking.html",
+    "booking-management.html",
 
-      "club-roles.html",
-      "archives.html",
-      "payments.html",
-      "services.html"
-    ]);
+    "club-roles.html",
+    "archives.html",
+    "payments.html",
+    "services.html"
+  ]);
 
   if (
     PRIVATE_MEMBER_PAGES.has(page) &&
-    !isFunStudioPage() &&
     !verifiedPrivateAccess() &&
     !independentlyProtectedPage(page)
   ) {
@@ -764,31 +517,19 @@
 
     sessionStorage.setItem(
       "hubGateDestination",
-      location.pathname +
-      location.search
+      location.pathname + location.search
     );
 
-    location.replace(
-      "your-info.html?needPin=1"
-    );
-
+    location.replace("your-info.html?needPin=1");
     return;
   }
 
-  /*
-    Protect private links dynamically when the page
-    has been entered through What's On / Library.
-  */
-  if (
-    document.readyState ===
-    "loading"
-  ) {
+  if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
       protectPrivateLinks,
       { once: true }
     );
-
   } else {
     protectPrivateLinks();
   }

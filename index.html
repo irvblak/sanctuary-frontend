@@ -129,7 +129,10 @@
     <section class="hero">
       <div class="hero-overlay">
 
-        <h1 class="hero-title" style="margin-top:0.5rem; text-align:center;">
+        <h1
+          class="hero-title"
+          style="margin-top:0.5rem; text-align:center;"
+        >
           Sanctuary Club
         </h1>
 
@@ -171,10 +174,10 @@
             <button
               class="hero-button route-button"
               data-route="whats-on"
-              data-target="events-calendar.html"
+              data-target="library.html"
               type="button"
             >
-              What’s On
+              What’s On / Library
             </button>
 
             <button
@@ -236,8 +239,8 @@
       Two distinct routes begin here:
 
       whats-on
-        Public, view-only journey through the Calendar,
-        Events List and Event Notices.
+        Access Code route beginning at the
+        What's On / Library index.
 
       info
         Private member journey beginning at Member Login.
@@ -275,11 +278,18 @@
         localStorage.getItem(ACCESS_UNTIL_KEY) || "0"
       );
 
-      return Boolean(until && Date.now() < until);
+      return Boolean(
+        until &&
+        Date.now() < until
+      );
     }
 
     function refreshSessionAccess() {
-      sessionStorage.setItem("sanctuaryAccess", "granted");
+      sessionStorage.setItem(
+        "sanctuaryAccess",
+        "granted"
+      );
+
       sessionStorage.setItem(
         "sanctuaryAccessTime",
         String(Date.now())
@@ -287,7 +297,8 @@
     }
 
     function grantAccess() {
-      const until = Date.now() + ACCESS_TTL_MS;
+      const until =
+        Date.now() + ACCESS_TTL_MS;
 
       localStorage.setItem(
         ACCESS_UNTIL_KEY,
@@ -306,15 +317,22 @@
 
     function setEntryRoute(route) {
       if (!validRoute(route)) {
-        sessionStorage.removeItem(ROUTE_KEY);
+        sessionStorage.removeItem(
+          ROUTE_KEY
+        );
         return;
       }
 
-      sessionStorage.setItem(ROUTE_KEY, route);
+      sessionStorage.setItem(
+        ROUTE_KEY,
+        route
+      );
     }
 
     function clearEntryRoute() {
-      sessionStorage.removeItem(ROUTE_KEY);
+      sessionStorage.removeItem(
+        ROUTE_KEY
+      );
     }
 
     function clearPendingJourney() {
@@ -322,18 +340,32 @@
       pendingRoute = "";
     }
 
-    function continueToTarget(target, route) {
-      if (!target || !validRoute(route)) return;
+    function continueToTarget(
+      target,
+      route
+    ) {
+      if (
+        !target ||
+        !validRoute(route)
+      ) {
+        return;
+      }
 
       setEntryRoute(route);
-      window.location.href = target;
+
+      window.location.href =
+        target;
     }
 
-    function showGateFor(target, route) {
+    function showGateFor(
+      target,
+      route
+    ) {
       pendingTarget = target;
       pendingRoute = route;
 
       gate.style.display = "block";
+
       input.value = "";
       input.focus();
     }
@@ -344,130 +376,207 @@
     }
 
     function clearAccess() {
-      localStorage.removeItem(ACCESS_UNTIL_KEY);
+      localStorage.removeItem(
+        ACCESS_UNTIL_KEY
+      );
 
-      sessionStorage.removeItem("sanctuaryAccess");
-      sessionStorage.removeItem("sanctuaryAccessTime");
-      sessionStorage.removeItem("authToken");
-      sessionStorage.removeItem("currentMemberId");
+      sessionStorage.removeItem(
+        "sanctuaryAccess"
+      );
+
+      sessionStorage.removeItem(
+        "sanctuaryAccessTime"
+      );
+
+      sessionStorage.removeItem(
+        "authToken"
+      );
+
+      sessionStorage.removeItem(
+        "currentMemberId"
+      );
 
       clearEntryRoute();
       clearPendingJourney();
     }
 
     /*
-      WHAT'S ON / INFO
+      WHAT'S ON / LIBRARY AND INFO
 
-      The route marker is set whenever one of the two home
-      entrances is selected, including while the existing
-      eight-hour access period remains active.
+      The route marker is set whenever one of the two
+      home entrances is selected, including while the
+      existing eight-hour Access Code period remains active.
     */
-    document.querySelectorAll(".route-button").forEach(button => {
-      button.addEventListener("click", () => {
-        const target = button.dataset.target || "";
-        const route = button.dataset.route || "";
+    document
+      .querySelectorAll(".route-button")
+      .forEach(button => {
 
-        if (!target || !validRoute(route)) return;
+        button.addEventListener(
+          "click",
+          () => {
 
-        if (hasValidAccess()) {
-          refreshSessionAccess();
-          continueToTarget(target, route);
-          return;
-        }
+            const target =
+              button.dataset.target || "";
 
-        showGateFor(target, route);
+            const route =
+              button.dataset.route || "";
+
+            if (
+              !target ||
+              !validRoute(route)
+            ) {
+              return;
+            }
+
+            if (hasValidAccess()) {
+              refreshSessionAccess();
+
+              continueToTarget(
+                target,
+                route
+              );
+
+              return;
+            }
+
+            showGateFor(
+              target,
+              route
+            );
+          }
+        );
       });
-    });
 
     /*
       ACCESS CODE SUBMISSION
     */
-    submitButton.addEventListener("click", () => {
-      const enteredCode = String(input.value || "")
-        .trim()
-        .toUpperCase();
+    submitButton.addEventListener(
+      "click",
+      () => {
 
-      if (enteredCode !== ACCESS_CODE) {
-        input.select();
-        return;
-      }
+        const enteredCode =
+          String(input.value || "")
+            .trim()
+            .toUpperCase();
 
-      if (!pendingTarget || !validRoute(pendingRoute)) {
+        if (
+          enteredCode !== ACCESS_CODE
+        ) {
+          input.select();
+          return;
+        }
+
+        if (
+          !pendingTarget ||
+          !validRoute(pendingRoute)
+        ) {
+          hideGate();
+          clearPendingJourney();
+          return;
+        }
+
+        const target =
+          pendingTarget;
+
+        const route =
+          pendingRoute;
+
+        grantAccess();
+
+        logoutLink.style.display =
+          "inline";
+
         hideGate();
         clearPendingJourney();
-        return;
+
+        continueToTarget(
+          target,
+          route
+        );
       }
-
-      const target = pendingTarget;
-      const route = pendingRoute;
-
-      grantAccess();
-      logoutLink.style.display = "inline";
-
-      hideGate();
-      clearPendingJourney();
-
-      continueToTarget(target, route);
-    });
+    );
 
     /*
       SHOW / HIDE ACCESS CODE
     */
-    eyeButton.addEventListener("click", () => {
-      const showing = input.type === "text";
+    eyeButton.addEventListener(
+      "click",
+      () => {
 
-      input.type = showing ? "password" : "text";
+        const showing =
+          input.type === "text";
 
-      eyeButton.setAttribute(
-        "aria-label",
-        showing
-          ? "Show access code"
-          : "Hide access code"
-      );
+        input.type =
+          showing
+            ? "password"
+            : "text";
 
-      input.focus();
-    });
+        eyeButton.setAttribute(
+          "aria-label",
+          showing
+            ? "Show access code"
+            : "Hide access code"
+        );
+
+        input.focus();
+      }
+    );
 
     /*
       ENTER KEY
     */
-    input.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        submitButton.click();
+    input.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Enter") {
+          submitButton.click();
+        }
       }
-    });
+    );
 
     /*
       LOGOUT
 
-      The public/member route marker is deliberately cleared,
-      so a later visit begins with a fresh choice between
-      What's On and Info.
+      The route marker is deliberately cleared,
+      so a later visit begins with a fresh choice
+      between What's On / Library and Info.
     */
-    logoutLink.addEventListener("click", event => {
-      event.preventDefault();
+    logoutLink.addEventListener(
+      "click",
+      event => {
 
-      clearAccess();
-      hideGate();
+        event.preventDefault();
 
-      logoutLink.style.display = "none";
-      input.type = "password";
+        clearAccess();
+        hideGate();
 
-      eyeButton.setAttribute(
-        "aria-label",
-        "Show or hide access code"
-      );
-    });
+        logoutLink.style.display =
+          "none";
+
+        input.type = "password";
+
+        eyeButton.setAttribute(
+          "aria-label",
+          "Show or hide access code"
+        );
+      }
+    );
 
     /*
       INITIAL PAGE STATE
     */
     if (hasValidAccess()) {
-      logoutLink.style.display = "inline";
+      logoutLink.style.display =
+        "inline";
+
       refreshSessionAccess();
+
     } else {
       clearAccess();
-      logoutLink.style.display = "none";
+
+      logoutLink.style.display =
+        "none";
     }
   </script>
 

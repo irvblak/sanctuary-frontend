@@ -1,6 +1,7 @@
 // access.js — Sanctuary Club access control
-// 8-hour front-page session, Starter/default PIN protection
-// and public What's On / private Info route awareness
+// 8-hour front-page session, Personal PIN protection,
+// What's On / Library route, Info route,
+// and restricted Just for fun access to the Design Studio.
 
 (function () {
   "use strict";
@@ -9,11 +10,6 @@
   const TIME_KEY = "sanctuaryAccessTime";
   const TTL = 8 * 60 * 60 * 1000;
 
-  /*
-    Resident-specific private access is deliberately separate from the
-    general 8-hour Sanctuary session. It is granted only after a successful
-    Membership Number + Personal PIN login during this browser session.
-  */
   const PRIVATE_KEY = "sanctuaryPrivateAccess";
   const PRIVATE_TIME_KEY = "sanctuaryPrivateAccessTime";
   const PRIVATE_TTL = 8 * 60 * 60 * 1000;
@@ -23,12 +19,15 @@
   const ROUTE_INFO = "info";
 
   const ROUTE_MESSAGE =
-    "To use the other Club facilities, please return Home, " +
-    "choose Info and enter or create your personal PIN.";
+    "To see member information and private Club facilities, please return Home, " +
+    "choose Info and enter your Membership Number and Personal PIN.";
 
   function validSession() {
     const value = sessionStorage.getItem(KEY);
-    const time = parseInt(sessionStorage.getItem(TIME_KEY) || "0", 10);
+    const time = parseInt(
+      sessionStorage.getItem(TIME_KEY) || "0",
+      10
+    );
 
     if (value !== "granted") return false;
     if (!time) return false;
@@ -77,6 +76,7 @@
   function decodeJwtPayload(token) {
     try {
       const part = token.split(".")[1];
+
       if (!part) return {};
 
       let normalised = part
@@ -88,6 +88,7 @@
       }
 
       return JSON.parse(atob(normalised));
+
     } catch (error) {
       return {};
     }
@@ -95,15 +96,23 @@
 
   function tokenHasExpired(data) {
     const exp = Number(data && data.exp);
-    return Boolean(exp && Date.now() >= exp * 1000);
+
+    return Boolean(
+      exp &&
+      Date.now() >= exp * 1000
+    );
   }
 
   function hasUsablePersonalMemberToken() {
     const token = getMemberToken();
+
     if (!token) return false;
 
     const data = decodeJwtPayload(token);
-    if (!data || tokenHasExpired(data)) return false;
+
+    if (!data || tokenHasExpired(data)) {
+      return false;
+    }
 
     return !(
       data.starter_pin === true ||
@@ -116,13 +125,19 @@
   }
 
   function verifiedPrivateAccess() {
-    return validPrivateSession() && hasUsablePersonalMemberToken();
+    return (
+      validPrivateSession() &&
+      hasUsablePersonalMemberToken()
+    );
   }
 
   function currentRoute() {
     const route = sessionStorage.getItem(ROUTE_KEY);
 
-    if (route === ROUTE_WHATS_ON || route === ROUTE_INFO) {
+    if (
+      route === ROUTE_WHATS_ON ||
+      route === ROUTE_INFO
+    ) {
       return route;
     }
 
@@ -138,7 +153,10 @@
   }
 
   function setRoute(route) {
-    if (route !== ROUTE_WHATS_ON && route !== ROUTE_INFO) {
+    if (
+      route !== ROUTE_WHATS_ON &&
+      route !== ROUTE_INFO
+    ) {
       return false;
     }
 
@@ -150,6 +168,9 @@
     sessionStorage.removeItem(ROUTE_KEY);
   }
 
+  /*
+    Pages needing no Sanctuary front-page session.
+  */
   const UNGATED_PAGES = new Set([
     "index.html",
     "about.html",
@@ -159,10 +180,7 @@
   ]);
 
   /*
-    Pages available before a personal Membership PIN has been completed.
-
-    Members Directory and Club Information are deliberately absent:
-    both now require a valid personal-PIN member session.
+    Pages available before a Personal PIN has been completed.
   */
   const STARTER_ALLOWED = new Set([
     "members-info.html",
@@ -174,32 +192,38 @@
   ]);
 
   /*
-    The public What's On journey contains only the Calendar,
-    Events List and individual Event Notices.
+    WHAT'S ON / LIBRARY
+
+    These pages are available through the Access Code route
+    without Personal PIN verification.
   */
   const WHATS_ON_ALLOWED = new Set([
     "events-calendar.html",
     "events.html",
-    "events-details.html"
+    "events-details.html",
+    "notices-preview.html",
+    "library.html",
+    "library-publication.html"
   ]);
 
+  /*
+    Private member facilities.
+
+    host-area.html is the actual Your Design Studio page.
+    Ordinary access to it remains private.
+
+    The two explicit ?fun= routes are dealt with separately below.
+  */
   const INFO_ONLY_PAGES = new Set([
     "members-info.html",
     "your-info.html",
     "members-directory.html",
-    "library.html",
-    "library-publication.html",
-    "notices-preview.html",
 
     "events-activities.html",
     "host-area.html",
     "host-my-events.html",
     "host-event-form.html",
     "host-state-of-play.html",
-
-    "your-design-studio.html",
-    "design-studio.html",
-    "creative-canvas.html",
 
     "event-booking.html",
     "booking-management.html",
@@ -211,8 +235,57 @@
   ]);
 
   const page =
-    (location.pathname.split("/").pop() || "index.html")
-      .toLowerCase();
+    (
+      location.pathname.split("/").pop() ||
+      "index.html"
+    ).toLowerCase();
+
+  /*
+    JUST FOR FUN
+
+    Only these two URLs receive the special lower-access route:
+
+      host-area.html?fun=write
+      host-area.html?fun=create
+
+    Plain host-area.html remains fully protected.
+  */
+  function isFunStudioUrl(url = location.href) {
+    try {
+      const parsed = new URL(url, location.href);
+
+      const destination =
+        (
+          parsed.pathname.split("/").pop() ||
+          "index.html"
+        ).toLowerCase();
+
+      if (destination !== "host-area.html") {
+        return false;
+      }
+
+      const fun =
+        (
+          parsed.searchParams.get("fun") ||
+          ""
+        ).toLowerCase();
+
+      return (
+        fun === "write" ||
+        fun === "create"
+      );
+
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function isFunStudioPage() {
+    return (
+      page === "host-area.html" &&
+      isFunStudioUrl(location.href)
+    );
+  }
 
   function independentlyProtectedPage(pageName) {
     return (
@@ -227,8 +300,10 @@
         new URL(url, location.href)
           .pathname
           .split("/")
-          .pop() || "index.html"
+          .pop() ||
+        "index.html"
       ).toLowerCase();
+
     } catch (error) {
       return "";
     }
@@ -238,28 +313,43 @@
     const destination = destinationPage(url);
 
     if (!destination) return false;
-    if (INFO_ONLY_PAGES.has(destination)) return true;
+
+    /*
+      Explicit Just for fun Studio links are deliberately
+      exempt from normal Host Area protection.
+    */
+    if (isFunStudioUrl(url)) {
+      return false;
+    }
+
+    if (INFO_ONLY_PAGES.has(destination)) {
+      return true;
+    }
 
     return (
       destination.startsWith("members-") ||
       destination.startsWith("your-info") ||
       destination.startsWith("host-") ||
-      destination.startsWith("your-design-studio") ||
-      destination.startsWith("creative-canvas") ||
       destination.startsWith("event-booking") ||
       destination.startsWith("booking-") ||
-      destination.startsWith("notices-preview") ||
-      destination.startsWith("library") ||
       destination.startsWith("archive") ||
       destination.startsWith("payment")
     );
   }
 
   function ensureRouteMessageStyles() {
-    if (document.getElementById("sanctuary-route-style")) return;
+    if (
+      document.getElementById(
+        "sanctuary-route-style"
+      )
+    ) {
+      return;
+    }
 
     const style = document.createElement("style");
+
     style.id = "sanctuary-route-style";
+
     style.textContent = `
       .sanctuary-route-shade {
         position: fixed;
@@ -337,7 +427,11 @@
   }
 
   function closeRouteMessage() {
-    document.getElementById("sanctuary-route-message")?.remove();
+    document
+      .getElementById(
+        "sanctuary-route-message"
+      )
+      ?.remove();
   }
 
   function showRouteMessage() {
@@ -345,39 +439,101 @@
     ensureRouteMessageStyles();
 
     const shade = document.createElement("div");
+
     shade.id = "sanctuary-route-message";
     shade.className = "sanctuary-route-shade";
-    shade.setAttribute("role", "dialog");
-    shade.setAttribute("aria-modal", "true");
-    shade.setAttribute("aria-labelledby", "sanctuary-route-heading");
+
+    shade.setAttribute(
+      "role",
+      "dialog"
+    );
+
+    shade.setAttribute(
+      "aria-modal",
+      "true"
+    );
+
+    shade.setAttribute(
+      "aria-labelledby",
+      "sanctuary-route-heading"
+    );
 
     shade.innerHTML = `
       <div class="sanctuary-route-dialog">
-        <div class="sanctuary-route-lock" aria-hidden="true">🔒</div>
-        <h2 id="sanctuary-route-heading">Other Club facilities</h2>
-        <p>${ROUTE_MESSAGE}</p>
-        <div class="sanctuary-route-actions">
-          <a class="sanctuary-route-home" href="index.html">Return Home</a>
-          <button class="sanctuary-route-close" type="button">Stay here</button>
+
+        <div
+          class="sanctuary-route-lock"
+          aria-hidden="true"
+        >
+          🔒
         </div>
+
+        <h2 id="sanctuary-route-heading">
+          There’s more inside
+        </h2>
+
+        <p>
+          ${ROUTE_MESSAGE}
+          If you would like a little help getting started,
+          ask one of our Website Helpers.
+        </p>
+
+        <div class="sanctuary-route-actions">
+
+          <a
+            class="sanctuary-route-home"
+            href="index.html"
+          >
+            Return Home
+          </a>
+
+          <button
+            class="sanctuary-route-close"
+            type="button"
+          >
+            Stay here
+          </button>
+
+        </div>
+
       </div>
     `;
 
     document.body.appendChild(shade);
 
-    const closeButton = shade.querySelector(".sanctuary-route-close");
-    closeButton?.addEventListener("click", closeRouteMessage);
+    const closeButton =
+      shade.querySelector(
+        ".sanctuary-route-close"
+      );
 
-    shade.addEventListener("click", event => {
-      if (event.target === shade) closeRouteMessage();
-    });
+    closeButton?.addEventListener(
+      "click",
+      closeRouteMessage
+    );
+
+    shade.addEventListener(
+      "click",
+      event => {
+        if (event.target === shade) {
+          closeRouteMessage();
+        }
+      }
+    );
 
     document.addEventListener(
       "keydown",
       function escapeHandler(event) {
-        if (event.key !== "Escape") return;
+
+        if (event.key !== "Escape") {
+          return;
+        }
+
         closeRouteMessage();
-        document.removeEventListener("keydown", escapeHandler);
+
+        document.removeEventListener(
+          "keydown",
+          escapeHandler
+        );
       }
     );
 
@@ -385,18 +541,35 @@
   }
 
   function protectPrivateLinks() {
-    if (!isWhatsOnRoute()) return;
+    if (!isWhatsOnRoute()) {
+      return;
+    }
 
     document
-      .querySelectorAll("a[href], [data-private-destination]")
+      .querySelectorAll(
+        "a[href], [data-private-destination]"
+      )
       .forEach(element => {
+
         const target =
           element.getAttribute("href") ||
-          element.getAttribute("data-private-destination") ||
+          element.getAttribute(
+            "data-private-destination"
+          ) ||
           "";
 
+        /*
+          Do not interfere with the two explicit
+          Just for fun Studio links.
+        */
+        if (isFunStudioUrl(target)) {
+          return;
+        }
+
         const explicitlyPrivate =
-          element.hasAttribute("data-private-route");
+          element.hasAttribute(
+            "data-private-route"
+          );
 
         if (
           !explicitlyPrivate &&
@@ -407,62 +580,95 @@
 
         element.setAttribute(
           "aria-label",
-          `${element.textContent.trim()} — available through Info`
+          `${
+            element.textContent.trim()
+          } — available through Info`
         );
 
-        element.addEventListener("click", event => {
-          event.preventDefault();
-          event.stopPropagation();
-          showRouteMessage();
-        });
+        element.addEventListener(
+          "click",
+          event => {
+            event.preventDefault();
+            event.stopPropagation();
+            showRouteMessage();
+          }
+        );
       });
   }
 
-  window.SanctuaryAccess = Object.freeze({
-    routeKey: ROUTE_KEY,
+  window.SanctuaryAccess =
+    Object.freeze({
 
-    routes: Object.freeze({
-      whatsOn: ROUTE_WHATS_ON,
-      info: ROUTE_INFO
-    }),
+      routeKey: ROUTE_KEY,
 
-    routeMessage: ROUTE_MESSAGE,
+      routes:
+        Object.freeze({
+          whatsOn: ROUTE_WHATS_ON,
+          info: ROUTE_INFO
+        }),
 
-    validSession,
-    validPrivateSession,
-    grantPrivateSession,
-    clearPrivateSession,
-    hasUsablePersonalMemberToken,
-    verifiedPrivateAccess,
-    starterOrDefaultAccess,
+      routeMessage: ROUTE_MESSAGE,
 
-    currentRoute,
-    isWhatsOnRoute,
-    isInfoRoute,
+      validSession,
+      validPrivateSession,
+      grantPrivateSession,
+      clearPrivateSession,
 
-    setRoute,
-    clearRoute,
+      hasUsablePersonalMemberToken,
+      verifiedPrivateAccess,
+      starterOrDefaultAccess,
 
-    isInfoOnlyDestination,
-    protectPrivateLinks,
+      currentRoute,
+      isWhatsOnRoute,
+      isInfoRoute,
 
-    showRouteMessage,
-    closeRouteMessage
-  });
+      setRoute,
+      clearRoute,
 
+      isInfoOnlyDestination,
+
+      isFunStudioUrl,
+      isFunStudioPage,
+
+      protectPrivateLinks,
+
+      showRouteMessage,
+      closeRouteMessage
+    });
+
+  /*
+    Ungated pages need no further action.
+  */
   if (UNGATED_PAGES.has(page)) {
     return;
   }
 
+  /*
+    Every other page first requires a valid
+    Sanctuary front-page session.
+  */
   if (!validSession()) {
     clearRoute();
-    location.replace("index.html");
+
+    location.replace(
+      "index.html"
+    );
+
     return;
   }
 
+  /*
+    WHAT'S ON / LIBRARY ROUTE
+
+    The ordinary open-access destinations are allowed,
+    together with the two explicit Just for fun Studio URLs.
+
+    Plain host-area.html is NOT allowed here.
+  */
   if (
     isWhatsOnRoute() &&
     !WHATS_ON_ALLOWED.has(page) &&
+    !isFunStudioPage() &&
     !independentlyProtectedPage(page)
   ) {
     sessionStorage.setItem(
@@ -470,43 +676,45 @@
       ROUTE_MESSAGE
     );
 
-    location.replace("index.html");
+    location.replace(
+      "index.html"
+    );
+
     return;
   }
 
   /*
     PRIVATE MEMBER FACILITIES
 
-    A token left in localStorage from an earlier visit is NOT enough.
-    The resident must have deliberately verified with Membership Number
-    and Personal PIN during the present private session.
+    A stored member token alone is not enough.
+    Personal PIN verification must have established
+    the private Sanctuary session.
+
+    The two explicit Just for fun Host Area URLs
+    are deliberately exempt.
   */
-  const PRIVATE_MEMBER_PAGES = new Set([
-    "members-directory.html",
-    "library.html",
-    "library-publication.html",
+  const PRIVATE_MEMBER_PAGES =
+    new Set([
+      "members-directory.html",
 
-    "events-activities.html",
-    "host-area.html",
-    "host-my-events.html",
-    "host-event-form.html",
-    "host-state-of-play.html",
+      "events-activities.html",
+      "host-area.html",
+      "host-my-events.html",
+      "host-event-form.html",
+      "host-state-of-play.html",
 
-    "your-design-studio.html",
-    "design-studio.html",
-    "creative-canvas.html",
+      "event-booking.html",
+      "booking-management.html",
 
-    "event-booking.html",
-    "booking-management.html",
-
-    "club-roles.html",
-    "archives.html",
-    "payments.html",
-    "services.html"
-  ]);
+      "club-roles.html",
+      "archives.html",
+      "payments.html",
+      "services.html"
+    ]);
 
   if (
     PRIVATE_MEMBER_PAGES.has(page) &&
+    !isFunStudioPage() &&
     !verifiedPrivateAccess() &&
     !independentlyProtectedPage(page)
   ) {
@@ -517,19 +725,33 @@
 
     sessionStorage.setItem(
       "hubGateDestination",
-      location.pathname + location.search
+      location.pathname +
+      location.search
     );
 
-    location.replace("your-info.html?needPin=1");
+    location.replace(
+      "your-info.html?needPin=1"
+    );
+
     return;
   }
 
-  if (document.readyState === "loading") {
+  /*
+    Once a What's On / Library page has loaded,
+    intercept any links leading onwards into
+    private Club facilities.
+
+    Just for fun links remain available.
+  */
+  if (
+    document.readyState === "loading"
+  ) {
     document.addEventListener(
       "DOMContentLoaded",
       protectPrivateLinks,
       { once: true }
     );
+
   } else {
     protectPrivateLinks();
   }

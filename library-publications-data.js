@@ -1,26 +1,112 @@
-
 /*
-  Sanctuary Club Library — News & Publications
-  ------------------------------------------------
-  One current record per Library item.
+  Sanctuary Club Library publication data
 
-  Later, this file can be replaced by a backend/API without changing
-  library-publication.html or the member-facing Library route.
+  The Library index may contain both Notices and Publications.
+  The N/P distinction is useful to the system, not something members
+  need to understand in order to find material.
+
+  privacy:
+    "access" = ordinary Sanctuary Club access
+    "pin"    = Personal PIN required
+    "role"   = Personal PIN plus appropriate authority
+
+  approval:
+    "direct"    = authorised functional role may publish directly
+    "editorial" = Writer / Artist work remains private until approved
+
+  Publishing rule:
+  A creator may choose Access Code or Personal PIN privacy where permitted.
+  Higher-authority creators may publish at their own level or down to a
+  wider audience, but never up into a level they are not authorised to use.
+
+  Source rule:
+  One publication, one source. The Library indexes/displays the published
+  item; Your Library manages it; YDS remains the editing source.
+
+  Draft/unpublished work may be Deleted.
+  Published work is Withdrawn rather than Deleted.
 */
 
 window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
+  "sanctuary-ethos": {
+    kind: "publication",
+
+    title: "Sanctuary Ethos",
+
+    category: "news-notices",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "The principles and spirit that guide Sanctuary Club.",
+
+    body: `
+      <p class="lead">
+        Sanctuary Club is intended to make it easier for neighbours to know what is
+        happening, keep useful information close at hand, and take part in Club life
+        in whatever way suits them.
+      </p>
+
+      <p>
+        It is designed by residents, for residents, with simplicity, privacy and
+        neighbourliness at its heart.
+      </p>
+
+      <h2>Simple to use</h2>
+
+      <p>
+        The computer should do the thinking. Members should simply be able to find
+        what they want and get on with what they came to do.
+      </p>
+
+      <h2>Privacy with purpose</h2>
+
+      <p>
+        Information should be available to the people who need it, while personal
+        and protected material remains private.
+      </p>
+
+      <h2>Taking part</h2>
+
+      <p>
+        Sanctuary Club should make it easier for residents to organise, contribute,
+        share and help — without making participation complicated.
+      </p>
+
+      <h2>A Club that can grow</h2>
+
+      <p>
+        The website is intended to develop with Sanctuary. New facilities can be
+        added as they become useful, while keeping the familiar structure simple.
+      </p>
+    `
+  },
+
+
   "design-studio-guide": {
-    type: "P",
+    kind: "publication",
 
     title: "Your Design Studio — Quick Guide",
 
-    summary:
-      "A printable guide to creating and arranging publications in Your Design Studio.",
+    category: "news-notices",
 
-    updated: "13 August 2026",
+    privacy: "access",
+
+    approval: "direct",
 
     owner: "Sanctuary Club",
+
+    updated: "14 August 2026",
+
+    summary:
+      "A printable guide to creating and arranging publications in Your Design Studio.",
 
     body: `
       <p class="lead">
@@ -56,14 +142,13 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </ul>
 
       <p>
-        Once the text box is selected, use the appearance controls to change
-        its size, style, colour and alignment.
+        Once the text box is selected, use the appearance controls to change its
+        size, style, colour and alignment.
       </p>
 
       <p>
-        There is no separate <strong>Add Title</strong> button.
-        A title is simply a text box styled as a title and placed wherever
-        you want it on the page.
+        There is no separate <strong>Add Title</strong> button. A title is simply
+        a text box styled as a title and placed wherever you want it on the page.
       </p>
 
       <h3>Add Illustration</h3>
@@ -91,7 +176,9 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <h2>Moving things around</h2>
 
-      <p>Text and illustration boxes are movable.</p>
+      <p>
+        Text and illustration boxes are movable.
+      </p>
 
       <ol>
         <li>Click and hold the box.</li>
@@ -185,14 +272,15 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        The Studio will give you a final opportunity to check before making
-        it available on Sanctuary Club.
+        For ordinary authorised publishing, choose the appropriate Privacy Level:
+        <strong>Access Code</strong> or <strong>Personal PIN</strong>.
+        Additional protected levels appear only where the creator has the
+        appropriate authority.
       </p>
 
       <p>
-        What happens after publication depends on the type of publication and
-        your authorised role. For example, an Event may also appear automatically
-        in the Calendar and Events List.
+        Writer and Artist work remains behind closed doors while it is being created
+        and is submitted for editorial approval before publication.
       </p>
 
       <div class="motto">

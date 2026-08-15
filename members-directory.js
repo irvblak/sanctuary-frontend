@@ -3,82 +3,108 @@
 // Backend-first + local fallback
 // Contact status colours aligned with Your Information (YI)
 // Resident-level multi-role icons
+// Find a Member: first-name search
 
 const STORAGE_KEY = "sanctuaryMembers";
 const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 const ICON_SPRITE = "assets/icons/icons.svg?v=ROLE_ICONS_2";
 
+
 // ---------- Role definitions
+
 const ROLE_DEFINITIONS = {
   host: {
     label: "Event Host",
     icon: "role-host"
   },
+
   activity_organiser: {
     label: "Activity Organiser",
     icon: "role-activity"
   },
+
   committee: {
     label: "Committee",
     icon: "role-committee"
   },
+
   panel: {
     label: "Residents Association Panel",
     icon: "role-panel"
   },
+
   residents_association_panel: {
     label: "Residents Association Panel",
     icon: "role-panel"
   },
+
   treasurer: {
     label: "Treasurer",
     icon: "role-treasurer"
   },
+
   news_contributor: {
     label: "News Contributor",
     icon: "role-news"
   },
+
   editor: {
     label: "Editor",
     icon: "role-editor"
   },
+
   artist: {
     label: "Artist",
     icon: "role-artist"
   },
+
   website_helper: {
     label: "Website Helper",
     icon: "role-helper"
   },
+
   services: {
     label: "Services",
     icon: "role-services"
   },
+
   admin: {
     label: "Administrator",
     icon: "role-admin"
   }
 };
 
+
 // ---------- Load members safely (local fallback)
+
 function loadMembersLocal() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    return JSON.parse(
+      localStorage.getItem(STORAGE_KEY)
+    ) || {};
   } catch {
     return {};
   }
 }
 
+
 // ---------- Load members from backend first
+
 async function loadMembers() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/members-directory`, {
-      method: "GET",
-      headers: { "Accept": "application/json" },
-      mode: "cors"
-    });
+    const res = await fetch(
+      `${BACKEND_URL}/api/members-directory`,
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        },
+        mode: "cors"
+      }
+    );
 
-    const data = await res.json().catch(() => null);
+    const data =
+      await res.json().catch(() => null);
 
     if (
       res.ok &&
@@ -89,6 +115,7 @@ async function loadMembers() {
     ) {
       return data.members;
     }
+
   } catch (err) {
     console.warn(
       "Members Directory backend load failed; using local fallback.",
@@ -99,26 +126,40 @@ async function loadMembers() {
   return loadMembersLocal();
 }
 
+
 // ---------- Helpers
+
 function pad(n) {
   return String(n).padStart(2, "0");
 }
+
 
 function buildSch() {
   return ["SCH"];
 }
 
+
 function buildMews() {
   const list = [];
-  for (let i = 1; i <= 73; i++) list.push(`SM${pad(i)}`);
+
+  for (let i = 1; i <= 73; i++) {
+    list.push(`SM${pad(i)}`);
+  }
+
   return list;
 }
 
+
 function buildCourt() {
   const list = [];
-  for (let i = 1; i <= 43; i++) list.push(`SC${pad(i)}`);
+
+  for (let i = 1; i <= 43; i++) {
+    list.push(`SC${pad(i)}`);
+  }
+
   return list;
 }
+
 
 function hasResidents(data) {
   return (
@@ -128,9 +169,11 @@ function hasResidents(data) {
   );
 }
 
+
 function clean(v) {
   return String(v || "").trim();
 }
+
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -141,12 +184,21 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+
 function normaliseRole(role) {
-  return clean(role).toLowerCase().replace(/[\s-]+/g, "_");
+  return clean(role)
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
 }
 
+
 function residentRoles(resident) {
-  if (!resident || !Array.isArray(resident.roles)) return [];
+  if (
+    !resident ||
+    !Array.isArray(resident.roles)
+  ) {
+    return [];
+  }
 
   return [
     ...new Set(
@@ -157,47 +209,62 @@ function residentRoles(resident) {
   ];
 }
 
+
 function roleIconsHtml(resident) {
-  const roles = residentRoles(resident);
+  const roles =
+    residentRoles(resident);
 
-  if (!roles.length) return "";
+  if (!roles.length) {
+    return "";
+  }
 
-  const icons = roles
-    .map(role => {
-      const def = ROLE_DEFINITIONS[role];
-      if (!def) return "";
+  const icons =
+    roles
+      .map(role => {
+        const def =
+          ROLE_DEFINITIONS[role];
 
-      return `
-        <span
-          title="${escapeHtml(def.label)}"
-          aria-label="${escapeHtml(def.label)}"
-          style="
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            width:30px;
-            height:30px;
-            border-radius:50%;
-            background:#f3f8fc;
-            color:#31506b;
-            margin-right:5px;
-          "
-        >
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            viewBox="0 0 64 64"
-            style="width:22px;height:22px;display:block;"
+        if (!def) {
+          return "";
+        }
+
+        return `
+          <span
+            title="${escapeHtml(def.label)}"
+            aria-label="${escapeHtml(def.label)}"
+            style="
+              display:inline-flex;
+              align-items:center;
+              justify-content:center;
+              width:30px;
+              height:30px;
+              border-radius:50%;
+              background:#f3f8fc;
+              color:#31506b;
+              margin-right:5px;
+            "
           >
-            <use href="${ICON_SPRITE}#${def.icon}"></use>
-          </svg>
-        </span>
-      `;
-    })
-    .filter(Boolean)
-    .join("");
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              viewBox="0 0 64 64"
+              style="
+                width:22px;
+                height:22px;
+                display:block;
+              "
+            >
+              <use href="${ICON_SPRITE}#${def.icon}"></use>
+            </svg>
+          </span>
+        `;
+      })
+      .filter(Boolean)
+      .join("");
 
-  if (!icons) return "";
+  if (!icons) {
+    return "";
+  }
 
   return `
     <div
@@ -214,64 +281,136 @@ function roleIconsHtml(resident) {
   `;
 }
 
+
 function isFilledOrNA(v) {
-  const s = clean(v).toLowerCase();
-  return !!s && (s === "n/a" || s.length > 0);
+  const s =
+    clean(v).toLowerCase();
+
+  return !!s &&
+    (
+      s === "n/a" ||
+      s.length > 0
+    );
 }
+
 
 function hasAnyVisibleContact(data) {
-  if (!hasResidents(data)) return false;
+  if (!hasResidents(data)) {
+    return false;
+  }
 
-  return data.residents.some((res, idx) => {
-    return (
-      clean(res.name) ||
-      clean(res.email) ||
-      clean(res.mobile) ||
-      (idx === 0 && clean(res.landline))
-    );
-  });
+  return data.residents.some(
+    (res, idx) => {
+      return (
+        clean(res.name) ||
+        clean(res.email) ||
+        clean(res.mobile) ||
+        (
+          idx === 0 &&
+          clean(res.landline)
+        )
+      );
+    }
+  );
 }
 
+
 function getContactStatus(data) {
-  if (!data || !data.joined) return "inactive";
-  if (!hasResidents(data)) return "basic";
+  if (!data || !data.joined) {
+    return "inactive";
+  }
+
+  if (!hasResidents(data)) {
+    return "basic";
+  }
 
   let any = false;
   let all = true;
 
-  data.residents.forEach((res, idx) => {
-    const fields = [
-      res.name,
-      res.email,
-      res.mobile
-    ];
+  data.residents.forEach(
+    (res, idx) => {
 
-    if (idx === 0) fields.push(res.landline);
+      const fields = [
+        res.name,
+        res.email,
+        res.mobile
+      ];
 
-    fields.forEach(value => {
-      if (clean(value)) any = true;
-      if (!isFilledOrNA(value)) all = false;
-    });
-  });
+      if (idx === 0) {
+        fields.push(res.landline);
+      }
 
-  if (all) return "complete";
-  if (any || hasAnyVisibleContact(data)) return "partial";
+      fields.forEach(value => {
+        if (clean(value)) {
+          any = true;
+        }
+
+        if (!isFilledOrNA(value)) {
+          all = false;
+        }
+      });
+    }
+  );
+
+  if (all) {
+    return "complete";
+  }
+
+  if (
+    any ||
+    hasAnyVisibleContact(data)
+  ) {
+    return "partial";
+  }
+
   return "basic";
 }
 
+
 function statusLabel(status) {
-  if (status === "complete") return "🟢 Contact Info Complete";
-  if (status === "partial") return "🟡 Contact Info Partial";
-  if (status === "basic") return "🔵 Basic Member Entry";
+  if (status === "complete") {
+    return "🟢 Contact Info Complete";
+  }
+
+  if (status === "partial") {
+    return "🟡 Contact Info Partial";
+  }
+
+  if (status === "basic") {
+    return "🔵 Basic Member Entry";
+  }
+
   return "";
 }
 
-// Backwards-compatibility:
-// If SCH isn't stored as "SCH" yet, look for the first populated SCH01..SCH06.
-function resolveSchData(members) {
-  const direct = members["SCH"];
 
-  if (direct && (hasResidents(direct) || direct.joined)) {
+// ---------- First-name helper
+
+function firstNameFromFullName(fullName) {
+  const name =
+    clean(fullName);
+
+  if (!name) {
+    return "";
+  }
+
+  return name.split(/\s+/)[0];
+}
+
+
+// ---------- SCH backwards compatibility
+
+function resolveSchData(members) {
+  const direct =
+    members["SCH"];
+
+  if (
+    direct &&
+    (
+      hasResidents(direct) ||
+      direct.joined
+    )
+  ) {
     return {
       idForDisplay: "SCH",
       data: direct,
@@ -280,10 +419,19 @@ function resolveSchData(members) {
   }
 
   for (let i = 1; i <= 6; i++) {
-    const legacyId = "SCH" + pad(i);
-    const legacy = members[legacyId];
+    const legacyId =
+      "SCH" + pad(i);
 
-    if (legacy && (hasResidents(legacy) || legacy.joined)) {
+    const legacy =
+      members[legacyId];
+
+    if (
+      legacy &&
+      (
+        hasResidents(legacy) ||
+        legacy.joined
+      )
+    ) {
       return {
         idForDisplay: "SCH",
         data: legacy,
@@ -299,71 +447,143 @@ function resolveSchData(members) {
   };
 }
 
+
+// ---------- Member button registry
+//
+// Search results use this to activate exactly
+// the same button/detail system as the normal MD.
+
+const memberButtonRegistry =
+  new Map();
+
+
 // ---------- Render grid
-function renderGrid(containerId, memberIds, members, detailArea) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+
+function renderGrid(
+  containerId,
+  memberIds,
+  members,
+  detailArea
+) {
+  const container =
+    document.getElementById(containerId);
+
+  if (!container) {
+    return;
+  }
 
   container.innerHTML = "";
-  let activeBtn = null;
 
   memberIds.forEach(id => {
-    const btn = document.createElement("button");
-    btn.className = "member-button";
-    btn.textContent = id;
 
-    let data = members[id];
-    let displayId = id;
+    const btn =
+      document.createElement("button");
+
+    btn.className =
+      "member-button";
+
+    btn.textContent =
+      id;
+
+    let data =
+      members[id];
+
+    let displayId =
+      id;
 
     if (id === "SCH") {
-      const resolved = resolveSchData(members);
-      data = resolved.data;
-      displayId = resolved.idForDisplay;
+      const resolved =
+        resolveSchData(members);
+
+      data =
+        resolved.data;
+
+      displayId =
+        resolved.idForDisplay;
     }
 
-    const status = getContactStatus(data);
-    const isUsable = true;
+    const status =
+      getContactStatus(data);
 
     if (status === "complete") {
-      btn.classList.add("contact-complete");
+      btn.classList.add(
+        "contact-complete"
+      );
+
     } else if (status === "partial") {
-      btn.classList.add("contact-partial");
+      btn.classList.add(
+        "contact-partial"
+      );
+
     } else if (status === "basic") {
-      btn.classList.add("contact-basic");
+      btn.classList.add(
+        "contact-basic"
+      );
+
     } else {
-      btn.classList.add("inactive");
+      btn.classList.add(
+        "inactive"
+      );
     }
 
-    btn.title = statusLabel(status);
+    btn.title =
+      statusLabel(status);
 
     btn.onclick = () => {
-      if (!isUsable) return;
 
-      if (activeBtn === btn) {
+      document
+        .querySelectorAll(
+          ".member-button.active"
+        )
+        .forEach(otherBtn => {
+          if (otherBtn !== btn) {
+            otherBtn.classList.remove(
+              "active"
+            );
+          }
+        });
+
+      if (
+        btn.classList.contains("active")
+      ) {
         btn.classList.remove("active");
         detailArea.innerHTML = "";
-        activeBtn = null;
         return;
       }
 
-      if (activeBtn) activeBtn.classList.remove("active");
-
-      activeBtn = btn;
       btn.classList.add("active");
       detailArea.innerHTML = "";
 
       if (!hasResidents(data)) {
-        const msg = document.createElement("div");
+        const msg =
+          document.createElement("div");
 
-        msg.style.padding = "0.9rem 1rem";
-        msg.style.borderRadius = "10px";
-        msg.style.background = "#fff";
-        msg.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
-        msg.style.color = "#444";
+        msg.style.padding =
+          "0.9rem 1rem";
+
+        msg.style.borderRadius =
+          "10px";
+
+        msg.style.background =
+          "#fff";
+
+        msg.style.boxShadow =
+          "0 2px 8px rgba(0,0,0,0.06)";
+
+        msg.style.color =
+          "#444";
 
         msg.innerHTML = `
-          <strong>${escapeHtml(displayId)}</strong><br>
-          <span style="color:#666;">${escapeHtml(statusLabel(status))}</span><br>
+          <strong>
+            ${escapeHtml(displayId)}
+          </strong>
+          <br>
+
+          <span style="color:#666;">
+            ${escapeHtml(statusLabel(status))}
+          </span>
+          <br>
+
           <span style="color:#666;">
             Member joined — no contact details shared yet.
           </span>
@@ -373,78 +593,390 @@ function renderGrid(containerId, memberIds, members, detailArea) {
         return;
       }
 
-      renderMemberDetail(displayId, data, detailArea, status);
+      renderMemberDetail(
+        displayId,
+        data,
+        detailArea,
+        status
+      );
     };
 
     container.appendChild(btn);
+
+    memberButtonRegistry.set(
+      displayId,
+      btn
+    );
   });
 }
 
-// ---------- Render resident cards
-function renderMemberDetail(memberId, data, container, status) {
-  const heading = document.createElement("div");
 
-  heading.style.margin = "0 0 0.75rem";
-  heading.style.color = "#555";
+// ---------- Render resident cards
+
+function renderMemberDetail(
+  memberId,
+  data,
+  container,
+  status
+) {
+  const heading =
+    document.createElement("div");
+
+  heading.style.margin =
+    "0 0 0.75rem";
+
+  heading.style.color =
+    "#555";
 
   heading.innerHTML = `
-    <strong>${escapeHtml(memberId)}</strong>
+    <strong>
+      ${escapeHtml(memberId)}
+    </strong>
     — ${escapeHtml(statusLabel(status))}
   `;
 
   container.appendChild(heading);
 
-  const wrap = document.createElement("div");
-  wrap.className = "member-detail-wrapper";
+  const wrap =
+    document.createElement("div");
 
-  (data.residents || []).forEach((res, idx) => {
-    const card = document.createElement("div");
-    card.className = "resident-card";
+  wrap.className =
+    "member-detail-wrapper";
 
-    card.innerHTML = `
-      <div class="resident-header">Resident ${idx + 1}</div>
+  (data.residents || [])
+    .forEach((res, idx) => {
 
-      ${roleIconsHtml(res)}
+      const card =
+        document.createElement("div");
 
-      <div class="resident-row">
-        <span>Name</span>
-        <span>${escapeHtml(res.name || "—")}</span>
-      </div>
+      card.className =
+        "resident-card";
 
-      <div class="resident-row">
-        <span>Email</span>
-        <span>${escapeHtml(res.email || "—")}</span>
-      </div>
+      card.innerHTML = `
+        <div class="resident-header">
+          Resident ${idx + 1}
+        </div>
 
-      <div class="resident-row">
-        <span>Mobile</span>
-        <span>${escapeHtml(res.mobile || "—")}</span>
-      </div>
+        ${roleIconsHtml(res)}
 
-      ${
-        idx === 0
-          ? `
-            <div class="resident-row">
-              <span>Landline</span>
-              <span>${escapeHtml(res.landline || "—")}</span>
-            </div>
-          `
-          : ""
-      }
-    `;
+        <div class="resident-row">
+          <span>Name</span>
+          <span>
+            ${escapeHtml(res.name || "—")}
+          </span>
+        </div>
 
-    wrap.appendChild(card);
-  });
+        <div class="resident-row">
+          <span>Email</span>
+          <span>
+            ${escapeHtml(res.email || "—")}
+          </span>
+        </div>
+
+        <div class="resident-row">
+          <span>Mobile</span>
+          <span>
+            ${escapeHtml(res.mobile || "—")}
+          </span>
+        </div>
+
+        ${
+          idx === 0
+            ? `
+              <div class="resident-row">
+                <span>Landline</span>
+                <span>
+                  ${escapeHtml(res.landline || "—")}
+                </span>
+              </div>
+            `
+            : ""
+        }
+      `;
+
+      wrap.appendChild(card);
+    });
 
   container.appendChild(wrap);
 }
 
-// ---------- Init
-document.addEventListener("DOMContentLoaded", async () => {
-  const members = await loadMembers();
-  const detailArea = document.getElementById("member-detail");
 
-  renderGrid("members-sch", buildSch(), members, detailArea);
-  renderGrid("members-mews", buildMews(), members, detailArea);
-  renderGrid("members-court", buildCourt(), members, detailArea);
-});
+// ---------- Build searchable resident list
+
+function buildSearchIndex(members) {
+  const results = [];
+
+  Object.entries(members)
+    .forEach(([memberId, data]) => {
+
+      if (!hasResidents(data)) {
+        return;
+      }
+
+      (data.residents || [])
+        .forEach(resident => {
+
+          const fullName =
+            clean(resident.name);
+
+          if (!fullName) {
+            return;
+          }
+
+          const firstName =
+            firstNameFromFullName(
+              fullName
+            );
+
+          if (!firstName) {
+            return;
+          }
+
+          results.push({
+            memberId,
+            fullName,
+            firstName,
+            firstNameLower:
+              firstName.toLowerCase()
+          });
+        });
+    });
+
+  // Include legacy SCH if necessary.
+
+  const sch =
+    resolveSchData(members);
+
+  if (
+    sch.data &&
+    sch.sourceId &&
+    sch.sourceId !== "SCH" &&
+    hasResidents(sch.data)
+  ) {
+    (sch.data.residents || [])
+      .forEach(resident => {
+
+        const fullName =
+          clean(resident.name);
+
+        if (!fullName) {
+          return;
+        }
+
+        const firstName =
+          firstNameFromFullName(
+            fullName
+          );
+
+        if (!firstName) {
+          return;
+        }
+
+        const alreadyThere =
+          results.some(item =>
+            item.memberId === "SCH" &&
+            item.fullName === fullName
+          );
+
+        if (!alreadyThere) {
+          results.push({
+            memberId: "SCH",
+            fullName,
+            firstName,
+            firstNameLower:
+              firstName.toLowerCase()
+          });
+        }
+      });
+  }
+
+  results.sort(
+    (a, b) =>
+      a.fullName.localeCompare(
+        b.fullName,
+        "en",
+        {
+          sensitivity: "base"
+        }
+      )
+  );
+
+  return results;
+}
+
+
+// ---------- Find a Member
+
+function setupMemberSearch(
+  members,
+  detailArea
+) {
+  const input =
+    document.getElementById(
+      "memberSearch"
+    );
+
+  const resultsArea =
+    document.getElementById(
+      "memberSearchResults"
+    );
+
+  if (
+    !input ||
+    !resultsArea
+  ) {
+    return;
+  }
+
+  const searchIndex =
+    buildSearchIndex(members);
+
+
+  function clearResults() {
+    resultsArea.innerHTML = "";
+  }
+
+
+  function openMember(memberId) {
+    let displayId =
+      memberId;
+
+    if (
+      memberId.startsWith("SCH")
+    ) {
+      displayId = "SCH";
+    }
+
+    const btn =
+      memberButtonRegistry.get(
+        displayId
+      );
+
+    if (!btn) {
+      return;
+    }
+
+    // If already active, don't let the
+    // existing toggle close it.
+    if (
+      !btn.classList.contains("active")
+    ) {
+      btn.click();
+    }
+
+    detailArea.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+
+  function renderResults() {
+    const query =
+      clean(input.value)
+        .toLowerCase();
+
+    clearResults();
+
+    if (query.length < 2) {
+      return;
+    }
+
+    const matches =
+      searchIndex.filter(item =>
+        item.firstNameLower
+          .startsWith(query)
+      );
+
+    if (!matches.length) {
+      const none =
+        document.createElement("p");
+
+      none.className =
+        "search-none";
+
+      none.textContent =
+        "No member found with that first name.";
+
+      resultsArea.appendChild(none);
+      return;
+    }
+
+    matches.forEach(item => {
+
+      const button =
+        document.createElement("button");
+
+      button.type =
+        "button";
+
+      button.className =
+        "member-search-result";
+
+      button.textContent =
+        `${item.fullName} — ${item.memberId}`;
+
+      button.addEventListener(
+        "click",
+        () => {
+          openMember(
+            item.memberId
+          );
+        }
+      );
+
+      resultsArea.appendChild(
+        button
+      );
+    });
+  }
+
+
+  input.addEventListener(
+    "input",
+    renderResults
+  );
+}
+
+
+// ---------- Init
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    const members =
+      await loadMembers();
+
+    const detailArea =
+      document.getElementById(
+        "member-detail"
+      );
+
+    renderGrid(
+      "members-sch",
+      buildSch(),
+      members,
+      detailArea
+    );
+
+    renderGrid(
+      "members-mews",
+      buildMews(),
+      members,
+      detailArea
+    );
+
+    renderGrid(
+      "members-court",
+      buildCourt(),
+      members,
+      detailArea
+    );
+
+    setupMemberSearch(
+      members,
+      detailArea
+    );
+  }
+);

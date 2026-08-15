@@ -1,1 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
 
+  <title>Website Helpers | Sanctuary Club</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <meta
+    name="robots"
+    content="noindex, nofollow"
+  />
+
+  <script src="access.js?v=WEBSITE_HELPERS_1"></script>
+
+  <style>
+    :root {
+      --bg1: #d9ecff;
+      --bg2: #f5f9fc;
+      --ink: #263746;
+      --muted: #60717f;
+      --blue: #123a78;
+      --blue-dark: #0f3166;
+      --line: #d8e3ec;
+      --soft: #f5f9fc;
+      --white: #ffffff;
+      --warm: #fffaf1;
+      --green: #eef8f1;
+      --green-line: #c6dfce;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+
+      min-height: 100vh;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size: 18px;
+      line-height: 1.55;
+
+      color: var(--ink);
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg1) 0%,
+          var(--bg2) 45%,
+          #ffffff 100%
+        );
+    }
+
+    a,
+    button {
+      font: inherit;
+    }
+
+
+    /* ---------- Top navigation ---------- */
+
+    .topbar {
+      max-width: 1050px;
+      margin: 0 auto;
+
+      padding:
+        1.1rem
+        1rem
+        .45rem;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--blue);
+
+      font-size: 1.8rem;
+      font-weight: 850;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: .5rem;
+
+      justify-content: flex-end;
+    }
+
+    .top-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 43px;
+
+      padding:
+        .58rem
+        .85rem;
+
+      border-radius:
+        12px
+        12px
+        0
+        0;
+
+      background: var(--blue);
+      color: #ffffff;
+
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .top-link:hover,
+    .top-link:focus-visible {
+      background: var(--blue-dark);
+    }
+
+
+    /* ---------- Main page ---------- */
+
+    .shell {
+      max-width: 1050px;
+      margin: 0 auto;
+
+      padding:
+        0
+        1rem
+        2.5rem;
+    }
+
+    .panel {
+      padding: 1.5rem;
+
+      border:
+        1px
+        solid
+        var(--line);
+
+      border-radius: 20px;
+
+      background: var(--white);
+
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin:
+        0
+        0
+        .5rem;
+
+      color: var(--blue);
+
+      font-size: 1.65rem;
+    }
+
+    .intro {
+      max-width: 780px;
+
+      margin:
+        0
+        0
+        1rem;
+
+      color: var(--muted);
+
+      font-weight: 650;
+    }
+
+
+    /* ---------- Doorstep/member explanation ---------- */
+
+    .access-note {
+      margin:
+        0
+        0
+        1.25rem;
+
+      padding:
+        .9rem
+        1rem;
+
+      border:
+        1px
+        solid
+        #bfdce7;
+
+      border-radius: 14px;
+
+      background: #eef7fa;
+
+      color: #315c6d;
+    }
+
+    .access-note strong {
+      color: var(--blue);
+    }
+
+
+    /* ---------- Helper cards ---------- */
+
+    .helper-list {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(270px, 1fr)
+        );
+
+      gap: 1rem;
+
+      margin-top: 1rem;
+    }
+
+    .helper-card {
+      padding: 1rem;
+
+      border:
+        1px
+        solid
+        var(--line);
+
+      border-radius: 15px;
+
+      background: #ffffff;
+
+      box-shadow:
+        0
+        3px
+        12px
+        rgba(0,0,0,.05);
+    }
+
+    .helper-heading {
+      display: flex;
+
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: .75rem;
+
+      margin-bottom: .65rem;
+    }
+
+    .helper-name {
+      color: #223b50;
+
+      font-size: 1.08rem;
+      font-weight: 850;
+    }
+
+    .helper-member {
+      margin-top: .15rem;
+
+      color: var(--muted);
+
+      font-size: .9rem;
+      font-weight: 650;
+    }
+
+    .helper-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 38px;
+      height: 38px;
+
+      flex:
+        0
+        0
+        38px;
+
+      border:
+        1px
+        solid
+        #bcd3e4;
+
+      border-radius: 50%;
+
+      background: #eef6fc;
+
+      font-size: 1.15rem;
+    }
+
+
+    /* ---------- Contact detail ---------- */
+
+    .contact-details {
+      margin-top: .65rem;
+
+      padding-top: .65rem;
+
+      border-top:
+        1px
+        solid
+        #e4ebf0;
+    }
+
+    .contact-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 1rem;
+
+      margin: .3rem 0;
+
+      font-size: .92rem;
+    }
+
+    .contact-label {
+      color: var(--muted);
+    }
+
+    .contact-value {
+      text-align: right;
+
+      font-weight: 650;
+
+      overflow-wrap: anywhere;
+    }
+
+    .private-contact-note {
+      margin-top: .65rem;
+
+      padding:
+        .65rem
+        .75rem;
+
+      border:
+        1px
+        solid
+        #ddd3b5;
+
+      border-radius: 10px;
+
+      background: var(--warm);
+
+      color: #625a45;
+
+      font-size: .87rem;
+    }
+
+
+    /* ---------- Status ---------- */
+
+    .status {
+      margin-top: 1rem;
+
+      padding:
+        .85rem
+        1rem;
+
+      border-radius: 12px;
+
+      background: var(--soft);
+
+      color: var(--muted);
+    }
+
+    .status.error {
+      border:
+        1px
+        solid
+        #e1c1c1;
+
+      background: #fff7f7;
+
+      color: #8a3434;
+    }
+
+
+    /* ---------- Need help ---------- */
+
+    .clubhouse-note {
+      margin-top: 1.3rem;
+
+      padding: 1rem;
+
+      border:
+        1px
+        solid
+        var(--green-line);
+
+      border-radius: 14px;
+
+      background: var(--green);
+
+      color: #365b40;
+    }
+
+    .clubhouse-note strong {
+      color: #245134;
+    }
+
+
+    /* ---------- Motto ---------- */
+
+    .motto {
+      margin-top: 2rem;
+
+      padding-top: 1.15rem;
+
+      border-top:
+        1px
+        solid
+        var(--line);
+
+      color: #31506b;
+
+      text-align: center;
+
+      font-weight: 850;
+
+      line-height: 1.55;
+    }
+
+
+    @media (max-width: 650px) {
+      body {
+        font-size: 17px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .panel {
+        padding: 1rem;
+
+        border-radius: 15px;
+      }
+
+      .helper-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <div class="topbar">
+
+    <div class="brand">
+      Website Helpers
+    </div>
+
+    <div class="top-actions">
+
+      <a
+        class="top-link"
+        href="library.html"
+      >
+        Library
+      </a>
+
+      <a
+        class="top-link"
+        href="index.html"
+      >
+        Home
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <div class="shell">
+
+    <main class="panel">
+
+      <h1>
+        Need a little help?
+      </h1>
+
+      <p class="intro">
+        Website Helpers are Sanctuary neighbours
+        who have volunteered to help other residents
+        get started or find their way around Sanctuary Club.
+      </p>
+
+
+      <div
+        class="access-note"
+        id="accessNote"
+      >
+        Loading access information…
+      </div>
+
+
+      <div
+        class="helper-list"
+        id="helperList"
+      ></div>
+
+
+      <div
+        class="status"
+        id="statusBox"
+      >
+        Loading current Website Helpers…
+      </div>
+
+
+      <div class="clubhouse-note">
+
+        <strong>
+          Prefer not to use the Personal PIN yet?
+        </strong>
+
+        The names and Membership Numbers of the current
+        Website Helpers are shown here.
+
+        Their contact details are also available
+        on the Website Helpers notice
+        in the Clubhouse.
+
+      </div>
+
+
+      <div class="motto">
+        The computer does the thinking.<br>
+        You do the creating.
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <script>
+    (function () {
+      "use strict";
+
+
+      const BACKEND_URL =
+        "https://sanctuary-backend-8iqc.onrender.com";
+
+
+      const helperList =
+        document.getElementById(
+          "helperList"
+        );
+
+
+      const statusBox =
+        document.getElementById(
+          "statusBox"
+        );
+
+
+      const accessNote =
+        document.getElementById(
+          "accessNote"
+        );
+
+
+      let safeHelpers = [];
+
+
+      /* ---------- Helpers ---------- */
+
+      function clean(value) {
+        return String(
+          value || ""
+        ).trim();
+      }
+
+
+      function escapeHtml(value) {
+        return String(
+          value ?? ""
+        )
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+
+      function normaliseRole(role) {
+        return clean(role)
+          .toLowerCase()
+          .replace(
+            /[\s-]+/g,
+            "_"
+          );
+      }
+
+
+      function hasWebsiteHelperRole(
+        resident
+      ) {
+        const roles =
+          Array.isArray(
+            resident?.roles
+          )
+            ? resident.roles
+            : [];
+
+
+        return roles
+          .map(normaliseRole)
+          .includes(
+            "website_helper"
+          );
+      }
+
+
+      function privateAccessOpen() {
+        return Boolean(
+          window.SanctuaryAccess &&
+          typeof window
+            .SanctuaryAccess
+            .verifiedPrivateAccess
+            === "function" &&
+          window
+            .SanctuaryAccess
+            .verifiedPrivateAccess()
+        );
+      }
+
+
+      function setStatus(
+        message,
+        isError = false
+      ) {
+        statusBox.textContent =
+          message;
+
+        statusBox.classList.toggle(
+          "error",
+          Boolean(isError)
+        );
+
+        statusBox.hidden =
+          !message;
+      }
+
+
+      /* ---------- Safe doorstep feed ---------- */
+
+      async function loadSafeHelpers() {
+        const response =
+          await fetch(
+            `${BACKEND_URL}/api/role-directory`,
+            {
+              method: "GET",
+
+              headers: {
+                "Accept":
+                  "application/json"
+              },
+
+              mode: "cors"
+            }
+          );
+
+
+        const data =
+          await response
+            .json()
+            .catch(() => null);
+
+
+        if (
+          !response.ok ||
+          !data ||
+          data.success !== true ||
+          !Array.isArray(data.residents)
+        ) {
+          throw new Error(
+            data?.message ||
+            "Website Helpers could not be loaded."
+          );
+        }
+
+
+        safeHelpers =
+          data.residents
+            .filter(
+              hasWebsiteHelperRole
+            )
+            .sort(
+              (a, b) =>
+                clean(a.name)
+                  .localeCompare(
+                    clean(b.name),
+                    "en",
+                    {
+                      sensitivity: "base"
+                    }
+                  )
+            );
+
+
+        return safeHelpers;
+      }
+
+
+      /* ---------- Private member contact feed ---------- */
+
+      async function loadMemberDirectory() {
+        const response =
+          await fetch(
+            `${BACKEND_URL}/api/members-directory`,
+            {
+              method: "GET",
+
+              headers: {
+                "Accept":
+                  "application/json"
+              },
+
+              mode: "cors"
+            }
+          );
+
+
+        const data =
+          await response
+            .json()
+            .catch(() => null);
+
+
+        if (
+          !response.ok ||
+          !data ||
+          data.success !== true ||
+          !data.members ||
+          typeof data.members
+            !== "object"
+        ) {
+          throw new Error(
+            "Member contact information could not be loaded."
+          );
+        }
+
+
+        return data.members;
+      }
+
+
+      function findContactRecord(
+        helper,
+        members
+      ) {
+        const memberId =
+          clean(
+            helper.member_id
+          );
+
+
+        const residentId =
+          clean(
+            helper.resident_id
+          );
+
+
+        const member =
+          members[memberId];
+
+
+        if (
+          !member ||
+          !Array.isArray(
+            member.residents
+          )
+        ) {
+          return null;
+        }
+
+
+        const match =
+          residentId.match(
+            /\/(\d+)$/
+          );
+
+
+        const index =
+          match
+            ? Number(match[1]) - 1
+            : -1;
+
+
+        if (
+          index >= 0 &&
+          member.residents[index]
+        ) {
+          return member.residents[index];
+        }
+
+
+        const helperName =
+          clean(helper.name)
+            .toLowerCase();
+
+
+        return (
+          member.residents.find(
+            resident =>
+              clean(resident?.name)
+                .toLowerCase()
+                === helperName
+          ) ||
+          null
+        );
+      }
+
+
+      /* ---------- Rendering ---------- */
+
+      function contactRow(
+        label,
+        value
+      ) {
+        const cleaned =
+          clean(value);
+
+
+        if (
+          !cleaned ||
+          cleaned.toLowerCase()
+            === "n/a"
+        ) {
+          return "";
+        }
+
+
+        return `
+          <div class="contact-row">
+
+            <span class="contact-label">
+              ${escapeHtml(label)}
+            </span>
+
+            <span class="contact-value">
+              ${escapeHtml(cleaned)}
+            </span>
+
+          </div>
+        `;
+      }
+
+
+      function renderHelpers(
+        helpers,
+        members = null
+      ) {
+        helperList.innerHTML = "";
+
+
+        if (!helpers.length) {
+          helperList.innerHTML = `
+            <div class="status">
+              No Website Helpers are currently assigned.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        const showContacts =
+          Boolean(members);
+
+
+        helpers.forEach(
+          helper => {
+
+            const card =
+              document.createElement(
+                "article"
+              );
+
+
+            card.className =
+              "helper-card";
+
+
+            let contactHtml = "";
+
+
+            if (showContacts) {
+              const contact =
+                findContactRecord(
+                  helper,
+                  members
+                );
+
+
+              if (contact) {
+                contactHtml = `
+                  <div class="contact-details">
+
+                    ${contactRow(
+                      "Email",
+                      contact.email
+                    )}
+
+                    ${contactRow(
+                      "Mobile",
+                      contact.mobile
+                    )}
+
+                    ${contactRow(
+                      "Landline",
+                      contact.landline
+                    )}
+
+                  </div>
+                `;
+              }
+
+
+              if (!contactHtml) {
+                contactHtml = `
+                  <div class="private-contact-note">
+                    No contact details have been shared here.
+                  </div>
+                `;
+              }
+
+            } else {
+              contactHtml = `
+                <div class="private-contact-note">
+                  Contact details are available after entering
+                  through <strong>Access all</strong>
+                  with your Personal PIN.
+                </div>
+              `;
+            }
+
+
+            card.innerHTML = `
+              <div class="helper-heading">
+
+                <div>
+
+                  <div class="helper-name">
+                    ${escapeHtml(
+                      helper.name ||
+                      "Website Helper"
+                    )}
+                  </div>
+
+                  <div class="helper-member">
+                    Membership Number:
+                    ${escapeHtml(
+                      helper.member_id
+                    )}
+                  </div>
+
+                </div>
+
+                <div
+                  class="helper-mark"
+                  title="Website Helper"
+                  aria-label="Website Helper"
+                >
+                  🌿
+                </div>
+
+              </div>
+
+              ${contactHtml}
+            `;
+
+
+            helperList.appendChild(
+              card
+            );
+          }
+        );
+      }
+
+
+      /* ---------- Initial load ---------- */
+
+      async function initialise() {
+        try {
+          setStatus(
+            "Loading current Website Helpers…"
+          );
+
+
+          const helpers =
+            await loadSafeHelpers();
+
+
+          /*
+            Doorstep view is rendered immediately
+            from the deliberately limited feed.
+          */
+
+          renderHelpers(
+            helpers
+          );
+
+
+          if (!privateAccessOpen()) {
+            accessNote.innerHTML = `
+              <strong>
+                You are viewing the doorstep version.
+              </strong>
+
+              Names and Membership Numbers are shown,
+              but personal contact details remain private.
+
+              Enter through
+              <strong>Access all</strong>
+              with your Personal PIN
+              to see the contact details
+              Helpers have chosen to share.
+            `;
+
+
+            setStatus("");
+            return;
+          }
+
+
+          /*
+            Personal-PIN member:
+            now obtain the normal member directory
+            information and add shared contact details.
+          */
+
+          accessNote.innerHTML = `
+            <strong>
+              Member view.
+            </strong>
+
+            You can see the contact information
+            each Website Helper has chosen to share.
+          `;
+
+
+          try {
+            const members =
+              await loadMemberDirectory();
+
+
+            renderHelpers(
+              helpers,
+              members
+            );
+
+          } catch (error) {
+            console.warn(
+              "Website Helper contact details could not be loaded.",
+              error
+            );
+
+
+            /*
+              Safe fallback:
+              names and membership numbers remain visible.
+            */
+
+            renderHelpers(
+              helpers
+            );
+          }
+
+
+          setStatus("");
+
+
+        } catch (error) {
+          console.error(
+            error
+          );
+
+
+          helperList.innerHTML =
+            "";
+
+
+          setStatus(
+            error.message ||
+            "Website Helpers could not be loaded.",
+            true
+          );
+        }
+      }
+
+
+      initialise();
+
+    })();
+  </script>
+
+</body>
+</html>

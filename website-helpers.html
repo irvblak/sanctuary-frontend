@@ -15,7 +15,7 @@
     content="noindex, nofollow"
   />
 
-  <script src="access.js?v=WEBSITE_HELPERS_2"></script>
+  <script src="access.js?v=WEBSITE_HELPERS_3"></script>
 
   <style>
     :root {
@@ -69,11 +69,7 @@
     .topbar {
       max-width:1000px;
       margin:0 auto;
-
-      padding:
-        1.1rem
-        1rem
-        .45rem;
+      padding:1.1rem 1rem .45rem;
 
       display:flex;
       justify-content:space-between;
@@ -100,14 +96,9 @@
       justify-content:center;
 
       min-height:43px;
-
       padding:.58rem .85rem;
 
-      border-radius:
-        12px
-        12px
-        0
-        0;
+      border-radius:12px 12px 0 0;
 
       background:var(--blue);
       color:#fff;
@@ -124,11 +115,7 @@
     .shell {
       max-width:1000px;
       margin:0 auto;
-
-      padding:
-        0
-        1rem
-        2.5rem;
+      padding:0 1rem 2.5rem;
     }
 
     .panel {
@@ -143,18 +130,13 @@
 
     h1 {
       margin:0 0 .5rem;
-
       color:var(--blue);
       font-size:1.65rem;
     }
 
     .intro {
       max-width:780px;
-
-      margin:
-        0
-        0
-        1.3rem;
+      margin:0 0 1.3rem;
 
       color:var(--muted);
       font-weight:650;
@@ -219,10 +201,7 @@
       width:38px;
       height:38px;
 
-      flex:
-        0
-        0
-        38px;
+      flex:0 0 38px;
 
       border:1px solid #bcd3e4;
       border-radius:50%;
@@ -236,10 +215,7 @@
       margin-top:.7rem;
       padding-top:.7rem;
 
-      border-top:
-        1px
-        solid
-        #e4ebf0;
+      border-top:1px solid #e4ebf0;
     }
 
     .contact-row {
@@ -260,7 +236,6 @@
     .contact-value {
       text-align:right;
       font-weight:650;
-
       overflow-wrap:anywhere;
     }
 
@@ -302,20 +277,15 @@
 
     .status.error {
       border:1px solid #e1c1c1;
-
       background:#fff7f7;
       color:#8a3434;
     }
 
     .motto {
       margin-top:2rem;
-
       padding-top:1.15rem;
 
-      border-top:
-        1px
-        solid
-        var(--line);
+      border-top:1px solid var(--line);
 
       color:#31506b;
 
@@ -395,7 +365,7 @@
 
       <p class="intro">
         Any of our Website Helpers will be pleased to help
-        you get started or find your way around Sanctuary Club.
+        members get started or find their way around Sanctuary Club.
       </p>
 
 
@@ -438,45 +408,26 @@
     (function () {
       "use strict";
 
-
       const BACKEND_URL =
         "https://sanctuary-backend-8iqc.onrender.com";
 
-
       const helperList =
-        document.getElementById(
-          "helperList"
-        );
-
+        document.getElementById("helperList");
 
       const statusBox =
-        document.getElementById(
-          "statusBox"
-        );
-
+        document.getElementById("statusBox");
 
       const clubhouseNote =
-        document.getElementById(
-          "clubhouseNote"
-        );
+        document.getElementById("clubhouseNote");
 
-
-      let safeHelpers = [];
-
-
-      /* ---------- Utility ---------- */
 
       function clean(value) {
-        return String(
-          value || ""
-        ).trim();
+        return String(value || "").trim();
       }
 
 
       function escapeHtml(value) {
-        return String(
-          value ?? ""
-        )
+        return String(value ?? "")
           .replace(/&/g,"&amp;")
           .replace(/</g,"&lt;")
           .replace(/>/g,"&gt;")
@@ -488,68 +439,42 @@
       function normaliseRole(role) {
         return clean(role)
           .toLowerCase()
-          .replace(
-            /[\s-]+/g,
-            "_"
-          );
+          .replace(/[\s-]+/g,"_");
       }
 
 
-      function hasWebsiteHelperRole(
-        resident
-      ) {
+      function hasWebsiteHelperRole(resident) {
         const roles =
-          Array.isArray(
-            resident?.roles
-          )
+          Array.isArray(resident?.roles)
             ? resident.roles
             : [];
 
-
         return roles
-          .map(
-            normaliseRole
-          )
-          .includes(
-            "website_helper"
-          );
+          .map(normaliseRole)
+          .includes("website_helper");
       }
 
 
       function privateAccessOpen() {
         return Boolean(
           window.SanctuaryAccess &&
-          typeof window
-            .SanctuaryAccess
-            .verifiedPrivateAccess
-            === "function" &&
-          window
-            .SanctuaryAccess
-            .verifiedPrivateAccess()
+          typeof window.SanctuaryAccess.verifiedPrivateAccess === "function" &&
+          window.SanctuaryAccess.verifiedPrivateAccess()
         );
       }
 
 
-      function setStatus(
-        message,
-        isError = false
-      ) {
-        statusBox.textContent =
-          message;
-
+      function setStatus(message, isError = false) {
+        statusBox.textContent = message;
 
         statusBox.classList.toggle(
           "error",
           Boolean(isError)
         );
 
-
-        statusBox.hidden =
-          !message;
+        statusBox.hidden = !message;
       }
 
-
-      /* ---------- Safe role feed ---------- */
 
       async function loadSafeHelpers() {
         const response =
@@ -557,30 +482,23 @@
             `${BACKEND_URL}/api/role-directory`,
             {
               method:"GET",
-
               headers:{
-                "Accept":
-                  "application/json"
+                "Accept":"application/json"
               },
-
               mode:"cors"
             }
           );
-
 
         const data =
           await response
             .json()
             .catch(() => null);
 
-
         if (
           !response.ok ||
           !data ||
           data.success !== true ||
-          !Array.isArray(
-            data.residents
-          )
+          !Array.isArray(data.residents)
         ) {
           throw new Error(
             data?.message ||
@@ -588,30 +506,19 @@
           );
         }
 
-
-        safeHelpers =
-          data.residents
-            .filter(
-              hasWebsiteHelperRole
-            )
-            .sort(
-              (a,b) =>
-                clean(a.name)
-                  .localeCompare(
-                    clean(b.name),
-                    "en",
-                    {
-                      sensitivity:"base"
-                    }
-                  )
-            );
-
-
-        return safeHelpers;
+        return data.residents
+          .filter(hasWebsiteHelperRole)
+          .sort(
+            (a,b) =>
+              clean(a.name)
+                .localeCompare(
+                  clean(b.name),
+                  "en",
+                  { sensitivity:"base" }
+                )
+          );
       }
 
-
-      /* ---------- Member contact data ---------- */
 
       async function loadMemberDirectory() {
         const response =
@@ -619,22 +526,17 @@
             `${BACKEND_URL}/api/members-directory`,
             {
               method:"GET",
-
               headers:{
-                "Accept":
-                  "application/json"
+                "Accept":"application/json"
               },
-
               mode:"cors"
             }
           );
-
 
         const data =
           await response
             .json()
             .catch(() => null);
-
 
         if (
           !response.ok ||
@@ -648,53 +550,33 @@
           );
         }
 
-
         return data.members;
       }
 
 
-      function findContactRecord(
-        helper,
-        members
-      ) {
+      function findContactRecord(helper, members) {
         const memberId =
-          clean(
-            helper.member_id
-          );
-
+          clean(helper.member_id);
 
         const residentId =
-          clean(
-            helper.resident_id
-          );
-
+          clean(helper.resident_id);
 
         const member =
           members[memberId];
 
-
         if (
           !member ||
-          !Array.isArray(
-            member.residents
-          )
+          !Array.isArray(member.residents)
         ) {
           return null;
         }
 
-
         const match =
-          residentId.match(
-            /\/(\d+)$/
-          );
-
+          residentId.match(/\/(\d+)$/);
 
         if (match) {
           const index =
-            Number(
-              match[1]
-            ) - 1;
-
+            Number(match[1]) - 1;
 
           if (
             index >= 0 &&
@@ -704,19 +586,13 @@
           }
         }
 
-
         const helperName =
-          clean(
-            helper.name
-          ).toLowerCase();
-
+          clean(helper.name).toLowerCase();
 
         return (
           member.residents.find(
-            resident =>
-              clean(
-                resident?.name
-              ).toLowerCase()
+            member =>
+              clean(member?.name).toLowerCase()
                 === helperName
           ) ||
           null
@@ -724,24 +600,16 @@
       }
 
 
-      /* ---------- Contact display ---------- */
-
-      function contactRow(
-        label,
-        value
-      ) {
+      function contactRow(label, value) {
         const cleaned =
           clean(value);
 
-
         if (
           !cleaned ||
-          cleaned.toLowerCase()
-            === "n/a"
+          cleaned.toLowerCase() === "n/a"
         ) {
           return "";
         }
-
 
         return `
           <div class="contact-row">
@@ -759,15 +627,11 @@
       }
 
 
-      /* ---------- Render Helpers ---------- */
-
       function renderHelpers(
         helpers,
         members = null
       ) {
-        helperList.innerHTML =
-          "";
-
+        helperList.innerHTML = "";
 
         if (!helpers.length) {
           helperList.innerHTML = `
@@ -775,159 +639,133 @@
               No Website Helpers are currently assigned.
             </div>
           `;
-
           return;
         }
-
 
         const showContacts =
           Boolean(members);
 
+        helpers.forEach(helper => {
 
-        helpers.forEach(
-          helper => {
+          const card =
+            document.createElement("article");
 
-            const card =
-              document.createElement(
-                "article"
+          card.className =
+            "helper-card";
+
+          let contactHtml = "";
+
+          if (showContacts) {
+
+            const contact =
+              findContactRecord(
+                helper,
+                members
               );
 
+            if (contact) {
+              const rows = [
 
-            card.className =
-              "helper-card";
+                contactRow(
+                  "Email",
+                  contact.email
+                ),
 
+                contactRow(
+                  "Mobile",
+                  contact.mobile
+                ),
 
-            let contactHtml =
-              "";
+                contactRow(
+                  "Landline",
+                  contact.landline
+                )
 
+              ]
+                .filter(Boolean)
+                .join("");
 
-            if (showContacts) {
-              const contact =
-                findContactRecord(
-                  helper,
-                  members
-                );
-
-
-              if (contact) {
-                const rows = [
-
-                  contactRow(
-                    "Email",
-                    contact.email
-                  ),
-
-                  contactRow(
-                    "Mobile",
-                    contact.mobile
-                  ),
-
-                  contactRow(
-                    "Landline",
-                    contact.landline
-                  )
-
-                ]
-                  .filter(Boolean)
-                  .join("");
-
-
-                if (rows) {
-                  contactHtml = `
-                    <div class="contact-details">
-                      ${rows}
-                    </div>
-                  `;
-                }
-              }
-
-
-              if (!contactHtml) {
+              if (rows) {
                 contactHtml = `
-                  <div class="private-note">
-                    No contact details have been shared here.
+                  <div class="contact-details">
+                    ${rows}
                   </div>
                 `;
               }
+            }
 
-            } else {
+            if (!contactHtml) {
               contactHtml = `
                 <div class="private-note">
-                  Contact details are available
-                  after entering through
-                  <strong>Access all</strong>
-                  with your Personal PIN.
+                  No contact details have been shared here.
                 </div>
               `;
             }
 
+          } else {
 
-            card.innerHTML = `
-              <div class="helper-heading">
+            contactHtml = `
+              <div class="private-note">
+                Contact details are available after entering through
+                <strong>Access all</strong>
+                with your Personal PIN.
+              </div>
+            `;
+          }
 
-                <div>
+          card.innerHTML = `
+            <div class="helper-heading">
 
-                  <div class="helper-name">
-                    ${escapeHtml(
-                      helper.name ||
-                      "Website Helper"
-                    )}
-                  </div>
+              <div>
 
-                  <div class="helper-member">
-                    ${escapeHtml(
-                      helper.member_id
-                    )}
-                  </div>
-
+                <div class="helper-name">
+                  ${escapeHtml(
+                    helper.name ||
+                    "Website Helper"
+                  )}
                 </div>
 
-                <div
-                  class="helper-mark"
-                  title="Website Helper"
-                  aria-label="Website Helper"
-                >
-                  🌿
+                <div class="helper-member">
+                  Membership Number:
+                  ${escapeHtml(
+                    helper.member_id
+                  )}
                 </div>
 
               </div>
 
-              ${contactHtml}
-            `;
+              <div
+                class="helper-mark"
+                title="Website Helper"
+                aria-label="Website Helper"
+              >
+                🌿
+              </div>
 
+            </div>
 
-            helperList.appendChild(
-              card
-            );
-          }
-        );
+            ${contactHtml}
+          `;
+
+          helperList.appendChild(card);
+        });
       }
 
 
-      /* ---------- Start ---------- */
-
       async function initialise() {
         try {
+
           setStatus(
             "Loading Website Helpers…"
           );
 
-
           const helpers =
             await loadSafeHelpers();
 
-
-          /*
-            Everyone first receives only
-            the deliberately limited role feed.
-          */
-
-          renderHelpers(
-            helpers
-          );
-
+          renderHelpers(helpers);
 
           if (!privateAccessOpen()) {
+
             clubhouseNote.hidden =
               false;
 
@@ -936,20 +774,13 @@
             return;
           }
 
-
-          /*
-            Personal-PIN member:
-            now add shared contact information.
-          */
-
           clubhouseNote.hidden =
             true;
 
-
           try {
+
             const members =
               await loadMemberDirectory();
-
 
             renderHelpers(
               helpers,
@@ -957,38 +788,25 @@
             );
 
           } catch(error) {
+
             console.warn(
               "Website Helper contact information could not be loaded.",
               error
             );
 
-
-            /*
-              Safe fallback remains:
-              name + Membership Number only.
-            */
-
-            renderHelpers(
-              helpers
-            );
+            renderHelpers(helpers);
 
             clubhouseNote.hidden =
               false;
           }
 
-
           setStatus("");
 
-
         } catch(error) {
-          console.error(
-            error
-          );
 
+          console.error(error);
 
-          helperList.innerHTML =
-            "";
-
+          helperList.innerHTML = "";
 
           setStatus(
             error.message ||

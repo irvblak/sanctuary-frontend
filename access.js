@@ -203,7 +203,7 @@
     "events-details.html",
     "notices-preview.html",
     "library.html",
-    "library-publications.html"
+    "library-publications.html",
     "website-helpers.html"
   ]);
 

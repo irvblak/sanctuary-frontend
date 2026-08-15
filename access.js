@@ -713,6 +713,8 @@
       "archives.html",
       "payments.html",
       "services.html"
+
+      "role-holders.html",
     ]);
 
   if (

@@ -232,7 +232,7 @@
     "club-roles.html",
     "archives.html",
     "payments.html",
-    "services.html"
+    "services.html",
 
     "role-holders.html",
   ]);
@@ -712,7 +712,7 @@
       "club-roles.html",
       "archives.html",
       "payments.html",
-      "services.html"
+      "services.html",
 
       "role-holders.html",
     ]);

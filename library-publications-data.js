@@ -75,74 +75,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     `
   },
 
-
-  /*
-    =========================================================
-    SANCTUARY ETHOS
-    Previously developed as Sanctuary Creed
-    =========================================================
-  */
-
-  "sanctuary-ethos": {
-    kind: "publication",
-
-    title: "Sanctuary Ethos",
-
-    privacy: "access",
-
-    approval: "direct",
-
-    owner: "Sanctuary Club",
-
-    updated: "14 August 2026",
-
-    summary:
-      "The principles and spirit that guide Sanctuary Club.",
-
-    body: `
-      <p class="lead">
-        Sanctuary Club is designed by residents, for residents,
-        to make community life easier, friendlier and more enjoyable.
-      </p>
-
-      <h2>Neighbourly before technical</h2>
-
-      <p>
-        Technology should help people take part in Club life,
-        not get in their way.
-      </p>
-
-      <h2>Explain why</h2>
-
-      <p>
-        When something is protected or unavailable,
-        the Club should explain why rather than simply say “No”.
-      </p>
-
-      <h2>One obvious way</h2>
-
-      <p>
-        Members should be able to find what they want
-        without needing to understand how the website works.
-      </p>
-
-      <h2>People before features</h2>
-
-      <p>
-        New facilities should earn their place by making life
-        easier or more enjoyable for residents.
-      </p>
-
-      <h2>Privacy by design</h2>
-
-      <p>
-        Information should be available to the people who need it,
-        while personal and protected material remains private.
-      </p>
-    `
-  },
-
-
+   
   /*
     =========================================================
     YOUR PRIVACY AT SANCTUARY

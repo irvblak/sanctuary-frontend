@@ -1,6 +1,6 @@
 // access.js — Sanctuary Club access control
 // 8-hour front-page session, Personal PIN protection,
-// What's On / Library route, Info route,
+// What's On / Library route, Access All route,
 // and restricted Just for fun access to the Design Studio.
 
 (function () {
@@ -20,7 +20,7 @@
 
   const ROUTE_MESSAGE =
     "To see member information and private Club facilities, please return Home, " +
-    "choose Info and enter your Membership Number and Personal PIN.";
+    "choose Access All and enter your Membership Number and Personal PIN.";
 
   function validSession() {
     const value = sessionStorage.getItem(KEY);
@@ -210,10 +210,10 @@
   /*
     Private member facilities.
 
-    host-area.html is the actual Your Design Studio page.
-    Ordinary access to it remains private.
+    Your Design Studio is now split into a front door
+    and one common Canvas. Both remain private for ordinary use.
 
-    The two explicit ?fun= routes are dealt with separately below.
+    The explicit ?fun= Canvas routes are dealt with separately below.
   */
   const INFO_ONLY_PAGES = new Set([
     "members-info.html",
@@ -221,6 +221,8 @@
     "members-directory.html",
 
     "events-activities.html",
+    "your-design-studio.html",
+    "design-studio-canvas.html",
     "host-area.html",
     "host-my-events.html",
     "host-event-form.html",
@@ -234,7 +236,7 @@
     "payments.html",
     "services.html",
 
-    "role-holders.html",
+    "role-holders.html"
   ]);
 
   const page =
@@ -246,12 +248,13 @@
   /*
     JUST FOR FUN
 
-    Only these two URLs receive the special lower-access route:
+    These URLs receive the special lower-access route:
 
-      host-area.html?fun=write
-      host-area.html?fun=create
+      design-studio-canvas.html?fun=write
+      design-studio-canvas.html?fun=create
 
-    Plain host-area.html remains fully protected.
+    The old host-area.html?fun= routes remain temporarily recognised
+    during the migration. Plain Studio/Canvas pages remain protected.
   */
   function isFunStudioUrl(url = location.href) {
     try {
@@ -263,7 +266,10 @@
           "index.html"
         ).toLowerCase();
 
-      if (destination !== "host-area.html") {
+      if (
+        destination !== "design-studio-canvas.html" &&
+        destination !== "host-area.html"
+      ) {
         return false;
       }
 
@@ -285,7 +291,10 @@
 
   function isFunStudioPage() {
     return (
-      page === "host-area.html" &&
+      (
+        page === "design-studio-canvas.html" ||
+        page === "host-area.html"
+      ) &&
       isFunStudioUrl(location.href)
     );
   }
@@ -319,7 +328,7 @@
 
     /*
       Explicit Just for fun Studio links are deliberately
-      exempt from normal Host Area protection.
+      exempt from normal private protection.
     */
     if (isFunStudioUrl(url)) {
       return false;
@@ -562,7 +571,7 @@
           "";
 
         /*
-          Do not interfere with the two explicit
+          Do not interfere with explicit
           Just for fun Studio links.
         */
         if (isFunStudioUrl(target)) {
@@ -585,7 +594,7 @@
           "aria-label",
           `${
             element.textContent.trim()
-          } — available through Info`
+          } — available through Access All`
         );
 
         element.addEventListener(
@@ -664,9 +673,9 @@
     WHAT'S ON / LIBRARY ROUTE
 
     The ordinary open-access destinations are allowed,
-    together with the two explicit Just for fun Studio URLs.
+    together with the explicit Just for fun Studio URLs.
 
-    Plain host-area.html is NOT allowed here.
+    Plain Your Design Studio / Canvas pages are NOT allowed here.
   */
   if (
     isWhatsOnRoute() &&
@@ -693,7 +702,7 @@
     Personal PIN verification must have established
     the private Sanctuary session.
 
-    The two explicit Just for fun Host Area URLs
+    The explicit Just for fun Canvas URLs
     are deliberately exempt.
   */
   const PRIVATE_MEMBER_PAGES =
@@ -701,6 +710,8 @@
       "members-directory.html",
 
       "events-activities.html",
+      "your-design-studio.html",
+      "design-studio-canvas.html",
       "host-area.html",
       "host-my-events.html",
       "host-event-form.html",
@@ -714,7 +725,7 @@
       "payments.html",
       "services.html",
 
-      "role-holders.html",
+      "role-holders.html"
     ]);
 
   if (

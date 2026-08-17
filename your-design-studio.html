@@ -1,1 +1,3303 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <title>Your Design Studio | Sanctuary Club</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <meta
+    name="robots"
+    content="noindex, nofollow"
+  />
+
+  <script src="access.js?v=YDS_FRONT_DOOR_1"></script>
+
+  <style>
+    :root{
+      --bg1:#eef6fb;
+      --bg2:#f8fbfd;
+      --card:#ffffff;
+      --ink:#173042;
+      --muted:#607583;
+      --line:#d7e3ea;
+      --accent:#1f6f8b;
+      --accent-dark:#175a72;
+      --accent-soft:#e9f4f8;
+      --soft:#f3f8fb;
+      --good:#216e39;
+      --warn:#8a5a00;
+      --bad:#9e2b2b;
+      --disabled-bg:#f1f3f4;
+      --disabled-ink:#8a969d;
+      --warm:#fffaf0;
+      --warm-line:#e3d5aa;
+      --shadow:0 14px 34px rgba(20,60,80,.12);
+      --tile-shadow:0 8px 20px rgba(20,60,80,.09);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg1),
+          var(--bg2)
+        );
+
+      color:var(--ink);
+
+      font-size:17px;
+      line-height:1.55;
+    }
+
+    .page{
+      max-width:1040px;
+      margin:0 auto;
+      padding:1.25rem;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:flex-start;
+      margin-bottom:1rem;
+    }
+
+    .eyebrow{
+      margin:0 0 .2rem;
+
+      color:var(--accent);
+
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:.8rem;
+    }
+
+    h1{
+      margin:.1rem 0 .3rem;
+
+      color:var(--accent-dark);
+
+      font-size:
+        clamp(
+          1.8rem,
+          4vw,
+          2.35rem
+        );
+
+      line-height:1.12;
+    }
+
+    h2{
+      margin:.1rem 0 .65rem;
+
+      color:var(--accent-dark);
+
+      font-size:1.3rem;
+      line-height:1.25;
+    }
+
+    h3{
+      margin:0;
+
+      color:var(--accent-dark);
+
+      font-size:1.1rem;
+      line-height:1.3;
+    }
+
+    p{
+      margin:.45rem 0;
+    }
+
+    .sub{
+      max-width:760px;
+
+      color:var(--muted);
+
+      font-size:1rem;
+      font-weight:600;
+      line-height:1.5;
+    }
+
+    .card{
+      margin-bottom:1rem;
+      padding:1.2rem;
+
+      border:1px solid var(--line);
+      border-radius:20px;
+
+      background:var(--card);
+
+      box-shadow:var(--shadow);
+    }
+
+    .actions{
+      display:flex;
+      gap:.6rem;
+      flex-wrap:wrap;
+
+      margin-top:1rem;
+    }
+
+    .topbar .actions{
+      margin-top:0;
+      justify-content:flex-end;
+    }
+
+    a.btn,
+    button.btn{
+      appearance:none;
+
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+
+      padding:.68rem 1.05rem;
+
+      border:1px solid var(--accent);
+      border-radius:999px;
+
+      background:var(--accent);
+      color:#fff;
+
+      text-decoration:none;
+
+      font:inherit;
+      font-size:.95rem;
+      font-weight:850;
+
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    a.btn:hover,
+    button.btn:hover{
+      background:var(--accent-dark);
+      border-color:var(--accent-dark);
+    }
+
+    a.btn.secondary,
+    button.btn.secondary{
+      background:#fff;
+      color:var(--accent);
+    }
+
+    a.btn.secondary:hover,
+    button.btn.secondary:hover{
+      background:var(--accent-soft);
+    }
+
+    button.btn:disabled{
+      opacity:.55;
+      cursor:wait;
+    }
+
+
+    /* ---------- Verification ---------- */
+
+    .form-grid{
+      display:grid;
+
+      grid-template-columns:
+        1fr
+        1fr;
+
+      gap:.8rem;
+
+      align-items:end;
+    }
+
+    label{
+      display:block;
+
+      color:var(--muted);
+
+      font-size:.9rem;
+      font-weight:850;
+    }
+
+    input{
+      width:100%;
+
+      margin-top:.28rem;
+      padding:.7rem .75rem;
+
+      border:1px solid var(--line);
+      border-radius:11px;
+
+      background:#fff;
+      color:var(--ink);
+
+      font:inherit;
+      font-size:1rem;
+    }
+
+    input:focus{
+      outline:
+        3px solid
+        rgba(31,111,139,.14);
+
+      border-color:var(--accent);
+    }
+
+    .pin-wrap{
+      position:relative;
+
+      display:block;
+
+      margin-top:.28rem;
+    }
+
+    .pin-wrap input{
+      margin-top:0;
+      padding-right:4rem;
+    }
+
+    .eye-btn{
+      position:absolute;
+
+      right:.35rem;
+      top:50%;
+
+      transform:
+        translateY(-50%);
+
+      padding:.33rem .62rem;
+
+      border:1px solid var(--line);
+      border-radius:999px;
+
+      background:var(--soft);
+      color:var(--accent-dark);
+
+      font-size:.8rem;
+      font-weight:850;
+
+      cursor:pointer;
+    }
+
+    .status{
+      margin-top:.85rem;
+      padding:.76rem .86rem;
+
+      border:1px solid var(--line);
+      border-radius:12px;
+
+      background:var(--soft);
+      color:var(--muted);
+
+      font-weight:750;
+      line-height:1.4;
+    }
+
+    .status.good{
+      background:#e8f5eb;
+      color:var(--good);
+      border-color:#b9dfc2;
+    }
+
+    .status.warn{
+      background:#fff4db;
+      color:var(--warn);
+      border-color:#ead49a;
+    }
+
+    .status.err{
+      background:#fff1f1;
+      color:var(--bad);
+      border-color:#e5b8b8;
+    }
+
+
+    /* ---------- Welcome ---------- */
+
+    .welcome{
+      padding:1.1rem .9rem .4rem;
+
+      text-align:center;
+    }
+
+    .greeting{
+      margin:0 0 .35rem;
+
+      color:var(--accent-dark);
+
+      font-size:
+        clamp(
+          1.5rem,
+          3vw,
+          2rem
+        );
+    }
+
+    .welcome-line{
+      margin:0 0 .7rem;
+
+      color:var(--muted);
+
+      font-size:1.08rem;
+    }
+
+    .role-invitation{
+      max-width:720px;
+
+      margin:.15rem auto .9rem;
+
+      color:var(--muted);
+
+      font-size:.94rem;
+      font-weight:650;
+    }
+
+    .question{
+      margin:.7rem 0 0;
+
+      color:var(--ink);
+
+      font-size:
+        clamp(
+          1.45rem,
+          3vw,
+          1.9rem
+        );
+    }
+
+    .you-may{
+      margin:.35rem 0 0;
+
+      color:var(--accent-dark);
+
+      font-weight:900;
+      font-size:1.1rem;
+    }
+
+    .verified-line{
+      margin:.7rem 0 0;
+
+      color:var(--muted);
+
+      font-size:.87rem;
+    }
+
+
+    /* ---------- Role badges ---------- */
+
+    .member-role-strip{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+
+      gap:.55rem;
+
+      min-height:34px;
+
+      margin:.8rem 0 .2rem;
+    }
+
+    .member-role-badge{
+      position:relative;
+
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+
+      width:34px;
+      height:34px;
+
+      border:1px solid var(--line);
+      border-radius:10px;
+
+      background:#fff;
+
+      box-shadow:
+        0
+        4px
+        12px
+        rgba(20,60,80,.08);
+    }
+
+    .role-icon{
+      display:block;
+
+      width:25px;
+      height:25px;
+
+      overflow:visible;
+      color:currentColor;
+    }
+
+
+    /* ---------- Studio choices ---------- */
+
+    .studio-grid{
+      display:grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0,1fr)
+        );
+
+      gap:1rem;
+
+      margin-top:1rem;
+    }
+
+    .studio-tile{
+      display:flex;
+      align-items:center;
+
+      gap:1rem;
+
+      min-height:126px;
+
+      padding:1.1rem;
+
+      border:1px solid var(--line);
+      border-radius:18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #fff,
+          var(--soft)
+        );
+
+      color:var(--ink);
+
+      box-shadow:var(--tile-shadow);
+
+      text-align:left;
+
+      font:inherit;
+    }
+
+    button.studio-tile{
+      width:100%;
+
+      cursor:pointer;
+    }
+
+    .studio-tile.active:hover,
+    .studio-tile.active:focus-visible{
+      border-color:var(--accent);
+
+      outline:none;
+
+      box-shadow:
+        0
+        12px
+        26px
+        rgba(20,60,80,.13);
+    }
+
+    .studio-tile.disabled{
+      background:var(--disabled-bg);
+      color:var(--disabled-ink);
+
+      box-shadow:none;
+
+      cursor:default;
+    }
+
+    .tile-mark{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      width:58px;
+      height:58px;
+
+      flex:0 0 58px;
+
+      border-radius:16px;
+
+      background:var(--accent-soft);
+      color:var(--accent-dark);
+    }
+
+    .tile-mark .role-icon{
+      width:42px;
+      height:42px;
+    }
+
+    .disabled .tile-mark{
+      background:#e1e5e7;
+      color:#929ca2;
+
+      filter:grayscale(1);
+    }
+
+    .tile-copy strong{
+      display:block;
+
+      margin-bottom:.25rem;
+
+      color:var(--accent-dark);
+
+      font-size:1.08rem;
+      line-height:1.25;
+    }
+
+    .tile-copy span{
+      display:block;
+
+      color:var(--muted);
+
+      font-size:.93rem;
+      line-height:1.42;
+    }
+
+    .disabled .tile-copy strong{
+      color:#7f8a90;
+    }
+
+    .disabled .tile-copy span{
+      color:#8a969d;
+    }
+
+    .availability{
+      display:inline-block !important;
+
+      margin-top:.45rem;
+      padding:.22rem .48rem;
+
+      border:1px solid #b9dfc2;
+      border-radius:999px;
+
+      background:#e8f5eb;
+      color:var(--good) !important;
+
+      font-size:.78rem !important;
+      font-weight:850;
+    }
+
+    .disabled .availability{
+      border-color:#d4dadd;
+
+      background:#eceff1;
+      color:#7f8a90 !important;
+    }
+
+
+    /* ---------- Opening explanation ---------- */
+
+    .choice-opening{
+      margin-top:1rem;
+      padding:1.1rem;
+
+      border:2px solid #c7dce7;
+      border-radius:17px;
+
+      background:#f7fbfd;
+    }
+
+    .choice-opening[hidden]{
+      display:none;
+    }
+
+    .choice-opening h2{
+      margin-bottom:.45rem;
+    }
+
+    .choice-opening p{
+      max-width:800px;
+    }
+
+    .choice-detail{
+      margin:.8rem 0;
+
+      padding:.8rem .9rem;
+
+      border:1px solid #d5e3eb;
+      border-radius:12px;
+
+      background:#fff;
+
+      color:#405766;
+    }
+
+    .choice-buttons{
+      display:flex;
+      flex-wrap:wrap;
+
+      gap:.6rem;
+
+      margin-top:.9rem;
+    }
+
+
+    /* ---------- Event workspace ---------- */
+
+    .existing-tools{
+      margin-top:1.25rem;
+      padding-top:1.15rem;
+
+      border-top:1px solid var(--line);
+    }
+
+    .workspace-intro{
+      margin:.15rem 0 .8rem;
+
+      color:var(--muted);
+
+      font-size:.95rem;
+      font-weight:650;
+    }
+
+    .tool-links{
+      display:grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(0,1fr)
+        );
+
+      gap:.75rem;
+    }
+
+    .tool-links a{
+      display:block;
+
+      padding:.9rem;
+
+      border:1px solid var(--line);
+      border-radius:14px;
+
+      background:#fff;
+      color:var(--ink);
+
+      text-decoration:none;
+    }
+
+    .tool-links a:hover{
+      border-color:var(--accent);
+      background:var(--soft);
+    }
+
+    .tool-links strong{
+      display:block;
+
+      margin-bottom:.15rem;
+
+      color:var(--accent-dark);
+    }
+
+    .tool-links span{
+      display:block;
+
+      color:var(--muted);
+
+      font-size:.88rem;
+      line-height:1.4;
+    }
+
+
+    /* ---------- Help ---------- */
+
+    .help-note{
+      margin-top:1.15rem;
+      padding:1.05rem;
+
+      border:1px solid #cfe3eb;
+      border-radius:16px;
+
+      background:var(--accent-soft);
+      color:#315c6d;
+    }
+
+    .help-note > strong{
+      display:block;
+
+      margin-bottom:.3rem;
+
+      color:var(--accent-dark);
+
+      font-size:1.08rem;
+    }
+
+    .help-note p{
+      margin:.45rem 0;
+    }
+
+    .guide-links{
+      display:grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0,1fr)
+        );
+
+      gap:.7rem;
+
+      margin:.8rem 0;
+    }
+
+    .guide-link{
+      display:block;
+
+      padding:.8rem .9rem;
+
+      border:1px solid #bfd8e4;
+      border-radius:12px;
+
+      background:#fff;
+      color:var(--accent-dark);
+
+      text-decoration:none;
+    }
+
+    .guide-link strong{
+      display:block;
+
+      margin-bottom:.18rem;
+    }
+
+    .guide-link span{
+      display:block;
+
+      color:var(--muted);
+
+      font-size:.85rem;
+      line-height:1.4;
+    }
+
+    .helper-link{
+      color:var(--accent-dark);
+
+      font-weight:800;
+      text-underline-offset:2px;
+    }
+
+
+    /* ---------- Motto ---------- */
+
+    .motto{
+      margin-top:1.6rem;
+      padding-top:1rem;
+
+      border-top:1px solid var(--line);
+
+      color:#31506b;
+
+      text-align:center;
+
+      font-weight:850;
+      line-height:1.55;
+    }
+
+
+    [hidden]{
+      display:none !important;
+    }
+
+
+    @media(max-width:760px){
+
+      .topbar{
+        display:block;
+      }
+
+      .topbar .actions{
+        justify-content:flex-start;
+
+        margin-top:.85rem;
+      }
+
+      .form-grid,
+      .studio-grid,
+      .tool-links,
+      .guide-links{
+        grid-template-columns:1fr;
+      }
+
+    }
+
+
+    @media(max-width:480px){
+
+      .page{
+        padding:.8rem;
+      }
+
+      .card{
+        padding:1rem;
+
+        border-radius:16px;
+      }
+
+      .studio-tile{
+        align-items:flex-start;
+
+        min-height:110px;
+      }
+
+      .tile-mark{
+        width:50px;
+        height:50px;
+
+        flex-basis:50px;
+      }
+
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <main class="page">
+
+
+    <!-- =====================================================
+         TOP
+         ===================================================== -->
+
+    <div class="topbar">
+
+      <div>
+
+        <p class="eyebrow">
+          Sanctuary Club
+        </p>
+
+        <h1>
+          Your Design Studio
+        </h1>
+
+        <div class="sub">
+          Your place to create, manage and publish
+          attractive information for Sanctuary Club.
+        </div>
+
+      </div>
+
+
+      <div class="actions">
+
+        <a
+          class="btn secondary"
+          href="members-info.html"
+        >
+          Members Hub
+        </a>
+
+        <button
+          class="btn secondary"
+          id="logoutBtn"
+          type="button"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         VERIFY
+         ===================================================== -->
+
+    <section
+      class="card"
+      id="verifyCard"
+    >
+
+      <h2>
+        Open Your Design Studio
+      </h2>
+
+      <p class="sub">
+        Enter your resident reference and Personal PIN.
+        Your allocated roles will decide which Studio choices
+        are available to you.
+      </p>
+
+
+      <form id="verifyForm">
+
+        <div class="form-grid">
+
+          <label>
+            Resident Ref
+
+            <input
+              id="residentRefInput"
+              type="text"
+              placeholder="e.g. SM55/1"
+              autocomplete="username"
+            />
+          </label>
+
+
+          <label>
+            Personal PIN
+
+            <span class="pin-wrap">
+
+              <input
+                id="pinInput"
+                type="password"
+                inputmode="numeric"
+                maxlength="4"
+                placeholder="4 digits"
+                autocomplete="current-password"
+              />
+
+              <button
+                id="togglePinBtn"
+                class="eye-btn"
+                type="button"
+                aria-label="Show PIN"
+                title="Show PIN"
+              >
+                Show
+              </button>
+
+            </span>
+          </label>
+
+        </div>
+
+
+        <div class="actions">
+
+          <button
+            class="btn"
+            id="verifyBtn"
+            type="submit"
+          >
+            Enter Your Design Studio
+          </button>
+
+        </div>
+
+
+        <div
+          class="status"
+          id="verifyStatus"
+          hidden
+        ></div>
+
+      </form>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         STUDIO FRONT DOOR
+         ===================================================== -->
+
+    <section
+      class="card"
+      id="studioCard"
+      hidden
+    >
+
+      <div class="welcome">
+
+        <h2
+          class="greeting"
+          id="greetingLine"
+        >
+          Good morning.
+        </h2>
+
+        <p class="welcome-line">
+          Welcome to Your Design Studio.
+        </p>
+
+
+        <p class="role-invitation">
+          Your active choices are determined by the roles
+          currently allocated to you.
+          If there is another role you would like to take on,
+          please ask an Administrator.
+        </p>
+
+
+        <div
+          class="member-role-strip"
+          id="memberRoleStrip"
+          aria-label="Your assigned community roles"
+        ></div>
+
+
+        <h3 class="question">
+          What shall we do today?
+        </h3>
+
+        <p class="you-may">
+          You may:
+        </p>
+
+        <p
+          class="verified-line"
+          id="verifiedLine"
+        >
+          Signed in.
+        </p>
+
+      </div>
+
+
+
+      <!-- ROLE CHOICES -->
+
+      <div
+        class="studio-grid"
+        id="studioGrid"
+      ></div>
+
+
+
+      <!-- OPENING EXPLANATION -->
+
+      <section
+        class="choice-opening"
+        id="choiceOpening"
+        hidden
+      >
+
+        <h2 id="choiceHeading"></h2>
+
+        <div id="choiceNarrative"></div>
+
+        <div
+          class="choice-buttons"
+          id="choiceButtons"
+        ></div>
+
+      </section>
+
+
+
+      <!-- EVENT WORKSPACE -->
+
+      <div
+        class="existing-tools"
+        id="existingTools"
+        hidden
+      >
+
+        <h3>
+          Your Event Workspace
+        </h3>
+
+        <p class="workspace-intro">
+          If you have created an Event, you can control it from here
+          as well as from other convenient places around Sanctuary Club.
+        </p>
+
+
+        <div class="tool-links">
+
+          <a href="host-my-events.html">
+
+            <strong>
+              Your Event Notices
+            </strong>
+
+            <span>
+              View or edit Event Notices
+              you have already created.
+            </span>
+
+          </a>
+
+
+          <a href="host-my-events.html?mode=sop">
+
+            <strong>
+              State of Play
+            </strong>
+
+            <span>
+              View bookings, places remaining
+              and your printable Host report.
+            </span>
+
+          </a>
+
+
+          <a href="host-my-events.html?mode=booking">
+
+            <strong>
+              Book for a Member
+            </strong>
+
+            <span>
+              Add, update or cancel
+              a member booking for one of your Events.
+            </span>
+
+          </a>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- HELP -->
+
+      <div class="help-note">
+
+        <strong>
+          Need a little help?
+        </strong>
+
+        <p>
+          You don't need any publishing experience.
+          The best way to learn is simply to have a go.
+        </p>
+
+
+        <div class="guide-links">
+
+          <a
+            class="guide-link"
+            href="library-publications.html?id=design-studio-guide"
+          >
+
+            <strong>
+              Your Design Studio — Quick Guide
+            </strong>
+
+            <span>
+              How to use the design tools.
+            </span>
+
+          </a>
+
+
+          <a
+            class="guide-link"
+            href="library-publications.html?id=design-studio-publishing"
+          >
+
+            <strong>
+              Your Design Studio — Publishing Guide
+            </strong>
+
+            <span>
+              Where finished work goes
+              and what happens next.
+            </span>
+
+          </a>
+
+        </div>
+
+
+        <p>
+          You can use the Studio simply for your own pleasure,
+          then print your creation or save it to your computer.
+        </p>
+
+        <p>
+          If you think you might want to share it later,
+          save a Draft on the website as well.
+          You can come back to it and offer it for publication
+          through the appropriate Writer or Artist route.
+        </p>
+
+        <p>
+          Our
+          <a
+            class="helper-link"
+            href="website-helpers.html"
+          >
+            Website Helpers
+          </a>
+          will also be happy to assist.
+        </p>
+
+      </div>
+
+
+
+      <div class="motto">
+        The computer does the thinking.<br />
+        You do the creating.
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <script>
+    (function(){
+      "use strict";
+
+
+      const API_BASE =
+        "https://sanctuary-backend-8iqc.onrender.com";
+
+
+      const ROLE_ICONS =
+        "assets/icons/icons.svg";
+
+
+      const els = {
+
+        verifyCard:
+          document.getElementById(
+            "verifyCard"
+          ),
+
+        studioCard:
+          document.getElementById(
+            "studioCard"
+          ),
+
+        studioGrid:
+          document.getElementById(
+            "studioGrid"
+          ),
+
+        memberRoleStrip:
+          document.getElementById(
+            "memberRoleStrip"
+          ),
+
+        existingTools:
+          document.getElementById(
+            "existingTools"
+          ),
+
+        verifyForm:
+          document.getElementById(
+            "verifyForm"
+          ),
+
+        verifyBtn:
+          document.getElementById(
+            "verifyBtn"
+          ),
+
+        verifyStatus:
+          document.getElementById(
+            "verifyStatus"
+          ),
+
+        residentRefInput:
+          document.getElementById(
+            "residentRefInput"
+          ),
+
+        pinInput:
+          document.getElementById(
+            "pinInput"
+          ),
+
+        togglePinBtn:
+          document.getElementById(
+            "togglePinBtn"
+          ),
+
+        greetingLine:
+          document.getElementById(
+            "greetingLine"
+          ),
+
+        verifiedLine:
+          document.getElementById(
+            "verifiedLine"
+          ),
+
+        logoutBtn:
+          document.getElementById(
+            "logoutBtn"
+          ),
+
+        choiceOpening:
+          document.getElementById(
+            "choiceOpening"
+          ),
+
+        choiceHeading:
+          document.getElementById(
+            "choiceHeading"
+          ),
+
+        choiceNarrative:
+          document.getElementById(
+            "choiceNarrative"
+          ),
+
+        choiceButtons:
+          document.getElementById(
+            "choiceButtons"
+          )
+
+      };
+
+
+      /*
+        =====================================================
+        STUDIO CHOICES
+        =====================================================
+
+        These are entrances, not different design tools.
+
+        Every creative route eventually reaches
+        design-studio-canvas.html.
+      */
+
+
+      const STUDIO_CHOICES = [
+
+        {
+          key:"host",
+
+          label:"Host an Event",
+
+          description:
+            "Create an Event — payable or free — and its Notice.",
+
+          iconId:"role-host",
+
+          roles:["host"]
+        },
+
+
+        {
+          key:"activity",
+
+          label:"Activity Organiser",
+
+          description:
+            "Create dated activity information or standing information about an Activity you organise.",
+
+          iconId:"role-activity",
+
+          roles:["activity_organiser"]
+        },
+
+
+        {
+          key:"writer",
+
+          label:"Writer",
+
+          description:
+            "Write news, stories, articles or other work for possible publication.",
+
+          iconId:"role-news",
+
+          roles:[
+            "writer",
+            "news_contributor"
+          ]
+        },
+
+
+        {
+          key:"artist",
+
+          label:"Artist",
+
+          description:
+            "Create for pleasure or prepare work for possible inclusion in the Library Gallery.",
+
+          iconId:"role-artist",
+
+          roles:["artist"]
+        },
+
+
+        {
+          key:"committee",
+
+          label:"Committee",
+
+          description:
+            "Create Committee News & Notices.",
+
+          iconId:"role-committee",
+
+          roles:["committee"]
+        },
+
+
+        {
+          key:"panel",
+
+          label:"Residents Association Panel",
+
+          description:
+            "Create Residents Association Panel News & Notices.",
+
+          iconId:"role-panel",
+
+          roles:["panel"]
+        },
+
+
+        {
+          key:"services",
+
+          label:"Services",
+
+          description:
+            "Create information and notices about a Service you provide.",
+
+          iconId:"role-services",
+
+          roles:["services"]
+        }
+
+      ];
+
+
+
+      /*
+        Role badges may include roles which do not themselves
+        provide a publishing entrance.
+
+        Administrator, Treasurer and Website Helper can therefore
+        still be displayed as roles without becoming YDS choices.
+      */
+
+
+      const MEMBER_ROLE_ICONS = [
+
+        {
+          roles:["host"],
+          iconId:"role-host",
+          tooltip:"Event Host"
+        },
+
+        {
+          roles:[
+            "activity_organiser",
+            "activity"
+          ],
+          iconId:"role-activity",
+          tooltip:"Activity Organiser"
+        },
+
+        {
+          roles:[
+            "writer",
+            "news_contributor"
+          ],
+          iconId:"role-news",
+          tooltip:"Writer"
+        },
+
+        {
+          roles:["editor"],
+          iconId:"role-editor",
+          tooltip:"Editor"
+        },
+
+        {
+          roles:["artist"],
+          iconId:"role-artist",
+          tooltip:"Artist"
+        },
+
+        {
+          roles:["committee"],
+          iconId:"role-committee",
+          tooltip:"Committee"
+        },
+
+        {
+          roles:["panel"],
+          iconId:"role-panel",
+          tooltip:"Residents Association Panel"
+        },
+
+        {
+          roles:["services"],
+          iconId:"role-services",
+          tooltip:"Services"
+        },
+
+        {
+          roles:["treasurer"],
+          iconId:"role-treasurer",
+          tooltip:"Treasurer"
+        },
+
+        {
+          roles:["website_helper"],
+          iconId:"role-helper",
+          tooltip:"Website Helper"
+        },
+
+        {
+          roles:["admin"],
+          iconId:"role-admin",
+          tooltip:"Administrator"
+        }
+
+      ];
+
+
+
+      function clean(value){
+        return String(
+          value || ""
+        ).trim();
+      }
+
+
+
+      function normaliseResidentRef(value){
+
+        const raw =
+          clean(value)
+            .toUpperCase();
+
+
+        const match =
+          raw.match(
+            /^(SM|SC|SCH)\s*0*(\d+)(?:\s*\/\s*(\d+))?$/
+          );
+
+
+        if(!match){
+          return raw;
+        }
+
+
+        if(match[1] === "SCH"){
+          return "SCH";
+        }
+
+
+        return (
+          match[1] +
+          String(
+            parseInt(
+              match[2],
+              10
+            )
+          ).padStart(
+            2,
+            "0"
+          ) +
+          (
+            match[3]
+              ? "/" +
+                parseInt(
+                  match[3],
+                  10
+                )
+              : ""
+          )
+        );
+      }
+
+
+
+      function memberIdFromResidentRef(ref){
+
+        const raw =
+          clean(ref)
+            .toUpperCase();
+
+
+        if(raw === "SCH"){
+          return "SCH";
+        }
+
+
+        const match =
+          raw.match(
+            /^(SM|SC)\d+/
+          );
+
+
+        return match
+          ? match[0]
+          : raw.split("/")[0];
+      }
+
+
+
+      function normaliseRole(value){
+
+        const raw =
+          clean(value)
+            .toLowerCase()
+            .replace(
+              /[\s-]+/g,
+              "_"
+            );
+
+
+        const aliases = {
+
+          administrator:
+            "admin",
+
+          event_host:
+            "host",
+
+          activity:
+            "activity_organiser",
+
+          organiser:
+            "activity_organiser",
+
+          activity_organizer:
+            "activity_organiser",
+
+          news:
+            "news_contributor",
+
+          community_news:
+            "news_contributor",
+
+          residents_association_panel:
+            "panel",
+
+          residents_panel:
+            "panel",
+
+          residents_association:
+            "panel",
+
+          association_panel:
+            "panel",
+
+          service_publisher:
+            "services",
+
+          website_helper:
+            "website_helper",
+
+          helper:
+            "website_helper"
+
+        };
+
+
+        return aliases[raw] || raw;
+      }
+
+
+
+      function setStatus(
+        type,
+        text
+      ){
+
+        els.verifyStatus.hidden =
+          false;
+
+
+        els.verifyStatus.className =
+          `status ${type || ""}`.trim();
+
+
+        els.verifyStatus.textContent =
+          text;
+      }
+
+
+
+      async function apiFetch(
+        path,
+        options
+      ){
+
+        const response =
+          await fetch(
+            `${API_BASE}${path}`,
+            {
+              cache:"no-store",
+              ...(options || {})
+            }
+          );
+
+
+        const text =
+          await response.text();
+
+
+        let data;
+
+
+        try{
+
+          data =
+            text
+              ? JSON.parse(text)
+              : null;
+
+        }catch{
+
+          data = {
+            success:false,
+            message:
+              text ||
+              "Invalid server response"
+          };
+        }
+
+
+        if(
+          !response.ok ||
+          data?.success === false
+        ){
+          throw new Error(
+            data?.message ||
+            `Request failed: ${response.status}`
+          );
+        }
+
+
+        return data || {};
+      }
+
+
+
+      async function loadMemberProfile(
+        memberId,
+        token
+      ){
+
+        if(!memberId){
+          return null;
+        }
+
+
+        try{
+
+          return await apiFetch(
+            `/api/member-profile/${encodeURIComponent(memberId)}`,
+            {
+              method:"GET",
+
+              headers:
+                token
+                  ? {
+                      "Authorization":
+                        `Bearer ${token}`
+                    }
+                  : {}
+            }
+          );
+
+        }catch(error){
+
+          console.warn(
+            "Member profile could not be loaded.",
+            error
+          );
+
+
+          return null;
+        }
+      }
+
+
+
+      function residentIndexFromRef(
+        residentRef
+      ){
+
+        const match =
+          clean(residentRef)
+            .match(
+              /\/(\d+)$/
+            );
+
+
+        const index =
+          match
+            ? parseInt(
+                match[1],
+                10
+              )
+            : 1;
+
+
+        return (
+          Number.isFinite(index) &&
+          index > 0
+        )
+          ? index
+          : 1;
+      }
+
+
+
+      function selectResidentFromProfile(
+        profileData,
+        residentRef
+      ){
+
+        const member =
+          profileData?.member ||
+          profileData?.profile ||
+          profileData?.entry ||
+          profileData ||
+          {};
+
+
+        const residents =
+          Array.isArray(
+            member?.residents
+          )
+            ? member.residents
+            : [];
+
+
+        const resident =
+          residents[
+            residentIndexFromRef(
+              residentRef
+            ) - 1
+          ];
+
+
+        return {
+          member,
+          resident:
+            (
+              resident &&
+              typeof resident === "object"
+            )
+              ? resident
+              : null
+        };
+      }
+
+
+
+      function extractRoles(data){
+
+        const roles =
+          new Set();
+
+
+        function add(source){
+
+          if(!source){
+            return;
+          }
+
+
+          if(Array.isArray(source)){
+
+            source.forEach(add);
+
+            return;
+          }
+
+
+          if(
+            typeof source ===
+            "object"
+          ){
+
+            const direct =
+              normaliseRole(
+                source.role ||
+                source.name ||
+                source.key ||
+                source.code ||
+                ""
+              );
+
+
+            if(direct){
+              roles.add(direct);
+            }
+
+
+            Object.entries(
+              source
+            ).forEach(
+              ([key,value]) => {
+
+                if(
+                  value === true ||
+                  value === 1 ||
+                  value === "true"
+                ){
+
+                  const role =
+                    normaliseRole(
+                      key
+                    );
+
+
+                  if(role){
+                    roles.add(role);
+                  }
+                }
+              }
+            );
+
+
+            return;
+          }
+
+
+          String(source)
+            .split(/[,;|]/)
+            .map(
+              normaliseRole
+            )
+            .filter(Boolean)
+            .forEach(
+              role =>
+                roles.add(role)
+            );
+        }
+
+
+        [
+          data?.roles,
+          data?.role,
+          data?.resident_roles,
+          data?.residentRoles,
+          data?.assigned_roles,
+          data?.assignedRoles,
+
+          data?.member?.roles,
+          data?.member?.role,
+
+          data?.resident?.roles,
+          data?.resident?.role,
+
+          data?.user?.roles,
+          data?.user?.role,
+
+          data?.profile?.roles,
+          data?.profile?.role
+        ].forEach(add);
+
+
+        return [...roles];
+      }
+
+
+
+      function firstWord(value){
+
+        return (
+          clean(value)
+            .split(/\s+/)[0] ||
+          ""
+        );
+      }
+
+
+
+      function extractDisplayName(data){
+
+        const candidates = [
+
+          data?.preferred_name,
+          data?.preferredName,
+          data?.first_name,
+          data?.firstName,
+          data?.display_name,
+          data?.displayName,
+          data?.name,
+
+          data?.member?.preferred_name,
+          data?.member?.preferredName,
+          data?.member?.first_name,
+          data?.member?.firstName,
+          data?.member?.display_name,
+          data?.member?.displayName,
+          data?.member?.name,
+
+          data?.resident?.preferred_name,
+          data?.resident?.preferredName,
+          data?.resident?.first_name,
+          data?.resident?.firstName,
+          data?.resident?.display_name,
+          data?.resident?.displayName,
+          data?.resident?.name,
+
+          sessionStorage.getItem(
+            "currentDisplayName"
+          ),
+
+          localStorage.getItem(
+            "currentDisplayName"
+          )
+
+        ];
+
+
+        for(
+          const value of candidates
+        ){
+
+          const name =
+            firstWord(value);
+
+
+          if(name){
+            return name;
+          }
+        }
+
+
+        return "";
+      }
+
+
+
+      function timeGreeting(){
+
+        const hour =
+          new Date()
+            .getHours();
+
+
+        if(hour < 12){
+          return "Good morning";
+        }
+
+
+        if(hour < 18){
+          return "Good afternoon";
+        }
+
+
+        return "Good evening";
+      }
+
+
+
+      function hasAnyRole(
+        memberRoles,
+        requiredRoles
+      ){
+
+        return requiredRoles
+          .some(
+            role =>
+              memberRoles.includes(
+                role
+              )
+          );
+      }
+
+
+
+      function isChoiceAssigned(
+        choice,
+        roles
+      ){
+
+        /*
+          Administrator is deliberately NOT
+          an automatic publishing qualification.
+        */
+
+        return hasAnyRole(
+          roles,
+          choice.roles
+        );
+      }
+
+
+
+      function roleSvg(
+        iconId
+      ){
+
+        return `
+          <svg
+            class="role-icon"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <use
+              href="${ROLE_ICONS}#${iconId}"
+            ></use>
+          </svg>
+        `;
+      }
+
+
+
+      function renderMemberRoles(
+        roles
+      ){
+
+        els.memberRoleStrip.innerHTML =
+          "";
+
+
+        MEMBER_ROLE_ICONS
+          .forEach(
+            definition => {
+
+              if(
+                !hasAnyRole(
+                  roles,
+                  definition.roles
+                )
+              ){
+                return;
+              }
+
+
+              const badge =
+                document.createElement(
+                  "span"
+                );
+
+
+              badge.className =
+                "member-role-badge";
+
+
+              badge.title =
+                definition.tooltip;
+
+
+              badge.setAttribute(
+                "aria-label",
+                definition.tooltip
+              );
+
+
+              badge.innerHTML =
+                roleSvg(
+                  definition.iconId
+                );
+
+
+              els.memberRoleStrip
+                .appendChild(
+                  badge
+                );
+            }
+          );
+
+
+        els.memberRoleStrip.hidden =
+          !els.memberRoleStrip
+            .children.length;
+      }
+
+
+
+      function createChoiceTile(
+        choice,
+        roles
+      ){
+
+        const assigned =
+          isChoiceAssigned(
+            choice,
+            roles
+          );
+
+
+        if(!assigned){
+
+          const tile =
+            document.createElement(
+              "article"
+            );
+
+
+          tile.className =
+            "studio-tile disabled";
+
+
+          tile.setAttribute(
+            "aria-disabled",
+            "true"
+          );
+
+
+          tile.innerHTML = `
+            <div class="tile-mark">
+              ${roleSvg(choice.iconId)}
+            </div>
+
+            <div class="tile-copy">
+
+              <strong>
+                ${choice.label}
+              </strong>
+
+              <span>
+                ${choice.description}
+              </span>
+
+              <span class="availability">
+                Available when this role is assigned.
+              </span>
+
+            </div>
+          `;
+
+
+          return tile;
+        }
+
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+
+        button.type =
+          "button";
+
+
+        button.className =
+          "studio-tile active";
+
+
+        button.innerHTML = `
+          <div class="tile-mark">
+            ${roleSvg(choice.iconId)}
+          </div>
+
+          <div class="tile-copy">
+
+            <strong>
+              ${choice.label}
+            </strong>
+
+            <span>
+              ${choice.description}
+            </span>
+
+            <span class="availability">
+              Available now
+            </span>
+
+          </div>
+        `;
+
+
+        button.addEventListener(
+          "click",
+          () =>
+            openChoice(
+              choice.key
+            )
+        );
+
+
+        return button;
+      }
+
+
+
+      function renderStudio(
+        roles
+      ){
+
+        els.studioGrid.innerHTML =
+          "";
+
+
+        STUDIO_CHOICES
+          .forEach(
+            choice => {
+
+              els.studioGrid
+                .appendChild(
+                  createChoiceTile(
+                    choice,
+                    roles
+                  )
+                );
+            }
+          );
+
+
+        /*
+          Event tools belong to someone who
+          actually has the Host role.
+
+          Administrator alone no longer exposes them.
+        */
+
+        els.existingTools.hidden =
+          !roles.includes(
+            "host"
+          );
+      }
+
+
+
+      function actionButton(
+        label,
+        href,
+        secondary = false
+      ){
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+
+        link.className =
+          secondary
+            ? "btn secondary"
+            : "btn";
+
+
+        link.href =
+          href;
+
+
+        link.textContent =
+          label;
+
+
+        return link;
+      }
+
+
+
+      function setChoiceContent(
+        title,
+        html,
+        buttons
+      ){
+
+        els.choiceHeading.textContent =
+          title;
+
+
+        els.choiceNarrative.innerHTML =
+          html;
+
+
+        els.choiceButtons.innerHTML =
+          "";
+
+
+        buttons.forEach(
+          button =>
+            els.choiceButtons
+              .appendChild(
+                button
+              )
+        );
+
+
+        els.choiceOpening.hidden =
+          false;
+
+
+        els.choiceOpening
+          .scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+          });
+      }
+
+
+
+      function openChoice(
+        key
+      ){
+
+        if(key === "host"){
+
+          setChoiceContent(
+
+            "Host an Event",
+
+            `
+              <p>
+                Use this route for an Event,
+                whether it is free or payable.
+              </p>
+
+              <div class="choice-detail">
+                While the Event is current,
+                the computer can place it in the
+                Calendar, Events List and Event Notices.
+
+                After the Event date it disappears
+                from the current displays,
+                while a compact permanent Event record
+                can remain in the Library archive.
+              </div>
+
+              <p>
+                The Event form will ask whether the Event
+                is payable. Payment information is needed
+                only when <strong>Yes</strong> is chosen.
+              </p>
+            `,
+
+            [
+              actionButton(
+                "Continue to Event form",
+                "host-event-form.html?mode=host"
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "activity"){
+
+          setChoiceContent(
+
+            "Activity Organiser",
+
+            `
+              <p>
+                Activities can produce two different kinds
+                of information.
+              </p>
+
+              <div class="choice-detail">
+                <strong>Dated activity:</strong>
+                something which needs to appear in the
+                Calendar, Events List and Notices while current.
+                It normally disappears when it is over.
+              </div>
+
+              <div class="choice-detail">
+                <strong>Standing Activity information:</strong>
+                general information about your Activity.
+                This can remain as an editable Library publication.
+              </div>
+            `,
+
+            [
+              actionButton(
+                "Create dated activity",
+                "host-event-form.html?mode=host&source=activity"
+              ),
+
+              actionButton(
+                "Create standing information",
+                "design-studio-canvas.html?mode=activity",
+                true
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "writer"){
+
+          setChoiceContent(
+
+            "Writer",
+
+            `
+              <p>
+                Use the common Design Studio to write news,
+                stories, articles or other work.
+              </p>
+
+              <div class="choice-detail">
+                Writer work remains private while it is being prepared.
+                When you are ready, you may submit it to a Club Editor.
+                The Editor can approve it for Current News
+                or for permanent inclusion in the Library.
+              </div>
+
+              <p>
+                Nothing is published merely because you created it.
+              </p>
+            `,
+
+            [
+              actionButton(
+                "Open the Design Studio",
+                "design-studio-canvas.html?mode=writer"
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "artist"){
+
+          setChoiceContent(
+
+            "Artist",
+
+            `
+              <p>
+                Use the common Design Studio simply for pleasure,
+                or to create something you may later wish to share.
+              </p>
+
+              <div class="choice-detail">
+                Artist work remains private while it is being prepared.
+                If you decide to offer it for publication,
+                it goes to a Club Editor before it can appear
+                in the Library Gallery.
+              </div>
+
+              <p>
+                You can always print your creation or save it
+                to your own computer without publishing it.
+              </p>
+            `,
+
+            [
+              actionButton(
+                "Open the Design Studio",
+                "design-studio-canvas.html?mode=artist"
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "committee"){
+
+          setChoiceContent(
+
+            "Committee — News & Notices",
+
+            `
+              <p>
+                Use the common Design Studio for Committee
+                News & Notices.
+              </p>
+
+              <div class="choice-detail">
+                The kind of item you create will determine
+                where it appears and whether it becomes
+                part of the permanent Library record.
+              </div>
+
+              <p>
+                Where the destination is already known,
+                the computer should make that decision for you.
+              </p>
+            `,
+
+            [
+              actionButton(
+                "Open the Design Studio",
+                "design-studio-canvas.html?mode=committee"
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "panel"){
+
+          setChoiceContent(
+
+            "Residents Association Panel — News & Notices",
+
+            `
+              <p>
+                Use the common Design Studio for
+                Residents Association Panel News & Notices.
+              </p>
+
+              <div class="choice-detail">
+                Panel material is a special category.
+                Its publishing, privacy and archive arrangements
+                are determined by the Panel's agreed arrangements.
+              </div>
+            `,
+
+            [
+              actionButton(
+                "Open the Design Studio",
+                "design-studio-canvas.html?mode=panel"
+              )
+            ]
+
+          );
+
+
+          return;
+        }
+
+
+
+        if(key === "services"){
+
+          setChoiceContent(
+
+            "Services",
+
+            `
+              <p>
+                Use this route for information about
+                a Service you provide.
+              </p>
+
+              <div class="choice-detail">
+                A dated Service item can be treated like an Event
+                while it is current.
+
+                Standing information about the Service can remain
+                as an editable Library publication.
+              </div>
+            `,
+
+            [
+              actionButton(
+                "Create dated Service item",
+                "host-event-form.html?mode=host&source=services"
+              ),
+
+              actionButton(
+                "Create standing information",
+                "design-studio-canvas.html?mode=services",
+                true
+              )
+            ]
+
+          );
+
+        }
+      }
+
+
+
+      function storeSession(
+        data,
+        residentRef,
+        memberId,
+        roles,
+        displayName
+      ){
+
+        try{
+
+          const token =
+            data.token ||
+            data.authToken ||
+            data.access_token ||
+            "";
+
+
+          if(token){
+
+            localStorage.setItem(
+              "authToken",
+              token
+            );
+
+            sessionStorage.setItem(
+              "authToken",
+              token
+            );
+          }
+
+
+          const values = {
+
+            currentMemberId:
+              memberId,
+
+            currentResidentId:
+              residentRef,
+
+            verifiedResidentId:
+              residentRef,
+
+            hostAreaVerified:
+              "true",
+
+            hostAreaRoles:
+              JSON.stringify(
+                roles
+              ),
+
+            currentDisplayName:
+              displayName || ""
+
+          };
+
+
+          Object.entries(
+            values
+          ).forEach(
+            ([key,value]) => {
+
+              localStorage.setItem(
+                key,
+                value
+              );
+
+              sessionStorage.setItem(
+                key,
+                value
+              );
+            }
+          );
+
+
+        }catch(error){
+
+          console.warn(
+            "Could not store Design Studio session.",
+            error
+          );
+        }
+      }
+
+
+
+      function recognisedStudioRole(
+        roles
+      ){
+
+        const recognised =
+          new Set([
+            "host",
+            "activity_organiser",
+            "writer",
+            "news_contributor",
+            "artist",
+            "committee",
+            "panel",
+            "services"
+          ]);
+
+
+        return roles
+          .some(
+            role =>
+              recognised.has(role)
+          );
+      }
+
+
+
+      function showStudio(
+        data,
+        residentRef,
+        memberId,
+        roles,
+        resolvedName = ""
+      ){
+
+        const name =
+          resolvedName ||
+          extractDisplayName(data);
+
+
+        els.verifyCard.hidden =
+          true;
+
+
+        els.studioCard.hidden =
+          false;
+
+
+        els.greetingLine.textContent =
+          name
+            ? `${timeGreeting()}, ${name}.`
+            : `${timeGreeting()}.`;
+
+
+        els.verifiedLine.textContent =
+          `Signed in as ${residentRef} (${memberId})`;
+
+
+        renderMemberRoles(
+          roles
+        );
+
+
+        renderStudio(
+          roles
+        );
+
+
+        window.scrollTo({
+          top:0,
+          behavior:"smooth"
+        });
+      }
+
+
+
+      async function verifyStudio(
+        event
+      ){
+
+        event.preventDefault();
+
+
+        const residentRef =
+          normaliseResidentRef(
+            els.residentRefInput.value
+          );
+
+
+        const memberId =
+          memberIdFromResidentRef(
+            residentRef
+          );
+
+
+        const pin =
+          clean(
+            els.pinInput.value
+          );
+
+
+        if(
+          !residentRef ||
+          !memberId ||
+          !pin
+        ){
+
+          setStatus(
+            "err",
+            "Enter your resident reference and Personal PIN."
+          );
+
+
+          return;
+        }
+
+
+        try{
+
+          els.verifyBtn.disabled =
+            true;
+
+
+          setStatus(
+            "warn",
+            "Opening Your Design Studio…"
+          );
+
+
+          const loginData =
+            await apiFetch(
+              "/auth/login",
+              {
+                method:"POST",
+
+                headers:{
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify({
+                    memberId,
+                    residentId:
+                      residentRef,
+                    pin
+                  })
+              }
+            );
+
+
+          const token =
+            loginData.token ||
+            loginData.authToken ||
+            loginData.access_token ||
+            "";
+
+
+          const profileData =
+            await loadMemberProfile(
+              memberId,
+              token
+            );
+
+
+          const selected =
+            selectResidentFromProfile(
+              profileData,
+              residentRef
+            );
+
+
+          const roles =
+            [
+              ...new Set([
+                ...extractRoles(
+                  loginData
+                ),
+
+                ...extractRoles(
+                  selected.resident ||
+                  {}
+                ),
+
+                ...extractRoles(
+                  selected.member ||
+                  {}
+                )
+              ])
+            ];
+
+
+          if(
+            !recognisedStudioRole(
+              roles
+            )
+          ){
+
+            setStatus(
+              "err",
+              "No Design Studio publishing or creative role is currently assigned to this member."
+            );
+
+
+            return;
+          }
+
+
+          const displayName =
+            extractDisplayName(
+              selected.resident ||
+              {}
+            ) ||
+            extractDisplayName(
+              loginData
+            );
+
+
+          storeSession(
+            loginData,
+            residentRef,
+            memberId,
+            roles,
+            displayName
+          );
+
+
+          showStudio(
+            loginData,
+            residentRef,
+            memberId,
+            roles,
+            displayName
+          );
+
+
+        }catch(error){
+
+          console.error(
+            error
+          );
+
+
+          setStatus(
+            "err",
+            error.message ||
+            "Your Design Studio could not be opened."
+          );
+
+
+        }finally{
+
+          els.verifyBtn.disabled =
+            false;
+        }
+      }
+
+
+
+      /*
+        Restore the already verified YDS session
+        when returning from another Studio page.
+      */
+
+
+      function restoreStudioSession(){
+
+        try{
+
+          const verified =
+            (
+              sessionStorage.getItem(
+                "hostAreaVerified"
+              ) === "true"
+            ) ||
+            (
+              localStorage.getItem(
+                "hostAreaVerified"
+              ) === "true"
+            );
+
+
+          if(!verified){
+            return false;
+          }
+
+
+          const residentRef =
+            sessionStorage.getItem(
+              "currentResidentId"
+            ) ||
+            localStorage.getItem(
+              "currentResidentId"
+            ) ||
+            "";
+
+
+          const memberId =
+            sessionStorage.getItem(
+              "currentMemberId"
+            ) ||
+            localStorage.getItem(
+              "currentMemberId"
+            ) ||
+            memberIdFromResidentRef(
+              residentRef
+            );
+
+
+          const displayName =
+            sessionStorage.getItem(
+              "currentDisplayName"
+            ) ||
+            localStorage.getItem(
+              "currentDisplayName"
+            ) ||
+            "";
+
+
+          const rolesRaw =
+            sessionStorage.getItem(
+              "hostAreaRoles"
+            ) ||
+            localStorage.getItem(
+              "hostAreaRoles"
+            ) ||
+            "[]";
+
+
+          let roles = [];
+
+
+          try{
+
+            roles =
+              JSON.parse(
+                rolesRaw
+              )
+                .map(
+                  normaliseRole
+                )
+                .filter(Boolean);
+
+          }catch{
+
+            roles = [];
+          }
+
+
+          roles =
+            [...new Set(roles)];
+
+
+          if(
+            !residentRef ||
+            !memberId ||
+            !recognisedStudioRole(
+              roles
+            )
+          ){
+            return false;
+          }
+
+
+          showStudio(
+            {},
+            residentRef,
+            memberId,
+            roles,
+            displayName
+          );
+
+
+          return true;
+
+
+        }catch(error){
+
+          console.warn(
+            "Could not restore Design Studio session.",
+            error
+          );
+
+
+          return false;
+        }
+      }
+
+
+
+      els.verifyForm
+        .addEventListener(
+          "submit",
+          verifyStudio
+        );
+
+
+
+      els.togglePinBtn
+        .addEventListener(
+          "click",
+          () => {
+
+            const showing =
+              els.pinInput.type ===
+              "text";
+
+
+            els.pinInput.type =
+              showing
+                ? "password"
+                : "text";
+
+
+            els.togglePinBtn.textContent =
+              showing
+                ? "Show"
+                : "Hide";
+
+
+            els.togglePinBtn.setAttribute(
+              "aria-label",
+              showing
+                ? "Show PIN"
+                : "Hide PIN"
+            );
+          }
+        );
+
+
+
+      els.logoutBtn
+        .addEventListener(
+          "click",
+          () => {
+
+            try{
+
+              [
+                "hostAreaVerified",
+                "hostAreaRoles",
+                "currentResidentId",
+                "verifiedResidentId",
+                "currentDisplayName"
+              ].forEach(
+                key => {
+
+                  localStorage.removeItem(
+                    key
+                  );
+
+                  sessionStorage.removeItem(
+                    key
+                  );
+                }
+              );
+
+            }catch{
+              /* nothing */
+            }
+
+
+            if(
+              typeof window.scLogout ===
+              "function"
+            ){
+
+              window.scLogout();
+
+              return;
+            }
+
+
+            window.location.href =
+              "index.html";
+          }
+        );
+
+
+
+      /*
+        If the member has just come back from the Canvas,
+        there is no need to make them verify twice.
+      */
+
+
+      restoreStudioSession();
+
+    })();
+  </script>
+
+</body>
+</html>

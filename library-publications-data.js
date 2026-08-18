@@ -1087,6 +1087,122 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         </strong>
       </div>
     `
+  
+    },
+
+
+  /*
+    =========================================================
+    THE WAY FORWARD
+    Your Club & The Way Forward
+    =========================================================
+  */
+
+  "the-way-forward": {
+    kind: "publication",
+
+    title: "The Way Forward",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "18 August 2026",
+
+    summary:
+      "The website has created new possibilities. How the Club is governed for the future belongs to its members.",
+
+    body: `
+      <div class="way-forward">
+
+        <p class="lead">
+          <strong>
+            Sanctuary Club has created new possibilities for our community.
+          </strong>
+        </p>
+
+        <p>
+          The website is there to make life at Sanctuary
+          <strong>easier, more enjoyable and more connected</strong>.
+        </p>
+
+        <p>
+          It can help us organise events and activities, share news and information,
+          communicate with one another, encourage creativity and keep useful
+          Club information readily available.
+        </p>
+
+        <p>
+          It can continue to develop as members discover what is useful
+          and what they would like it to do.
+        </p>
+
+        <h2>
+          But a website is a tool for a community.<br>
+          It does not govern the community.
+        </h2>
+
+        <p>
+          The time has come for <strong>the membership to decide how Sanctuary Club
+          itself should be organised and governed for the future.</strong>
+        </p>
+
+        <p>
+          That may include a Constitution; the structure and responsibilities
+          of the Club Committee; how its members are chosen and how long they serve;
+          how decisions are made and reported; and how the wider membership
+          can participate.
+        </p>
+
+        <p>
+          The Residents Association Panel has its own responsibilities
+          and will have a separate protected area within Sanctuary Club,
+          using the same software and facilities wherever they are appropriate.
+        </p>
+
+        <p>
+          Members may, of course, undertake roles in both.
+          People and experience can be shared while responsibilities,
+          authority and protected information remain properly distinct.
+        </p>
+
+        <p>
+          The website can make Club governance easier. It can provide information,
+          publish notices and minutes, support meetings and voting,
+          preserve an accessible record and help members take part.
+        </p>
+
+        <h2>
+          It should not make those decisions.<br>
+          Members should.
+        </h2>
+
+        <p>
+          Nothing needs to be done simply because the technology makes it possible.
+        </p>
+
+        <p>
+          Our arrangements should suit <strong>Sanctuary</strong>,
+          remain proportionate to a community of our size and,
+          above all, reflect what the membership wants.
+        </p>
+
+        <p class="lead">
+          <strong>
+            Sanctuary Club has provided some new possibilities.
+          </strong>
+        </p>
+
+        <div class="motto">
+          <strong>
+            The way forward belongs to its members.
+          </strong>
+        </div>
+
+      </div>
+    `
   }
 
 };

@@ -2,139 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
   <title>Forgotten Membership PIN | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  />
-
-  <meta
-    name="robots"
-    content="noindex,nofollow"
-  />
-
-  <script src="access.js?v=FORGOT_PIN_2"></script>
+  <script src="access.js?v=FORGOT_PIN_3"></script>
 
   <style>
     :root{
-      --bg1:#d9ecff;
-      --bg2:#f4f8fc;
+      --bg1:#cfe6f8;
+      --bg2:#eef5f9;
+      --card:#ffffff;
       --ink:#243746;
-      --muted:#526574;
-      --blue:#123a78;
-      --blue-dark:#0f3166;
-      --soft:#f7fbff;
-      --line:#d7e3ec;
-      --panel:#ffffff;
+      --muted:#435b6a;
+      --line:#c7d8e3;
+      --accent:#005ea8;
+      --accent-dark:#003b69;
+      --accent-soft:#edf6fc;
       --warm:#fff9e8;
       --warm-line:#ddc979;
       --good:#216e39;
+      --good-bg:#e8f5eb;
       --bad:#9e2b2b;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --bad-bg:#fff2f4;
+      --shadow:0 5px 18px rgba(34,68,94,.10);
     }
 
-    *{
-      box-sizing:border-box;
-    }
+    *{box-sizing:border-box}
 
     body{
       margin:0;
       min-height:100vh;
-
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      font-size:18px;
-      line-height:1.6;
-
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 48%,#fff 100%);
       color:var(--ink);
-
-      background:
-        linear-gradient(
-          180deg,
-          var(--bg1) 0%,
-          var(--bg2) 48%,
-          #ffffff 100%
-        );
+      font-size:18px;
+      line-height:1.62;
     }
 
-    .topbar{
-      max-width:900px;
+    nav{
+      max-width:920px;
       margin:0 auto;
-
-      padding:1.1rem 1rem .45rem;
-
+      padding:1rem 1.25rem;
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:1rem;
     }
 
-    .brand{
-      color:var(--blue);
-      font-size:1.9rem;
-      font-weight:850;
-    }
-
-    .top-link{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-
-      min-height:44px;
-      padding:.58rem .9rem;
-
-      border-radius:12px 12px 0 0;
-
-      background:var(--blue);
-      color:#fff;
-
+    nav a{
       text-decoration:none;
       font-weight:800;
+      color:var(--accent-dark);
     }
 
-    .top-link:hover,
-    .top-link:focus-visible{
-      background:var(--blue-dark);
+    main{
+      max-width:760px;
+      margin:0 auto 2.5rem;
+      padding:0 1rem;
     }
 
-    .page-shell{
-      max-width:900px;
-      margin:0 auto;
-      padding:0 1rem 2.5rem;
-    }
-
-    .page-card{
-      padding:1.5rem;
-
-      border:1px solid var(--line);
+    .card{
+      background:var(--card);
       border-radius:20px;
-
-      background:var(--panel);
       box-shadow:var(--shadow);
+      border:1px solid rgba(183,207,222,.9);
+      padding:1.5rem;
     }
 
     h1{
-      margin:0 0 .5rem;
-
-      color:var(--blue);
-
-      font-size:1.75rem;
+      margin:0;
+      color:var(--accent-dark);
+      font-size:1.8rem;
       line-height:1.25;
     }
 
     h2{
-      margin:1.4rem 0 .55rem;
-
-      color:var(--blue);
-
-      font-size:1.25rem;
+      margin:1.35rem 0 .5rem;
+      color:var(--accent-dark);
+      font-size:1.3rem;
     }
 
     p{
@@ -142,181 +88,137 @@
     }
 
     .lead{
-      margin:.2rem 0 .8rem;
-
-      color:#334c5f;
-
+      margin-top:.55rem;
+      color:#304858;
       font-size:1.08rem;
-      font-weight:700;
+      font-weight:750;
     }
 
     .reassurance{
-      margin:1rem 0 1.2rem;
-      padding:1rem;
-
-      border:1px solid var(--warm-line);
-      border-radius:14px;
-
+      margin:1.15rem 0;
+      padding:1rem 1.05rem;
+      border-radius:15px;
+      border:2px solid var(--warm-line);
       background:var(--warm);
-
-      color:#4f4a32;
+      color:#3f493f;
     }
 
     .reassurance strong{
       color:#5b4b10;
     }
 
-    hr{
-      margin:1.35rem 0;
-
-      border:0;
-      border-top:1px solid var(--line);
-    }
-
-    form{
-      margin-top:.8rem;
+    .form-box{
+      margin-top:1.25rem;
+      padding:1.15rem;
+      border:2px solid #b9d1e1;
+      border-radius:16px;
+      background:#f8fbfd;
     }
 
     label{
       display:block;
-
-      margin-bottom:.85rem;
-
+      margin-top:.8rem;
       color:#405968;
-
       font-weight:850;
     }
 
     input{
       width:100%;
-
-      margin-top:.28rem;
-      padding:.72rem .78rem;
-
+      margin-top:.3rem;
+      padding:.72rem;
       border:1px solid #bfcfda;
       border-radius:10px;
-
       background:#fff;
       color:var(--ink);
-
       font:inherit;
       font-size:1.05rem;
     }
 
     input:focus{
-      outline:3px solid rgba(18,58,120,.14);
-      border-color:var(--blue);
+      outline:3px solid rgba(0,94,168,.16);
+      border-color:var(--accent);
     }
 
     .button-row{
       display:flex;
-      gap:.7rem;
+      gap:.75rem;
       flex-wrap:wrap;
-
-      margin-top:1rem;
+      margin-top:1.15rem;
     }
 
     button{
-      min-width:130px;
-
-      padding:.72rem 1rem;
-
-      border:1px solid var(--blue);
+      padding:.72rem 1.05rem;
       border-radius:10px;
-
-      background:#fff;
-      color:var(--blue);
-
+      border:none;
+      cursor:pointer;
       font:inherit;
       font-weight:850;
-
-      cursor:pointer;
     }
 
     button.primary{
-      background:var(--blue);
+      background:var(--accent);
       color:#fff;
     }
 
-    button:hover,
-    button:focus-visible{
-      background:var(--blue-dark);
+    button.secondary{
+      background:#667f94;
       color:#fff;
     }
 
-    #statusBox{
-      margin-top:1rem;
+    button:disabled{
+      opacity:.5;
+      cursor:default;
     }
 
     .status{
-      padding:.8rem .95rem;
-
+      margin-top:1rem;
+      padding:.9rem 1rem;
       border-radius:12px;
-
       font-weight:750;
-      line-height:1.45;
-    }
-
-    .status.info{
-      border:1px solid #c7dbe8;
-      background:var(--soft);
-      color:#31506b;
+      line-height:1.5;
     }
 
     .status.ok{
-      border:1px solid #b9dfc2;
-      background:#e8f5eb;
+      background:var(--good-bg);
+      border:1px solid #b9d9c1;
       color:var(--good);
     }
 
     .status.err{
-      border:1px solid #e5b8b8;
-      background:#fff1f1;
+      background:var(--bad-bg);
+      border:1px solid #e2bcbc;
       color:var(--bad);
     }
 
+    .success-next{
+      margin-top:1rem;
+    }
+
+    .success-next a{
+      display:inline-block;
+      padding:.72rem 1rem;
+      border-radius:10px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-weight:850;
+    }
+
     .helper-note{
-      margin-top:1.25rem;
+      margin-top:1.2rem;
       padding-top:1rem;
-
       border-top:1px solid var(--line);
-
       color:var(--muted);
-      font-size:.95rem;
+      font-size:.97rem;
     }
 
     .helper-note a{
-      color:var(--blue);
+      color:var(--accent-dark);
       font-weight:800;
-      text-underline-offset:2px;
     }
 
-    .motto{
-      margin-top:1.6rem;
-      padding-top:1rem;
-
-      border-top:1px solid var(--line);
-
-      color:#31506b;
-
-      text-align:center;
-      font-weight:850;
-      line-height:1.55;
-    }
-
-    @media(max-width:620px){
-      body{
-        font-size:17px;
-      }
-
-      .topbar{
-        align-items:flex-start;
-        flex-direction:column;
-      }
-
-      .page-card{
-        padding:1rem;
-      }
+    @media(max-width:600px){
+      .card{padding:1.05rem}
 
       .button-row{
         flex-direction:column;
@@ -331,86 +233,71 @@
 
 <body>
 
-  <div class="topbar">
+<nav>
+  <a href="index.html">Home</a>
+  <a href="your-info.html">Back to Member Login</a>
+</nav>
 
-    <div class="brand">
-      Forgotten Membership PIN
-    </div>
+<main>
 
-    <a
-      class="top-link"
-      href="your-info.html"
-    >
-      Back
-    </a>
+  <section class="card">
 
-  </div>
+    <h1>🔐 Forgotten your Membership PIN?</h1>
 
-  <div class="page-shell">
+    <p class="lead">
+      Don't worry — getting back in is straightforward.
+    </p>
 
-    <main class="page-card">
-
-      <h1>
-        🔐 Forgotten your Membership PIN?
-      </h1>
-
-      <p class="lead">
-        Don't worry — you can regain access safely.
+    <div class="reassurance">
+      <p>
+        Enter your <strong>Membership Number</strong> and
+        <strong>surname</strong> below.
       </p>
-
-      <div class="reassurance">
-
-        <p>
-          Sanctuary Club can temporarily restore the
-          <strong>Starter PIN</strong>
-          for your membership.
-        </p>
-
-        <p>
-          Once you sign in with the temporary Starter PIN,
-          you will be asked to choose a new personal four-digit PIN.
-        </p>
-
-      </div>
-
-      <hr>
-
-      <h2>
-        Confirm your membership
-      </h2>
 
       <p>
-        Please enter your Membership Number and surname below.
+        If they match our records, your PIN will be reset to the
+        temporary Starter PIN <strong>2468</strong>.
       </p>
+
+      <p>
+        Use 2468 to sign in again. You will then be asked to choose
+        your own new personal four-digit PIN.
+      </p>
+    </div>
+
+    <div class="form-box">
+
+      <h2>Confirm your membership</h2>
 
       <form id="forgotPinForm">
 
-        <label>
+        <label for="memberId">
           Membership Number
-
-          <input
-            id="memberId"
-            type="text"
-            placeholder="e.g. SM55"
-            autocomplete="off"
-            required
-          >
         </label>
 
-        <label>
+        <input
+          id="memberId"
+          type="text"
+          placeholder="e.g. SM55"
+          autocomplete="off"
+          required
+        >
+
+        <label for="surname">
           Surname
-
-          <input
-            id="surname"
-            type="text"
-            autocomplete="family-name"
-            required
-          >
         </label>
+
+        <input
+          id="surname"
+          type="text"
+          autocomplete="family-name"
+          required
+        >
 
         <div class="button-row">
 
           <button
+            id="resetBtn"
             type="submit"
             class="primary"
           >
@@ -419,6 +306,7 @@
 
           <button
             type="button"
+            class="secondary"
             onclick="history.back()"
           >
             Cancel
@@ -430,79 +318,120 @@
 
       <div id="statusBox"></div>
 
-      <div class="helper-note">
-        If you have difficulty, one of our
-        <a href="website-helpers.html">
-          Website Helpers
-        </a>
-        will be happy to assist.
+    </div>
+
+    <div class="helper-note">
+      <strong>Need a little help?</strong>
+      If you have any difficulty, one of our
+      <a href="website-helpers.html">Website Helpers</a>
+      will be happy to assist.
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  const API_BASE =
+    "https://sanctuary-backend-8iqc.onrender.com";
+
+  const form =
+    document.getElementById("forgotPinForm");
+
+  const memberIdInput =
+    document.getElementById("memberId");
+
+  const surnameInput =
+    document.getElementById("surname");
+
+  const resetBtn =
+    document.getElementById("resetBtn");
+
+  const statusBox =
+    document.getElementById("statusBox");
+
+  function showStatus(type, message){
+    statusBox.innerHTML = `
+      <div class="status ${type}">
+        ${message}
       </div>
+    `;
+  }
 
-      <div class="motto">
-        The computer does the thinking.<br>
-        You do the creating.
-      </div>
+  form.addEventListener("submit", async function(event){
+    event.preventDefault();
 
-    </main>
+    const memberId =
+      memberIdInput.value.trim().toUpperCase();
 
-  </div>
+    const surname =
+      surnameInput.value.trim();
 
-  <script>
+    if(!memberId || !surname){
+      showStatus(
+        "err",
+        "Please enter both your Membership Number and surname."
+      );
+      return;
+    }
 
-    document
-      .getElementById("forgotPinForm")
-      .addEventListener(
-        "submit",
-        async function(event){
+    resetBtn.disabled = true;
+    resetBtn.textContent = "Resetting…";
+    statusBox.innerHTML = "";
 
-          event.preventDefault();
-
-          const statusBox =
-            document.getElementById("statusBox");
-
-          const memberId =
-            document
-              .getElementById("memberId")
-              .value
-              .trim()
-              .toUpperCase();
-
-          const surname =
-            document
-              .getElementById("surname")
-              .value
-              .trim();
-
-          if(!memberId || !surname){
-
-            statusBox.innerHTML = `
-              <div class="status err">
-                Please enter both your Membership Number and surname.
-              </div>
-            `;
-
-            return;
-          }
-
-          /*
-            Current page behaviour retained.
-
-            Backend forgotten-PIN reset route
-            still needs to be connected here
-            if/when available.
-          */
-
-          statusBox.innerHTML = `
-            <div class="status info">
-              Your details have been entered.
-              The automatic PIN reset connection is still being prepared.
-            </div>
-          `;
-
+    try{
+      const response = await fetch(
+        `${API_BASE}/api/request-pin-reset`,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            member_id:memberId,
+            surname:surname
+          })
         }
       );
 
-  </script>
+      const data = await response.json();
+
+      if(!response.ok || !data.success){
+        throw new Error(
+          data.message ||
+          "We could not reset your PIN."
+        );
+      }
+
+      form.style.display = "none";
+
+      statusBox.innerHTML = `
+        <div class="status ok">
+          <strong>Your PIN has been reset.</strong><br><br>
+          Your temporary Starter PIN is <strong>2468</strong>.<br>
+          Use it to sign in, then choose your new personal
+          four-digit PIN.
+        </div>
+
+        <div class="success-next">
+          <a href="your-info.html">
+            Return to Member Login
+          </a>
+        </div>
+      `;
+
+    }catch(error){
+      showStatus(
+        "err",
+        error.message ||
+        "Something went wrong. Please try again."
+      );
+
+      resetBtn.disabled = false;
+      resetBtn.textContent = "Reset my PIN";
+    }
+  });
+</script>
 
 </body>
 </html>

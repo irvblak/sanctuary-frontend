@@ -2,123 +2,507 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Forgotten Membership PIN | Sanctuary Club</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <title>Forgotten Membership PIN | Sanctuary Club</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  />
+
+  <script src="access.js?v=FORGOT_PIN_2"></script>
+
+  <style>
+    :root{
+      --bg1:#d9ecff;
+      --bg2:#f4f8fc;
+      --ink:#243746;
+      --muted:#526574;
+      --blue:#123a78;
+      --blue-dark:#0f3166;
+      --soft:#f7fbff;
+      --line:#d7e3ec;
+      --panel:#ffffff;
+      --warm:#fff9e8;
+      --warm-line:#ddc979;
+      --good:#216e39;
+      --bad:#9e2b2b;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size:18px;
+      line-height:1.6;
+
+      color:var(--ink);
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg1) 0%,
+          var(--bg2) 48%,
+          #ffffff 100%
+        );
+    }
+
+    .topbar{
+      max-width:900px;
+      margin:0 auto;
+
+      padding:1.1rem 1rem .45rem;
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+    }
+
+    .brand{
+      color:var(--blue);
+      font-size:1.9rem;
+      font-weight:850;
+    }
+
+    .top-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+
+      min-height:44px;
+      padding:.58rem .9rem;
+
+      border-radius:12px 12px 0 0;
+
+      background:var(--blue);
+      color:#fff;
+
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .top-link:hover,
+    .top-link:focus-visible{
+      background:var(--blue-dark);
+    }
+
+    .page-shell{
+      max-width:900px;
+      margin:0 auto;
+      padding:0 1rem 2.5rem;
+    }
+
+    .page-card{
+      padding:1.5rem;
+
+      border:1px solid var(--line);
+      border-radius:20px;
+
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    h1{
+      margin:0 0 .5rem;
+
+      color:var(--blue);
+
+      font-size:1.75rem;
+      line-height:1.25;
+    }
+
+    h2{
+      margin:1.4rem 0 .55rem;
+
+      color:var(--blue);
+
+      font-size:1.25rem;
+    }
+
+    p{
+      margin:.55rem 0;
+    }
+
+    .lead{
+      margin:.2rem 0 .8rem;
+
+      color:#334c5f;
+
+      font-size:1.08rem;
+      font-weight:700;
+    }
+
+    .reassurance{
+      margin:1rem 0 1.2rem;
+      padding:1rem;
+
+      border:1px solid var(--warm-line);
+      border-radius:14px;
+
+      background:var(--warm);
+
+      color:#4f4a32;
+    }
+
+    .reassurance strong{
+      color:#5b4b10;
+    }
+
+    hr{
+      margin:1.35rem 0;
+
+      border:0;
+      border-top:1px solid var(--line);
+    }
+
+    form{
+      margin-top:.8rem;
+    }
+
+    label{
+      display:block;
+
+      margin-bottom:.85rem;
+
+      color:#405968;
+
+      font-weight:850;
+    }
+
+    input{
+      width:100%;
+
+      margin-top:.28rem;
+      padding:.72rem .78rem;
+
+      border:1px solid #bfcfda;
+      border-radius:10px;
+
+      background:#fff;
+      color:var(--ink);
+
+      font:inherit;
+      font-size:1.05rem;
+    }
+
+    input:focus{
+      outline:3px solid rgba(18,58,120,.14);
+      border-color:var(--blue);
+    }
+
+    .button-row{
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+
+      margin-top:1rem;
+    }
+
+    button{
+      min-width:130px;
+
+      padding:.72rem 1rem;
+
+      border:1px solid var(--blue);
+      border-radius:10px;
+
+      background:#fff;
+      color:var(--blue);
+
+      font:inherit;
+      font-weight:850;
+
+      cursor:pointer;
+    }
+
+    button.primary{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    button:hover,
+    button:focus-visible{
+      background:var(--blue-dark);
+      color:#fff;
+    }
+
+    #statusBox{
+      margin-top:1rem;
+    }
+
+    .status{
+      padding:.8rem .95rem;
+
+      border-radius:12px;
+
+      font-weight:750;
+      line-height:1.45;
+    }
+
+    .status.info{
+      border:1px solid #c7dbe8;
+      background:var(--soft);
+      color:#31506b;
+    }
+
+    .status.ok{
+      border:1px solid #b9dfc2;
+      background:#e8f5eb;
+      color:var(--good);
+    }
+
+    .status.err{
+      border:1px solid #e5b8b8;
+      background:#fff1f1;
+      color:var(--bad);
+    }
+
+    .helper-note{
+      margin-top:1.25rem;
+      padding-top:1rem;
+
+      border-top:1px solid var(--line);
+
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .helper-note a{
+      color:var(--blue);
+      font-weight:800;
+      text-underline-offset:2px;
+    }
+
+    .motto{
+      margin-top:1.6rem;
+      padding-top:1rem;
+
+      border-top:1px solid var(--line);
+
+      color:#31506b;
+
+      text-align:center;
+      font-weight:850;
+      line-height:1.55;
+    }
+
+    @media(max-width:620px){
+      body{
+        font-size:17px;
+      }
+
+      .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .page-card{
+        padding:1rem;
+      }
+
+      .button-row{
+        flex-direction:column;
+      }
+
+      button{
+        width:100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="page-shell">
+  <div class="topbar">
 
-  <div class="page-card">
+    <div class="brand">
+      Forgotten Membership PIN
+    </div>
 
-    <h1>🔐 Forgotten your Membership PIN?</h1>
-
-    <p class="lead">
-      Don't worry.
-    </p>
-
-    <p>
-      Sanctuary Club can safely issue a temporary
-      <strong>Starter PIN</strong> to allow you to regain access.
-    </p>
-
-    <p>
-      After signing in with the temporary Starter PIN, you'll be
-      asked immediately to choose a new personal Membership PIN.
-    </p>
-
-    <hr>
-
-    <h2>Confirm your membership</h2>
-
-    <p>
-      Please enter the information below.
-    </p>
-
-    <form id="forgotPinForm">
-
-      <label>
-        Membership Reference
-        <input
-          id="memberId"
-          type="text"
-          placeholder="e.g. SM55"
-          autocomplete="off"
-          required
-        >
-      </label>
-
-      <label>
-        Surname
-        <input
-          id="surname"
-          type="text"
-          autocomplete="family-name"
-          required
-        >
-      </label>
-
-      <div class="button-row">
-
-        <button
-          type="submit"
-          class="primary"
-        >
-          Reset my PIN
-        </button>
-
-        <button
-          type="button"
-          onclick="history.back()"
-        >
-          Cancel
-        </button>
-
-      </div>
-
-    </form>
-
-    <div id="statusBox"></div>
+    <a
+      class="top-link"
+      href="your-info.html"
+    >
+      Back
+    </a>
 
   </div>
 
-</div>
+  <div class="page-shell">
 
-<script>
+    <main class="page-card">
 
-document
-.getElementById("forgotPinForm")
-.addEventListener("submit", async function(e){
+      <h1>
+        🔐 Forgotten your Membership PIN?
+      </h1>
 
-    e.preventDefault();
+      <p class="lead">
+        Don't worry — you can regain access safely.
+      </p>
 
-    /*
-      Next phase:
+      <div class="reassurance">
 
-      POST /api/request-pin-reset
+        <p>
+          Sanctuary Club can temporarily restore the
+          <strong>Starter PIN</strong>
+          for your membership.
+        </p>
 
-      Body:
+        <p>
+          Once you sign in with the temporary Starter PIN,
+          you will be asked to choose a new personal four-digit PIN.
+        </p>
 
-      {
-        member_id,
-        surname
-      }
+      </div>
 
-      Backend:
+      <hr>
 
-      ✓ verify resident
-      ✓ temporarily enable Starter PIN (2468)
-      ✓ expiry (e.g. 30 minutes)
-      ✓ force PIN change on next login
-    */
+      <h2>
+        Confirm your membership
+      </h2>
 
-});
+      <p>
+        Please enter your Membership Number and surname below.
+      </p>
 
-</script>
+      <form id="forgotPinForm">
+
+        <label>
+          Membership Number
+
+          <input
+            id="memberId"
+            type="text"
+            placeholder="e.g. SM55"
+            autocomplete="off"
+            required
+          >
+        </label>
+
+        <label>
+          Surname
+
+          <input
+            id="surname"
+            type="text"
+            autocomplete="family-name"
+            required
+          >
+        </label>
+
+        <div class="button-row">
+
+          <button
+            type="submit"
+            class="primary"
+          >
+            Reset my PIN
+          </button>
+
+          <button
+            type="button"
+            onclick="history.back()"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      </form>
+
+      <div id="statusBox"></div>
+
+      <div class="helper-note">
+        If you have difficulty, one of our
+        <a href="website-helpers.html">
+          Website Helpers
+        </a>
+        will be happy to assist.
+      </div>
+
+      <div class="motto">
+        The computer does the thinking.<br>
+        You do the creating.
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+
+    document
+      .getElementById("forgotPinForm")
+      .addEventListener(
+        "submit",
+        async function(event){
+
+          event.preventDefault();
+
+          const statusBox =
+            document.getElementById("statusBox");
+
+          const memberId =
+            document
+              .getElementById("memberId")
+              .value
+              .trim()
+              .toUpperCase();
+
+          const surname =
+            document
+              .getElementById("surname")
+              .value
+              .trim();
+
+          if(!memberId || !surname){
+
+            statusBox.innerHTML = `
+              <div class="status err">
+                Please enter both your Membership Number and surname.
+              </div>
+            `;
+
+            return;
+          }
+
+          /*
+            Current page behaviour retained.
+
+            Backend forgotten-PIN reset route
+            still needs to be connected here
+            if/when available.
+          */
+
+          statusBox.innerHTML = `
+            <div class="status info">
+              Your details have been entered.
+              The automatic PIN reset connection is still being prepared.
+            </div>
+          `;
+
+        }
+      );
+
+  </script>
 
 </body>
 </html>

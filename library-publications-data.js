@@ -1,4 +1,3 @@
-
 /*
   Sanctuary Club
   library-publications-data.js
@@ -42,7 +41,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "14 August 2026",
+    updated: "18 August 2026",
 
     summary:
       "A short introduction to Sanctuary Club and the different ways in.",
@@ -63,7 +62,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        To see these, return Home, choose <strong>Info</strong>,
+        To see these, return Home, choose <strong>Access All</strong>,
         and enter your Membership Number and Personal PIN.
       </p>
 
@@ -75,11 +74,11 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     `
   },
 
-   
+
   /*
     =========================================================
     YOUR PRIVACY AT SANCTUARY
-    Short signpost to the fuller Privacy & Security publication
+    Short signpost to the fuller Privacy & Security publications
     =========================================================
   */
 
@@ -94,7 +93,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "14 August 2026",
+    updated: "18 August 2026",
 
     summary:
       "A short introduction to privacy and protected information around Sanctuary Club.",
@@ -118,13 +117,15 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <p>
         Administrators do not need to know your Personal PIN,
-        and privacy is intended to be built into the way the Club works
+        and privacy is built into the way the Club works
         rather than added afterwards.
       </p>
 
       <p>
-        For the fuller explanation, return to the Library and choose
-        <strong>Privacy &amp; Security</strong>.
+        For a simple practical explanation, return to the Library and choose
+        <strong>Your Access &amp; Privacy — at a Glance</strong>.
+        For the fuller explanation, choose
+        <strong>Privacy, Security &amp; Data Protection Charter</strong>.
       </p>
     `
   },
@@ -147,14 +148,14 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "14 August 2026",
+    updated: "18 August 2026",
 
     summary:
       "There are many ways to take part — as much or as little as you wish.",
 
     body: `
       <p class="lead">
-        Sanctuary Club works best when residents use it
+        Sanctuary Club works best when members use it
         in whatever way suits them.
       </p>
 
@@ -195,7 +196,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "14 August 2026",
+    updated: "18 August 2026",
 
     summary:
       "A quick hand-over reminder for Sanctuary members.",
@@ -203,7 +204,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     body: `
       <p class="lead">
         When you are ready to use the private member facilities,
-        please enter through <strong>Info</strong> and check that
+        please enter through <strong>Access All</strong> and check that
         Your Information is up to date.
       </p>
 
@@ -243,14 +244,14 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "14 August 2026",
+    updated: "18 August 2026",
 
     summary:
-      "A printable guide to creating and arranging publications in Your Design Studio.",
+      "A printable guide to creating and arranging work in Your Design Studio.",
 
     body: `
       <p class="lead">
-        Your Design Studio is designed to let you create a publication
+        Your Design Studio is designed to let you create
         by placing and arranging items directly on the page.
       </p>
 
@@ -265,9 +266,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         Print this guide and keep it beside you while you are working.
       </div>
 
-
-      <h2>Creating your publication</h2>
-
+      <h2>Creating your design</h2>
 
       <h3>Add Text</h3>
 
@@ -296,7 +295,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         and placed wherever you want it on the page.
       </p>
 
-
       <h3>Add Illustration</h3>
 
       <p>
@@ -318,10 +316,9 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        The illustration appears as an object on your publication
+        The illustration appears as an object on your design
         and can then be positioned wherever you wish.
       </p>
-
 
       <h2>Moving things around</h2>
 
@@ -338,7 +335,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         <li>The box stays where you leave it.</li>
       </ol>
 
-
       <h2>Selecting a box</h2>
 
       <p>
@@ -353,7 +349,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       <p>
         You can select another box simply by clicking it.
       </p>
-
 
       <h2>Overlay and Underlay</h2>
 
@@ -381,7 +376,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         They change only which item appears on top.
       </p>
 
-
       <h2>Delete</h2>
 
       <p>
@@ -390,8 +384,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        Because this cannot be undone accidentally,
-        the Studio will ask you to confirm:
+        The Studio will ask you to confirm:
       </p>
 
       <p>
@@ -403,11 +396,10 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         or <strong>Keep</strong> to leave it unchanged.
       </p>
 
-
       <h2>Recover Draft</h2>
 
       <p>
-        If you previously started a publication but did not finish it,
+        If you previously started a design but did not finish it,
         choose <strong>Recover Draft</strong>.
       </p>
 
@@ -415,7 +407,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         This brings your unfinished work back into the Studio
         so that you can continue where you left off.
       </p>
-
 
       <h2>Save to my computer</h2>
 
@@ -434,15 +425,14 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         Work created through <strong>Just for fun</strong>
         can also be saved this way.
         If it is later opened through full YDS after entering through
-        <strong>Info</strong>, it is treated as a new Writer or Artist
+        <strong>Access All</strong>, it is treated as a new Writer or Artist
         creation and will require editorial approval before publication.
       </p>
-
 
       <h2>Preview</h2>
 
       <p>
-        Choose <strong>Preview</strong> to see the publication
+        Choose <strong>Preview</strong> to see the design
         without the Design Studio editing controls.
       </p>
 
@@ -451,7 +441,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         before printing or publishing.
       </p>
 
-
       <h2>Print</h2>
 
       <p>
@@ -459,95 +448,16 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        The publication is designed to print cleanly on A4.
-      </p>
-
-
-      <h2>Publish</h2>
-
-      <p>
-        When you are satisfied with the finished publication,
-        choose <strong>Publish</strong>.
+        The design is intended to print cleanly on A4.
       </p>
 
       <p>
-        The Studio will give you a final opportunity
-        to check your work.
+        This Guide explains how to use the design tool itself.
+        What happens to finished work — including publication,
+        editorial approval, privacy and Library destinations —
+        is explained in
+        <strong>Your Design Studio — Publishing Guide</strong>.
       </p>
-
-      <p>
-        For most Club material, you will then be asked
-        to choose the <strong>Privacy Level</strong>:
-      </p>
-
-      <ul>
-        <li>
-          <strong>Access Code</strong> —
-          available to anyone who has entered Sanctuary Club
-          through <strong>What’s On / Library</strong>.
-        </li>
-
-        <li>
-          <strong>Personal PIN</strong> —
-          available only to verified Sanctuary members.
-        </li>
-      </ul>
-
-      <p>
-        If your role gives you authority to publish more restricted material,
-        the appropriate additional privacy choice will also be available.
-      </p>
-
-      <p>
-        You may make your work more widely available,
-        but you cannot publish into a more restricted area
-        than your role permits.
-      </p>
-
-      <p>
-        Some material already has a natural destination.
-        For example, an Event may also appear automatically
-        in the Calendar, Events List and Notices.
-      </p>
-
-      <p>
-        In those cases the computer will do what it already knows
-        needs to be done rather than ask you unnecessary questions.
-      </p>
-
-
-      <h3>Writers and Artists</h3>
-
-      <p>
-        Work created as a <strong>Writer</strong> or
-        <strong>Artist</strong> remains behind closed doors
-        while it is being prepared.
-      </p>
-
-      <p>
-        It is not offered a Privacy Level at this stage.
-      </p>
-
-      <p>
-        When it is ready, choose
-        <strong>Submit for Publication</strong>.
-      </p>
-
-      <p>
-        The work then goes for editorial approval
-        before it is made available in the Library.
-      </p>
-
-      <p>
-        The Editor may return the work for changes
-        or approve and publish it.
-      </p>
-
-      <p>
-        Once it is published, the contributor should receive
-        an automatic confirmation.
-      </p>
-
 
       <div class="motto">
         <strong>
@@ -556,7 +466,284 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         </strong>
       </div>
     `
-     },
+  },
+
+
+  /*
+    =========================================================
+    YOUR DESIGN STUDIO — PUBLISHING GUIDE
+    =========================================================
+  */
+
+  "design-studio-publishing": {
+    kind: "publication",
+
+    title: "Your Design Studio — Publishing Guide",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "18 August 2026",
+
+    summary:
+      "What happens to work created in Your Design Studio and where it may go.",
+
+    body: `
+      <p class="lead">
+        Your Design Studio uses one common design tool.
+        The route you choose before entering the Studio tells the computer
+        what kind of work you are creating and what may happen to it afterwards.
+      </p>
+
+      <p>
+        Wherever the correct destination is already known,
+        the computer should make that decision automatically.
+        You should be asked to choose only when there is a genuine choice to make.
+      </p>
+
+      <h2>Your work while you create it</h2>
+
+      <p>
+        You can use the Studio simply for your own pleasure.
+        You may print your work or save an editable copy to your computer
+        without publishing it anywhere.
+      </p>
+
+      <p>
+        If you think you may want to submit your work later,
+        you may also keep a draft so that you can return to it.
+      </p>
+
+      <h2>Events</h2>
+
+      <p>
+        An Event may be free or payable.
+        If it is payable, the appropriate payment information is added
+        as part of the Event process.
+      </p>
+
+      <p>
+        While an Event is current, it can appear automatically in the
+        Calendar, Events List and Event Notices.
+      </p>
+
+      <p>
+        After the Event date it disappears from the current displays.
+        A compact Events List-style record may remain permanently
+        in the Library archive.
+      </p>
+
+      <h2>Activities</h2>
+
+      <p>
+        A dated Activity may appear in the Calendar, Events List
+        and Notices while it is current.
+      </p>
+
+      <p>
+        General information about an Activity may instead become
+        an editable standing publication in the appropriate Library section.
+      </p>
+
+      <h2>Writers and Artists</h2>
+
+      <p>
+        Writer and Artist work remains private while it is being created.
+      </p>
+
+      <p>
+        If you decide that you would like to share it with your neighbours,
+        you may submit it to a Club Editor.
+      </p>
+
+      <p>
+        All Writer and Artist work intended for publication
+        requires editorial approval.
+      </p>
+
+      <p>
+        Approved Writer work may appear as current News
+        or become a permanent Library publication.
+        Approved Artist work may be included in the Library Gallery.
+      </p>
+
+      <p>
+        The Editor may return work for changes or approve it for publication.
+        Once it is published, the contributor should receive
+        an automatic confirmation.
+      </p>
+
+      <h2>Committee</h2>
+
+      <p>
+        Committee News &amp; Notices use the same Design Studio framework
+        and the same publishing facilities wherever they are appropriate.
+      </p>
+
+      <p>
+        The type of material being created determines its destination,
+        privacy and whether it forms part of the permanent Library record.
+      </p>
+
+      <h2>Residents Association Panel</h2>
+
+      <p>
+        Residents Association Panel work is a separate protected area.
+        Wherever practical it can use the same Sanctuary Club software
+        and facilities, while keeping its own authority, privacy
+        and records distinct.
+      </p>
+
+      <p>
+        The detailed publishing arrangements for the Residents Association Panel
+        will be determined separately.
+      </p>
+
+      <h2>Services</h2>
+
+      <p>
+        Dated Service information may be treated like an Event while current.
+        Standing Service information may remain as an editable Library publication.
+      </p>
+
+      <h2>Privacy and publication</h2>
+
+      <p>
+        Where a privacy choice is genuinely needed,
+        the Studio will offer only the choices appropriate
+        to the work and to the authority of the person creating it.
+      </p>
+
+      <p>
+        Material can be made more widely available where appropriate,
+        but cannot be published into a more restricted area
+        without the necessary authority.
+      </p>
+
+      <p>
+        For instructions on using the design tool itself,
+        see <strong>Your Design Studio — Quick Guide</strong>.
+      </p>
+
+      <div class="motto">
+        <strong>
+          The computer does the thinking.<br>
+          You do the creating.
+        </strong>
+      </div>
+    `
+  },
+
+
+  /*
+    =========================================================
+    YOUR ACCESS & PRIVACY — AT A GLANCE
+    =========================================================
+  */
+
+  "access-privacy-glance": {
+    kind: "publication",
+
+    title: "Your Access & Privacy — at a Glance",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "18 August 2026",
+
+    summary:
+      "A simple practical guide to who can see what in Sanctuary Club.",
+
+    body: `
+      <p class="lead">
+        Sanctuary Club has been designed to keep access simple
+        while protecting information that is private.
+      </p>
+
+      <h2>The Sanctuary Access Code</h2>
+
+      <p>
+        The shared Access Code <strong>wxyz</strong> lets you enter
+        the generally available parts of the website — including What’s On,
+        News &amp; Notices and generally available Library information.
+        It does <strong>not</strong> give access to members’ private information.
+      </p>
+
+      <h2>Your Personal PIN</h2>
+
+      <p>
+        Your own four-digit Personal PIN protects the information
+        you choose to enter and gives you access to the private member areas
+        of Sanctuary Club.
+      </p>
+
+      <p>
+        Administrators cannot see, recover or tell you your Personal PIN.
+      </p>
+
+      <h2>The Members Database</h2>
+
+      <p>
+        The full members database has
+        <strong>additional software protection</strong>
+        and is not available through the ordinary member areas of the website.
+      </p>
+
+      <p>
+        Access to the full database — including the facility used to email
+        members who have registered an email address — is restricted to
+        <strong>three members specifically appointed by the membership</strong>
+        for that purpose.
+      </p>
+
+      <p>
+        Other authorised role holders may have access to particular information
+        needed for their responsibilities, but this does not give them access
+        to the full members database.
+      </p>
+
+      <h2>Residents Association Panel</h2>
+
+      <p>
+        The Residents Association Panel has its own protected area.
+        Access is restricted to those authorised to carry out
+        the appropriate Residents Association responsibilities.
+      </p>
+
+      <h2>In simple terms</h2>
+
+      <p>
+        <strong>Access Code</strong> — generally available Club information.
+      </p>
+
+      <p>
+        <strong>Personal PIN</strong> — your information and private member facilities.
+      </p>
+
+      <p>
+        <strong>Authorised role</strong> — only the additional information
+        needed for that responsibility.
+      </p>
+
+      <p>
+        <strong>Full members database</strong> — additional software protection,
+        with access restricted to the three appointed members.
+      </p>
+
+      <p>
+        The principle is simple:
+        generally useful Club information should be easy to see.
+        Personal or protected information should be available only
+        to the people who need it.
+      </p>
+    `
+  },
 
 
   /*
@@ -576,7 +763,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "15 August 2026",
+    updated: "18 August 2026",
 
     summary:
       "How Sanctuary Club protects members, their information and their privacy.",
@@ -589,38 +776,40 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        <strong>Version 1.0</strong>
+        <strong>Version 1.1</strong>
       </p>
-
 
       <h2>Our Privacy Promise</h2>
 
       <p>
-        Sanctuary Club has been created by residents, for residents.
+        Privacy and security are built into Sanctuary Club,
+        not added as an afterthought.
+        The website has been designed specifically for our community
+        so that members can enjoy its benefits without having to understand
+        the technology protecting them.
       </p>
 
       <p>
+        Personal information is kept behind Personal PIN access;
+        generally available Club information is deliberately separated
+        from private member information; administrative powers are restricted;
+        and only the information needed to provide each Club facility
+        is used or displayed.
+      </p>
+
+      <p>
+        Sanctuary Club has been created by members, for members.
         Its purpose is to strengthen our community, make it easier to organise
         activities and events, improve communication and provide useful
-        information for everyone who lives here.
+        information for everyone who belongs to the Club.
       </p>
 
       <p>
-        From the very beginning, Sanctuary Club has been designed with privacy,
-        security and neighbourly trust as guiding principles.
+        We do not make extravagant claims about security.
+        Our aim is to provide sensible, proportionate protection
+        which is continually reviewed as Sanctuary Club develops,
+        so that members can use the Club comfortably and with confidence.
       </p>
-
-      <p>
-        We believe residents should enjoy the benefits of modern technology
-        without sacrificing their privacy or peace of mind.
-      </p>
-
-      <p>
-        For that reason, every effort has been made to collect only the
-        information needed to operate Sanctuary Club, to protect it appropriately,
-        and to use it only for the benefit of our residents and community.
-      </p>
-
 
       <h2>Our Principles</h2>
 
@@ -634,7 +823,8 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
         <li>
           using personal information only for legitimate Sanctuary Club
-          and Residents Association purposes;
+          purposes and, where separately authorised,
+          Residents Association purposes;
         </li>
 
         <li>
@@ -664,32 +854,34 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <p>
         It has not been created for commercial purposes, advertising or marketing,
-        and residents' personal information is never sold or shared for
+        and members’ personal information is never sold or shared for
         commercial gain.
       </p>
-
 
       <h2>The Starter PIN</h2>
 
       <p>
-        Every new member begins with the temporary Starter PIN.
+        Every new membership begins with the temporary Starter PIN
+        <strong>2468</strong>.
       </p>
 
       <p>
-        The same Starter PIN is also used whenever an authorised Administrator
-        resets a forgotten PIN.
+        If you forget your Personal PIN, you can use the
+        <strong>Forgotten your PIN?</strong> facility to restore
+        the temporary Starter PIN automatically.
       </p>
 
       <p>
-        This provides a simple and familiar way for members to begin using
-        Sanctuary Club or regain access if they forget their own Personal PIN.
+        Where a surname is already recorded, you will be asked for it
+        as a simple check of the membership details.
+        If no surname has yet been recorded, your Membership Number is sufficient.
       </p>
 
       <p>
-        Before accessing private member services, members are asked to replace
-        the Starter PIN with their own Personal PIN.
+        After signing in with the Starter PIN,
+        you will be asked to choose your own new Personal PIN
+        before using private member services.
       </p>
-
 
       <h2>Your Personal PIN</h2>
 
@@ -716,9 +908,8 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <p>
         This approach has been deliberately chosen so that no Administrator
-        can know or recover a member's Personal PIN.
+        can know or recover a member’s Personal PIN.
       </p>
-
 
       <h2>What Information Is Held?</h2>
 
@@ -728,14 +919,17 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <ul>
         <li>your name;</li>
-        <li>your resident reference;</li>
+        <li>your member reference;</li>
         <li>your household Membership Number;</li>
         <li>your contact details, where you choose to provide them;</li>
-        <li>
-          the voluntary Club or Residents Association roles you undertake;
-        </li>
+        <li>the voluntary Club roles you undertake;</li>
         <li>event bookings and related information.</li>
       </ul>
+
+      <p>
+        Information connected specifically with Residents Association business
+        is handled within the appropriate separately protected arrangements.
+      </p>
 
       <p>
         Only information reasonably required to operate Sanctuary Club is held.
@@ -746,12 +940,11 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         they wish to provide.
       </p>
 
-
       <h2>How Your Information Is Used</h2>
 
       <p>
-        Your information is used only for purposes connected with Sanctuary Club
-        and the Residents Association.
+        Your Club information is used only for purposes connected
+        with Sanctuary Club.
       </p>
 
       <p>Typical examples include:</p>
@@ -774,7 +967,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         or unrelated purposes.
       </p>
 
-
       <h2>Who Can See Your Information?</h2>
 
       <p>
@@ -783,21 +975,28 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        Access to administration functions is restricted to authorised
-        Administrators and other authorised role holders.
+        The full members database has
+        <strong>additional software protection</strong>
+        and is not available through the ordinary member areas of the website.
       </p>
 
       <p>
-        Different responsibilities are protected through role-based permissions
-        so that individuals can access only the information needed to carry out
-        their authorised duties.
+        Access to the full database — including the facility used to email
+        members who have registered an email address — is restricted to
+        <strong>three members specifically appointed by the membership</strong>
+        for that purpose.
       </p>
 
       <p>
-        Sensitive Residents Association information will, where appropriate,
-        be protected separately.
+        Other authorised role holders may have access only to the particular
+        information needed to carry out their responsibilities.
+        This does not give them access to the full members database.
       </p>
 
+      <p>
+        Residents Association Panel information is protected separately
+        and is available only to those with the appropriate authority.
+      </p>
 
       <h2>Looking After Your Information</h2>
 
@@ -811,7 +1010,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         As the Club develops, its security arrangements and operating procedures
         will continue to be reviewed and strengthened wherever appropriate.
       </p>
-
 
       <h2>Your Rights</h2>
 
@@ -840,7 +1038,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         and as promptly as possible.
       </p>
 
-
       <h2>Looking Ahead</h2>
 
       <p>
@@ -848,18 +1045,18 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        New facilities and services will continue to be developed, but privacy,
-        security and responsible stewardship of members' information will remain
-        fundamental design principles.
+        New facilities and services will continue to be developed,
+        but privacy, security and responsible stewardship of members’
+        information will remain fundamental design principles.
       </p>
 
       <p>
         This Charter reflects Sanctuary Club as it is today.
-        It will be reviewed and updated as the Club develops so that members,
-        Administrators and the Residents Association continue to benefit
-        from good governance, clear policies and appropriate safeguards.
+        It will be reviewed and updated as the Club develops
+        so that members and those entrusted with Club responsibilities
+        continue to benefit from good governance, clear policies
+        and appropriate safeguards.
       </p>
-
 
       <h2>Our Commitment</h2>
 
@@ -874,7 +1071,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        Our aim is to strengthen our community while respecting every member's
+        Our aim is to strengthen our community while respecting every member’s
         privacy, dignity and trust.
       </p>
 
@@ -882,7 +1079,6 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         That is the commitment made by Sanctuary Club to every member,
         today and in the future.
       </p>
-
 
       <div class="motto">
         <strong>
@@ -894,4 +1090,3 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
   }
 
 };
-

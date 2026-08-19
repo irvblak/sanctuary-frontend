@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
 
-  <title>What’s On / Library | Sanctuary Club</title>
+  <title>
+    Library | Sanctuary Club
+  </title>
 
   <meta
     name="viewport"
@@ -12,34 +16,49 @@
 
   <meta
     name="robots"
-    content="noindex, nofollow"
+    content="noindex,nofollow"
   />
 
-  <script src="access.js?v=LIBRARY_MAIN_6"></script>
+  <script src="access.js?v=LIBRARY_20260819_1"></script>
+
 
   <style>
-    :root {
+
+    :root{
       --bg1:#d9ecff;
       --bg2:#f4f8fc;
+      --bg3:#ffffff;
+
       --ink:#1f2a37;
       --muted:#52606f;
+
       --blue:#123a78;
-      --blue2:#0f3166;
+      --blue-hover:#0f3166;
+
+      --soft-blue:#f7fbff;
+
+      --panel:#ffffff;
       --line:#d8e1ec;
-      --soft:#f7fbff;
-      --panel:#fff;
-      --warm:#fffaf1;
-      --locked:#f1f3f5;
-      --locked-ink:#7b858e;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
+
+      --green:#eef9f1;
+      --green-ink:#245b33;
+
+      --cream:#fffdf7;
+
+      --shadow:
+        0 8px 24px
+        rgba(0,0,0,.08);
     }
 
-    * {
+
+    *{
       box-sizing:border-box;
     }
 
-    body {
+
+    body{
       margin:0;
+
       min-height:100vh;
 
       font-family:
@@ -58,100 +77,121 @@
       background:
         linear-gradient(
           180deg,
-          var(--bg1),
+          var(--bg1) 0%,
           var(--bg2) 44%,
-          #fff 100%
+          var(--bg3) 100%
         );
     }
 
-    a,
-    button {
+
+    button,
+    a{
       font:inherit;
     }
 
 
-    /* ---------- Top ---------- */
+    /*
+      =========================================================
+      TOP BAR
+      =========================================================
+    */
 
-    .topbar {
-      max-width:1120px;
-      margin:0 auto;
-
-      padding:
-        1.15rem
-        1rem
-        .45rem;
-
+    .topbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
 
       gap:1rem;
+
+      max-width:1180px;
+
+      margin:0 auto;
+
+      padding:
+        1.2rem
+        1.2rem
+        .45rem;
     }
 
-    .brand {
+
+    .brand{
       color:var(--blue);
 
       font-size:2rem;
       font-weight:850;
     }
 
-    .top-actions {
+
+    .top-actions{
       display:flex;
-      gap:.5rem;
       flex-wrap:wrap;
+
       justify-content:flex-end;
+
+      gap:.55rem;
     }
 
-    .top-link {
+
+    .top-link{
       display:inline-flex;
       align-items:center;
       justify-content:center;
 
-      min-height:44px;
+      min-height:46px;
 
-      padding:.6rem .9rem;
+      padding:
+        .65rem
+        1rem;
 
       border-radius:
-        13px
-        13px
+        14px
+        14px
         0
         0;
 
+      color:#ffffff;
       background:var(--blue);
-      color:#fff;
 
       text-decoration:none;
       font-weight:800;
 
       box-shadow:
-        0
-        4px
-        10px
-        rgba(0,0,0,.12);
+        0 4px 10px
+        rgba(0,0,0,.13);
     }
+
 
     .top-link:hover,
-    .top-link:focus-visible {
-      background:var(--blue2);
+    .top-link:focus-visible{
+      background:var(--blue-hover);
     }
 
 
-    /* ---------- Main ---------- */
+    /*
+      =========================================================
+      PAGE
+      =========================================================
+    */
 
-    .shell {
-      max-width:1120px;
+    .shell{
+      max-width:1180px;
+
       margin:0 auto;
 
       padding:
         0
         1rem
-        2.4rem;
+        2.5rem;
     }
 
-    .panel {
-      padding:1.45rem;
 
-      border:1px solid var(--line);
+    .main-panel{
+      padding:1.5rem;
+
+      border:
+        1px solid
+        var(--line);
+
       border-radius:22px;
 
       background:var(--panel);
@@ -159,63 +199,226 @@
       box-shadow:var(--shadow);
     }
 
-    .intro {
-      margin:0;
+
+    h1{
+      margin:
+        0
+        0
+        .45rem;
+
+      color:var(--blue);
+
+      font-size:
+        clamp(
+          2rem,
+          4vw,
+          2.7rem
+        );
+
+      line-height:1.15;
+    }
+
+
+    .intro{
+      max-width:940px;
+
+      margin:
+        0
+        0
+        .55rem;
 
       color:var(--muted);
 
       font-size:1.08rem;
+      line-height:1.6;
     }
 
-    .privacy-note {
-      margin:.75rem 0 1.25rem;
 
-      padding:.8rem 1rem;
+    .access-note{
+      max-width:980px;
 
-      border:1px solid #d7e4f3;
+      margin:
+        .85rem
+        0
+        1.4rem;
+
+      padding:
+        .9rem
+        1rem;
+
+      border:
+        1px solid
+        #d7e4f3;
+
       border-radius:14px;
 
-      background:var(--soft);
+      background:var(--soft-blue);
 
       color:#344054;
 
-      font-size:.97rem;
+      font-size:.98rem;
+      line-height:1.55;
     }
 
 
-    /* ---------- Just for fun ---------- */
+    /*
+      =========================================================
+      LIBRARY INDEX
+      =========================================================
+    */
 
-    .fun-zone {
+    .library-grid{
+      display:grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0,1fr)
+        );
+
+      gap:1rem;
+
+      align-items:start;
+    }
+
+
+    details.library-branch{
+      overflow:hidden;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:18px;
+
+      background:#ffffff;
+
+      box-shadow:
+        0 5px 16px
+        rgba(0,0,0,.06);
+    }
+
+
+    details.library-branch[open]{
+      box-shadow:
+        0 8px 22px
+        rgba(18,58,120,.11);
+    }
+
+
+    summary.branch-heading{
+      display:flex;
+      align-items:center;
+
+      gap:.85rem;
+
+      min-height:86px;
+
+      padding:
+        1rem
+        1.1rem;
+
+      color:#ffffff;
+      background:var(--blue);
+
+      cursor:pointer;
+
+      list-style:none;
+      user-select:none;
+    }
+
+
+    summary.branch-heading::-webkit-details-marker{
+      display:none;
+    }
+
+
+    summary.branch-heading:hover,
+    summary.branch-heading:focus-visible{
+      background:var(--blue-hover);
+    }
+
+
+    .branch-icon{
+      flex:0 0 auto;
+
+      font-size:1.8rem;
+      line-height:1;
+    }
+
+
+    .branch-title-wrap{
+      flex:1;
+
+      min-width:0;
+    }
+
+
+    .branch-title{
+      display:block;
+
+      font-size:1.16rem;
+      font-weight:850;
+      line-height:1.22;
+    }
+
+
+    .branch-subtitle{
+      display:block;
+
+      margin-top:.18rem;
+
+      color:#e9f2ff;
+
+      font-size:.88rem;
+      font-weight:650;
+      line-height:1.35;
+    }
+
+
+    .arrow{
+      font-size:1.3rem;
+      font-weight:900;
+
+      transition:
+        transform
+        .18s ease;
+    }
+
+
+    details[open] .arrow{
+      transform:
+        rotate(90deg);
+    }
+
+
+    .branch-body{
+      padding:1rem;
+
+      background:var(--soft-blue);
+    }
+
+
+    .branch-note{
       margin:
         0
         0
-        1.35rem;
-
-      padding:1rem;
-
-      border:1px solid #d6dfeb;
-      border-radius:17px;
-
-      background:var(--warm);
-    }
-
-    .fun-zone h2 {
-      margin:0 0 .25rem;
-
-      color:var(--blue);
-
-      font-size:1.2rem;
-    }
-
-    .fun-zone p {
-      margin:.2rem 0 .7rem;
+        .85rem;
 
       color:var(--muted);
 
-      font-size:.92rem;
+      font-size:.95rem;
+      line-height:1.5;
     }
 
-    .fun-grid {
+
+    /*
+      =========================================================
+      ITEMS
+      =========================================================
+    */
+
+    .sub-list{
       display:grid;
 
       grid-template-columns:
@@ -227,258 +430,140 @@
       gap:.65rem;
     }
 
-    .fun-link {
-      display:block;
 
-      padding:.75rem .85rem;
-
-      border:1px solid #dccfae;
-      border-radius:13px;
-
-      background:#fff;
-
-      color:var(--blue);
-
-      text-decoration:none;
-      font-weight:850;
-    }
-
-    .fun-link small {
-      display:block;
-
-      margin-top:.2rem;
-
-      color:var(--muted);
-
-      font-size:.78rem;
-      font-weight:600;
-    }
-
-
-    /* ---------- Six doors ---------- */
-
-    .index-heading {
-      margin:
-        0
-        0
-        .75rem;
-
-      color:var(--blue);
-
-      font-size:1.35rem;
-    }
-
-    .door-grid {
-      display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
-      gap:.8rem;
-    }
-
-    .door {
+    .sub-item{
       position:relative;
 
-      display:flex;
-      align-items:flex-start;
-
-      gap:.8rem;
+      display:block;
 
       width:100%;
 
-      min-height:105px;
+      min-height:72px;
 
-      padding:.95rem 1rem;
+      padding:
+        .8rem
+        .9rem;
 
-      border:1px solid #d5e2ef;
-      border-radius:15px;
+      border:
+        1px solid
+        #d5e2ef;
 
-      background:#fff;
+      border-radius:13px;
 
       color:var(--blue);
+      background:#ffffff;
 
       text-align:left;
       text-decoration:none;
 
-      cursor:pointer;
+      font-weight:800;
+      line-height:1.3;
 
-      box-shadow:
-        0
-        3px
-        10px
-        rgba(0,0,0,.04);
+      cursor:pointer;
     }
 
-    .door:hover,
-    .door:focus-visible {
+
+    .sub-item:hover,
+    .sub-item:focus-visible{
       border-color:#9ebadb;
+
       background:#f1f7ff;
     }
 
-    .door-icon {
-      flex:0 0 auto;
 
-      font-size:1.55rem;
-
-      line-height:1.25;
-    }
-
-    .door-title {
+    .sub-item small{
       display:block;
 
-      font-size:1.05rem;
-      font-weight:850;
-    }
-
-    .door-copy {
-      display:block;
-
-      margin-top:.18rem;
+      margin-top:.24rem;
 
       color:var(--muted);
 
-      font-size:.82rem;
+      font-size:.79rem;
       font-weight:600;
-
       line-height:1.4;
     }
 
-    .door.locked {
-      border-color:#d8dde1;
 
-      background:var(--locked);
-      color:var(--locked-ink);
-
-      box-shadow:none;
-    }
-
-    .door.locked .door-copy {
-      color:#899198;
-    }
-
-    .door-lock {
+    .lock-mark{
       position:absolute;
 
-      top:.7rem;
-      right:.75rem;
+      top:.55rem;
+      right:.62rem;
 
-      font-size:.95rem;
+      font-size:.92rem;
     }
 
 
-    /* ---------- Internal panels ---------- */
+    .empty-item{
+      color:#687786;
 
-    .content-panel {
-      margin-top:1.25rem;
+      background:#f7f9fb;
 
-      padding:1.15rem;
-
-      border:1px solid var(--line);
-      border-radius:16px;
-
-      background:var(--soft);
+      cursor:default;
     }
 
-    .content-panel[hidden] {
-      display:none;
+
+    .empty-item:hover{
+      border-color:#d5e2ef;
+
+      background:#f7f9fb;
     }
 
-    .content-panel h2 {
-      margin:
-        0
-        0
-        .6rem;
 
-      color:var(--blue);
+    .small-label{
+      display:inline-flex;
+      align-items:center;
 
-      font-size:1.3rem;
-    }
+      margin-top:.38rem;
 
-    .content-panel h3 {
-      margin:
-        1.2rem
-        0
-        .4rem;
+      padding:
+        .2rem
+        .52rem;
 
-      color:var(--blue);
+      border:
+        1px solid
+        #cbe8d2;
 
-      font-size:1.05rem;
-    }
-
-    .content-panel p {
-      margin:
-        .5rem
-        0;
-
-      max-width:80ch;
-    }
-
-    .content-links {
-      display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
-      gap:.65rem;
-
-      margin-top:.8rem;
-    }
-
-    .content-link {
-      display:block;
-
-      padding:.75rem .85rem;
-
-      border:1px solid #d4e1ec;
-      border-radius:12px;
-
-      background:#fff;
-
-      color:var(--blue);
-
-      text-decoration:none;
-      font-weight:800;
-    }
-
-    .content-link small {
-      display:block;
-
-      margin-top:.18rem;
-
-      color:var(--muted);
-
-      font-size:.78rem;
-      font-weight:600;
-    }
-
-    .close-panel {
-      margin-top:1rem;
-
-      padding:.5rem .75rem;
-
-      border:1px solid #9fb7ca;
       border-radius:999px;
 
-      background:#fff;
+      color:var(--green-ink);
+      background:var(--green);
 
-      color:var(--blue);
-
-      font-weight:750;
-      cursor:pointer;
+      font-size:.74rem;
+      font-weight:850;
     }
 
 
-    /* ---------- Lock dialog ---------- */
+    /*
+      =========================================================
+      MOTTO
+      =========================================================
+    */
 
-    .shade {
+    .motto{
+      margin:
+        1.5rem
+        auto
+        .25rem;
+
+      text-align:center;
+
+      color:var(--blue);
+
+      font-size:1rem;
+      line-height:1.5;
+    }
+
+
+    /*
+      =========================================================
+      GATE
+      =========================================================
+    */
+
+    .gate-shade{
       position:fixed;
+
       inset:0;
 
       z-index:99999;
@@ -498,125 +583,177 @@
         );
     }
 
-    .dialog {
-      width:min(520px,100%);
 
-      padding:1.3rem;
+    .gate-dialog{
+      width:
+        min(
+          540px,
+          100%
+        );
 
-      border:1px solid var(--line);
+      padding:1.45rem;
+
+      border:
+        1px solid
+        var(--line);
+
       border-radius:18px;
 
-      background:#fff;
+      background:#ffffff;
 
       text-align:center;
 
       box-shadow:
-        0
-        18px
-        48px
+        0 18px 48px
         rgba(0,0,0,.24);
     }
 
-    .dialog h2 {
+
+    .gate-dialog h2{
       margin:
         .2rem
         0
-        .6rem;
+        .7rem;
 
       color:var(--blue);
+
+      font-size:1.4rem;
     }
 
-    .dialog-actions {
+
+    .gate-dialog p{
+      margin:.4rem 0;
+
+      color:#344054;
+
+      line-height:1.6;
+    }
+
+
+    .gate-actions{
       display:flex;
-
       justify-content:center;
-
-      gap:.55rem;
       flex-wrap:wrap;
 
-      margin-top:1rem;
+      gap:.6rem;
+
+      margin-top:1.1rem;
     }
 
-    .dialog-actions a,
-    .dialog-actions button {
-      min-width:120px;
 
-      padding:.62rem .85rem;
+    .gate-actions a,
+    .gate-actions button{
+      min-width:125px;
 
-      border:1px solid var(--blue);
+      padding:
+        .68rem
+        1rem;
+
+      border:
+        1px solid
+        var(--blue);
+
       border-radius:999px;
 
       font-weight:800;
+
       text-decoration:none;
+
       cursor:pointer;
     }
 
-    .dialog-actions a {
+
+    .gate-actions a{
+      color:#ffffff;
       background:var(--blue);
-      color:#fff;
     }
 
-    .dialog-actions button {
-      background:#fff;
+
+    .gate-actions button{
       color:var(--blue);
+      background:#ffffff;
     }
 
 
-    /* ---------- Motto ---------- */
+    /*
+      =========================================================
+      RESPONSIVE
+      =========================================================
+    */
 
-    .motto {
-      margin-top:2rem;
+    @media(max-width:850px){
 
-      padding-top:1.1rem;
-
-      border-top:1px solid var(--line);
-
-      color:#31506b;
-
-      text-align:center;
-
-      font-weight:850;
-      line-height:1.55;
-    }
-
-
-    @media(max-width:780px) {
-      .door-grid,
-      .fun-grid,
-      .content-links {
+      .library-grid{
         grid-template-columns:1fr;
       }
+
     }
 
-    @media(max-width:620px) {
-      body {
+
+    @media(max-width:620px){
+
+      body{
         font-size:17px;
       }
 
-      .panel {
-        padding:1rem;
+
+      .topbar{
+        display:block;
+
+        padding:
+          .9rem
+          .8rem
+          .35rem;
       }
 
-      .brand {
+
+      .brand{
+        margin-bottom:.65rem;
+
         font-size:1.65rem;
       }
 
-      .topbar {
-        align-items:flex-start;
-        flex-direction:column;
+
+      .top-actions{
+        justify-content:flex-start;
       }
+
+
+      .shell{
+        padding:
+          0
+          .8rem
+          1.5rem;
+      }
+
+
+      .main-panel{
+        padding:
+          1rem
+          .85rem;
+      }
+
+
+      .sub-list{
+        grid-template-columns:1fr;
+      }
+
     }
+
   </style>
+
 </head>
 
 
 <body>
 
+
   <div class="topbar">
 
     <div class="brand">
-      What’s On / Library
+      The Library
     </div>
+
 
     <div class="top-actions">
 
@@ -627,12 +764,14 @@
         Calendar
       </a>
 
+
       <a
         class="top-link"
         href="events.html"
       >
         Events List
       </a>
+
 
       <a
         class="top-link"
@@ -648,574 +787,1119 @@
 
   <div class="shell">
 
-    <main class="panel">
-
-      <p class="intro">
-        <strong>
-          What’s happening, useful information
-          and things to enjoy around Sanctuary.
-        </strong>
-      </p>
+    <main class="main-panel">
 
 
-      <div class="privacy-note">
-        Some information is available through
-        What’s On / Library.
-        Private member information becomes available
-        after entering through
-        <strong>Access all</strong>
-        with your Personal PIN.
-      </div>
-
-
-      <!-- JUST FOR FUN -->
-
-      <section class="fun-zone">
-
-        <h2>
-          Just for fun
-        </h2>
-
-        <p>
-          Have a go in Your Design Studio.
-          Nothing created here is published.
-        </p>
-
-        <div class="fun-grid">
-
-          <a
-            class="fun-link"
-            href="host-area.html?fun=write"
-          >
-            ✍️ Write Something
-
-            <small>
-              Write, arrange, preview, print
-              or save your work.
-            </small>
-          </a>
-
-          <a
-            class="fun-link"
-            href="host-area.html?fun=create"
-          >
-            🎨 Create Something
-
-            <small>
-              Play with words and pictures,
-              then print or save your creation.
-            </small>
-          </a>
-
-        </div>
-
-      </section>
-
-
-      <h1 class="index-heading">
+      <h1>
         Library
       </h1>
 
 
-      <!-- SIX MAIN DOORS -->
+      <p class="intro">
 
-      <div class="door-grid">
+        <strong>
+          News, pictures, writing, useful information
+          and things worth keeping from around Sanctuary.
+        </strong>
+
+      </p>
 
 
-        <!-- INTRODUCTION -->
+      <p class="intro">
+        Choose a section below, then choose what you would like to read.
+      </p>
 
-        <button
-          class="door"
-          id="introductionDoor"
-          type="button"
+
+      <div class="access-note">
+
+        Most Library material can be read after entering Sanctuary
+        with the Access Code.
+
+        Where something needs greater privacy, you will see a 🔒.
+
+        Simply return Home and choose
+        <strong>Access All</strong>
+        if you wish to continue.
+
+      </div>
+
+
+
+      <div class="library-grid">
+
+
+        <!--
+          =====================================================
+          GALLERY
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
         >
 
-          <span class="door-icon">
-            👋
-          </span>
+          <summary class="branch-heading">
 
-          <span>
-
-            <span class="door-title">
-              Introduction
+            <span class="branch-icon">
+              🖼️
             </span>
 
-            <span class="door-copy">
-              What Sanctuary Club offers
-              and how to make use of it.
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Gallery
+              </span>
+
+              <span class="branch-subtitle">
+                Artwork, photographs and visual creations by members
+              </span>
+
             </span>
 
-          </span>
+            <span class="arrow">
+              ›
+            </span>
 
-        </button>
+          </summary>
 
 
-        <!-- WEBSITE HELPERS -->
+          <div class="branch-body">
 
-        <a
-          class="door"
-          href="website-helpers.html"
+            <p class="branch-note">
+              Work created by an Artist appears here
+              after editorial approval.
+            </p>
+
+
+            <div class="sub-list">
+
+              <div class="sub-item empty-item">
+
+                Gallery
+
+                <small>
+                  No member artwork has yet been published.
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          CLUB NOTICES & NEWS
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
+          open
         >
 
-          <span class="door-icon">
-            🌿
-          </span>
+          <summary class="branch-heading">
 
-          <span>
-
-            <span class="door-title">
-              Website Helpers
+            <span class="branch-icon">
+              📰
             </span>
 
-            <span class="door-copy">
-              Members who will be pleased
-              to help you get started.
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Club Notices &amp; News
+              </span>
+
+              <span class="branch-subtitle">
+                Club announcements, news and retained notices
+              </span>
+
             </span>
 
-          </span>
+            <span class="arrow">
+              ›
+            </span>
 
-        </a>
+          </summary>
 
 
-        <!-- ROLE HOLDERS -->
+          <div class="branch-body">
 
-        <a
-          class="door"
-          id="roleHoldersDoor"
-          href="role-holders.html"
+            <p class="branch-note">
+              Written Club Notices and News which are worth keeping.
+              Dated Event Notices disappear after the Event.
+            </p>
+
+
+            <div class="sub-list">
+
+              <a
+                class="sub-item"
+                href="notices-preview.html"
+              >
+
+                Current Notices &amp; News
+
+                <small>
+                  Current Club announcements and news.
+                </small>
+
+                <span class="small-label">
+                  Available now
+                </span>
+
+              </a>
+
+
+              <div class="sub-item empty-item">
+
+                Past Events
+
+                <small>
+                  A chronological Events List-style archive
+                  will build here as Events pass.
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          MEMBERS' ARTICLES & STORIES
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
         >
 
-          <span class="door-icon">
-            👥
-          </span>
+          <summary class="branch-heading">
 
-          <span>
-
-            <span class="door-title">
-              Role Holders
+            <span class="branch-icon">
+              ✍️
             </span>
 
-            <span class="door-copy">
-              Who currently does what
-              around Sanctuary Club.
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Members’ Articles &amp; Stories
+              </span>
+
+              <span class="branch-subtitle">
+                Writing contributed by Sanctuary members
+              </span>
+
             </span>
 
-          </span>
+            <span class="arrow">
+              ›
+            </span>
 
-        </a>
+          </summary>
 
 
-        <!-- USEFUL INFORMATION -->
+          <div class="branch-body">
 
-        <button
-          class="door"
-          id="usefulDoor"
-          type="button"
+            <p class="branch-note">
+              Articles, stories, reminiscences and other writing
+              appear here after editorial approval.
+            </p>
+
+
+            <div class="sub-list">
+
+              <div class="sub-item empty-item">
+
+                Articles &amp; Stories
+
+                <small>
+                  No member writing has yet been published.
+                  As the collection grows it can be grouped by author.
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          RESIDENTS ASSOCIATION
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
         >
 
-          <span class="door-icon">
-            📌
-          </span>
+          <summary class="branch-heading">
 
-          <span>
-
-            <span class="door-title">
-              Useful Information
+            <span class="branch-icon">
+              🏛️
             </span>
 
-            <span class="door-copy">
-              Editor-approved information,
-              guides and material worth keeping.
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Residents Association Notices &amp; News
+              </span>
+
+              <span class="branch-subtitle">
+                Association information, notices and retained records
+              </span>
+
             </span>
 
-          </span>
+            <span class="arrow">
+              ›
+            </span>
 
-        </button>
+          </summary>
 
 
-        <!-- CURRENT NOTICES -->
+          <div class="branch-body">
 
-        <a
-          class="door"
-          href="notices-preview.html"
+            <p class="branch-note">
+              Residents Association material is kept separately.
+              Different items may have General access,
+              Personal PIN access or protected RAP access.
+            </p>
+
+
+            <div class="sub-list">
+
+              <div class="sub-item empty-item">
+
+                Association Notices &amp; News
+
+                <small>
+                  Published Association material will appear here.
+                </small>
+
+              </div>
+
+
+              <button
+                class="sub-item protected-item"
+                type="button"
+                data-privacy="role"
+                data-role="panel"
+              >
+
+                RAP Protected Material
+
+                <span class="lock-mark">
+                  🔒
+                </span>
+
+                <small>
+                  Material requiring appropriate
+                  Residents Association authority.
+                </small>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          USEFUL INFORMATION
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
+          open
         >
 
-          <span class="door-icon">
-            📰
-          </span>
+          <summary class="branch-heading">
 
-          <span>
-
-            <span class="door-title">
-              Current Notices &amp; News
+            <span class="branch-icon">
+              📌
             </span>
 
-            <span class="door-copy">
-              Current Club and community notices
-              and news.
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Useful Information
+              </span>
+
+              <span class="branch-subtitle">
+                Guides, policies and material worth keeping
+              </span>
+
             </span>
 
-          </span>
+            <span class="arrow">
+              ›
+            </span>
 
-        </a>
+          </summary>
 
 
-        <!-- PRIVACY -->
+          <div class="branch-body">
 
-<button
-  class="door"
-  id="privacyDoor"
-  type="button"
->
-  <span class="door-icon">
-    🔐
-  </span>
+            <p class="branch-note">
+              Permanent or regularly useful information.
+              Further categories can be added here as the Library grows.
+            </p>
 
-  <span>
 
-    <span class="door-title">
-      Privacy &amp; Security
-    </span>
+            <div class="sub-list">
 
-    <span class="door-copy">
-      A simple explanation,
-      with the full Charter alongside.
-    </span>
 
-  </span>
+              <a
+                class="sub-item"
+                href="library-publications.html?id=welcome"
+              >
 
-</button>
+                Welcome to Sanctuary Club
 
-</div>
+                <small>
+                  A short introduction to Sanctuary Club
+                  and the different ways in.
+                </small>
 
-      <!-- INTRODUCTION PANEL -->
+              </a>
 
-      <section
-        class="content-panel"
-        id="introductionPanel"
-        hidden
-      >
 
-        <h2>
-          An Introduction to Sanctuary Club
-        </h2>
+              <a
+                class="sub-item"
+                href="library-publications.html?id=access-privacy-glance"
+              >
 
-        <p>
-          <strong>
-            sanctuary-club.uk is so much more
-            than just a website.
-          </strong>
-        </p>
+                Your Access &amp; Privacy — at a Glance
 
-        <p>
-          It has been designed so that it is easy to use
-          and so that all members can contribute
-          just as much or as little as they wish.
-        </p>
+                <small>
+                  A simple practical guide to who can see what.
+                </small>
 
-        <p>
-          If you only want to enjoy the Studio,
-          get to know what’s going on
-          and see useful information,
-          enter using <strong>What’s On / Library</strong>
-          and the wxyz Access Code.
-        </p>
+              </a>
 
-        <p>
-          But if you want to make use of all
-          the Club has to offer,
-          for privacy and security reasons
-          you will need to set up a Personal PIN.
-          You will then be able to enjoy full 
-          use of all the website facilities
-        </p>
 
-        <p>
-          If you need any help doing this,
-          the Club’s Website Helpers
-          will be only too happy to assist.
-        </p>
+              <a
+                class="sub-item"
+                href="library-publications.html?id=privacy-security"
+              >
 
-        <p>
-          Nobody but you will know
-          your household Personal PIN.
-        </p>
+                Privacy, Security &amp; Data Protection Charter
 
-        <p>
-          You decide just how much
-          of your personal contact information to share.
-          Entering your email address will enable you
-          to receive messages intended for all members
-          from the Club Committee and Residents Association Panel.
-        </p>
+                <small>
+                  How Sanctuary Club protects members
+                  and their information.
+                </small>
 
-        <p>
-          The members’ database is protected
-          by the website’s privacy and security arrangements.
-        </p>
+              </a>
 
-        <button
-          class="close-panel"
-          type="button"
-          data-close-panel
+
+              <a
+                class="sub-item"
+                href="library-publications.html?id=design-studio-guide"
+              >
+
+                Your Design Studio — Quick Guide
+
+                <small>
+                  A practical printable guide
+                  to using the design tools.
+                </small>
+
+              </a>
+
+
+              <a
+                class="sub-item"
+                href="library-publications.html?id=design-studio-publishing"
+              >
+
+                Your Design Studio — Publishing Guide
+
+                <small>
+                  What happens to finished work,
+                  including editorial approval and publication.
+                </small>
+
+              </a>
+
+
+              <a
+                class="sub-item"
+                href="library-publications.html?id=the-way-forward"
+              >
+
+                The Way Forward
+
+                <small>
+                  The website has created new possibilities.
+                  The Club’s future belongs to its members.
+                </small>
+
+              </a>
+
+
+              <a
+                class="sub-item"
+                href="library-publications.html?id=taking-part"
+              >
+
+                Taking Part in Sanctuary Club
+
+                <small>
+                  Some of the ways members can contribute,
+                  organise, create or help.
+                </small>
+
+              </a>
+
+
+              <a
+                class="sub-item"
+                href="library-publications.html?id=check-information"
+              >
+
+                Please Check Your Information
+
+                <small>
+                  A reminder about Your Information
+                  and your Personal PIN.
+                </small>
+
+              </a>
+
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          ROLE HOLDERS
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
         >
-          Close Introduction
-        </button>
 
-      </section>
+          <summary class="branch-heading">
 
+            <span class="branch-icon">
+              👥
+            </span>
 
-      <!-- USEFUL INFORMATION PANEL -->
+            <span class="branch-title-wrap">
 
-      <section
-        class="content-panel"
-        id="usefulPanel"
-        hidden
-      >
+              <span class="branch-title">
+                Role Holders
+              </span>
 
-        <h2>
-          Useful Information
-        </h2>
+              <span class="branch-subtitle">
+                Who currently does what around Sanctuary Club
+              </span>
 
-        <p>
-          Useful Information contains material
-          that is worth keeping available
-          rather than treating as a temporary Notice.
-        </p>
+            </span>
 
-        <p>
-          Material placed here will be
-          <strong>Editor approved</strong>.
-        </p>
+            <span class="arrow">
+              ›
+            </span>
+
+          </summary>
 
 
-        <div class="content-links">
+          <div class="branch-body">
 
-  <a
-    class="content-link"
-    href="library-publications.html?id=design-studio-guide"
-  >
-    Your Design Studio — Quick Guide
-
-    <small>
-      How to use the design tool:
-      words, pictures, arranging, saving and printing.
-    </small>
-  </a>
-
-  <a
-    class="content-link"
-    href="library-publications.html?id=design-studio-publishing"
-  >
-    Your Design Studio — Publishing Guide
-
-    <small>
-      What happens to finished work,
-      including publication, approval and destinations.
-    </small>
-  </a>
-
-</div>
+            <p class="branch-note">
+              The Role Holders Register updates automatically
+              when Club roles are allocated or withdrawn.
+            </p>
 
 
-        <button
-          class="close-panel"
-          type="button"
-          data-close-panel
+            <div class="sub-list">
+
+              <a
+                class="sub-item"
+                href="role-holders.html"
+              >
+
+                View Role Holders
+
+                <small>
+                  See current Club roles
+                  and the members who hold them.
+                </small>
+
+                <span class="small-label">
+                  Live register
+                </span>
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+
+        <!--
+          =====================================================
+          WEBSITE HELPERS
+          =====================================================
+        -->
+
+        <details
+          class="library-branch"
         >
-          Close Useful Information
-        </button>
 
-      </section>
+          <summary class="branch-heading">
+
+            <span class="branch-icon">
+              🌿
+            </span>
+
+            <span class="branch-title-wrap">
+
+              <span class="branch-title">
+                Website Helpers
+              </span>
+
+              <span class="branch-subtitle">
+                Members who can help you use Sanctuary Club
+              </span>
+
+            </span>
+
+            <span class="arrow">
+              ›
+            </span>
+
+          </summary>
+
+
+          <div class="branch-body">
+
+            <p class="branch-note">
+              If you would like help getting started
+              or using any part of the website,
+              one of the Website Helpers will be pleased to assist.
+            </p>
+
+
+            <div class="sub-list">
+
+              <a
+                class="sub-item"
+                href="website-helpers.html"
+              >
+
+                View Website Helpers
+
+                <small>
+                  See who is currently available to help.
+                </small>
+
+                <span class="small-label">
+                  Live register
+                </span>
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </details>
+
+
+      </div>
+
 
 
       <div class="motto">
-        The computer does the thinking.<br>
-        You do the creating.
+
+        <strong>
+          The computer does the thinking.<br>
+          You simply find what you want.
+        </strong>
+
       </div>
+
 
     </main>
 
   </div>
 
 
+
   <script>
+
     (function () {
+
       "use strict";
 
 
-      const introductionDoor =
-        document.getElementById(
-          "introductionDoor"
-        );
-
-
-      const usefulDoor =
-        document.getElementById(
-          "usefulDoor"
-        );
-
-
-      const roleHoldersDoor =
-        document.getElementById(
-          "roleHoldersDoor"
-        );
-
-
-      const introductionPanel =
-        document.getElementById(
-          "introductionPanel"
-        );
-
-
-      const usefulPanel =
-        document.getElementById(
-          "usefulPanel"
-        );
-
+      /*
+        =======================================================
+        PERSONAL PIN ACCESS
+        =======================================================
+      */
 
       function privateAccessOpen() {
+
         return Boolean(
           window.SanctuaryAccess &&
-          typeof window
-            .SanctuaryAccess
-            .verifiedPrivateAccess
-            === "function" &&
-          window
-            .SanctuaryAccess
+
+          typeof
+            window.SanctuaryAccess
+              .verifiedPrivateAccess ===
+            "function" &&
+
+          window.SanctuaryAccess
             .verifiedPrivateAccess()
         );
       }
 
 
-      function closePanels() {
-        introductionPanel.hidden =
-          true;
+      /*
+        =======================================================
+        CURRENT ROLES
+        =======================================================
+      */
 
-        usefulPanel.hidden =
-          true;
+      function currentRoles() {
+
+        const token =
+          sessionStorage.getItem(
+            "authToken"
+          ) ||
+
+          localStorage.getItem(
+            "authToken"
+          ) ||
+
+          sessionStorage.getItem(
+            "memberToken"
+          ) ||
+
+          localStorage.getItem(
+            "memberToken"
+          ) ||
+
+          "";
+
+
+        if (!token) {
+          return [];
+        }
+
+
+        try {
+
+          let part =
+            token.split(".")[1] ||
+            "";
+
+
+          part =
+            part
+              .replace(
+                /-/g,
+                "+"
+              )
+              .replace(
+                /_/g,
+                "/"
+              );
+
+
+          while (
+            part.length % 4
+          ) {
+            part += "=";
+          }
+
+
+          const data =
+            JSON.parse(
+              atob(part)
+            );
+
+
+          return (
+            Array.isArray(
+              data.roles
+            )
+              ? data.roles
+              : []
+          )
+            .map(
+              role =>
+                String(
+                  role || ""
+                )
+                  .trim()
+                  .toLowerCase()
+            )
+            .filter(Boolean);
+
+        } catch (error) {
+
+          return [];
+        }
       }
 
 
-      function openPanel(panel) {
-        closePanels();
+      function normaliseRole(
+        role
+      ) {
 
-        panel.hidden =
-          false;
+        const raw =
+          String(
+            role || ""
+          )
+            .trim()
+            .toLowerCase()
+            .replace(
+              /[\s-]+/g,
+              "_"
+            );
 
-        panel.scrollIntoView({
-          behavior:"smooth",
-          block:"start"
-        });
+
+        const aliases = {
+
+          residents_association_panel:
+            "panel",
+
+          residents_panel:
+            "panel",
+
+          association_panel:
+            "panel",
+
+          rap:
+            "panel"
+        };
+
+
+        return (
+          aliases[raw] ||
+          raw
+        );
       }
 
 
-      introductionDoor.addEventListener(
-        "click",
-        () => {
-          openPanel(
-            introductionPanel
-          );
-        }
-      );
+      function hasRequiredRole(
+        role
+      ) {
+
+        const wanted =
+          normaliseRole(role);
 
 
-      usefulDoor.addEventListener(
-        "click",
-        () => {
-          openPanel(
-            usefulPanel
+        const roles =
+          currentRoles()
+            .map(
+              normaliseRole
+            );
+
+
+        return (
+          roles.includes(
+            wanted
+          ) ||
+
+          roles.includes(
+            "admin"
+          )
+        );
+      }
+
+
+      /*
+        =======================================================
+        GATE
+        =======================================================
+      */
+
+      function closeGate() {
+
+        document
+          .getElementById(
+            "libraryGate"
+          )
+          ?.remove();
+      }
+
+
+      function showGate(
+        heading,
+        message,
+        showHome
+      ) {
+
+        closeGate();
+
+
+        const shade =
+          document.createElement(
+            "div"
+          );
+
+
+        shade.id =
+          "libraryGate";
+
+
+        shade.className =
+          "gate-shade";
+
+
+        shade.innerHTML = `
+
+          <div
+            class="gate-dialog"
+            role="dialog"
+            aria-modal="true"
+          >
+
+            <div
+              style="font-size:2rem"
+              aria-hidden="true"
+            >
+              🔒
+            </div>
+
+            <h2>
+              ${heading}
+            </h2>
+
+            <p>
+              ${message}
+            </p>
+
+            <div class="gate-actions">
+
+              ${
+                showHome
+                  ? `
+                    <a href="index.html">
+                      Return Home
+                    </a>
+                  `
+                  : ""
+              }
+
+              <button
+                type="button"
+                id="closeLibraryGate"
+              >
+                Stay in Library
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        document.body
+          .appendChild(
+            shade
+          );
+
+
+        shade
+          .querySelector(
+            "#closeLibraryGate"
+          )
+          ?.addEventListener(
+            "click",
+            closeGate
+          );
+
+
+        shade.addEventListener(
+          "click",
+          event => {
+
+            if (
+              event.target ===
+              shade
+            ) {
+
+              closeGate();
+            }
+          }
+        );
+      }
+
+
+      /*
+        =======================================================
+        PROTECTED ITEMS
+        =======================================================
+      */
+
+      function openProtectedItem(
+        event
+      ) {
+
+        const item =
+          event.currentTarget;
+
+
+        const privacy =
+          item.dataset.privacy ||
+          "access";
+
+
+        if (
+          privacy === "pin"
+        ) {
+
+          if (
+            !privateAccessOpen()
+          ) {
+
+            showGate(
+              "Personal PIN access",
+              "To see this information, please return Home, choose Access All and enter your Membership Number and Personal PIN.",
+              true
+            );
+
+            return;
+          }
+
+
+          const href =
+            item.dataset.href ||
+            "";
+
+
+          if (href) {
+
+            window.location.href =
+              href;
+
+            return;
+          }
+
+
+          showGate(
+            "Library",
+            "This section has not yet been populated.",
+            false
+          );
+
+          return;
+        }
+
+
+        if (
+          privacy === "role"
+        ) {
+
+          if (
+            !privateAccessOpen()
+          ) {
+
+            showGate(
+              "Protected information",
+              "Please return Home, choose Access All and enter your Membership Number and Personal PIN before opening protected material.",
+              true
+            );
+
+            return;
+          }
+
+
+          if (
+            !hasRequiredRole(
+              item.dataset.role ||
+              ""
+            )
+          ) {
+
+            showGate(
+              "Protected information",
+              "This material is available only to members with the appropriate authority.",
+              false
+            );
+
+            return;
+          }
+
+
+          const href =
+            item.dataset.href ||
+            "";
+
+
+          if (href) {
+
+            window.location.href =
+              href;
+
+            return;
+          }
+
+
+          showGate(
+            "Residents Association",
+            "The protected Residents Association section is ready for the agreed RAP publishing and records structure.",
+            false
           );
         }
-      );
+      }
 
 
       document
         .querySelectorAll(
-          "[data-close-panel]"
+          ".protected-item"
         )
-        .forEach(button => {
+        .forEach(
+          item => {
 
-          button.addEventListener(
-            "click",
-            closePanels
-          );
-
-        });
-
-
-      /*
-        ROLE HOLDERS
-
-        The door remains visible to everybody.
-
-        What’s On / Library:
-          greyed and locked.
-
-        Access all + Personal PIN:
-          live.
-      */
-
-      if (!privateAccessOpen()) {
-
-        roleHoldersDoor.classList.add(
-          "locked"
-        );
-
-
-        const lock =
-          document.createElement(
-            "span"
-          );
-
-
-        lock.className =
-          "door-lock";
-
-
-        lock.textContent =
-          "🔒";
-
-
-        roleHoldersDoor.appendChild(
-          lock
-        );
-
-
-        roleHoldersDoor.addEventListener(
-          "click",
-          event => {
-
-            event.preventDefault();
-
-
-            if (
-              window.SanctuaryAccess &&
-              typeof window
-                .SanctuaryAccess
-                .showRouteMessage
-                === "function"
-            ) {
-
-              window
-                .SanctuaryAccess
-                .showRouteMessage();
-
-              return;
-            }
-
-
-            alert(
-              "Role Holders is available after entering through Access all with your Personal PIN."
+            item.addEventListener(
+              "click",
+              openProtectedItem
             );
-
           }
         );
 
-      }
-
     })();
+
   </script>
 
+
 </body>
+
 </html>

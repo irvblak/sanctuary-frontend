@@ -155,8 +155,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     body: `
       <p class="lead">
-        Sanctuary Club works best when members use it
-        in whatever way suits them.
+        Whether you are at home on your computer, together in the Clubhouse or out and about for a meal or a visit, Sanctuary Club will help to enhance community life.
       </p>
 
       <p>

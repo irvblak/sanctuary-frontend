@@ -196,10 +196,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     owner: "Sanctuary Club",
 
     updated: "18 August 2026",
-
-    summary:
-      "A quick hand-over reminder for Sanctuary members.",
-
+    
     body: `
       <p class="lead">
         If you are ready to use the private member facilities,

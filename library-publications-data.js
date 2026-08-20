@@ -151,7 +151,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     updated: "18 August 2026",
 
     summary:
-      "There are many ways to take part — Contact Irving (SM55).",
+      "There are many ways to take part — Contact a Website Helper or Admin.",
 
     body: `
       <p class="lead">

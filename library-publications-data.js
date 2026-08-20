@@ -155,7 +155,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     body: `
       <p class="lead">
-        Whether you are at home on your computer, together in the Clubhouse or out and about for a meal or a visit, Sanctuary Club will bring you enjoyment, keep you informed and enhance community life in many ways.
+       At home, in the clubhouse or out and about, Sanctuary Club is useful and enjoyable.
       </p>
 
       <p>

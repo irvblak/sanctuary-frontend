@@ -187,7 +187,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
   "check-information": {
     kind: "notice",
 
-    title: "Please Check Your Information",
+    title: "Arrived here from What's On/wxyz?",
 
     privacy: "access",
 
@@ -202,27 +202,18 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     body: `
       <p class="lead">
-        When you are ready to use the private member facilities,
-        please enter through <strong>Access All</strong> and check that
-        Your Information is up to date.
+        If you are ready to use the private member facilities,
+        please enter through <strong>Access All</strong> and create your personal PIN.
       </p>
 
       <p>
-        If you are still using the temporary Starter PIN,
-        you will be asked to replace it with your own Personal PIN
-        before opening private member services.
+        Please contact a Website Helper if you need some assistance
       </p>
 
       <p>
-        Your Personal PIN is there to protect your information
-        and the member-only parts of Sanctuary Club.
+        Your Personal PIN is there to protect your information.
       </p>
-
-      <p>
-        If you would like a little help getting started,
-        ask one of our Website Helpers.
-      </p>
-    `
+         `
   },
 
 

@@ -151,7 +151,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     updated: "18 August 2026",
 
     summary:
-      "There are many ways to take part — as much or as little as you wish.",
+      "There are many ways to take part — Contact Irving (SM55).",
 
     body: `
       <p class="lead">

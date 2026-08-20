@@ -136,42 +136,46 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     TAKING PART IN SANCTUARY CLUB
     =========================================================
   */
-
-  "taking-part": {
-    kind: "notice",
+     "taking-part": {
+    kind: "publication",
 
     title: "Taking Part in Sanctuary Club",
 
     privacy: "access",
 
-    approval: "direct",
-
-    owner: "Sanctuary Club",
-
-    updated: "18 August 2026",
-
-    summary:
-      "There are many ways to take part — Contact a Website Helper or Admin.",
-
     body: `
       <p class="lead">
-       LEAD 
+        <strong><em>
+          There are many ways to take part — Contact a Website Helper or Admin.
+        </em></strong>
+      </p>
+
+      <h2>
+        Needed
+      </h2>
+
+      <p>
+        <strong>Website Helpers</strong>
+        to encourage and assist members and newcomers to join in and use the website.
       </p>
 
       <p>
-        NARRATIVE
+        <strong>Committee Members</strong>
+        to discuss and decide how to structure Sanctuary Club and make best use of the website's power to aid the community.
       </p>
 
       <p>
-        NARRATIVE
+        <strong>Role Players</strong>
+        There is a lot of scope for members to take on roles such as Editor, Art teacher (using the Studio) etc.
       </p>
 
       <p>
-        NARRATIVE
+        <strong>New Ideas</strong>
+        Again, plenty of scope for your thoughts on how the power of the website can be used for education and enjoyment.
       </p>
     `
   },
-
+  
 
   /*
     =========================================================

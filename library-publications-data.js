@@ -155,7 +155,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     body: `
       <p class="lead">
-       At home, in the clubhouse or out and about, Sanctuary Club is useful and enjoyable.
+       Whether you are just at home, spending time in the clubhouse or out and about enjoying something organised by a member, Sanctuary Club is useful and enjoyable.
       </p>
 
       <p>

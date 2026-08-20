@@ -155,23 +155,19 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     body: `
       <p class="lead">
-       Whether you are just at home, spending time in the clubhouse or out and about enjoying something organised by a member, Sanctuary Club is useful and enjoyable.
+       LEAD 
       </p>
 
       <p>
-        You might Host an Event, organise an Activity,
-        contribute news, write something, create artwork,
-        help with the website — or simply enjoy what
-        other members provide.
+        NARRATIVE
       </p>
 
       <p>
-        There is no obligation to take on a role.
+        NARRATIVE
       </p>
 
       <p>
-        If something interests you, the Club Roles section
-        explains the possibilities and who can help.
+        NARRATIVE
       </p>
     `
   },

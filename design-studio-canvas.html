@@ -862,6 +862,504 @@
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
 
+ /*
+  =========================================================
+  YDS PUBLISHING
+  =========================================================
+*/
+
+function getAuthToken(){
+
+  return (
+    sessionStorage.getItem("authToken") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("memberToken") ||
+    localStorage.getItem("memberToken") ||
+    ""
+  );
+
+}
+
+
+function publishingAllowed(){
+
+  if(IS_FUN_MODE){
+    return false;
+  }
+
+  /*
+    Event / dated Calendar material continues through
+    the Event system rather than being independently
+    published from this Canvas.
+  */
+
+  if(
+    CANVAS_MODE === "host" ||
+    PUBLICATION_TYPE === "dated"
+  ){
+    return false;
+  }
+
+  return Boolean(
+    PUBLICATION_DESTINATION
+  );
+
+}
+
+
+function editorialApprovalRequired(){
+
+  return (
+    CANVAS_MODE === "writer" ||
+    CANVAS_MODE === "artist" ||
+    PUBLICATION_APPROVAL === "editor"
+  );
+
+}
+
+
+function publicationButtonLabel(){
+
+  return editorialApprovalRequired()
+    ? "Submit for Publication"
+    : "Publish";
+
+}
+
+
+function firstUsefulText(){
+
+  const ignored = new Set([
+    "",
+    "Type your title",
+    "Type or paste text",
+    "Start writing here…"
+  ]);
+
+
+  for(const item of pages()){
+
+    const boxes =
+      item.querySelectorAll(
+        '.canvas-item[data-kind="text"] .item-content, ' +
+        '.canvas-item[data-kind="title"] .item-content'
+      );
+
+
+    for(const box of boxes){
+
+      const text =
+        clean(
+          box.textContent
+        );
+
+
+      if(
+        text &&
+        !ignored.has(text)
+      ){
+
+        const firstLine =
+          text
+            .split(/\r?\n/)
+            .map(clean)
+            .find(Boolean);
+
+
+        if(firstLine){
+          return firstLine.slice(0,120);
+        }
+
+      }
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+function publicationCanvasData(){
+
+  syncDrawingData();
+
+  return {
+    format:
+      "sanctuary-yds-publication",
+
+    version:
+      1,
+
+    mode:
+      CANVAS_MODE,
+
+    publication_type:
+      PUBLICATION_TYPE,
+
+    destination:
+      PUBLICATION_DESTINATION,
+
+    retention:
+      PUBLICATION_RETENTION,
+
+    approval:
+      PUBLICATION_APPROVAL,
+
+    state:
+      JSON.parse(
+        snapshotState()
+      )
+  };
+
+}
+
+
+function cleanPublicationPagesHtml(){
+
+  syncDrawingData();
+
+
+  const wrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  pages().forEach(page => {
+
+    const clone =
+      page.cloneNode(true);
+
+
+    clone.hidden =
+      false;
+
+
+    clone
+      .querySelectorAll(
+        ".drag-handle, " +
+        ".resize-handle, " +
+        ".canvas-guide, " +
+        ".canvas-safe-area, " +
+        ".canvas-empty-hint"
+      )
+      .forEach(
+        element =>
+          element.remove()
+      );
+
+
+    clone
+      .querySelectorAll(
+        ".canvas-item"
+      )
+      .forEach(item => {
+
+        item.classList.remove(
+          "selected",
+          "drawing-edit"
+        );
+
+      });
+
+
+    clone
+      .querySelectorAll(
+        "[contenteditable]"
+      )
+      .forEach(element => {
+
+        element.removeAttribute(
+          "contenteditable"
+        );
+
+      });
+
+
+    wrapper.appendChild(
+      clone
+    );
+
+  });
+
+
+  return wrapper.innerHTML;
+
+}
+
+
+async function publishCanvas(){
+
+  if(
+    !publishingAllowed()
+  ){
+    return;
+  }
+
+
+  const token =
+    getAuthToken();
+
+
+  if(!token){
+
+    alert(
+      "Your Design Studio session has expired. Please return to Your Design Studio and sign in again."
+    );
+
+    return;
+  }
+
+
+  finishDrawingEdit();
+
+  selectItem(null);
+
+
+  const suggestedTitle =
+    firstUsefulText();
+
+
+  const enteredTitle =
+    window.prompt(
+      "Title for this Library item:",
+      suggestedTitle
+    );
+
+
+  if(
+    enteredTitle === null
+  ){
+    return;
+  }
+
+
+  const title =
+    clean(
+      enteredTitle
+    );
+
+
+  if(!title){
+
+    alert(
+      "Please give your work a title before publishing it."
+    );
+
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      "publishCanvasBtn"
+    );
+
+
+  const oldText =
+    button.textContent;
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    editorialApprovalRequired()
+      ? "Submitting…"
+      : "Publishing…";
+
+
+  try{
+
+    const payload = {
+
+      title,
+
+      mode:
+        CANVAS_MODE,
+
+      publication_type:
+        PUBLICATION_TYPE,
+
+      destination:
+        PUBLICATION_DESTINATION,
+
+      retention:
+        PUBLICATION_RETENTION,
+
+      approval:
+        PUBLICATION_APPROVAL,
+
+      privacy:
+        CANVAS_MODE === "panel"
+          ? "role"
+          : "access",
+
+      creator_name:
+        sessionStorage.getItem(
+          "currentDisplayName"
+        ) ||
+        localStorage.getItem(
+          "currentDisplayName"
+        ) ||
+        "",
+
+      body_html:
+        cleanPublicationPagesHtml(),
+
+      canvas_data:
+        publicationCanvasData()
+
+    };
+
+
+    const response =
+      await fetch(
+        `${API_BASE}/api/library-publications`,
+        {
+          method:
+            "POST",
+
+          headers:{
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              `Bearer ${token}`
+          },
+
+          body:
+            JSON.stringify(
+              payload
+            )
+        }
+      );
+
+
+    const data =
+      await response.json()
+        .catch(
+          () => ({})
+        );
+
+
+    if(
+      !response.ok ||
+      data.success === false
+    ){
+
+      throw new Error(
+        data.message ||
+        `Publication failed (${response.status})`
+      );
+
+    }
+
+
+    /*
+      Once successfully handed to the backend,
+      keep its identity available to later editing
+      work in this browser session.
+    */
+
+    const publication =
+      data.publication ||
+      {};
+
+
+    if(
+      publication.publication_id
+    ){
+
+      sessionStorage.setItem(
+        "sanctuaryCurrentPublicationId",
+        publication.publication_id
+      );
+
+    }
+
+
+    if(
+      publication.status === "submitted"
+    ){
+
+      alert(
+        "Your work has been submitted for editorial approval."
+      );
+
+    }else{
+
+      alert(
+        "Your work has been published to the Library."
+      );
+
+    }
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      error.message ||
+      "Your work could not be published."
+    );
+
+
+  }finally{
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      oldText;
+
+  }
+
+}
+
+
+function configurePublishingButton(){
+
+  const button =
+    document.getElementById(
+      "publishCanvasBtn"
+    );
+
+
+  if(!button){
+    return;
+  }
+
+
+  if(
+    !publishingAllowed()
+  ){
+
+    button.hidden =
+      true;
+
+    return;
+  }
+
+
+  button.hidden =
+    false;
+
+
+  button.textContent =
+    publicationButtonLabel();
+
+}
+    
     document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{if(IS_FUN_MODE){window.location.href="library.html";return;}creativeWorkspace.hidden=true;publishWorkspace.hidden=true;els.studioCard.hidden=false;selectItem(null);window.scrollTo({top:0,behavior:"smooth"})});
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
     orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});

@@ -1377,110 +1377,108 @@
 
       const STUDIO_CHOICES = [
 
-        {
-          key:"host",
+  {
+    key:"host",
 
-          label:"Host an Event",
+    label:"Host an Event",
 
-          description:
-            "Create an Event — payable or free — and its Notice.",
+    description:
+      "Create an Event — payable or free — and its Notice.",
 
-          iconId:"role-host",
+    iconId:"role-host",
 
-          roles:["host"]
-        },
-
-
-        {
-          key:"activity",
-
-          label:"Activity Organiser",
-
-          description:
-            "Create dated activity information or standing information about an Activity you organise.",
-
-          iconId:"role-activity",
-
-          roles:["activity_organiser"]
-        },
+    roles:["host"]
+  },
 
 
-        {
-          key:"writer",
+  {
+    key:"activity",
 
-          label:"Writer",
+    label:"Activity Organiser",
 
-          description:
-            "Write news, stories, articles or other work for possible publication.",
+    description:
+      "Create a dated Activity Notice or standing information about an Activity you organise.",
 
-          iconId:"role-news",
+    iconId:"role-activity",
 
-          roles:[
-            "writer",
-            "news_contributor"
-          ]
-        },
+    roles:["activity_organiser"]
+  },
 
 
-        {
-          key:"artist",
+  {
+    key:"writer",
 
-          label:"Artist",
+    label:"Writer",
 
-          description:
-            "Create for pleasure or prepare work for possible inclusion in the Library Gallery.",
+    description:
+      "Write articles, stories, reminiscences or other work for publication.",
 
-          iconId:"role-artist",
+    iconId:"role-news",
 
-          roles:["artist"]
-        },
-
-
-        {
-          key:"committee",
-
-          label:"Committee",
-
-          description:
-            "Create Committee News & Notices.",
-
-          iconId:"role-committee",
-
-          roles:["committee"]
-        },
+    roles:[
+      "writer",
+      "news_contributor"
+    ]
+  },
 
 
-        {
-          key:"panel",
+  {
+    key:"artist",
 
-          label:"Residents Association Panel",
+    label:"Artist",
 
-          description:
-            "Create Residents Association Panel News & Notices.",
+    description:
+      "Create artwork or other visual work for possible publication in the Gallery.",
 
-          iconId:"role-panel",
+    iconId:"role-artist",
 
-          roles:["panel"]
-        },
-
-
-        {
-          key:"services",
-
-          label:"Services",
-
-          description:
-            "Create information and notices about a Service you provide.",
-
-          iconId:"role-services",
-
-          roles:["services"]
-        }
-
-      ];
+    roles:["artist"]
+  },
 
 
+  {
+    key:"committee",
 
+    label:"Committee",
+
+    description:
+      "Create a dated Committee Notice or standing Committee information.",
+
+    iconId:"role-committee",
+
+    roles:["committee"]
+  },
+
+
+  {
+    key:"panel",
+
+    label:"Residents Association Panel",
+
+    description:
+      "Create a dated Residents Association Notice or standing information.",
+
+    iconId:"role-panel",
+
+    roles:["panel"]
+  },
+
+
+  {
+    key:"services",
+
+    label:"Services",
+
+    description:
+      "Create a dated Service Notice or standing information about a Service.",
+
+    iconId:"role-services",
+
+    roles:["services"]
+  }
+
+];
+      
       /*
         Role badges may include roles which do not themselves
         provide a publishing entrance.

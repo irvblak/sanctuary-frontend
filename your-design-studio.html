@@ -2434,293 +2434,293 @@
 
 
       function openChoice(
-        key
-      ){
+  key
+){
 
-        if(key === "host"){
+  /*
+    =====================================================
+    HOST AN EVENT
+    =====================================================
 
-          setChoiceContent(
+    Anything appearing on Calendar follows the common
+    dated-material rule.
 
-            "Host an Event",
+    Calendar material is retained for 60 days after
+    its date and is then removed automatically.
 
-            `
-              <p>
-                Use this route for an Event,
-                whether it is free or payable.
-              </p>
+    That retention rule will be enforced centrally
+    by the publishing/event system rather than asking
+    the member to make an archive decision.
+  */
 
-              <div class="choice-detail">
-                While the Event is current,
-                the computer can place it in the
-                Calendar, Events List and Event Notices.
+  if(key === "host"){
 
-                After the Event date it disappears
-                from the current displays,
-                while a compact permanent Event record
-                can remain in the Library archive.
-              </div>
+    setChoiceContent(
 
-              <p>
-                The Event form will ask whether the Event
-                is payable. Payment information is needed
-                only when <strong>Yes</strong> is chosen.
-              </p>
-            `,
+      "Host an Event",
 
-            [
-              actionButton(
-                "Continue to Event form",
-                "host-event-form.html?mode=host"
-              )
-            ]
+      `
+        <p>
+          Create your Event and its Notice here.
+        </p>
 
-          );
+        <p>
+          The Event form will ask for the date, time,
+          venue and any booking or payment information needed.
+        </p>
+      `,
 
+      [
+        actionButton(
+          "Continue to Event form",
+          "host-event-form.html?mode=host&source=host"
+        )
+      ]
 
-          return;
-        }
+    );
 
+    return;
+  }
 
 
-        if(key === "activity"){
 
-          setChoiceContent(
+  /*
+    =====================================================
+    ACTIVITY ORGANISER
+    =====================================================
+  */
 
-            "Activity Organiser",
+  if(key === "activity"){
 
-            `
-              <p>
-                Activities can produce two different kinds
-                of information.
-              </p>
+    setChoiceContent(
 
-              <div class="choice-detail">
-                <strong>Dated activity:</strong>
-                something which needs to appear in the
-                Calendar, Events List and Notices while current.
-                It normally disappears when it is over.
-              </div>
+      "Activity Organiser",
 
-              <div class="choice-detail">
-                <strong>Standing Activity information:</strong>
-                general information about your Activity.
-                This can remain as an editable Library publication.
-              </div>
-            `,
+      `
+        <p>
+          Choose what you would like to create.
+        </p>
+      `,
 
-            [
-              actionButton(
-                "Create dated activity",
-                "host-event-form.html?mode=host&source=activity"
-              ),
+      [
+        actionButton(
+          "Create dated Activity Notice",
+          "host-event-form.html?mode=host&source=activity"
+        ),
 
-              actionButton(
-                "Create standing information",
-                "design-studio-canvas.html?mode=activity",
-                true
-              )
-            ]
+        actionButton(
+          "Create standing Activity information",
+          "design-studio-canvas.html?mode=activity&type=standing&destination=club-activities&retention=permanent&approval=self",
+          true
+        )
+      ]
 
-          );
+    );
 
+    return;
+  }
 
-          return;
-        }
 
 
+  /*
+    =====================================================
+    WRITER
+    =====================================================
 
-        if(key === "writer"){
+    Writer work:
+      destination = Members' Articles & Stories
+      approval    = Editor
+      retention   = permanent until withdrawn
+  */
 
-          setChoiceContent(
+  if(key === "writer"){
 
-            "Writer",
+    setChoiceContent(
 
-            `
-              <p>
-                Use the common Design Studio to write news,
-                stories, articles or other work.
-              </p>
+      "Writer",
 
-              <div class="choice-detail">
-                Writer work remains private while it is being prepared.
-                When you are ready, you may submit it to a Club Editor.
-                The Editor can approve it for Current News
-                or for permanent inclusion in the Library.
-              </div>
+      `
+        <p>
+          Create an article, story, reminiscence
+          or other piece of writing.
+        </p>
 
-              <p>
-                Nothing is published merely because you created it.
-              </p>
-            `,
+        <p>
+          When it is ready, you may submit it
+          to an Editor for publication.
+        </p>
+      `,
 
-            [
-              actionButton(
-                "Open the Design Studio",
-                "design-studio-canvas.html?mode=writer"
-              )
-            ]
+      [
+        actionButton(
+          "Open the Design Studio",
+          "design-studio-canvas.html?mode=writer&type=standing&destination=members-articles-stories&retention=permanent&approval=editor"
+        )
+      ]
 
-          );
+    );
 
+    return;
+  }
 
-          return;
-        }
 
 
+  /*
+    =====================================================
+    ARTIST
+    =====================================================
 
-        if(key === "artist"){
+    Artist work:
+      destination = Gallery
+      approval    = Editor
+      retention   = permanent until withdrawn
+  */
 
-          setChoiceContent(
+  if(key === "artist"){
 
-            "Artist",
+    setChoiceContent(
 
-            `
-              <p>
-                Use the common Design Studio simply for pleasure,
-                or to create something you may later wish to share.
-              </p>
+      "Artist",
 
-              <div class="choice-detail">
-                Artist work remains private while it is being prepared.
-                If you decide to offer it for publication,
-                it goes to a Club Editor before it can appear
-                in the Library Gallery.
-              </div>
+      `
+        <p>
+          Create artwork or other visual work
+          for yourself or for possible publication.
+        </p>
 
-              <p>
-                You can always print your creation or save it
-                to your own computer without publishing it.
-              </p>
-            `,
+        <p>
+          When it is ready, you may submit it
+          to an Editor for the Gallery.
+        </p>
+      `,
 
-            [
-              actionButton(
-                "Open the Design Studio",
-                "design-studio-canvas.html?mode=artist"
-              )
-            ]
+      [
+        actionButton(
+          "Open the Design Studio",
+          "design-studio-canvas.html?mode=artist&type=standing&destination=gallery&retention=permanent&approval=editor"
+        )
+      ]
 
-          );
+    );
 
+    return;
+  }
 
-          return;
-        }
 
 
+  /*
+    =====================================================
+    COMMITTEE
+    =====================================================
+  */
 
-        if(key === "committee"){
+  if(key === "committee"){
 
-          setChoiceContent(
+    setChoiceContent(
 
-            "Committee — News & Notices",
+      "Committee",
 
-            `
-              <p>
-                Use the common Design Studio for Committee
-                News & Notices.
-              </p>
+      `
+        <p>
+          Choose what you would like to create.
+        </p>
+      `,
 
-              <div class="choice-detail">
-                The kind of item you create will determine
-                where it appears and whether it becomes
-                part of the permanent Library record.
-              </div>
+      [
+        actionButton(
+          "Create dated Committee Notice",
+          "host-event-form.html?mode=host&source=committee"
+        ),
 
-              <p>
-                Where the destination is already known,
-                the computer should make that decision for you.
-              </p>
-            `,
+        actionButton(
+          "Create standing Committee information",
+          "design-studio-canvas.html?mode=committee&type=standing&destination=notices-news&retention=permanent&approval=self",
+          true
+        )
+      ]
 
-            [
-              actionButton(
-                "Open the Design Studio",
-                "design-studio-canvas.html?mode=committee"
-              )
-            ]
+    );
 
-          );
+    return;
+  }
 
 
-          return;
-        }
 
+  /*
+    =====================================================
+    RESIDENTS ASSOCIATION PANEL
+    =====================================================
+  */
 
+  if(key === "panel"){
 
-        if(key === "panel"){
+    setChoiceContent(
 
-          setChoiceContent(
+      "Residents Association Panel",
 
-            "Residents Association Panel — News & Notices",
+      `
+        <p>
+          Choose what you would like to create.
+        </p>
+      `,
 
-            `
-              <p>
-                Use the common Design Studio for
-                Residents Association Panel News & Notices.
-              </p>
+      [
+        actionButton(
+          "Create dated Residents Association Notice",
+          "host-event-form.html?mode=host&source=panel"
+        ),
 
-              <div class="choice-detail">
-                Panel material is a special category.
-                Its publishing, privacy and archive arrangements
-                are determined by the Panel's agreed arrangements.
-              </div>
-            `,
+        actionButton(
+          "Create standing Residents Association information",
+          "design-studio-canvas.html?mode=panel&type=standing&destination=notices-news&retention=permanent&approval=self",
+          true
+        )
+      ]
 
-            [
-              actionButton(
-                "Open the Design Studio",
-                "design-studio-canvas.html?mode=panel"
-              )
-            ]
+    );
 
-          );
+    return;
+  }
 
 
-          return;
-        }
 
+  /*
+    =====================================================
+    SERVICES
+    =====================================================
+  */
 
+  if(key === "services"){
 
-        if(key === "services"){
+    setChoiceContent(
 
-          setChoiceContent(
+      "Services",
 
-            "Services",
+      `
+        <p>
+          Choose what you would like to create.
+        </p>
+      `,
 
-            `
-              <p>
-                Use this route for information about
-                a Service you provide.
-              </p>
+      [
+        actionButton(
+          "Create dated Service Notice",
+          "host-event-form.html?mode=host&source=services"
+        ),
 
-              <div class="choice-detail">
-                A dated Service item can be treated like an Event
-                while it is current.
+        actionButton(
+          "Create standing Service information",
+          "design-studio-canvas.html?mode=services&type=standing&destination=notices-news&retention=permanent&approval=self",
+          true
+        )
+      ]
 
-                Standing information about the Service can remain
-                as an editable Library publication.
-              </div>
-            `,
+    );
 
-            [
-              actionButton(
-                "Create dated Service item",
-                "host-event-form.html?mode=host&source=services"
-              ),
+    return;
+  }
 
-              actionButton(
-                "Create standing information",
-                "design-studio-canvas.html?mode=services",
-                true
-              )
-            ]
-
-          );
-
-        }
-      }
-
-
+}
 
       function storeSession(
         data,

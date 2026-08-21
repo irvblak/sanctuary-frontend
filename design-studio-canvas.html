@@ -1379,7 +1379,24 @@ function configurePublishingButton(){
     document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);
     document.getElementById("importCanvasBtn").addEventListener("click",()=>{importCanvasFileInput.value="";importCanvasFileInput.click()});
     importCanvasFileInput.addEventListener("change",()=>importPortableProjectFile(importCanvasFileInput.files&&importCanvasFileInput.files[0]));
-    document.getElementById("printCanvasBtn").addEventListener("click",printCanvas);
+document
+  .getElementById(
+    "printCanvasBtn"
+  )
+  .addEventListener(
+    "click",
+    printCanvas
+  );
+
+
+document
+  .getElementById(
+    "publishCanvasBtn"
+  )
+  .addEventListener(
+    "click",
+    publishCanvas
+  );
     document.addEventListener("keydown",e=>{if(creativeWorkspace.hidden)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redoCanvas():undoCanvas()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redoCanvas()}else if(e.key==="Delete"&&selectedItem&&!drawingEditingItem&&!document.activeElement?.isContentEditable){deleteSelected()}});
     creativePages.addEventListener("pointerdown",e=>{if(e.target.classList.contains("canvas-page")||e.target.classList.contains("canvas-safe-area")||e.target.classList.contains("canvas-empty-hint")){finishDrawingEdit();selectItem(null)}});
     window.addEventListener("afterprint",()=>{document.body.classList.remove("print-canvas");showCurrentPage()});

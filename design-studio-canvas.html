@@ -373,6 +373,21 @@
     const FUN_MODE=["write","create"].includes((PAGE_PARAMS.get("fun")||"").toLowerCase()) ? (PAGE_PARAMS.get("fun")||"").toLowerCase() : "";
     const IS_FUN_MODE=Boolean(FUN_MODE);
     const CANVAS_MODE=(PAGE_PARAMS.get("mode")||"").toLowerCase();
+
+    const PUBLICATION_TYPE=
+      (PAGE_PARAMS.get("type")||"standing").toLowerCase();
+
+    const PUBLICATION_DESTINATION=
+      (PAGE_PARAMS.get("destination")||"").toLowerCase();
+
+    const PUBLICATION_RETENTION=
+      (PAGE_PARAMS.get("retention")||"permanent").toLowerCase();
+
+    const PUBLICATION_APPROVAL=
+      (PAGE_PARAMS.get("approval")||"").toLowerCase();
+
+    const API_BASE=
+      "https://sanctuary-backend-8iqc.onrender.com";
     const MODE_LABELS={
       activity:"Activity Organiser",
       writer:"Writer",

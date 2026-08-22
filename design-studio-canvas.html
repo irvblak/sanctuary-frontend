@@ -453,6 +453,7 @@
     let currentCanvasMode=CANVAS_MODE||"artist";
     let selectedItem=null,currentPageIndex=0,pendingImageAction="add",zCounter=20;
     let undoStack=[],redoStack=[],typingSnapshotTaken=false;
+    let savedTextRange=null;
     let drawingTool="pencil",drawingEditingItem=null,drawingPointerActive=false;
     const DRAFT_KEY="sanctuaryCreativeCanvasDraftV3";
 
@@ -572,6 +573,8 @@
         content.addEventListener("beforeinput",()=>{if(!typingSnapshotTaken){pushUndo();typingSnapshotTaken=true}});
         content.addEventListener("paste",e=>handleRichPaste(e,d));
         content.addEventListener("input",()=>scheduleForwardFlow(d));
+        content.addEventListener("mouseup",()=>rememberTextSelection(d));
+        content.addEventListener("keyup",()=>rememberTextSelection(d));
         content.addEventListener("blur",()=>{typingSnapshotTaken=false;pushOverflowForward(d)});
       }
 
@@ -594,6 +597,7 @@
     function selectItem(d){
       if(selectedItem&&selectedItem!==d)selectedItem.classList.remove("selected");
       if(drawingEditingItem&&drawingEditingItem!==d)finishDrawingEdit();
+      if(selectedItem!==d)savedTextRange=null;
       selectedItem=d||null;
       if(selectedItem){
         selectedItem.classList.add("selected");
@@ -612,6 +616,103 @@
 
     function syncFormatControls(){const c=selectedItem?.querySelector(".item-content");if(!c)return;fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";const bg=getComputedStyle(c).backgroundColor;backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff"}
     function rgbToHex(rgb){const m=String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);return m?"#"+m.slice(1,4).map(x=>Number(x).toString(16).padStart(2,"0")).join(""):""}
+
+    function rememberTextSelection(d){
+      if(!d || d!==selectedItem || d.dataset.kind==="image" || d.dataset.kind==="drawing")return;
+      const content=d.querySelector(".item-content");
+      const selection=window.getSelection();
+      if(!content || !selection || !selection.rangeCount)return;
+      const range=selection.getRangeAt(0);
+      if(
+        content.contains(range.startContainer) &&
+        content.contains(range.endContainer) &&
+        !range.collapsed
+      ){
+        savedTextRange=range.cloneRange();
+      }
+    }
+
+    function restoreTextSelection(){
+      if(!savedTextRange || !selectedItem)return false;
+      const content=selectedItem.querySelector(".item-content");
+      if(!content)return false;
+      try{
+        if(
+          !content.contains(savedTextRange.startContainer) ||
+          !content.contains(savedTextRange.endContainer)
+        ){
+          savedTextRange=null;
+          return false;
+        }
+        const selection=window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(savedTextRange);
+        return !savedTextRange.collapsed;
+      }catch(_){
+        savedTextRange=null;
+        return false;
+      }
+    }
+
+    function refreshSavedTextSelection(){
+      const selection=window.getSelection();
+      if(selection && selection.rangeCount && !selection.getRangeAt(0).collapsed){
+        savedTextRange=selection.getRangeAt(0).cloneRange();
+      }else{
+        savedTextRange=null;
+      }
+    }
+
+    function applySelectedTextCommand(command,value,boxFallback){
+      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
+      const content=selectedItem.querySelector(".item-content");
+      pushUndo();
+      if(restoreTextSelection()){
+        content.focus({preventScroll:true});
+        try{document.execCommand("styleWithCSS",false,true)}catch(_){}
+        document.execCommand(command,false,value??null);
+        refreshSavedTextSelection();
+        return;
+      }
+      boxFallback(content);
+      syncFormatControls();
+    }
+
+    function applySelectedInlineStyle(prop,value,boxFallback){
+      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
+      const content=selectedItem.querySelector(".item-content");
+      pushUndo();
+      if(restoreTextSelection()){
+        const selection=window.getSelection();
+        const range=selection.getRangeAt(0);
+        const span=document.createElement("span");
+        span.style[prop]=value;
+        try{
+          const fragment=range.extractContents();
+          span.appendChild(fragment);
+          range.insertNode(span);
+          const newRange=document.createRange();
+          newRange.selectNodeContents(span);
+          selection.removeAllRanges();
+          selection.addRange(newRange);
+          savedTextRange=newRange.cloneRange();
+          return;
+        }catch(_){
+          savedTextRange=null;
+        }
+      }
+      boxFallback(content);
+      syncFormatControls();
+    }
+
+    function applySelectedFontSize(px){
+      const size=`${clamp(parseInt(px)||18,8,96)}px`;
+      applySelectedInlineStyle("fontSize",size,content=>{content.style.fontSize=size});
+    }
+
+    function applySelectedTextColour(colour){
+      applySelectedInlineStyle("color",colour,content=>{content.style.color=colour});
+    }
 
 
     function hydrateDrawingCanvas(d){
@@ -1614,7 +1715,17 @@ function configurePublishingButton(){
     document.getElementById("quickGuideBtn").addEventListener("click",openPrintableGuide);
     document.getElementById("addCanvasTextBtn").addEventListener("click",()=>makeCanvasItem("text"));document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"}));document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
     canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
-    fontFamilySelect.addEventListener("change",()=>applyTextStyle("fontFamily",fontFamilySelect.value));fontSizeInput.addEventListener("change",()=>applyTextStyle("fontSize",`${clamp(parseInt(fontSizeInput.value)||18,8,96)}px`));document.getElementById("formatBoldBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.fontWeight=parseInt(getComputedStyle(c).fontWeight)>=700?"400":"700"});document.getElementById("formatItalicBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.fontStyle=getComputedStyle(c).fontStyle==="italic"?"normal":"italic"});document.getElementById("formatUnderlineBtn").addEventListener("click",()=>{if(!selectedItem)return;const c=selectedItem.querySelector(".item-content");pushUndo();c.style.textDecoration=getComputedStyle(c).textDecorationLine.includes("underline")?"none":"underline"});document.getElementById("alignLeftBtn").addEventListener("click",()=>applyTextStyle("textAlign","left"));document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));textColourInput.addEventListener("input",()=>applyTextStyle("color",textColourInput.value));backgroundColourInput.addEventListener("input",()=>applyTextStyle("backgroundColor",backgroundColourInput.value));document.getElementById("transparentBackgroundBtn").addEventListener("click",()=>applyTextStyle("backgroundColor","transparent"));
+    fontFamilySelect.addEventListener("change",()=>applySelectedInlineStyle("fontFamily",fontFamilySelect.value,content=>{content.style.fontFamily=fontFamilySelect.value}));
+    fontSizeInput.addEventListener("change",()=>applySelectedFontSize(fontSizeInput.value));
+    document.getElementById("formatBoldBtn").addEventListener("click",()=>applySelectedTextCommand("bold",null,content=>{content.style.fontWeight=parseInt(getComputedStyle(content).fontWeight)>=700?"400":"700"}));
+    document.getElementById("formatItalicBtn").addEventListener("click",()=>applySelectedTextCommand("italic",null,content=>{content.style.fontStyle=getComputedStyle(content).fontStyle==="italic"?"normal":"italic"}));
+    document.getElementById("formatUnderlineBtn").addEventListener("click",()=>applySelectedTextCommand("underline",null,content=>{content.style.textDecoration=getComputedStyle(content).textDecorationLine.includes("underline")?"none":"underline"}));
+    document.getElementById("alignLeftBtn").addEventListener("click",()=>applyTextStyle("textAlign","left"));
+    document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));
+    document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));
+    textColourInput.addEventListener("change",()=>applySelectedTextColour(textColourInput.value));
+    backgroundColourInput.addEventListener("input",()=>applyTextStyle("backgroundColor",backgroundColourInput.value));
+    document.getElementById("transparentBackgroundBtn").addEventListener("click",()=>applyTextStyle("backgroundColor","transparent"));
     document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));
     document.getElementById("drawLineBtn").addEventListener("click",()=>setDrawingTool("line"));
     document.getElementById("drawRectBtn").addEventListener("click",()=>setDrawingTool("rect"));

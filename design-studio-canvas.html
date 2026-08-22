@@ -220,13 +220,21 @@
             <button class="btn secondary" id="quickGuideBtn" type="button">Guide</button>
             <button class="btn secondary" id="loadCanvasBtn" type="button">Recover Draft</button>
             <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
-            <button class="btn secondary" id="exportCanvasBtn" type="button">Save to my computer</button>
-            <button class="btn secondary" id="importCanvasBtn" type="button">Open saved work</button>
+            <button class="btn secondary" id="exportCanvasBtn" type="button">Save editable copy</button>
+            <button class="btn secondary" id="importCanvasBtn" type="button">Open editable copy</button>
             <input id="importCanvasFileInput" type="file" accept=".sanctuary-yds,.json,application/json" hidden>
           </span>
 
           <span class="canvas-action-group">
   <span class="canvas-action-label">Finish</span>
+
+  <button
+    class="btn"
+    id="savePdfBtn"
+    type="button"
+  >
+    Save PDF
+  </button>
 
   <button
     class="btn"
@@ -304,7 +312,25 @@
               <option value="Verdana,sans-serif">Verdana</option>
               <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
             </select>
-            <label class="toolbar-check">Size <input id="fontSizeInput" type="number" min="8" max="96" step="1" value="18"></label>
+            <label class="toolbar-check">Size
+              <select id="fontSizeInput" aria-label="Font size">
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18" selected>18</option>
+                <option value="20">20</option>
+                <option value="24">24</option>
+                <option value="28">28</option>
+                <option value="32">32</option>
+                <option value="36">36</option>
+                <option value="48">48</option>
+                <option value="60">60</option>
+                <option value="72">72</option>
+                <option value="96">96</option>
+              </select>
+            </label>
             <div class="compact-button-row">
               <button id="formatBoldBtn" type="button"><strong>B</strong></button>
               <button id="formatItalicBtn" type="button"><em>I</em></button>
@@ -694,7 +720,8 @@
         const selection=window.getSelection();
         const range=selection.getRangeAt(0);
         const span=document.createElement("span");
-        span.style[prop]=value;
+        const cssName=prop.replace(/[A-Z]/g,m=>"-"+m.toLowerCase());
+        span.style.setProperty(cssName,value,"important");
         try{
           const fragment=range.extractContents();
           span.appendChild(fragment);
@@ -704,6 +731,7 @@
           selection.removeAllRanges();
           selection.addRange(newRange);
           savedTextRange=newRange.cloneRange();
+          content.focus({preventScroll:true});
           return;
         }catch(_){
           savedTextRange=null;
@@ -711,6 +739,7 @@
       }
       boxFallback(content);
       syncFormatControls();
+      content.focus({preventScroll:true});
     }
 
     function applySelectedFontSize(px){
@@ -1213,6 +1242,19 @@
     function saveDraft(){try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so members will not need to manage image sizes themselves.")}}
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
+
+    function saveCanvasPdf(){
+      const originalTitle=document.title;
+      const heading=clean(creativeHeading?.textContent||"Sanctuary Design Studio");
+      document.title=heading||"Sanctuary Design Studio";
+      alert(
+        "Your finished copy will now open in the computer's print window.\n\n" +
+        "Choose Save as PDF (or Microsoft Print to PDF), then choose where you would like to keep it.\n\n" +
+        "No Adobe software is needed."
+      );
+      printCanvas();
+      setTimeout(()=>{document.title=originalTitle;},1000);
+    }
 
  /*
   =========================================================
@@ -1752,6 +1794,15 @@ function configurePublishingButton(){
     document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);
     document.getElementById("importCanvasBtn").addEventListener("click",()=>{importCanvasFileInput.value="";importCanvasFileInput.click()});
     importCanvasFileInput.addEventListener("change",()=>importPortableProjectFile(importCanvasFileInput.files&&importCanvasFileInput.files[0]));
+document
+  .getElementById(
+    "savePdfBtn"
+  )
+  .addEventListener(
+    "click",
+    saveCanvasPdf
+  );
+
 document
   .getElementById(
     "printCanvasBtn"

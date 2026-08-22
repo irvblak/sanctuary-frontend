@@ -1247,17 +1247,105 @@
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
 
-    function saveCanvasPdf(){
-      const originalTitle=document.title;
-      const heading=clean(creativeHeading?.textContent||"Sanctuary Design Studio");
-      document.title=heading||"Sanctuary Design Studio";
-      alert(
-        "Your finished copy will now open in the computer's print window.\n\n" +
-        "Choose Save as PDF (or Microsoft Print to PDF), then choose where you would like to keep it.\n\n" +
-        "No Adobe software is needed."
-      );
-      printCanvas();
-      setTimeout(()=>{document.title=originalTitle;},1000);
+    function safeViewFilename(){
+      const label=clean(creativeHeading?.textContent||"Sanctuary creation")
+        .replace(/[^\w\s-]/g,"")
+        .trim()
+        .replace(/\s+/g,"-")
+        .toLowerCase()||"sanctuary-creation";
+      return `${label}-view.html`;
+    }
+
+    function standaloneViewHtml(){
+      syncDrawingData();
+
+      const pageClones=pages().map((page,pageIndex)=>{
+        const clone=page.cloneNode(true);
+        clone.hidden=false;
+        clone.removeAttribute("hidden");
+        clone.querySelectorAll(".selected,.drawing-edit").forEach(el=>{
+          el.classList.remove("selected","drawing-edit");
+        });
+        clone.querySelectorAll(".drag-handle,.resize-handle,.canvas-guide,.canvas-safe-area,.canvas-empty-hint").forEach(el=>el.remove());
+
+        const originals=[...page.querySelectorAll('.canvas-item[data-kind="drawing"]')];
+        const drawings=[...clone.querySelectorAll('.canvas-item[data-kind="drawing"]')];
+        drawings.forEach((item,i)=>{
+          const originalCanvas=originals[i]?.querySelector(".drawing-surface");
+          const clonedCanvas=item.querySelector(".drawing-surface");
+          if(!clonedCanvas)return;
+          const img=document.createElement("img");
+          img.alt="Drawing";
+          try{
+            img.src=originalCanvas?originalCanvas.toDataURL("image/png"):(item.dataset.drawingData||"");
+          }catch(_){
+            img.src=item.dataset.drawingData||"";
+          }
+          img.style.width="100%";
+          img.style.height="100%";
+          img.style.objectFit="contain";
+          img.style.display="block";
+          clonedCanvas.replaceWith(img);
+        });
+
+        clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+        return clone.outerHTML;
+      }).join("\n");
+
+      const title=clean(creativeHeading?.textContent||"Sanctuary Design Studio");
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(title||"Sanctuary Design Studio")}</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.viewer-note{max-width:900px;margin:0 auto 18px;padding:12px 16px;border-radius:12px;background:#fff;border:1px solid #d7e3ea;color:#31506b;font-weight:700}
+.canvas-page{position:relative;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.16);overflow:hidden;margin:0 auto 24px;page-break-after:always;break-after:page}
+.canvas-page:last-child{page-break-after:auto;break-after:auto}
+.canvas-page.portrait{width:min(100%,210mm);aspect-ratio:210/297}
+.canvas-page.landscape{width:min(100%,297mm);aspect-ratio:297/210}
+.canvas-item{position:absolute;min-width:70px;min-height:42px;border:0;background:transparent;overflow:visible}
+.canvas-item .item-content{position:absolute;inset:0;overflow:hidden;white-space:pre-wrap;word-break:break-word;padding:.45rem;background:transparent}
+.canvas-item .item-content img{max-width:100%;max-height:100%;display:block;margin:auto;object-fit:contain}
+.canvas-item[data-kind="image"] .item-content,.canvas-item[data-kind="drawing"] .item-content{padding:0;display:flex;align-items:center;justify-content:center}
+.canvas-item[data-kind="image"] img{width:100%;height:100%;object-fit:contain}
+.canvas-item.fill img{object-fit:cover}
+.canvas-item[data-flow-group] .item-content{white-space:normal;line-height:1.5}
+.canvas-item[data-flow-group] .item-content p{margin:.35em 0 .75em}
+.canvas-item[data-flow-group] .item-content h1,.canvas-item[data-flow-group] .item-content h2,.canvas-item[data-flow-group] .item-content h3{margin:.45em 0 .35em;line-height:1.18}
+.canvas-item[data-flow-group] .item-content ul,.canvas-item[data-flow-group] .item-content ol{margin:.35em 0 .75em;padding-left:1.5em}
+.page-number{position:absolute;bottom:1.3%;font-size:12px;color:#61727e;z-index:950;pointer-events:none}.page-number.center{left:50%;transform:translateX(-50%)}.page-number.right{right:3.5%}
+@media print{body{padding:0;background:#fff}.viewer-note{display:none}.canvas-page{box-shadow:none;margin:0 auto}}
+</style>
+</head>
+<body>
+<div class="viewer-note">View-only copy saved from Sanctuary Club — Your Design Studio.</div>
+${pageClones}
+</body>
+</html>`;
+    }
+
+    function saveCanvasViewCopy(){
+      try{
+        selectItem(null);
+        const html=standaloneViewHtml();
+        const blob=new Blob([html],{type:"text/html;charset=utf-8"});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");
+        a.href=url;
+        a.download=safeViewFilename();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        alert("A viewable copy has been saved to your computer. Open the .html file in your normal web browser. Use Save My Work separately if you want an editable YDS copy.");
+      }catch(err){
+        console.error(err);
+        alert("The viewable copy could not be saved. Your YDS work remains unchanged.");
+      }
     }
 
  /*
@@ -1804,7 +1892,7 @@ document
   )
   .addEventListener(
     "click",
-    saveCanvasPdf
+    saveCanvasViewCopy
   );
 
 document

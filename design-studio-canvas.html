@@ -1779,7 +1779,7 @@ function configurePublishingButton(){
     document.getElementById("alignLeftBtn").addEventListener("click",()=>applyTextStyle("textAlign","left"));
     document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));
     document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));
-    textColourInput.addEventListener("change",()=>applySelectedTextColour(textColourInput.value));
+    textColourInput.addEventListener("input",()=>applySelectedTextColour(textColourInput.value));
     backgroundColourInput.addEventListener("input",()=>applyTextStyle("backgroundColor",backgroundColourInput.value));
     document.getElementById("transparentBackgroundBtn").addEventListener("click",()=>applyTextStyle("backgroundColor","transparent"));
     document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));

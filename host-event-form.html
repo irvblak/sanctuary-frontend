@@ -228,6 +228,20 @@
       filter:grayscale(.15);
     }
 
+    .notice-only-note{
+      display:none;
+      margin:.1rem 0 .75rem;
+      padding:.65rem .75rem;
+      border-radius:12px;
+      background:#f3f5f7;
+      border:1px solid #d8dde3;
+      color:#5d6872;
+      font-weight:750;
+      line-height:1.4;
+    }
+
+    .notice-only-note.show{display:block}
+
     .status{
       display:none;
       margin:.7rem 0 0;
@@ -382,6 +396,7 @@
 
       <section class="card" id="bookingSection">
         <h2>Bookings, Guests &amp; Cut-off Dates</h2>
+        <p id="bookingNoticeOnlyNote" class="notice-only-note">Not used for this type of Notice. These controls are shown only because the same form also serves hosted Events.</p>
         <p class="help">These details feed Booking, Guest Booking, the Event Notice and State of Play.</p>
 
         <div class="booking-grid">
@@ -419,6 +434,7 @@
 
       <section class="card" id="paymentSection">
         <h2>Payment</h2>
+        <p id="paymentNoticeOnlyNote" class="notice-only-note">Not used for this type of Notice. Payment arrangements apply only to hosted Events.</p>
         <p class="help">Use this for payable hosted events. Payment collection itself remains outside the website for now.</p>
 
         <div class="payment-grid">
@@ -502,6 +518,7 @@ const els = {
   endTime:$("endTime"),
   modeNote:$("modeNote"),
   bookingSection:$("bookingSection"),
+  bookingNoticeOnlyNote:$("bookingNoticeOnlyNote"),
   capacityTotal:$("capacityTotal"),
   membersBookingOpenAt:$("membersBookingOpenAt"),
   guestsBookingOpenAt:$("guestsBookingOpenAt"),
@@ -509,6 +526,7 @@ const els = {
   cancellationCutoffAt:$("cancellationCutoffAt"),
   refundCutoffAt:$("refundCutoffAt"),
   paymentSection:$("paymentSection"),
+  paymentNoticeOnlyNote:$("paymentNoticeOnlyNote"),
   paymentRequired:$("paymentRequired"),
   costPerPlace:$("costPerPlace"),
   paymentInstructions:$("paymentInstructions"),
@@ -755,22 +773,25 @@ function applyMode(){
   const isPost = eventMode === "post";
 
   els.pageTitle.textContent = editEventId
-    ? (isPost ? "Edit Posted Event" : "Edit Hosted Event")
-    : (isPost ? "Post an Event" : "Host an Event");
+    ? (isPost ? "Edit Notice" : "Edit Hosted Event")
+    : (isPost ? "Create a Notice" : "Host an Event");
 
   document.title = `${els.pageTitle.textContent} | Sanctuary Club`;
 
   els.pageSubtitle.textContent = isPost
-    ? "Enter the facts needed to place this non-bookable event in the Calendar, Events List and Event Notice."
+    ? "Enter the date, time, place and other basic details for your Notice. It can then be designed in Your Design Studio and shown through the appropriate Calendar, Events List and Notice route."
     : "Enter the facts needed for the Event Notice, Calendar, Events List, bookings and State of Play.";
 
   els.modeNote.textContent = isPost
-    ? "PanE is for non-bookable events. Booking and payment controls are not used."
+    ? "This is a Notice, not a bookable hosted Event. Complete the Notice details above; Booking and Payment are not needed and have therefore been greyed out."
     : "Enter your event details then go to your studio to create your poster";
 
   [els.bookingSection,els.paymentSection].forEach(section=>{
     section.classList.toggle("pan-e-disabled",isPost);
   });
+
+  els.bookingNoticeOnlyNote.classList.toggle("show",isPost);
+  els.paymentNoticeOnlyNote.classList.toggle("show",isPost);
 
   [
     els.capacityTotal,
@@ -784,6 +805,14 @@ function applyMode(){
     els.paymentInstructions,
     els.paymentNote
   ].forEach(el=>el.disabled = isPost);
+
+  els.saveBtn.textContent = isPost
+    ? "Save Notice Details & Continue to Notice Design"
+    : "Save Event Details & Continue to Notice Design";
+
+  els.resetBtn.textContent = isPost
+    ? "Reset notice details"
+    : "Reset event details";
 }
 
 function asTime(value){
@@ -1047,7 +1076,7 @@ async function saveEvent(){
 
   try{
     els.saveBtn.disabled = true;
-    setStatus(els.saveStatus,"warn","Saving event details…");
+    setStatus(els.saveStatus,"warn",eventMode === "post" ? "Saving Notice details…" : "Saving event details…");
 
     const data = await apiFetch(
       "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
@@ -1077,7 +1106,7 @@ async function saveEvent(){
     setStatus(
       els.saveStatus,
       "ok",
-      `Event details saved as ${eventId}. Returning to Your Design Studio to complete the Notice…`
+      `${eventMode === "post" ? "Notice details" : "Event details"} saved as ${eventId}. Returning to Your Design Studio to complete the Notice…`
     );
 
     window.setTimeout(()=>{

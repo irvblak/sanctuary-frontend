@@ -1448,16 +1448,20 @@
 
 
   {
-    key:"committee",
+    key:"club_publications",
 
-    label:"Committee",
+    label:"Club Publications",
 
     description:
-      "Create a dated Committee Notice or standing Committee information.",
+      "Create Club guides, information, notices and news for publication.",
 
     iconId:"role-committee",
 
-    roles:["committee"]
+    roles:[
+      "committee",
+      "secretary",
+      "treasurer"
+    ]
   },
 
 
@@ -1541,6 +1545,12 @@
           roles:["committee"],
           iconId:"role-committee",
           tooltip:"Committee"
+        },
+
+        {
+          roles:["secretary"],
+          iconId:"role-committee",
+          tooltip:"Secretary"
         },
 
         {
@@ -2621,31 +2631,51 @@
 
   /*
     =====================================================
-    COMMITTEE
+    CLUB PUBLICATIONS
     =====================================================
+
+    Club Publications is a publishing route, not a new
+    member role.  It may be opened by any qualifying
+    Club-office role listed in STUDIO_CHOICES above.
+
+    The member chooses what is being produced; the
+    publishing metadata then carries the correct Library
+    destination forward automatically.
   */
 
-  if(key === "committee"){
+  if(key === "club_publications"){
 
     setChoiceContent(
 
-      "Committee",
+      "Club Publications",
 
       `
         <p>
-          Choose what you would like to create.
+          Choose the kind of Club publication you would like to create.
+        </p>
+
+        <p>
+          The computer will use your choice to send approved work to the
+          correct part of the Library. You do not need to choose a filing
+          destination yourself.
         </p>
       `,
 
       [
         actionButton(
-          "Create dated Committee Notice",
-          "host-event-form.html?mode=host&source=committee"
+          "Guides & Help",
+          "design-studio-canvas.html?mode=club-publications&type=standing&destination=guides-help&retention=permanent&approval=self"
         ),
 
         actionButton(
-          "Create standing Committee information",
-          "design-studio-canvas.html?mode=committee&type=standing&destination=notices-news&retention=permanent&approval=self",
+          "Club Information",
+          "design-studio-canvas.html?mode=club-publications&type=standing&destination=club-information&retention=permanent&approval=self",
+          true
+        ),
+
+        actionButton(
+          "Notices & News",
+          "design-studio-canvas.html?mode=club-publications&type=standing&destination=notices-news&retention=permanent&approval=self",
           true
         )
       ]
@@ -2830,6 +2860,8 @@
             "news_contributor",
             "artist",
             "committee",
+            "secretary",
+            "treasurer",
             "panel",
             "services"
           ]);

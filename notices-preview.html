@@ -1,11 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Notices & Publications Preview | Sanctuary Club</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-
+  <meta charset="UTF-8">
+  <title>Notices & Publications | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <script src="access.js?v=AC_1"></script>
 
   <style>
@@ -18,38 +18,22 @@
       --line:#dbe6f0;
       --brand:#0f4c81;
       --brand2:#1d6ca8;
-      --shadow:0 12px 28px rgba(15,76,129,0.08);
-
-      --events:#0f4c81;
-      --club:#7c3aed;
-      --association:#7a4b14;
-      --activities:#0f766e;
-      --services:#c2410c;
-      --news:#b45309;
+      --club:#6d28d9;
+      --association:#8a5a00;
+      --shadow:0 12px 28px rgba(15,76,129,.08);
     }
 
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
 
-    html, body{
+    html,body{
       margin:0;
-      padding:0;
+      min-height:100%;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--ink);
-      background:linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 42%, #ffffff 100%);
-      min-height:100%;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2) 42%,#fff 100%);
     }
 
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
-
-    button,
-    input,
-    textarea,
-    select{
-      font:inherit;
-    }
+    a{color:inherit;text-decoration:none}
 
     .page{
       max-width:1120px;
@@ -72,463 +56,326 @@
       gap:8px;
       align-items:center;
       color:var(--muted);
-      font-size:1rem;
       font-weight:650;
     }
 
-    .crumbs a{
-      color:var(--brand);
-      font-weight:800;
-    }
+    .crumbs a,.back-link{color:var(--brand);font-weight:800}
 
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--brand);
-      font-weight:800;
-      font-size:1rem;
+    .hero,.panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
     }
 
     .hero{
-      background:linear-gradient(135deg, rgba(15,76,129,0.10), rgba(255,255,255,0.98));
-      border:1px solid rgba(15,76,129,0.12);
-      border-radius:24px;
-      box-shadow:var(--shadow);
       padding:24px 22px;
       margin-bottom:18px;
+      background:linear-gradient(135deg,rgba(15,76,129,.10),rgba(255,255,255,.98));
     }
 
     .hero h1{
       margin:0 0 10px;
-      font-size:clamp(2rem, 3vw, 2.55rem);
-      line-height:1.12;
       color:var(--brand);
+      font-size:clamp(2rem,3vw,2.55rem);
+      line-height:1.12;
     }
 
-    .hero > p{
-      margin:0;
-      max-width:900px;
+    .hero p{
+      margin:.45rem 0 0;
       color:#334155;
-      font-size:1.08rem;
+      font-size:1.06rem;
       font-weight:650;
-      line-height:1.7;
-    }
-
-    .retention-note{
-      margin-top:18px;
-      padding:18px 20px;
-      border-radius:18px;
-      border:1px solid rgba(15,76,129,0.14);
-      background:rgba(255,255,255,0.82);
-      color:#2f4558;
-      font-size:1.08rem;
-      font-weight:700;
       line-height:1.65;
     }
 
-    .retention-note p{
-      margin:0;
-    }
-
-    .retention-note p + p{
-      margin-top:10px;
-    }
-
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:18px;
-    }
-
-    .cat-btn{
-      appearance:none;
-      border:1px solid #c9dced;
-      background:#fff;
-      color:var(--brand);
-      border-radius:999px;
-      padding:12px 18px;
-      font-weight:850;
-      font-size:1.03rem;
-      line-height:1.15;
-      cursor:pointer;
-      box-shadow:0 6px 16px rgba(0,0,0,.05);
-      transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
-    }
-
-    .cat-btn:hover,
-    .cat-btn:focus-visible{
-      transform:translateY(-1px);
-      box-shadow:0 10px 20px rgba(15,76,129,0.10);
-      outline:3px solid rgba(29,108,168,.18);
-      outline-offset:2px;
-    }
-
-    .cat-btn.active{
-      background:var(--brand);
-      color:#fff;
-      border-color:transparent;
-    }
-
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .panel-inner{
-      padding:22px;
-    }
-
-    .panel-head{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:flex-start;
+    .chooser{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
       margin-bottom:18px;
     }
 
-    .panel-head h2{
-      margin:0 0 8px;
-      color:var(--brand);
-      font-size:1.48rem;
-      line-height:1.25;
-    }
-
-    .panel-sub{
-      color:#475b6c;
-      font-size:1.07rem;
-      font-weight:650;
-      line-height:1.65;
-      max-width:880px;
-    }
-
-    .status{
-      display:none;
-      margin-bottom:14px;
-      padding:14px 16px;
-      border-radius:14px;
-      font-weight:750;
-      font-size:1.02rem;
-      line-height:1.5;
-    }
-
-    .status.show{ display:block; }
-
-    .status.info{
-      background:#eef6ff;
-      border:1px solid rgba(15,76,129,.14);
-      color:#0b4d87;
-    }
-
-    .status.err{
-      background:#fff4f4;
-      border:1px solid rgba(180,35,24,.18);
-      color:#b42318;
-    }
-
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
-      gap:16px;
-    }
-
-    .notice-card,
-    .section-card{
+    .choice{
+      border:1px solid #c9dced;
       background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow:0 8px 18px rgba(15,76,129,0.06);
-      display:flex;
-      flex-direction:column;
-      min-height:100%;
-    }
-
-    .notice-card.media-top .notice-media{
-      display:block;
-    }
-
-    .notice-media{
-      display:none;
-      width:100%;
-      height:190px;
-      object-fit:cover;
-      background:#eef4f8;
-      border-bottom:1px solid var(--line);
-    }
-
-    .notice-body,
-    .section-card-inner{
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      gap:11px;
-      flex:1;
-    }
-
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:center;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:7px 11px;
-      border-radius:999px;
-      font-size:0.88rem;
-      font-weight:850;
-      letter-spacing:0.01em;
-    }
-
-    .badge.events{ background:#e8f2fb; color:var(--events); }
-    .badge.club{ background:#f3e8ff; color:var(--club); }
-    .badge.association{ background:#fff4df; color:var(--association); }
-    .badge.activities{ background:#e8faf6; color:var(--activities); }
-    .badge.services{ background:#fff1e9; color:var(--services); }
-    .badge.news{ background:#fff7e8; color:var(--news); }
-
-    .when{
-      color:var(--muted);
-      font-size:1rem;
-      font-weight:650;
-      line-height:1.5;
-    }
-
-    .title,
-    .section-title{
-      margin:0;
-      font-size:1.22rem;
-      line-height:1.32;
-      color:#123b62;
-    }
-
-    .summary,
-    .section-copy{
-      margin:0;
-      color:#334155;
-      line-height:1.65;
-      font-size:1.04rem;
-      font-weight:620;
-      white-space:pre-wrap;
-    }
-
-    .section-copy strong{
-      color:#123b62;
-    }
-
-    .card-footer{
-      margin-top:auto;
-      padding-top:6px;
-    }
-
-    .open-link,
-    .helper-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
       color:var(--brand);
-      font-weight:850;
-      font-size:1rem;
-    }
-
-    .welcome-box,
-    .planned-box{
-      padding:22px;
-      border:1px solid #c8d9e7;
-      border-radius:18px;
-      background:linear-gradient(135deg, #fbfdff, #f2f8fd);
-      color:#334155;
-    }
-
-    .welcome-box h3,
-    .planned-box h3{
-      margin:0 0 10px;
-      color:#123b62;
-      font-size:1.32rem;
-      line-height:1.3;
-    }
-
-    .welcome-box p,
-    .planned-box p{
-      margin:0;
-      font-size:1.08rem;
-      font-weight:680;
-      line-height:1.68;
-    }
-
-    .welcome-box p + p,
-    .planned-box p + p{
-      margin-top:11px;
-    }
-
-    .planned-list{
-      margin:14px 0 0;
-      padding-left:1.25rem;
-      color:#334155;
-      font-size:1.05rem;
-      font-weight:680;
-      line-height:1.7;
-    }
-
-    .invitation{
-      margin-top:16px;
+      border-radius:16px;
       padding:16px 18px;
-      border-radius:16px;
-      background:#f4f9fd;
-      border:1px solid rgba(15,76,129,.13);
-      color:#24445f;
-      font-size:1.06rem;
-      font-weight:750;
-      line-height:1.62;
+      font:inherit;
+      font-size:1.08rem;
+      font-weight:850;
+      cursor:pointer;
+      text-align:left;
+      box-shadow:0 6px 16px rgba(0,0,0,.05);
     }
 
-    .invitation strong{
+    .choice small{
+      display:block;
+      margin-top:.25rem;
+      color:var(--muted);
+      font-size:.86rem;
+      font-weight:650;
+      line-height:1.45;
+    }
+
+    .choice.active{
+      background:var(--brand);
+      color:#fff;
+      border-color:var(--brand);
+    }
+
+    .choice.active small{color:#e9f3fb}
+
+    .panel{padding:22px}
+
+    .section[hidden]{display:none}
+
+    .section h2{
+      margin:0 0 .4rem;
       color:var(--brand);
+      font-size:1.5rem;
     }
 
-    .empty{
-      padding:20px;
-      border:1px dashed #c8d9e7;
-      border-radius:16px;
-      background:#fbfdff;
-      color:#526474;
-      font-size:1.05rem;
+    .section-intro{
+      margin:0 0 1rem;
+      color:#475b6c;
+      font-size:1.03rem;
       font-weight:650;
       line-height:1.6;
     }
 
-    @media (max-width:680px){
-      .page{
-        padding:16px 12px 36px;
-      }
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:16px;
+    }
 
-      .hero,
-      .panel-inner{
-        padding:18px 15px;
-      }
+    .card{
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:#fff;
+      box-shadow:0 8px 18px rgba(15,76,129,.06);
+      overflow:hidden;
+    }
 
-      <body>
+    .card-body{padding:18px}
+
+    .badge{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.86rem;
+      font-weight:850;
+      margin-bottom:.7rem;
+    }
+
+    .badge.club{background:#f3e8ff;color:var(--club)}
+    .badge.association{background:#fff4df;color:var(--association)}
+
+    .card h3{
+      margin:.15rem 0 .45rem;
+      color:#123b62;
+      font-size:1.2rem;
+      line-height:1.3;
+    }
+
+    .card p{
+      margin:.35rem 0;
+      color:#334155;
+      line-height:1.6;
+      white-space:pre-wrap;
+    }
+
+    .meta{
+      margin-top:.7rem;
+      color:var(--muted);
+      font-size:.92rem;
+      font-weight:650;
+    }
+
+    .status{
+      margin-top:1rem;
+      padding:.75rem .85rem;
+      border-radius:12px;
+      background:#eef6ff;
+      color:#0b4d87;
+      border:1px solid rgba(15,76,129,.14);
+      font-weight:700;
+    }
+
+    .status[hidden]{display:none}
+
+    @media(max-width:680px){
+      .chooser{grid-template-columns:1fr}
+      .hero,.panel{padding:18px 15px}
+    }
+  </style>
+</head>
+
+<body>
   <div class="page">
     <div class="topbar">
       <div class="crumbs">
-        <a href="members-info.html">Members Hub</a><span>›</span>
-        <a href="library.html">Library</a><span>›</span>
-        <span>Notices &amp; Publications Preview</span>
+        <a href="members-info.html">Members Hub</a>
+        <span>›</span>
+        <a href="library.html">Library</a>
+        <span>›</span>
+        <span>Notices &amp; Publications</span>
       </div>
       <a class="back-link" href="library.html">← Back to Library</a>
     </div>
 
     <section class="hero">
       <h1>Notices &amp; Publications</h1>
-      <p>This preview shows how retained Club and Residents Association material can be presented for members to read. Choose the area you want below.</p>
-      <div class="retention-note">
-        <p><strong>Club Notices &amp; News</strong> contains Club material intended for members generally, including Useful Information, Guides &amp; Help, notices and news.</p>
-        <p><strong>Residents Association</strong> is a separate area for Association information and publications. Private Association material will remain protected by the appropriate access permissions.</p>
-      </div>
+      <p>
+        Club material and Residents Association material have separate homes.
+        Choose the area you want to read.
+      </p>
     </section>
 
-    <div class="toolbar" id="categoryToolbar" aria-label="Publication areas">
-      <button class="cat-btn" type="button" data-category="club">Club Notices &amp; News</button>
-      <button class="cat-btn" type="button" data-category="association">Residents Association</button>
+    <div class="chooser">
+      <button class="choice active" id="clubBtn" type="button">
+        Club Notices &amp; News
+        <small>Useful Information, Guides &amp; Help, notices and Club news.</small>
+      </button>
+
+      <button class="choice" id="associationBtn" type="button">
+        Residents Association
+        <small>Residents Association information and publications.</small>
+      </button>
     </div>
 
-    <section class="panel"><div class="panel-inner">
-      <div class="panel-head"><div>
-        <h2 id="panelTitle">Welcome</h2>
-        <div class="panel-sub" id="panelSub">Choose an area above to see the publications available there.</div>
-      </div></div>
-      <div id="statusBox" class="status info"></div>
-      <div id="content"></div>
-    </div></section>
+    <section class="panel">
+      <div class="section" id="clubSection">
+        <h2>Club Notices &amp; News</h2>
+        <p class="section-intro">
+          Club information worth seeing now or finding again later.
+        </p>
+
+        <div class="cards" id="clubCards">
+          <article class="card">
+            <div class="card-body">
+              <span class="badge club">Useful Information</span>
+              <h3>Useful Information</h3>
+              <p>Standing Club information will appear here.</p>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-body">
+              <span class="badge club">Guides &amp; Help</span>
+              <h3>Guides &amp; Help</h3>
+              <p>Permanent guides and help material will appear here.</p>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-body">
+              <span class="badge club">Notices &amp; News</span>
+              <h3>Notices &amp; News</h3>
+              <p>Club notices and news worth retaining will appear here.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="section" id="associationSection" hidden>
+        <h2>Residents Association</h2>
+        <p class="section-intro">
+          A separate home for Residents Association information and publications.
+          Where material is private, the appropriate access controls still apply.
+        </p>
+
+        <div class="cards" id="associationCards">
+          <article class="card">
+            <div class="card-body">
+              <span class="badge association">Residents Association</span>
+              <h3>Residents Association</h3>
+              <p>Residents Association publications will appear here.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="status" id="statusBox" hidden></div>
+    </section>
   </div>
 
   <script>
-  (function(){
-    const toolbar=document.getElementById("categoryToolbar");
-    const panelTitle=document.getElementById("panelTitle");
-    const panelSub=document.getElementById("panelSub");
-    const content=document.getElementById("content");
-    const statusBox=document.getElementById("statusBox");
-    let currentCategory="";
+    (function(){
+      "use strict";
 
-    const CATEGORY_META={
-      club:{title:"Club Notices & News",sub:"Club information and publications kept here so members can find and read them again."},
-      association:{title:"Residents Association",sub:"A separate home for Residents Association information and publications."}
-    };
+      var clubBtn=document.getElementById("clubBtn");
+      var associationBtn=document.getElementById("associationBtn");
+      var clubSection=document.getElementById("clubSection");
+      var associationSection=document.getElementById("associationSection");
+      var clubCards=document.getElementById("clubCards");
+      var associationCards=document.getElementById("associationCards");
+      var statusBox=document.getElementById("statusBox");
 
-    function setStatus(kind,message){
-      if(!message){statusBox.className="status";statusBox.textContent="";return;}
-      statusBox.className=`status show ${kind}`; statusBox.textContent=message;
-    }
-    function escapeHtml(value){
-      return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-    }
-    function formatDate(value){
-      if(!value)return "";
-      const d=new Date(value); if(Number.isNaN(d.getTime()))return "";
-      return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
-    }
-    function renderWelcome(){
-      content.innerHTML=`<div class="welcome-box">
-        <h3>What would you like to read?</h3>
-        <p>Choose <strong>Club Notices &amp; News</strong> or <strong>Residents Association</strong> above.</p>
-        <p>The Library will keep useful material in the right place, so members do not have to remember where it first appeared.</p>
-      </div>`;
-    }
-    function renderEmpty(message){content.innerHTML=`<div class="empty">${escapeHtml(message)}</div>`;}
-    function renderNotices(notices,category){
-      const usable=notices.filter(n=>n&&n.category===category).sort((a,b)=>{
-        if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;
-        return new Date(b.createdAt||0)-new Date(a.createdAt||0);
-      });
-      if(!usable.length){
-        renderEmpty(category==="association"?"There are no Residents Association publications to show here yet.":"There are no Club publications to show here yet.");
-        return;
+      function escapeHtml(value){
+        return String(value == null ? "" : value)
+          .replace(/&/g,"&amp;")
+          .replace(/</g,"&lt;")
+          .replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;")
+          .replace(/'/g,"&#39;");
       }
-      content.innerHTML=`<div class="cards">${usable.map(n=>{
-        const media=Array.isArray(n.media)?(n.media[0]||""):"";
-        const badgeClass=category==="association"?"association":"club";
-        const badgeText=category==="association"?"Residents Association":(n.section||"Club Notices & News");
-        const dateText=formatDate(n.createdAt);
-        return `<article class="notice-card${media?" media-top":""}">
-          ${media?`<img class="notice-media" src="${escapeHtml(media)}" alt="">`:""}
-          <div class="notice-body">
-            <div class="badge-row"><span class="badge ${badgeClass}">${escapeHtml(badgeText)}</span>${n.pinned?`<span class="badge news">Keep handy</span>`:""}</div>
-            ${dateText?`<div class="when">${escapeHtml(dateText)}</div>`:""}
-            <h3 class="title">${escapeHtml(n.title||"Untitled publication")}</h3>
-            <p class="summary">${escapeHtml(n.body||"")}</p>
-            ${n.author?`<div class="when">From: ${escapeHtml(n.author)}</div>`:""}
-          </div></article>`;
-      }).join("")}</div>`;
-    }
-    async function loadData(){
-      const res=await fetch("notices-preview.json",{cache:"no-store"});
-      if(!res.ok)throw new Error(`HTTP ${res.status}`);
-      const data=await res.json();
-      return Array.isArray(data?.notices)?data.notices:[];
-    }
-    async function loadCategory(category){
-      currentCategory=category;
-      [...toolbar.querySelectorAll(".cat-btn")].forEach(btn=>btn.classList.toggle("active",btn.dataset.category===category));
-      const meta=CATEGORY_META[category]; panelTitle.textContent=meta.title; panelSub.textContent=meta.sub;
-      setStatus("info","Loading publications…"); content.innerHTML="";
-      try{const notices=await loadData();setStatus("","");renderNotices(notices,category);}
-      catch(err){console.error(err);setStatus("err","The preview publications could not be loaded just now.");renderEmpty("Please try again shortly.");}
-    }
-    toolbar.addEventListener("click",e=>{
-      const btn=e.target.closest(".cat-btn"); if(!btn)return;
-      const category=btn.dataset.category; if(category===currentCategory)return; loadCategory(category);
-    });
-    renderWelcome();
-  })();
+
+      function showSection(which){
+        var club=which==="club";
+        clubSection.hidden=!club;
+        associationSection.hidden=club;
+        clubBtn.classList.toggle("active",club);
+        associationBtn.classList.toggle("active",!club);
+      }
+
+      clubBtn.addEventListener("click",function(){showSection("club");});
+      associationBtn.addEventListener("click",function(){showSection("association");});
+
+      function renderCards(items,category,target){
+        var filtered=items.filter(function(item){
+          return item && item.category===category;
+        });
+
+        if(!filtered.length){return;}
+
+        target.innerHTML=filtered.map(function(item){
+          var badgeClass=category==="association" ? "association" : "club";
+          var badgeText=category==="association"
+            ? "Residents Association"
+            : (item.section || "Club Notices & News");
+
+          var author=item.author
+            ? '<div class="meta">From: '+escapeHtml(item.author)+'</div>'
+            : '';
+
+          return '<article class="card"><div class="card-body">' +
+            '<span class="badge '+badgeClass+'">'+escapeHtml(badgeText)+'</span>' +
+            '<h3>'+escapeHtml(item.title || "Untitled publication")+'</h3>' +
+            '<p>'+escapeHtml(item.body || "")+'</p>' +
+            author +
+            '</div></article>';
+        }).join("");
+      }
+
+      fetch("notices-preview.json",{cache:"no-store"})
+        .then(function(response){
+          if(!response.ok){throw new Error("HTTP "+response.status);}
+          return response.json();
+        })
+        .then(function(data){
+          var items=(data && Array.isArray(data.notices)) ? data.notices : [];
+          renderCards(items,"club",clubCards);
+          renderCards(items,"association",associationCards);
+        })
+        .catch(function(error){
+          console.error("Preview data could not be loaded:",error);
+          statusBox.hidden=false;
+          statusBox.textContent="The preview data could not be loaded, but the Notices & Publications sections are available.";
+        });
+    })();
   </script>
 </body>
 </html>

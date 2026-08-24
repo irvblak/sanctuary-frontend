@@ -1,53 +1,52 @@
 {
   "notices": [
     {
-      "id": "PREVIEW-CLUB-001",
+      "id": "CLUB-USEFUL",
       "category": "club",
       "section": "Useful Information",
-      "title": "Useful Information — preview",
-      "body": "This is an example of the sort of standing Club information that members will be able to find again in the Library.",
+      "title": "Useful Information",
+      "body": "",
       "media": [],
-      "author": "Sanctuary Club",
-      "pinned": true,
-      "createdAt": "2026-08-24T06:00:00Z",
+      "author": "",
+      "pinned": false,
+      "createdAt": "",
       "expiresAt": ""
     },
     {
-      "id": "PREVIEW-CLUB-002",
+      "id": "CLUB-GUIDES",
       "category": "club",
       "section": "Guides & Help",
-      "title": "Guides & Help — preview",
-      "body": "Guides to using Sanctuary Club and other helpful material can be retained here for members to consult whenever needed.",
+      "title": "Guides & Help",
+      "body": "",
       "media": [],
-      "author": "Sanctuary Club",
+      "author": "",
       "pinned": false,
-      "createdAt": "2026-08-24T06:05:00Z",
+      "createdAt": "",
       "expiresAt": ""
     },
     {
-      "id": "PREVIEW-CLUB-003",
+      "id": "CLUB-NEWS",
       "category": "club",
       "section": "Notices & News",
-      "title": "Club Notices & News — preview",
-      "body": "Club notices and news worth keeping can be read here after publication, rather than disappearing into a mixed notice list.",
+      "title": "Notices & News",
+      "body": "",
       "media": [],
-      "author": "Sanctuary Club",
+      "author": "",
       "pinned": false,
-      "createdAt": "2026-08-24T06:10:00Z",
+      "createdAt": "",
       "expiresAt": ""
     },
     {
-      "id": "PREVIEW-RA-001",
+      "id": "RA",
       "category": "association",
       "section": "Residents Association",
-      "title": "Residents Association — preview",
-      "body": "This is the separate Library area for Residents Association information and publications. Private Association material will remain subject to the appropriate access controls.",
+      "title": "Residents Association",
+      "body": "",
       "media": [],
-      "author": "Residents Association",
-      "pinned": true,
-      "createdAt": "2026-08-24T06:15:00Z",
+      "author": "",
+      "pinned": false,
+      "createdAt": "",
       "expiresAt": ""
     }
   ]
 }
-

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Club Notices and News | Sanctuary Club</title>
+  <title>Notices & Publications Preview | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
@@ -21,7 +21,8 @@
       --shadow:0 12px 28px rgba(15,76,129,0.08);
 
       --events:#0f4c81;
-      --committee:#7c3aed;
+      --club:#7c3aed;
+      --association:#7a4b14;
       --activities:#0f766e;
       --services:#c2410c;
       --news:#b45309;
@@ -288,7 +289,8 @@
     }
 
     .badge.events{ background:#e8f2fb; color:var(--events); }
-    .badge.committee{ background:#f3e8ff; color:var(--committee); }
+    .badge.club{ background:#f3e8ff; color:var(--club); }
+    .badge.association{ background:#fff4df; color:var(--association); }
     .badge.activities{ background:#e8faf6; color:var(--activities); }
     .badge.services{ background:#fff1e9; color:var(--services); }
     .badge.news{ background:#fff7e8; color:var(--news); }
@@ -413,489 +415,122 @@
         padding:18px 15px;
       }
 
-      .cat-btn{
-        width:100%;
-        justify-content:center;
-      }
-    }
-  </style>
-</head>
-<body>
+      <body>
   <div class="page">
     <div class="topbar">
       <div class="crumbs">
-        <a href="members-info.html">Members Hub</a>
-        <span>›</span>
-        <span>Club Notices and News</span>
+        <a href="members-info.html">Members Hub</a><span>›</span>
+        <a href="library.html">Library</a><span>›</span>
+        <span>Notices &amp; Publications Preview</span>
       </div>
-
-      <a class="back-link" href="members-info.html">← Back to Members Hub</a>
+      <a class="back-link" href="library.html">← Back to Library</a>
     </div>
 
     <section class="hero">
-      <h1>Club Notices and News</h1>
-      <p>
-        Choose a button below to see what is happening now — and what is planned for each part of Sanctuary Club.
-      </p>
-
+      <h1>Notices &amp; Publications</h1>
+      <p>This preview shows how retained Club and Residents Association material can be presented for members to read. Choose the area you want below.</p>
       <div class="retention-note">
-        <p>Committee &amp; Panel and News items stay on Sanctuary Club, so you can come back and read them whenever you like.</p>
-        <p>Event, Activity and Service notices disappear once they have finished, but you can always download or save a copy on your computer.</p>
+        <p><strong>Club Notices &amp; News</strong> contains Club material intended for members generally, including Useful Information, Guides &amp; Help, notices and news.</p>
+        <p><strong>Residents Association</strong> is a separate area for Association information and publications. Private Association material will remain protected by the appropriate access permissions.</p>
       </div>
     </section>
 
-    <div class="toolbar" id="categoryToolbar" aria-label="Notice categories">
-      <button class="cat-btn" type="button" data-category="events">Events</button>
-      <button class="cat-btn" type="button" data-category="committee">Committee &amp; Panel</button>
-      <button class="cat-btn" type="button" data-category="activities">Activities</button>
-      <button class="cat-btn" type="button" data-category="services">Services</button>
-      <button class="cat-btn" type="button" data-category="news">News</button>
+    <div class="toolbar" id="categoryToolbar" aria-label="Publication areas">
+      <button class="cat-btn" type="button" data-category="club">Club Notices &amp; News</button>
+      <button class="cat-btn" type="button" data-category="association">Residents Association</button>
     </div>
 
-    <section class="panel">
-      <div class="panel-inner">
-        <div class="panel-head">
-          <div>
-            <h2 id="panelTitle">Welcome</h2>
-            <div class="panel-sub" id="panelSub">
-              Click one of the buttons above to explore Sanctuary Club notices and see how each section will grow.
-            </div>
-          </div>
-        </div>
-
-        <div id="statusBox" class="status info"></div>
-        <div id="content"></div>
-      </div>
-    </section>
+    <section class="panel"><div class="panel-inner">
+      <div class="panel-head"><div>
+        <h2 id="panelTitle">Welcome</h2>
+        <div class="panel-sub" id="panelSub">Choose an area above to see the publications available there.</div>
+      </div></div>
+      <div id="statusBox" class="status info"></div>
+      <div id="content"></div>
+    </div></section>
   </div>
 
   <script>
-    (function(){
-      const BACKEND_URL =
-        (window.SanctuaryConfig && window.SanctuaryConfig.BACKEND_URL) ||
-        "https://sanctuary-backend-8iqc.onrender.com";
+  (function(){
+    const toolbar=document.getElementById("categoryToolbar");
+    const panelTitle=document.getElementById("panelTitle");
+    const panelSub=document.getElementById("panelSub");
+    const content=document.getElementById("content");
+    const statusBox=document.getElementById("statusBox");
+    let currentCategory="";
 
-      const toolbar = document.getElementById("categoryToolbar");
-      const panelTitle = document.getElementById("panelTitle");
-      const panelSub = document.getElementById("panelSub");
-      const content = document.getElementById("content");
-      const statusBox = document.getElementById("statusBox");
+    const CATEGORY_META={
+      club:{title:"Club Notices & News",sub:"Club information and publications kept here so members can find and read them again."},
+      association:{title:"Residents Association",sub:"A separate home for Residents Association information and publications."}
+    };
 
-      let currentCategory = "";
-
-      const CATEGORY_META = {
-        events: {
-          title: "Events",
-          sub: "See the current and forthcoming events being arranged for Sanctuary residents."
-        },
-        committee: {
-          title: "Committee & Panel",
-          sub: "Two separate areas for the Club Committee and the Residents Association Panel."
-        },
-        activities: {
-          title: "Activities",
-          sub: "Regular groups and shared interests that help bring neighbours together."
-        },
-        services: {
-          title: "Services",
-          sub: "Useful services available to Sanctuary residents."
-        },
-        news: {
-          title: "News",
-          sub: "Community news, new ideas and the story of Sanctuary Club as it grows."
-        }
-      };
-
-      function setStatus(kind, message){
-        if(!message){
-          statusBox.className = "status";
-          statusBox.textContent = "";
-          return;
-        }
-
-        statusBox.className = `status show ${kind}`;
-        statusBox.textContent = message;
+    function setStatus(kind,message){
+      if(!message){statusBox.className="status";statusBox.textContent="";return;}
+      statusBox.className=`status show ${kind}`; statusBox.textContent=message;
+    }
+    function escapeHtml(value){
+      return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+    }
+    function formatDate(value){
+      if(!value)return "";
+      const d=new Date(value); if(Number.isNaN(d.getTime()))return "";
+      return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+    }
+    function renderWelcome(){
+      content.innerHTML=`<div class="welcome-box">
+        <h3>What would you like to read?</h3>
+        <p>Choose <strong>Club Notices &amp; News</strong> or <strong>Residents Association</strong> above.</p>
+        <p>The Library will keep useful material in the right place, so members do not have to remember where it first appeared.</p>
+      </div>`;
+    }
+    function renderEmpty(message){content.innerHTML=`<div class="empty">${escapeHtml(message)}</div>`;}
+    function renderNotices(notices,category){
+      const usable=notices.filter(n=>n&&n.category===category).sort((a,b)=>{
+        if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;
+        return new Date(b.createdAt||0)-new Date(a.createdAt||0);
+      });
+      if(!usable.length){
+        renderEmpty(category==="association"?"There are no Residents Association publications to show here yet.":"There are no Club publications to show here yet.");
+        return;
       }
-
-      function escapeHtml(value){
-        return String(value ?? "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/\"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
-
-      function stripHtml(value){
-        const div = document.createElement("div");
-        div.innerHTML = value || "";
-        return (div.textContent || div.innerText || "").trim();
-      }
-
-      function truncate(text, maxLen){
-        const s = String(text || "").trim();
-        if(s.length <= maxLen) return s;
-        return s.slice(0, maxLen).trimEnd() + "…";
-      }
-
-      function asArray(payload){
-        if(Array.isArray(payload)) return payload;
-        if(Array.isArray(payload?.events)) return payload.events;
-        if(Array.isArray(payload?.items)) return payload.items;
-        if(Array.isArray(payload?.data)) return payload.data;
-        return [];
-      }
-
-      function getField(obj, names, fallback=""){
-        for(const name of names){
-          if(obj && obj[name] !== undefined && obj[name] !== null && obj[name] !== ""){
-            return obj[name];
-          }
-        }
-        return fallback;
-      }
-
-      function localDateOnly(value){
-        if(!value) return null;
-
-        const raw = String(value).trim();
-        if(!raw) return null;
-
-        const datePart = raw.includes("T") ? raw.split("T")[0] : raw.split(" ")[0];
-        const bits = datePart.split("-").map(Number);
-
-        if(bits.length === 3 && bits.every(n => Number.isFinite(n))){
-          return new Date(bits[0], bits[1] - 1, bits[2]);
-        }
-
-        const parsed = new Date(raw);
-        if(Number.isNaN(parsed.getTime())) return null;
-
-        return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-      }
-
-      function todayDateOnly(){
-        const now = new Date();
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      }
-
-      function isTodayOrFuture(value){
-        const d = localDateOnly(value);
-        if(!d) return true;
-        return d >= todayDateOnly();
-      }
-
-      function formatDate(dateStr){
-        if(!dateStr) return "";
-        const d = localDateOnly(dateStr);
-        if(d){
-          return d.toLocaleDateString("en-GB", {
-            weekday:"short",
-            day:"numeric",
-            month:"short",
-            year:"numeric"
-          });
-        }
-        return String(dateStr);
-      }
-
-      function formatWhen(ev){
-        const dateVal = getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
-        const timeVal = getField(ev, ["start_time", "time", "event_time"]);
-        const formattedDate = formatDate(dateVal);
-        return [formattedDate, timeVal].filter(Boolean).join(" · ");
-      }
-
-      function getEventDate(ev){
-        return getField(ev, ["event_date", "date", "start_date", "start_datetime", "start"]);
-      }
-
-      function isCurrentEvent(ev){
-        return isTodayOrFuture(getEventDate(ev));
-      }
-
-      function getEventId(ev){
-        return getField(ev, ["event_id", "id"]);
-      }
-
-      function getSummary(ev){
-        return getField(ev, ["notice_summary", "summary", "short_description"]);
-      }
-
-      function getBody(ev){
-        return getField(ev, ["notice_body", "description", "body", "details"]);
-      }
-
-      function getMedia(ev){
-        const media = getField(ev, ["notice_media", "image_url", "image", "media"]);
-        if(Array.isArray(media)) return media[0] || "";
-        return media;
-      }
-
-      function getTitle(ev){
-        return getField(ev, ["title", "event_title", "name"], "Untitled event");
-      }
-
-      function getLocation(ev){
-        return getField(ev, ["location", "venue", "place"]);
-      }
-
-      function sortEvents(events){
-        return [...events].sort((a, b) => {
-          const aDate = localDateOnly(getEventDate(a));
-          const bDate = localDateOnly(getEventDate(b));
-          const aTs = aDate ? aDate.getTime() : NaN;
-          const bTs = bDate ? bDate.getTime() : NaN;
-
-          if(Number.isNaN(aTs) && Number.isNaN(bTs)) return 0;
-          if(Number.isNaN(aTs)) return 1;
-          if(Number.isNaN(bTs)) return -1;
-          return aTs - bTs;
-        });
-      }
-
-      function renderWelcome(){
-        content.innerHTML = `
-          <div class="welcome-box">
-            <h3>What would you like to see?</h3>
-            <p>Choose a button above to see what is happening now and what is planned for each section.</p>
-            <p>Sanctuary Club will grow as residents add events, activities, services, news and community information.</p>
-            <div class="invitation">
-              <strong>Have an idea or need a hand?</strong><br>
-              A Sanctuary Helper will be pleased to help you get started.
-            </div>
-          </div>
-        `;
-      }
-
-      function renderEmpty(message){
-        content.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
-      }
-
-      function renderEvents(events){
-        const usable = sortEvents(events)
-          .filter(ev => getEventId(ev))
-          .filter(isCurrentEvent);
-
-        if(!usable.length){
-          content.innerHTML = `
-            <div class="planned-box">
-              <h3>Events will appear here</h3>
-              <p>When residents arrange lunches, quizzes, talks, trips or other one-off occasions, their notices will appear in this section.</p>
-              <div class="invitation">
-                <strong>Thinking of organising something?</strong><br>
-                A Sanctuary Helper will be pleased to help you turn your idea into an event notice.
-              </div>
-            </div>
-          `;
-          return;
-        }
-
-        content.innerHTML = `
-          <div class="cards">
-            ${usable.map(ev => {
-              const eventId = getEventId(ev);
-              const title = getTitle(ev);
-              const summary = truncate(
-                getSummary(ev) || stripHtml(getBody(ev)) || "Open the Event Notice for full details.",
-                220
-              );
-              const media = getMedia(ev);
-              const whenText = formatWhen(ev);
-              const location = getLocation(ev);
-              const href = `events-details.html?event_id=${encodeURIComponent(eventId)}`;
-
-              return `
-                <article class="notice-card${media ? " media-top" : ""}">
-                  ${media ? `<a href="${href}"><img class="notice-media" src="${escapeHtml(media)}" alt="${escapeHtml(title)}"></a>` : ""}
-                  <div class="notice-body">
-                    <div class="badge-row">
-                      <span class="badge events">Event</span>
-                    </div>
-
-                    ${whenText || location ? `
-                      <div class="when">
-                        ${whenText ? `<div>${escapeHtml(whenText)}</div>` : ""}
-                        ${location ? `<div>${escapeHtml(location)}</div>` : ""}
-                      </div>
-                    ` : ""}
-
-                    <h3 class="title"><a href="${href}">${escapeHtml(title)}</a></h3>
-                    <p class="summary">${escapeHtml(summary)}</p>
-
-                    <div class="card-footer">
-                      <a class="open-link" href="${href}">Open Event Notice →</a>
-                    </div>
-                  </div>
-                </article>
-              `;
-            }).join("")}
-          </div>
-        `;
-      }
-
-      function renderCommitteeAndPanel(){
-        content.innerHTML = `
-          <div class="cards">
-            <article class="section-card">
-              <div class="section-card-inner">
-                <div class="badge-row">
-                  <span class="badge committee">Club Committee</span>
-                </div>
-                <h3 class="section-title">Club Committee</h3>
-                <p class="section-copy">
-                  This will be the place for Club Committee news, meetings, volunteer information, documents and other Club matters.
-                </p>
-                <div class="invitation">
-                  <strong>Could you help bring this area to life?</strong><br>
-                  Speak to a Sanctuary Helper if you would like to find out more.
-                </div>
-              </div>
-            </article>
-
-            <article class="section-card">
-              <div class="section-card-inner">
-                <div class="badge-row">
-                  <span class="badge committee">Residents Association Panel</span>
-                </div>
-                <h3 class="section-title">Residents Association Panel</h3>
-                <p class="section-copy">
-                  This area is being prepared for Residents Association information and will gradually grow as Sanctuary Club develops.
-                </p>
-                <p class="section-copy"><strong>In time, you will be able to find things like:</strong></p>
-                <ul class="planned-list">
-                  <li>Meetings with Sanctuary Management</li>
-                  <li>Community Meetings and the AGM</li>
-                  <li>Consultations and elections</li>
-                  <li>News from the Panel</li>
-                  <li>Important documents and earlier information</li>
-                </ul>
-                <p class="section-copy"><strong>We are looking forward to sharing it with you. Watch this space…</strong></p>
-                <div class="invitation">
-                  <strong>Sanctuary Club is designed to support everyone who helps our community</strong><br>
-                  </div>
-              </div>
-            </article>
-          </div>
-        `;
-      }
-
-      function renderActivities(){
-        content.innerHTML = `
-          <div class="planned-box">
-            <h3>Activities are the regular things we enjoy together</h3>
-            <p>Coffee mornings, Bridge, Book Club, art, walking and many other shared interests can all find a home here.</p>
-            <p>As activity organisers begin using Sanctuary Club, their current notices and updates will appear in this section.</p>
-            <div class="invitation">
-              <strong>Thinking of starting or helping with an activity?</strong><br>
-              A Sanctuary Helper will be pleased to help you get it under way.
-            </div>
-          </div>
-        `;
-      }
-
-      function renderServices(){
-        content.innerHTML = `
-          <div class="planned-box">
-            <h3>Useful services for Sanctuary residents</h3>
-            <p>Details of visiting services, regular providers and other useful local help will appear here as they become available.</p>
-            <p>Service notices will stay visible while they are current and disappear automatically when they expire.</p>
-            <div class="invitation">
-              <strong>Know of a service that could help other residents?</strong><br>
-              Tell a Sanctuary Helper and we will help prepare the notice.
-            </div>
-          </div>
-        `;
-      }
-
-      function renderNews(){
-        content.innerHTML = `
-          <div class="planned-box">
-            <h3>The community noticeboard</h3>
-            <p>Community news, volunteer opportunities, website improvements and stories from around Sanctuary will appear here.</p>
-            <p><strong>Help Shape Sanctuary Club</strong> will also live in this section, so residents can suggest ideas and see how those ideas are helping the Club grow.</p>
-            <div class="invitation">
-              <strong>Have something worth sharing?</strong><br>
-              A Sanctuary Helper will be pleased to help turn your idea into a news item.
-            </div>
-          </div>
-        `;
-      }
-
-      async function getJson(url){
-        const res = await fetch(url, {
-          headers: { "Accept": "application/json" }
-        });
-
-        const text = await res.text();
-        let data = {};
-        try{
-          data = text ? JSON.parse(text) : {};
-        }catch{
-          data = {};
-        }
-
-        if(!res.ok){
-          throw new Error(data.message || `HTTP ${res.status}`);
-        }
-
-        return data;
-      }
-
-      async function loadCategory(category){
-        currentCategory = category;
-
-        [...toolbar.querySelectorAll(".cat-btn")].forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.category === category);
-        });
-
-        const meta = CATEGORY_META[category];
-        panelTitle.textContent = meta.title;
-        panelSub.textContent = meta.sub;
-        setStatus("", "");
-
-        if(category === "committee"){
-          renderCommitteeAndPanel();
-          return;
-        }
-
-        if(category === "activities"){
-          renderActivities();
-          return;
-        }
-
-        if(category === "services"){
-          renderServices();
-          return;
-        }
-
-        if(category === "news"){
-          renderNews();
-          return;
-        }
-
-        setStatus("info", "Loading current event notices...");
-        content.innerHTML = "";
-
-        try{
-          const data = await getJson(`${BACKEND_URL}/api/events`);
-          const events = asArray(data);
-          setStatus("", "");
-          renderEvents(events);
-        }catch(err){
-          console.error(err);
-          renderEmpty("Sorry, event notices could not be loaded just now.");
-          setStatus("err", err.message || "Could not load event notices.");
-        }
-      }
-
-      toolbar.addEventListener("click", (e) => {
-        const btn = e.target.closest(".cat-btn");
-        if(!btn) return;
-
-        const category = btn.dataset.category;
-        if(category === currentCategory) return;
-        loadCategory(category);
+      content.innerHTML=`<div class="cards">${usable.map(n=>{
+        const media=Array.isArray(n.media)?(n.media[0]||""):"";
+        const badgeClass=category==="association"?"association":"club";
+        const badgeText=category==="association"?"Residents Association":(n.section||"Club Notices & News");
+        const dateText=formatDate(n.createdAt);
+        return `<article class="notice-card${media?" media-top":""}">
+          ${media?`<img class="notice-media" src="${escapeHtml(media)}" alt="">`:""}
+          <div class="notice-body">
+            <div class="badge-row"><span class="badge ${badgeClass}">${escapeHtml(badgeText)}</span>${n.pinned?`<span class="badge news">Keep handy</span>`:""}</div>
+            ${dateText?`<div class="when">${escapeHtml(dateText)}</div>`:""}
+            <h3 class="title">${escapeHtml(n.title||"Untitled publication")}</h3>
+            <p class="summary">${escapeHtml(n.body||"")}</p>
+            ${n.author?`<div class="when">From: ${escapeHtml(n.author)}</div>`:""}
+          </div></article>`;
+      }).join("")}</div>`;
+    }
+    async function loadData(){
+      const res=await fetch("notices-preview.json",{cache:"no-store"});
+      if(!res.ok)throw new Error(`HTTP ${res.status}`);
+      const data=await res.json();
+      return Array.isArray(data?.notices)?data.notices:[];
+    }
+    async function loadCategory(category){
+      currentCategory=category;
+      [...toolbar.querySelectorAll(".cat-btn")].forEach(btn=>btn.classList.toggle("active",btn.dataset.category===category));
+      const meta=CATEGORY_META[category]; panelTitle.textContent=meta.title; panelSub.textContent=meta.sub;
+      setStatus("info","Loading publications…"); content.innerHTML="";
+      try{const notices=await loadData();setStatus("","");renderNotices(notices,category);}
+      catch(err){console.error(err);setStatus("err","The preview publications could not be loaded just now.");renderEmpty("Please try again shortly.");}
+    }
+    toolbar.addEventListener("click",e=>{
+      const btn=e.target.closest(".cat-btn"); if(!btn)return;
+      const category=btn.dataset.category; if(category===currentCategory)return; loadCategory(category);
+    });
+    renderWelcome();
+  })();
+  </script>
+</body>        loadCategory(category);
       });
 
       renderWelcome();

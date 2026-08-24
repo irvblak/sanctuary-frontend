@@ -1,39 +1,52 @@
 {
   "notices": [
     {
-      "id": "PREVIEW-001",
-      "category": "committee",
-      "title": "Preview area — test notice",
-      "body": "This is a PREVIEW notice.\n\nTry adding a GIF or image URL in the media array.\n\nNothing here affects the live notices page.",
-      "media": [
-        "https://media.giphy.com/media/3o7qE1YN7aBOFPRw8E/giphy.gif"
-      ],
-      "author": "Committee",
+      "id": "PREVIEW-CLUB-001",
+      "category": "club",
+      "section": "Useful Information",
+      "title": "Useful Information — preview",
+      "body": "This is an example of the sort of standing Club information that members will be able to find again in the Library.",
+      "media": [],
+      "author": "Sanctuary Club",
       "pinned": true,
-      "createdAt": "2026-01-29T09:00:00Z",
+      "createdAt": "2026-08-24T06:00:00Z",
       "expiresAt": ""
     },
     {
-      "id": "PREVIEW-002",
-      "category": "host",
-      "title": "Test: Host notice styling",
-      "body": "Example host notice.\n\nAdd any text here. Links work too: https://example.com",
+      "id": "PREVIEW-CLUB-002",
+      "category": "club",
+      "section": "Guides & Help",
+      "title": "Guides & Help — preview",
+      "body": "Guides to using Sanctuary Club and other helpful material can be retained here for members to consult whenever needed.",
       "media": [],
-      "author": "Host",
+      "author": "Sanctuary Club",
       "pinned": false,
-      "createdAt": "2026-01-29T09:05:00Z",
+      "createdAt": "2026-08-24T06:05:00Z",
       "expiresAt": ""
     },
     {
-      "id": "PREVIEW-003",
-      "category": "activities",
-      "title": "Test: Activities notice",
-      "body": "Example activities notice.\n\nYou can add an expiry date to auto-hide it.",
+      "id": "PREVIEW-CLUB-003",
+      "category": "club",
+      "section": "Notices & News",
+      "title": "Club Notices & News — preview",
+      "body": "Club notices and news worth keeping can be read here after publication, rather than disappearing into a mixed notice list.",
       "media": [],
-      "author": "Activities",
+      "author": "Sanctuary Club",
       "pinned": false,
-      "createdAt": "2026-01-29T09:10:00Z",
-      "expiresAt": "2026-02-28T23:59:59Z"
+      "createdAt": "2026-08-24T06:10:00Z",
+      "expiresAt": ""
+    },
+    {
+      "id": "PREVIEW-RA-001",
+      "category": "association",
+      "section": "Residents Association",
+      "title": "Residents Association — preview",
+      "body": "This is the separate Library area for Residents Association information and publications. Private Association material will remain subject to the appropriate access controls.",
+      "media": [],
+      "author": "Residents Association",
+      "pinned": true,
+      "createdAt": "2026-08-24T06:15:00Z",
+      "expiresAt": ""
     }
   ]
 }

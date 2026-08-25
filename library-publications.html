@@ -365,6 +365,9 @@
     (function () {
       "use strict";
 
+      const API_BASE =
+        "https://sanctuary-backend-8iqc.onrender.com";
+
       const params =
         new URLSearchParams(
           window.location.search
@@ -381,7 +384,7 @@
         window.SANCTUARY_LIBRARY_PUBLICATIONS ||
         {};
 
-      const publication =
+      const staticPublication =
         publications[publicationId];
 
       const publicationElement =
@@ -499,6 +502,120 @@
       }
 
 
+      function backendPublicationToReader(item) {
+        if (!item) {
+          return null;
+        }
+
+        const updated =
+          item.updated_at ||
+          item.published_at ||
+          "";
+
+        let updatedLabel = "";
+
+        if (updated) {
+          const parsed =
+            new Date(updated);
+
+          if (!Number.isNaN(parsed.getTime())) {
+            updatedLabel =
+              parsed.toLocaleDateString(
+                "en-GB",
+                {
+                  day:"numeric",
+                  month:"long",
+                  year:"numeric"
+                }
+              );
+          } else {
+            updatedLabel =
+              String(updated);
+          }
+        }
+
+        return {
+          title:
+            item.title ||
+            "Library Item",
+
+          summary:
+            item.summary ||
+            "",
+
+          owner:
+            item.creator_name ||
+            item.owner ||
+            "Sanctuary Club",
+
+          updated:
+            updatedLabel,
+
+          body:
+            item.body_html ||
+            item.body ||
+            ""
+        };
+      }
+
+
+      async function loadPublication() {
+        if (!publicationId) {
+          showMissingPublication();
+          return;
+        }
+
+        if (staticPublication) {
+          renderPublication(
+            staticPublication
+          );
+          return;
+        }
+
+        try {
+          const response =
+            await fetch(
+              `${API_BASE}/api/library-publications/${encodeURIComponent(publicationId)}`,
+              {
+                headers:{
+                  "Accept":
+                    "application/json"
+                }
+              }
+            );
+
+          const data =
+            await response.json()
+              .catch(
+                () => ({})
+              );
+
+          if (
+            !response.ok ||
+            data.success === false ||
+            !data.publication
+          ) {
+            showMissingPublication();
+            return;
+          }
+
+          renderPublication(
+            backendPublicationToReader(
+              data.publication
+            )
+          );
+
+        } catch (error) {
+          console.error(
+            "Library publication could not be loaded:",
+            error
+          );
+
+          showMissingPublication();
+        }
+      }
+
+
       printButton.addEventListener(
         "click",
         () => {
@@ -507,9 +624,7 @@
       );
 
 
-      renderPublication(
-        publication
-      );
+      loadPublication();
 
     })();
   </script>

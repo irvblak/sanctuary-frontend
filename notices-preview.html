@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -228,7 +227,10 @@
 
     <section class="hero">
       <h1>Notices &amp; Publications</h1>
-      
+      <p>
+        Club material and Residents Association material have separate homes.
+        Choose the area you want to read.
+      </p>
     </section>
 
     <div class="chooser">
@@ -245,30 +247,45 @@
 
     <section class="panel">
       <div class="section" id="clubSection">
-            <div class="cards" id="clubCards">
+        <h2>Club Notices &amp; News</h2>
+        <p class="section-intro">
+          Club information worth seeing now or finding again later.
+        </p>
+
+        <div class="cards" id="clubCards">
           <article class="card">
             <div class="card-body">
               <span class="badge club">Useful Information</span>
               <h3>Useful Information</h3>
+              <p>Standing Club information will appear here.</p>
             </div>
           </article>
 
           <article class="card">
             <div class="card-body">
               <span class="badge club">Guides &amp; Help</span>
-          </div>
+              <h3>Guides &amp; Help</h3>
+              <p>Permanent guides and help material will appear here.</p>
+            </div>
           </article>
 
           <article class="card">
             <div class="card-body">
               <span class="badge club">Notices &amp; News</span>
-          </div>
+              <h3>Notices &amp; News</h3>
+              <p>Club notices and news worth retaining will appear here.</p>
+            </div>
           </article>
         </div>
       </div>
 
       <div class="section" id="associationSection" hidden>
-        
+        <h2>Residents Association</h2>
+        <p class="section-intro">
+          A separate home for Residents Association information and publications.
+          Where material is private, the appropriate access controls still apply.
+        </p>
+
         <div class="cards" id="associationCards">
           <article class="card">
             <div class="card-body">
@@ -288,6 +305,8 @@
     (function(){
       "use strict";
 
+      var API_BASE="https://sanctuary-backend-8iqc.onrender.com";
+
       var clubBtn=document.getElementById("clubBtn");
       var associationBtn=document.getElementById("associationBtn");
       var clubSection=document.getElementById("clubSection");
@@ -301,8 +320,21 @@
           .replace(/&/g,"&amp;")
           .replace(/</g,"&lt;")
           .replace(/>/g,"&gt;")
-          .replace(/"/g,"&quot;")
+          .replace(/\"/g,"&quot;")
           .replace(/'/g,"&#39;");
+      }
+
+      function htmlToText(value){
+        var raw=String(value || "");
+        if(!raw)return "";
+        try{
+          var doc=new DOMParser().parseFromString(raw,"text/html");
+          return String(doc.body ? doc.body.textContent : raw)
+            .replace(/\s+/g," ")
+            .trim();
+        }catch(error){
+          return raw.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+        }
       }
 
       function showSection(which){
@@ -316,12 +348,80 @@
       clubBtn.addEventListener("click",function(){showSection("club");});
       associationBtn.addEventListener("click",function(){showSection("association");});
 
-      function renderCards(items,category,target){
+      function liveClubItem(item){
+        if(!item || item.status !== "published")return false;
+        if(item.mode === "panel")return false;
+        return [
+          "club-activities",
+          "notices-news",
+          "useful-information",
+          "guides-help"
+        ].indexOf(String(item.category || "").toLowerCase()) !== -1;
+      }
+
+      function liveAssociationItem(item){
+        return Boolean(
+          item &&
+          item.status === "published" &&
+          item.mode === "panel"
+        );
+      }
+
+      function clubBadge(item){
+        var category=String(item.category || "").toLowerCase();
+        if(category === "club-activities")return "Activities";
+        if(category === "useful-information")return "Useful Information";
+        if(category === "guides-help")return "Guides & Help";
+        if(item.mode === "services")return "Services";
+        if(item.mode === "club-publications")return "Club Publications";
+        return "Notices & News";
+      }
+
+      function publicationText(item){
+        return String(item.summary || "").trim() ||
+          htmlToText(item.body_html || "") ||
+          "Published information.";
+      }
+
+      function renderLiveCards(items,target,isAssociation){
+        if(!items.length){
+          target.innerHTML='<article class="card"><div class="card-body">' +
+            '<span class="badge '+(isAssociation?'association':'club')+'">'+
+            (isAssociation?'Residents Association':'Club Notices & News')+'</span>'+
+            '<h3>No published items yet</h3>'+
+            '<p>Published material will appear here automatically.</p>'+
+            '</div></article>';
+          return;
+        }
+
+        items.sort(function(a,b){
+          return String(b.published_at || b.updated_at || "")
+            .localeCompare(String(a.published_at || a.updated_at || ""));
+        });
+
+        target.innerHTML=items.map(function(item){
+          var badge=isAssociation ? "Residents Association" : clubBadge(item);
+          var text=publicationText(item);
+          var creator=String(item.creator_name || "").trim();
+          var ref=String(item.publication_id || "").trim();
+          var meta=[];
+          if(creator)meta.push("From: "+creator);
+          if(ref)meta.push(ref);
+
+          return '<article class="card"><div class="card-body">' +
+            '<span class="badge '+(isAssociation?'association':'club')+'">'+escapeHtml(badge)+'</span>'+
+            '<h3>'+escapeHtml(item.title || "Untitled publication")+'</h3>'+
+            '<p>'+escapeHtml(text)+'</p>'+
+            (meta.length?'<div class="meta">'+escapeHtml(meta.join(" • "))+'</div>':'')+
+            '</div></article>';
+        }).join("");
+      }
+
+      function renderFallback(items,category,target){
         var filtered=items.filter(function(item){
           return item && item.category===category;
         });
-
-        if(!filtered.length){return;}
+        if(!filtered.length)return;
 
         target.innerHTML=filtered.map(function(item){
           var badgeClass=category==="association" ? "association" : "club";
@@ -334,28 +434,62 @@
             : '';
 
           return '<article class="card"><div class="card-body">' +
-            '<span class="badge '+badgeClass+'">'+escapeHtml(badgeText)+'</span>' +
-            '<h3>'+escapeHtml(item.title || "Untitled publication")+'</h3>' +
-            '<p>'+escapeHtml(item.body || "")+'</p>' +
-            author +
+            '<span class="badge '+badgeClass+'">'+escapeHtml(badgeText)+'</span>'+
+            '<h3>'+escapeHtml(item.title || "Untitled publication")+'</h3>'+
+            '<p>'+escapeHtml(item.body || "")+'</p>'+
+            author+
             '</div></article>';
         }).join("");
       }
 
-      fetch("notices-preview.json",{cache:"no-store"})
+      function loadFallback(){
+        return fetch("notices-preview.json",{cache:"no-store"})
+          .then(function(response){
+            if(!response.ok)throw new Error("HTTP "+response.status);
+            return response.json();
+          })
+          .then(function(data){
+            var items=(data && Array.isArray(data.notices)) ? data.notices : [];
+            renderFallback(items,"club",clubCards);
+            renderFallback(items,"association",associationCards);
+          });
+      }
+
+      statusBox.hidden=false;
+      statusBox.textContent="Loading published material…";
+
+      fetch(API_BASE+"/api/library-publications",{cache:"no-store"})
         .then(function(response){
-          if(!response.ok){throw new Error("HTTP "+response.status);}
+          if(!response.ok)throw new Error("HTTP "+response.status);
           return response.json();
         })
         .then(function(data){
-          var items=(data && Array.isArray(data.notices)) ? data.notices : [];
-          renderCards(items,"club",clubCards);
-          renderCards(items,"association",associationCards);
+          var items=(data && Array.isArray(data.publications)) ? data.publications : [];
+          var clubItems=items.filter(liveClubItem);
+
+          /*
+            Residents Association publications are deliberately not fetched into
+            the member-facing display until the protected backend reader is in place.
+            This prevents a public Library page from becoming the route around RAP privacy.
+          */
+          renderLiveCards(clubItems,clubCards,false);
+
+          associationCards.innerHTML='<article class="card"><div class="card-body">'+
+            '<span class="badge association">Residents Association</span>'+
+            '<h3>Protected Association material</h3>'+
+            '<p>Residents Association publications will be shown here through the protected Association route.</p>'+
+            '</div></article>';
+
+          statusBox.hidden=true;
         })
         .catch(function(error){
-          console.error("Preview data could not be loaded:",error);
+          console.error("Live publications could not be loaded:",error);
           statusBox.hidden=false;
-          statusBox.textContent="The preview data could not be loaded, but the Notices & Publications sections are available.";
+          statusBox.textContent="Live publications could not be loaded, so the preview material is being shown instead.";
+          loadFallback().catch(function(fallbackError){
+            console.error("Preview fallback could not be loaded:",fallbackError);
+            statusBox.textContent="Published material could not be loaded just now.";
+          });
         });
     })();
   </script>

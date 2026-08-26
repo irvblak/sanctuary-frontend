@@ -427,8 +427,6 @@
               <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
             </div>
             <div class="compact-button-row wrap-buttons">
-              <button id="overlayObjectBtn" type="button">Overlay</button>
-              <button id="underlayObjectBtn" type="button">Underlay</button>
               <button id="duplicateObjectBtn" type="button">Duplicate</button>
               <button id="deleteObjectBtn" type="button">Delete</button>
               <button id="undoCanvasBtn" type="button">Undo</button>
@@ -667,9 +665,10 @@
       if(selectedItem!==d)savedTextRange=null;
       selectedItem=d||null;
       if(selectedItem){
-        containItem(selectedItem);
-        selectedItem.classList.add("selected");
-      }
+         containItem(selectedItem);
+         selectedItem.classList.add("selected");
+         selectedItem.style.zIndex=String(++zCounter);
+       }
       const kind=selectedItem?.dataset.kind||"";
       objectToolbar.hidden=!selectedItem;
       formatToolbar.hidden=!selectedItem||kind==="image"||kind==="drawing";

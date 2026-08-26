@@ -979,47 +979,140 @@
       p.querySelectorAll(".canvas-item").forEach(containItem);
     }
 
-    function startDrag(e,d,captureTarget=e.currentTarget){
-      if(e.button!==undefined&&e.button!==0)return;
-      e.preventDefault();
-      if(d.dataset.kind==="drawing")finishDrawingEdit();
-      selectItem(d);
-      pushUndo();
+function startDrag(e,d,captureTarget=e.currentTarget){
+  if(e.button!==undefined&&e.button!==0)return;
+  e.preventDefault();
+  e.stopPropagation();
 
-      const p=d.closest(".canvas-page")||currentPage();
-      const pr=p.getBoundingClientRect();
-      const dr=d.getBoundingClientRect();
-      const startX=e.clientX,startY=e.clientY;
-      const startL=dr.left-pr.left,startT=dr.top-pr.top;
-      const guideV=p.querySelector(".canvas-guide.v"),guideH=p.querySelector(".canvas-guide.h");
-      const target=captureTarget||d;
-      try{target.setPointerCapture(e.pointerId)}catch{}
+  if(d.dataset.kind==="drawing")finishDrawingEdit();
+  selectItem(d);
+  pushUndo();
 
-      const move=ev=>{
-        let l=startL+(ev.clientX-startX),t=startT+(ev.clientY-startY);
-        l=clamp(l,0,Math.max(0,pr.width-dr.width));
-        t=clamp(t,0,Math.max(0,pr.height-dr.height));
-        const cx=l+dr.width/2,cy=t+dr.height/2,snap=7;
-        if(guideV)guideV.style.display="none";
-        if(guideH)guideH.style.display="none";
-        if(Math.abs(cx-pr.width/2)<snap){l=pr.width/2-dr.width/2;if(guideV){guideV.style.left="50%";guideV.style.display="block"}}
-        if(Math.abs(cy-pr.height/2)<snap){t=pr.height/2-dr.height/2;if(guideH){guideH.style.top="50%";guideH.style.display="block"}}
-        d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height);
-      };
+  const p=d.closest(".canvas-page")||currentPage();
+  if(!p)return;
 
-      const up=()=>{
-        if(guideV)guideV.style.display="none";
-        if(guideH)guideH.style.display="none";
-        containItem(d);
-        target.removeEventListener("pointermove",move);
-        target.removeEventListener("pointerup",up);
-        target.removeEventListener("pointercancel",up);
-      };
-      target.addEventListener("pointermove",move);
-      target.addEventListener("pointerup",up);
-      target.addEventListener("pointercancel",up);
+  containItem(d);
+
+  const pr=p.getBoundingClientRect();
+  const guideV=p.querySelector(".canvas-guide.v");
+  const guideH=p.querySelector(".canvas-guide.h");
+  const target=captureTarget||d;
+  const isFlowBox=!!d.dataset.flowGroup;
+
+  let lastX=e.clientX;
+  let lastY=e.clientY;
+
+  try{target.setPointerCapture(e.pointerId)}catch{}
+
+  const move=ev=>{
+    const dr=d.getBoundingClientRect();
+
+    let l=
+      dr.left-pr.left+
+      (ev.clientX-lastX);
+
+    let t=
+      dr.top-pr.top+
+      (ev.clientY-lastY);
+
+    lastX=ev.clientX;
+    lastY=ev.clientY;
+
+    l=clamp(
+      l,
+      0,
+      Math.max(0,pr.width-dr.width)
+    );
+
+    t=clamp(
+      t,
+      0,
+      Math.max(0,pr.height-dr.height)
+    );
+
+    if(guideV)guideV.style.display="none";
+    if(guideH)guideH.style.display="none";
+
+    /*
+      Ordinary YDS objects may gently snap
+      to the centre of the page.
+
+      Imported Host/Event flowing data boxes
+      are deliberately large. Centre snapping
+      makes them appear to jump away from
+      the mouse, so they do not use it.
+    */
+    if(!isFlowBox){
+      const cx=l+dr.width/2;
+      const cy=t+dr.height/2;
+      const snap=7;
+
+      if(Math.abs(cx-pr.width/2)<snap){
+        l=pr.width/2-dr.width/2;
+
+        if(guideV){
+          guideV.style.left="50%";
+          guideV.style.display="block";
+        }
+      }
+
+      if(Math.abs(cy-pr.height/2)<snap){
+        t=pr.height/2-dr.height/2;
+
+        if(guideH){
+          guideH.style.top="50%";
+          guideH.style.display="block";
+        }
+      }
     }
 
+    d.style.left=pct(l,pr.width);
+    d.style.top=pct(t,pr.height);
+  };
+
+  const up=()=>{
+    if(guideV)guideV.style.display="none";
+    if(guideH)guideH.style.display="none";
+
+    containItem(d);
+
+    try{
+      target.releasePointerCapture(
+        e.pointerId
+      );
+    }catch{}
+
+    target.removeEventListener(
+      "pointermove",
+      move
+    );
+
+    target.removeEventListener(
+      "pointerup",
+      up
+    );
+
+    target.removeEventListener(
+      "pointercancel",
+      up
+    );
+  };
+
+  target.addEventListener(
+    "pointermove",
+    move
+  );
+
+  target.addEventListener(
+    "pointerup",
+    up
+  );
+
+  target.addEventListener(
+    "pointercancel",
+    up
+  );
+}
     function startResize(e,d,dir){
       if(e.button!==undefined && e.button!==0)return;
       e.preventDefault();

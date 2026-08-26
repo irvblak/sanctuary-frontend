@@ -237,7 +237,7 @@
     id="savePdfBtn"
     type="button"
   >
-    Save to My Computer
+    Save Viewable Copy
   </button>
 
   <button
@@ -293,6 +293,21 @@
             </label>
           </div>
 
+          <div class="toolbar-row">
+            <span class="toolbar-label">Page background</span>
+            <label class="toolbar-check">Colour 1 <input id="pageBackgroundColour1" type="color" value="#ffffff"></label>
+            <label class="toolbar-check">Colour 2 <input id="pageBackgroundColour2" type="color" value="#e9f4f8"></label>
+            <label class="toolbar-check">Direction
+              <select id="pageGradientDirection">
+                <option value="180deg">Top to bottom</option>
+                <option value="90deg">Left to right</option>
+                <option value="135deg">Diagonal</option>
+              </select>
+            </label>
+            <button id="applyPageGradientBtn" type="button">Graded page</button>
+            <button id="applyPageSolidBtn" type="button">Solid page</button>
+          </div>
+
 
         </aside>
 
@@ -346,7 +361,17 @@
               <button id="alignRightBtn" type="button">Right</button>
             </div>
             <label class="toolbar-check">Text colour <input id="textColourInput" type="color" value="#173042"></label>
-            <label class="toolbar-check">Panel colour <input id="backgroundColourInput" type="color" value="#ffffff"></label>
+            <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" type="color" value="#ffffff"></label>
+            <label class="toolbar-check">Panel colour 2 <input id="panelTintColourInput" type="color" value="#e9f4f8"></label>
+            <label class="toolbar-check">Direction
+              <select id="panelGradientDirection">
+                <option value="180deg">Top to bottom</option>
+                <option value="90deg">Left to right</option>
+                <option value="135deg">Diagonal</option>
+              </select>
+            </label>
+            <button id="gradedPanelBtn" type="button">Graded panel</button>
+            <button id="solidPanelBtn" type="button">Solid panel</button>
             <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
           </div>
 
@@ -438,8 +463,7 @@
       activity:"Activity Organiser",
       writer:"Writer",
       artist:"Artist",
-      committee:"Club Publications",
-      "club-publications":"Club Publications",
+      committee:"Committee — News & Notices",
       panel:"Residents Association Panel — News & Notices",
       services:"Services",
       host:"Host an Event — Event Notice"
@@ -449,7 +473,6 @@
       writer:["writer","news_contributor"],
       artist:["artist"],
       committee:["committee"],
-      "club-publications":["committee"],
       panel:["panel"],
       services:["services"],
       host:["host"]
@@ -474,6 +497,11 @@
     const fontSizeInput=document.getElementById("fontSizeInput");
     const textColourInput=document.getElementById("textColourInput");
     const backgroundColourInput=document.getElementById("backgroundColourInput");
+    const panelTintColourInput=document.getElementById("panelTintColourInput");
+    const panelGradientDirection=document.getElementById("panelGradientDirection");
+    const pageBackgroundColour1=document.getElementById("pageBackgroundColour1");
+    const pageBackgroundColour2=document.getElementById("pageBackgroundColour2");
+    const pageGradientDirection=document.getElementById("pageGradientDirection");
     const drawLineColour=document.getElementById("drawLineColour");
     const drawFillColour=document.getElementById("drawFillColour");
     const drawThickness=document.getElementById("drawThickness");
@@ -651,6 +679,45 @@
 
     function syncFormatControls(){const c=selectedItem?.querySelector(".item-content");if(!c)return;fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";const bg=getComputedStyle(c).backgroundColor;backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff"}
     function rgbToHex(rgb){const m=String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);return m?"#"+m.slice(1,4).map(x=>Number(x).toString(16).padStart(2,"0")).join(""):""}
+
+    function setCurrentPageSolidBackground(){
+      const p=currentPage(); if(!p)return;
+      pushUndo();
+      p.style.background=pageBackgroundColour1.value;
+    }
+
+    function setCurrentPageGradientBackground(){
+      const p=currentPage(); if(!p)return;
+      pushUndo();
+      p.style.background=`linear-gradient(${pageGradientDirection.value}, ${pageBackgroundColour1.value}, ${pageBackgroundColour2.value})`;
+    }
+
+    function setSelectedPanelSolidBackground(){
+      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
+      const content=selectedItem.querySelector(".item-content"); if(!content)return;
+      pushUndo();
+      content.style.backgroundImage="none";
+      content.style.backgroundColor=backgroundColourInput.value;
+      syncFormatControls();
+    }
+
+    function setSelectedPanelGradientBackground(){
+      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
+      const content=selectedItem.querySelector(".item-content"); if(!content)return;
+      pushUndo();
+      content.style.backgroundColor=backgroundColourInput.value;
+      content.style.backgroundImage=`linear-gradient(${panelGradientDirection.value}, ${backgroundColourInput.value}, ${panelTintColourInput.value})`;
+      syncFormatControls();
+    }
+
+    function setSelectedPanelTransparent(){
+      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
+      const content=selectedItem.querySelector(".item-content"); if(!content)return;
+      pushUndo();
+      content.style.backgroundImage="none";
+      content.style.backgroundColor="transparent";
+      syncFormatControls();
+    }
 
     function captureCurrentTextSelection(){
       if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
@@ -1874,8 +1941,12 @@ function configurePublishingButton(){
     document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));
     document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));
     textColourInput.addEventListener("input",()=>applySelectedTextColour(textColourInput.value));
-    backgroundColourInput.addEventListener("input",()=>applyTextStyle("backgroundColor",backgroundColourInput.value));
-    document.getElementById("transparentBackgroundBtn").addEventListener("click",()=>applyTextStyle("backgroundColor","transparent"));
+    backgroundColourInput.addEventListener("input",setSelectedPanelSolidBackground);
+    document.getElementById("gradedPanelBtn").addEventListener("click",setSelectedPanelGradientBackground);
+    document.getElementById("solidPanelBtn").addEventListener("click",setSelectedPanelSolidBackground);
+    document.getElementById("transparentBackgroundBtn").addEventListener("click",setSelectedPanelTransparent);
+    document.getElementById("applyPageGradientBtn").addEventListener("click",setCurrentPageGradientBackground);
+    document.getElementById("applyPageSolidBtn").addEventListener("click",setCurrentPageSolidBackground);
     document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));
     document.getElementById("drawLineBtn").addEventListener("click",()=>setDrawingTool("line"));
     document.getElementById("drawRectBtn").addEventListener("click",()=>setDrawingTool("rect"));

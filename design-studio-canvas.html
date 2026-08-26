@@ -40,11 +40,12 @@
     .drawing-toolbar .draw-colour{display:inline-flex;align-items:center;gap:.3rem}
     .drawing-toolbar input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}
     .drawing-toolbar select{min-width:105px}
+    .canvas-item[data-kind="drawing"]{border:1px dashed rgba(76,147,173,.55)}
     .canvas-item[data-kind="drawing"] .item-content{padding:0;overflow:hidden;background:transparent}
-    .drawing-surface{display:block;width:100%;height:100%;touch-action:none;background:transparent}
+    .drawing-surface{display:block;width:100%;height:100%;touch-action:none;background:transparent;pointer-events:none}
     .canvas-item.drawing-edit{border:2px solid var(--accent)}
     .canvas-item.drawing-edit .drag-handle,.canvas-item.drawing-edit .resize-handle{display:none!important}
-    .canvas-item.drawing-edit .drawing-surface{cursor:crosshair}
+    .canvas-item.drawing-edit .drawing-surface{cursor:crosshair;pointer-events:auto}
     .draw-mode-note{font-size:.85rem;color:var(--accent-dark);font-weight:850}
     .swatch-row{display:inline-flex;gap:.25rem;align-items:center}
     .mini-swatch{width:25px;height:25px!important;padding:0!important;border-radius:50%!important;border:2px solid #fff!important;box-shadow:0 0 0 1px var(--line)}
@@ -411,8 +412,9 @@
             </label>
             <label class="toolbar-check">Shape fill <input id="drawFillColour" type="color" value="#d9ecff" aria-label="Shape fill colour"></label>
             <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
+            <button id="editDrawingBtn" type="button">Edit Drawing</button>
             <button id="finishDrawingBtn" type="button">Finish Drawing</button>
-            <span class="draw-mode-note" id="drawModeNote">Choose a tool, then draw inside the selected drawing box.</span>
+            <span class="draw-mode-note" id="drawModeNote">Drawing selected. Move, resize or layer it; choose Edit Drawing when you want to draw.</span>
           </div>
 
           <div class="toolbar-row" id="objectToolbar" hidden>
@@ -425,6 +427,8 @@
               <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
             </div>
             <div class="compact-button-row wrap-buttons">
+              <button id="overlayObjectBtn" type="button">Overlay</button>
+              <button id="underlayObjectBtn" type="button">Underlay</button>
               <button id="duplicateObjectBtn" type="button">Duplicate</button>
               <button id="deleteObjectBtn" type="button">Delete</button>
               <button id="undoCanvasBtn" type="button">Undo</button>
@@ -663,8 +667,8 @@
       if(selectedItem!==d)savedTextRange=null;
       selectedItem=d||null;
       if(selectedItem){
+        containItem(selectedItem);
         selectedItem.classList.add("selected");
-        selectedItem.style.zIndex=String(++zCounter);
       }
       const kind=selectedItem?.dataset.kind||"";
       objectToolbar.hidden=!selectedItem;
@@ -851,7 +855,7 @@
       drawingEditingItem.classList.remove("drawing-edit");
       drawingEditingItem=null;
       drawingPointerActive=false;
-      drawModeNote.textContent="Choose a tool, then draw inside the selected drawing box.";
+      drawModeNote.textContent="Drawing selected. Move, resize or layer it; choose Edit Drawing when you want to draw.";
     }
     function setDrawingTool(tool){
       drawingTool=tool;
@@ -861,7 +865,6 @@
         const map={drawPencilBtn:"pencil",drawLineBtn:"line",drawRectBtn:"rect",drawOvalBtn:"oval",drawFillBtn:"fill",drawEraserBtn:"eraser"};
         b.classList.toggle("active",map[id]===tool);
       });
-      if(selectedItem?.dataset.kind==="drawing"&&!drawingEditingItem)beginDrawingEdit(selectedItem);
     }
     function drawingPoint(e,canvas){
       const r=canvas.getBoundingClientRect();
@@ -879,7 +882,7 @@
     }
     let drawStart=null,drawSavedImage=null,lastDrawPoint=null;
     function drawingPointerDown(e,d){
-      if(drawingEditingItem!==d){beginDrawingEdit(d);return}
+      if(drawingEditingItem!==d)return;
       e.preventDefault();
       const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
       pushUndo();
@@ -1018,35 +1021,120 @@
     }
 
     function startResize(e,d,dir){
-      e.preventDefault();e.stopPropagation();
+      if(e.button!==undefined && e.button!==0)return;
+      e.preventDefault();
+      e.stopPropagation();
+
       if(d.dataset.kind==="drawing")finishDrawingEdit();
-      selectItem(d);pushUndo();
-      const p=d.closest(".canvas-page")||currentPage(),pr=p.getBoundingClientRect(),dr=d.getBoundingClientRect(),sx=e.clientX,sy=e.clientY;
-      const base={l:dr.left-pr.left,t:dr.top-pr.top,w:dr.width,h:dr.height},minW=70,minH=42,isImage=d.dataset.kind==="image",ratio=dr.width/Math.max(1,dr.height);
-      e.currentTarget.setPointerCapture(e.pointerId);
+      selectItem(d);
+      pushUndo();
+
+      const handle=e.currentTarget;
+      const p=d.closest(".canvas-page")||currentPage();
+      if(!p)return;
+
+      containItem(d);
+
+      const pr=p.getBoundingClientRect();
+      const dr=d.getBoundingClientRect();
+      const minW=Math.min(70,pr.width);
+      const minH=Math.min(42,pr.height);
+      const base={l:dr.left-pr.left,t:dr.top-pr.top,w:dr.width,h:dr.height};
+      base.r=base.l+base.w;
+      base.b=base.t+base.h;
+
+      const isImage=d.dataset.kind==="image";
+      const ratio=base.w/Math.max(1,base.h);
+
+      try{handle.setPointerCapture(e.pointerId)}catch{}
+
       const move=ev=>{
-        const dx=ev.clientX-sx,dy=ev.clientY-sy;let {l,t,w,h}=base;
+        const px=clamp(ev.clientX-pr.left,0,pr.width);
+        const py=clamp(ev.clientY-pr.top,0,pr.height);
+
+        let l=base.l,t=base.t,w=base.w,h=base.h;
+
         if(isImage){
           if(!/[ns]/.test(dir)||!/[ew]/.test(dir))return;
-          const signedX=dir.includes("w")?-dx:dx,signedY=dir.includes("n")?-dy:dy;
-          const delta=Math.abs(signedX)>=Math.abs(signedY)?signedX:signedY*ratio;
-          w=Math.max(minW,base.w+delta);h=w/ratio;
-          const maxWByX=dir.includes("w")?base.l+base.w:pr.width-base.l;
-          const maxHByY=dir.includes("n")?base.t+base.h:pr.height-base.t;
-          const maxW=Math.max(minW,Math.min(maxWByX,maxHByY*ratio));
-          w=Math.min(w,maxW);h=w/ratio;
-          if(dir.includes("w"))l=base.l+base.w-w;
-          if(dir.includes("n"))t=base.t+base.h-h;
+
+          const wantedW=dir.includes("e")
+            ? Math.max(minW,px-base.l)
+            : Math.max(minW,base.r-px);
+
+          const wantedH=dir.includes("s")
+            ? Math.max(minH,py-base.t)
+            : Math.max(minH,base.b-py);
+
+          let scale=Math.min(wantedW/base.w,wantedH/base.h);
+          scale=Math.max(scale,minW/base.w,minH/base.h);
+
+          const maxWByX=dir.includes("w")?base.r:(pr.width-base.l);
+          const maxHByY=dir.includes("n")?base.b:(pr.height-base.t);
+          scale=Math.min(scale,Math.min(maxWByX/base.w,maxHByY/base.h));
+
+          w=base.w*scale;
+          h=base.h*scale;
+          if(dir.includes("w"))l=base.r-w;
+          if(dir.includes("n"))t=base.b-h;
         }else{
-          if(dir.includes("e"))w=clamp(base.w+dx,minW,pr.width-base.l);
-          if(dir.includes("s"))h=clamp(base.h+dy,minH,pr.height-base.t);
-          if(dir.includes("w")){const nl=clamp(base.l+dx,0,base.l+base.w-minW);w=base.w+(base.l-nl);l=nl}
-          if(dir.includes("n")){const nt=clamp(base.t+dy,0,base.t+base.h-minH);h=base.h+(base.t-nt);t=nt}
+          if(dir.includes("e"))w=clamp(px-base.l,minW,pr.width-base.l);
+          if(dir.includes("s"))h=clamp(py-base.t,minH,pr.height-base.t);
+          if(dir.includes("w")){
+            l=clamp(px,0,base.r-minW);
+            w=base.r-l;
+          }
+          if(dir.includes("n")){
+            t=clamp(py,0,base.b-minH);
+            h=base.b-t;
+          }
         }
-        d.style.left=pct(l,pr.width);d.style.top=pct(t,pr.height);d.style.width=pct(w,pr.width);d.style.height=pct(h,pr.height);
+
+        l=clamp(l,0,Math.max(0,pr.width-minW));
+        t=clamp(t,0,Math.max(0,pr.height-minH));
+        w=clamp(w,minW,Math.max(minW,pr.width-l));
+        h=clamp(h,minH,Math.max(minH,pr.height-t));
+
+        d.style.left=pct(l,pr.width);
+        d.style.top=pct(t,pr.height);
+        d.style.width=pct(w,pr.width);
+        d.style.height=pct(h,pr.height);
       };
-      const up=()=>{containItem(d);pushOverflowForward(d);e.currentTarget.removeEventListener("pointermove",move);e.currentTarget.removeEventListener("pointerup",up);e.currentTarget.removeEventListener("pointercancel",up)};
-      e.currentTarget.addEventListener("pointermove",move);e.currentTarget.addEventListener("pointerup",up);e.currentTarget.addEventListener("pointercancel",up);
+
+      const up=()=>{
+        containItem(d);
+        pushOverflowForward(d);
+        try{handle.releasePointerCapture(e.pointerId)}catch{}
+        handle.removeEventListener("pointermove",move);
+        handle.removeEventListener("pointerup",up);
+        handle.removeEventListener("pointercancel",up);
+      };
+
+      handle.addEventListener("pointermove",move);
+      handle.addEventListener("pointerup",up);
+      handle.addEventListener("pointercancel",up);
+    }
+
+    function changeSelectedLayer(direction){
+      if(!selectedItem)return;
+      if(selectedItem.dataset.kind==="drawing")finishDrawingEdit();
+
+      const p=selectedItem.closest(".canvas-page")||currentPage();
+      if(!p)return;
+
+      const items=[...p.querySelectorAll(".canvas-item")]
+        .sort((a,b)=>(parseInt(a.style.zIndex)||10)-(parseInt(b.style.zIndex)||10));
+      const index=items.indexOf(selectedItem);
+      const targetIndex=index+direction;
+      if(index<0||targetIndex<0||targetIndex>=items.length)return;
+
+      pushUndo();
+
+      items.forEach((item,i)=>item.style.zIndex=String(10+i));
+      const target=items[targetIndex];
+      const old=selectedItem.style.zIndex;
+      selectedItem.style.zIndex=target.style.zIndex;
+      target.style.zIndex=old;
+      zCounter=Math.max(zCounter,10+items.length);
     }
 
     function moveSelectedBy(dx,dy){
@@ -1953,9 +2041,10 @@ function configurePublishingButton(){
     document.getElementById("drawOvalBtn").addEventListener("click",()=>setDrawingTool("oval"));
     document.getElementById("drawFillBtn").addEventListener("click",()=>setDrawingTool("fill"));
     document.getElementById("drawEraserBtn").addEventListener("click",()=>setDrawingTool("eraser"));
+    document.getElementById("editDrawingBtn").addEventListener("click",()=>{if(selectedItem?.dataset.kind==="drawing")beginDrawingEdit(selectedItem)});
     document.getElementById("finishDrawingBtn").addEventListener("click",finishDrawingEdit);
     document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
-    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Recover the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be recovered.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);
+    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>changeSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>changeSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Recover the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be recovered.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);
     document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);
     document.getElementById("importCanvasBtn").addEventListener("click",()=>{importCanvasFileInput.value="";importCanvasFileInput.click()});
     importCanvasFileInput.addEventListener("change",()=>importPortableProjectFile(importCanvasFileInput.files&&importCanvasFileInput.files[0]));

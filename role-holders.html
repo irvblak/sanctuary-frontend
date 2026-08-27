@@ -1,1294 +1,296 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-
-  <title>Role Holders | Sanctuary Club</title>
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  />
-
-  <meta
-    name="robots"
-    content="noindex, nofollow"
-  />
-
-  <script src="access.js?v=ROLE_HOLDERS_1"></script>
-
-  <style>
-    :root {
-      --bg1:#d9ecff;
-      --bg2:#f5f9fc;
-      --ink:#263746;
-      --muted:#60717f;
-      --blue:#123a78;
-      --blue-dark:#0f3166;
-      --line:#d8e3ec;
-      --soft:#f5f9fc;
-      --white:#ffffff;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
-    }
-
-    * {
-      box-sizing:border-box;
-    }
-
-    body {
-      margin:0;
-      min-height:100vh;
-
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      font-size:18px;
-      line-height:1.55;
-      color:var(--ink);
-
-      background:
-        linear-gradient(
-          180deg,
-          var(--bg1) 0%,
-          var(--bg2) 45%,
-          #ffffff 100%
-        );
-    }
-
-    a,
-    button {
-      font:inherit;
-    }
-
-
-    /* ---------- Navigation ---------- */
-
-    .topbar {
-      max-width:1100px;
-      margin:0 auto;
-
-      padding:
-        1.1rem
-        1rem
-        .45rem;
-
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:1rem;
-    }
-
-    .brand {
-      color:var(--blue);
-      font-size:1.8rem;
-      font-weight:850;
-    }
-
-    .top-actions {
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      justify-content:flex-end;
-    }
-
-    .top-link {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-
-      min-height:43px;
-
-      padding:.58rem .85rem;
-
-      border-radius:
-        12px
-        12px
-        0
-        0;
-
-      background:var(--blue);
-      color:#fff;
-
-      text-decoration:none;
-      font-weight:800;
-    }
-
-    .top-link:hover,
-    .top-link:focus-visible {
-      background:var(--blue-dark);
-    }
-
-
-    /* ---------- Main ---------- */
-
-    .shell {
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 1rem 2.5rem;
-    }
-
-    .panel {
-      padding:1.5rem;
-
-      border:1px solid var(--line);
-      border-radius:20px;
-
-      background:var(--white);
-      box-shadow:var(--shadow);
-    }
-
-    h1 {
-      margin:0 0 .5rem;
-
-      color:var(--blue);
-
-      font-size:1.65rem;
-    }
-
-    .intro {
-      max-width:820px;
-
-      margin:0 0 1.25rem;
-
-      color:var(--muted);
-
-      font-weight:650;
-    }
-
-    .intro-note {
-      margin:0 0 1.35rem;
-
-      padding:.85rem 1rem;
-
-      border:1px solid #c8dcea;
-      border-radius:13px;
-
-      background:#eef7fa;
-
-      color:#315c6d;
-    }
-
-
-    /* ---------- Roles ---------- */
-
-    .roles-grid {
-      display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
-      gap:1rem;
-
-      align-items:start;
-    }
-
-    .role-section {
-      overflow:hidden;
-
-      border:1px solid var(--line);
-      border-radius:17px;
-
-      background:#fff;
-
-      box-shadow:
-        0 4px 14px
-        rgba(0,0,0,.05);
-    }
-
-    .role-heading {
-      display:flex;
-      align-items:center;
-
-      gap:.75rem;
-
-      padding:.9rem 1rem;
-
-      background:var(--blue);
-      color:#fff;
-    }
-
-    .role-icon {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-
-      width:38px;
-      height:38px;
-
-      flex:0 0 38px;
-
-      border-radius:50%;
-
-      background:
-        rgba(255,255,255,.16);
-
-      font-size:1.15rem;
-    }
-
-    .role-title {
-      font-size:1.08rem;
-      font-weight:850;
-    }
-
-    .role-body {
-      padding:.8rem;
-      background:var(--soft);
-    }
-
-    .holder-list {
-      display:grid;
-      gap:.65rem;
-    }
-
-
-    /* ---------- Person ---------- */
-
-    .holder-card {
-      padding:.8rem .85rem;
-
-      border:1px solid #d5e2eb;
-      border-radius:12px;
-
-      background:#fff;
-    }
-
-    .holder-name {
-      color:#223b50;
-
-      font-size:1rem;
-      font-weight:850;
-    }
-
-    .holder-reference {
-      margin-top:.1rem;
-
-      color:var(--muted);
-
-      font-size:.84rem;
-      font-weight:650;
-    }
-
-    .contact-details {
-      display:grid;
-      gap:.2rem;
-
-      margin-top:.55rem;
-      padding-top:.55rem;
-
-      border-top:
-        1px
-        solid
-        #e5ebf0;
-    }
-
-    .contact-row {
-      display:flex;
-      justify-content:space-between;
-
-      gap:1rem;
-
-      font-size:.87rem;
-    }
-
-    .contact-label {
-      color:var(--muted);
-    }
-
-    .contact-value {
-      text-align:right;
-      font-weight:650;
-
-      overflow-wrap:anywhere;
-    }
-
-    .no-contact {
-      margin-top:.5rem;
-
-      color:var(--muted);
-
-      font-size:.84rem;
-      font-style:italic;
-    }
-
-    .empty-role {
-      padding:.6rem;
-
-      color:var(--muted);
-
-      text-align:center;
-
-      font-size:.9rem;
-    }
-
-
-    /* ---------- Status ---------- */
-
-    .status {
-      margin-top:1rem;
-
-      padding:.85rem 1rem;
-
-      border-radius:12px;
-
-      background:#f4f7f9;
-      color:var(--muted);
-    }
-
-    .status.error {
-      border:1px solid #e1c1c1;
-
-      background:#fff7f7;
-      color:#8a3434;
-    }
-
-
-    /* ---------- Motto ---------- */
-
-    .motto {
-      margin-top:2rem;
-
-      padding-top:1.15rem;
-
-      border-top:
-        1px
-        solid
-        var(--line);
-
-      color:#31506b;
-
-      text-align:center;
-
-      font-weight:850;
-      line-height:1.55;
-    }
-
-
-    @media(max-width:760px) {
-      .roles-grid {
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media(max-width:650px) {
-      body {
-        font-size:17px;
-      }
-
-      .topbar {
-        align-items:flex-start;
-        flex-direction:column;
-      }
-
-      .panel {
-        padding:1rem;
-        border-radius:15px;
-      }
-
-      .contact-row {
-        display:block;
-      }
-
-      .contact-value {
-        display:block;
-        text-align:left;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Role Register | Sanctuary Club</title>
+<script src="access.js?v=ROLE_REGISTER_1"></script>
+<style>
+:root{--ink:#263746;--muted:#60717f;--blue:#123a78;--line:#d8e3ec;--soft:#f5f9fc;--white:#fff;--shadow:0 8px 24px rgba(0,0,0,.08)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:linear-gradient(180deg,#d9ecff 0,#f5f9fc 280px,#f5f9fc 100%)}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 18px 55px}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+a{color:var(--blue);font-weight:750;text-decoration:none}
+.hero{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:var(--shadow);margin-bottom:18px}
+.hero h1{margin:0 0 8px;color:var(--blue);font-size:2rem}
+.hero p{margin:.35rem 0;line-height:1.55;color:#506675}
+.guide-note{font-size:.96rem}
+.status{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;color:var(--muted)}
+.register{display:grid;gap:14px}
+.role{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.045)}
+.role-head{display:grid;grid-template-columns:58px 1fr auto;gap:14px;align-items:center;padding:17px 18px;background:linear-gradient(90deg,#f6fbfe,#fff)}
+.role-icon{width:54px;height:54px;border:1px solid var(--line);background:var(--soft);border-radius:15px;display:grid;place-items:center}
+.role-icon svg{width:35px;height:35px}
+.role-title h2{margin:0;color:var(--blue);font-size:1.25rem}
+.role-title p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.guide-link{white-space:nowrap;padding:8px 10px;border:1px solid #c9d9e4;border-radius:10px;background:#fff}
+.role-body{padding:16px 18px}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.person{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fcfeff}
+.person strong{display:block;margin-bottom:4px}
+.ref{font-size:.9rem;color:var(--blue);font-weight:750}
+.contact{margin-top:6px;font-size:.92rem;color:#536b79;line-height:1.45}
+.empty{color:#7a8c97;font-style:italic;padding:4px 0}
+.activities{display:grid;gap:10px}
+.activity{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fbfdff}
+.activity-head{display:flex;gap:9px;align-items:center;margin-bottom:9px}
+.activity-symbol{font-size:1.35rem}
+.activity h3{margin:0;color:#275b70;font-size:1.03rem}
+.activity .people{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}
+.motto{text-align:center;margin:26px 0 0;color:#526b79;font-weight:750}
+@media(max-width:650px){.role-head{grid-template-columns:48px 1fr}.guide-link{grid-column:1/-1;text-align:center}.role-icon{width:46px;height:46px}}
+</style>
 </head>
-
-
 <body>
+<main class="wrap">
+<div class="topbar">
+  <a href="library.html">← Back to Library</a>
+</div>
 
-  <div class="topbar">
+<section class="hero">
+  <h1>Role Register</h1>
+  <p>Who currently helps with what around Sanctuary Club.</p>
+  <p class="guide-note">A member may appear under more than one heading. Roles and activity assignments are generated from the current Role Manager rather than maintained separately here.</p>
+</section>
 
-    <div class="brand">
-      Role Holders
-    </div>
+<div class="status" id="status">Loading current Role Register…</div>
+<div class="register" id="register"></div>
 
-    <div class="top-actions">
+<div class="motto">The computer does the thinking.<br>You simply find what you want.</div>
+</main>
 
-      <a
-        class="top-link"
-        href="library.html"
-      >
-        Library
-      </a>
+<script>
+(() => {
+  const API="https://sanctuary-backend-8iqc.onrender.com";
+  const ICONS="assets/icons/icons.svg";
+  const register=document.getElementById("register");
+  const status=document.getElementById("status");
 
-      <a
-        class="top-link"
-        href="members-info.html"
-      >
-        Members Hub
-      </a>
+  const ROLE_ORDER=[
+    {
+      keys:["host"],
+      title:"Event Hosts",
+      guide:"event-host",
+      icon:"role-host",
+      note:"Members authorised to create and manage one-off Events."
+    },
+    {
+      keys:["activity_organiser","activity"],
+      title:"Activity Organisers",
+      guide:"activity-organiser",
+      icon:"role-activity",
+      note:"Organisers are subdivided below by their assigned activity.",
+      activity:true
+    },
+    {
+      keys:["news_contributor","writer","news"],
+      title:"Writers",
+      guide:"writer",
+      icon:"role-news",
+      note:"Members authorised to create written contributions and publications."
+    },
+    {
+      keys:["artist"],
+      title:"Artists",
+      guide:"artist",
+      icon:"role-artist",
+      note:"Members contributing visual work and Gallery material."
+    },
+    {
+      keys:["editor"],
+      title:"Editors",
+      guide:"editor",
+      icon:"role-editor",
+      note:"Members providing editorial approval where required."
+    },
+    {
+      keys:["committee","club_publications","club-publications"],
+      title:"Club Publications",
+      guide:"club-publications",
+      icon:"role-committee",
+      note:"Authorised maintainers of standing Club publications and information."
+    },
+    {
+      keys:["panel","residents_association_panel"],
+      title:"Residents Association Panel",
+      guide:"residents-association-panel",
+      icon:"role-panel",
+      note:"Current Panel role holders."
+    },
+    {
+      keys:["treasurer"],
+      title:"Treasurer / Finance",
+      guide:"treasurer",
+      icon:"role-treasurer",
+      note:"Members with authorised finance responsibilities."
+    },
+    {
+      keys:["website_helper","helper"],
+      title:"Website Helpers",
+      guide:"website-helper",
+      icon:"role-helper",
+      note:"Members who can help neighbours use Sanctuary Club."
+    },
+    {
+      keys:["services"],
+      title:"Services",
+      guide:"services",
+      icon:"role-services",
+      note:"Members authorised for approved service information."
+    },
+    {
+      keys:["admin","administrator"],
+      title:"Administrators",
+      guide:"administrator",
+      icon:"role-admin",
+      note:"Members with authorised system administration responsibilities."
+    }
+  ];
 
-    </div>
+  const ACTIVITY_ICONS={
+    "daffs-caff":"activity-caff",
+    "bridge":"activity-bridge",
+    "bridge-lessons":"activity-bridge",
+    "book-club":"activity-book",
+    "quizzes":"activity-quiz",
+    "exercise":"activity-exercise",
+    "art":"activity-art",
+    "other":"activity-quiz"
+  };
 
-  </div>
+  function clean(v){return String(v??"").trim()}
+  function normRole(v){return clean(v).toLowerCase().replace(/[\s-]+/g,"_")}
+  function esc(v){return clean(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  function arr(v){return Array.isArray(v)?v:[]}
 
+  function getToken(){
+    return localStorage.getItem("authToken")||
+           sessionStorage.getItem("authToken")||
+           localStorage.getItem("sanctuaryAuthToken")||
+           sessionStorage.getItem("sanctuaryAuthToken")||"";
+  }
 
-  <div class="shell">
+  async function fetchJson(path,auth=false){
+    const headers={Accept:"application/json"};
+    if(auth&&getToken())headers.Authorization="Bearer "+getToken();
+    const r=await fetch(API+path,{headers,cache:"no-store"});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.success===false)throw new Error(d.message||`Could not load ${path}`);
+    return d;
+  }
 
-    <main class="panel">
+  function rolePeople(all,keys){
+    const wanted=new Set(keys.map(normRole));
+    return all.filter(p=>arr(p.roles).map(normRole).some(r=>wanted.has(r)));
+  }
 
-      <h1>
-        Who does what?
-      </h1>
+  function personHtml(p){
+    const rid=clean(p.resident_id||p.residentId);
+    const mid=clean(p.member_id||p.memberId||rid.split("/")[0]);
+    const name=clean(p.name||p.display_name||p.displayName)||rid||mid||"Role holder";
+    const details=[];
+    if(p.email)details.push(`<span>${esc(p.email)}</span>`);
+    if(p.mobile)details.push(`<span>${esc(p.mobile)}</span>`);
+    if(p.landline)details.push(`<span>${esc(p.landline)}</span>`);
+    return `<div class="person">
+      <strong>${esc(name)}</strong>
+      <div class="ref">${esc(rid||mid)}</div>
+      ${details.length?`<div class="contact">${details.join("<br>")}</div>`:""}
+    </div>`;
+  }
 
-      <p class="intro">
-        These are the residents currently helping Sanctuary Club
-        through its various roles.
-      </p>
-
-      <div class="intro-note">
-        The list updates automatically when roles are allocated
-        or changed by an Administrator.
+  function roleShell(role,body){
+    return `<section class="role">
+      <div class="role-head">
+        <div class="role-icon"><svg aria-hidden="true"><use href="${ICONS}#${role.icon}"></use></svg></div>
+        <div class="role-title"><h2>${esc(role.title)}</h2><p>${esc(role.note)}</p></div>
+        <a class="guide-link" href="role-guide.html?role=${encodeURIComponent(role.guide)}">Role Guide</a>
       </div>
+      <div class="role-body">${body}</div>
+    </section>`;
+  }
 
+  function ordinaryBody(people){
+    if(!people.length)return `<div class="empty">No current role holder is recorded.</div>`;
+    return `<div class="people">${people.map(personHtml).join("")}</div>`;
+  }
 
-      <div
-        class="roles-grid"
-        id="rolesGrid"
-      ></div>
+  function activityBody(activities){
+    const withPeople=activities.filter(a=>arr(a.organisers).length);
+    if(!withPeople.length)return `<div class="empty">No activity-specific organisers are recorded yet.</div>`;
+    return `<div class="activities">${withPeople.map(a=>`
+      <section class="activity">
+        <div class="activity-head">
+          <span class="activity-symbol">
+            <svg aria-hidden="true" width="30" height="30">
+              <use href="activity-icons.svg#${ACTIVITY_ICONS[clean(a.activity_id)]||"activity-quiz"}"></use>
+            </svg>
+          </span>
+          <h3>${esc(a.activity_name||a.activity_id)}</h3>
+        </div>
+        <div class="people">${arr(a.organisers).map(personHtml).join("")}</div>
+      </section>`).join("")}</div>`;
+  }
 
+  async function load(){
+    try{
+      const [rolesData,activityData]=await Promise.all([
+        fetchJson("/api/role-directory"),
+        fetchJson("/api/activity-organisers").catch(()=>({activities:[]}))
+      ]);
 
-      <div
-        class="status"
-        id="statusBox"
-      >
-        Loading current Role Holders…
-      </div>
+      let people=arr(rolesData.role_holders||rolesData.roles||rolesData.people||rolesData.members||rolesData.items);
+      const activities=arr(activityData.activities);
 
+      // If the protected Role Register has access to fuller directory data,
+      // merge shared contact details where available; failure is harmless.
+      try{
+        const md=await fetchJson("/api/members-directory",true);
+        const source=md.members||{};
+        const contacts=new Map();
 
-      <div class="motto">
-        The computer does the thinking.<br>
-        You do the creating.
-      </div>
-
-    </main>
-
-  </div>
-
-
-  <script>
-    (function () {
-      "use strict";
-
-
-      const BACKEND_URL =
-        "https://sanctuary-backend-8iqc.onrender.com";
-
-
-      /*
-        The page is deliberately role-first.
-
-        A resident with several assigned roles
-        appears under each relevant heading.
-      */
-
-      const ROLE_DEFINITIONS = {
-
-        website_helper: {
-          label:"Website Helpers",
-          icon:"🌿",
-          order:10
-        },
-
-        host: {
-          label:"Event Hosts",
-          icon:"🎉",
-          order:20
-        },
-
-        activity_organiser: {
-          label:"Activity Organisers",
-          icon:"🌱",
-          order:30
-        },
-
-        news_contributor: {
-          label:"Community News",
-          icon:"📰",
-          order:40
-        },
-
-        writer: {
-          label:"Writers",
-          icon:"✍️",
-          order:50
-        },
-
-        artist: {
-          label:"Artists",
-          icon:"🎨",
-          order:60
-        },
-
-        editor: {
-          label:"Editor",
-          icon:"📝",
-          order:70
-        },
-
-        committee: {
-          label:"Club Committee",
-          icon:"👥",
-          order:80
-        },
-
-        panel: {
-          label:"Residents Association Panel",
-          icon:"👥",
-          order:90
-        },
-
-        residents_association_panel: {
-          label:"Residents Association Panel",
-          icon:"👥",
-          order:90
-        },
-
-        treasurer: {
-          label:"Treasurer",
-          icon:"£",
-          order:100
-        },
-
-        services: {
-          label:"Services",
-          icon:"🤲",
-          order:110
-        },
-
-        admin: {
-          label:"Administrators",
-          icon:"⚙️",
-          order:120
+        if(Array.isArray(source)){
+          source.forEach(member=>{
+            arr(member.residents).forEach((r,i)=>{
+              const rid=clean(r.resident_id||`${member.member_id||member.memberId}/${i+1}`).toUpperCase();
+              contacts.set(rid,r);
+            });
+          });
+        }else if(source&&typeof source==="object"){
+          Object.values(source).forEach(member=>{
+            const mid=clean(member.member_id||member.memberId);
+            arr(member.residents).forEach((r,i)=>{
+              const rid=clean(r.resident_id||`${mid}/${i+1}`).toUpperCase();
+              contacts.set(rid,r);
+            });
+          });
         }
 
-      };
-
-
-      /*
-        Aliases allow old/new role wording to arrive
-        without creating duplicate headings.
-      */
-
-      const ROLE_ALIASES = {
-
-        event_host:
-          "host",
-
-        activity:
-          "activity_organiser",
-
-        organiser:
-          "activity_organiser",
-
-        organizer:
-          "activity_organiser",
-
-        news:
-          "news_contributor",
-
-        community_news:
-          "news_contributor",
-
-        helper:
-          "website_helper",
-
-        website_helpers:
-          "website_helper",
-
-        administrator:
-          "admin",
-
-        residents_association_panel:
-          "panel"
-
-      };
-
-
-      const rolesGrid =
-        document.getElementById(
-          "rolesGrid"
-        );
-
-
-      const statusBox =
-        document.getElementById(
-          "statusBox"
-        );
-
-
-      /* ---------- Utility ---------- */
-
-      function clean(value) {
-        return String(
-          value || ""
-        ).trim();
-      }
-
-
-      function escapeHtml(value) {
-        return String(
-          value ?? ""
-        )
-          .replace(/&/g,"&amp;")
-          .replace(/</g,"&lt;")
-          .replace(/>/g,"&gt;")
-          .replace(/"/g,"&quot;")
-          .replace(/'/g,"&#39;");
-      }
-
-
-      function normaliseRole(role) {
-        const cleaned =
-          clean(role)
-            .toLowerCase()
-            .replace(
-              /[\s-]+/g,
-              "_"
-            );
-
-
-        return (
-          ROLE_ALIASES[cleaned] ||
-          cleaned
-        );
-      }
-
-
-      function setStatus(
-        message,
-        isError = false
-      ) {
-        statusBox.textContent =
-          message;
-
-
-        statusBox.classList.toggle(
-          "error",
-          Boolean(isError)
-        );
-
-
-        statusBox.hidden =
-          !message;
-      }
-
-
-      /* ---------- Safe current-role feed ---------- */
-
-      async function loadRoleDirectory() {
-        const response =
-          await fetch(
-            `${BACKEND_URL}/api/role-directory`,
-            {
-              method:"GET",
-
-              headers:{
-                "Accept":
-                  "application/json"
-              },
-
-              mode:"cors"
-            }
-          );
-
-
-        const data =
-          await response
-            .json()
-            .catch(() => null);
-
-
-        if (
-          !response.ok ||
-          !data ||
-          data.success !== true ||
-          !Array.isArray(
-            data.residents
-          )
-        ) {
-          throw new Error(
-            data?.message ||
-            "Current Role Holders could not be loaded."
-          );
-        }
-
-
-        return data.residents;
-      }
-
-
-      /* ---------- Member contact feed ---------- */
-
-      async function loadMemberDirectory() {
-        const response =
-          await fetch(
-            `${BACKEND_URL}/api/members-directory`,
-            {
-              method:"GET",
-
-              headers:{
-                "Accept":
-                  "application/json"
-              },
-
-              mode:"cors"
-            }
-          );
-
-
-        const data =
-          await response
-            .json()
-            .catch(() => null);
-
-
-        if (
-          !response.ok ||
-          !data ||
-          data.success !== true ||
-          !data.members ||
-          typeof data.members !== "object"
-        ) {
-          throw new Error(
-            "Member contact information could not be loaded."
-          );
-        }
-
-
-        return data.members;
-      }
-
-
-      /* ---------- Find MD contact record ---------- */
-
-      function findContactRecord(
-        holder,
-        members
-      ) {
-        const memberId =
-          clean(
-            holder.member_id
-          );
-
-
-        const residentId =
-          clean(
-            holder.resident_id
-          );
-
-
-        const member =
-          members[memberId];
-
-
-        if (
-          !member ||
-          !Array.isArray(
-            member.residents
-          )
-        ) {
-          return null;
-        }
-
-
-        const residentMatch =
-          residentId.match(
-            /\/(\d+)$/
-          );
-
-
-        if (residentMatch) {
-          const index =
-            Number(
-              residentMatch[1]
-            ) - 1;
-
-
-          if (
-            index >= 0 &&
-            member.residents[index]
-          ) {
-            return member.residents[index];
-          }
-        }
-
-
-        /*
-          Fallback by name.
-        */
-
-        const wantedName =
-          clean(holder.name)
-            .toLowerCase();
-
-
-        return (
-          member.residents.find(
-            resident =>
-              clean(resident?.name)
-                .toLowerCase()
-                === wantedName
-          ) ||
-          null
-        );
-      }
-
-
-      /* ---------- Contact display ---------- */
-
-      function contactRow(
-        label,
-        value
-      ) {
-        const cleaned =
-          clean(value);
-
-
-        if (
-          !cleaned ||
-          cleaned.toLowerCase()
-            === "n/a"
-        ) {
-          return "";
-        }
-
-
-        return `
-          <div class="contact-row">
-
-            <span class="contact-label">
-              ${escapeHtml(label)}
-            </span>
-
-            <span class="contact-value">
-              ${escapeHtml(cleaned)}
-            </span>
-
-          </div>
-        `;
-      }
-
-
-      function contactHtml(
-        holder,
-        members
-      ) {
-        const resident =
-          findContactRecord(
-            holder,
-            members
-          );
-
-
-        if (!resident) {
-          return `
-            <div class="no-contact">
-              No contact details have been shared here.
-            </div>
-          `;
-        }
-
-
-        const rows = [
-
-          contactRow(
-            "Email",
-            resident.email
-          ),
-
-          contactRow(
-            "Mobile",
-            resident.mobile
-          ),
-
-          contactRow(
-            "Landline",
-            resident.landline
-          )
-
-        ]
-          .filter(Boolean)
-          .join("");
-
-
-        if (!rows) {
-          return `
-            <div class="no-contact">
-              No contact details have been shared here.
-            </div>
-          `;
-        }
-
-
-        return `
-          <div class="contact-details">
-            ${rows}
-          </div>
-        `;
-      }
-
-
-      /* ---------- Group by role ---------- */
-
-      function buildRoleGroups(
-        residents
-      ) {
-        const groups =
-          new Map();
-
-
-        residents.forEach(
-          resident => {
-
-            const rawRoles =
-              Array.isArray(
-                resident.roles
-              )
-                ? resident.roles
-                : [];
-
-
-            const roles =
-              [
-                ...new Set(
-                  rawRoles
-                    .map(
-                      normaliseRole
-                    )
-                    .filter(Boolean)
-                )
-              ];
-
-
-            roles.forEach(
-              role => {
-
-                if (
-                  !ROLE_DEFINITIONS[role]
-                ) {
-                  return;
-                }
-
-
-                if (
-                  !groups.has(role)
-                ) {
-                  groups.set(
-                    role,
-                    []
-                  );
-                }
-
-
-                groups
-                  .get(role)
-                  .push(
-                    resident
-                  );
-              }
-            );
-          }
-        );
-
-
-        return groups;
-      }
-
-
-      /* ---------- Person card ---------- */
-
-      function holderCardHtml(
-        holder,
-        members
-      ) {
-        const name =
-          clean(holder.name) ||
-          "Role Holder";
-
-
-        const memberId =
-          clean(
-            holder.member_id
-          );
-
-
-        const residentId =
-          clean(
-            holder.resident_id
-          );
-
-
-        return `
-          <article class="holder-card">
-
-            <div class="holder-name">
-              ${escapeHtml(name)}
-            </div>
-
-            <div class="holder-reference">
-
-              Membership Number:
-              ${escapeHtml(memberId)}
-
-              ${
-                residentId
-                  ? ` · ${escapeHtml(residentId)}`
-                  : ""
-              }
-
-            </div>
-
-            ${contactHtml(
-              holder,
-              members
-            )}
-
-          </article>
-        `;
-      }
-
-
-      /* ---------- Render ---------- */
-
-      function renderRoleHolders(
-        residents,
-        members
-      ) {
-        rolesGrid.innerHTML =
-          "";
-
-
-        const groups =
-          buildRoleGroups(
-            residents
-          );
-
-
-        const roleNames =
-          [...groups.keys()]
-            .sort(
-              (a,b) =>
-                (
-                  ROLE_DEFINITIONS[a]
-                    ?.order || 999
-                )
-                -
-                (
-                  ROLE_DEFINITIONS[b]
-                    ?.order || 999
-                )
-            );
-
-
-        if (!roleNames.length) {
-          rolesGrid.innerHTML = `
-            <div class="status">
-              No current Role Holders were found.
-            </div>
-          `;
-
-          return;
-        }
-
-
-        roleNames.forEach(
-          role => {
-
-            const definition =
-              ROLE_DEFINITIONS[role];
-
-
-            /*
-              Remove duplicate people inside
-              an individual role.
-            */
-
-            const seen =
-              new Set();
-
-
-            const holders =
-              groups
-                .get(role)
-                .filter(
-                  holder => {
-
-                    const key =
-                      clean(
-                        holder.resident_id
-                      )
-                      ||
-                      (
-                        clean(
-                          holder.member_id
-                        )
-                        +
-                        "|" +
-                        clean(
-                          holder.name
-                        )
-                      );
-
-
-                    if (
-                      seen.has(key)
-                    ) {
-                      return false;
-                    }
-
-
-                    seen.add(key);
-
-                    return true;
-                  }
-                )
-                .sort(
-                  (a,b) =>
-                    clean(a.name)
-                      .localeCompare(
-                        clean(b.name),
-                        "en",
-                        {
-                          sensitivity:
-                            "base"
-                        }
-                      )
-                );
-
-
-            if (!holders.length) {
-              return;
-            }
-
-
-            const section =
-              document.createElement(
-                "section"
-              );
-
-
-            section.className =
-              "role-section";
-
-
-            section.innerHTML = `
-              <div class="role-heading">
-
-                <span
-                  class="role-icon"
-                  aria-hidden="true"
-                >
-                  ${definition.icon}
-                </span>
-
-                <span class="role-title">
-                  ${escapeHtml(
-                    definition.label
-                  )}
-                </span>
-
-              </div>
-
-              <div class="role-body">
-
-                <div class="holder-list">
-
-                  ${
-                    holders
-                      .map(
-                        holder =>
-                          holderCardHtml(
-                            holder,
-                            members
-                          )
-                      )
-                      .join("")
-                  }
-
-                </div>
-
-              </div>
-            `;
-
-
-            rolesGrid.appendChild(
-              section
-            );
-          }
-        );
-      }
-
-
-      /* ---------- Start ---------- */
-
-      async function initialise() {
-        try {
-          setStatus(
-            "Loading current Role Holders…"
-          );
-
-
-          /*
-            The page itself is Personal-PIN protected
-            by access.js.
-
-            role-directory tells us WHO has each role.
-            members-directory supplies the contact
-            information they have chosen to share.
-          */
-
-          const [
-            residents,
-            members
-          ] =
-            await Promise.all([
-              loadRoleDirectory(),
-              loadMemberDirectory()
-            ]);
-
-
-          renderRoleHolders(
-            residents,
-            members
-          );
-
-
-          setStatus("");
-
-
-        } catch(error) {
-          console.error(error);
-
-
-          rolesGrid.innerHTML =
-            "";
-
-
-          setStatus(
-            error.message ||
-            "Role Holders could not be loaded.",
-            true
-          );
-        }
-      }
-
-
-      initialise();
-
-    })();
-  </script>
-
+        people=people.map(p=>{
+          const extra=contacts.get(clean(p.resident_id||p.residentId).toUpperCase())||{};
+          return {...p,
+            email:p.email||extra.email||extra.email_address||"",
+            mobile:p.mobile||extra.mobile||"",
+            landline:p.landline||extra.landline||""
+          };
+        });
+      }catch(_){}
+
+      register.innerHTML=ROLE_ORDER.map(role=>{
+        if(role.activity)return roleShell(role,activityBody(activities));
+        return roleShell(role,ordinaryBody(rolePeople(people,role.keys)));
+      }).join("");
+
+      status.textContent="Current Role Register";
+    }catch(err){
+      status.textContent=err.message||"The Role Register could not be loaded.";
+    }
+  }
+
+  load();
+})();
+</script>
 </body>
 </html>

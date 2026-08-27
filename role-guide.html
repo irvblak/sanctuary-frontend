@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Role Guide | Sanctuary Club</title>
+<script src="access.js"></script>
+<script src="role-guides-data.js"></script>
+<style>
+:root{--ink:#203747;--muted:#617583;--blue:#123a78;--line:#d8e3ec;--soft:#f5f9fc}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#e7f2fa,#f8fbfd);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+a{color:var(--blue);font-weight:750;text-decoration:none}
+button{border:0;border-radius:10px;padding:9px 13px;background:var(--blue);color:#fff;font:inherit;font-weight:750;cursor:pointer}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+.head{display:flex;gap:15px;align-items:center;margin-bottom:12px}
+.icon{width:58px;height:58px;display:grid;place-items:center;border-radius:15px;background:var(--soft);border:1px solid var(--line)}
+.icon svg{width:38px;height:38px}
+h1{margin:0;color:var(--blue)}
+.lead{font-size:1.08rem;line-height:1.6;color:#405968}
+.section{margin-top:23px;padding-top:18px;border-top:1px solid var(--line)}
+.section h2{margin:0 0 7px;color:#1d5870;font-size:1.12rem}
+.section p{margin:0;line-height:1.62}
+.motto{text-align:center;margin-top:26px;color:#526b79;font-weight:750}
+@media print{.top{display:none}.wrap{padding:0}.card{border:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="top">
+  <a href="role-holders.html">← Role Register</a>
+  <button type="button" id="printBtn">Print Guide</button>
+</div>
+<article class="card" id="card" hidden>
+  <div class="head">
+    <div class="icon"><svg aria-hidden="true"><use id="iconUse" href=""></use></svg></div>
+    <h1 id="title"></h1>
+  </div>
+  <p class="lead" id="intro"></p>
+  <div id="sections"></div>
+  <div class="motto">The computer does the thinking.<br>You simply find what you want.</div>
+</article>
+<div class="card" id="missing" hidden>That Role Guide could not be found.</div>
+</main>
+<script>
+(() => {
+  const key=(new URLSearchParams(location.search).get("role")||"").trim().toLowerCase();
+  const guide=(window.SANCTUARY_ROLE_GUIDES||{})[key];
+  if(!guide){document.getElementById("missing").hidden=false;return}
+  document.getElementById("title").textContent=guide.title;
+  document.getElementById("intro").textContent=guide.introduction||"";
+  document.getElementById("iconUse").setAttribute("href",`assets/icons/icons.svg#${guide.icon}`);
+  document.getElementById("sections").innerHTML=(guide.sections||[]).map(([h,p])=>
+    `<section class="section"><h2>${escapeHtml(h)}</h2><p>${escapeHtml(p)}</p></section>`
+  ).join("");
+  document.getElementById("card").hidden=false;
+  document.title=`${guide.title} — Role Guide | Sanctuary Club`;
+  document.getElementById("printBtn").onclick=()=>window.print();
+
+  function escapeHtml(v){
+    return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+})();
+</script>
+</body>
+</html>

@@ -225,7 +225,7 @@
     .yds-colour-popover{
       position:absolute;
       z-index:5000;
-      width:258px;
+      width:300px;
       padding:12px;
       border:1px solid #bfcfd8;
       border-radius:14px;
@@ -237,7 +237,7 @@
     .yds-colour-sv{
       --picker-hue:0;
       position:relative;
-      height:150px;
+      height:180px;
       border-radius:10px;
       cursor:crosshair;
       touch-action:none;
@@ -554,8 +554,8 @@
               <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
             </div>
             <div class="compact-button-row wrap-buttons">
-              <button id="overlayObjectBtn" type="button" title="Move selected box one layer forward">Overlay</button>
-              <button id="underlayObjectBtn" type="button" title="Move selected box one layer backward">Underlay</button>
+              <button id="overlayObjectBtn" type="button" title="Bring selected box in front of all other boxes">Overlay</button>
+              <button id="underlayObjectBtn" type="button" title="Send selected box behind all other boxes">Underlay</button>
               <button id="duplicateObjectBtn" type="button">Duplicate</button>
               <button id="deleteObjectBtn" type="button">Delete</button>
               <button id="undoCanvasBtn" type="button">Undo</button>
@@ -579,7 +579,7 @@
       <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
       <button id="ydsColourDone" class="yds-colour-done" type="button">Done</button>
     </div>
-    <p class="yds-colour-note">Move the slider for the hue, then choose the exact shade above.</p>
+    <p class="yds-colour-note">Choose the hue with the rainbow slider, then click the exact tint or shade above.</p>
   </div>
 
   <script>
@@ -859,13 +859,23 @@
 
       const names={image:"Illustration",title:"Title",text:"Text",drawing:"Drawing"};
       selectedObjectNote.textContent=selectedItem
-        ?`${names[kind]||"Box"} selected. Overlay / Underlay moves it one layer at a time.`
+        ?`${names[kind]||"Box"} selected. Overlay brings it to the front; Underlay sends it behind.`
         :"Nothing selected. Choose Add Text, Add Illustration or Draw / Paint to add something.";
       if(selectedItem&&kind!=="image"&&kind!=="drawing")syncFormatControls();
       if(selectedItem&&kind==="drawing")setDrawingTool(drawingTool);
     }
 
-    function syncFormatControls(){const c=selectedItem?.querySelector(".item-content");if(!c)return;fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";const bg=getComputedStyle(c).backgroundColor;backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff"}
+    function syncFormatControls(){
+      const c=selectedItem?.querySelector(".item-content");
+      if(!c)return;
+      fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;
+      fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;
+      textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";
+      const bg=getComputedStyle(c).backgroundColor;
+      backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff";
+      textColourInput.dispatchEvent(new Event("ydscolourrefresh"));
+      backgroundColourInput.dispatchEvent(new Event("ydscolourrefresh"));
+    }
     function rgbToHex(rgb){const m=String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);return m?"#"+m.slice(1,4).map(x=>Number(x).toString(16).padStart(2,"0")).join(""):""}
 
     function setCurrentPageSolidBackground(){
@@ -1355,13 +1365,16 @@
       if(ordered.length<2)return;
       const at=ordered.indexOf(selectedItem);
       if(at<0)return;
-      const otherAt=direction>0?at+1:at-1;
-      if(otherAt<0||otherAt>=ordered.length)return;
+
+      // Make the two controls completely predictable:
+      // Overlay = front of every object; Underlay = behind every object.
+      if(direction>0 && at===ordered.length-1)return;
+      if(direction<0 && at===0)return;
 
       pushUndo();
-      // Swap the selected object with its immediate neighbour only.
-      ordered[at]=ordered[otherAt];
-      ordered[otherAt]=selectedItem;
+      ordered.splice(at,1);
+      if(direction>0)ordered.push(selectedItem);
+      else ordered.unshift(selectedItem);
       ordered.forEach((item,index)=>{item.style.zIndex=String(10+index)});
       zCounter=Math.max(10,10+ordered.length-1);
       selectItem(selectedItem,false);
@@ -2442,7 +2455,7 @@ document
     function positionColourPopover(trigger){
       const r=trigger.getBoundingClientRect();
       ydsColourPopover.hidden=false;
-      const w=258;
+      const w=300;
       const left=Math.max(8,Math.min(window.scrollX+r.left,window.scrollX+window.innerWidth-w-8));
       const top=window.scrollY+r.bottom+6;
       ydsColourPopover.style.left=`${left}px`;
@@ -2481,7 +2494,10 @@ document
         e.preventDefault();e.stopPropagation();
         openYdsColourPicker(input,trigger);
       });
-      input.addEventListener("input",()=>trigger.style.setProperty("--yds-colour",input.value));
+      const refreshTrigger=()=>trigger.style.setProperty("--yds-colour",input.value||"#FFFFFF");
+      input.addEventListener("input",refreshTrigger);
+      input.addEventListener("change",refreshTrigger);
+      input.addEventListener("ydscolourrefresh",refreshTrigger);
     }
 
     document.querySelectorAll('input[type="color"]').forEach(enhanceColourInput);

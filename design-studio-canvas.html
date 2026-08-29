@@ -592,19 +592,33 @@
       activity:"Activity Organiser",
       writer:"Writer",
       artist:"Artist",
-      committee:"Committee — News & Notices",
-      panel:"Residents Association Panel — News & Notices",
+      committee:"Committee",
+      panel:"Residents Association",
       services:"Services",
-      host:"Host an Event — Event Notice"
+      host:"Dated Notice"
     };
     const MODE_ROLES={
       activity:["activity_organiser"],
       writer:["writer","news_contributor"],
       artist:["artist"],
-      committee:["committee"],
-      panel:["panel"],
+      committee:["committee","secretary","committee_secretary"],
+      panel:["panel","residents_association","ra_secretary","panel_secretary"],
       services:["services"],
       host:["host"]
+    };
+    const DATED_SOURCE_ROLES={
+      host:["host"],
+      activity:["activity_organiser"],
+      committee:["committee","secretary","committee_secretary"],
+      panel:["panel","residents_association","ra_secretary","panel_secretary"],
+      services:["services"]
+    };
+    const DATED_SOURCE_LABELS={
+      host:"Host Event",
+      activity:"Activity",
+      committee:"Committee",
+      panel:"Residents Association",
+      services:"Service"
     };
 
     const creativeWorkspace=document.getElementById("creativeWorkspace");
@@ -660,12 +674,23 @@
       try{roles=JSON.parse(sessionStorage.getItem("hostAreaRoles")||localStorage.getItem("hostAreaRoles")||"[]");}catch(_){roles=[];}
       return [...new Set((Array.isArray(roles)?roles:[]).map(normaliseRole).filter(Boolean))];
     }
+    function readEventHandoff(){
+      try{return JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null")}catch(_){return null}
+    }
+    function datedSource(){
+      const handoff=readEventHandoff();
+      return normaliseRole(PAGE_PARAMS.get("source")||handoff?.source||"host");
+    }
     function authorisedForMode(){
       if(IS_FUN_MODE)return true;
+      const roles=storedRoles();
+      if(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated"){
+        const required=DATED_SOURCE_ROLES[datedSource()]||[];
+        return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
+      }
       const required=MODE_ROLES[CANVAS_MODE];
       if(!required||!required.length)return false;
-      const roles=storedRoles();
-      return required.some(role=>roles.includes(role));
+      return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
     }
     function hasStudioSession(){
       const resident=sessionStorage.getItem("currentResidentId")||localStorage.getItem("currentResidentId")||sessionStorage.getItem("verifiedResidentId")||localStorage.getItem("verifiedResidentId")||"";
@@ -692,7 +717,7 @@
     }
 
     function portableProject(){
-      return {format:"sanctuary-yds",version:2,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",state:JSON.parse(snapshotState())};
+      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated")?readEventHandoff():null,state:JSON.parse(snapshotState())};
     }
     function safeProjectFilename(){
       const label=clean(creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
@@ -1509,10 +1534,14 @@
       return lines.filter(Boolean).join("\n");
     }
     function openEventCanvasFromHandoff(){
-      let e=null; try{e=JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null")}catch(_){}
+      const e=readEventHandoff();
       if(!e)return false;
-      openCreativeWorkspace(true,"Host an Event — Event Notice");
-      makeCanvasItem("title",e.title||"Event Notice","",{left:"8%",top:"6%",width:"84%",height:"12%"});
+      const source=normaliseRole(e.source||PAGE_PARAMS.get("source")||"host");
+      const sourceLabel=DATED_SOURCE_LABELS[source]||"Dated";
+      const scope=clean(e.scope_name||PAGE_PARAMS.get("scope_name")||"");
+      const heading=`${sourceLabel}${scope?" — "+scope:""} — Notice`;
+      openCreativeWorkspace(true,heading);
+      makeCanvasItem("title",e.title||"Notice","",{left:"8%",top:"6%",width:"84%",height:"12%"});
       makeCanvasItem("text",eventNoticeFacts(e),"",{left:"8%",top:"22%",width:"84%",height:"34%"});
       makeCanvasItem("text","Add your invitation, description or other wording here.","",{left:"8%",top:"61%",width:"84%",height:"27%"});
       undoStack=[];redoStack=[];updateUndoRedo();selectItem(null);
@@ -1666,29 +1695,14 @@ function getAuthToken(){
 }
 
 
+function isDatedWorkflow(){
+  return CANVAS_MODE === "host" && PUBLICATION_TYPE === "dated";
+}
+
 function publishingAllowed(){
-
-  if(IS_FUN_MODE){
-    return false;
-  }
-
-  /*
-    Event / dated Calendar material continues through
-    the Event system rather than being independently
-    published from this Canvas.
-  */
-
-  if(
-    CANVAS_MODE === "host" ||
-    PUBLICATION_TYPE === "dated"
-  ){
-    return false;
-  }
-
-  return Boolean(
-    PUBLICATION_DESTINATION
-  );
-
+  if(IS_FUN_MODE) return false;
+  if(isDatedWorkflow()) return Boolean(readEventHandoff());
+  return Boolean(PUBLICATION_DESTINATION);
 }
 
 
@@ -1876,12 +1890,85 @@ function cleanPublicationPagesHtml(){
 }
 
 
+function currentDatedWipKey(){
+  return sessionStorage.getItem("sanctuaryCurrentDatedWipKey")||localStorage.getItem("sanctuaryCurrentDatedWipKey")||"";
+}
+
+async function publishDatedCanvas(){
+  const token=getAuthToken();
+  const handoff=readEventHandoff();
+  if(!token||!handoff){
+    alert("Your dated Work in Progress could not be found. Please return to Your Design Studio and reopen it.");
+    return;
+  }
+
+  finishDrawingEdit();
+  selectItem(null);
+
+  const payload={...(handoff.event_payload||{})};
+  payload.status="published";
+  payload.workflow_status="published";
+  payload.notice_published=true;
+  payload.yds_notice_pending=false;
+  payload.notice_title=clean(handoff.title||payload.title||firstUsefulText()||"Notice");
+  payload.notice_body_html=cleanPublicationPagesHtml();
+  payload.notice_body=payload.notice_body_html;
+  payload.notice_summary=clean(handoff.title||payload.title||"");
+  payload.source=handoff.source||payload.source||"host";
+  payload.producer_role=handoff.producer_role||payload.producer_role||payload.source;
+  payload.scope_id=handoff.scope_id||payload.scope_id||"";
+  payload.scope_name=handoff.scope_name||payload.scope_name||"";
+  payload.producer_resident_id=handoff.producer_resident_id||payload.host_resident_id||"";
+  payload.producer_member_id=handoff.producer_member_id||payload.host_member_id||"";
+  payload.retention_rule="event-date-plus-60-days";
+  payload.canvas_data=publicationCanvasData();
+
+  const existingId=clean(handoff.event_id||payload.event_id||"");
+  const method=existingId?"PUT":"POST";
+  const url=existingId?`${API_BASE}/api/events/${encodeURIComponent(existingId)}`:`${API_BASE}/api/events`;
+  const button=document.getElementById("publishCanvasBtn");
+  const oldText=button?.textContent||"Publish";
+  if(button){button.disabled=true;button.textContent="Publishing…";}
+
+  try{
+    const response=await fetch(url,{method,headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},body:JSON.stringify(payload)});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||data.success===false) throw new Error(data.message||`Publication failed (${response.status})`);
+
+    const event=data.event||data.item||{};
+    const eventId=clean(data.event_id||event.event_id||existingId);
+    if(eventId) sessionStorage.setItem("sanctuaryCurrentEventId",eventId);
+
+    handoff.workflow_status="published";
+    handoff.event_id=eventId||existingId;
+    sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(handoff));
+
+    const wipKey=currentDatedWipKey();
+    if(wipKey){localStorage.removeItem(wipKey);sessionStorage.removeItem(wipKey);}
+    localStorage.removeItem("sanctuaryCurrentDatedWipKey");
+    sessionStorage.removeItem("sanctuaryCurrentDatedWipKey");
+
+    alert("Published. Calendar, Events List and linked Notice are now live together.");
+    if(eventId) location.href=`events-details.html?event_id=${encodeURIComponent(eventId)}`;
+    else location.href="your-design-studio.html";
+  }catch(error){
+    console.error(error);
+    alert(error.message||"Your dated item could not be published. Your Work in Progress remains saved.");
+  }finally{
+    if(button){button.disabled=false;button.textContent=oldText;}
+  }
+}
+
 async function publishCanvas(){
 
   if(
     !publishingAllowed()
   ){
     return;
+  }
+
+  if(isDatedWorkflow()){
+    return publishDatedCanvas();
   }
 
 
@@ -2408,7 +2495,12 @@ document
       modeIntro.textContent=`Working as: ${label}.`;
       document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
 
-      if(PAGE_PARAMS.get("open")==="event-canvas"&&CANVAS_MODE==="host"){
+      if(PAGE_PARAMS.get("open")==="event-canvas"&&isDatedWorkflow()){
+        const e=readEventHandoff();
+        const source=normaliseRole(e?.source||PAGE_PARAMS.get("source")||"host");
+        const sourceLabel=DATED_SOURCE_LABELS[source]||"Dated";
+        const scope=clean(e?.scope_name||PAGE_PARAMS.get("scope_name")||"");
+        modeIntro.textContent=`Working on private Work in Progress: ${sourceLabel}${scope?" — "+scope:""}. Nothing appears in Calendar, Events List or Notices until you press Publish.`;
         if(openEventCanvasFromHandoff())return;
       }
 

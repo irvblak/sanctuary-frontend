@@ -568,6 +568,20 @@
     </section>
   </main>
 
+
+  <div id="ydsColourPopover" class="yds-colour-popover" hidden role="dialog" aria-label="Choose colour">
+    <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose shade">
+      <span id="ydsColourMarker" class="yds-colour-marker"></span>
+    </div>
+    <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
+    <div class="yds-colour-footer">
+      <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
+      <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
+      <button id="ydsColourDone" class="yds-colour-done" type="button">Done</button>
+    </div>
+    <p class="yds-colour-note">Move the slider for the hue, then choose the exact shade above.</p>
+  </div>
+
   <script>
     "use strict";
 
@@ -2571,17 +2585,5 @@ document
     configurePublishingButton();
   </script>
 
-<div id="ydsColourPopover" class="yds-colour-popover" hidden role="dialog" aria-label="Choose colour">
-  <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose shade">
-    <span id="ydsColourMarker" class="yds-colour-marker"></span>
-  </div>
-  <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
-  <div class="yds-colour-footer">
-    <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
-    <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
-    <button id="ydsColourDone" class="yds-colour-done" type="button">Done</button>
-  </div>
-  <p class="yds-colour-note">Move the slider for the hue, then choose the exact shade above.</p>
-</div>
 </body>
 </html>

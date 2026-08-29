@@ -337,7 +337,8 @@
       </div>
 
       <nav class="nav" aria-label="Page links">
-        <a class="pill" href="host-area.html">Your Design Studio</a>
+        <a class="pill" href="your-design-studio.html">Your Design Studio</a>
+        <a class="pill" id="guideLink" href="role-guide.html">Guide</a>
         <a class="pill" href="members-info.html">Members Hub</a>
         <button class="secondary" id="logoutBtn" type="button">Logout</button>
       </nav>
@@ -347,7 +348,7 @@
 
     <form id="eventForm" novalidate>
       <section class="card">
-        <h2>Event Details</h2>
+        <h2 id="detailsHeading">Calendar &amp; Events List Details</h2>
 
         <div class="event-grid">
           <div class="event-title">
@@ -396,7 +397,7 @@
 
       <section class="card" id="bookingSection">
         <h2>Bookings, Guests &amp; Cut-off Dates</h2>
-        <p id="bookingNoticeOnlyNote" class="notice-only-note">Not used for this type of Notice. These controls are shown only because the same form also serves hosted Events.</p>
+        <p id="bookingNoticeOnlyNote" class="notice-only-note">Not needed for this dated item. Booking controls apply only to hosted Events.</p>
         <p class="help">These details feed Booking, Guest Booking, the Event Notice and State of Play.</p>
 
         <div class="booking-grid">
@@ -434,7 +435,7 @@
 
       <section class="card" id="paymentSection">
         <h2>Payment</h2>
-        <p id="paymentNoticeOnlyNote" class="notice-only-note">Not used for this type of Notice. Payment arrangements apply only to hosted Events.</p>
+        <p id="paymentNoticeOnlyNote" class="notice-only-note">Not needed for this dated item. Payment arrangements apply only to hosted Events.</p>
         <p class="help">Use this for payable hosted events. Payment collection itself remains outside the website for now.</p>
 
         <div class="payment-grid">
@@ -468,7 +469,8 @@
 
         <div class="actions">
           <button class="primary" id="saveBtn" type="button">Save Event Details &amp; Continue to Notice Design</button>
-          <button class="secondary" id="resetBtn" type="button">Reset event details</button>
+          <button class="secondary" id="recoverWipBtn" type="button" style="display:none;">Recover Work in Progress</button>
+          <button class="secondary" id="resetBtn" type="button">Clear these details</button>
           <a class="pill" id="viewNoticeLink" href="#" style="display:none;">View Event Notice</a>
           <button class="secondary" id="scrapEventBtn" type="button" style="display:none;">🗑 Scrap this Event…</button>
         </div>
@@ -502,6 +504,15 @@ const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
 
 const params = new URLSearchParams(location.search);
 const eventMode = String(params.get("mode") || "host").toLowerCase() === "post" ? "post" : "host";
+
+const rawSource = String(params.get("source") || (eventMode === "host" ? "host" : "host")).toLowerCase();
+const datedSource = ["host","activity","committee","panel","services"].includes(rawSource)
+  ? rawSource
+  : (eventMode === "host" ? "host" : "host");
+
+const scopeId = String(params.get("scope") || "").trim();
+const scopeName = String(params.get("scope_name") || "").trim();
+
 let editEventId = String(params.get("event_id") || "").trim();
 
 const $ = id => document.getElementById(id);
@@ -509,6 +520,8 @@ const els = {
   pageTitle:$("pageTitle"),
   pageSubtitle:$("pageSubtitle"),
   identityBox:$("identityBox"),
+  detailsHeading:$("detailsHeading"),
+  guideLink:$("guideLink"),
   eventForm:$("eventForm"),
   title:$("title"),
   venue:$("venue"),
@@ -533,6 +546,7 @@ const els = {
   paymentNote:$("paymentNote"),
   saveStatus:$("saveStatus"),
   saveBtn:$("saveBtn"),
+  recoverWipBtn:$("recoverWipBtn"),
   resetBtn:$("resetBtn"),
   viewNoticeLink:$("viewNoticeLink"),
   scrapEventBtn:$("scrapEventBtn"),
@@ -581,7 +595,12 @@ function normalRole(role){
     activity_organizer:"activity_organiser",
     community_news:"news_contributor",
     residents_association_panel:"panel",
+    residents_association:"panel",
     residents_panel:"panel",
+    ra:"panel",
+    residents_association_secretary:"ra_secretary",
+    panel_secretary:"ra_secretary",
+    committee_secretary:"committee_secretary",
     service_provider:"services"
   };
   return aliases[key] || key;
@@ -655,16 +674,16 @@ function storedRoles(){
 
 function roleAllowsMode(roles){
   if(roles.includes("admin")) return true;
-  if(eventMode === "host") return roles.includes("host");
 
-  return roles.some(r=>[
-    "panel",
-    "committee",
-    "services",
-    "activity_organiser",
-    "news_contributor",
-    "editor"
-  ].includes(r));
+  const allowed = {
+    host:["host"],
+    activity:["activity_organiser"],
+    committee:["committee","secretary","committee_secretary"],
+    panel:["panel","ra_secretary"],
+    services:["services"]
+  };
+
+  return (allowed[datedSource] || []).some(role=>roles.includes(role));
 }
 
 function profileResidents(profile){
@@ -726,6 +745,130 @@ async function refreshAuthorityRoles(memberId,residentId,roles){
   }
 }
 
+const SOURCE_LABELS = {
+  host:"Event Host",
+  activity:"Activity Organiser",
+  committee:"Committee",
+  panel:"Residents Association",
+  services:"Services"
+};
+
+const SOURCE_TITLES = {
+  host:"Prepare an Event",
+  activity:"Prepare a dated Activity",
+  committee:"Prepare dated Committee material",
+  panel:"Prepare dated Residents Association material",
+  services:"Prepare dated Service information"
+};
+
+const SOURCE_GUIDES = {
+  host:"event-host",
+  activity:"activity-organiser",
+  committee:"club-publications",
+  panel:"residents-association-panel",
+  services:"services"
+};
+
+function sourceLabel(){
+  return SOURCE_LABELS[datedSource] || "Authorised producer";
+}
+
+function sourceTitle(){
+  return SOURCE_TITLES[datedSource] || "Prepare dated material";
+}
+
+function wipStorageKey(){
+  const resident = verifiedResidentId || "unknown";
+  const scope = scopeId || "general";
+  return `sanctuaryDatedWip:${resident}:${datedSource}:${scope}`;
+}
+
+function makeDraftId(){
+  return `WIP-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+}
+
+function readStoredWip(){
+  try{
+    const raw = localStorage.getItem(wipStorageKey());
+    return raw ? JSON.parse(raw) : null;
+  }catch{
+    return null;
+  }
+}
+
+function storeWip(handoff){
+  localStorage.setItem(wipStorageKey(), JSON.stringify(handoff));
+  sessionStorage.setItem("sanctuaryEventCanvasHandoff", JSON.stringify(handoff));
+  sessionStorage.setItem("sanctuaryCurrentDatedWipKey", wipStorageKey());
+  els.recoverWipBtn.style.display = "inline-flex";
+}
+
+function clearStoredWip(){
+  try{
+    localStorage.removeItem(wipStorageKey());
+    if(sessionStorage.getItem("sanctuaryCurrentDatedWipKey") === wipStorageKey()){
+      sessionStorage.removeItem("sanctuaryCurrentDatedWipKey");
+    }
+  }catch{}
+  els.recoverWipBtn.style.display = "none";
+}
+
+function populateFromPayload(p){
+  if(!p || typeof p !== "object") return false;
+
+  els.title.value = p.title || p.notice_title || "";
+  els.venue.value = p.location || p.venue || "";
+  els.category.value = p.category_label || p.category || p.category_key || "";
+  els.eventDate.value = p.event_date || "";
+  els.startTime.value = p.start_time || "";
+  els.endTime.value = p.end_time || "";
+
+  els.capacityTotal.value = p.capacity_total ?? p.capacity ?? "";
+  els.membersBookingOpenAt.value = p.members_booking_open_at || "";
+  els.guestsBookingOpenAt.value = p.guests_booking_open_at || "";
+  els.bookingCloseAt.value = p.booking_close_at || "";
+  els.cancellationCutoffAt.value = p.cancellation_cutoff_at || "";
+  els.refundCutoffAt.value = p.refund_cutoff_at || "";
+
+  const payable =
+    p.payment_required === true ||
+    p.payable === true ||
+    p.is_payable === true ||
+    clean(p.payment_required).toLowerCase() === "yes";
+
+  els.paymentRequired.value = payable ? "yes" : "no";
+  els.costPerPlace.value =
+    p.cost_per_place ??
+    p.price_per_place ??
+    p.price_member ??
+    p.unit_price ??
+    "";
+
+  els.paymentInstructions.value = p.payment_instructions || "";
+  els.paymentNote.value =
+    p.payment_terms ||
+    p.refund_note ||
+    p.payment_refund_note ||
+    "";
+
+  return true;
+}
+
+function recoverWip(){
+  const saved = readStoredWip();
+
+  if(!saved || !populateFromPayload(saved.event_payload || saved)){
+    setStatus(els.saveStatus,"warn","No Work in Progress was found for this role and activity.");
+    return;
+  }
+
+  setStatus(
+    els.saveStatus,
+    "ok",
+    "Your Work in Progress has been recovered. It is still private and has not been published."
+  );
+}
+
 async function loadProducer(memberId,residentId){
   const rememberedName =
     sessionStorage.getItem("currentDisplayName") ||
@@ -765,26 +908,28 @@ async function loadProducer(memberId,residentId){
   }
 
   els.identityBox.textContent =
-    `${eventMode === "post" ? "Authorised producer" : "Host"} recognised: ${producer.name || residentId} (${residentId})`;
+    `${sourceLabel()} recognised: ${producer.name || residentId} (${residentId})${scopeName ? " • " + scopeName : ""}`;
   els.identityBox.classList.add("show");
 }
 
 function applyMode(){
-  const isPost = eventMode === "post";
+  const isPost = datedSource !== "host";
 
   els.pageTitle.textContent = editEventId
-    ? (isPost ? "Edit Notice" : "Edit Hosted Event")
-    : (isPost ? "Create a Notice" : "Host an Event");
+    ? `Edit ${sourceTitle().replace(/^Prepare /,"")}`
+    : sourceTitle();
 
   document.title = `${els.pageTitle.textContent} | Sanctuary Club`;
+  els.detailsHeading.textContent = "Calendar & Events List Details";
 
-  els.pageSubtitle.textContent = isPost
-    ? "Enter the date, time, place and other basic details for your Notice. It can then be designed in Your Design Studio and shown through the appropriate Calendar, Events List and Notice route."
-    : "Enter the facts needed for the Event Notice, Calendar, Events List, bookings and State of Play.";
+  els.pageSubtitle.textContent =
+    "Enter the factual details needed for Calendar & Events List first. " +
+    "They remain private Work in Progress while you prepare the linked Notice in Your Design Studio.";
 
-  els.modeNote.textContent = isPost
-    ? "This is a Notice, not a bookable hosted Event. Complete the Notice details above; Booking and Payment are not needed and have therefore been greyed out."
-    : "Enter your event details then go to your studio to create your poster";
+  els.modeNote.textContent =
+    datedSource === "host"
+      ? "Nothing is visible to members yet. Continue to Notice Design when these Event facts are ready; Calendar, Events List and the linked Notice will become live only when you publish from the Design Studio."
+      : `Nothing is visible to members yet. This ${sourceLabel()} item is non-bookable; Booking and Payment are therefore not needed. Calendar, Events List and the linked Notice will become live together only when you publish.`;
 
   [els.bookingSection,els.paymentSection].forEach(section=>{
     section.classList.toggle("pan-e-disabled",isPost);
@@ -806,13 +951,14 @@ function applyMode(){
     els.paymentNote
   ].forEach(el=>el.disabled = isPost);
 
-  els.saveBtn.textContent = isPost
-    ? "Save Notice Details & Continue to Notice Design"
-    : "Save Event Details & Continue to Notice Design";
+  els.saveBtn.textContent =
+    "Save Work in Progress & Continue to Notice Design";
 
-  els.resetBtn.textContent = isPost
-    ? "Reset notice details"
-    : "Reset event details";
+  els.resetBtn.textContent =
+    "Clear these details";
+
+  const guideRole = SOURCE_GUIDES[datedSource] || "event-host";
+  els.guideLink.href = `role-guide.html?role=${encodeURIComponent(guideRole)}`;
 }
 
 function asTime(value){
@@ -822,7 +968,7 @@ function asTime(value){
 }
 
 function validateDates(){
-  if(eventMode === "post") return "";
+  if(datedSource !== "host") return "";
 
   const eventStart = els.eventDate.value
     ? asTime(els.eventDate.value + "T" + (els.startTime.value || "00:00"))
@@ -873,7 +1019,7 @@ function existingHostMember(){
 }
 
 function buildPayload(){
-  const isPost = eventMode === "post";
+  const isPost = datedSource !== "host";
   const payable = !isPost && els.paymentRequired.value === "yes";
   const cost = payable ? money(els.costPerPlace.value) : 0;
 
@@ -883,6 +1029,14 @@ function buildPayload(){
   return {
     event_id:editEventId,
     event_mode:eventMode,
+    source:datedSource,
+    producer_role:datedSource,
+    scope_id:scopeId,
+    scope_name:scopeName,
+    workflow_status:"draft",
+    status:"draft",
+    notice_published:false,
+    retention_rule:"event-date-plus-60-days",
 
     title:clean(els.title.value),
     notice_title:clean(els.title.value),
@@ -997,7 +1151,7 @@ async function loadEvent(){
   if(e.host_landline) producer.landline = clean(e.host_landline);
 
   els.identityBox.textContent =
-    `${eventMode === "post" ? "Authorised producer" : "Host"} recognised: ${producer.name || verifiedResidentId} (${ownerResident || verifiedResidentId})`;
+    `${sourceLabel()} recognised: ${producer.name || verifiedResidentId} (${ownerResident || verifiedResidentId})${scopeName ? " • " + scopeName : ""}`;
 
   els.viewNoticeLink.href =
     "events-details.html?event_id=" + encodeURIComponent(editEventId);
@@ -1006,19 +1160,31 @@ async function loadEvent(){
   els.scrapStateOfPlayLink.href =
     "host-state-of-play.html?event_id=" + encodeURIComponent(editEventId);
 
-  if(eventMode === "host"){
+  if(editEventId){
     els.scrapEventBtn.style.display = "inline-flex";
   }
 }
 
 function buildHandoff(payload,eventId){
+  const existing = readStoredWip();
+
   return {
-    handoff_version:1,
-    handoff_type:"event_notice",
+    handoff_version:2,
+    handoff_type:"dated_notice_wip",
     saved_at:new Date().toISOString(),
 
-    event_id:eventId,
+    draft_id:existing?.draft_id || makeDraftId(),
+    workflow_status:"draft",
+    workflow_action:eventId ? "update" : "create",
+    visibility:"private",
+    retention_rule:"event-date-plus-60-days",
+
+    event_id:eventId || "",
     event_mode:eventMode,
+    source:datedSource,
+    producer_role:datedSource,
+    scope_id:scopeId,
+    scope_name:scopeName,
 
     title:payload.title,
     category:payload.category,
@@ -1044,7 +1210,9 @@ function buildHandoff(payload,eventId){
     payment_required:payload.payment_required,
     cost_per_place:payload.cost_per_place,
     payment_instructions:payload.payment_instructions,
-    payment_note:payload.payment_refund_note
+    payment_note:payload.payment_refund_note,
+
+    event_payload:payload
   };
 }
 
@@ -1052,7 +1220,7 @@ async function saveEvent(){
   setStatus(els.saveStatus,"","");
 
   if(!verifiedResidentId || !verifiedMemberId || !authToken){
-    location.replace("host-area.html");
+    location.replace("your-design-studio.html");
     return;
   }
 
@@ -1063,8 +1231,8 @@ async function saveEvent(){
     return;
   }
 
-  if(eventMode === "host" && payload.payment_required && payload.cost_per_place <= 0){
-    setStatus(els.saveStatus,"warn","For a payable event, enter a cost per place.");
+  if(datedSource === "host" && payload.payment_required && payload.cost_per_place <= 0){
+    setStatus(els.saveStatus,"warn","For a payable Event, enter a cost per place.");
     return;
   }
 
@@ -1076,52 +1244,60 @@ async function saveEvent(){
 
   try{
     els.saveBtn.disabled = true;
-    setStatus(els.saveStatus,"warn",eventMode === "post" ? "Saving Notice details…" : "Saving event details…");
 
-    const data = await apiFetch(
-      "/api/events" + (editEventId ? "/" + encodeURIComponent(editEventId) : ""),
-      {
-        method:editEventId ? "PUT" : "POST",
-        headers:{
-          "Content-Type":"application/json",
-          "Authorization":"Bearer " + authToken
-        },
-        body:JSON.stringify(payload)
-      }
-    );
-
-    const eventId = clean(data.event?.event_id || data.event_id || editEventId);
-
-    if(!eventId){
-      throw new Error("The Event was saved but no Event Reference was returned.");
-    }
-
-    editEventId = eventId;
-
-    sessionStorage.setItem(
-      "sanctuaryEventCanvasHandoff",
-      JSON.stringify(buildHandoff(payload,eventId))
-    );
+    /*
+      New and edited dated material is staged locally as private WIP.
+      No POST/PUT to /api/events happens here.  The Canvas Publish
+      action will create/update the Event record and make C + EL + N
+      live together.
+    */
+    const handoff = buildHandoff(payload,editEventId);
+    storeWip(handoff);
 
     setStatus(
       els.saveStatus,
       "ok",
-      `${eventMode === "post" ? "Notice details" : "Event details"} saved as ${eventId}. Returning to Your Design Studio to complete the Notice…`
+      "Work in Progress saved privately. Opening the linked Notice in Your Design Studio…"
     );
 
+    const canvasParams = new URLSearchParams({
+      mode:"host",
+      type:"dated",
+      open:"event-canvas",
+      source:datedSource,
+      status:"draft",
+      visibility:"private",
+      retention:"60-days",
+      from:"dated-form"
+    });
+
+    if(scopeId) canvasParams.set("scope",scopeId);
+    if(scopeName) canvasParams.set("scope_name",scopeName);
+    if(editEventId) canvasParams.set("event_id",editEventId);
+
     window.setTimeout(()=>{
-      location.href =
-        `host-area.html?open=event-canvas&event_id=${encodeURIComponent(eventId)}&mode=${encodeURIComponent(eventMode)}`;
-    },350);
+      location.href = `design-studio-canvas.html?${canvasParams.toString()}`;
+    },250);
 
   }catch(err){
-    setStatus(els.saveStatus,"err",err.message || "Save failed.");
+    setStatus(els.saveStatus,"err",err.message || "Work in Progress could not be saved.");
   }finally{
     els.saveBtn.disabled = false;
   }
 }
 
 function resetForm(){
+  const hasSaved = Boolean(readStoredWip());
+
+  if(hasSaved){
+    const ok = window.confirm(
+      "Clear these details and remove the saved Work in Progress for this role" +
+      (scopeName ? ` (${scopeName})` : "") +
+      "?"
+    );
+    if(!ok) return;
+  }
+
   [
     els.title,els.venue,els.eventDate,els.startTime,els.endTime,
     els.capacityTotal,els.membersBookingOpenAt,els.guestsBookingOpenAt,
@@ -1131,7 +1307,8 @@ function resetForm(){
 
   els.category.value="";
   els.paymentRequired.value="no";
-  setStatus(els.saveStatus,"","");
+  clearStoredWip();
+  setStatus(els.saveStatus,"ok","The Work in Progress has been cleared.");
 }
 
 async function scrapCheck(){
@@ -1190,7 +1367,7 @@ async function scrapEvent(){
           "Content-Type":"application/json",
           "Authorization":"Bearer " + authToken
         },
-        body:JSON.stringify({confirm_delete:true})
+        body:JSON.stringify({confirm_scrap:true})
       }
     );
 
@@ -1226,7 +1403,7 @@ async function initialise(){
   applyMode();
 
   if(!authToken){
-    location.replace("host-area.html");
+    location.replace("your-design-studio.html");
     return;
   }
 
@@ -1247,7 +1424,7 @@ async function initialise(){
   );
 
   if(!residentId || !memberId){
-    location.replace("host-area.html");
+    location.replace("your-design-studio.html");
     return;
   }
 
@@ -1255,7 +1432,7 @@ async function initialise(){
   roles = await refreshAuthorityRoles(memberId,residentId,roles);
 
   if(!roleAllowsMode(roles)){
-    location.replace("host-area.html");
+    location.replace("your-design-studio.html");
     return;
   }
 
@@ -1264,16 +1441,22 @@ async function initialise(){
 
   await loadProducer(memberId,residentId);
 
+  const savedWip = readStoredWip();
+  if(savedWip){
+    els.recoverWipBtn.style.display = "inline-flex";
+  }
+
   if(editEventId){
     try{
       await loadEvent();
     }catch(err){
-      setStatus(els.saveStatus,"err",err.message || "Could not load Event.");
+      setStatus(els.saveStatus,"err",err.message || "Could not load the dated item.");
     }
   }
 }
 
 els.saveBtn.addEventListener("click",saveEvent);
+els.recoverWipBtn.addEventListener("click",recoverWip);
 els.resetBtn.addEventListener("click",resetForm);
 
 els.eventForm.addEventListener("submit",event=>{

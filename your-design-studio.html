@@ -3432,6 +3432,16 @@
 
 
 
+      /*
+        If this member has already opened Your Design Studio during the
+        current authenticated visit, restore that Studio identity now.
+        Do not ask for the Personal PIN again merely because the member
+        has returned from Canvas or another Studio page.
+      */
+
+      restoreStudioSession();
+
+
       els.verifyForm
         .addEventListener(
           "submit",
@@ -3523,12 +3533,10 @@
 
 
       /*
-        YDS always opens at the Member ID + Personal PIN threshold.
-
-        This deliberately avoids restoring hostAreaVerified / hostAreaRoles
-        from a previous visit. A fresh verification refreshes the member's
-        current roles and issues a current authentication token before any
-        publishing route is opened.
+        Authentication principle:
+        Info login / an already verified Studio session remains valid until
+        logout or expiry. Returning from Canvas must not create a second
+        Personal-PIN threshold.
       */
 
     })();

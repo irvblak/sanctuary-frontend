@@ -1063,7 +1063,7 @@
     class="btn secondary"
     href="library-publications.html?id=design-studio-publishing"
   >
-    Where does my work go?
+    Publishing & filing
   </a>
 
 </div>
@@ -1118,11 +1118,11 @@
       >
 
         <h3>
-          Your Event Workspace
+          Your Event & Activity Workspace
         </h3>
 
         <p class="workspace-intro">
-          If you have created an Event, you can control it from here
+          If you have created a dated Event or Activity, you can return to it here
           as well as from other convenient places around Sanctuary Club.
         </p>
 
@@ -1132,11 +1132,11 @@
           <a href="host-my-events.html">
 
             <strong>
-              Your Event Notices
+              Your Dated Notices
             </strong>
 
             <span>
-              View or edit Event Notices
+              View or edit dated Event or Activity Notices
               you have already created.
             </span>
 
@@ -1165,7 +1165,7 @@
 
             <span>
               Add, update or cancel
-              a member booking for one of your Events.
+              a member booking for one of your Events or Activities.
             </span>
 
           </a>
@@ -1233,10 +1233,8 @@
         </p>
 
         <p>
-          If you think you might want to share it later,
-          save a Draft on the website as well.
-          You can come back to it and offer it for publication
-          through the appropriate Writer or Artist route.
+          If you are preparing something for the Club, keep it as Work in Progress until you are ready.
+          Work in Progress is private and editable; publishing or submitting is the deliberate step that makes it available to others.
         </p>
 
         <p>
@@ -1389,105 +1387,64 @@
 
   {
     key:"host",
-
     label:"Host an Event",
-
     description:
-      "Create an Event — payable or free — and its Notice.",
-
+      "Create a dated Event for Calendar & Events List, then prepare its linked Notice.",
     iconId:"role-host",
-
     roles:["host"]
   },
 
-
   {
     key:"activity",
-
     label:"Activity Organiser",
-
     description:
-      "Create a dated Activity Notice or standing information about an Activity you organise.",
-
+      "Create dated C&EL material or standing information for an Activity you organise.",
     iconId:"role-activity",
-
     roles:["activity_organiser"]
   },
 
-
   {
     key:"writer",
-
     label:"Writer",
-
     description:
-      "Write articles, stories, reminiscences or other work for publication.",
-
+      "Create an article or story for the Reading Room.",
     iconId:"role-news",
-
-    roles:[
-      "writer",
-      "news_contributor"
-    ]
+    roles:["writer","news_contributor"]
   },
-
 
   {
     key:"artist",
-
     label:"Artist",
-
     description:
-      "Create artwork or other visual work for possible publication in the Gallery.",
-
+      "Create visual work for possible publication in the Gallery.",
     iconId:"role-artist",
-
     roles:["artist"]
   },
 
-
   {
-    key:"club_publications",
-
-    label:"Club Publications",
-
+    key:"committee",
+    label:"Committee",
     description:
-      "Create Club guides, information, notices and news for publication.",
-
+      "Create authorised dated Committee material or standing Club publications.",
     iconId:"role-committee",
-
-    roles:[
-      "committee",
-      "secretary",
-      "treasurer"
-    ]
+    roles:["committee","secretary","committee_secretary"]
   },
-
 
   {
     key:"panel",
-
-    label:"Residents Association Panel",
-
+    label:"Residents Association",
     description:
-      "Create a dated Residents Association Notice or standing information.",
-
+      "Create authorised dated or standing Residents Association material.",
     iconId:"role-panel",
-
-    roles:["panel"]
+    roles:["panel","residents_association","ra_secretary","panel_secretary"]
   },
-
 
   {
     key:"services",
-
     label:"Services",
-
     description:
-      "Create a dated Service Notice or standing information about a Service.",
-
+      "Create dated or standing information for an authorised Service.",
     iconId:"role-services",
-
     roles:["services"]
   }
 
@@ -1555,7 +1512,7 @@
         {
           roles:["panel"],
           iconId:"role-panel",
-          tooltip:"Residents Association Panel"
+          tooltip:"Residents Association"
         },
 
         {
@@ -1713,6 +1670,21 @@
           association_panel:
             "panel",
 
+          ra:
+            "panel",
+
+          ra_secretary:
+            "ra_secretary",
+
+          residents_association_secretary:
+            "ra_secretary",
+
+          panel_secretary:
+            "ra_secretary",
+
+          committee_secretary:
+            "committee_secretary",
+
           service_publisher:
             "services",
 
@@ -1747,6 +1719,125 @@
           text;
       }
 
+
+
+
+      const ACTIVITY_SCOPE_LABELS = {
+        "daffs-caff":"Daff’s Caff",
+        "book-club":"Book Club",
+        "bridge":"Bridge",
+        "mahjong":"Mahjong",
+        "rummikub":"Rummikub",
+        "bowls":"Bowls",
+        "table-tennis":"Table Tennis",
+        "cookery":"Cookery",
+        "walking-group":"Walking Group",
+        "art-group":"Art Group",
+        "gardening":"Gardening",
+        "computer-art":"Computer Art"
+      };
+
+      let currentActivityScopes = [];
+
+
+      function cleanActivityScope(value){
+        const raw = clean(value)
+          .toLowerCase()
+          .replace(/[’']/g,"")
+          .replace(/&/g,"and")
+          .replace(/[^a-z0-9]+/g,"-")
+          .replace(/^-+|-+$/g,"");
+
+        const aliases = {
+          "daffs-caff":"daffs-caff",
+          "daff-s-caff":"daffs-caff",
+          "book-club":"book-club",
+          "bridge":"bridge",
+          "mahjong":"mahjong",
+          "rummikub":"rummikub",
+          "bowls":"bowls",
+          "table-tennis":"table-tennis",
+          "cookery":"cookery",
+          "walking-group":"walking-group",
+          "art-group":"art-group",
+          "gardening":"gardening",
+          "computer-art":"computer-art"
+        };
+
+        return aliases[raw] || "";
+      }
+
+
+      function extractActivityScopes(){
+        const found = [];
+
+        Array.from(arguments).forEach(source => {
+          if(!source || typeof source !== "object") return;
+
+          const values =
+            source.activity_scopes ||
+            source.activityScopes ||
+            source.scopes ||
+            [];
+
+          if(!Array.isArray(values)) return;
+
+          values.forEach(value => {
+            const scope = cleanActivityScope(
+              typeof value === "string"
+                ? value
+                : (
+                    value?.activity_id ||
+                    value?.activityId ||
+                    value?.scope ||
+                    value?.id ||
+                    value?.name ||
+                    ""
+                  )
+            );
+
+            if(scope && !found.includes(scope)){
+              found.push(scope);
+            }
+          });
+        });
+
+        return found;
+      }
+
+
+      function storeActivityScopes(scopes){
+        currentActivityScopes = Array.isArray(scopes)
+          ? [...new Set(scopes.map(cleanActivityScope).filter(Boolean))]
+          : [];
+
+        try{
+          const encoded = JSON.stringify(currentActivityScopes);
+          sessionStorage.setItem("ydsActivityScopes", encoded);
+          localStorage.setItem("ydsActivityScopes", encoded);
+        }catch(error){
+          console.warn("Could not store Activity scopes.", error);
+        }
+      }
+
+
+      function restoreActivityScopes(){
+        try{
+          const raw =
+            sessionStorage.getItem("ydsActivityScopes") ||
+            localStorage.getItem("ydsActivityScopes") ||
+            "[]";
+
+          const parsed = JSON.parse(raw);
+          currentActivityScopes = Array.isArray(parsed)
+            ? [...new Set(parsed.map(cleanActivityScope).filter(Boolean))]
+            : [];
+        }catch{
+          currentActivityScopes = [];
+        }
+
+        return currentActivityScopes;
+      }
 
 
       async function apiFetch(
@@ -2375,8 +2466,9 @@
         */
 
         els.existingTools.hidden =
-          !roles.includes(
-            "host"
+          !(
+            roles.includes("host") ||
+            roles.includes("activity_organiser")
           );
       }
 
@@ -2453,314 +2545,403 @@
 
 
 
-      function openChoice(
-  key
-){
-
-  /*
-    =====================================================
-    HOST AN EVENT
-    =====================================================
-
-    Anything appearing on Calendar follows the common
-    dated-material rule.
-
-    Calendar material is retained for 60 days after
-    its date and is then removed automatically.
-
-    That retention rule will be enforced centrally
-    by the publishing/event system rather than asking
-    the member to make an archive decision.
-  */
-
-  if(key === "host"){
-
-    setChoiceContent(
-
-      "Host an Event",
-
-      `
-        <p>
-          Create your Event and its Notice here.
-        </p>
-
-        <p>
-          The Event form will ask for the date, time,
-          venue and any booking or payment information needed.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Continue to Event form",
-          "host-event-form.html?mode=host&source=host"
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    ACTIVITY ORGANISER
-    =====================================================
-  */
-
-  if(key === "activity"){
-
-    setChoiceContent(
-
-      "Activity Organiser",
-
-      `
-        <p>
-          Choose what you would like to create.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Create dated Activity Notice",
-          "host-event-form.html?mode=post&source=activity"
-        ),
-
-        actionButton(
-          "Create standing Activity information",
-          "design-studio-canvas.html?mode=activity&type=standing&destination=club-activities&retention=permanent&approval=self",
+      function guideButton(roleKey){
+        return actionButton(
+          "Guide",
+          `role-guide.html?role=${encodeURIComponent(roleKey)}`,
           true
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    WRITER
-    =====================================================
-
-    Writer work:
-      destination = Members' Articles & Stories
-      approval    = Editor
-      retention   = permanent until withdrawn
-  */
-
-  if(key === "writer"){
-
-    setChoiceContent(
-
-      "Writer",
-
-      `
-        <p>
-          Create an article, story, reminiscence
-          or other piece of writing.
-        </p>
-
-        <p>
-          When it is ready, you may submit it
-          to an Editor for publication.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Open the Design Studio",
-          "design-studio-canvas.html?mode=writer&type=standing&destination=members-articles-stories&retention=permanent&approval=editor"
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    ARTIST
-    =====================================================
-
-    Artist work:
-      destination = Gallery
-      approval    = Editor
-      retention   = permanent until withdrawn
-  */
-
-  if(key === "artist"){
-
-    setChoiceContent(
-
-      "Artist",
-
-      `
-        <p>
-          Create artwork or other visual work
-          for yourself or for possible publication.
-        </p>
-
-        <p>
-          When it is ready, you may submit it
-          to an Editor for the Gallery.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Open the Design Studio",
-          "design-studio-canvas.html?mode=artist&type=standing&destination=gallery&retention=permanent&approval=editor"
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    CLUB PUBLICATIONS
-    =====================================================
-
-    Club Publications is a publishing route, not a new
-    member role.  It may be opened by any qualifying
-    Club-office role listed in STUDIO_CHOICES above.
-
-    The member chooses what is being produced; the
-    publishing metadata then carries the correct Library
-    destination forward automatically.
-  */
-
-  if(key === "club_publications"){
-
-    setChoiceContent(
-
-      "Club Publications",
-
-      `
-        <p>
-          Choose the kind of Club publication you would like to create.
-        </p>
-
-        <p>
-          The computer will use your choice to send approved work to the
-          correct part of the Library. You do not need to choose a filing
-          destination yourself.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Guides & Help",
-          "design-studio-canvas.html?mode=club-publications&type=standing&destination=guides-help&retention=permanent&approval=self"
-        ),
-
-        actionButton(
-          "Useful Information",
-          "design-studio-canvas.html?mode=club-publications&type=standing&destination=useful-information&retention=permanent&approval=self",
-          true
-        ),
-
-        actionButton(
-          "Notices & News",
-          "design-studio-canvas.html?mode=club-publications&type=standing&destination=notices-news&retention=permanent&approval=self",
-          true
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    RESIDENTS ASSOCIATION PANEL
-    =====================================================
-  */
-
-  if(key === "panel"){
-
-    setChoiceContent(
-
-      "Residents Association Panel",
-
-      `
-        <p>
-          Choose what you would like to create.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Create dated Residents Association Notice",
-          "host-event-form.html?mode=post&source=panel"
-        ),
-
-        actionButton(
-          "Create standing Residents Association information",
-          "design-studio-canvas.html?mode=panel&type=standing&destination=notices-news&retention=permanent&approval=self",
-          true
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-
-
-  /*
-    =====================================================
-    SERVICES
-    =====================================================
-  */
-
-  if(key === "services"){
-
-    setChoiceContent(
-
-      "Services",
-
-      `
-        <p>
-          Choose what you would like to create.
-        </p>
-      `,
-
-      [
-        actionButton(
-          "Create dated Service Notice",
-          "host-event-form.html?mode=host&source=services"
-        ),
-
-        actionButton(
-          "Create standing Service information",
-          "design-studio-canvas.html?mode=services&type=standing&destination=notices-news&retention=permanent&approval=self",
-          true
-        )
-      ]
-
-    );
-
-    return;
-  }
-
-}
+        );
+      }
+
+
+      function datedRoute(source, extraParams = {}){
+        const params = new URLSearchParams({
+          mode: source === "host" ? "host" : "post",
+          source,
+          status:"draft",
+          visibility:"private",
+          retention:"60-days",
+          from:"yds",
+          ...extraParams
+        });
+
+        return `host-event-form.html?${params.toString()}`;
+      }
+
+
+      function standingRoute(mode, destination, extraParams = {}){
+        const params = new URLSearchParams({
+          mode,
+          type:"standing",
+          destination,
+          retention:"permanent",
+          approval:"self",
+          status:"draft",
+          visibility:"private",
+          from:"yds",
+          ...extraParams
+        });
+
+        return `design-studio-canvas.html?${params.toString()}`;
+      }
+
+
+      function activityButtons(){
+        const scopes =
+          currentActivityScopes.length
+            ? currentActivityScopes
+            : restoreActivityScopes();
+
+        if(!scopes.length){
+          return [
+            actionButton(
+              "Create dated Activity Notice",
+              datedRoute("activity")
+            ),
+            actionButton(
+              "Create standing Activity information",
+              standingRoute(
+                "activity",
+                "club-activities",
+                {section:"club-activities"}
+              ),
+              true
+            ),
+            guideButton("activity-organiser")
+          ];
+        }
+
+        const buttons = [];
+
+        scopes.forEach(scope => {
+          const label =
+            ACTIVITY_SCOPE_LABELS[scope] ||
+            scope;
+
+          buttons.push(
+            actionButton(
+              `${label} — dated Notice`,
+              datedRoute(
+                "activity",
+                {
+                  scope,
+                  scope_name:label
+                }
+              )
+            )
+          );
+
+          buttons.push(
+            actionButton(
+              `${label} — standing information`,
+              standingRoute(
+                "activity",
+                "club-activities",
+                {
+                  section:"club-activities",
+                  scope,
+                  scope_name:label
+                }
+              ),
+              true
+            )
+          );
+        });
+
+        buttons.push(
+          guideButton("activity-organiser")
+        );
+
+        return buttons;
+      }
+
+
+      function openChoice(key){
+
+        if(key === "host"){
+
+          setChoiceContent(
+            "Host an Event",
+            `
+              <p>
+                Start with the factual Event details needed for the Calendar and Events List.
+                When those are saved, you can continue directly to the linked Notice.
+              </p>
+
+              <p>
+                Your work remains private and editable while it is Work in Progress.
+                Nothing appears in Calendar, Events List or Notices until you choose <strong>Publish</strong>.
+                Published dated material is removed automatically 60 days after its date.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create an Event",
+                datedRoute("host")
+              ),
+              guideButton("event-host")
+            ]
+          );
+
+          return;
+        }
+
+
+        if(key === "activity"){
+
+          const scoped =
+            currentActivityScopes.length ||
+            restoreActivityScopes().length;
+
+          setChoiceContent(
+            "Activity Organiser",
+            `
+              <p>
+                ${scoped
+                  ? "Choose the Activity and what you want to create."
+                  : "Choose what you want to create. When Activity scopes are assigned in the Role Manager, your own Activities will be shown here automatically."}
+              </p>
+
+              <p>
+                A dated Activity goes through Calendar & Events List before its linked Notice.
+                Standing Activity information goes directly to the Design Studio and is filed automatically under Club Activities.
+              </p>
+
+              <p>
+                Work in Progress stays private until you publish it.
+                Dated material follows the 60-day rule; standing material remains until it is withdrawn.
+              </p>
+            `,
+            activityButtons()
+          );
+
+          return;
+        }
+
+
+        if(key === "writer"){
+
+          setChoiceContent(
+            "Writer",
+            `
+              <p>
+                Create an article, story, reminiscence or other piece of writing.
+                Your Work in Progress remains private and editable until you submit it.
+              </p>
+
+              <p>
+                When it is ready, submit it to an Editor.
+                Approved work is filed automatically in the Reading Room.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create an Article or Story",
+                standingRoute(
+                  "writer",
+                  "members-articles-stories",
+                  {
+                    section:"reading-room",
+                    approval:"editor"
+                  }
+                )
+              ),
+              guideButton("writer")
+            ]
+          );
+
+          return;
+        }
+
+
+        if(key === "artist"){
+
+          setChoiceContent(
+            "Artist",
+            `
+              <p>
+                Create artwork or other visual work in the Design Studio.
+                Your Work in Progress remains private and editable until you submit it.
+              </p>
+
+              <p>
+                When it is ready, submit it to an Editor.
+                Approved work is filed automatically in the Gallery.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create Gallery Work",
+                standingRoute(
+                  "artist",
+                  "gallery",
+                  {
+                    section:"gallery",
+                    approval:"editor"
+                  }
+                )
+              ),
+              guideButton("artist")
+            ]
+          );
+
+          return;
+        }
+
+
+        if(key === "committee"){
+
+          setChoiceContent(
+            "Committee",
+            `
+              <p>
+                Choose the kind of authorised Committee material you want to create.
+                Dated material goes first to Calendar & Events List and then to its linked Notice.
+              </p>
+
+              <p>
+                Standing material goes directly to the Design Studio and is filed automatically
+                in the appropriate Club Publications section.
+                Work in Progress remains private until it is published.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create dated Committee Notice",
+                datedRoute("committee")
+              ),
+              actionButton(
+                "Committee News",
+                standingRoute(
+                  "committee",
+                  "notices-news",
+                  {
+                    section:"club-publications",
+                    subcategory:"news"
+                  }
+                ),
+                true
+              ),
+              actionButton(
+                "Useful Information",
+                standingRoute(
+                  "committee",
+                  "useful-information",
+                  {
+                    section:"club-publications",
+                    subcategory:"useful-information"
+                  }
+                ),
+                true
+              ),
+              actionButton(
+                "Meeting Information",
+                standingRoute(
+                  "committee",
+                  "notices-news",
+                  {
+                    section:"club-publications",
+                    subcategory:"meetings"
+                  }
+                ),
+                true
+              ),
+              guideButton("club-publications")
+            ]
+          );
+
+          return;
+        }
+
+
+        if(key === "panel"){
+
+          setChoiceContent(
+            "Residents Association",
+            `
+              <p>
+                Choose the kind of authorised Residents Association material you want to create.
+                Dated material goes first to Calendar & Events List and then to its linked Notice.
+              </p>
+
+              <p>
+                Standing material goes directly to the Design Studio and is filed automatically
+                under Residents Association. Work in Progress remains private until it is published.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create dated Residents Association Notice",
+                datedRoute("panel")
+              ),
+              actionButton(
+                "Residents Association News",
+                standingRoute(
+                  "panel",
+                  "notices-news",
+                  {
+                    section:"residents-association",
+                    subcategory:"news"
+                  }
+                ),
+                true
+              ),
+              actionButton(
+                "Meeting Information",
+                standingRoute(
+                  "panel",
+                  "notices-news",
+                  {
+                    section:"residents-association",
+                    subcategory:"meetings"
+                  }
+                ),
+                true
+              ),
+              guideButton("residents-association-panel")
+            ]
+          );
+
+          return;
+        }
+
+
+        if(key === "services"){
+
+          setChoiceContent(
+            "Services",
+            `
+              <p>
+                Choose dated information for Calendar & Events List, or standing information
+                for the authorised Service.
+              </p>
+
+              <p>
+                Work in Progress remains private until it is published.
+                Dated material follows the 60-day rule; standing information remains until withdrawn.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create dated Service Notice",
+                datedRoute("services")
+              ),
+              actionButton(
+                "Create standing Service information",
+                standingRoute(
+                  "services",
+                  "notices-news",
+                  {section:"services"}
+                ),
+                true
+              ),
+              guideButton("services")
+            ]
+          );
+
+          return;
+        }
+      }
 
       function storeSession(
         data,
@@ -2860,8 +3041,9 @@
             "artist",
             "committee",
             "secretary",
-            "treasurer",
+            "committee_secretary",
             "panel",
+            "ra_secretary",
             "services"
           ]);
 
@@ -3040,6 +3222,15 @@
             ];
 
 
+          storeActivityScopes(
+            extractActivityScopes(
+              loginData,
+              selected.resident || {},
+              selected.member || {}
+            )
+          );
+
+
           if(
             !recognisedStudioRole(
               roles
@@ -3175,6 +3366,9 @@
               "hostAreaRoles"
             ) ||
             "[]";
+
+
+          restoreActivityScopes();
 
 
           let roles = [];

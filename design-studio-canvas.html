@@ -423,8 +423,8 @@
 
           <div class="toolbar-row">
             <span class="toolbar-label">Page background</span>
-            <label class="toolbar-check">Colour 1 <input id="pageBackgroundColour1" type="color" value="#ffffff"></label>
-            <label class="toolbar-check">Colour 2 <input id="pageBackgroundColour2" type="color" value="#e9f4f8"></label>
+            <label class="toolbar-check">Colour 1 <input id="pageBackgroundColour1" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="pageBackgroundColour1" aria-label="Choose Colour 1" title="Choose Colour 1"></button></label>
+            <label class="toolbar-check">Colour 2 <input id="pageBackgroundColour2" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="pageBackgroundColour2" aria-label="Choose Colour 2" title="Choose Colour 2"></button></label>
             <label class="toolbar-check">Direction
               <select id="pageGradientDirection">
                 <option value="180deg">Top to bottom</option>
@@ -488,9 +488,9 @@
               <button id="alignCentreBtn" type="button">Centre</button>
               <button id="alignRightBtn" type="button">Right</button>
             </div>
-            <label class="toolbar-check">Text colour <input id="textColourInput" type="color" value="#173042"></label>
-            <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" type="color" value="#ffffff"></label>
-            <label class="toolbar-check">Panel colour 2 <input id="panelTintColourInput" type="color" value="#e9f4f8"></label>
+            <label class="toolbar-check">Text colour <input id="textColourInput" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="textColourInput" aria-label="Choose text colour" title="Choose text colour"></button></label>
+            <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose panel colour 1" title="Choose panel colour 1"></button></label>
+            <label class="toolbar-check">Panel colour 2 <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose panel colour 2" title="Choose panel colour 2"></button></label>
             <label class="toolbar-check">Direction
               <select id="panelGradientDirection">
                 <option value="180deg">Top to bottom</option>
@@ -520,7 +520,7 @@
               <button id="drawFillBtn" type="button">🪣 Fill</button>
               <button id="drawEraserBtn" type="button">Eraser</button>
             </div>
-            <label class="toolbar-check">Line <input id="drawLineColour" type="color" value="#173042" aria-label="Line colour"></label>
+            <label class="toolbar-check">Line <input id="drawLineColour" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawLineColour" aria-label="Choose line colour" title="Choose line colour"></button></label>
             <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
               <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
               <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
@@ -537,7 +537,7 @@
                 <option value="15">Very thick</option>
               </select>
             </label>
-            <label class="toolbar-check">Shape fill <input id="drawFillColour" type="color" value="#d9ecff" aria-label="Shape fill colour"></label>
+            <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
             <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
             <button id="editDrawingBtn" type="button">Edit Drawing</button>
             <button id="finishDrawingBtn" type="button">Finish Drawing</button>
@@ -678,6 +678,162 @@
     let savedTextRange=null;
     let drawingTool="pencil",drawingEditingItem=null,drawingPointerActive=false;
     const DRAFT_KEY="sanctuaryCreativeCanvasDraftV3";
+
+    /* Consistent YDS colour chooser */
+    const ydsColourPopover=document.getElementById("ydsColourPopover");
+    const ydsColourSV=document.getElementById("ydsColourSV");
+    const ydsColourMarker=document.getElementById("ydsColourMarker");
+    const ydsHueRange=document.getElementById("ydsHueRange");
+    const ydsColourPreview=document.getElementById("ydsColourPreview");
+    const ydsColourHex=document.getElementById("ydsColourHex");
+    const ydsColourDone=document.getElementById("ydsColourDone");
+    let activeColourInput=null;
+    let activeColourTrigger=null;
+    let pickerHue=0,pickerSat=0,pickerVal=1;
+
+    function normaliseHex(value){
+      let s=String(value||"").trim().replace(/^#/,"");
+      if(/^[0-9a-f]{3}$/i.test(s))s=s.split("").map(c=>c+c).join("");
+      return /^[0-9a-f]{6}$/i.test(s)?`#${s.toUpperCase()}`:null;
+    }
+
+    function hexToRgb(hex){
+      const h=normaliseHex(hex)||"#FFFFFF";
+      return {
+        r:parseInt(h.slice(1,3),16),
+        g:parseInt(h.slice(3,5),16),
+        b:parseInt(h.slice(5,7),16)
+      };
+    }
+
+    function rgbToHsvColour(r,g,b){
+      r/=255;g/=255;b/=255;
+      const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+      let h=0;
+      if(d){
+        if(max===r)h=((g-b)/d)%6;
+        else if(max===g)h=(b-r)/d+2;
+        else h=(r-g)/d+4;
+        h*=60;if(h<0)h+=360;
+      }
+      return {h,s:max?d/max:0,v:max};
+    }
+
+    function hsvToHex(h,s,v){
+      const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;
+      let r=0,g=0,b=0;
+      if(h<60){r=c;g=x}else if(h<120){r=x;g=c}else if(h<180){g=c;b=x}
+      else if(h<240){g=x;b=c}else if(h<300){r=x;b=c}else{r=c;b=x}
+      const part=n=>Math.round((n+m)*255).toString(16).padStart(2,"0");
+      return `#${part(r)}${part(g)}${part(b)}`.toUpperCase();
+    }
+
+    function refreshColourPicker(dispatchInput=true){
+      const hex=hsvToHex(pickerHue,pickerSat,pickerVal);
+      ydsColourSV.style.setProperty("--picker-hue",String(pickerHue));
+      ydsHueRange.value=String(Math.round(pickerHue));
+      ydsColourMarker.style.left=`${pickerSat*100}%`;
+      ydsColourMarker.style.top=`${(1-pickerVal)*100}%`;
+      ydsColourPreview.style.background=hex;
+      ydsColourHex.value=hex;
+      if(activeColourInput){
+        activeColourInput.value=hex;
+        if(activeColourTrigger)activeColourTrigger.style.setProperty("--yds-colour",hex);
+        if(dispatchInput)activeColourInput.dispatchEvent(new Event("input",{bubbles:true}));
+      }
+    }
+
+    function setPickerFromHex(hex,dispatchInput=false){
+      const rgb=hexToRgb(hex),hsv=rgbToHsvColour(rgb.r,rgb.g,rgb.b);
+      pickerHue=hsv.h;pickerSat=hsv.s;pickerVal=hsv.v;
+      refreshColourPicker(dispatchInput);
+    }
+
+    function positionColourPopover(trigger){
+      const r=trigger.getBoundingClientRect();
+      ydsColourPopover.hidden=false;
+      const w=300;
+      const left=Math.max(8,Math.min(window.scrollX+r.left,window.scrollX+window.innerWidth-w-8));
+      const top=window.scrollY+r.bottom+6;
+      ydsColourPopover.style.left=`${left}px`;
+      ydsColourPopover.style.top=`${top}px`;
+    }
+
+    function openYdsColourPicker(input,trigger){
+      activeColourInput=input;
+      activeColourTrigger=trigger;
+      setPickerFromHex(input.value||"#FFFFFF",false);
+      positionColourPopover(trigger);
+      ydsColourHex.focus({preventScroll:true});
+      ydsColourHex.select();
+    }
+
+    function closeYdsColourPicker(){
+      if(activeColourInput)activeColourInput.dispatchEvent(new Event("change",{bubbles:true}));
+      ydsColourPopover.hidden=true;
+      activeColourInput=null;
+      activeColourTrigger=null;
+    }
+
+    function wireColourTrigger(trigger){
+      const id=trigger?.dataset?.colourFor;
+      const input=id?document.getElementById(id):null;
+      if(!input)return;
+      const refresh=()=>trigger.style.setProperty("--yds-colour",normaliseHex(input.value)||"#FFFFFF");
+      refresh();
+      trigger.addEventListener("click",e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        openYdsColourPicker(input,trigger);
+      });
+      input.addEventListener("input",refresh);
+      input.addEventListener("change",refresh);
+      input.addEventListener("ydscolourrefresh",refresh);
+    }
+
+    document.querySelectorAll(".yds-colour-trigger[data-colour-for]").forEach(wireColourTrigger);
+
+    function svPointer(e){
+      const r=ydsColourSV.getBoundingClientRect();
+      pickerSat=clamp((e.clientX-r.left)/r.width,0,1);
+      pickerVal=1-clamp((e.clientY-r.top)/r.height,0,1);
+      refreshColourPicker(true);
+    }
+
+    ydsColourSV.addEventListener("pointerdown",e=>{
+      e.preventDefault();
+      try{ydsColourSV.setPointerCapture(e.pointerId)}catch{}
+      svPointer(e);
+    });
+    ydsColourSV.addEventListener("pointermove",e=>{
+      if(e.buttons!==1)return;
+      svPointer(e);
+    });
+    ydsHueRange.addEventListener("input",()=>{
+      pickerHue=Number(ydsHueRange.value)||0;
+      refreshColourPicker(true);
+    });
+    ydsColourHex.addEventListener("change",()=>{
+      const hex=normaliseHex(ydsColourHex.value);
+      if(hex)setPickerFromHex(hex,true);
+      else refreshColourPicker(false);
+    });
+    ydsColourHex.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        const hex=normaliseHex(ydsColourHex.value);
+        if(hex)setPickerFromHex(hex,true);
+        closeYdsColourPicker();
+      }
+    });
+    ydsColourDone.addEventListener("click",closeYdsColourPicker);
+    document.addEventListener("pointerdown",e=>{
+      if(ydsColourPopover.hidden)return;
+      if(ydsColourPopover.contains(e.target)||e.target.closest?.(".yds-colour-trigger"))return;
+      closeYdsColourPicker();
+    });
+    window.addEventListener("resize",()=>{if(!ydsColourPopover.hidden&&activeColourTrigger)positionColourPopover(activeColourTrigger)});
+
 
     function clean(v){return String(v||"").trim()}
     function normaliseRole(value){
@@ -2382,191 +2538,6 @@ document
     publishCanvas
   );
 
-
-    /* Consistent YDS colour chooser */
-    const ydsColourPopover=document.getElementById("ydsColourPopover");
-    const ydsColourSV=document.getElementById("ydsColourSV");
-    const ydsColourMarker=document.getElementById("ydsColourMarker");
-    const ydsHueRange=document.getElementById("ydsHueRange");
-    const ydsColourPreview=document.getElementById("ydsColourPreview");
-    const ydsColourHex=document.getElementById("ydsColourHex");
-    const ydsColourDone=document.getElementById("ydsColourDone");
-    let activeColourInput=null;
-    let activeColourTrigger=null;
-    let pickerHue=0,pickerSat=0,pickerVal=1;
-
-    function normaliseHex(value){
-      let s=String(value||"").trim().replace(/^#/,"");
-      if(/^[0-9a-f]{3}$/i.test(s))s=s.split("").map(c=>c+c).join("");
-      return /^[0-9a-f]{6}$/i.test(s)?`#${s.toUpperCase()}`:null;
-    }
-
-    function hexToRgb(hex){
-      const h=normaliseHex(hex)||"#FFFFFF";
-      return {
-        r:parseInt(h.slice(1,3),16),
-        g:parseInt(h.slice(3,5),16),
-        b:parseInt(h.slice(5,7),16)
-      };
-    }
-
-    function rgbToHsvColour(r,g,b){
-      r/=255;g/=255;b/=255;
-      const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
-      let h=0;
-      if(d){
-        if(max===r)h=((g-b)/d)%6;
-        else if(max===g)h=(b-r)/d+2;
-        else h=(r-g)/d+4;
-        h*=60;if(h<0)h+=360;
-      }
-      return {h,s:max?d/max:0,v:max};
-    }
-
-    function hsvToHex(h,s,v){
-      const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;
-      let r=0,g=0,b=0;
-      if(h<60){r=c;g=x}else if(h<120){r=x;g=c}else if(h<180){g=c;b=x}
-      else if(h<240){g=x;b=c}else if(h<300){r=x;b=c}else{r=c;b=x}
-      const part=n=>Math.round((n+m)*255).toString(16).padStart(2,"0");
-      return `#${part(r)}${part(g)}${part(b)}`.toUpperCase();
-    }
-
-    function refreshColourPicker(dispatchInput=true){
-      const hex=hsvToHex(pickerHue,pickerSat,pickerVal);
-      ydsColourSV.style.setProperty("--picker-hue",String(pickerHue));
-      ydsHueRange.value=String(Math.round(pickerHue));
-      ydsColourMarker.style.left=`${pickerSat*100}%`;
-      ydsColourMarker.style.top=`${(1-pickerVal)*100}%`;
-      ydsColourPreview.style.background=hex;
-      ydsColourHex.value=hex;
-      if(activeColourInput){
-        activeColourInput.value=hex;
-        if(activeColourTrigger)activeColourTrigger.style.setProperty("--yds-colour",hex);
-        if(dispatchInput)activeColourInput.dispatchEvent(new Event("input",{bubbles:true}));
-      }
-    }
-
-    function setPickerFromHex(hex,dispatchInput=false){
-      const rgb=hexToRgb(hex),hsv=rgbToHsvColour(rgb.r,rgb.g,rgb.b);
-      pickerHue=hsv.h;pickerSat=hsv.s;pickerVal=hsv.v;
-      refreshColourPicker(dispatchInput);
-    }
-
-    function positionColourPopover(trigger){
-      const r=trigger.getBoundingClientRect();
-      ydsColourPopover.hidden=false;
-      const w=300;
-      const left=Math.max(8,Math.min(window.scrollX+r.left,window.scrollX+window.innerWidth-w-8));
-      const top=window.scrollY+r.bottom+6;
-      ydsColourPopover.style.left=`${left}px`;
-      ydsColourPopover.style.top=`${top}px`;
-    }
-
-    function openYdsColourPicker(input,trigger){
-      activeColourInput=input;
-      activeColourTrigger=trigger;
-      setPickerFromHex(input.value||"#FFFFFF",false);
-      positionColourPopover(trigger);
-      ydsColourHex.focus({preventScroll:true});
-      ydsColourHex.select();
-    }
-
-    function closeYdsColourPicker(){
-      if(activeColourInput)activeColourInput.dispatchEvent(new Event("change",{bubbles:true}));
-      ydsColourPopover.hidden=true;
-      activeColourInput=null;
-      activeColourTrigger=null;
-    }
-
-    function enhanceColourInput(input){
-      if(!input||input.dataset.ydsEnhanced==="1")return;
-      input.dataset.ydsEnhanced="1";
-
-      // Do not leave a browser-native colour control behind. Chrome and Firefox
-      // otherwise show different palettes. The hidden value remains a normal
-      // text value and our common YDS chooser is the only visible picker.
-      const currentValue=input.value||"#FFFFFF";
-      input.type="text";
-      input.value=currentValue;
-      input.classList.add("yds-colour-source");
-      input.tabIndex=-1;
-      input.setAttribute("aria-hidden","true");
-
-      const trigger=document.createElement("button");
-      trigger.type="button";
-      trigger.className="yds-colour-trigger";
-      trigger.style.setProperty("--yds-colour",input.value||"#FFFFFF");
-      const label=input.getAttribute("aria-label")||input.closest("label")?.textContent?.trim()||"colour";
-      trigger.setAttribute("aria-label",`Choose ${label}`);
-      trigger.title=`Choose ${label}`;
-      input.insertAdjacentElement("afterend",trigger);
-
-      const openPicker=e=>{
-        if(e){e.preventDefault();e.stopPropagation();}
-        openYdsColourPicker(input,trigger);
-      };
-      trigger.addEventListener("click",openPicker);
-
-      // If the user clicks the wording of a labelled colour control, open the
-      // same YDS palette rather than focusing the hidden source value.
-      const wrappingLabel=input.closest("label");
-      if(wrappingLabel){
-        wrappingLabel.addEventListener("click",e=>{
-          if(e.target===trigger||trigger.contains(e.target))return;
-          if(e.target===input)return;
-          openPicker(e);
-        });
-      }
-
-      const refreshTrigger=()=>trigger.style.setProperty("--yds-colour",input.value||"#FFFFFF");
-      input.addEventListener("input",refreshTrigger);
-      input.addEventListener("change",refreshTrigger);
-      input.addEventListener("ydscolourrefresh",refreshTrigger);
-    }
-
-    document.querySelectorAll('input[type="color"]').forEach(enhanceColourInput);
-
-    function svPointer(e){
-      const r=ydsColourSV.getBoundingClientRect();
-      pickerSat=clamp((e.clientX-r.left)/r.width,0,1);
-      pickerVal=1-clamp((e.clientY-r.top)/r.height,0,1);
-      refreshColourPicker(true);
-    }
-
-    ydsColourSV.addEventListener("pointerdown",e=>{
-      e.preventDefault();
-      try{ydsColourSV.setPointerCapture(e.pointerId)}catch{}
-      svPointer(e);
-    });
-    ydsColourSV.addEventListener("pointermove",e=>{
-      if(e.buttons!==1)return;
-      svPointer(e);
-    });
-    ydsHueRange.addEventListener("input",()=>{
-      pickerHue=Number(ydsHueRange.value)||0;
-      refreshColourPicker(true);
-    });
-    ydsColourHex.addEventListener("change",()=>{
-      const hex=normaliseHex(ydsColourHex.value);
-      if(hex)setPickerFromHex(hex,true);
-      else refreshColourPicker(false);
-    });
-    ydsColourHex.addEventListener("keydown",e=>{
-      if(e.key==="Enter"){
-        e.preventDefault();
-        const hex=normaliseHex(ydsColourHex.value);
-        if(hex)setPickerFromHex(hex,true);
-        closeYdsColourPicker();
-      }
-    });
-    ydsColourDone.addEventListener("click",closeYdsColourPicker);
-    document.addEventListener("pointerdown",e=>{
-      if(ydsColourPopover.hidden)return;
-      if(ydsColourPopover.contains(e.target)||e.target.closest?.(".yds-colour-trigger"))return;
-      closeYdsColourPicker();
-    });
-    window.addEventListener("resize",()=>{if(!ydsColourPopover.hidden&&activeColourTrigger)positionColourPopover(activeColourTrigger)});
 
     document.addEventListener("keydown",e=>{if(creativeWorkspace.hidden)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redoCanvas():undoCanvas()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redoCanvas()}else if(e.key==="Delete"&&selectedItem&&!drawingEditingItem&&!document.activeElement?.isContentEditable){deleteSelected()}});
     creativePages.addEventListener("pointerdown",e=>{

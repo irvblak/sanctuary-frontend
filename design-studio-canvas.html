@@ -324,6 +324,61 @@
       font-size:.78rem;
       line-height:1.3;
     }
+
+
+    /* 30 Aug 2026 — fitted drawing-board layout. The working Canvas owns the viewport. */
+    .canvas-offscreen-tools{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
+    body.canvas-active{height:100vh;overflow:hidden;background:#dfe8ed;}
+    body.canvas-active > main.page{width:100vw;max-width:none;height:100vh;margin:0;padding:.35rem .45rem;overflow:hidden;}
+    body.canvas-active .topbar,body.canvas-active .fun-banner{display:none!important;}
+    body.canvas-active #creativeWorkspace{
+      display:flex!important;flex-direction:column;width:100%;height:100%;margin:0;transform:none;padding:.35rem .45rem;
+      border-radius:12px;overflow:hidden;
+    }
+    body.canvas-active .canvas-compact-head{flex:0 0 42px;min-height:42px;margin:0 0 .3rem;gap:.4rem;}
+    body.canvas-active .canvas-compact-head h2{font-size:1rem;overflow:hidden;text-overflow:ellipsis;}
+    body.canvas-active .canvas-head-actions{flex-wrap:nowrap;gap:.25rem;}
+    body.canvas-active .canvas-head-actions .btn{padding:.36rem .58rem;font-size:.78rem;}
+    body.canvas-active .canvas-three-column{
+      flex:1 1 auto;min-height:0;height:calc(100vh - 54px);
+      display:grid;grid-template-columns:190px minmax(0,1fr) 235px;gap:.4rem;align-items:stretch;overflow:hidden;
+    }
+    body.canvas-active .canvas-side{
+      position:static;top:auto;height:100%;max-height:none;min-height:0;overflow:hidden;
+      gap:.28rem;padding:.3rem;border-radius:11px;box-shadow:none;
+    }
+    body.canvas-active .canvas-side .toolbar-row{gap:.22rem;padding:.3rem;border-radius:8px;}
+    body.canvas-active .canvas-side .toolbar-label{font-size:.76rem;padding-bottom:.12rem;}
+    body.canvas-active .canvas-side button,body.canvas-active .canvas-side select,body.canvas-active .canvas-side .toolbar-check{font-size:.74rem;line-height:1.15;}
+    body.canvas-active .canvas-side button{padding:.3rem .36rem;min-height:27px;}
+    body.canvas-active .canvas-side .canvas-tip,body.canvas-active .yds-colour-note{display:none!important;}
+    body.canvas-active .canvas-main-panel{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+    body.canvas-active .compact-page-tabs{flex:0 0 28px;min-height:28px;margin:0 0 .2rem;overflow:hidden;}
+    body.canvas-active .canvas-shell{flex:1 1 auto;min-height:0;height:auto;overflow:hidden;}
+    body.canvas-active .canvas-stage{
+      width:100%;height:100%;min-height:0;padding:.25rem;border-radius:10px;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+    }
+    body.canvas-active .canvas-pages{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    body.canvas-active .canvas-page.portrait{
+      width:min(100%,calc((100vh - 88px) * 210 / 297));
+      height:min(100%,calc(100vh - 88px));aspect-ratio:210/297;
+    }
+    body.canvas-active .canvas-page.landscape{
+      width:min(100%,calc((100vh - 88px) * 297 / 210));
+      height:min(100%,calc(100vh - 88px));aspect-ratio:297/210;
+    }
+    body.canvas-active .yds-colour-popover{padding:.32rem;gap:.25rem;}
+    body.canvas-active .yds-colour-sv{height:105px;}
+    body.canvas-active .yds-colour-target{font-size:.72rem;margin:0;}
+    body.canvas-active .yds-colour-footer{gap:.25rem;}
+    body.canvas-active .yds-colour-hex{font-size:.72rem;padding:.3rem;}
+    @media(max-height:760px){
+      body.canvas-active .canvas-side .toolbar-row{padding:.22rem;gap:.15rem;}
+      body.canvas-active .canvas-side button{min-height:24px;padding:.22rem .3rem;}
+      body.canvas-active .yds-colour-sv{height:82px;}
+    }
+
 </style>
 </head>
 <body>
@@ -348,51 +403,21 @@
       <div class="canvas-compact-head">
         <h2 id="creativeHeading">My Own Design</h2>
         <div class="canvas-head-actions">
-          <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio choices</button>
+          <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio</button>
+          <button class="btn secondary" id="loadCanvasBtn" type="button">Recover Draft</button>
+          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
+          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button>
+          <button class="btn" id="publishCanvasBtn" type="button" hidden>Publish</button>
 
-          <span class="canvas-action-group">
-            <span class="canvas-action-label">Help &amp; Recovery</span>
-            <button class="btn secondary" id="quickGuideBtn" type="button">Guide</button>
-            <button class="btn secondary" id="loadCanvasBtn" type="button">Recover Draft</button>
-            <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
-          </span>
-
-          <span class="canvas-action-group">
-            <span class="canvas-action-label">My Work</span>
-            <button class="btn secondary" id="exportCanvasBtn" type="button">Save My Work</button>
-            <button class="btn secondary" id="importCanvasBtn" type="button">Open My Work</button>
+          <!-- These established controls remain in the page for the separate Tools page to call. -->
+          <span class="canvas-offscreen-tools" aria-hidden="true">
+            <button id="quickGuideBtn" type="button">Guide</button>
+            <button id="exportCanvasBtn" type="button">Save My Work</button>
+            <button id="importCanvasBtn" type="button">Open My Work</button>
             <input id="importCanvasFileInput" type="file" accept=".sanctuary-yds,.json,application/json" hidden>
+            <button id="savePdfBtn" type="button">Save Viewable Copy</button>
+            <button id="printCanvasBtn" type="button">Print</button>
           </span>
-
-          <span class="canvas-action-group">
-  <span class="canvas-action-label">Keep a Copy</span>
-
-  <button
-    class="btn"
-    id="savePdfBtn"
-    type="button"
-  >
-    Save Viewable Copy
-  </button>
-
-  <button
-    class="btn"
-    id="printCanvasBtn"
-    type="button"
-  >
-    Print
-  </button>
-
-  <button
-    class="btn"
-    id="publishCanvasBtn"
-    type="button"
-    hidden
-  >
-    Publish
-  </button>
-
-</span>
         </div>
       </div>
 
@@ -1786,6 +1811,7 @@
     }
 
     function openCreativeWorkspace(fresh=false,label="Creative Canvas"){
+      document.body.classList.add("canvas-active");
       creativeWorkspace.hidden=false;
       creativeHeading.textContent=label||"My Own Design";
       if(fresh||!pages().length){
@@ -1793,6 +1819,9 @@
         currentPageIndex=0;
         undoStack=[];
         redoStack=[];
+        // Artist work opens in Landscape by default; all other YDS routes open in Portrait.
+        // The Role Holder can switch orientation at any time and saved work retains its chosen setting.
+        orientationSelect.value=(CANVAS_MODE==="artist")?"landscape":"portrait";
         createPage();
         applyOrientation();
         renderPageTabs();
@@ -2469,6 +2498,9 @@ function configurePublishingButton(){
 
 }
     
+    document.getElementById("canvasToolsBtn").addEventListener("click",()=>{
+      window.open("design-studio-tools.html","sanctuaryYdsTools","width=760,height=820,resizable=yes,scrollbars=yes");
+    });
     document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{window.location.href=IS_FUN_MODE?"library.html":"your-design-studio.html";});
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
     orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});

@@ -222,18 +222,25 @@
       background:var(--yds-colour,#ffffff);
       border:1px solid rgba(0,0,0,.12);
     }
+    .yds-colour-trigger.active-colour{outline:3px solid rgba(31,111,139,.22);outline-offset:2px}
     .yds-colour-popover{
-      position:absolute;
-      z-index:5000;
-      width:300px;
+      position:static;
+      width:100%;
       padding:12px;
       border:1px solid #bfcfd8;
       border-radius:14px;
       background:#fff;
-      box-shadow:0 16px 34px rgba(20,60,80,.22);
+      box-shadow:none;
       color:var(--ink);
+      margin-top:.7rem;
     }
-    .yds-colour-popover[hidden]{display:none!important}
+    .yds-colour-popover[hidden]{display:block!important}
+    .yds-colour-target{
+      margin:0 0 .55rem;
+      color:var(--accent-dark);
+      font-weight:900;
+      line-height:1.3;
+    }
     .yds-colour-sv{
       --picker-hue:0;
       position:relative;
@@ -563,24 +570,24 @@
             </div>
             <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
           </div>
+
+          <div id="ydsColourPopover" class="yds-colour-popover" role="group" aria-label="Colour palette">
+            <p class="yds-colour-target">Colour palette — <span id="ydsColourTarget">Page colour 1</span></p>
+            <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose tint or shade">
+              <span id="ydsColourMarker" class="yds-colour-marker"></span>
+            </div>
+            <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
+            <div class="yds-colour-footer">
+              <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
+              <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
+              <button id="ydsColourDone" class="yds-colour-done" type="button">Apply</button>
+            </div>
+            <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
+          </div>
         </aside>
       </div>
     </section>
   </main>
-
-
-  <div id="ydsColourPopover" class="yds-colour-popover" hidden role="dialog" aria-label="Choose colour">
-    <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose shade">
-      <span id="ydsColourMarker" class="yds-colour-marker"></span>
-    </div>
-    <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
-    <div class="yds-colour-footer">
-      <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
-      <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
-      <button id="ydsColourDone" class="yds-colour-done" type="button">Done</button>
-    </div>
-    <p class="yds-colour-note">Choose the hue with the rainbow slider, then click the exact tint or shade above.</p>
-  </div>
 
   <script>
     "use strict";
@@ -687,6 +694,7 @@
     const ydsColourPreview=document.getElementById("ydsColourPreview");
     const ydsColourHex=document.getElementById("ydsColourHex");
     const ydsColourDone=document.getElementById("ydsColourDone");
+    const ydsColourTarget=document.getElementById("ydsColourTarget");
     let activeColourInput=null;
     let activeColourTrigger=null;
     let pickerHue=0,pickerSat=0,pickerVal=1;
@@ -749,30 +757,27 @@
       refreshColourPicker(dispatchInput);
     }
 
-    function positionColourPopover(trigger){
-      const r=trigger.getBoundingClientRect();
-      ydsColourPopover.hidden=false;
-      const w=300;
-      const left=Math.max(8,Math.min(window.scrollX+r.left,window.scrollX+window.innerWidth-w-8));
-      const top=window.scrollY+r.bottom+6;
-      ydsColourPopover.style.left=`${left}px`;
-      ydsColourPopover.style.top=`${top}px`;
-    }
+    const COLOUR_TARGET_LABELS={
+      pageBackgroundColour1:"Page colour 1",
+      pageBackgroundColour2:"Page colour 2",
+      textColourInput:"Text colour",
+      backgroundColourInput:"Panel colour 1",
+      panelTintColourInput:"Panel colour 2",
+      drawLineColour:"Drawing line",
+      drawFillColour:"Drawing fill"
+    };
 
     function openYdsColourPicker(input,trigger){
       activeColourInput=input;
       activeColourTrigger=trigger;
+      document.querySelectorAll(".yds-colour-trigger.active-colour").forEach(btn=>btn.classList.remove("active-colour"));
+      trigger?.classList.add("active-colour");
+      if(ydsColourTarget)ydsColourTarget.textContent=COLOUR_TARGET_LABELS[input.id]||"Selected colour";
       setPickerFromHex(input.value||"#FFFFFF",false);
-      positionColourPopover(trigger);
-      ydsColourHex.focus({preventScroll:true});
-      ydsColourHex.select();
     }
 
     function closeYdsColourPicker(){
       if(activeColourInput)activeColourInput.dispatchEvent(new Event("change",{bubbles:true}));
-      ydsColourPopover.hidden=true;
-      activeColourInput=null;
-      activeColourTrigger=null;
     }
 
     function wireColourTrigger(trigger){
@@ -827,12 +832,11 @@
       }
     });
     ydsColourDone.addEventListener("click",closeYdsColourPicker);
-    document.addEventListener("pointerdown",e=>{
-      if(ydsColourPopover.hidden)return;
-      if(ydsColourPopover.contains(e.target)||e.target.closest?.(".yds-colour-trigger"))return;
-      closeYdsColourPicker();
-    });
-    window.addEventListener("resize",()=>{if(!ydsColourPopover.hidden&&activeColourTrigger)positionColourPopover(activeColourTrigger)});
+
+    // The palette is always visible. Start it on Page colour 1 so the slider
+    // is immediately usable before any canvas object has been selected.
+    const initialColourTrigger=document.querySelector('[data-colour-for="pageBackgroundColour1"]');
+    if(initialColourTrigger)openYdsColourPicker(pageBackgroundColour1,initialColourTrigger);
 
 
     function clean(v){return String(v||"").trim()}

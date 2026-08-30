@@ -796,9 +796,9 @@
 
       d.addEventListener("pointerdown",e=>{
         if(e.target.closest(".resize-handle")||e.target.closest(".drag-handle"))return;
-        // Selecting an object must never alter its stacking order.
-        // Overlay / Underlay are the only controls which change layers.
-        selectItem(d,false);
+        // A direct click on an object makes it the top object.
+        // The Move handle does not change layer order; manual Overlay / Underlay remain available.
+        selectItem(d,true);
         if(d.dataset.kind==="image") startDrag(e,d,d);
       });
 
@@ -837,8 +837,9 @@
       if(selectedItem){
         containItem(selectedItem);
         selectedItem.classList.add("selected");
-        // Layer order is deliberately left unchanged here.
-        // Overlay / Underlay own all stacking changes.
+        if(bringToFront){
+          selectedItem.style.zIndex=String(++zCounter);
+        }
       }
       const kind=selectedItem?.dataset.kind||"";
       // Keep the right-hand Selection panel permanently visible.
@@ -2481,7 +2482,17 @@ document
     function enhanceColourInput(input){
       if(!input||input.dataset.ydsEnhanced==="1")return;
       input.dataset.ydsEnhanced="1";
+
+      // Do not leave a browser-native colour control behind. Chrome and Firefox
+      // otherwise show different palettes. The hidden value remains a normal
+      // text value and our common YDS chooser is the only visible picker.
+      const currentValue=input.value||"#FFFFFF";
+      input.type="text";
+      input.value=currentValue;
       input.classList.add("yds-colour-source");
+      input.tabIndex=-1;
+      input.setAttribute("aria-hidden","true");
+
       const trigger=document.createElement("button");
       trigger.type="button";
       trigger.className="yds-colour-trigger";
@@ -2490,10 +2501,24 @@ document
       trigger.setAttribute("aria-label",`Choose ${label}`);
       trigger.title=`Choose ${label}`;
       input.insertAdjacentElement("afterend",trigger);
-      trigger.addEventListener("click",e=>{
-        e.preventDefault();e.stopPropagation();
+
+      const openPicker=e=>{
+        if(e){e.preventDefault();e.stopPropagation();}
         openYdsColourPicker(input,trigger);
-      });
+      };
+      trigger.addEventListener("click",openPicker);
+
+      // If the user clicks the wording of a labelled colour control, open the
+      // same YDS palette rather than focusing the hidden source value.
+      const wrappingLabel=input.closest("label");
+      if(wrappingLabel){
+        wrappingLabel.addEventListener("click",e=>{
+          if(e.target===trigger||trigger.contains(e.target))return;
+          if(e.target===input)return;
+          openPicker(e);
+        });
+      }
+
       const refreshTrigger=()=>trigger.style.setProperty("--yds-colour",input.value||"#FFFFFF");
       input.addEventListener("input",refreshTrigger);
       input.addEventListener("change",refreshTrigger);

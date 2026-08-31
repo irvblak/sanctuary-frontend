@@ -379,6 +379,56 @@
       body.canvas-active .yds-colour-sv{height:82px;}
     }
 
+    /* 31 Aug 2026 — keep text tools off the right panel and reclaim its full height. */
+    body.canvas-active #creativeWorkspace{position:relative;}
+    body.canvas-active .canvas-compact-head{
+      position:absolute;z-index:40;top:.32rem;left:194px;right:239px;
+      height:34px;min-height:34px;margin:0;justify-content:flex-start;
+      pointer-events:none;
+    }
+    body.canvas-active .canvas-compact-head h2{display:none;}
+    body.canvas-active .canvas-head-actions{
+      justify-content:flex-start;gap:.22rem;pointer-events:auto;
+    }
+    body.canvas-active .canvas-head-actions .btn{padding:.30rem .50rem;font-size:.75rem;}
+    body.canvas-active .canvas-three-column{
+      height:100%;min-height:0;margin:0;
+    }
+    body.canvas-active .canvas-main-panel{
+      position:relative;padding-top:38px;
+    }
+    body.canvas-active .canvas-side-left,
+    body.canvas-active .canvas-side-right{align-self:stretch;}
+    body.canvas-active .text-format-float{
+      position:absolute;z-index:35;top:70px;left:50%;transform:translateX(-50%);
+      width:min(920px,calc(100% - 12px));
+      display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;
+      gap:.25rem;padding:.28rem .35rem;margin:0;
+      border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.98);
+      box-shadow:0 6px 16px rgba(20,60,80,.12);
+    }
+    body.canvas-active .text-format-float[hidden]{display:none!important;}
+    body.canvas-active .text-format-float .toolbar-label{border:0;padding:0 .2rem 0 0;margin:0;}
+    body.canvas-active .text-format-float select{width:auto;max-width:150px;min-height:27px;padding:.24rem .3rem;}
+    body.canvas-active .text-format-float .toolbar-check{width:auto;display:inline-flex;align-items:center;gap:.2rem;}
+    body.canvas-active .text-format-float .compact-button-row{width:auto;display:inline-flex;gap:.18rem;}
+    body.canvas-active .text-format-float button{width:auto;min-width:28px;min-height:27px;padding:.25rem .38rem;}
+    body.canvas-active .text-format-float .yds-colour-trigger{width:32px!important;min-width:32px;height:27px;flex:0 0 32px;}
+    @media(max-width:1100px){
+      body.canvas-active .canvas-compact-head{left:194px;right:224px;}
+      body.canvas-active .text-format-float{width:calc(100% - 8px);}
+    }
+
+    .tools-choice-backdrop{position:fixed;inset:0;z-index:5000;background:rgba(18,43,56,.28);display:flex;align-items:center;justify-content:center;padding:1rem}
+    .tools-choice-backdrop[hidden]{display:none!important}
+    .tools-choice-box{width:min(430px,94vw);background:#fff;border:1px solid var(--line);border-radius:16px;padding:1rem;box-shadow:0 18px 50px rgba(0,0,0,.22)}
+    .tools-choice-box h3{margin:0 0 .35rem;color:var(--accent-dark)}
+    .tools-choice-box p{margin:.25rem 0 .8rem;color:var(--muted);line-height:1.4}
+    .tools-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+    .tools-choice-actions button{border:1px solid var(--accent);border-radius:11px;padding:.7rem .55rem;background:var(--accent);color:#fff;font:inherit;font-weight:850;cursor:pointer}
+    .tools-choice-actions button.secondary{background:#fff;color:var(--accent)}
+    .tools-choice-cancel{display:block;margin:.65rem auto 0;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -473,15 +523,7 @@
 
         <div class="canvas-main-panel">
           <div class="page-tabs compact-page-tabs" id="pageTabs"></div>
-          <div class="canvas-shell">
-            <div class="canvas-stage">
-              <div class="canvas-pages" id="creativePages"></div>
-            </div>
-          </div>
-        </div>
-
-        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
-          <div class="toolbar-row format-toolbar" id="formatToolbar" hidden>
+          <div class="toolbar-row format-toolbar text-format-float" id="formatToolbar" hidden>
             <span class="toolbar-label">Text</span>
             <select id="fontFamilySelect" aria-label="Font">
               <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
@@ -534,6 +576,15 @@
             <button id="solidPanelBtn" type="button">Solid panel</button>
             <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
           </div>
+          <div class="canvas-shell">
+            <div class="canvas-stage">
+              <div class="canvas-pages" id="creativePages"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
+
 
           <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
             <span class="toolbar-label">Illustration</span>
@@ -613,6 +664,18 @@
       </div>
     </section>
   </main>
+
+  <div id="toolsChoice" class="tools-choice-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="toolsChoiceTitle">
+    <div class="tools-choice-box">
+      <h3 id="toolsChoiceTitle">Tools &amp; Guide</h3>
+      <p>Use this screen, or keep your Canvas full-size here and put Tools &amp; Guide on a genuine second screen.</p>
+      <div class="tools-choice-actions">
+        <button id="toolsThisScreenBtn" type="button">Use this screen</button>
+        <button id="toolsSecondScreenBtn" class="secondary" type="button">Use second screen</button>
+      </div>
+      <button id="toolsChoiceCancelBtn" class="tools-choice-cancel" type="button">Cancel</button>
+    </div>
+  </div>
 
   <script>
     "use strict";
@@ -710,6 +773,9 @@
     let savedTextRange=null;
     let drawingTool="pencil",drawingEditingItem=null,drawingPointerActive=false;
     const DRAFT_KEY="sanctuaryCreativeCanvasDraftV3";
+    const TOOLS_STATE_KEY="sanctuaryYdsToolsWorkV1";
+    const TOOLS_RETURN_KEY="sanctuaryYdsToolsReturnV1";
+    const TOOLS_ACTION_KEY="sanctuaryYdsToolsActionV1";
 
     /* Consistent YDS colour chooser */
     const ydsColourPopover=document.getElementById("ydsColourPopover");
@@ -2498,8 +2564,32 @@ function configurePublishingButton(){
 
 }
     
-    document.getElementById("canvasToolsBtn").addEventListener("click",()=>{
-      window.open("design-studio-tools.html","sanctuaryYdsTools","width=760,height=820,resizable=yes,scrollbars=yes");
+    const toolsChoice=document.getElementById("toolsChoice");
+    function holdWorkForTools(){
+      sessionStorage.setItem(TOOLS_STATE_KEY,snapshotState());
+      sessionStorage.setItem(TOOLS_RETURN_KEY,window.location.href);
+      sessionStorage.removeItem(TOOLS_ACTION_KEY);
+    }
+    document.getElementById("canvasToolsBtn").addEventListener("click",()=>{toolsChoice.hidden=false;});
+    document.getElementById("toolsChoiceCancelBtn").addEventListener("click",()=>{toolsChoice.hidden=true;});
+    document.getElementById("toolsThisScreenBtn").addEventListener("click",()=>{
+      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools & Guide. Please use Save Draft first, then try again.");}
+    });
+    document.getElementById("toolsSecondScreenBtn").addEventListener("click",()=>{
+      try{
+        holdWorkForTools();
+        const w=window.open("design-studio-tools.html?screen=second","sanctuaryYdsTools","width=760,height=850,resizable=yes,scrollbars=yes");
+        if(!w) alert("Your browser blocked the second Tools window. Please allow pop-ups for Sanctuary Club, or choose Use this screen.");
+        toolsChoice.hidden=true;
+      }catch(err){console.error(err);alert("Tools & Guide could not be opened safely. Please use this screen instead.");}
+    });
+    window.addEventListener("message",event=>{
+      if(event.origin!==window.location.origin)return;
+      const data=event.data||{};
+      if(data.type!=="sanctuary-yds-tools-action")return;
+      const action=String(data.action||"");
+      if(action) sessionStorage.setItem(TOOLS_ACTION_KEY,action);
+      runToolsActionIfRequested();
     });
     document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{window.location.href=IS_FUN_MODE?"library.html":"your-design-studio.html";});
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
@@ -2631,6 +2721,29 @@ document
 
     initialiseCanvasPage();
     configurePublishingButton();
+
+    // Returning from Tools & Guide: restore the exact work that was on screen,
+    // then perform any requested action on that same work.
+    try{
+      const toolsState=sessionStorage.getItem(TOOLS_STATE_KEY);
+      const toolsReturn=sessionStorage.getItem(TOOLS_RETURN_KEY);
+      const returningFromTools=toolsState && toolsReturn && toolsReturn===window.location.href;
+      if(returningFromTools){
+        restoreState(toolsState);
+        sessionStorage.removeItem(TOOLS_STATE_KEY);
+        sessionStorage.removeItem(TOOLS_RETURN_KEY);
+        const toolsAction=sessionStorage.getItem(TOOLS_ACTION_KEY)||"";
+        sessionStorage.removeItem(TOOLS_ACTION_KEY);
+        setTimeout(()=>{
+          if(toolsAction==="save-work") document.getElementById("exportCanvasBtn")?.click();
+          else if(toolsAction==="open-work") document.getElementById("importCanvasBtn")?.click();
+          else if(toolsAction==="save-view") document.getElementById("savePdfBtn")?.click();
+          else if(toolsAction==="print") document.getElementById("printCanvasBtn")?.click();
+        },80);
+      }
+    }catch(err){
+      console.error("Could not restore work after Tools & Guide.",err);
+    }
   </script>
 
 </body>

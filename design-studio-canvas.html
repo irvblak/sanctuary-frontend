@@ -386,7 +386,11 @@
       height:34px;min-height:34px;margin:0;justify-content:flex-start;
       pointer-events:none;
     }
-    body.canvas-active .canvas-compact-head h2{display:none;}
+    body.canvas-active .canvas-compact-head h2{
+      display:block;position:absolute;left:-194px;top:.12rem;width:186px;
+      margin:0;font-size:.84rem;line-height:1.15;color:var(--accent-dark);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
+    }
     body.canvas-active .canvas-head-actions{
       justify-content:flex-start;gap:.22rem;pointer-events:auto;
     }
@@ -397,7 +401,9 @@
     body.canvas-active .canvas-main-panel{
       position:relative;padding-top:38px;
     }
-    body.canvas-active .canvas-side-left,
+    body.canvas-active .canvas-side-left{
+      align-self:stretch;margin-top:34px;height:calc(100% - 34px);
+    }
     body.canvas-active .canvas-side-right{align-self:stretch;}
     body.canvas-active .text-format-float{
       position:absolute;z-index:35;top:70px;left:50%;transform:translateX(-50%);
@@ -408,6 +414,8 @@
       box-shadow:0 6px 16px rgba(20,60,80,.12);
     }
     body.canvas-active .text-format-float[hidden]{display:none!important;}
+    body.canvas-active .draw-mode-note{display:none!important;}
+    body.canvas-active .selected-note:empty{display:none!important;}
     body.canvas-active .text-format-float .toolbar-label{border:0;padding:0 .2rem 0 0;margin:0;}
     body.canvas-active .text-format-float select{width:auto;max-width:150px;min-height:27px;padding:.24rem .3rem;}
     body.canvas-active .text-format-float .toolbar-check{width:auto;display:inline-flex;align-items:center;gap:.2rem;}
@@ -1111,7 +1119,7 @@
 
       const names={image:"Illustration",title:"Title",text:"Text",drawing:"Drawing"};
       selectedObjectNote.textContent=selectedItem
-        ?`${names[kind]||"Box"} selected. Overlay brings it to the front; Underlay sends it behind.`
+        ?(kind==="drawing"?"":`${names[kind]||"Box"} selected.`)
         :"Nothing selected. Choose Add Text, Add Illustration or Draw / Paint to add something.";
       if(selectedItem&&kind!=="image"&&kind!=="drawing")syncFormatControls();
       if(selectedItem&&kind==="drawing")setDrawingTool(drawingTool);
@@ -1293,7 +1301,7 @@
       drawingEditingItem=d;
       d.classList.add("drawing-edit");
       selectItem(d);
-      drawModeNote.textContent="Drawing mode is on. Draw inside the box; choose Finish Drawing when you want to move or resize it.";
+      drawModeNote.textContent="";
     }
     function finishDrawingEdit(){
       if(!drawingEditingItem)return;
@@ -1301,7 +1309,7 @@
       drawingEditingItem.classList.remove("drawing-edit");
       drawingEditingItem=null;
       drawingPointerActive=false;
-      drawModeNote.textContent="Drawing selected. Move, resize or layer it; choose Edit Drawing when you want to draw.";
+      drawModeNote.textContent="";
     }
     function setDrawingTool(tool){
       drawingTool=tool;

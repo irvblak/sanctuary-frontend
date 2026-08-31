@@ -630,9 +630,11 @@
             </label>
             <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
             <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
-            <button id="editDrawingBtn" type="button">Edit Drawing</button>
-            <button id="finishDrawingBtn" type="button">Finish Drawing</button>
-            <span class="draw-mode-note" id="drawModeNote">Drawing selected. Move, resize or layer it; choose Edit Drawing when you want to draw.</span>
+            <div class="compact-button-row drawing-edit-actions">
+              <button id="editDrawingBtn" type="button">Edit Drawing</button>
+              <button id="finishDrawingBtn" type="button">Finish Drawing</button>
+            </div>
+            <span class="draw-mode-note" id="drawModeNote"></span>
           </div>
 
           <div class="toolbar-row" id="objectToolbar">
@@ -1987,6 +1989,35 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
 .canvas-item[data-flow-group] .item-content ul,.canvas-item[data-flow-group] .item-content ol{margin:.35em 0 .75em;padding-left:1.5em}
 .page-number{position:absolute;bottom:1.3%;font-size:12px;color:#61727e;z-index:950;pointer-events:none}.page-number.center{left:50%;transform:translateX(-50%)}.page-number.right{right:3.5%}
 @media print{body{padding:0;background:#fff}.viewer-note{display:none}.canvas-page{box-shadow:none;margin:0 auto}}
+
+    /* Right-side space fix: keep Draw / Paint, Selection and the complete palette visible together. */
+    .canvas-side-right{gap:.22rem;padding:.28rem;overflow:hidden;}
+    .canvas-side-right .toolbar-row{gap:.2rem;padding:.3rem;}
+    #drawingToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.2rem;}
+    #drawingToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .2rem;font-size:.76rem;}
+    #drawingToolbar .swatch-row{justify-content:space-between;gap:.12rem;}
+    #drawingToolbar .mini-swatch{width:21px;height:21px!important;}
+    #drawingToolbar .toolbar-check{font-size:.78rem;min-height:28px;}
+    #drawingToolbar select{min-width:82px;padding:.22rem .3rem;}
+    #drawingToolbar .drawing-edit-actions{display:flex;gap:.2rem;}
+    #drawingToolbar .drawing-edit-actions button{flex:1 1 0;width:auto;min-width:0;padding:.28rem .2rem;font-size:.77rem;}
+    #drawingToolbar .draw-mode-note{display:none!important;}
+    #objectToolbar .object-move-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:.18rem;}
+    #objectToolbar .object-move-grid .move-up,
+    #objectToolbar .object-move-grid .move-left,
+    #objectToolbar .object-move-grid .move-centre,
+    #objectToolbar .object-move-grid .move-right,
+    #objectToolbar .object-move-grid .move-down{grid-column:auto;}
+    #objectToolbar .object-move-grid button{min-height:29px;padding:.2rem .1rem;font-size:.78rem;}
+    #objectToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.18rem;}
+    #objectToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .12rem;font-size:.73rem;}
+    #objectToolbar .selected-note{display:none!important;}
+    .canvas-side-right .yds-colour-popover{margin:0;padding:.32rem;}
+    .canvas-side-right .yds-colour-target{margin:0 0 .22rem;font-size:.78rem;}
+    .canvas-side-right .yds-colour-sv{height:82px;}
+    .canvas-side-right .yds-hue-range{margin:.22rem 0;}
+    .canvas-side-right .yds-colour-footer{gap:.22rem;}
+    .canvas-side-right .yds-colour-note{display:none!important;}
 </style>
 </head>
 <body>

@@ -317,6 +317,19 @@
       font-weight:600;
     }
 
+
+    .useful-matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:.75rem}
+    .useful-cell{padding:.8rem;border:1px solid #d5e2ef;border-radius:13px;background:#fff}
+    .useful-cell strong{display:block;color:var(--blue);line-height:1.25}
+    .useful-cell small{display:block;margin-top:.18rem;color:var(--muted);font-size:.78rem;font-weight:600;line-height:1.35}
+    .member-input{margin-top:.85rem;padding:.85rem;border:1px solid #d7e4f3;border-radius:13px;background:#f7fbff}
+    .member-input label{display:block;color:var(--blue);font-weight:800}
+    .member-input-row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.45rem}
+    .member-input input{min-height:44px;padding:.55rem .7rem;border:1px solid #b8c8da;border-radius:10px;background:#fff;font:inherit}
+    .member-input button{min-height:44px;padding:.55rem .85rem;border:0;border-radius:10px;background:var(--blue);color:#fff;font-weight:800;cursor:pointer}
+    .member-input button:hover,.member-input button:focus-visible{background:var(--blue-hover)}
+    .member-input-status{margin:.45rem 0 0;color:var(--muted);font-size:.82rem}
+
     .reference-grid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -410,6 +423,7 @@
       .main-panel{padding:1rem .85rem}
       .sub-list,
       .activity-list,
+      .useful-matrix,
       .reference-grid{
         grid-template-columns:1fr;
       }
@@ -539,7 +553,6 @@
             <div class="sub-list">
               <div class="sub-item future">Articles<small>Writing on subjects members would like to share.</small></div>
               <div class="sub-item future">Stories &amp; Recollections<small>Personal stories, experiences and memories.</small></div>
-              <div class="sub-item future">History &amp; Memories<small>Sanctuary, local and personal history.</small></div>
               <div class="sub-item future">Reviews &amp; Recommendations<small>Books, films, places and other things members have enjoyed.</small></div>
             </div>
           </div>
@@ -551,21 +564,18 @@
             <span class="branch-icon">🎨</span>
             <span class="branch-title-wrap">
               <span class="branch-title">Gallery</span>
-              <span class="branch-subtitle">Artwork, photography and creative work</span>
+              <span class="branch-subtitle">Original and AI-assisted artwork by members</span>
             </span>
             <span class="arrow">›</span>
           </summary>
 
           <div class="branch-body">
             <p class="branch-note">
-              Creative work members would like to share.
+              Artwork created by members.
             </p>
 
             <div class="sub-list">
-              <div class="sub-item future">Members’ Art<small>Paintings, drawings, digital art and other artwork.</small></div>
-              <div class="sub-item future">Photography<small>Photographs contributed by members.</small></div>
-              <div class="sub-item future">Creative Projects<small>Other creative work and exhibitions.</small></div>
-              <div class="sub-item future">Computer Art<small>Creative digital work produced by members.</small></div>
+              <div class="sub-item future">Members’ Art<small>Self-created or AI-assisted artwork by members.</small></div>
             </div>
           </div>
         </details>
@@ -628,17 +638,21 @@
             </span>
             <span class="arrow">›</span>
           </summary>
-
           <div class="branch-body">
-            <p class="branch-note">
-              Enter information to share with other members.
-            </p>
-
-            <div class="sub-list">
-              <div class="sub-item future">Useful Numbers<small>Contact numbers members may find useful.</small></div>
-              <div class="sub-item future">Workmen &amp; Trades<small>Local trades and practical contacts.</small></div>
-              <div class="sub-item future">Places to Eat<small>Restaurants, cafés and other recommendations.</small></div>
-              <div class="sub-item future">Places to Visit<small>Days out, attractions and interesting places.</small></div>
+            <p class="branch-note">Useful information contributed by members and reviewed before it is added.</p>
+            <div class="useful-matrix">
+              <div class="useful-cell"><strong>Useful Numbers</strong><small>Contact numbers members may find useful.</small></div>
+              <div class="useful-cell"><strong>Workmen &amp; Trades</strong><small>Local trades and practical contacts.</small></div>
+              <div class="useful-cell"><strong>Places to Eat</strong><small>Restaurants, cafés and member recommendations.</small></div>
+              <div class="useful-cell"><strong>Places to Visit</strong><small>Days out, attractions and interesting places.</small></div>
+            </div>
+            <div class="member-input">
+              <label for="usefulMemberNo">Add something — or send us a review</label>
+              <div class="member-input-row">
+                <input id="usefulMemberNo" type="text" autocomplete="off" placeholder="Membership number" aria-label="Membership number">
+                <button id="usefulInputBtn" type="button">Continue</button>
+              </div>
+              <p id="usefulInputStatus" class="member-input-status">Enter your membership number to contribute.</p>
             </div>
           </div>
         </details>
@@ -685,6 +699,20 @@
   </div>
 
   <script>
+
+    (function usefulInformationGateway(){
+      const memberNo=document.getElementById("usefulMemberNo");
+      const button=document.getElementById("usefulInputBtn");
+      const status=document.getElementById("usefulInputStatus");
+      if(!memberNo||!button||!status) return;
+      button.addEventListener("click",function(){
+        const ref=String(memberNo.value||"").trim().toUpperCase();
+        if(!ref){status.textContent="Please enter your membership number first.";memberNo.focus();return;}
+        sessionStorage.setItem("sanctuaryUsefulContributor",ref);
+        window.location.href="your-design-studio.html?mode=useful-information";
+      });
+    })();
+
     (function protectLibrary(){
       const ttl = 8 * 60 * 60 * 1000;
 

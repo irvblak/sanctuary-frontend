@@ -30,7 +30,22 @@ a{font:inherit}.topbar{display:flex;justify-content:space-between;align-items:ce
     </section>
     <section class="news-section">
       <div class="section-head"><h2>Meetings &amp; Club Business</h2><p>Meeting material, minutes and retained Club business.</p></div>
-      <div class="section-body"><div id="clubBusinessList" class="news-list"><p class="empty">Published meeting and Club business material will appear here.</p></div></div>
+      <div class="section-body">
+        <div id="clubBusinessList" class="news-list">
+          <div class="news-item">
+            Notices
+            <small>Meeting notices, agendas and related advance information.</small>
+          </div>
+          <div class="news-item">
+            Minutes
+            <small>Approved and retained minutes and meeting records.</small>
+          </div>
+          <div class="news-item">
+            E.M.S.
+            <small>Information and material concerning Emerson Management Services.</small>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </main></div>
@@ -39,7 +54,9 @@ a{font:inherit}.topbar{display:flex;justify-content:space-between;align-items:ce
   Display shelf only. Committee/Secretary authority belongs in YDS.
   YDS will later publish to:
     Club News -> News & Notices
-    Club News -> Meetings & Club Business
+    Club News -> Meetings & Club Business -> Notices
+                                          -> Minutes
+                                          -> E.M.S.
   Guides, Administration and Privacy & Security are separate destinations.
 */
 (function protectClubNews(){

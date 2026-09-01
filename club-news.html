@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Club News | Sanctuary Club</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<script src="access.js?v=CN_1"></script>
+<style>
+:root{--bg1:#d9ecff;--bg2:#f4f8fc;--bg3:#fff;--ink:#1f2a37;--muted:#52606f;--blue:#123a78;--blue-hover:#0f3166;--soft:#f7fbff;--line:#d8e1ec;--shadow:0 8px 24px rgba(0,0,0,.08)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;font-weight:500;line-height:1.55;color:var(--ink);background:linear-gradient(180deg,var(--bg1),var(--bg2) 44%,var(--bg3))}
+a{font:inherit}.topbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;max-width:1100px;margin:auto;padding:1.2rem 1.2rem .45rem}.brand{color:var(--blue);font-size:2rem;font-weight:850}.top-actions{display:flex;gap:.55rem;flex-wrap:wrap}.top-link{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.65rem 1rem;border:1px solid var(--blue);border-radius:14px 14px 0 0;color:#fff;background:var(--blue);text-decoration:none;font-weight:800}.top-link.secondary{color:var(--blue);background:#fff;border-color:var(--line)}.top-link:hover,.top-link:focus-visible{background:var(--blue-hover);color:#fff}.shell{max-width:1100px;margin:auto;padding:0 1rem 2.5rem}.main-panel{padding:1.5rem;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)}.intro{max-width:850px;margin:0 auto 1.5rem;text-align:center;color:var(--muted);font-size:1.18rem}.intro strong{display:block;color:var(--blue);font-size:1.7rem}.news-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.news-section{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 5px 16px rgba(0,0,0,.06)}.section-head{padding:1rem 1.1rem;color:#fff;background:var(--blue)}.section-head h2{margin:0;font-size:1.25rem}.section-head p{margin:.25rem 0 0;color:#e9f2ff;font-size:.9rem;font-weight:650}.section-body{min-height:180px;padding:1rem;background:var(--soft)}.news-list{display:grid;gap:.7rem}.empty{margin:0;padding:1rem;border:1px dashed #b9c9db;border-radius:13px;background:#fff;color:var(--muted);text-align:center}.news-item{display:block;padding:.85rem .9rem;border:1px solid #d5e2ef;border-radius:13px;background:#fff;color:var(--blue);text-decoration:none;font-weight:800}.news-item small{display:block;margin-top:.2rem;color:var(--muted);font-size:.8rem;font-weight:600}
+@media(max-width:760px){body{font-size:17px}.news-grid{grid-template-columns:1fr}.topbar{padding:.9rem .8rem .25rem;align-items:flex-start}.brand{font-size:1.65rem}.shell{padding:0 .8rem 1.5rem}.main-panel{padding:1rem .85rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">Club News</div>
+  <div class="top-actions">
+    <a class="top-link secondary" href="library.html">Library</a>
+    <a class="top-link" href="members-info.html">Members Hub</a>
+  </div>
+</div>
+<div class="shell"><main class="main-panel">
+  <p class="intro"><strong>Club News</strong>Current Club news, notices, meetings and Club business.</p>
+  <div class="news-grid">
+    <section class="news-section">
+      <div class="section-head"><h2>News &amp; Notices</h2><p>Current Club announcements and information for members.</p></div>
+      <div class="section-body"><div id="newsNoticesList" class="news-list"><p class="empty">Published News &amp; Notices will appear here.</p></div></div>
+    </section>
+    <section class="news-section">
+      <div class="section-head"><h2>Meetings &amp; Club Business</h2><p>Meeting material, minutes and retained Club business.</p></div>
+      <div class="section-body"><div id="clubBusinessList" class="news-list"><p class="empty">Published meeting and Club business material will appear here.</p></div></div>
+    </section>
+  </div>
+</main></div>
+<script>
+/*
+  Display shelf only. Committee/Secretary authority belongs in YDS.
+  YDS will later publish to:
+    Club News -> News & Notices
+    Club News -> Meetings & Club Business
+  Guides, Administration and Privacy & Security are separate destinations.
+*/
+(function protectClubNews(){
+  const ttl=8*60*60*1000;
+  const granted=sessionStorage.getItem("sanctuaryAccess");
+  const accessTime=Number(sessionStorage.getItem("sanctuaryAccessTime")||0);
+  const active=Boolean(granted)&&accessTime>0&&(Date.now()-accessTime)<ttl;
+  if(!active) window.location.replace("members-info.html");
+})();
+</script>
+</body>
+</html>

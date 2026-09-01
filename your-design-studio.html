@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1427,7 +1428,13 @@
     description:
       "Create authorised dated Committee material or standing Club publications.",
     iconId:"role-committee",
-    roles:["committee","secretary","committee_secretary"]
+    roles:[
+      "committee",
+      "committee_chair",
+      "committee_secretary",
+      "committee_treasurer",
+      "committee_officer"
+    ]
   },
 
   {
@@ -1436,7 +1443,14 @@
     description:
       "Create authorised dated or standing Residents Association material.",
     iconId:"role-panel",
-    roles:["panel","residents_association","ra_secretary","panel_secretary"]
+    roles:[
+      "panel",
+      "residents_association",
+      "ra_chair",
+      "ra_secretary",
+      "ra_treasurer",
+      "ra_officer"
+    ]
   },
 
   {
@@ -1486,9 +1500,15 @@
         },
 
         {
-          roles:["editor"],
+          roles:["copy_editor"],
           iconId:"role-editor",
-          tooltip:"Editor"
+          tooltip:"Copy Editor"
+        },
+
+        {
+          roles:["art_editor"],
+          iconId:"role-editor",
+          tooltip:"Art Editor"
         },
 
         {
@@ -1498,19 +1518,26 @@
         },
 
         {
-          roles:["committee"],
+          roles:[
+            "committee",
+            "committee_chair",
+            "committee_secretary",
+            "committee_treasurer",
+            "committee_officer"
+          ],
           iconId:"role-committee",
           tooltip:"Committee"
         },
 
         {
-          roles:["secretary"],
-          iconId:"role-committee",
-          tooltip:"Secretary"
-        },
-
-        {
-          roles:["panel"],
+          roles:[
+            "panel",
+            "residents_association",
+            "ra_chair",
+            "ra_secretary",
+            "ra_treasurer",
+            "ra_officer"
+          ],
           iconId:"role-panel",
           tooltip:"Residents Association"
         },
@@ -1534,9 +1561,15 @@
         },
 
         {
-          roles:["admin"],
+          roles:["admin_website","admin"],
           iconId:"role-admin",
-          tooltip:"Administrator"
+          tooltip:"Admin Website"
+        },
+
+        {
+          roles:["admin_club"],
+          iconId:"role-admin",
+          tooltip:"Admin Club"
         }
 
       ];
@@ -1685,6 +1718,57 @@
           committee_secretary:
             "committee_secretary",
 
+          secretary:
+            "committee_secretary",
+
+          committee_chairman:
+            "committee_chair",
+
+          committee_chair:
+            "committee_chair",
+
+          committee_treasurer:
+            "committee_treasurer",
+
+          committee_officer:
+            "committee_officer",
+
+          ra_chair:
+            "ra_chair",
+
+          residents_association_chair:
+            "ra_chair",
+
+          ra_treasurer:
+            "ra_treasurer",
+
+          residents_association_treasurer:
+            "ra_treasurer",
+
+          ra_officer:
+            "ra_officer",
+
+          residents_association_officer:
+            "ra_officer",
+
+          copy_editor:
+            "copy_editor",
+
+          art_editor:
+            "art_editor",
+
+          admin_website:
+            "admin_website",
+
+          website_admin:
+            "admin_website",
+
+          admin_club:
+            "admin_club",
+
+          club_admin:
+            "admin_club",
+
           service_publisher:
             "services",
 
@@ -1738,6 +1822,7 @@
       };
 
       let currentActivityScopes = [];
+      let currentMemberRoles = [];
 
 
       function cleanActivityScope(value){
@@ -2439,6 +2524,10 @@
         roles
       ){
 
+        currentMemberRoles = Array.isArray(roles)
+          ? [...new Set(roles.map(normaliseRole).filter(Boolean))]
+          : [];
+
         els.studioGrid.innerHTML =
           "";
 
@@ -2791,64 +2880,165 @@
 
         if(key === "committee"){
 
-          setChoiceContent(
-            "Committee",
-            `
-              <p>
-                Choose the kind of authorised Committee material you want to create.
-                Dated material goes first to Calendar & Events List and then to its linked Notice.
-              </p>
+          const isCommitteeSecretary =
+            currentMemberRoles.includes("committee_secretary");
 
-              <p>
-                Standing material goes directly to the Design Studio and is filed automatically
-                in the appropriate Club Publications section.
-                Work in Progress remains private until it is published.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create dated Committee Notice",
-                datedRoute("committee")
-              ),
-              actionButton(
-                "Committee News",
-                standingRoute(
-                  "committee",
-                  "notices-news",
-                  {
-                    section:"club-publications",
-                    subcategory:"news"
-                  }
+          if(isCommitteeSecretary){
+
+            setChoiceContent(
+              "Committee Secretary",
+              `
+                <p>
+                  Choose where the finished Committee material belongs.
+                  These are the agreed Club Library destinations available to the Committee Secretary.
+                </p>
+
+                <p>
+                  Work in Progress remains private and editable until publication.
+                  Dated Committee material still goes through Calendar & Events List and its linked Notice.
+                </p>
+
+                <p>
+                  <strong>Where in Library does it go?</strong>
+                </p>
+              `,
+              [
+                actionButton(
+                  "Create dated Committee Notice",
+                  datedRoute("committee")
                 ),
-                true
-              ),
-              actionButton(
-                "Useful Information",
-                standingRoute(
-                  "committee",
-                  "useful-information",
-                  {
-                    section:"club-publications",
-                    subcategory:"useful-information"
-                  }
+                actionButton(
+                  "News & Announcements",
+                  standingRoute(
+                    "committee",
+                    "club-news",
+                    {
+                      section:"club-news",
+                      subcategory:"news-announcements",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
                 ),
-                true
-              ),
-              actionButton(
-                "Meeting Information",
-                standingRoute(
-                  "committee",
-                  "notices-news",
-                  {
-                    section:"club-publications",
-                    subcategory:"meetings"
-                  }
+                actionButton(
+                  "Meeting Notices",
+                  standingRoute(
+                    "committee",
+                    "club-news",
+                    {
+                      section:"meetings-club-business",
+                      subcategory:"notices",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
                 ),
-                true
-              ),
-              guideButton("club-publications")
-            ]
-          );
+                actionButton(
+                  "Minutes",
+                  standingRoute(
+                    "committee",
+                    "club-news",
+                    {
+                      section:"meetings-club-business",
+                      subcategory:"minutes",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                actionButton(
+                  "E.M.S.",
+                  standingRoute(
+                    "committee",
+                    "club-news",
+                    {
+                      section:"meetings-club-business",
+                      subcategory:"ems",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                actionButton(
+                  "Guides",
+                  standingRoute(
+                    "committee",
+                    "guides",
+                    {
+                      section:"reference-help",
+                      subcategory:"guides",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                actionButton(
+                  "Administration",
+                  standingRoute(
+                    "committee",
+                    "administration",
+                    {
+                      section:"reference-help",
+                      subcategory:"administration",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                actionButton(
+                  "Privacy & Security",
+                  standingRoute(
+                    "committee",
+                    "privacy-security",
+                    {
+                      section:"reference-help",
+                      subcategory:"privacy-security",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                guideButton("committee")
+              ]
+            );
+
+          }else{
+
+            setChoiceContent(
+              "Committee",
+              `
+                <p>
+                  Create authorised Committee material here.
+                  Dated material goes first to Calendar & Events List and then to its linked Notice.
+                </p>
+
+                <p>
+                  Standing Committee work is prepared in the Design Studio and remains private
+                  until it is ready for the Committee Secretary to publish and file in the correct Library destination.
+                </p>
+              `,
+              [
+                actionButton(
+                  "Create dated Committee Notice",
+                  datedRoute("committee")
+                ),
+                actionButton(
+                  "Prepare standing Committee material",
+                  standingRoute(
+                    "committee",
+                    "committee-secretary-review",
+                    {
+                      section:"committee",
+                      subcategory:"awaiting-secretary",
+                      approval:"committee-secretary"
+                    }
+                  ),
+                  true
+                ),
+                guideButton("committee")
+              ]
+            );
+          }
 
           return;
         }
@@ -3040,10 +3230,16 @@
             "news_contributor",
             "artist",
             "committee",
-            "secretary",
+            "committee_chair",
             "committee_secretary",
+            "committee_treasurer",
+            "committee_officer",
             "panel",
+            "residents_association",
+            "ra_chair",
             "ra_secretary",
+            "ra_treasurer",
+            "ra_officer",
             "services"
           ]);
 

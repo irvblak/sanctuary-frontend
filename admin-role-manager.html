@@ -345,6 +345,20 @@
       margin-top:.22rem;
     }
 
+    .helperMasterRole{
+      margin-bottom:.75rem;
+      border:2px solid rgba(0,94,168,.28);
+      background:#fff;
+    }
+
+    .helperMasterRole input[type="checkbox"]{
+      flex:0 0 auto;
+    }
+
+    .otherClubRoleGrid{
+      margin-top:.75rem;
+    }
+
     .scopePanel{
       margin-top:.75rem;
       padding:.85rem;
@@ -689,15 +703,22 @@
 
           <div class="roleSection">
             <h3>Other Club Roles</h3>
-            <div class="roleGrid">
-              <label class="roleBox">
-                <input type="checkbox" id="roleWebsiteHelper" />
-                <div class="roleText">
-                  <strong>Website Helper &amp; Tutor</strong>
-                  <span>Helps and teaches members to use Sanctuary Club and Your Design Studio.</span>
-                </div>
-              </label>
 
+            <label class="roleBox helperMasterRole">
+              <input type="checkbox" id="roleWebsiteHelper" />
+              <div class="roleText">
+                <strong>Website Helper &amp; Tutor</strong>
+                <span>Tick this role to activate the specialisms below.</span>
+              </div>
+            </label>
+
+            <div class="scopePanel" id="websiteHelperScopePanel">
+              <h3>Website Helper &amp; Tutor specialisms</h3>
+              <div class="section-note">Select every area in which this member is willing to help or teach. More than one Helper &amp; Tutor may be appointed to the same specialism.</div>
+              <div class="scopeGrid" id="websiteHelperScopeGrid"></div>
+            </div>
+
+            <div class="roleGrid otherClubRoleGrid">
               <label class="roleBox">
                 <input type="checkbox" id="roleServices" />
                 <div class="roleText">
@@ -713,12 +734,6 @@
                   <span>Coordinates practical condominium information, equipment and building matters.</span>
                 </div>
               </label>
-            </div>
-
-            <div class="scopePanel" id="websiteHelperScopePanel">
-              <h3>Website Helper &amp; Tutor specialisms</h3>
-              <div class="section-note">Select every area in which this member is willing to help or teach. More than one Helper &amp; Tutor may be appointed to the same specialism.</div>
-              <div class="scopeGrid" id="websiteHelperScopeGrid"></div>
             </div>
           </div>
 

@@ -27,6 +27,7 @@
       --warnbg:#fff8ea;
       --err:#b00020;
       --errbg:#fff2f4;
+      --soft:#f7fbff;
     }
 
     *{ box-sizing:border-box; }
@@ -116,6 +117,12 @@
     h2{
       margin:0 0 .7rem;
       font-size:1.08rem;
+      color:var(--brand-dark);
+    }
+
+    h3{
+      margin:0;
+      font-size:1rem;
       color:var(--brand-dark);
     }
 
@@ -236,7 +243,7 @@
       display:flex;
       flex-direction:column;
       gap:.55rem;
-      max-height:660px;
+      max-height:760px;
       overflow:auto;
       padding-right:.2rem;
       margin-top:.8rem;
@@ -266,16 +273,30 @@
       margin-top:.32rem;
       color:var(--muted);
       font-size:.9rem;
-      display:flex;
-      gap:.4rem;
-      flex-wrap:wrap;
-      align-items:center;
+      line-height:1.35;
     }
 
     .divider{
       height:1px;
       background:#e6edf5;
       margin:.9rem 0;
+    }
+
+    .roleSection{
+      margin-top:1rem;
+      padding-top:.15rem;
+    }
+
+    .roleSection + .roleSection{
+      border-top:1px solid #e6edf5;
+      padding-top:1rem;
+    }
+
+    .section-note{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.4;
+      margin:.25rem 0 .65rem;
     }
 
     .roleGrid{
@@ -298,9 +319,11 @@
       gap:.65rem;
       align-items:flex-start;
       cursor:pointer;
+      margin:0;
     }
 
-    .roleBox input[type="checkbox"]{
+    .roleBox input[type="checkbox"],
+    .scopeBox input[type="checkbox"]{
       width:18px;
       height:18px;
       margin-top:.15rem;
@@ -321,6 +344,58 @@
       line-height:1.35;
       margin-top:.22rem;
     }
+
+    .scopePanel{
+      margin-top:.75rem;
+      padding:.85rem;
+      border:1px solid rgba(0,94,168,.16);
+      border-radius:14px;
+      background:var(--soft);
+    }
+
+    .scopePanel.hidden{ display:none; }
+
+    .scopeGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:.55rem;
+      margin-top:.65rem;
+    }
+
+    @media (max-width:760px){
+      .scopeGrid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+
+    @media (max-width:520px){
+      .scopeGrid{ grid-template-columns:1fr; }
+    }
+
+    .scopeBox{
+      display:flex;
+      gap:.55rem;
+      align-items:flex-start;
+      border:1px solid #dce7f3;
+      border-radius:12px;
+      background:#fff;
+      padding:.62rem .68rem;
+      margin:0;
+      cursor:pointer;
+      color:#334155;
+      font-size:.91rem;
+    }
+
+    .legacyBox{
+      margin-top:.8rem;
+      background:#fff8ea;
+      border:1px solid rgba(138,91,0,.18);
+      border-radius:14px;
+      padding:.8rem .9rem;
+      color:#6f4b00;
+      line-height:1.42;
+      font-size:.9rem;
+    }
+
+    .legacyBox.hidden{ display:none; }
 
     .actions{
       display:flex;
@@ -385,7 +460,7 @@
         <div>
           <h1>Member Roles</h1>
           <div class="subtle">
-            Manage current role incumbents only. Residents with no assigned role are not listed.
+            Appoint current role-holders and, for Activity Organisers, the activities they organise.
           </div>
         </div>
       </div>
@@ -401,15 +476,15 @@
         <h2>Add role-holder</h2>
         <div class="row">
           <div class="field small">
-            <label for="addResidentRef">Resident ref</label>
+            <label for="addResidentRef">Member ref</label>
             <input id="addResidentRef" placeholder="e.g. SM55/1" />
           </div>
           <div class="actions-left">
-            <button class="btn primary" id="btnLoadResident" type="button">Load resident</button>
+            <button class="btn primary" id="btnLoadResident" type="button">Load member</button>
           </div>
         </div>
         <div class="hint">
-          Use this only when appointing a new role-holder who is not already listed below.
+          Use this when appointing a member who is not already in the current role-holder list.
         </div>
       </div>
 
@@ -422,7 +497,7 @@
         </div>
 
         <div class="panel">
-          <h2>Edit selected resident</h2>
+          <h2>Edit selected member</h2>
 
           <div class="row">
             <div class="field">
@@ -443,7 +518,7 @@
             </div>
 
             <div class="field small">
-              <label for="residentId">Resident ref</label>
+              <label for="residentId">Member ref</label>
               <input id="residentId" readonly />
             </div>
 
@@ -455,101 +530,203 @@
 
           <div class="summaryBox">
             <strong>Visibility rule:</strong> only current role incumbents are shown here and on the public “Who does what” notice.
-            If all roles are removed, the resident disappears from the list after saving.
+            If all roles are removed, the member disappears from the list after saving.
           </div>
+
+          <div class="legacyBox hidden" id="legacyBox"></div>
 
           <div class="divider"></div>
 
           <h2>Assign roles</h2>
 
-          <div class="roleGrid">
-            <label class="roleBox">
-              <input type="checkbox" id="roleHost" />
-              <div class="roleText">
-                <strong>Event Host</strong>
-                <span>Can create and manage their own one-off events and linked notices.</span>
-              </div>
-            </label>
+          <div class="roleSection">
+            <h3>Events &amp; Activities</h3>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleHost" />
+                <div class="roleText">
+                  <strong>Event Host</strong>
+                  <span>Can create and manage their own one-off events and linked notices.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleActivityOrganiser" />
-              <div class="roleText">
-                <strong>Activity Organiser</strong>
-                <span>Can organise and publish regular or continuing Club activities.</span>
-              </div>
-            </label>
-.......................
-            <label class="roleBox">
-              <input type="checkbox" id="roleCommittee" />
-              <div class="roleText">
-                <strong>Committee</strong>
-                <span>Helps run the Club, its social programme and its general responsibilities.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleActivityOrganiser" />
+                <div class="roleText">
+                  <strong>Activity Organiser</strong>
+                  <span>Can organise one or more named Club activities.</span>
+                </div>
+              </label>
+            </div>
 
-            <label class="roleBox">
-              <input type="checkbox" id="rolePanel" />
-              <div class="roleText">
-                <strong>Residents Association Panel</strong>
-                <span>Handles Association governance, meetings, consultations and Panel communications.</span>
-              </div>
-            </label>
+            <div class="scopePanel hidden" id="activityScopePanel">
+              <h3>Activities organised</h3>
+              <div class="section-note">Select every activity for which this member is an organiser. More than one organiser may be appointed to the same activity.</div>
+              <div class="scopeGrid" id="activityScopeGrid"></div>
+            </div>
+          </div>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleTreasurer" />
-              <div class="roleText">
-                <strong>Treasurer</strong>
-                <span>Handles finance-related responsibilities for the Club and its activities.</span>
-              </div>
-            </label>
+          <div class="roleSection">
+            <h3>Committee</h3>
+            <div class="section-note">Committee office determines the member’s Committee publishing route in Your Design Studio.</div>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleCommitteeChair" />
+                <div class="roleText">
+                  <strong>Chair</strong>
+                  <span>Committee Chair.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleNewsContributor" />
-              <div class="roleText">
-                <strong>Writer</strong>
-                <span>Can create Club news, notices and other publications.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleCommitteeSecretary" />
+                <div class="roleText">
+                  <strong>Secretary</strong>
+                  <span>Committee Secretary and Committee publication point.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleEditor" />
-              <div class="roleText">
-                <strong>Editor</strong>
-                <span>Manages News Contributors and editorial publishing, including review, approval, publication and withdrawal.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleCommitteeTreasurer" />
+                <div class="roleText">
+                  <strong>Treasurer</strong>
+                  <span>Committee Treasurer.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleArtist" />
-              <div class="roleText">
-                <strong>Artist</strong>
-                <span>Can create free-form publications and designs using the Creative Canvas.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleCommitteeOfficer" />
+                <div class="roleText">
+                  <strong>Officer</strong>
+                  <span>Other Committee office-holder.</span>
+                </div>
+              </label>
+            </div>
+          </div>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleWebsiteHelper" />
-              <div class="roleText">
-                <strong>Website Helper</strong>
-                <span>Helps neighbours become confident users of Sanctuary Club.</span>
-              </div>
-            </label>
+          <div class="roleSection">
+            <h3>Residents Association</h3>
+            <div class="section-note">Separate from Club Committee responsibilities.</div>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleRaChair" />
+                <div class="roleText">
+                  <strong>Chair</strong>
+                  <span>Residents Association Chair.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleServices" />
-              <div class="roleText">
-                <strong>Services</strong>
-                <span>Can prepare approved information for external or community service providers.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleRaSecretary" />
+                <div class="roleText">
+                  <strong>Secretary</strong>
+                  <span>Residents Association Secretary and publication point.</span>
+                </div>
+              </label>
 
-            <label class="roleBox">
-              <input type="checkbox" id="roleAdmin" />
-              <div class="roleText">
-                <strong>Administrator</strong>
-                <span>Full system access, including responsibility for authorised role assignments.</span>
-              </div>
-            </label>
+              <label class="roleBox">
+                <input type="checkbox" id="roleRaTreasurer" />
+                <div class="roleText">
+                  <strong>Treasurer</strong>
+                  <span>Residents Association Treasurer.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleRaOfficer" />
+                <div class="roleText">
+                  <strong>Officer</strong>
+                  <span>Other Residents Association office-holder.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="roleSection">
+            <h3>Creative &amp; Editorial</h3>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleWriter" />
+                <div class="roleText">
+                  <strong>Writer</strong>
+                  <span>Creates written material for editorial review and publication.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleArtist" />
+                <div class="roleText">
+                  <strong>Artist</strong>
+                  <span>Creates artwork and visual publications using Your Design Studio.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleCopyEditor" />
+                <div class="roleText">
+                  <strong>Copy Editor</strong>
+                  <span>Reviews written material for presentation and publication.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleArtEditor" />
+                <div class="roleText">
+                  <strong>Art Editor</strong>
+                  <span>Reviews artwork and visual material for publication.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="roleSection">
+            <h3>Other Club Roles</h3>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleWebsiteHelper" />
+                <div class="roleText">
+                  <strong>Website Helper</strong>
+                  <span>Helps members become confident users of Sanctuary Club.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleServices" />
+                <div class="roleText">
+                  <strong>Services</strong>
+                  <span>Prepares approved information about external or community services.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleCondominiumCoordinator" />
+                <div class="roleText">
+                  <strong>Condominium Coordinator</strong>
+                  <span>Coordinates practical condominium information, equipment and building matters.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="roleSection">
+            <h3>Administration</h3>
+            <div class="roleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleAdminWebsite" />
+                <div class="roleText">
+                  <strong>Admin Website</strong>
+                  <span>Website administration and technical oversight.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleAdminClub" />
+                <div class="roleText">
+                  <strong>Admin Club</strong>
+                  <span>Club administration, records and publication oversight.</span>
+                </div>
+              </label>
+            </div>
           </div>
 
           <div class="actions">
@@ -557,7 +734,7 @@
               <button class="btn primary" id="btnSaveRoles" type="button" disabled>Save roles</button>
             </div>
             <div class="actions-right">
-              <span class="pill" id="modePill">No resident selected</span>
+              <span class="pill" id="modePill">No member selected</span>
             </div>
           </div>
         </div>
@@ -587,18 +764,35 @@
     const memberIdEl = $("memberId");
     const residentIdEl = $("residentId");
     const currentRolesEl = $("currentRoles");
+    const legacyBox = $("legacyBox");
 
     const roleHostEl = $("roleHost");
     const roleActivityOrganiserEl = $("roleActivityOrganiser");
-    const roleCommitteeEl = $("roleCommittee");
-    const rolePanelEl = $("rolePanel");
-    const roleTreasurerEl = $("roleTreasurer");
-    const roleNewsContributorEl = $("roleNewsContributor");
-    const roleEditorEl = $("roleEditor");
+
+    const roleCommitteeChairEl = $("roleCommitteeChair");
+    const roleCommitteeSecretaryEl = $("roleCommitteeSecretary");
+    const roleCommitteeTreasurerEl = $("roleCommitteeTreasurer");
+    const roleCommitteeOfficerEl = $("roleCommitteeOfficer");
+
+    const roleRaChairEl = $("roleRaChair");
+    const roleRaSecretaryEl = $("roleRaSecretary");
+    const roleRaTreasurerEl = $("roleRaTreasurer");
+    const roleRaOfficerEl = $("roleRaOfficer");
+
+    const roleWriterEl = $("roleWriter");
     const roleArtistEl = $("roleArtist");
+    const roleCopyEditorEl = $("roleCopyEditor");
+    const roleArtEditorEl = $("roleArtEditor");
+
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
-    const roleAdminEl = $("roleAdmin");
+    const roleCondominiumCoordinatorEl = $("roleCondominiumCoordinator");
+
+    const roleAdminWebsiteEl = $("roleAdminWebsite");
+    const roleAdminClubEl = $("roleAdminClub");
+
+    const activityScopePanel = $("activityScopePanel");
+    const activityScopeGrid = $("activityScopeGrid");
 
     const btnSaveRoles = $("btnSaveRoles");
     const modePill = $("modePill");
@@ -608,19 +802,63 @@
     let currentRoleHolders = [];
     let selectedResident = null;
 
+    const ACTIVITY_SCOPES = [
+      ["daffs-caff", "Daff’s Caff"],
+      ["book-club", "Book Club"],
+      ["bridge", "Bridge"],
+      ["mahjong", "Mahjong"],
+      ["rummikub", "Rummikub"],
+      ["bowls", "Bowls"],
+      ["table-tennis", "Table Tennis"],
+      ["cookery", "Cookery"],
+      ["walking-group", "Walking Group"],
+      ["art-group", "Art Group"],
+      ["gardening", "Gardening"],
+      ["computer-art", "Computer Art"]
+    ];
+
     const ROLE_LABELS = {
       host: "Event Host",
       activity_organiser: "Activity Organiser",
-      committee: "Committee",
-      panel: "Residents Association Panel",
-      treasurer: "Treasurer",
-      news_contributor: "News Contributor",
-      editor: "Editor",
+
+      committee_chair: "Committee Chair",
+      committee_secretary: "Committee Secretary",
+      committee_treasurer: "Committee Treasurer",
+      committee_officer: "Committee Officer",
+
+      ra_chair: "Residents Association Chair",
+      ra_secretary: "Residents Association Secretary",
+      ra_treasurer: "Residents Association Treasurer",
+      ra_officer: "Residents Association Officer",
+
+      writer: "Writer",
       artist: "Artist",
+      copy_editor: "Copy Editor",
+      art_editor: "Art Editor",
+
       website_helper: "Website Helper",
       services: "Services",
-      admin: "Administrator"
+      condominium_coordinator: "Condominium Coordinator",
+
+      admin_website: "Admin Website",
+      admin_club: "Admin Club",
+
+      admin: "Administrator (legacy)",
+      committee: "Committee (legacy)",
+      panel: "Residents Association Panel (legacy)",
+      treasurer: "Treasurer (legacy)",
+      news_contributor: "Writer (legacy)",
+      editor: "Editor (legacy)"
     };
+
+    const LEGACY_ROLES = new Set([
+      "admin",
+      "committee",
+      "panel",
+      "treasurer",
+      "news_contributor",
+      "editor"
+    ]);
 
     function showBox(el,msg){
       el.textContent = msg;
@@ -702,65 +940,100 @@
         : [];
     }
 
-    function displayRoles(roles){
-      const cleaned = Array.isArray(roles) ? roles : [];
-      return cleaned.length
-        ? cleaned.map(r => ROLE_LABELS[r] || r).join(", ")
-        : "No role";
+    function activityScopesFor(obj){
+      const raw =
+        obj?.activity_scopes ??
+        obj?.activityScopes ??
+        obj?.activity_scope ??
+        obj?.activityScope ??
+        [];
+
+      if(Array.isArray(raw)){
+        return [...new Set(
+          raw.map(x => String(x).trim().toLowerCase()).filter(Boolean)
+        )];
+      }
+
+      if(typeof raw === "string" && raw.trim()){
+        return [...new Set(
+          raw.split(",").map(x => x.trim().toLowerCase()).filter(Boolean)
+        )];
+      }
+
+      return [];
     }
-    function normaliseResident(member, resident, arrayIndex){
-  const memberId = baseMemberIdFrom(member);
 
-  const suppliedResidentId = cleanId(
-    resident.resident_id ||
-    resident.residentId ||
-    resident.resident_ref ||
-    resident.residentRef ||
-    ""
-  );
+    function activityLabel(scope){
+      const found = ACTIVITY_SCOPES.find(([key]) => key === scope);
+      return found ? found[1] : scope;
+    }
 
-  const suppliedResidentIndex = parseInt(
-    resident.resident_index ||
-    resident.residentIndex ||
-    "",
-    10
-  );
+    function displayRoles(roles,activityScopes = []){
+      const cleaned = Array.isArray(roles) ? roles : [];
+      if(!cleaned.length) return "No role";
 
-  const residentIndex =
-    Number.isFinite(suppliedResidentIndex) && suppliedResidentIndex > 0
-      ? suppliedResidentIndex
-      : arrayIndex + 1;
+      return cleaned.map(role => {
+        if(role === "activity_organiser" && activityScopes.length){
+          return `Activity Organiser — ${activityScopes.map(activityLabel).join(", ")}`;
+        }
+        return ROLE_LABELS[role] || role;
+      }).join(", ");
+    }
 
-  const residentId =
-    suppliedResidentId ||
-    `${memberId}/${residentIndex}`;
+    function normaliseResident(member,resident,arrayIndex){
+      const memberId = baseMemberIdFrom(member);
 
-  return {
-    resident_id: residentId,
-    member_id: memberId,
-    resident_index: residentIndex,
+      const suppliedResidentId = cleanId(
+        resident.resident_id ||
+        resident.residentId ||
+        resident.resident_ref ||
+        resident.residentRef ||
+        ""
+      );
 
-    name: firstNonEmpty(
-      resident.name,
-      resident.full_name,
-      resident.fullName,
-      resident.resident_name,
-      resident.residentName,
-      resident.display_name,
-      resident.displayName
-    ),
+      const suppliedResidentIndex = parseInt(
+        resident.resident_index ||
+        resident.residentIndex ||
+        "",
+        10
+      );
 
-    email: firstNonEmpty(
-      resident.email,
-      resident.email_address,
-      resident.emailAddress
-    ),
+      const residentIndex =
+        Number.isFinite(suppliedResidentIndex) && suppliedResidentIndex > 0
+          ? suppliedResidentIndex
+          : arrayIndex + 1;
 
-    roles: rolesFor(resident),
-    source: "resident"
-  };
-}
-    
+      const residentId =
+        suppliedResidentId ||
+        `${memberId}/${residentIndex}`;
+
+      return {
+        resident_id: residentId,
+        member_id: memberId,
+        resident_index: residentIndex,
+
+        name: firstNonEmpty(
+          resident.name,
+          resident.full_name,
+          resident.fullName,
+          resident.resident_name,
+          resident.residentName,
+          resident.display_name,
+          resident.displayName
+        ),
+
+        email: firstNonEmpty(
+          resident.email,
+          resident.email_address,
+          resident.emailAddress
+        ),
+
+        roles: rolesFor(resident),
+        activity_scopes: activityScopesFor(resident),
+        source: "resident"
+      };
+    }
+
     function flattenMembers(members){
       const out = [];
 
@@ -785,17 +1058,111 @@
           name:firstNonEmpty(member.primary_name,member.name,member.display_name),
           email:firstNonEmpty(member.primary_email,member.email,member.email_address),
           roles:rolesFor(member),
+          activity_scopes:activityScopesFor(member),
           source:"legacy"
         });
       });
 
       out.sort((a,b) => {
-        const byMember = String(a.member_id).localeCompare(String(b.member_id),undefined,{numeric:true});
+        const byMember = String(a.member_id).localeCompare(
+          String(b.member_id),
+          undefined,
+          {numeric:true}
+        );
         if(byMember !== 0) return byMember;
         return Number(a.resident_index || 0) - Number(b.resident_index || 0);
       });
 
       return out;
+    }
+
+    function buildActivityScopeGrid(){
+      activityScopeGrid.innerHTML = "";
+
+      ACTIVITY_SCOPES.forEach(([key,label]) => {
+        const item = document.createElement("label");
+        item.className = "scopeBox";
+        item.innerHTML = `
+          <input type="checkbox" data-activity-scope="${escapeHtml(key)}" />
+          <span>${escapeHtml(label)}</span>
+        `;
+        activityScopeGrid.appendChild(item);
+      });
+    }
+
+    function scopeCheckboxes(){
+      return Array.from(
+        activityScopeGrid.querySelectorAll('input[data-activity-scope]')
+      );
+    }
+
+    function selectedActivityScopes(){
+      return scopeCheckboxes()
+        .filter(el => el.checked)
+        .map(el => el.dataset.activityScope);
+    }
+
+    function setSelectedActivityScopes(scopes){
+      const selected = new Set(Array.isArray(scopes) ? scopes : []);
+      scopeCheckboxes().forEach(el => {
+        el.checked = selected.has(el.dataset.activityScope);
+      });
+    }
+
+    function updateActivityPanel(){
+      const active = roleActivityOrganiserEl.checked;
+      activityScopePanel.classList.toggle("hidden",!active);
+
+      if(!active){
+        setSelectedActivityScopes([]);
+      }
+    }
+
+    function legacyRolesFor(obj){
+      return rolesFor(obj).filter(role => LEGACY_ROLES.has(role));
+    }
+
+    function updateLegacyBox(){
+      const legacy = selectedResident ? legacyRolesFor(selectedResident) : [];
+
+      if(!legacy.length){
+        legacyBox.classList.add("hidden");
+        legacyBox.textContent = "";
+        return;
+      }
+
+      legacyBox.classList.remove("hidden");
+      legacyBox.innerHTML =
+        `<strong>Migration safeguard:</strong> ${escapeHtml(
+          legacy.map(r => ROLE_LABELS[r] || r).join(", ")
+        )} will be retained when you save.`;
+    }
+
+    function clearRoleChecks(){
+      [
+        roleHostEl,
+        roleActivityOrganiserEl,
+        roleCommitteeChairEl,
+        roleCommitteeSecretaryEl,
+        roleCommitteeTreasurerEl,
+        roleCommitteeOfficerEl,
+        roleRaChairEl,
+        roleRaSecretaryEl,
+        roleRaTreasurerEl,
+        roleRaOfficerEl,
+        roleWriterEl,
+        roleArtistEl,
+        roleCopyEditorEl,
+        roleArtEditorEl,
+        roleWebsiteHelperEl,
+        roleServicesEl,
+        roleCondominiumCoordinatorEl,
+        roleAdminWebsiteEl,
+        roleAdminClubEl
+      ].forEach(el => el.checked = false);
+
+      setSelectedActivityScopes([]);
+      updateActivityPanel();
     }
 
     function resetSelection(){
@@ -805,19 +1172,14 @@
       memberIdEl.value = "";
       residentIdEl.value = "";
       currentRolesEl.value = "";
-      roleHostEl.checked = false;
-      roleActivityOrganiserEl.checked = false;
-      roleCommitteeEl.checked = false;
-      rolePanelEl.checked = false;
-      roleTreasurerEl.checked = false;
-      roleNewsContributorEl.checked = false;
-      roleEditorEl.checked = false;
-      roleArtistEl.checked = false;
-      roleWebsiteHelperEl.checked = false;
-      roleServicesEl.checked = false;
-      roleAdminEl.checked = false;
+
+      clearRoleChecks();
+
+      legacyBox.classList.add("hidden");
+      legacyBox.textContent = "";
+
       btnSaveRoles.disabled = true;
-      modePill.textContent = "No resident selected";
+      modePill.textContent = "No member selected";
     }
 
     function renderRoleHoldersList(){
@@ -830,14 +1192,16 @@
 
       currentRoleHolders.forEach(resident => {
         const item = document.createElement("div");
-        item.className = "item" + (selectedResident && selectedResident.resident_id === resident.resident_id ? " active" : "");
+        item.className =
+          "item" +
+          (selectedResident &&
+           selectedResident.resident_id === resident.resident_id
+            ? " active"
+            : "");
 
         item.innerHTML = `
           <div class="item-title">${escapeHtml(resident.resident_id)} — ${escapeHtml(resident.name || "(No name)")}</div>
-          <div class="item-meta">
-            <span>${escapeHtml(displayRoles(resident.roles))}</span>
-            ${resident.email ? `<span>•</span><span>${escapeHtml(resident.email)}</span>` : ""}
-          </div>
+          <div class="item-meta">${escapeHtml(displayRoles(resident.roles,resident.activity_scopes))}</div>
         `;
 
         item.onclick = () => selectResident(resident);
@@ -846,26 +1210,49 @@
     }
 
     function selectResident(resident){
-      selectedResident = Object.assign({}, resident);
+      selectedResident = Object.assign({},resident);
       const roles = rolesFor(selectedResident);
+      const scopes = activityScopesFor(selectedResident);
 
       memberNameEl.value = selectedResident.name || "";
       memberEmailEl.value = selectedResident.email || "";
       memberIdEl.value = selectedResident.member_id || "";
       residentIdEl.value = selectedResident.resident_id || "";
-      currentRolesEl.value = displayRoles(roles);
+      currentRolesEl.value = displayRoles(roles,scopes);
+
+      clearRoleChecks();
 
       roleHostEl.checked = roles.includes("host");
       roleActivityOrganiserEl.checked = roles.includes("activity_organiser");
-      roleCommitteeEl.checked = roles.includes("committee");
-      rolePanelEl.checked = roles.includes("panel");
-      roleTreasurerEl.checked = roles.includes("treasurer");
-      roleNewsContributorEl.checked = roles.includes("news_contributor");
-      roleEditorEl.checked = roles.includes("editor");
+
+      roleCommitteeChairEl.checked = roles.includes("committee_chair");
+      roleCommitteeSecretaryEl.checked = roles.includes("committee_secretary");
+      roleCommitteeTreasurerEl.checked = roles.includes("committee_treasurer");
+      roleCommitteeOfficerEl.checked = roles.includes("committee_officer");
+
+      roleRaChairEl.checked = roles.includes("ra_chair");
+      roleRaSecretaryEl.checked = roles.includes("ra_secretary");
+      roleRaTreasurerEl.checked = roles.includes("ra_treasurer");
+      roleRaOfficerEl.checked = roles.includes("ra_officer");
+
+      roleWriterEl.checked =
+        roles.includes("writer") ||
+        roles.includes("news_contributor");
+
       roleArtistEl.checked = roles.includes("artist");
+      roleCopyEditorEl.checked = roles.includes("copy_editor");
+      roleArtEditorEl.checked = roles.includes("art_editor");
+
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
-      roleAdminEl.checked = roles.includes("admin");
+      roleCondominiumCoordinatorEl.checked = roles.includes("condominium_coordinator");
+
+      roleAdminWebsiteEl.checked = roles.includes("admin_website");
+      roleAdminClubEl.checked = roles.includes("admin_club");
+
+      setSelectedActivityScopes(scopes);
+      updateActivityPanel();
+      updateLegacyBox();
 
       btnSaveRoles.disabled = false;
       modePill.textContent = `Editing ${selectedResident.resident_id}`;
@@ -875,17 +1262,44 @@
 
     function selectedRoles(){
       const roles = [];
+
       if(roleHostEl.checked) roles.push("host");
       if(roleActivityOrganiserEl.checked) roles.push("activity_organiser");
-      if(roleCommitteeEl.checked) roles.push("committee");
-      if(rolePanelEl.checked) roles.push("panel");
-      if(roleTreasurerEl.checked) roles.push("treasurer");
-      if(roleNewsContributorEl.checked) roles.push("news_contributor");
-      if(roleEditorEl.checked) roles.push("editor");
+
+      if(roleCommitteeChairEl.checked) roles.push("committee_chair");
+      if(roleCommitteeSecretaryEl.checked) roles.push("committee_secretary");
+      if(roleCommitteeTreasurerEl.checked) roles.push("committee_treasurer");
+      if(roleCommitteeOfficerEl.checked) roles.push("committee_officer");
+
+      if(roleRaChairEl.checked) roles.push("ra_chair");
+      if(roleRaSecretaryEl.checked) roles.push("ra_secretary");
+      if(roleRaTreasurerEl.checked) roles.push("ra_treasurer");
+      if(roleRaOfficerEl.checked) roles.push("ra_officer");
+
+      if(roleWriterEl.checked) roles.push("writer");
       if(roleArtistEl.checked) roles.push("artist");
+      if(roleCopyEditorEl.checked) roles.push("copy_editor");
+      if(roleArtEditorEl.checked) roles.push("art_editor");
+
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");
-      if(roleAdminEl.checked) roles.push("admin");
+      if(roleCondominiumCoordinatorEl.checked) roles.push("condominium_coordinator");
+
+      if(roleAdminWebsiteEl.checked) roles.push("admin_website");
+      if(roleAdminClubEl.checked) roles.push("admin_club");
+
+      /*
+        Migration safeguard:
+        Existing legacy roles remain until we deliberately retire them.
+        This is especially important for "admin", because the current
+        backend still authorises this page via the legacy admin role.
+      */
+      if(selectedResident){
+        legacyRolesFor(selectedResident).forEach(role => {
+          if(!roles.includes(role)) roles.push(role);
+        });
+      }
+
       return roles;
     }
 
@@ -918,7 +1332,10 @@
         renderRoleHoldersList();
 
         clearBox(infoBox);
-        showBox(okBox,`Loaded ${currentRoleHolders.length} current role-holder${currentRoleHolders.length === 1 ? "" : "s"}.`);
+        showBox(
+          okBox,
+          `Loaded ${currentRoleHolders.length} current role-holder${currentRoleHolders.length === 1 ? "" : "s"}.`
+        );
       }catch(err){
         clearBox(infoBox);
         showBox(errBox,err.message || "Could not load current role-holders.");
@@ -931,13 +1348,14 @@
       clearMessages();
 
       const ref = cleanId(addResidentRefEl.value);
+
       if(!ref){
-        showBox(warnBox,"Enter a resident reference such as SM55/1.");
+        showBox(warnBox,"Enter a member reference such as SM55/1.");
         return;
       }
 
       if(!ref.includes("/")){
-        showBox(warnBox,"Please use a resident-level reference such as SM55/1, not just SM55.");
+        showBox(warnBox,"Please use a member-level reference such as SM55/1, not just SM55.");
         return;
       }
 
@@ -946,17 +1364,22 @@
       const wantedIndex = parseInt(parts[1],10);
 
       if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
-        showBox(warnBox,"Please use a valid resident reference such as SM55/1.");
+        showBox(warnBox,"Please use a valid member reference such as SM55/1.");
         return;
       }
 
       try{
         showBox(infoBox,`Loading ${ref}…`);
 
-        const data = await getJson(`${BACKEND_URL}/api/member-profile/${encodeURIComponent(wantedMemberId)}`,{
-          method:"GET",
-          headers:{ "Authorization":`Bearer ${localStorage.getItem("authToken") || adminToken || ""}` }
-        });
+        const data = await getJson(
+          `${BACKEND_URL}/api/member-profile/${encodeURIComponent(wantedMemberId)}`,
+          {
+            method:"GET",
+            headers:{
+              "Authorization":`Bearer ${localStorage.getItem("authToken") || adminToken || ""}`
+            }
+          }
+        );
 
         const member = data.member || data.profile || data.entry || data || {};
         const residents = Array.isArray(member.residents) ? member.residents : [];
@@ -964,17 +1387,19 @@
 
         if(!resident || typeof resident !== "object"){
           clearBox(infoBox);
-          showBox(errBox,`Resident ${ref} was not found in Members Information.`);
+          showBox(errBox,`Member ${ref} was not found in Members Information.`);
           return;
         }
 
-        const existingRoleRecord = allResidents.find(r => cleanId(r.resident_id) === ref);
+        const existingRoleRecord =
+          allResidents.find(r => cleanId(r.resident_id) === ref);
 
         const selected = {
-          resident_id: ref,
-          member_id: wantedMemberId,
-          resident_index: wantedIndex,
-          name: firstNonEmpty(
+          resident_id:ref,
+          member_id:wantedMemberId,
+          resident_index:wantedIndex,
+
+          name:firstNonEmpty(
             resident.name,
             resident.full_name,
             resident.fullName,
@@ -983,19 +1408,27 @@
             resident.display_name,
             resident.displayName
           ),
-       
-          email: firstNonEmpty(
-              resident.email,
-              resident.email_address,
-              resident.emailAddress
-            ),
-          roles: existingRoleRecord ? rolesFor(existingRoleRecord) : rolesFor(resident),
-          source: "member-profile"
+
+          email:firstNonEmpty(
+            resident.email,
+            resident.email_address,
+            resident.emailAddress
+          ),
+
+          roles:existingRoleRecord
+            ? rolesFor(existingRoleRecord)
+            : rolesFor(resident),
+
+          activity_scopes:existingRoleRecord
+            ? activityScopesFor(existingRoleRecord)
+            : activityScopesFor(resident),
+
+          source:"member-profile"
         };
 
         clearBox(infoBox);
         selectResident(selected);
-        showBox(infoBox,`Loaded ${ref}. Assign at least one role, then save.`);
+        showBox(infoBox,`Loaded ${ref}. Assign the required role or roles, then save.`);
       }catch(err){
         clearBox(infoBox);
         showBox(errBox,err.message || `Could not load ${ref}.`);
@@ -1003,73 +1436,74 @@
     }
 
     async function saveRoles(){
-  console.log("Save roles clicked", selectedResident);
+      try{
+        clearMessages();
 
-  try{
-    clearMessages();
+        if(!selectedResident){
+          showBox(errBox,"Select or load a member first.");
+          return;
+        }
 
-    if(!selectedResident){
-      showBox(errBox,"Select or load a resident first.");
-      return;
+        const roles = selectedRoles();
+        const activityScopes = selectedActivityScopes();
+
+        if(roleActivityOrganiserEl.checked && !activityScopes.length){
+          showBox(
+            warnBox,
+            "Please select at least one activity for this Activity Organiser."
+          );
+          return;
+        }
+
+        btnSaveRoles.disabled = true;
+
+        await getJson(`${BACKEND_URL}/api/admin/set-roles`,{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${adminToken}`
+          },
+          body:JSON.stringify({
+            resident_id:selectedResident.resident_id,
+            member_id:selectedResident.member_id,
+            resident_index:selectedResident.resident_index,
+            name:selectedResident.name,
+            email:memberEmailEl.value.trim(),
+            roles:roles,
+            activity_scopes:activityScopes
+          })
+        });
+
+        if(roles.length){
+          showBox(okBox,`Roles updated for ${selectedResident.resident_id}.`);
+        }else{
+          showBox(
+            okBox,
+            `${selectedResident.resident_id} has been unassigned and removed from the current role-holder list.`
+          );
+        }
+
+        const keepId = selectedResident.resident_id;
+
+        await loadMembers();
+
+        const refreshed =
+          currentRoleHolders.find(resident => resident.resident_id === keepId);
+
+        if(refreshed){
+          selectResident(refreshed);
+        }else{
+          resetSelection();
+        }
+
+      }catch(err){
+        showBox(errBox,err?.message || "Could not save roles.");
+        btnSaveRoles.disabled = false;
+      }
     }
 
-    const roles = selectedRoles();
-    console.log("Selected roles:", roles);
+    roleActivityOrganiserEl.addEventListener("change",updateActivityPanel);
 
-    btnSaveRoles.disabled = true;
-
-    const response = await getJson(`${BACKEND_URL}/api/admin/set-roles`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":`Bearer ${adminToken}`
-      },
-      body:JSON.stringify({
-        resident_id:selectedResident.resident_id,
-        member_id:selectedResident.member_id,
-        resident_index:selectedResident.resident_index,
-        name:selectedResident.name,
-        email:memberEmailEl.value.trim(),
-        roles:roles
-      })
-    });
-
-    console.log("Set roles response:", response);
-
-    if(roles.length){
-      showBox(okBox,`Roles updated for ${selectedResident.resident_id}.`);
-    }else{
-      showBox(
-        okBox,
-        `${selectedResident.resident_id} has been unassigned and removed from the current role-holder list.`
-      );
-    }
-
-    const keepId = selectedResident.resident_id;
-
-    await loadMembers();
-
-    const refreshed = currentRoleHolders.find(
-      resident => resident.resident_id === keepId
-    );
-
-    if(refreshed){
-      selectResident(refreshed);
-    }else{
-      resetSelection();
-    }
-
-  }catch(err){
-    console.error("Save roles failed:", err);
-
-    showBox(
-      errBox,
-      err?.message || "Could not save roles."
-    );
-
-    btnSaveRoles.disabled = false;
-  }
-}
     btnRefresh.addEventListener("click",loadMembers);
     btnLoadResident.addEventListener("click",loadResidentByRef);
     btnSaveRoles.addEventListener("click",saveRoles);
@@ -1083,15 +1517,19 @@
 
     btnLogout.addEventListener("click",() => {
       localStorage.removeItem(TOKEN_KEY);
+
       if(typeof window.scLogout === "function"){
         window.scLogout();
         return;
       }
+
       try{ localStorage.clear(); }catch(_){}
       try{ sessionStorage.clear(); }catch(_){}
+
       window.location.href = "index.html";
     });
 
+    buildActivityScopeGrid();
     resetSelection();
     loadMembers();
   </script>

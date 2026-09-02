@@ -355,6 +355,14 @@
 
     .scopePanel.hidden{ display:none; }
 
+    .scopePanel.inactive{
+      opacity:.58;
+    }
+
+    .scopePanel.inactive .scopeBox{
+      cursor:not-allowed;
+    }
+
     .scopeGrid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -559,7 +567,7 @@
               </label>
             </div>
 
-            <div class="scopePanel hidden" id="activityScopePanel">
+            <div class="scopePanel" id="activityScopePanel">
               <h3>Activities organised</h3>
               <div class="section-note">Select every activity for which this member is an organiser. More than one organiser may be appointed to the same activity.</div>
               <div class="scopeGrid" id="activityScopeGrid"></div>
@@ -707,20 +715,10 @@
               </label>
             </div>
 
-            <div class="scopePanel" id="websiteHelperScopePlaceholder">
+            <div class="scopePanel" id="websiteHelperScopePanel">
               <h3>Website Helper &amp; Tutor specialisms</h3>
-              <div class="section-note">
-                Reserved for the Website Help teaching structure. These specialisms will be wired in the next backend/YDS stage, so they are shown here now without yet being assignable.
-              </div>
-              <div class="scopeGrid">
-                <label class="scopeBox"><input type="checkbox" disabled /><span>WebAssist</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Event Organiser</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Activity Organiser</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Writer</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Artist</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Committee</span></label>
-                <label class="scopeBox"><input type="checkbox" disabled /><span>Residents Association</span></label>
-              </div>
+              <div class="section-note">Select every area in which this member is willing to help or teach. More than one Helper &amp; Tutor may be appointed to the same specialism.</div>
+              <div class="scopeGrid" id="websiteHelperScopeGrid"></div>
             </div>
           </div>
 
@@ -809,6 +807,8 @@
 
     const activityScopePanel = $("activityScopePanel");
     const activityScopeGrid = $("activityScopeGrid");
+    const websiteHelperScopePanel = $("websiteHelperScopePanel");
+    const websiteHelperScopeGrid = $("websiteHelperScopeGrid");
 
     const btnSaveRoles = $("btnSaveRoles");
     const modePill = $("modePill");
@@ -831,6 +831,16 @@
       ["art-group", "Art Group"],
       ["gardening", "Gardening"],
       ["computer-art", "Computer Art"]
+    ];
+
+    const HELPER_SCOPES = [
+      ["webassist", "WebAssist"],
+      ["event_organiser", "Event Organiser"],
+      ["activity_organiser", "Activity Organiser"],
+      ["writer", "Writer"],
+      ["artist", "Artist"],
+      ["committee", "Committee"],
+      ["residents_association", "Residents Association"]
     ];
 
     const ROLE_LABELS = {
@@ -875,6 +885,8 @@
       "news_contributor",
       "editor"
     ]);
+
+    const TEMPORARILY_RETAINED_LEGACY_ROLES = new Set(["admin"]);
 
     function showBox(el,msg){
       el.textContent = msg;
@@ -984,13 +996,43 @@
       return found ? found[1] : scope;
     }
 
-    function displayRoles(roles,activityScopes = []){
+    function helperScopesFor(obj){
+      const raw =
+        obj?.helper_scopes ??
+        obj?.helperScopes ??
+        [];
+
+      if(Array.isArray(raw)){
+        return [...new Set(
+          raw.map(x => String(x).trim().toLowerCase()).filter(Boolean)
+        )];
+      }
+
+      if(typeof raw === "string" && raw.trim()){
+        return [...new Set(
+          raw.split(",").map(x => x.trim().toLowerCase()).filter(Boolean)
+        )];
+      }
+
+      return [];
+    }
+
+    function helperLabel(scope){
+      const found = HELPER_SCOPES.find(([key]) => key === scope);
+      return found ? found[1] : scope;
+    }
+
+
+    function displayRoles(roles,activityScopes = [],helperScopes = []){
       const cleaned = Array.isArray(roles) ? roles : [];
       if(!cleaned.length) return "No role";
 
       return cleaned.map(role => {
         if(role === "activity_organiser" && activityScopes.length){
           return `Activity Organiser — ${activityScopes.map(activityLabel).join(", ")}`;
+        }
+        if(role === "website_helper" && helperScopes.length){
+          return `Website Helper & Tutor — ${helperScopes.map(helperLabel).join(", ")}`;
         }
         return ROLE_LABELS[role] || role;
       }).join(", ");
@@ -1046,6 +1088,7 @@
 
         roles: rolesFor(resident),
         activity_scopes: activityScopesFor(resident),
+        helper_scopes: helperScopesFor(resident),
         source: "resident"
       };
     }
@@ -1075,6 +1118,7 @@
           email:firstNonEmpty(member.primary_email,member.email,member.email_address),
           roles:rolesFor(member),
           activity_scopes:activityScopesFor(member),
+          helper_scopes:helperScopesFor(member),
           source:"legacy"
         });
       });
@@ -1127,10 +1171,64 @@
 
     function updateActivityPanel(){
       const active = roleActivityOrganiserEl.checked;
-      activityScopePanel.classList.toggle("hidden",!active);
+
+      activityScopePanel.classList.remove("hidden");
+      activityScopePanel.classList.toggle("inactive", !active);
+
+      scopeCheckboxes().forEach(el => {
+        el.disabled = !active;
+      });
 
       if(!active){
         setSelectedActivityScopes([]);
+      }
+    }
+
+    function buildWebsiteHelperScopeGrid(){
+      websiteHelperScopeGrid.innerHTML = "";
+
+      HELPER_SCOPES.forEach(([key,label]) => {
+        const item = document.createElement("label");
+        item.className = "scopeBox";
+        item.innerHTML = `
+          <input type="checkbox" data-helper-scope="${escapeHtml(key)}" />
+          <span>${escapeHtml(label)}</span>
+        `;
+        websiteHelperScopeGrid.appendChild(item);
+      });
+    }
+
+    function helperScopeCheckboxes(){
+      return Array.from(
+        websiteHelperScopeGrid.querySelectorAll('input[data-helper-scope]')
+      );
+    }
+
+    function selectedHelperScopes(){
+      return helperScopeCheckboxes()
+        .filter(el => el.checked)
+        .map(el => el.dataset.helperScope);
+    }
+
+    function setSelectedHelperScopes(scopes){
+      const selected = new Set(Array.isArray(scopes) ? scopes : []);
+      helperScopeCheckboxes().forEach(el => {
+        el.checked = selected.has(el.dataset.helperScope);
+      });
+    }
+
+    function updateWebsiteHelperPanel(){
+      const active = roleWebsiteHelperEl.checked;
+
+      websiteHelperScopePanel.classList.remove("hidden");
+      websiteHelperScopePanel.classList.toggle("inactive", !active);
+
+      helperScopeCheckboxes().forEach(el => {
+        el.disabled = !active;
+      });
+
+      if(!active){
+        setSelectedHelperScopes([]);
       }
     }
 
@@ -1147,11 +1245,19 @@
         return;
       }
 
+      const retained = legacy.filter(role => TEMPORARILY_RETAINED_LEGACY_ROLES.has(role));
+      const removable = legacy.filter(role => !TEMPORARILY_RETAINED_LEGACY_ROLES.has(role));
+
+      const parts = [];
+      if(removable.length){
+        parts.push(`${escapeHtml(removable.map(r => ROLE_LABELS[r] || r).join(", "))} will be removed when you save.`);
+      }
+      if(retained.length){
+        parts.push(`${escapeHtml(retained.map(r => ROLE_LABELS[r] || r).join(", "))} is temporarily retained for existing Admin access.`);
+      }
+
       legacyBox.classList.remove("hidden");
-      legacyBox.innerHTML =
-        `<strong>Migration safeguard:</strong> ${escapeHtml(
-          legacy.map(r => ROLE_LABELS[r] || r).join(", ")
-        )} will be retained when you save.`;
+      legacyBox.innerHTML = `<strong>Legacy roles:</strong> ${parts.join(" ")}`;
     }
 
     function clearRoleChecks(){
@@ -1178,7 +1284,9 @@
       ].forEach(el => el.checked = false);
 
       setSelectedActivityScopes([]);
+      setSelectedHelperScopes([]);
       updateActivityPanel();
+      updateWebsiteHelperPanel();
     }
 
     function resetSelection(){
@@ -1217,7 +1325,7 @@
 
         item.innerHTML = `
           <div class="item-title">${escapeHtml(resident.resident_id)} — ${escapeHtml(resident.name || "(No name)")}</div>
-          <div class="item-meta">${escapeHtml(displayRoles(resident.roles,resident.activity_scopes))}</div>
+          <div class="item-meta">${escapeHtml(displayRoles(resident.roles,resident.activity_scopes,resident.helper_scopes))}</div>
         `;
 
         item.onclick = () => selectResident(resident);
@@ -1229,12 +1337,13 @@
       selectedResident = Object.assign({},resident);
       const roles = rolesFor(selectedResident);
       const scopes = activityScopesFor(selectedResident);
+      const helperScopes = helperScopesFor(selectedResident);
 
       memberNameEl.value = selectedResident.name || "";
       memberEmailEl.value = selectedResident.email || "";
       memberIdEl.value = selectedResident.member_id || "";
       residentIdEl.value = selectedResident.resident_id || "";
-      currentRolesEl.value = displayRoles(roles,scopes);
+      currentRolesEl.value = displayRoles(roles,scopes,helperScopes);
 
       clearRoleChecks();
 
@@ -1267,7 +1376,9 @@
       roleAdminClubEl.checked = roles.includes("admin_club");
 
       setSelectedActivityScopes(scopes);
+      setSelectedHelperScopes(helperScopes);
       updateActivityPanel();
+      updateWebsiteHelperPanel();
       updateLegacyBox();
 
       btnSaveRoles.disabled = false;
@@ -1305,14 +1416,15 @@
       if(roleAdminClubEl.checked) roles.push("admin_club");
 
       /*
-        Migration safeguard:
-        Existing legacy roles remain until we deliberately retire them.
-        This is especially important for "admin", because the current
-        backend still authorises this page via the legacy admin role.
+        Retire old role names as soon as this member is saved.
+        Keep only legacy "admin" temporarily because current backend
+        Admin authorisation still depends on it.
       */
       if(selectedResident){
         legacyRolesFor(selectedResident).forEach(role => {
-          if(!roles.includes(role)) roles.push(role);
+          if(TEMPORARILY_RETAINED_LEGACY_ROLES.has(role) && !roles.includes(role)){
+            roles.push(role);
+          }
         });
       }
 
@@ -1439,6 +1551,10 @@
             ? activityScopesFor(existingRoleRecord)
             : activityScopesFor(resident),
 
+          helper_scopes:existingRoleRecord
+            ? helperScopesFor(existingRoleRecord)
+            : helperScopesFor(resident),
+
           source:"member-profile"
         };
 
@@ -1462,11 +1578,20 @@
 
         const roles = selectedRoles();
         const activityScopes = selectedActivityScopes();
+        const helperScopes = selectedHelperScopes();
 
         if(roleActivityOrganiserEl.checked && !activityScopes.length){
           showBox(
             warnBox,
             "Please select at least one activity for this Activity Organiser."
+          );
+          return;
+        }
+
+        if(roleWebsiteHelperEl.checked && !helperScopes.length){
+          showBox(
+            warnBox,
+            "Please select at least one specialism for this Website Helper & Tutor."
           );
           return;
         }
@@ -1486,7 +1611,8 @@
             name:selectedResident.name,
             email:memberEmailEl.value.trim(),
             roles:roles,
-            activity_scopes:activityScopes
+            activity_scopes:activityScopes,
+            helper_scopes:helperScopes
           })
         });
 
@@ -1519,6 +1645,7 @@
     }
 
     roleActivityOrganiserEl.addEventListener("change",updateActivityPanel);
+    roleWebsiteHelperEl.addEventListener("change",updateWebsiteHelperPanel);
 
     btnRefresh.addEventListener("click",loadMembers);
     btnLoadResident.addEventListener("click",loadResidentByRef);
@@ -1546,6 +1673,7 @@
     });
 
     buildActivityScopeGrid();
+    buildWebsiteHelperScopeGrid();
     resetSelection();
     loadMembers();
   </script>

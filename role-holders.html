@@ -37,7 +37,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 <div class="shell"><main class="panel">
 <h1>Sanctuary Club Role Register</h1>
 <p class="intro">The Role Register shows the members currently helping to run the Club, its activities, publications, website and Residents Association.</p>
-<p class="intro">Some roles may be shared by more than one member. Activity Organisers are shown against the particular activities they organise.</p>
+<p class="intro">Some roles may be shared by more than one member. Activity Organisers are shown against the particular activities they organise, and Website Helpers &amp; Tutors against their specialisms.</p>
 <div class="intro-note">This is a live Register. Changes made by an Administrator to current role assignments appear here automatically.</div>
 
 <div id="registerContent" hidden>
@@ -72,8 +72,11 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 </tbody></table></div></section>
 
 <section class="register-section"><h2 class="section-heading">Other Club Roles</h2><div class="section-body">
+<h3 class="subheading">Website Helpers &amp; Tutors</h3>
+<table><thead><tr><th>Specialism</th><th>Helper(s) &amp; Tutor(s)</th></tr></thead><tbody id="websiteHelpersTutors"></tbody></table>
+
+<h3 class="subheading">Other Roles</h3>
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Website Helpers</td><td id="websiteHelpers"></td></tr>
 <tr><td>Services</td><td id="services"></td></tr>
 <tr><td>Condominium Coordinator</td><td id="condominiumCoordinator"></td></tr>
 </tbody></table></div></section>
@@ -97,6 +100,15 @@ const BACKEND_URL="https://sanctuary-backend-8iqc.onrender.com";
 const ACTIVITIES=[
 ["daffs-caff","Daff’s Caff"],["book-club","Book Club"],["bridge","Bridge"],["mahjong","Mahjong"],["rummikub","Rummikub"],["bowls","Bowls"],["table-tennis","Table Tennis"],["cookery","Cookery"],["walking-group","Walking Group"],["art-group","Art Group"],["gardening","Gardening"],["computer-art","Computer Art"]
 ];
+const HELPER_SPECIALISMS=[
+["webassist","WebAssist"],
+["event_organiser","Event Organiser"],
+["activity_organiser","Activity Organiser"],
+["writer","Writer"],
+["artist","Artist"],
+["committee","Committee"],
+["residents_association","Residents Association"]
+];
 const registerContent=document.getElementById("registerContent");
 const statusBox=document.getElementById("statusBox");
 const clean=v=>String(v||"").trim();
@@ -104,6 +116,8 @@ const normaliseRole=r=>clean(r).toLowerCase().replace(/[\s-]+/g,"_");
 const normaliseScope=s=>clean(s).toLowerCase().replace(/_/g,"-");
 const rolesFor=r=>Array.isArray(r?.roles)?r.roles.map(normaliseRole).filter(Boolean):[];
 const scopesFor=r=>{const raw=r?.activity_scopes??r?.activityScopes??[];return Array.isArray(raw)?raw.map(normaliseScope).filter(Boolean):[]};
+const normaliseHelperScope=s=>clean(s).toLowerCase().replace(/[\s-]+/g,"_");
+const helperScopesFor=r=>{const raw=r?.helper_scopes??r?.helperScopes??[];return Array.isArray(raw)?raw.map(normaliseHelperScope).filter(Boolean):[]};
 function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function setStatus(m,e=false){statusBox.textContent=m;statusBox.classList.toggle("error",!!e);statusBox.hidden=!m}
 async function loadRoleDirectory(){
@@ -126,8 +140,15 @@ function renderActivities(residents){
    const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr);
  });
 }
+function renderWebsiteHelpersTutors(residents){
+ const tbody=document.getElementById("websiteHelpersTutors");tbody.innerHTML="";
+ HELPER_SPECIALISMS.forEach(([scope,label])=>{
+   const helpers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));
+   const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(helpers)}</td>`;tbody.appendChild(tr);
+ });
+}
 function renderRegister(residents){
- renderEventHosts(residents);renderActivities(residents);
+ renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpersTutors(residents);
  fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));
  fillCell("committeeSecretary",holdersWithRole(residents,"committee_secretary"));
  fillCell("committeeTreasurer",holdersWithRole(residents,"committee_treasurer"));
@@ -140,7 +161,6 @@ function renderRegister(residents){
  fillCell("artists",holdersWithRole(residents,"artist"));
  fillCell("copyEditors",holdersWithRole(residents,"copy_editor"));
  fillCell("artEditors",holdersWithRole(residents,"art_editor"));
- fillCell("websiteHelpers",holdersWithRole(residents,"website_helper"));
  fillCell("services",holdersWithRole(residents,"services"));
  fillCell("condominiumCoordinator",holdersWithRole(residents,"condominium_coordinator"));
  fillCell("adminWebsite",holdersWithRole(residents,"admin_website"));

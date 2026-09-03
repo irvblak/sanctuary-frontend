@@ -704,18 +704,28 @@
           <div class="roleSection">
             <h3>Other Club Roles</h3>
 
-            <label class="roleBox helperMasterRole">
-              <input type="checkbox" id="roleWebsiteHelper" />
-              <div class="roleText">
-                <strong>Website Helper &amp; Tutor</strong>
-                <span>Tick this role to activate the specialisms below.</span>
-              </div>
-            </label>
+            <div class="roleGrid otherClubRoleGrid">
+              <label class="roleBox">
+                <input type="checkbox" id="roleWebsiteHelper" />
+                <div class="roleText">
+                  <strong>Website Helper</strong>
+                  <span>Provides general practical help with access to and use of the Sanctuary Club website.</span>
+                </div>
+              </label>
 
-            <div class="scopePanel" id="websiteHelperScopePanel">
-              <h3>Website Helper &amp; Tutor specialisms</h3>
-              <div class="section-note">Select every area in which this member is willing to help or teach. More than one Helper &amp; Tutor may be appointed to the same specialism.</div>
-              <div class="scopeGrid" id="websiteHelperScopeGrid"></div>
+              <label class="roleBox helperMasterRole">
+                <input type="checkbox" id="roleTutor" />
+                <div class="roleText">
+                  <strong>Tutor</strong>
+                  <span>Teaches members to use particular Sanctuary Club or Your Design Studio facilities.</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="scopePanel" id="tutorScopePanel">
+              <h3>Tutor specialisms</h3>
+              <div class="section-note">Select every area this member is willing to teach. More than one Tutor may be appointed to the same specialism.</div>
+              <div class="scopeGrid" id="tutorScopeGrid"></div>
             </div>
 
             <div class="roleGrid otherClubRoleGrid">
@@ -814,6 +824,7 @@
     const roleArtEditorEl = $("roleArtEditor");
 
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
+    const roleTutorEl = $("roleTutor");
     const roleServicesEl = $("roleServices");
     const roleCondominiumCoordinatorEl = $("roleCondominiumCoordinator");
 
@@ -822,8 +833,8 @@
 
     const activityScopePanel = $("activityScopePanel");
     const activityScopeGrid = $("activityScopeGrid");
-    const websiteHelperScopePanel = $("websiteHelperScopePanel");
-    const websiteHelperScopeGrid = $("websiteHelperScopeGrid");
+    const tutorScopePanel = $("tutorScopePanel");
+    const tutorScopeGrid = $("tutorScopeGrid");
 
     const btnSaveRoles = $("btnSaveRoles");
     const modePill = $("modePill");
@@ -848,7 +859,7 @@
       ["computer-art", "Computer Art"]
     ];
 
-    const HELPER_SCOPES = [
+    const TUTOR_SCOPES = [
       ["webassist", "WebAssist"],
       ["event_organiser", "Event Organiser"],
       ["activity_organiser", "Activity Organiser"],
@@ -877,7 +888,8 @@
       copy_editor: "Copy Editor",
       art_editor: "Art Editor",
 
-      website_helper: "Website Helper & Tutor",
+      website_helper: "Website Helper",
+      tutor: "Tutor",
       services: "Services",
       condominium_coordinator: "Condominium Coordinator",
 
@@ -1011,8 +1023,10 @@
       return found ? found[1] : scope;
     }
 
-    function helperScopesFor(obj){
+    function tutorScopesFor(obj){
       const raw =
+        obj?.tutor_scopes ??
+        obj?.tutorScopes ??
         obj?.helper_scopes ??
         obj?.helperScopes ??
         [];
@@ -1032,13 +1046,13 @@
       return [];
     }
 
-    function helperLabel(scope){
-      const found = HELPER_SCOPES.find(([key]) => key === scope);
+    function tutorLabel(scope){
+      const found = TUTOR_SCOPES.find(([key]) => key === scope);
       return found ? found[1] : scope;
     }
 
 
-    function displayRoles(roles,activityScopes = [],helperScopes = []){
+    function displayRoles(roles,activityScopes = [],tutorScopes = []){
       const cleaned = Array.isArray(roles) ? roles : [];
       if(!cleaned.length) return "No role";
 
@@ -1046,8 +1060,8 @@
         if(role === "activity_organiser" && activityScopes.length){
           return `Activity Organiser — ${activityScopes.map(activityLabel).join(", ")}`;
         }
-        if(role === "website_helper" && helperScopes.length){
-          return `Website Helper & Tutor — ${helperScopes.map(helperLabel).join(", ")}`;
+        if(role === "tutor" && tutorScopes.length){
+          return `Tutor — ${tutorScopes.map(tutorLabel).join(", ")}`;
         }
         return ROLE_LABELS[role] || role;
       }).join(", ");
@@ -1103,7 +1117,7 @@
 
         roles: rolesFor(resident),
         activity_scopes: activityScopesFor(resident),
-        helper_scopes: helperScopesFor(resident),
+        tutor_scopes: tutorScopesFor(resident),
         source: "resident"
       };
     }
@@ -1133,7 +1147,7 @@
           email:firstNonEmpty(member.primary_email,member.email,member.email_address),
           roles:rolesFor(member),
           activity_scopes:activityScopesFor(member),
-          helper_scopes:helperScopesFor(member),
+          tutor_scopes:tutorScopesFor(member),
           source:"legacy"
         });
       });
@@ -1199,51 +1213,51 @@
       }
     }
 
-    function buildWebsiteHelperScopeGrid(){
-      websiteHelperScopeGrid.innerHTML = "";
+    function buildTutorScopeGrid(){
+      tutorScopeGrid.innerHTML = "";
 
-      HELPER_SCOPES.forEach(([key,label]) => {
+      TUTOR_SCOPES.forEach(([key,label]) => {
         const item = document.createElement("label");
         item.className = "scopeBox";
         item.innerHTML = `
-          <input type="checkbox" data-helper-scope="${escapeHtml(key)}" />
+          <input type="checkbox" data-tutor-scope="${escapeHtml(key)}" />
           <span>${escapeHtml(label)}</span>
         `;
-        websiteHelperScopeGrid.appendChild(item);
+        tutorScopeGrid.appendChild(item);
       });
     }
 
-    function helperScopeCheckboxes(){
+    function tutorScopeCheckboxes(){
       return Array.from(
-        websiteHelperScopeGrid.querySelectorAll('input[data-helper-scope]')
+        tutorScopeGrid.querySelectorAll('input[data-tutor-scope]')
       );
     }
 
-    function selectedHelperScopes(){
-      return helperScopeCheckboxes()
+    function selectedTutorScopes(){
+      return tutorScopeCheckboxes()
         .filter(el => el.checked)
-        .map(el => el.dataset.helperScope);
+        .map(el => el.dataset.tutorScope);
     }
 
-    function setSelectedHelperScopes(scopes){
+    function setSelectedTutorScopes(scopes){
       const selected = new Set(Array.isArray(scopes) ? scopes : []);
-      helperScopeCheckboxes().forEach(el => {
-        el.checked = selected.has(el.dataset.helperScope);
+      tutorScopeCheckboxes().forEach(el => {
+        el.checked = selected.has(el.dataset.tutorScope);
       });
     }
 
-    function updateWebsiteHelperPanel(){
-      const active = roleWebsiteHelperEl.checked;
+    function updateTutorPanel(){
+      const active = roleTutorEl.checked;
 
-      websiteHelperScopePanel.classList.remove("hidden");
-      websiteHelperScopePanel.classList.toggle("inactive", !active);
+      tutorScopePanel.classList.remove("hidden");
+      tutorScopePanel.classList.toggle("inactive", !active);
 
-      helperScopeCheckboxes().forEach(el => {
+      tutorScopeCheckboxes().forEach(el => {
         el.disabled = !active;
       });
 
       if(!active){
-        setSelectedHelperScopes([]);
+        setSelectedTutorScopes([]);
       }
     }
 
@@ -1292,6 +1306,7 @@
         roleCopyEditorEl,
         roleArtEditorEl,
         roleWebsiteHelperEl,
+        roleTutorEl,
         roleServicesEl,
         roleCondominiumCoordinatorEl,
         roleAdminWebsiteEl,
@@ -1299,9 +1314,9 @@
       ].forEach(el => el.checked = false);
 
       setSelectedActivityScopes([]);
-      setSelectedHelperScopes([]);
+      setSelectedTutorScopes([]);
       updateActivityPanel();
-      updateWebsiteHelperPanel();
+      updateTutorPanel();
     }
 
     function resetSelection(){
@@ -1340,7 +1355,7 @@
 
         item.innerHTML = `
           <div class="item-title">${escapeHtml(resident.resident_id)} — ${escapeHtml(resident.name || "(No name)")}</div>
-          <div class="item-meta">${escapeHtml(displayRoles(resident.roles,resident.activity_scopes,resident.helper_scopes))}</div>
+          <div class="item-meta">${escapeHtml(displayRoles(resident.roles,resident.activity_scopes,resident.tutor_scopes))}</div>
         `;
 
         item.onclick = () => selectResident(resident);
@@ -1352,13 +1367,13 @@
       selectedResident = Object.assign({},resident);
       const roles = rolesFor(selectedResident);
       const scopes = activityScopesFor(selectedResident);
-      const helperScopes = helperScopesFor(selectedResident);
+      const tutorScopes = tutorScopesFor(selectedResident);
 
       memberNameEl.value = selectedResident.name || "";
       memberEmailEl.value = selectedResident.email || "";
       memberIdEl.value = selectedResident.member_id || "";
       residentIdEl.value = selectedResident.resident_id || "";
-      currentRolesEl.value = displayRoles(roles,scopes,helperScopes);
+      currentRolesEl.value = displayRoles(roles,scopes,tutorScopes);
 
       clearRoleChecks();
 
@@ -1383,7 +1398,11 @@
       roleCopyEditorEl.checked = roles.includes("copy_editor");
       roleArtEditorEl.checked = roles.includes("art_editor");
 
-      roleWebsiteHelperEl.checked = roles.includes("website_helper");
+      const oldCombinedTutor = roles.includes("website_helper") &&
+        tutorScopes.length &&
+        !roles.includes("tutor");
+      roleWebsiteHelperEl.checked = roles.includes("website_helper") && !oldCombinedTutor;
+      roleTutorEl.checked = roles.includes("tutor") || oldCombinedTutor;
       roleServicesEl.checked = roles.includes("services");
       roleCondominiumCoordinatorEl.checked = roles.includes("condominium_coordinator");
 
@@ -1391,9 +1410,9 @@
       roleAdminClubEl.checked = roles.includes("admin_club");
 
       setSelectedActivityScopes(scopes);
-      setSelectedHelperScopes(helperScopes);
+      setSelectedTutorScopes(tutorScopes);
       updateActivityPanel();
-      updateWebsiteHelperPanel();
+      updateTutorPanel();
       updateLegacyBox();
 
       btnSaveRoles.disabled = false;
@@ -1424,6 +1443,7 @@
       if(roleArtEditorEl.checked) roles.push("art_editor");
 
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
+      if(roleTutorEl.checked) roles.push("tutor");
       if(roleServicesEl.checked) roles.push("services");
       if(roleCondominiumCoordinatorEl.checked) roles.push("condominium_coordinator");
 
@@ -1566,9 +1586,9 @@
             ? activityScopesFor(existingRoleRecord)
             : activityScopesFor(resident),
 
-          helper_scopes:existingRoleRecord
-            ? helperScopesFor(existingRoleRecord)
-            : helperScopesFor(resident),
+          tutor_scopes:existingRoleRecord
+            ? tutorScopesFor(existingRoleRecord)
+            : tutorScopesFor(resident),
 
           source:"member-profile"
         };
@@ -1593,7 +1613,7 @@
 
         const roles = selectedRoles();
         const activityScopes = selectedActivityScopes();
-        const helperScopes = selectedHelperScopes();
+        const tutorScopes = selectedTutorScopes();
 
         if(roleActivityOrganiserEl.checked && !activityScopes.length){
           showBox(
@@ -1603,10 +1623,10 @@
           return;
         }
 
-        if(roleWebsiteHelperEl.checked && !helperScopes.length){
+        if(roleTutorEl.checked && !tutorScopes.length){
           showBox(
             warnBox,
-            "Please select at least one specialism for this Website Helper & Tutor."
+            "Please select at least one specialism for this Tutor."
           );
           return;
         }
@@ -1627,7 +1647,7 @@
             email:memberEmailEl.value.trim(),
             roles:roles,
             activity_scopes:activityScopes,
-            helper_scopes:helperScopes
+            tutor_scopes:tutorScopes
           })
         });
 
@@ -1660,7 +1680,7 @@
     }
 
     roleActivityOrganiserEl.addEventListener("change",updateActivityPanel);
-    roleWebsiteHelperEl.addEventListener("change",updateWebsiteHelperPanel);
+    roleTutorEl.addEventListener("change",updateTutorPanel);
 
     btnRefresh.addEventListener("click",loadMembers);
     btnLoadResident.addEventListener("click",loadResidentByRef);
@@ -1688,7 +1708,7 @@
     });
 
     buildActivityScopeGrid();
-    buildWebsiteHelperScopeGrid();
+    buildTutorScopeGrid();
     resetSelection();
     loadMembers();
   </script>

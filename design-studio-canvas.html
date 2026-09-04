@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -437,6 +438,17 @@
     .tools-choice-actions button.secondary{background:#fff;color:var(--accent)}
     .tools-choice-cancel{display:block;margin:.65rem auto 0;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}
 
+    /* 4 Sep 2026 — work identity and text tools belong in the side panels, never over the artwork. */
+    body.canvas-active .text-format-side{display:flex;flex-direction:column;align-items:stretch;gap:.22rem;padding:.3rem;margin:0;}
+    body.canvas-active .text-format-side[hidden]{display:none!important;}
+    body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;}
+    body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;}
+    body.canvas-active .text-format-side select{width:100%;}
+    .work-name-row label{font-size:.78rem;color:var(--accent-dark);font-weight:850;}
+    .work-name-row input{margin:0;padding:.42rem .48rem;font-size:.8rem;}
+    .work-name-note{font-size:.72rem;line-height:1.25;color:var(--muted);font-weight:700;}
+    body.canvas-active .work-name-note{display:block!important;}
+
 </style>
 </head>
 <body>
@@ -481,6 +493,12 @@
 
       <div class="canvas-three-column">
         <aside class="canvas-side canvas-side-left" aria-label="Page and add tools">
+          <div class="toolbar-row work-name-row">
+            <span class="toolbar-label">Your work</span>
+            <label for="workNameInput">Name this work *</label>
+            <input id="workNameInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Bridge Beginners – October">
+            <span class="work-name-note">Give it a short name so you can find it again if you put it away and return later.</span>
+          </div>
           <div class="toolbar-row">
             <span class="toolbar-label">Add</span>
             <button id="addCanvasTextBtn" type="button">Add Text</button>
@@ -531,7 +549,95 @@
 
         <div class="canvas-main-panel">
           <div class="page-tabs compact-page-tabs" id="pageTabs"></div>
-          <div class="toolbar-row format-toolbar text-format-float" id="formatToolbar" hidden>
+          <div class="canvas-shell">
+            <div class="canvas-stage">
+              <div class="canvas-pages" id="creativePages"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
+
+
+          <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
+            <span class="toolbar-label">Illustration</span>
+            <button id="imageFitBtn" type="button">Fit whole image</button>
+            <button id="imageFillBtn" type="button">Fill box</button>
+            <button id="replaceCanvasImageBtn" type="button">Replace</button>
+          </div>
+
+          <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
+            <span class="toolbar-label">Draw / Paint</span>
+            <div class="compact-button-row wrap-buttons">
+              <button id="drawPencilBtn" type="button">✏️ Pencil</button>
+              <button id="drawLineBtn" type="button">Line</button>
+              <button id="drawRectBtn" type="button">Rectangle</button>
+              <button id="drawOvalBtn" type="button">Oval</button>
+              <button id="drawFillBtn" type="button">🪣 Fill</button>
+              <button id="drawEraserBtn" type="button">Eraser</button>
+            </div>
+            <label class="toolbar-check">Line <input id="drawLineColour" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawLineColour" aria-label="Choose line colour" title="Choose line colour"></button></label>
+            <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
+              <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
+              <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
+              <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
+              <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
+              <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
+              <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
+            </span>
+            <label class="toolbar-check">Thickness
+              <select id="drawThickness">
+                <option value="2">Fine</option>
+                <option value="5" selected>Medium</option>
+                <option value="9">Thick</option>
+                <option value="15">Very thick</option>
+              </select>
+            </label>
+            <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
+            <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
+            <label class="toolbar-check"><input id="drawNoOutline" type="checkbox"> No outline</label>
+            <div class="compact-button-row drawing-edit-actions">
+              <button id="editDrawingBtn" type="button">Edit Drawing</button>
+              <button id="finishDrawingBtn" type="button">Finish Drawing</button>
+            </div>
+            <span class="draw-mode-note" id="drawModeNote"></span>
+          </div>
+
+          <div class="toolbar-row" id="objectToolbar">
+            <span class="toolbar-label">Selection</span>
+            <div class="object-move-grid" aria-label="Move selected box">
+              <button class="move-up" id="nudgeUpBtn" type="button" title="Move up">↑</button>
+              <button class="move-left" id="nudgeLeftBtn" type="button" title="Move left">←</button>
+              <button class="move-centre" id="centreObjectBtn" type="button" title="Centre horizontally">Centre</button>
+              <button class="move-right" id="nudgeRightBtn" type="button" title="Move right">→</button>
+              <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
+            </div>
+            <div class="compact-button-row wrap-buttons">
+              <button id="overlayObjectBtn" type="button" title="Bring selected box in front of all other boxes">Overlay</button>
+              <button id="underlayObjectBtn" type="button" title="Send selected box behind all other boxes">Underlay</button>
+              <button id="duplicateObjectBtn" type="button">Duplicate</button>
+              <button id="deleteObjectBtn" type="button">Delete</button>
+              <button id="undoCanvasBtn" type="button">Undo</button>
+              <button id="redoCanvasBtn" type="button">Redo</button>
+            </div>
+            <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
+          </div>
+
+          <div id="ydsColourPopover" class="yds-colour-popover" role="group" aria-label="Colour palette">
+            <p class="yds-colour-target">Colour palette — <span id="ydsColourTarget">Page colour 1</span></p>
+            <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose tint or shade">
+              <span id="ydsColourMarker" class="yds-colour-marker"></span>
+            </div>
+            <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
+            <div class="yds-colour-footer">
+              <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
+              <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
+              <button id="ydsColourDone" class="yds-colour-done" type="button">Apply</button>
+            </div>
+            <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
+          </div>
+
+          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar" hidden>
             <span class="toolbar-label">Text</span>
             <select id="fontFamilySelect" aria-label="Font">
               <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
@@ -583,92 +689,6 @@
             <button id="gradedPanelBtn" type="button">Graded panel</button>
             <button id="solidPanelBtn" type="button">Solid panel</button>
             <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
-          </div>
-          <div class="canvas-shell">
-            <div class="canvas-stage">
-              <div class="canvas-pages" id="creativePages"></div>
-            </div>
-          </div>
-        </div>
-
-        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
-
-
-          <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
-            <span class="toolbar-label">Illustration</span>
-            <button id="imageFitBtn" type="button">Fit whole image</button>
-            <button id="imageFillBtn" type="button">Fill box</button>
-            <button id="replaceCanvasImageBtn" type="button">Replace</button>
-          </div>
-
-          <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
-            <span class="toolbar-label">Draw / Paint</span>
-            <div class="compact-button-row wrap-buttons">
-              <button id="drawPencilBtn" type="button">✏️ Pencil</button>
-              <button id="drawLineBtn" type="button">Line</button>
-              <button id="drawRectBtn" type="button">Rectangle</button>
-              <button id="drawOvalBtn" type="button">Oval</button>
-              <button id="drawFillBtn" type="button">🪣 Fill</button>
-              <button id="drawEraserBtn" type="button">Eraser</button>
-            </div>
-            <label class="toolbar-check">Line <input id="drawLineColour" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawLineColour" aria-label="Choose line colour" title="Choose line colour"></button></label>
-            <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
-              <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
-              <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
-              <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
-              <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
-              <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
-              <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
-            </span>
-            <label class="toolbar-check">Thickness
-              <select id="drawThickness">
-                <option value="2">Fine</option>
-                <option value="5" selected>Medium</option>
-                <option value="9">Thick</option>
-                <option value="15">Very thick</option>
-              </select>
-            </label>
-            <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
-            <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
-            <div class="compact-button-row drawing-edit-actions">
-              <button id="editDrawingBtn" type="button">Edit Drawing</button>
-              <button id="finishDrawingBtn" type="button">Finish Drawing</button>
-            </div>
-            <span class="draw-mode-note" id="drawModeNote"></span>
-          </div>
-
-          <div class="toolbar-row" id="objectToolbar">
-            <span class="toolbar-label">Selection</span>
-            <div class="object-move-grid" aria-label="Move selected box">
-              <button class="move-up" id="nudgeUpBtn" type="button" title="Move up">↑</button>
-              <button class="move-left" id="nudgeLeftBtn" type="button" title="Move left">←</button>
-              <button class="move-centre" id="centreObjectBtn" type="button" title="Centre horizontally">Centre</button>
-              <button class="move-right" id="nudgeRightBtn" type="button" title="Move right">→</button>
-              <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
-            </div>
-            <div class="compact-button-row wrap-buttons">
-              <button id="overlayObjectBtn" type="button" title="Bring selected box in front of all other boxes">Overlay</button>
-              <button id="underlayObjectBtn" type="button" title="Send selected box behind all other boxes">Underlay</button>
-              <button id="duplicateObjectBtn" type="button">Duplicate</button>
-              <button id="deleteObjectBtn" type="button">Delete</button>
-              <button id="undoCanvasBtn" type="button">Undo</button>
-              <button id="redoCanvasBtn" type="button">Redo</button>
-            </div>
-            <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
-          </div>
-
-          <div id="ydsColourPopover" class="yds-colour-popover" role="group" aria-label="Colour palette">
-            <p class="yds-colour-target">Colour palette — <span id="ydsColourTarget">Page colour 1</span></p>
-            <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose tint or shade">
-              <span id="ydsColourMarker" class="yds-colour-marker"></span>
-            </div>
-            <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
-            <div class="yds-colour-footer">
-              <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
-              <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
-              <button id="ydsColourDone" class="yds-colour-done" type="button">Apply</button>
-            </div>
-            <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
           </div>
         </aside>
       </div>
@@ -756,6 +776,7 @@
     const numberFirstPageCheck=document.getElementById("numberFirstPageCheck");
     const pageNumberPosition=document.getElementById("pageNumberPosition");
     const creativeHeading=document.getElementById("creativeHeading");
+    const workNameInput=document.getElementById("workNameInput");
     const selectedObjectNote=document.getElementById("selectedObjectNote");
     const fontFamilySelect=document.getElementById("fontFamilySelect");
     const fontSizeInput=document.getElementById("fontSizeInput");
@@ -770,6 +791,7 @@
     const drawFillColour=document.getElementById("drawFillColour");
     const drawThickness=document.getElementById("drawThickness");
     const drawNoFill=document.getElementById("drawNoFill");
+    const drawNoOutline=document.getElementById("drawNoOutline");
     const drawModeNote=document.getElementById("drawModeNote");
     const funBanner=document.getElementById("funBanner");
     const modeIntro=document.getElementById("modeIntro");
@@ -990,14 +1012,14 @@
     }
     function snapshotState(){
       syncDrawingData();
-      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter});
+      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||"")});
     }
 
     function portableProject(){
       return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated")?readEventHandoff():null,state:JSON.parse(snapshotState())};
     }
     function safeProjectFilename(){
-      const label=clean(creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
+      const label=clean(workNameInput?.value||creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
       return `${label}.sanctuary-yds`;
     }
     function exportPortableProject(){
@@ -1012,7 +1034,7 @@
     }
     function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
     function restoreState(raw){
-      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
+      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
     }
     function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
     function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
@@ -1363,14 +1385,14 @@
         ctx.globalCompositeOperation="source-over";ctx.putImageData(drawSavedImage,0,0);drawingStyle(ctx);
         const x=drawStart.x,y=drawStart.y,w=pt.x-x,h=pt.y-y;
         ctx.beginPath();
-        if(drawingTool==="line"){ctx.moveTo(x,y);ctx.lineTo(pt.x,pt.y);ctx.stroke()}
+        if(drawingTool==="line"){ctx.moveTo(x,y);ctx.lineTo(pt.x,pt.y);if(!drawNoOutline.checked)ctx.stroke()}
         else if(drawingTool==="rect"){
           if(!drawNoFill.checked)ctx.fillRect(x,y,w,h);
-          ctx.strokeRect(x,y,w,h);
+          if(!drawNoOutline.checked)ctx.strokeRect(x,y,w,h);
         }else{
           ctx.ellipse(x+w/2,y+h/2,Math.abs(w/2),Math.abs(h/2),0,0,Math.PI*2);
           if(!drawNoFill.checked)ctx.fill();
-          ctx.stroke();
+          if(!drawNoOutline.checked)ctx.stroke();
         }
       }
     }
@@ -1879,6 +1901,7 @@
       const scope=clean(e.scope_name||PAGE_PARAMS.get("scope_name")||"");
       const heading=`${sourceLabel}${scope?" — "+scope:""} — Notice`;
       openCreativeWorkspace(true,heading);
+      if(workNameInput)workNameInput.value=clean(e.title||heading);
       makeCanvasItem("title",e.title||"Notice","",{left:"8%",top:"6%",width:"84%",height:"12%"});
       makeCanvasItem("text",eventNoticeFacts(e),"",{left:"8%",top:"22%",width:"84%",height:"34%"});
       makeCanvasItem("text","Add your invitation, description or other wording here.","",{left:"8%",top:"61%",width:"84%",height:"27%"});
@@ -1913,7 +1936,7 @@
       window.location.href="library-publications.html?id=design-studio-guide";
     }
 
-    function saveDraft(){try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so members will not need to manage image sizes themselves.")}}
+    function saveDraft(){if(!requireWorkName())return;try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so members will not need to manage image sizes themselves.")}}
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
 
@@ -2634,7 +2657,13 @@ function configurePublishingButton(){
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
     orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});
     document.getElementById("quickGuideBtn").addEventListener("click",openPrintableGuide);
-    document.getElementById("addCanvasTextBtn").addEventListener("click",()=>makeCanvasItem("text"));document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"}));document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
+    function requireWorkName(){
+      if(clean(workNameInput?.value))return true;
+      alert("Please name this work before you begin, so you can find it again later.");
+      workNameInput?.focus();
+      return false;
+    }
+    document.getElementById("addCanvasTextBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("text")});document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{if(!requireWorkName())return;pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"})});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
     canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
     document.addEventListener("selectionchange",()=>{
       const selection=window.getSelection();
@@ -2668,6 +2697,8 @@ function configurePublishingButton(){
     document.getElementById("drawOvalBtn").addEventListener("click",()=>setDrawingTool("oval"));
     document.getElementById("drawFillBtn").addEventListener("click",()=>setDrawingTool("fill"));
     document.getElementById("drawEraserBtn").addEventListener("click",()=>setDrawingTool("eraser"));
+    ["drawRectBtn","drawOvalBtn"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{if(drawNoFill.checked&&drawNoOutline.checked)drawNoFill.checked=false;}));
+
     document.getElementById("editDrawingBtn").addEventListener("click",()=>{if(selectedItem?.dataset.kind==="drawing")beginDrawingEdit(selectedItem)});
     document.getElementById("finishDrawingBtn").addEventListener("click",finishDrawingEdit);
     document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});

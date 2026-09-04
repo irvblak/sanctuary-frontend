@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Studio | Sanctuary Club</title>
+  <script src="access.js?v=MY_STUDIO_1"></script>
+  <style>
+    :root{--ink:#173847;--muted:#5f7078;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8}
+    *{box-sizing:border-box} body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1.5}
+    .page{width:min(1000px,calc(100% - 32px));margin:0 auto;padding:28px 0 44px}
+    .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}.eyebrow{margin:0;color:var(--muted);font-weight:700;font-size:.88rem;text-transform:uppercase;letter-spacing:.08em}h1{margin:.1rem 0 0;font-size:2rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.72rem 1.1rem;background:var(--accent);color:#fff;text-decoration:none;font-weight:800}.btn.secondary{background:#fff;color:var(--accent)}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,40px);box-shadow:0 8px 26px rgba(23,56,71,.07)}
+    .intro{text-align:center;margin:0 auto 26px;max-width:760px}.intro h2{font-size:1.55rem;margin:0 0 .45rem}.intro p{margin:.25rem 0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{border:1px solid var(--line);border-radius:16px;padding:22px;background:#fbfdfd}.panel h3{margin:0 0 .55rem;font-size:1.18rem}.panel p{margin:.45rem 0}.or{margin-top:1rem!important}.enter{text-align:center;margin-top:26px}.enter .btn{font-size:1.08rem;padding:.85rem 1.35rem}.small{font-size:.92rem;color:var(--muted);margin-top:.6rem}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.page{width:min(100% - 20px,1000px)}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div><p class="eyebrow">Sanctuary Club</p><h1>My Studio</h1></div>
+      <a class="btn secondary" href="members-info.html">← Members Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="intro">
+        <h2>What happens to my Studio work?</h2>
+        <p>It depends on the hat you are wearing when you create something and what you want to happen when you are satisfied with it.</p>
+      </div>
+
+      <div class="grid">
+        <section class="panel">
+          <h3>I want to just be creative</h3>
+          <p>If it is a piece of writing or art you have created purely for your own pleasure, you can keep it in your personal Archive here on the website or transfer it to your computer and read it or gaze admiringly at it in splendid isolation.</p>
+          <p class="or"><strong>OR — and why not do this instead?</strong></p>
+          <p>You can submit it to the Editor for approval. It might then be placed in the Library Reading Room or Gallery for everyone to enjoy.</p>
+          <p>Why not teach or join a Computer Art class? Who knows, you might even have your very own Exhibition one day. 😉</p>
+        </section>
+
+        <section class="panel">
+          <h3>I want to be informative</h3>
+          <p>If you are wearing your Event Host, Activity Organiser, Teacher, Club Committee, Residents Association or Condo Admin hat, the Studio knows the capacity in which you are working and can guide your work towards the right destination.</p>
+          <p>Dated events, activities and classes can go to the Calendar &amp; Events List with their related poster or Notice. Permanent information can be sent to its proper Library shelf.</p>
+          <p>You concentrate on the content and the design. The computer does the filing.</p>
+        </section>
+      </div>
+
+      <div class="enter">
+        <a class="btn" href="your-design-studio.html">Enter Your Design Studio</a>
+        <div class="small">In the Studio, simply choose the hat you are wearing today.</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

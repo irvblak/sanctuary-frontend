@@ -15,7 +15,7 @@
     content="noindex, nofollow"
   />
 
-  <script src="access.js?v=YDS_FRONT_DOOR_1"></script>
+  <script src="access.js?v=YDS_FRONT_DOOR_2"></script>
 
   <style>
     :root{
@@ -1145,40 +1145,6 @@
 
 
 
-      <!-- Front-door explanation: keep Studio administration elsewhere. -->
-      <section class="studio-explainer" aria-labelledby="studioWorkHeading">
-        <h2 id="studioWorkHeading">What happens to my Studio work?</h2>
-        <p class="studio-explainer-lead">
-          It depends on the hat you are wearing when you create something — and what you want to happen when you are satisfied with it.
-        </p>
-
-        <div class="studio-explainer-grid">
-          <div class="studio-explainer-panel">
-            <h3>I want to just be creative</h3>
-            <p>
-              If it is a piece of writing or art you have created purely for your own pleasure, you can keep it in your personal Archive here on the website, or transfer it to your computer and read it or gaze admiringly at it in splendid isolation.
-            </p>
-            <p class="studio-or"><strong>OR — and why not do this instead?</strong></p>
-            <p>
-              You can submit it to the Editor for approval. It might then be placed in the Library Reading Room or Gallery for everyone to enjoy.
-            </p>
-            <p>
-              Why not teach or join a Computer Art class? Who knows, you might even have your very own Exhibition one day. 😉
-            </p>
-          </div>
-
-          <div class="studio-explainer-panel">
-            <h3>I want to be informative</h3>
-            <p>
-              If you are wearing an <strong>Event Host, Activity Organiser, Teacher, Club Committee or Residents Association</strong> hat, the Studio knows what you are working on and where it may need to go.
-            </p>
-            <p>
-              You can announce an event, activity or class through the Calendar and Events List, and use the Studio to create the accompanying poster or notice — then really go to town with all the Studio tools.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <!-- Retained as a hidden compatibility hook for existing JavaScript. -->
       <div id="existingTools" hidden></div>
 
@@ -1315,70 +1281,16 @@
 
       const STUDIO_CHOICES = [
 
-  {
-    key:"host",
-    label:"Host an Event",
-    description:
-      "Create a dated Event for Calendar & Events List, then prepare its linked Notice.",
-    iconId:"role-host",
-    roles:["host"]
-  },
+        { key:"writer", label:"Writer", description:"Write something for yourself or for possible publication in the Reading Room.", iconId:"role-news", roles:[], always:true },
+        { key:"artist", label:"Artist", description:"Create artwork for yourself or for possible publication in the Gallery.", iconId:"role-artist", roles:[], always:true },
+        { key:"host", label:"Event Host", description:"Create and announce an Event you are hosting.", iconId:"role-host", roles:["host"] },
+        { key:"activity", label:"Activity Organiser", description:"Create information and dated Notices for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"] },
+        { key:"teacher", label:"Teacher", description:"Create information, classes and Notices for a subject you teach.", iconId:"role-helper", roles:["tutor","teacher"] },
+        { key:"committee", label:"Committee", description:"Create authorised Committee information and Notices.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary"] },
+        { key:"panel", label:"Residents Association", description:"Create authorised Residents Association information and Notices.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"] },
+        { key:"condo", label:"Condo Admin", description:"Prepare condominium reports and information for its Library shelf.", iconId:"role-services", roles:["condominium_coordinator","condo_admin"] }
 
-  {
-    key:"activity",
-    label:"Activity Organiser",
-    description:
-      "Create dated C&EL material or standing information for an Activity you organise.",
-    iconId:"role-activity",
-    roles:["activity_organiser"]
-  },
-
-  {
-    key:"writer",
-    label:"Writer",
-    description:
-      "Create an article or story for the Reading Room.",
-    iconId:"role-news",
-    roles:["writer","news_contributor"]
-  },
-
-  {
-    key:"artist",
-    label:"Artist",
-    description:
-      "Create visual work for possible publication in the Gallery.",
-    iconId:"role-artist",
-    roles:["artist"]
-  },
-
-  {
-    key:"committee",
-    label:"Committee",
-    description:
-      "Create authorised dated Committee material or standing Club publications.",
-    iconId:"role-committee",
-    roles:["committee","secretary","committee_secretary"]
-  },
-
-  {
-    key:"panel",
-    label:"Residents Association",
-    description:
-      "Create authorised dated or standing Residents Association material.",
-    iconId:"role-panel",
-    roles:["panel","residents_association","ra_secretary","panel_secretary"]
-  },
-
-  {
-    key:"services",
-    label:"Services",
-    description:
-      "Create dated or standing information for an authorised Service.",
-    iconId:"role-services",
-    roles:["services"]
-  }
-
-];
+      ];
       
       /*
         Role badges may include roles which do not themselves
@@ -2167,6 +2079,10 @@
           an automatic publishing qualification.
         */
 
+        if(choice.always){
+          return true;
+        }
+
         return hasAnyRole(
           roles,
           choice.roles
@@ -2827,6 +2743,33 @@
         }
 
 
+        if(key === "teacher"){
+
+          setChoiceContent(
+            "Teacher",
+            `<p>Create a class or teaching Notice, or prepare standing information for the subject you teach.</p>`,
+            [
+              actionButton("Create a dated Class Notice", datedRoute("tutor")),
+              actionButton("Create teaching information", standingRoute("tutor", "guides", {section:"website-help"}), true)
+            ]
+          );
+          return;
+        }
+
+
+        if(key === "condo"){
+
+          setChoiceContent(
+            "Condo Admin",
+            `<p>Prepare a condominium report or other standing information. It will be routed to the dedicated Condominium Library shelf.</p>`,
+            [
+              actionButton("Create Condominium information", standingRoute("condominium_coordinator", "condominium", {section:"condominium"}), true)
+            ]
+          );
+          return;
+        }
+
+
         if(key === "services"){
 
           setChoiceContent(
@@ -2952,28 +2895,8 @@
       function recognisedStudioRole(
         roles
       ){
-
-        const recognised =
-          new Set([
-            "host",
-            "activity_organiser",
-            "writer",
-            "news_contributor",
-            "artist",
-            "committee",
-            "secretary",
-            "committee_secretary",
-            "panel",
-            "ra_secretary",
-            "services"
-          ]);
-
-
-        return roles
-          .some(
-            role =>
-              recognised.has(role)
-          );
+        /* Every authenticated member may enter as Writer or Artist. */
+        return true;
       }
 
 
@@ -3001,7 +2924,7 @@
 
         els.greetingLine.textContent =
           name
-            ? `${timeGreeting()}, ${name}.`
+            ? `${timeGreeting()} ${name}.`
             : `${timeGreeting()}.`;
 
 

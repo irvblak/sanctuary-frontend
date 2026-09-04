@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -796,6 +795,62 @@
 
     /* ---------- Motto ---------- */
 
+    .studio-explainer{
+      margin:1.15rem auto 0;
+      padding:1rem 1.1rem;
+      max-width:1060px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fbfdfb;
+    }
+
+    .studio-explainer h2{
+      margin:0 0 .3rem;
+      color:var(--accent-dark);
+      text-align:center;
+      font-size:1.3rem;
+    }
+
+    .studio-explainer-lead{
+      margin:.15rem auto .85rem;
+      max-width:850px;
+      text-align:center;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .studio-explainer-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.85rem;
+    }
+
+    .studio-explainer-panel{
+      padding:.85rem .95rem;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+
+    .studio-explainer-panel h3{
+      margin:0 0 .45rem;
+      color:var(--accent-dark);
+      font-size:1.08rem;
+    }
+
+    .studio-explainer-panel p{
+      margin:.45rem 0;
+      line-height:1.48;
+    }
+
+    .studio-or{
+      color:var(--accent-dark);
+    }
+
+    @media(max-width:760px){
+      .studio-explainer-grid{grid-template-columns:1fr;}
+    }
+
     .motto{
       margin-top:1.6rem;
       padding-top:1rem;
@@ -1034,47 +1089,27 @@
           Welcome to Your Design Studio.
         </p>
 
+        <h3 class="question">
+          Which hat are you wearing today?
+        </h3>
 
-        <p class="role-invitation">
-          Your active choices are determined by the roles
-          currently allocated to you.
-          If there is another role you would like to take on,
-          please ask an Administrator.
+        <p class="you-may">
+          Choose from the Studio hats available to you.
         </p>
-
 
         <div
           class="member-role-strip"
           id="memberRoleStrip"
           aria-label="Your assigned community roles"
+          hidden
         ></div>
 
-
-        <h3 class="question">
-          What shall we do today?
-        </h3>
-
-        <p class="you-may">
-  You may:
-</p>
-
-<div class="actions" style="justify-content:center; margin-top:.65rem;">
-
-  <a
-    class="btn secondary"
-    href="library-publications.html?id=design-studio-publishing"
-  >
-    Publishing & filing
-  </a>
-
-</div>
-
-<p
-  class="verified-line"
-  id="verifiedLine"
->
-  Signed in.
-</p>
+        <p
+          class="verified-line"
+          id="verifiedLine"
+        >
+          Signed in.
+        </p>
 
       </div>
 
@@ -1110,148 +1145,42 @@
 
 
 
-      <!-- EVENT WORKSPACE -->
-
-      <div
-        class="existing-tools"
-        id="existingTools"
-        hidden
-      >
-
-        <h3>
-          Your Event & Activity Workspace
-        </h3>
-
-        <p class="workspace-intro">
-          If you have created a dated Event or Activity, you can return to it here
-          as well as from other convenient places around Sanctuary Club.
+      <!-- Front-door explanation: keep Studio administration elsewhere. -->
+      <section class="studio-explainer" aria-labelledby="studioWorkHeading">
+        <h2 id="studioWorkHeading">What happens to my Studio work?</h2>
+        <p class="studio-explainer-lead">
+          It depends on the hat you are wearing when you create something — and what you want to happen when you are satisfied with it.
         </p>
 
+        <div class="studio-explainer-grid">
+          <div class="studio-explainer-panel">
+            <h3>I want to just be creative</h3>
+            <p>
+              If it is a piece of writing or art you have created purely for your own pleasure, you can keep it in your personal Archive here on the website, or transfer it to your computer and read it or gaze admiringly at it in splendid isolation.
+            </p>
+            <p class="studio-or"><strong>OR — and why not do this instead?</strong></p>
+            <p>
+              You can submit it to the Editor for approval. It might then be placed in the Library Reading Room or Gallery for everyone to enjoy.
+            </p>
+            <p>
+              Why not teach or join a Computer Art class? Who knows, you might even have your very own Exhibition one day. 😉
+            </p>
+          </div>
 
-        <div class="tool-links">
-
-          <a href="host-my-events.html">
-
-            <strong>
-              Your Dated Notices
-            </strong>
-
-            <span>
-              View or edit dated Event or Activity Notices
-              you have already created.
-            </span>
-
-          </a>
-
-
-          <a href="host-my-events.html?mode=sop">
-
-            <strong>
-              State of Play
-            </strong>
-
-            <span>
-              View bookings, places remaining
-              and your printable Host report.
-            </span>
-
-          </a>
-
-
-          <a href="host-my-events.html?mode=booking">
-
-            <strong>
-              Book for a Member
-            </strong>
-
-            <span>
-              Add, update or cancel
-              a member booking for one of your Events or Activities.
-            </span>
-
-          </a>
-
+          <div class="studio-explainer-panel">
+            <h3>I want to be informative</h3>
+            <p>
+              If you are wearing an <strong>Event Host, Activity Organiser, Teacher, Club Committee or Residents Association</strong> hat, the Studio knows what you are working on and where it may need to go.
+            </p>
+            <p>
+              You can announce an event, activity or class through the Calendar and Events List, and use the Studio to create the accompanying poster or notice — then really go to town with all the Studio tools.
+            </p>
+          </div>
         </div>
+      </section>
 
-      </div>
-
-
-
-      <!-- HELP -->
-
-      <div class="help-note">
-
-        <strong>
-          Need a little help?
-        </strong>
-
-        <p>
-          You don't need any publishing experience.
-          The best way to learn is simply to have a go.
-        </p>
-
-
-        <div class="guide-links">
-
-          <a
-            class="guide-link"
-            href="library-publications.html?id=design-studio-guide"
-          >
-
-            <strong>
-              Your Design Studio — Quick Guide
-            </strong>
-
-            <span>
-              How to use the design tools.
-            </span>
-
-          </a>
-
-
-          <a
-            class="guide-link"
-            href="library-publications.html?id=design-studio-publishing"
-          >
-
-            <strong>
-              Your Design Studio — Publishing Guide
-            </strong>
-
-            <span>
-              Where finished work goes
-              and what happens next.
-            </span>
-
-          </a>
-
-        </div>
-
-
-        <p>
-          You can use the Studio simply for your own pleasure,
-          then print your creation or save it to your computer.
-        </p>
-
-        <p>
-          If you are preparing something for the Club, keep it as Work in Progress until you are ready.
-          Work in Progress is private and editable; publishing or submitting is the deliberate step that makes it available to others.
-        </p>
-
-        <p>
-          Our
-          <a
-            class="helper-link"
-            href="website-helpers.html"
-          >
-            Website Helpers
-          </a>
-          will also be happy to assist.
-        </p>
-
-      </div>
-
-
+      <!-- Retained as a hidden compatibility hook for existing JavaScript. -->
+      <div id="existingTools" hidden></div>
 
       <div class="motto">
         The computer does the thinking.<br />
@@ -1428,13 +1357,7 @@
     description:
       "Create authorised dated Committee material or standing Club publications.",
     iconId:"role-committee",
-    roles:[
-      "committee",
-      "committee_chair",
-      "committee_secretary",
-      "committee_treasurer",
-      "committee_officer"
-    ]
+    roles:["committee","secretary","committee_secretary"]
   },
 
   {
@@ -1443,14 +1366,7 @@
     description:
       "Create authorised dated or standing Residents Association material.",
     iconId:"role-panel",
-    roles:[
-      "panel",
-      "residents_association",
-      "ra_chair",
-      "ra_secretary",
-      "ra_treasurer",
-      "ra_officer"
-    ]
+    roles:["panel","residents_association","ra_secretary","panel_secretary"]
   },
 
   {
@@ -1500,15 +1416,9 @@
         },
 
         {
-          roles:["copy_editor"],
+          roles:["editor"],
           iconId:"role-editor",
-          tooltip:"Copy Editor"
-        },
-
-        {
-          roles:["art_editor"],
-          iconId:"role-editor",
-          tooltip:"Art Editor"
+          tooltip:"Editor"
         },
 
         {
@@ -1518,26 +1428,19 @@
         },
 
         {
-          roles:[
-            "committee",
-            "committee_chair",
-            "committee_secretary",
-            "committee_treasurer",
-            "committee_officer"
-          ],
+          roles:["committee"],
           iconId:"role-committee",
           tooltip:"Committee"
         },
 
         {
-          roles:[
-            "panel",
-            "residents_association",
-            "ra_chair",
-            "ra_secretary",
-            "ra_treasurer",
-            "ra_officer"
-          ],
+          roles:["secretary"],
+          iconId:"role-committee",
+          tooltip:"Secretary"
+        },
+
+        {
+          roles:["panel"],
           iconId:"role-panel",
           tooltip:"Residents Association"
         },
@@ -1561,15 +1464,9 @@
         },
 
         {
-          roles:["admin_website","admin"],
+          roles:["admin"],
           iconId:"role-admin",
-          tooltip:"Admin Website"
-        },
-
-        {
-          roles:["admin_club"],
-          iconId:"role-admin",
-          tooltip:"Admin Club"
+          tooltip:"Administrator"
         }
 
       ];
@@ -1718,57 +1615,6 @@
           committee_secretary:
             "committee_secretary",
 
-          secretary:
-            "committee_secretary",
-
-          committee_chairman:
-            "committee_chair",
-
-          committee_chair:
-            "committee_chair",
-
-          committee_treasurer:
-            "committee_treasurer",
-
-          committee_officer:
-            "committee_officer",
-
-          ra_chair:
-            "ra_chair",
-
-          residents_association_chair:
-            "ra_chair",
-
-          ra_treasurer:
-            "ra_treasurer",
-
-          residents_association_treasurer:
-            "ra_treasurer",
-
-          ra_officer:
-            "ra_officer",
-
-          residents_association_officer:
-            "ra_officer",
-
-          copy_editor:
-            "copy_editor",
-
-          art_editor:
-            "art_editor",
-
-          admin_website:
-            "admin_website",
-
-          website_admin:
-            "admin_website",
-
-          admin_club:
-            "admin_club",
-
-          club_admin:
-            "admin_club",
-
           service_publisher:
             "services",
 
@@ -1822,7 +1668,6 @@
       };
 
       let currentActivityScopes = [];
-      let currentMemberRoles = [];
 
 
       function cleanActivityScope(value){
@@ -2524,41 +2369,28 @@
         roles
       ){
 
-        currentMemberRoles = Array.isArray(roles)
-          ? [...new Set(roles.map(normaliseRole).filter(Boolean))]
-          : [];
-
         els.studioGrid.innerHTML =
           "";
 
 
-        STUDIO_CHOICES
-          .forEach(
-            choice => {
-
-              els.studioGrid
-                .appendChild(
-                  createChoiceTile(
-                    choice,
-                    roles
-                  )
-                );
-            }
-          );
-
-
         /*
-          Event tools belong to someone who
-          actually has the Host role.
-
-          Administrator alone no longer exposes them.
+          The front door shows only hats this member can actually wear.
+          Inactive/grey role tiles add clutter and belong in the Role Register,
+          not in the working Studio.
         */
+        STUDIO_CHOICES
+          .filter(choice => isChoiceAssigned(choice, roles))
+          .forEach(choice => {
+            els.studioGrid.appendChild(
+              createChoiceTile(choice, roles)
+            );
+          });
 
-        els.existingTools.hidden =
-          !(
-            roles.includes("host") ||
-            roles.includes("activity_organiser")
-          );
+        /* State of Play, booking tools and existing dated work are deliberately
+           not duplicated on the Studio front door. */
+        if(els.existingTools){
+          els.existingTools.hidden = true;
+        }
       }
 
 
@@ -2880,165 +2712,64 @@
 
         if(key === "committee"){
 
-          const isCommitteeSecretary =
-            currentMemberRoles.includes("committee_secretary");
+          setChoiceContent(
+            "Committee",
+            `
+              <p>
+                Choose the kind of authorised Committee material you want to create.
+                Dated material goes first to Calendar & Events List and then to its linked Notice.
+              </p>
 
-          if(isCommitteeSecretary){
-
-            setChoiceContent(
-              "Committee Secretary",
-              `
-                <p>
-                  Choose where the finished Committee material belongs.
-                  These are the agreed Club Library destinations available to the Committee Secretary.
-                </p>
-
-                <p>
-                  Work in Progress remains private and editable until publication.
-                  Dated Committee material still goes through Calendar & Events List and its linked Notice.
-                </p>
-
-                <p>
-                  <strong>Where in Library does it go?</strong>
-                </p>
-              `,
-              [
-                actionButton(
-                  "Create dated Committee Notice",
-                  datedRoute("committee")
+              <p>
+                Standing material goes directly to the Design Studio and is filed automatically
+                in the appropriate Club Publications section.
+                Work in Progress remains private until it is published.
+              </p>
+            `,
+            [
+              actionButton(
+                "Create dated Committee Notice",
+                datedRoute("committee")
+              ),
+              actionButton(
+                "Committee News",
+                standingRoute(
+                  "committee",
+                  "notices-news",
+                  {
+                    section:"club-publications",
+                    subcategory:"news"
+                  }
                 ),
-                actionButton(
-                  "News & Announcements",
-                  standingRoute(
-                    "committee",
-                    "club-news",
-                    {
-                      section:"club-news",
-                      subcategory:"news-announcements",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
+                true
+              ),
+              actionButton(
+                "Useful Information",
+                standingRoute(
+                  "committee",
+                  "useful-information",
+                  {
+                    section:"club-publications",
+                    subcategory:"useful-information"
+                  }
                 ),
-                actionButton(
-                  "Meeting Notices",
-                  standingRoute(
-                    "committee",
-                    "club-news",
-                    {
-                      section:"meetings-club-business",
-                      subcategory:"notices",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
+                true
+              ),
+              actionButton(
+                "Meeting Information",
+                standingRoute(
+                  "committee",
+                  "notices-news",
+                  {
+                    section:"club-publications",
+                    subcategory:"meetings"
+                  }
                 ),
-                actionButton(
-                  "Minutes",
-                  standingRoute(
-                    "committee",
-                    "club-news",
-                    {
-                      section:"meetings-club-business",
-                      subcategory:"minutes",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                actionButton(
-                  "E.M.S.",
-                  standingRoute(
-                    "committee",
-                    "club-news",
-                    {
-                      section:"meetings-club-business",
-                      subcategory:"ems",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                actionButton(
-                  "Guides",
-                  standingRoute(
-                    "committee",
-                    "guides",
-                    {
-                      section:"reference-help",
-                      subcategory:"guides",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                actionButton(
-                  "Administration",
-                  standingRoute(
-                    "committee",
-                    "administration",
-                    {
-                      section:"reference-help",
-                      subcategory:"administration",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                actionButton(
-                  "Privacy & Security",
-                  standingRoute(
-                    "committee",
-                    "privacy-security",
-                    {
-                      section:"reference-help",
-                      subcategory:"privacy-security",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                guideButton("committee")
-              ]
-            );
-
-          }else{
-
-            setChoiceContent(
-              "Committee",
-              `
-                <p>
-                  Create authorised Committee material here.
-                  Dated material goes first to Calendar & Events List and then to its linked Notice.
-                </p>
-
-                <p>
-                  Standing Committee work is prepared in the Design Studio and remains private
-                  until it is ready for the Committee Secretary to publish and file in the correct Library destination.
-                </p>
-              `,
-              [
-                actionButton(
-                  "Create dated Committee Notice",
-                  datedRoute("committee")
-                ),
-                actionButton(
-                  "Prepare standing Committee material",
-                  standingRoute(
-                    "committee",
-                    "committee-secretary-review",
-                    {
-                      section:"committee",
-                      subcategory:"awaiting-secretary",
-                      approval:"committee-secretary"
-                    }
-                  ),
-                  true
-                ),
-                guideButton("committee")
-              ]
-            );
-          }
+                true
+              ),
+              guideButton("club-publications")
+            ]
+          );
 
           return;
         }
@@ -3230,16 +2961,10 @@
             "news_contributor",
             "artist",
             "committee",
-            "committee_chair",
+            "secretary",
             "committee_secretary",
-            "committee_treasurer",
-            "committee_officer",
             "panel",
-            "residents_association",
-            "ra_chair",
             "ra_secretary",
-            "ra_treasurer",
-            "ra_officer",
             "services"
           ]);
 

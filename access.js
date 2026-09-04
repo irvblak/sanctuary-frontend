@@ -533,6 +533,7 @@
       "host-event-form.html",
       "host-state-of-play.html",
 
+      "my-studio.html",
       "your-design-studio.html",
 
       "design-studio.html",
@@ -565,6 +566,7 @@
       "host-event-form.html",
       "host-state-of-play.html",
 
+      "my-studio.html",
       "your-design-studio.html",
 
       "design-studio.html",
@@ -696,6 +698,10 @@
       ) ||
 
       destination.startsWith(
+        "my-studio"
+      ) ||
+
+      destination.startsWith(
         "your-design-studio"
       ) ||
 
@@ -724,9 +730,7 @@
       )
     );
   }
-
-
-  /*
+    /*
     =========================================================
     ACCESS ALL MESSAGE
     =========================================================
@@ -1042,7 +1046,7 @@
 
     closeButton
       ?.focus();
-  }
+      }
 
 
   /*
@@ -1120,7 +1124,6 @@
             event => {
 
               event.preventDefault();
-
               event.stopPropagation();
 
               showRouteMessage();

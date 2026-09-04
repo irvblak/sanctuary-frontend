@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -439,15 +438,17 @@
     .tools-choice-cancel{display:block;margin:.65rem auto 0;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}
 
     /* 4 Sep 2026 — work identity and text tools belong in the side panels, never over the artwork. */
-    body.canvas-active .text-format-side{display:flex;flex-direction:column;align-items:stretch;gap:.22rem;padding:.3rem;margin:0;}
-    body.canvas-active .text-format-side[hidden]{display:none!important;}
-    body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;}
-    body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;}
-    body.canvas-active .text-format-side select{width:100%;}
+    body.canvas-active .text-format-side{display:flex!important;flex-direction:column;align-items:stretch;gap:.17rem;padding:.24rem;margin:0;}
+    body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;gap:.15rem;}
+    body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;min-height:25px;padding:.2rem .24rem;}
+    body.canvas-active .text-format-side select{width:100%;min-height:25px;padding:.18rem .25rem;}
+    body.canvas-active .text-format-side .toolbar-check{font-size:.72rem;min-height:25px;}
+    body.canvas-active .text-format-side > button{min-height:25px;padding:.2rem .25rem;}
+    body.canvas-active #objectToolbar .selected-note{display:none!important;}
+    body.canvas-active .canvas-side{padding-bottom:.18rem;}
+    body.canvas-active .canvas-side-left{margin-top:32px;height:calc(100% - 32px);}
     .work-name-row label{font-size:.78rem;color:var(--accent-dark);font-weight:850;}
-    .work-name-row input{margin:0;padding:.42rem .48rem;font-size:.8rem;}
-    .work-name-note{font-size:.72rem;line-height:1.25;color:var(--muted);font-weight:700;}
-    body.canvas-active .work-name-note{display:block!important;}
+    .work-name-row input{margin:0;padding:.38rem .45rem;font-size:.8rem;}
 
 </style>
 </head>
@@ -497,7 +498,6 @@
             <span class="toolbar-label">Your work</span>
             <label for="workNameInput">Name this work *</label>
             <input id="workNameInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Bridge Beginners – October">
-            <span class="work-name-note">Give it a short name so you can find it again if you put it away and return later.</span>
           </div>
           <div class="toolbar-row">
             <span class="toolbar-label">Add</span>
@@ -637,7 +637,7 @@
             <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
           </div>
 
-          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar" hidden>
+          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar">
             <span class="toolbar-label">Text</span>
             <select id="fontFamilySelect" aria-label="Font">
               <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
@@ -678,7 +678,7 @@
             </div>
             <label class="toolbar-check">Text colour <input id="textColourInput" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="textColourInput" aria-label="Choose text colour" title="Choose text colour"></button></label>
             <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose panel colour 1" title="Choose panel colour 1"></button></label>
-            <label class="toolbar-check">Panel colour 2 <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose panel colour 2" title="Choose panel colour 2"></button></label>
+            <label class="toolbar-check">Panel colour 2 (graded) <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose panel colour 2" title="Choose panel colour 2"></button></label>
             <label class="toolbar-check">Direction
               <select id="panelGradientDirection">
                 <option value="180deg">Top to bottom</option>
@@ -800,6 +800,8 @@
 
     let publicationImage="";
     let currentCanvasMode=CANVAS_MODE||"artist";
+    let pageBackgroundMode="solid";
+    let panelBackgroundMode="solid";
     let selectedItem=null,currentPageIndex=0,pendingImageAction="add",zCounter=20;
     let undoStack=[],redoStack=[],typingSnapshotTaken=false;
     let savedTextRange=null;
@@ -1128,7 +1130,7 @@
       // Keep the right-hand Selection panel permanently visible.
       // Clicking blank canvas only deselects; object creation belongs to the explicit Add controls.
       objectToolbar.hidden=false;
-      formatToolbar.hidden=!selectedItem||kind==="image"||kind==="drawing";
+      formatToolbar.hidden=false;
       imageToolbar.hidden=!selectedItem||kind!=="image";
       drawingToolbar.hidden=!selectedItem||kind!=="drawing";
 
@@ -1141,10 +1143,7 @@
         if(control)control.disabled=!selectedItem;
       });
 
-      const names={image:"Illustration",title:"Title",text:"Text",drawing:"Drawing"};
-      selectedObjectNote.textContent=selectedItem
-        ?(kind==="drawing"?"":`${names[kind]||"Box"} selected.`)
-        :"Nothing selected. Choose Add Text, Add Illustration or Draw / Paint to add something.";
+      selectedObjectNote.textContent="";
       if(selectedItem&&kind!=="image"&&kind!=="drawing")syncFormatControls();
       if(selectedItem&&kind==="drawing")setDrawingTool(drawingTool);
     }
@@ -1165,12 +1164,14 @@
     function setCurrentPageSolidBackground(){
       const p=currentPage(); if(!p)return;
       pushUndo();
+      pageBackgroundMode="solid";
       p.style.background=pageBackgroundColour1.value;
     }
 
     function setCurrentPageGradientBackground(){
       const p=currentPage(); if(!p)return;
       pushUndo();
+      pageBackgroundMode="gradient";
       p.style.background=`linear-gradient(${pageGradientDirection.value}, ${pageBackgroundColour1.value}, ${pageBackgroundColour2.value})`;
     }
 
@@ -1178,6 +1179,7 @@
       if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
       const content=selectedItem.querySelector(".item-content"); if(!content)return;
       pushUndo();
+      panelBackgroundMode="solid";
       content.style.backgroundImage="none";
       content.style.backgroundColor=backgroundColourInput.value;
       syncFormatControls();
@@ -1187,6 +1189,7 @@
       if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
       const content=selectedItem.querySelector(".item-content"); if(!content)return;
       pushUndo();
+      panelBackgroundMode="gradient";
       content.style.backgroundColor=backgroundColourInput.value;
       content.style.backgroundImage=`linear-gradient(${panelGradientDirection.value}, ${backgroundColourInput.value}, ${panelTintColourInput.value})`;
       syncFormatControls();
@@ -2685,7 +2688,26 @@ function configurePublishingButton(){
     document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));
     document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));
     textColourInput.addEventListener("input",()=>applySelectedTextColour(textColourInput.value));
-    backgroundColourInput.addEventListener("input",setSelectedPanelSolidBackground);
+    backgroundColourInput.addEventListener("input",()=>{
+      if(panelBackgroundMode==="gradient") setSelectedPanelGradientBackground();
+      else setSelectedPanelSolidBackground();
+    });
+    panelTintColourInput.addEventListener("input",()=>{
+      if(selectedItem && selectedItem.dataset.kind!=="image" && selectedItem.dataset.kind!=="drawing"){
+        panelBackgroundMode="gradient";
+        setSelectedPanelGradientBackground();
+      }
+    });
+    pageBackgroundColour1.addEventListener("input",()=>{
+      if(pageBackgroundMode==="gradient") setCurrentPageGradientBackground();
+      else setCurrentPageSolidBackground();
+    });
+    pageBackgroundColour2.addEventListener("input",()=>{
+      pageBackgroundMode="gradient";
+      setCurrentPageGradientBackground();
+    });
+    pageGradientDirection.addEventListener("change",()=>{if(pageBackgroundMode==="gradient")setCurrentPageGradientBackground();});
+    panelGradientDirection.addEventListener("change",()=>{if(panelBackgroundMode==="gradient")setSelectedPanelGradientBackground();});
     document.getElementById("gradedPanelBtn").addEventListener("click",setSelectedPanelGradientBackground);
     document.getElementById("solidPanelBtn").addEventListener("click",setSelectedPanelSolidBackground);
     document.getElementById("transparentBackgroundBtn").addEventListener("click",setSelectedPanelTransparent);

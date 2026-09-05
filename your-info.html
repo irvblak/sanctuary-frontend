@@ -1791,6 +1791,25 @@
       localStorage.getItem("authToken") ||
       "";
 
+    /*
+      A normal arrival through Home → Access All is a
+      fresh routing decision.
+
+      Old private-page destinations must not decide
+      where the member goes this time.
+    */
+    if (ORDINARY_ACCESS_ALL_ENTRY){
+      clearPendingPrivateDestination();
+    }
+
+    /*
+      If this browser already has a valid Personal PIN
+      session, do not open Your Information merely
+      because credentials have been remembered.
+
+      A deliberate Hub → Your Information journey may
+      restore YI. Otherwise the member belongs at Hub.
+    */
     if (
       hasActiveClubSession() &&
       hasPrivateAccess() &&
@@ -1801,18 +1820,53 @@
       activeMember = rememberedMember;
       memberIdEl.value = rememberedMember;
 
-      loginPanel.classList.add("hidden");
-      memberPanel.classList.remove("hidden");
-      memberPanel.classList.remove("locked");
-      activeMemberId.textContent = rememberedMember;
-      setInformationIntro();
+      if (OPEN_YI_AFTER_LOGIN){
+        loginPanel.classList.add("hidden");
+        memberPanel.classList.remove("hidden");
+        memberPanel.classList.remove("locked");
+        activeMemberId.textContent = rememberedMember;
+        setInformationIntro();
 
-      mergeActiveRoles(rolesFromHostSession(rememberedMember));
-      setStatus(pageStatus, "info", "Loading your information...");
-      await loadExistingFor(rememberedMember);
+        mergeActiveRoles(
+          rolesFromHostSession(rememberedMember)
+        );
+
+        setStatus(
+          pageStatus,
+          "info",
+          "Loading your information..."
+        );
+
+        await loadExistingFor(rememberedMember);
+        return;
+      }
+
+      /*
+        A genuine private-page gate may return to the
+        page which caused the gate.
+      */
+      if (PRIVATE_GATE_LOGIN){
+        const destination = pendingPrivateDestination();
+
+        if (destination){
+          clearPendingPrivateDestination();
+          location.replace(destination);
+          return;
+        }
+      }
+
+      clearPendingPrivateDestination();
+      location.replace("members-info.html");
       return;
     }
 
+    /*
+      No valid Personal PIN session exists.
+      Show Member Login normally.
+
+      Remembering the Membership Number is harmless;
+      it does not constitute authentication.
+    */
     if (rememberedMember){
       memberIdEl.value = rememberedMember;
     }
@@ -1826,13 +1880,14 @@
     memberPanel.classList.add("hidden");
     memberPanel.classList.remove("locked");
     loginPanel.classList.remove("hidden");
+
     roleBadges.innerHTML = "";
     roleStrip.classList.remove("show");
-    setLoginIntro();
 
+    setLoginIntro();
     updateButtonsEnabled();
   }
-
+  
   pinEyeBtn.addEventListener("click", function(){
     const hidden = pinInput.type === "password";
     pinInput.type = hidden ? "text" : "password";

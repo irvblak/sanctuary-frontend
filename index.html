@@ -341,21 +341,38 @@
     }
 
     function continueToTarget(
-      target,
-      route
-    ) {
-      if (
-        !target ||
-        !validRoute(route)
-      ) {
-        return;
-      }
+  target,
+  route
+) {
+  if (
+    !target ||
+    !validRoute(route)
+  ) {
+    return;
+  }
 
-      setEntryRoute(route);
+  /*
+    Choosing Access All on Home starts a fresh
+    private journey.
 
-      window.location.href =
-        target;
-    }
+    A destination left behind by an earlier visit
+    must never decide where this new journey goes.
+  */
+  if (route === ROUTE_INFO) {
+    sessionStorage.removeItem(
+      "hubGateReason"
+    );
+
+    sessionStorage.removeItem(
+      "hubGateDestination"
+    );
+  }
+
+  setEntryRoute(route);
+
+  window.location.href =
+    target;
+}
 
     function showGateFor(
       target,

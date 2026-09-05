@@ -1490,7 +1490,7 @@
     }
   }
 
-  async function openHubOrInformation(){
+    async function openHubOrInformation(){
     const memberId = baseId(memberIdEl.value);
     const data = await loginMember();
 
@@ -1498,43 +1498,78 @@
 
     loginHouseholdRoleResidents = residentRecordsFromLogin(data);
     setHouseholdRoleResidents(loginHouseholdRoleResidents);
+
     mergeActiveRoles(
       rolesFromLogin(data),
       rolesFromHostSession(memberId)
     );
 
     setStarterMode(Boolean(data.force_pin_change || data.starter_pin));
+
     if (starterPinRequired){
       loginPanel.classList.add("hidden");
       memberPanel.classList.remove("hidden");
       activeMemberId.textContent = memberId;
       setInformationIntro();
       changePinBox.classList.remove("hidden");
-      setStatus(pageStatus, "warn", "Please replace the temporary 2468 PIN with your own Personal Private PIN.");
-    return;
-  }
+
+      setStatus(
+        pageStatus,
+        "warn",
+        "Please replace the temporary 2468 PIN with your own Personal Private PIN."
+      );
+
+      return;
+    }
+
     grantPrivateAccess();
 
-    const destination = pendingPrivateDestination();
-    if (destination){
+    /*
+      Only a genuine Personal PIN gate may return the
+      member directly to a waiting private destination.
+
+      An ordinary Access All login must never inherit an
+      old hubGateDestination from an earlier journey.
+    */
+    if (PRIVATE_GATE_LOGIN){
+      const destination = pendingPrivateDestination();
+
+      if (destination){
+        clearPendingPrivateDestination();
+        location.href = destination;
+        return;
+      }
+    } else {
       clearPendingPrivateDestination();
-      location.href = destination;
+    }
+
+    /*
+      Your Information is opened directly only when the
+      member deliberately came here to manage it.
+    */
+    if (OPEN_YI_AFTER_LOGIN){
+      loginPanel.classList.add("hidden");
+      memberPanel.classList.remove("hidden");
+      activeMemberId.textContent = memberId;
+      setInformationIntro();
+
+      setStatus(
+        pageStatus,
+        "info",
+        "Loading your information..."
+      );
+
+      await loadExistingFor(memberId);
       return;
     }
 
-    if (!OPEN_YI_AFTER_LOGIN){
-      location.href = "members-info.html";
-      return;
-    }
-
-    loginPanel.classList.add("hidden");
-    memberPanel.classList.remove("hidden");
-    activeMemberId.textContent = memberId;
-    setInformationIntro();
-    setStatus(pageStatus, "info", "Loading your information...");
-    await loadExistingFor(memberId);
+    /*
+      Normal successful Member Login always opens
+      the Members Hub.
+    */
+    location.href = "members-info.html";
   }
-
+  
   async function saveInformation(){
     if (!activeMember){
       setStatus(pageStatus, "err", "Please login first.");

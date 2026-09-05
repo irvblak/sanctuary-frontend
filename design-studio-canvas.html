@@ -408,7 +408,11 @@
       overflow-y:auto;
       overflow-x:hidden;
     }
-    body.canvas-active .canvas-side-right{align-self:stretch;}
+    body.canvas-active .canvas-side-right{
+      align-self:stretch;
+      transform:translateY(-28px);
+      height:calc(100% + 28px);
+    }
     body.canvas-active .text-format-float{
       position:absolute;z-index:35;top:70px;left:50%;transform:translateX(-50%);
       width:min(920px,calc(100% - 12px));

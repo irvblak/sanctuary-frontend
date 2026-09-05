@@ -636,6 +636,24 @@
             <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
           </div>
 
+          <div class="toolbar-row" id="textBackgroundToolbar">
+            <span class="toolbar-label">Text background</span>
+            <label class="toolbar-check">Colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose text background colour 1" title="Choose text background colour 1"></button></label>
+            <label class="toolbar-check">Colour 2 <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose text background colour 2" title="Choose text background colour 2"></button></label>
+            <label class="toolbar-check">Direction
+              <select id="panelGradientDirection">
+                <option value="180deg">Top to bottom</option>
+                <option value="90deg">Left to right</option>
+                <option value="135deg">Diagonal</option>
+              </select>
+            </label>
+            <div class="compact-button-row wrap-buttons">
+              <button id="solidPanelBtn" type="button">Solid</button>
+              <button id="gradedPanelBtn" type="button">Graded</button>
+              <button id="transparentBackgroundBtn" type="button">Transparent</button>
+            </div>
+          </div>
+
           <div class="toolbar-row" id="objectToolbar">
             <span class="toolbar-label">Selection</span>
             <div class="object-move-grid" aria-label="Move selected box">
@@ -657,7 +675,7 @@
           </div>
 
           <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar" hidden>
-            <span class="toolbar-label">Text</span>
+            <span class="toolbar-label">Type</span>
             <select id="fontFamilySelect" aria-label="Font">
               <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
               <option value="Georgia,serif">Georgia</option>
@@ -696,18 +714,6 @@
               <button id="alignRightBtn" type="button">Right</button>
             </div>
             <label class="toolbar-check">Text colour <input id="textColourInput" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="textColourInput" aria-label="Choose text colour" title="Choose text colour"></button></label>
-            <label class="toolbar-check">Text background colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose text background colour 1" title="Choose text background colour 1"></button></label>
-            <label class="toolbar-check">Text background colour 2 <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose text background colour 2" title="Choose text background colour 2"></button></label>
-            <label class="toolbar-check">Direction
-              <select id="panelGradientDirection">
-                <option value="180deg">Top to bottom</option>
-                <option value="90deg">Left to right</option>
-                <option value="135deg">Diagonal</option>
-              </select>
-            </label>
-            <button id="gradedPanelBtn" type="button">Text background graded</button>
-            <button id="solidPanelBtn" type="button">Text background solid</button>
-            <button id="transparentBackgroundBtn" type="button">Text background transparent</button>
           </div>
         </aside>
       </div>
@@ -1209,7 +1215,6 @@
       panelBackgroundMode="solid";
       content.style.backgroundImage="none";
       content.style.backgroundColor=backgroundColourInput.value;
-      syncFormatControls();
     }
 
     function setSelectedPanelGradientBackground(){
@@ -1219,7 +1224,6 @@
       panelBackgroundMode="gradient";
       content.style.backgroundColor=backgroundColourInput.value;
       content.style.backgroundImage=`linear-gradient(${panelGradientDirection.value}, ${backgroundColourInput.value}, ${panelTintColourInput.value})`;
-      syncFormatControls();
     }
 
     function setSelectedPanelTransparent(){
@@ -2046,6 +2050,31 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
     /* Right-side space fix: keep Draw / Paint, Selection and the complete palette visible together. */
     .canvas-side-right{gap:.22rem;padding:.28rem;overflow-y:auto;overflow-x:hidden;}
     body.canvas-active #objectToolbar{display:flex!important;}
+    body.canvas-active #textBackgroundToolbar{
+      display:flex!important;
+      flex:0 0 auto;
+      gap:.18rem;
+      padding:.28rem;
+    }
+    body.canvas-active #textBackgroundToolbar .toolbar-check{
+      min-height:24px;
+      font-size:.72rem;
+    }
+    body.canvas-active #textBackgroundToolbar select{
+      min-height:24px;
+      padding:.16rem .24rem;
+    }
+    body.canvas-active #textBackgroundToolbar .compact-button-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:.18rem;
+    }
+    body.canvas-active #textBackgroundToolbar .compact-button-row button{
+      width:100%;
+      min-height:25px;
+      padding:.18rem .18rem;
+      font-size:.72rem;
+    }
     .canvas-side-right .toolbar-row{gap:.2rem;padding:.3rem;}
     #drawingToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.2rem;}
     #drawingToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .2rem;font-size:.76rem;}

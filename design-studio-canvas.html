@@ -444,6 +444,20 @@
     /* 4 Sep 2026 — work identity and text tools belong in the side panels, never over the artwork. */
     body.canvas-active .text-format-side{display:flex!important;flex-direction:column;align-items:stretch;gap:.17rem;padding:.24rem;margin:0;}
     body.canvas-active #formatToolbar[hidden]{display:none!important;}
+    body.canvas-active #formatToolbar{
+      position:fixed;
+      z-index:10020;
+      width:190px;
+      max-height:calc(100vh - 16px);
+      overflow-y:auto;
+      display:flex!important;
+      background:rgba(247,251,253,.99);
+      border:1px solid var(--line);
+      border-radius:11px;
+      box-shadow:0 10px 28px rgba(20,60,80,.22);
+      padding:.34rem;
+      margin:0;
+    }
     body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;gap:.15rem;}
     body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;min-height:25px;padding:.2rem .24rem;}
     body.canvas-active .text-format-side select{width:100%;min-height:25px;padding:.18rem .25rem;}
@@ -1136,22 +1150,15 @@
       // Clicking blank canvas only deselects; object creation belongs to the explicit Add controls.
       objectToolbar.hidden=false;
       const isTextItem=Boolean(selectedItem && kind!=="image" && kind!=="drawing");
-      formatToolbar.hidden=!isTextItem;
+      // TEXT is contextual: adding/selecting a text box leaves it closed.
+      // Highlighting actual text opens the floating TEXT toolbox.
+      formatToolbar.hidden=true;
       imageToolbar.hidden=!selectedItem||kind!=="image";
       drawingToolbar.hidden=!selectedItem||kind!=="drawing";
 
-      // Context-sensitive right-hand tools.
-      // The right-hand panel frame remains fixed; only its contents scroll when needed.
       const rightTools=document.querySelector(".canvas-side-right");
-      if(rightTools && selectedItem){
-        requestAnimationFrame(()=>{
-          if(kind==="drawing"){
-            rightTools.scrollTop=0;
-          }else if(isTextItem){
-            const targetTop=Math.max(0,formatToolbar.offsetTop-rightTools.clientHeight+formatToolbar.offsetHeight+6);
-            rightTools.scrollTop=targetTop;
-          }
-        });
+      if(rightTools && selectedItem && kind==="drawing"){
+        requestAnimationFrame(()=>{rightTools.scrollTop=0;});
       }
 
       const needsSelection=[
@@ -2038,6 +2045,7 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
 
     /* Right-side space fix: keep Draw / Paint, Selection and the complete palette visible together. */
     .canvas-side-right{gap:.22rem;padding:.28rem;overflow-y:auto;overflow-x:hidden;}
+    body.canvas-active #objectToolbar{display:flex!important;}
     .canvas-side-right .toolbar-row{gap:.2rem;padding:.3rem;}
     #drawingToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.2rem;}
     #drawingToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .2rem;font-size:.76rem;}
@@ -2688,21 +2696,36 @@ function configurePublishingButton(){
     }
     document.getElementById("addCanvasTextBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("text")});document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{if(!requireWorkName())return;pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"})});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
     canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
+    function positionFloatingTextToolbar(){
+      if(!selectedItem||formatToolbar.hidden)return;
+      const itemRect=selectedItem.getBoundingClientRect();
+      const toolRect=formatToolbar.getBoundingClientRect();
+      const gap=10;
+      let left=itemRect.left;
+      let top=itemRect.top-toolRect.height-gap;
+      if(top<8)top=itemRect.bottom+gap;
+      if(left+toolRect.width>window.innerWidth-8)left=window.innerWidth-toolRect.width-8;
+      if(left<8)left=8;
+      if(top+toolRect.height>window.innerHeight-8)top=Math.max(8,window.innerHeight-toolRect.height-8);
+      formatToolbar.style.left=`${Math.round(left)}px`;
+      formatToolbar.style.top=`${Math.round(top)}px`;
+    }
+
     document.addEventListener("selectionchange",()=>{
       const selection=window.getSelection();
-      if(!selection||!selection.rangeCount||selection.isCollapsed)return;
+      if(!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing"||
+         !selection||!selection.rangeCount||selection.isCollapsed){
+        formatToolbar.hidden=true;
+        return;
+      }
       const range=selection.getRangeAt(0);
-      const content=selectedItem?.querySelector(".item-content");
+      const content=selectedItem.querySelector(".item-content");
       if(content&&content.contains(range.startContainer)&&content.contains(range.endContainer)){
         savedTextRange=range.cloneRange();
         formatToolbar.hidden=false;
-        const rightTools=document.querySelector(".canvas-side-right");
-        if(rightTools){
-          requestAnimationFrame(()=>{
-            const targetTop=Math.max(0,formatToolbar.offsetTop-rightTools.clientHeight+formatToolbar.offsetHeight+6);
-            rightTools.scrollTop=targetTop;
-          });
-        }
+        requestAnimationFrame(positionFloatingTextToolbar);
+      }else{
+        formatToolbar.hidden=true;
       }
     });
     formatToolbar.addEventListener("pointerdown",captureCurrentTextSelection,true);

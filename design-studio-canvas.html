@@ -408,11 +408,7 @@
       overflow-y:auto;
       overflow-x:hidden;
     }
-    body.canvas-active .canvas-side-right{
-      align-self:stretch;
-      transform:translateY(-28px);
-      height:calc(100% + 28px);
-    }
+    body.canvas-active .canvas-side-right{align-self:stretch;}
     body.canvas-active .text-format-float{
       position:absolute;z-index:35;top:70px;left:50%;transform:translateX(-50%);
       width:min(920px,calc(100% - 12px));
@@ -645,7 +641,7 @@
             <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
           </div>
 
-          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar">
+          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar" hidden>
             <span class="toolbar-label">Text</span>
             <select id="fontFamilySelect" aria-label="Font">
               <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
@@ -685,8 +681,8 @@
               <button id="alignRightBtn" type="button">Right</button>
             </div>
             <label class="toolbar-check">Text colour <input id="textColourInput" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="textColourInput" aria-label="Choose text colour" title="Choose text colour"></button></label>
-            <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose panel colour 1" title="Choose panel colour 1"></button></label>
-            <label class="toolbar-check">Panel colour 2 (graded) <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose panel colour 2" title="Choose panel colour 2"></button></label>
+            <label class="toolbar-check">Text background colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose text background colour 1" title="Choose text background colour 1"></button></label>
+            <label class="toolbar-check">Text background colour 2 <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose text background colour 2" title="Choose text background colour 2"></button></label>
             <label class="toolbar-check">Direction
               <select id="panelGradientDirection">
                 <option value="180deg">Top to bottom</option>
@@ -694,9 +690,9 @@
                 <option value="135deg">Diagonal</option>
               </select>
             </label>
-            <button id="gradedPanelBtn" type="button">Graded panel</button>
-            <button id="solidPanelBtn" type="button">Solid panel</button>
-            <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
+            <button id="gradedPanelBtn" type="button">Text background graded</button>
+            <button id="solidPanelBtn" type="button">Text background solid</button>
+            <button id="transparentBackgroundBtn" type="button">Text background transparent</button>
           </div>
         </aside>
       </div>
@@ -894,8 +890,8 @@
       pageBackgroundColour1:"Page colour 1",
       pageBackgroundColour2:"Page colour 2",
       textColourInput:"Text colour",
-      backgroundColourInput:"Panel colour 1",
-      panelTintColourInput:"Panel colour 2",
+      backgroundColourInput:"Text background colour 1",
+      panelTintColourInput:"Text background colour 2",
       drawLineColour:"Drawing line",
       drawFillColour:"Drawing fill"
     };
@@ -1138,9 +1134,24 @@
       // Keep the right-hand Selection panel permanently visible.
       // Clicking blank canvas only deselects; object creation belongs to the explicit Add controls.
       objectToolbar.hidden=false;
-      formatToolbar.hidden=false;
+      const isTextItem=Boolean(selectedItem && kind!=="image" && kind!=="drawing");
+      formatToolbar.hidden=!isTextItem;
       imageToolbar.hidden=!selectedItem||kind!=="image";
       drawingToolbar.hidden=!selectedItem||kind!=="drawing";
+
+      // Context-sensitive right-hand tools.
+      // The right-hand panel frame remains fixed; only its contents scroll when needed.
+      const rightTools=document.querySelector(".canvas-side-right");
+      if(rightTools && selectedItem){
+        requestAnimationFrame(()=>{
+          if(kind==="drawing"){
+            rightTools.scrollTop=0;
+          }else if(isTextItem){
+            const targetTop=Math.max(0,formatToolbar.offsetTop-rightTools.clientHeight+formatToolbar.offsetHeight+6);
+            rightTools.scrollTop=targetTop;
+          }
+        });
+      }
 
       const needsSelection=[
         "nudgeUpBtn","nudgeLeftBtn","centreObjectBtn","nudgeRightBtn","nudgeDownBtn",

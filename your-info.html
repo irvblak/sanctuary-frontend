@@ -693,6 +693,10 @@
   const MD_TTL_MS = 30 * 60 * 1000;
 
   const PAGE_PARAMS = new URLSearchParams(window.location.search);
+
+  const PRIVATE_GATE_LOGIN =
+    PAGE_PARAMS.get("needPin") === "1";
+
   const OPEN_YI_AFTER_LOGIN =
     PAGE_PARAMS.get("manage") === "1" ||
     /\/members-info\.html(?:$|[?#])/i.test(document.referrer || "");
@@ -701,6 +705,10 @@
     PAGE_PARAMS.get("return") === "personal" ||
     /\/(?:my-bookings|my-events)\.html(?:$|[?#])/i.test(document.referrer || "");
 
+  const ORDINARY_ACCESS_ALL_ENTRY =
+    !PRIVATE_GATE_LOGIN &&
+    !OPEN_YI_AFTER_LOGIN &&
+    !RETURNING_FROM_PERSONAL_SERVICE;
   const memberIdEl = document.getElementById("memberId");
   const pinInput = document.getElementById("pinInput");
   const pinEyeBtn = document.getElementById("pinEyeBtn");

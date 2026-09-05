@@ -2,2845 +2,419 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Design Studio Canvas | Sanctuary Club</title>
+  <title>Members Hub | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <script src="access.js?v=YDS_CANVAS_1"></script>
-<style>
-    :root{--bg1:#eef6fb;--bg2:#f8fbfd;--card:#fff;--ink:#173042;--muted:#607583;--line:#d7e3ea;--accent:#1f6f8b;--accent-dark:#175a72;--accent-soft:#e9f4f8;--soft:#f3f8fb;--good:#216e39;--warn:#8a5a00;--bad:#9e2b2b;--disabled-bg:#f1f3f4;--disabled-ink:#8a969d;--shadow:0 14px 34px rgba(20,60,80,.12);--tile-shadow:0 8px 20px rgba(20,60,80,.09)}
-    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink);min-height:100vh}.page{max-width:1040px;margin:0 auto;padding:1.25rem}.topbar{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem}.eyebrow{margin:0 0 .2rem;color:var(--accent);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}h1{margin:.1rem 0 .3rem;color:var(--accent-dark);font-size:clamp(1.8rem,4vw,2.35rem);line-height:1.12}h2{margin:.1rem 0 .65rem;font-size:1.3rem;line-height:1.2}h3{margin:0;font-size:1.1rem;line-height:1.25}.sub{color:var(--muted);font-size:1rem;font-weight:600;line-height:1.5;max-width:730px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:1.2rem;margin-bottom:1rem}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.topbar .actions{margin-top:0;justify-content:flex-end}a.btn,button.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;text-decoration:none;border-radius:999px;padding:.68rem 1.05rem;font-size:.95rem;font-weight:850;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}a.btn:hover,button.btn:hover{background:var(--accent-dark);border-color:var(--accent-dark)}a.btn.secondary,button.btn.secondary{background:#fff;color:var(--accent)}a.btn.secondary:hover,button.btn.secondary:hover{background:var(--accent-soft)}button.btn:disabled{opacity:.6;cursor:wait}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;align-items:end}label{display:block;color:var(--muted);font-weight:850;font-size:.9rem}input{width:100%;margin-top:.28rem;padding:.7rem .75rem;border:1px solid var(--line);border-radius:11px;font:inherit;font-size:1rem;background:#fff;color:var(--ink)}input:focus{outline:3px solid rgba(31,111,139,.14);border-color:var(--accent)}.pin-wrap{position:relative;display:block;margin-top:.28rem}.pin-wrap input{margin-top:0;padding-right:4rem}.eye-btn{position:absolute;right:.35rem;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:999px;padding:.33rem .62rem;font-size:.8rem;font-weight:850;cursor:pointer}.status{margin-top:.85rem;padding:.76rem .86rem;border-radius:12px;border:1px solid var(--line);background:var(--soft);color:var(--muted);font-weight:750;line-height:1.4}.status.good{background:#e8f5eb;color:var(--good);border-color:#b9dfc2}.status.warn{background:#fff4db;color:var(--warn);border-color:#ead49a}.status.err{background:#fff1f1;color:var(--bad);border-color:#e5b8b8}.welcome{text-align:center;padding:1.25rem .9rem .5rem}.greeting{margin:0 0 .35rem;color:var(--accent-dark);font-size:clamp(1.5rem,3vw,2rem)}.welcome-line{margin:0 0 1rem;color:var(--muted);font-size:1.08rem}.question{margin:0;font-size:clamp(1.5rem,3vw,2.05rem);color:var(--ink)}.you-may{margin:.5rem 0 0;color:var(--accent-dark);font-weight:900;font-size:1.12rem}.verified-line{margin:.9rem 0 0;color:var(--muted);font-size:.9rem}.studio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}.studio-tile{min-height:126px;display:flex;align-items:center;gap:1rem;border-radius:18px;padding:1.1rem;border:1px solid var(--line);background:linear-gradient(145deg,#fff,var(--soft));box-shadow:var(--tile-shadow);text-decoration:none;color:var(--ink);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}.studio-tile.active:hover{transform:none;border-color:var(--accent);box-shadow:0 12px 26px rgba(20,60,80,.13)}.studio-tile.active:focus{outline:3px solid rgba(31,111,139,.18);border-color:var(--accent)}.studio-tile.disabled{background:var(--disabled-bg);color:var(--disabled-ink);box-shadow:none;cursor:default}.tile-mark{width:58px;height:58px;flex:0 0 58px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;font-weight:900;background:var(--accent-soft);color:var(--accent-dark)}.disabled .tile-mark{background:#e1e5e7;color:#929ca2;filter:grayscale(1)}.tile-copy strong{display:block;margin-bottom:.25rem;color:var(--accent-dark);font-size:1.1rem;line-height:1.25}.disabled .tile-copy strong{color:#7f8a90}.tile-copy span{display:block;color:var(--muted);font-size:.95rem;line-height:1.42}.disabled .tile-copy span{color:#8a969d}.availability{margin-top:.45rem;font-size:.8rem!important;font-weight:850;color:#7f8a90!important}.existing-tools{margin-top:1.2rem;padding-top:1.1rem;border-top:1px solid var(--line)}.existing-tools h3{margin-bottom:.7rem;color:var(--accent-dark)}.tool-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.tool-links a{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:14px;padding:.9rem}.tool-links a:hover{border-color:var(--accent);background:var(--soft)}.tool-links strong{display:block;color:var(--accent-dark);margin-bottom:.15rem}.tool-links span{display:block;color:var(--muted);font-size:.9rem;line-height:1.35}.help-note{margin-top:1rem;padding:1rem 1.05rem;border-radius:16px;border:1px solid #cfe3eb;background:var(--accent-soft);color:var(--accent-dark);line-height:1.5}.help-note strong{display:block;margin-bottom:.2rem}.member-role-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem;margin:.9rem 0 .2rem;min-height:34px}.member-role-badge{width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 4px 12px rgba(20,60,80,.08);display:inline-flex;align-items:center;justify-content:center;position:relative}.member-role-badge .role-icon{width:25px;height:25px}.tile-mark .role-icon{width:42px;height:42px}.role-icon{display:block;overflow:visible;color:currentColor}.icon-fallback{display:none;font-size:1.25rem;font-weight:950;color:var(--accent-dark)}.studio-tile.preparing{cursor:pointer}.studio-tile.preparing .availability{color:var(--accent-dark)!important;background:var(--accent-soft);border:1px solid #bfdce7;border-radius:999px;display:inline-block;padding:.24rem .5rem}.studio-tile.active .availability{color:var(--good)!important;background:#e8f5eb;border:1px solid #b9dfc2;border-radius:999px;display:inline-block;padding:.24rem .5rem}.role-tooltip::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:max-content;max-width:220px;padding:.45rem .6rem;border-radius:9px;background:var(--ink);color:#fff;font-size:.75rem;line-height:1.25;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:0;visibility:hidden;pointer-events:none;z-index:30}.role-tooltip:hover::after,.role-tooltip:focus-visible::after{opacity:1;visibility:visible}.role-tooltip:focus-visible{outline:3px solid rgba(31,111,139,.2);outline-offset:3px}.studio-tile button{font:inherit}
 
-    /* Publishing workspace */
-    .publish-workspace{margin-top:1rem}.workspace-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.layout-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:.9rem 0 1rem}.layout-choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:.75rem;cursor:pointer;font:inherit;text-align:left}.layout-choice.selected,.layout-choice:hover{border-color:var(--accent);background:var(--soft)}.layout-choice strong{display:block;color:var(--accent-dark);margin-bottom:.2rem}.workspace-grid{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(420px,1.15fr);gap:1rem}.editor-stack{display:flex;flex-direction:column;gap:.75rem}.editor-box{border:1px solid var(--line);border-radius:15px;padding:.85rem;background:#fff}.editor-box h3{color:var(--accent-dark);margin-bottom:.55rem}.editor-box textarea{min-height:120px;resize:vertical;width:100%;margin-top:.28rem;padding:.7rem .75rem;border:1px solid var(--line);border-radius:11px;font:inherit;background:#fff;color:var(--ink)}.colour-row,.small-actions,.image-sources{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.swatch{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}.swatch.selected{box-shadow:0 0 0 3px rgba(31,111,139,.22)}.small-actions button,.image-sources button{border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:999px;padding:.45rem .68rem;font-weight:850;cursor:pointer}.image-sources button{border-radius:12px;flex:1 1 120px}.preview-shell{background:#e7eef2;border-radius:18px;padding:1rem;display:flex;justify-content:center;align-items:flex-start;overflow:auto}.a4{width:min(100%,680px);aspect-ratio:210/297;background:#fff;box-shadow:0 14px 32px rgba(0,0,0,.16);padding:6%;display:grid;gap:2%;overflow:hidden}.a4.classic{grid-template-columns:1fr 1fr;grid-template-rows:auto 34% 1fr}.a4.classic .pub-title,.a4.classic .pub-body{grid-column:1/-1}.a4.picture{grid-template-columns:1fr;grid-template-rows:auto 52% 1fr}.a4.text{grid-template-columns:1fr;grid-template-rows:auto 1fr}.a4.text .pub-image,.a4.text .pub-info{display:none!important}.a4.split{grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}.a4.split .pub-title{grid-column:1/-1}.pub-panel{border:1px dashed #bfd0d9;border-radius:10px;padding:.9rem;overflow:auto;white-space:pre-wrap}.pub-title{display:flex;align-items:center;justify-content:center;text-align:center;font-size:2rem;font-weight:900;color:#17314a}.pub-image{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);background:#f8fbfd}.pub-image img{max-width:100%;max-height:100%;object-fit:contain}.pub-info{background:#f8fbfd}.pub-panel.empty{display:none}.workspace-status{margin:.55rem 0 0;color:var(--muted);font-size:.85rem;line-height:1.4}
+  <script src="access.js?v=MH_8"></script>
 
-    /* Creative Canvas — common YDS production engine */
-    .canvas-shell{margin-top:.8rem}.canvas-toolbar{display:grid;gap:.7rem;margin:.85rem 0}.toolbar-row{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;padding:.7rem;border:1px solid var(--line);border-radius:14px;background:#fff}.toolbar-label{font-size:.82rem;font-weight:900;color:var(--accent-dark);margin-right:.2rem;text-transform:uppercase;letter-spacing:.04em}.toolbar-row button,.toolbar-row select,.toolbar-row input[type="number"]{border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:10px;padding:.46rem .62rem;font:inherit;font-size:.88rem;font-weight:800}.toolbar-row button{cursor:pointer}.toolbar-row button:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.toolbar-row button:disabled{opacity:.42;cursor:not-allowed}.toolbar-row select{background:#fff}.toolbar-row input[type="number"]{width:72px;background:#fff}.toolbar-row input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}.toolbar-check{display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);font-size:.88rem;font-weight:800}.toolbar-check input{width:auto;margin:0}.format-toolbar[hidden],.image-toolbar[hidden]{display:none!important}.page-tabs{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.7rem 0}.page-tab{border:1px solid var(--line);background:#fff;color:var(--accent-dark);border-radius:999px;padding:.42rem .72rem;font-weight:850;cursor:pointer}.page-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.canvas-stage{background:#dfe8ed;border-radius:18px;padding:1rem;overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:500px}.canvas-pages{width:100%;display:flex;justify-content:center}.canvas-page{position:relative;background:#fff;box-shadow:0 14px 32px rgba(0,0,0,.16);overflow:hidden;flex:0 0 auto}.canvas-page.portrait{width:min(100%,680px);aspect-ratio:210/297}.canvas-page.landscape{width:min(100%,860px);aspect-ratio:297/210}.canvas-page[hidden]{display:none}.canvas-safe-area{position:absolute;inset:3.5%;border:1px dashed rgba(31,111,139,.16);pointer-events:none}.canvas-guide{position:absolute;background:rgba(31,111,139,.45);pointer-events:none;z-index:900;display:none}.canvas-guide.v{top:0;bottom:0;width:1px}.canvas-guide.h{left:0;right:0;height:1px}.canvas-item{position:absolute;left:8%;top:8%;width:55%;height:18%;min-width:70px;min-height:42px;border:1px solid transparent;background:transparent;overflow:visible;z-index:10}.canvas-item.selected{border:1px dashed #4c93ad}.canvas-item .item-content{position:absolute;inset:0;overflow:hidden;outline:none;white-space:pre-wrap;word-break:break-word;padding:.45rem;background:transparent}
-    .canvas-item .item-content img{max-width:100%;height:auto;display:block;margin:.45rem auto;object-fit:contain}
-    .canvas-item[data-flow-group] .item-content{white-space:normal;line-height:1.5}
-    .canvas-item[data-flow-group] .item-content p{margin:.35em 0 .75em}
-    .canvas-item[data-flow-group] .item-content h1,.canvas-item[data-flow-group] .item-content h2,.canvas-item[data-flow-group] .item-content h3{margin:.45em 0 .35em;line-height:1.18}
-    .canvas-item[data-flow-group] .item-content ul,.canvas-item[data-flow-group] .item-content ol{margin:.35em 0 .75em;padding-left:1.5em}.canvas-item[data-kind="title"] .item-content{font-size:30px;font-weight:900;text-align:center;color:#17314a}.canvas-item[data-kind="text"] .item-content{font-size:18px;color:#173042}.canvas-item[data-kind="image"] .item-content{padding:0;display:flex;align-items:center;justify-content:center;background:transparent;touch-action:none}.canvas-item[data-kind="image"] img{width:100%;height:100%;object-fit:contain;display:block}.canvas-item.fill img{object-fit:cover}.drag-handle{touch-action:none;position:absolute;right:4px;top:4px;height:30px;min-width:58px;padding:2px 10px;border:1px solid #4c93ad;border-radius:8px;background:rgba(233,244,248,.94);color:#175a72;font-size:13px;font-weight:900;cursor:move;display:none;align-items:center;justify-content:center;user-select:none;z-index:5}.canvas-item.selected .drag-handle{display:flex}.canvas-item[data-kind="image"] .drag-handle{display:none!important}.canvas-item[data-kind="image"] .item-content{cursor:move}.resize-handle{touch-action:none;position:absolute;width:11px;height:11px;background:#fff;border:2px solid #4c93ad;border-radius:50%;display:none;z-index:4}.canvas-item.selected .resize-handle{display:block}.canvas-item[data-kind="image"] .resize-handle.n,.canvas-item[data-kind="image"] .resize-handle.e,.canvas-item[data-kind="image"] .resize-handle.s,.canvas-item[data-kind="image"] .resize-handle.w{display:none!important}.object-move-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.object-move-grid .move-up{grid-column:2}.object-move-grid .move-left{grid-column:1}.object-move-grid .move-centre{grid-column:2}.object-move-grid .move-right{grid-column:3}.object-move-grid .move-down{grid-column:2}.object-size-actions{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}.image-size-controls[hidden]{display:none!important}.resize-handle.nw{left:-6px;top:-6px;cursor:nwse-resize}.resize-handle.n{left:50%;top:-6px;transform:translateX(-50%);cursor:ns-resize}.resize-handle.ne{right:-6px;top:-6px;cursor:nesw-resize}.resize-handle.e{right:-6px;top:50%;transform:translateY(-50%);cursor:ew-resize}.resize-handle.se{right:-6px;bottom:-6px;cursor:nwse-resize}.resize-handle.s{left:50%;bottom:-6px;transform:translateX(-50%);cursor:ns-resize}.resize-handle.sw{left:-6px;bottom:-6px;cursor:nesw-resize}.resize-handle.w{left:-6px;top:50%;transform:translateY(-50%);cursor:ew-resize}.page-number{position:absolute;bottom:1.3%;font-size:12px;color:#61727e;z-index:950;pointer-events:none}.page-number.center{left:50%;transform:translateX(-50%)}.page-number.right{right:3.5%}.canvas-note{margin-top:.8rem;padding:.75rem;border:1px solid #cfe3eb;background:#eef7fa;color:#315c6d;border-radius:12px;font-weight:700}.selected-note{font-size:.85rem;color:var(--muted);font-weight:750}.canvas-empty-hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#8a9aa4;text-align:center;font-weight:750;pointer-events:none;max-width:70%}
-
-
-    /* Creative Canvas drawing, help and clearer selection */
-    .canvas-toolbar{position:sticky;top:.35rem;z-index:980;background:rgba(238,246,251,.96);padding:.35rem;border-radius:16px;backdrop-filter:blur(4px)}
-    .canvas-help-toggle{margin-left:auto}
-    .canvas-help{
-      margin:.75rem 0 1rem;padding:1rem;border:1px solid #cfe3eb;border-radius:16px;
-      background:#f7fbfd;color:#31506b;
+  <style>
+    :root{
+      --bg1:#d9ecff;
+      --bg2:#f4f8fc;
+      --bg3:#ffffff;
+      --ink:#1f2a37;
+      --muted:#52606f;
+      --blue:#123a78;
+      --blue-hover:#0f3166;
+      --soft-blue:#f7fbff;
+      --green:#eef9f1;
+      --green-ink:#245b33;
+      --panel:#ffffff;
+      --line:#d8e1ec;
+      --shadow:0 8px 24px rgba(0,0,0,0.08);
     }
-    .canvas-help h3{margin:0 0 .55rem;color:var(--accent-dark)}
-    .canvas-help p{margin:.35rem 0}
-    .canvas-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem 1rem;margin-top:.7rem}
-    .canvas-help-item{padding:.6rem .7rem;border-radius:11px;background:#fff;border:1px solid var(--line)}
-    .canvas-help-item strong{display:block;color:var(--accent-dark);margin-bottom:.12rem}
-    .canvas-tip{font-size:.84rem;color:var(--muted);font-weight:750}
-    .drawing-toolbar[hidden]{display:none!important}
-    .drawing-toolbar button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-    .drawing-toolbar .draw-colour{display:inline-flex;align-items:center;gap:.3rem}
-    .drawing-toolbar input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}
-    .drawing-toolbar select{min-width:105px}
-    .canvas-item[data-kind="drawing"]{border:1px dashed rgba(76,147,173,.55)}
-    .canvas-item[data-kind="drawing"] .item-content{padding:0;overflow:hidden;background:transparent}
-    .drawing-surface{display:block;width:100%;height:100%;touch-action:none;background:transparent;pointer-events:none}
-    .canvas-item.drawing-edit{border:2px solid var(--accent)}
-    .canvas-item.drawing-edit .drag-handle,.canvas-item.drawing-edit .resize-handle{display:none!important}
-    .canvas-item.drawing-edit .drawing-surface{cursor:crosshair;pointer-events:auto}
-    .draw-mode-note{font-size:.85rem;color:var(--accent-dark);font-weight:850}
-    .swatch-row{display:inline-flex;gap:.25rem;align-items:center}
-    .mini-swatch{width:25px;height:25px!important;padding:0!important;border-radius:50%!important;border:2px solid #fff!important;box-shadow:0 0 0 1px var(--line)}
-    .mini-swatch.selected{box-shadow:0 0 0 3px rgba(31,111,139,.23)}
-    @media(max-width:760px){.canvas-help-grid{grid-template-columns:1fr}.canvas-toolbar{position:static}}
-    @media print{
-      body.print-canvas{background:#fff!important}
-      body.print-canvas .topbar,body.print-canvas #verifyCard,body.print-canvas #studioCard,body.print-canvas #publishWorkspace,body.print-canvas .workspace-head,body.print-canvas .canvas-toolbar,body.print-canvas .page-tabs,body.print-canvas .canvas-note{display:none!important}
-      body.print-canvas .page,body.print-canvas #creativeWorkspace,body.print-canvas .canvas-shell,body.print-canvas .canvas-stage,body.print-canvas .canvas-pages{display:block!important;max-width:none!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
-      body.print-canvas .canvas-page{display:block!important;box-shadow:none!important;margin:0 auto!important;page-break-after:always;break-after:page}
-      body.print-canvas .canvas-page:last-child{page-break-after:auto;break-after:auto}
-      body.print-canvas .canvas-page.portrait{width:210mm!important;height:297mm!important}
-      body.print-canvas .canvas-page.landscape{width:297mm!important;height:210mm!important}
-      body.print-canvas .canvas-safe-area,body.print-canvas .drag-handle,body.print-canvas .resize-handle,body.print-canvas .canvas-guide,body.print-canvas .canvas-empty-hint{display:none!important}
-      body.print-canvas .canvas-item{border-color:transparent!important}
-    }
-    @media(max-width:900px){.workspace-grid{grid-template-columns:1fr}.layout-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:540px){.layout-choices{grid-template-columns:1fr}}
-[hidden]{display:none!important}@media(max-width:760px){.topbar{display:block}.topbar .actions{justify-content:flex-start;margin-top:.85rem}.form-grid,.studio-grid,.tool-links{grid-template-columns:1fr}}@media(max-width:480px){.page{padding:.8rem}.card{padding:1rem;border-radius:16px}.studio-tile{align-items:flex-start;min-height:110px}.tile-mark{width:50px;height:50px;flex-basis:50px}}
-  
 
-    /* Creative Canvas: wide work area with tools in a right-hand panel */
-    #creativeWorkspace{
-      width:min(1420px,calc(100vw - 2rem));
-      margin-left:50%;
-      transform:translateX(-50%);
-    }
-    .canvas-work-area{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 310px;
-      gap:1rem;
-      align-items:start;
-      margin-top:.8rem;
-    }
-    .canvas-main-panel{min-width:0;}
-    .canvas-toolbar{
-      position:sticky;
-      top:.5rem;
-      max-height:calc(100vh - 1rem);
-      overflow:auto;
+    *{ box-sizing:border-box; }
+
+    body{
       margin:0;
-      padding:.55rem;
-      border:1px solid var(--line);
-      background:rgba(247,251,253,.98);
-      box-shadow:0 10px 24px rgba(20,60,80,.10);
-    }
-    .canvas-toolbar .toolbar-row{
-      flex-direction:column;
-      align-items:stretch;
-      gap:.42rem;
-      padding:.65rem;
-    }
-    .canvas-toolbar .toolbar-label{
-      margin:0 0 .1rem;
-      padding-bottom:.28rem;
-      border-bottom:1px solid var(--line);
-    }
-    .canvas-toolbar button,
-    .canvas-toolbar select,
-    .canvas-toolbar .toolbar-check{
-      width:100%;
-      justify-content:flex-start;
-    }
-    .canvas-toolbar .toolbar-check{
-      flex-wrap:wrap;
-      padding:.12rem 0;
-    }
-    .canvas-toolbar input[type="number"]{width:76px;}
-    .canvas-toolbar input[type="color"]{width:42px;flex:0 0 42px;}
-    .canvas-toolbar .swatch-row{flex-wrap:wrap;}
-    .canvas-toolbar .canvas-tip,
-    .canvas-toolbar .draw-mode-note,
-    .canvas-toolbar .selected-note{display:block;width:100%;}
-    .canvas-main-panel .canvas-help{margin-top:0;}
-    .canvas-main-panel .page-tabs{margin-top:0;}
-    .canvas-stage{min-height:640px;}
-    @media(max-width:760px){
-      #creativeWorkspace{width:100%;margin-left:0;transform:none;}
-      .canvas-work-area{grid-template-columns:1fr;}
-      .canvas-toolbar{position:static;max-height:none;order:0;}
-      .canvas-toolbar .toolbar-row{flex-direction:row;align-items:center;}
-      .canvas-toolbar button,.canvas-toolbar select,.canvas-toolbar .toolbar-check{width:auto;}
-    }
-
-  
-
-    /* Creative Canvas: compact three-column working layout */
-    #creativeWorkspace{width:min(1560px,calc(100vw - 1.2rem));margin-left:50%;transform:translateX(-50%);padding:1rem;}
-    .canvas-compact-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .55rem;}
-    .canvas-compact-head h2{margin:0;font-size:1.18rem;white-space:nowrap;}
-    .canvas-head-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.38rem;}
-    .canvas-head-actions .btn{padding:.46rem .72rem;font-size:.84rem;}
-    .canvas-action-group{display:inline-flex;align-items:center;gap:.32rem;padding:.28rem .38rem;border:1px solid var(--line);border-radius:12px;background:#fff;}
-    .canvas-action-label{font-size:.7rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
-    .canvas-three-column{display:grid;grid-template-columns:225px minmax(520px,1fr) 255px;gap:.65rem;align-items:start;}
-    .canvas-side{position:sticky;top:.4rem;max-height:calc(100vh - .8rem);overflow:auto;display:flex;flex-direction:column;gap:.55rem;padding:.45rem;border:1px solid var(--line);border-radius:15px;background:rgba(247,251,253,.98);box-shadow:0 7px 18px rgba(20,60,80,.08);}
-    .canvas-side .toolbar-row{display:flex;flex-direction:column;align-items:stretch;gap:.34rem;padding:.5rem;margin:0;border-radius:11px;}
-    .canvas-side .toolbar-label{margin:0 0 .05rem;padding-bottom:.22rem;border-bottom:1px solid var(--line);}
-    .canvas-side button,.canvas-side select,.canvas-side .toolbar-check{width:100%;}
-    .canvas-side .toolbar-check{justify-content:space-between;gap:.35rem;}
-    .canvas-side input[type="number"]{width:68px;}
-    .canvas-side input[type="color"]{width:40px;flex:0 0 40px;}
-    .draw-paint-launch{background:var(--accent-soft)!important;border-color:#9fc8d8!important;font-weight:900!important;}
-    .compact-button-row{display:flex;gap:.3rem;}
-    .compact-button-row button{flex:1 1 0;width:auto;min-width:0;}
-    .compact-button-row.wrap-buttons{flex-wrap:wrap;}
-    .compact-button-row.wrap-buttons button{flex:1 1 46%;}
-    .canvas-main-panel{min-width:0;}
-    .compact-page-tabs{min-height:34px;margin:0 0 .35rem;justify-content:center;}
-    .compact-page-tabs .page-tab{padding:.3rem .62rem;font-size:.82rem;}
-    .canvas-shell{margin-top:0;}
-    .canvas-stage{min-height:0;padding:.55rem;border-radius:14px;}
-    .canvas-help{margin:.25rem 0 .55rem;max-height:38vh;overflow:auto;}
-    .canvas-note{display:none;}
-    .object-move-grid{grid-template-columns:repeat(3,1fr);gap:.28rem;}
-    .object-move-grid button{min-height:34px;padding:.32rem .38rem;}
-    .object-size-actions{display:flex;gap:.3rem;}
-    .object-size-actions button{flex:1;}
-    @media(max-width:1100px){
-      .canvas-three-column{grid-template-columns:190px minmax(430px,1fr) 220px;gap:.45rem;}
-      .canvas-side{padding:.3rem;}
-    }
-    @media print{
-      body.print-canvas .canvas-compact-head,
-      body.print-canvas .canvas-side,
-      body.print-canvas .canvas-help,
-      body.print-canvas .compact-page-tabs{display:none!important;}
-      body.print-canvas .canvas-three-column{display:block!important;}
-      body.print-canvas .canvas-main-panel{display:block!important;width:auto!important;}
-    }
-    @media(max-width:850px){
-      #creativeWorkspace{width:100%;margin-left:0;transform:none;}
-      .canvas-compact-head{align-items:flex-start;flex-direction:column;}
-      .canvas-head-actions{justify-content:flex-start;}
-      .canvas-three-column{grid-template-columns:1fr;}
-      .canvas-side{position:static;max-height:none;overflow:visible;}
-      .canvas-side-left{order:1}.canvas-main-panel{order:2}.canvas-side-right{order:3}
-      .canvas-side .toolbar-row{flex-direction:row;flex-wrap:wrap;align-items:center;}
-      .canvas-side button,.canvas-side select,.canvas-side .toolbar-check{width:auto;}
-    }
-
-    .fun-banner{margin:0 0 .8rem;padding:.8rem .95rem;border:1px solid #bfdce7;border-radius:14px;background:#eef7fa;color:#315c6d;font-weight:750;line-height:1.45}
-    .fun-banner strong{color:var(--accent-dark)}
-    .fun-banner[hidden]{display:none!important}
-  
-
-    /* YDS colour chooser — same in Chrome and Firefox */
-    .yds-colour-source{
-      position:absolute!important;
-      width:1px!important;
-      height:1px!important;
-      opacity:0!important;
-      pointer-events:none!important;
-      margin:0!important;
-      padding:0!important;
-    }
-    .yds-colour-trigger{
-      width:42px;
-      height:34px;
-      flex:0 0 42px;
-      padding:3px!important;
-      border:1px solid var(--line)!important;
-      border-radius:9px!important;
-      background:#fff!important;
-      cursor:pointer;
-      box-shadow:none!important;
-    }
-    .yds-colour-trigger::after{
-      content:"";
-      display:block;
-      width:100%;
-      height:100%;
-      border-radius:6px;
-      background:var(--yds-colour,#ffffff);
-      border:1px solid rgba(0,0,0,.12);
-    }
-    .yds-colour-trigger.active-colour{outline:3px solid rgba(31,111,139,.22);outline-offset:2px}
-    .yds-colour-popover{
-      position:static;
-      width:100%;
-      padding:12px;
-      border:1px solid #bfcfd8;
-      border-radius:14px;
-      background:#fff;
-      box-shadow:none;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:18.5px;
+      font-weight:500;
+      line-height:1.6;
       color:var(--ink);
-      margin-top:.7rem;
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 44%,var(--bg3) 100%);
     }
-    .yds-colour-popover[hidden]{display:block!important}
-    .yds-colour-target{
-      margin:0 0 .55rem;
-      color:var(--accent-dark);
-      font-weight:900;
+
+    button,a{ font:inherit; }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      max-width:1180px;
+      margin:0 auto;
+      padding:1.25rem 1.2rem 0.45rem;
+    }
+
+    .brand{
+      font-size:2rem;
+      font-weight:800;
+      letter-spacing:0.01em;
+    }
+
+    .logout-tab{
+      min-width:116px;
+      padding:0.72rem 1rem;
+      border:0;
+      border-radius:14px 14px 0 0;
+      color:#fff;
+      background:var(--blue);
+      box-shadow:0 4px 10px rgba(0,0,0,0.13);
+      font-size:1.05rem;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .logout-tab:hover,
+    .logout-tab:focus-visible{
+      background:var(--blue-hover);
+    }
+
+    .shell{
+      max-width:1180px;
+      margin:0 auto;
+      padding:0 1rem 2.5rem;
+    }
+
+    .main-panel{
+      padding:1.55rem;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .intro{
+      max-width:980px;
+      margin:0 0 1.15rem;
+      color:var(--muted);
+      font-size:1.1rem;
+      line-height:1.65;
+    }
+
+    .access-strip{
+      margin:0 0 1.45rem;
+      padding:1.1rem 1.2rem;
+      border:1px solid #d7e4f3;
+      border-radius:16px;
+      color:#344054;
+      background:var(--soft-blue);
+      font-size:1.08rem;
+      line-height:1.6;
+    }
+
+    .access-strip strong{ color:var(--blue); }
+
+    .access-strip p{
+      margin:0;
+    }
+
+    .access-strip p + p{
+      margin-top:0.55rem;
+    }
+
+    .role-link{
+      color:var(--blue);
+      font-weight:850;
+      text-underline-offset:3px;
+    }
+
+    .role-link:hover,
+    .role-link:focus-visible{
+      color:var(--blue-hover);
+    }
+
+    .content-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 0.78fr;
+      gap:1.3rem;
+      align-items:start;
+    }
+
+    .hub-card,
+    .info-card{
+      padding:1.15rem;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+    }
+
+    .hub-card{ max-width:740px; }
+
+    .hub-title,
+    .info-title{
+      margin:0 0 0.9rem;
+      color:var(--blue);
+      font-size:1.42rem;
+      font-weight:850;
       line-height:1.3;
     }
-    .yds-colour-sv{
-      --picker-hue:0;
-      position:relative;
-      height:180px;
-      border-radius:10px;
-      cursor:crosshair;
-      touch-action:none;
-      overflow:hidden;
-      background:
-        linear-gradient(to top,#000,transparent),
-        linear-gradient(to right,#fff,hsl(var(--picker-hue),100%,50%));
-      border:1px solid #c7d5dc;
+
+    .hub-list{
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
     }
-    .yds-colour-marker{
-      position:absolute;
-      width:14px;
-      height:14px;
-      border:2px solid #fff;
-      border-radius:50%;
-      box-shadow:0 0 0 1px rgba(0,0,0,.55);
-      transform:translate(-50%,-50%);
-      pointer-events:none;
-    }
-    .yds-hue-range{
-      width:100%;
-      height:18px;
-      margin:10px 0 8px!important;
-      padding:0!important;
-      appearance:none;
-      border:0!important;
-      border-radius:999px!important;
-      background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)!important;
-      cursor:pointer;
-    }
-    .yds-hue-range::-webkit-slider-thumb{
-      appearance:none;
-      width:18px;height:18px;
-      border-radius:50%;
-      background:#fff;
-      border:2px solid #607583;
-    }
-    .yds-hue-range::-moz-range-thumb{
-      width:16px;height:16px;
-      border-radius:50%;
-      background:#fff;
-      border:2px solid #607583;
-    }
-    .yds-colour-footer{
+
+    .hub-row{
       display:grid;
-      grid-template-columns:36px 1fr auto;
-      gap:8px;
+      grid-template-columns:230px minmax(0,1fr);
+      gap:0.95rem;
       align-items:center;
     }
-    .yds-colour-preview{
-      width:36px;height:34px;
-      border-radius:8px;
-      border:1px solid #bfcfd8;
-      background:#fff;
+
+    .hub-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:230px;
+      min-height:58px;
+      padding:0.82rem 0.9rem;
+      border:0;
+      border-radius:14px;
+      color:#fff;
+      background:var(--blue);
+      box-shadow:0 4px 12px rgba(18,58,120,0.22);
+      text-align:center;
+      text-decoration:none;
+      font-size:1.05rem;
+      font-weight:850;
+      line-height:1.2;
+      transition:background 0.15s ease,transform 0.15s ease;
     }
-    .yds-colour-hex{
-      width:100%!important;
-      margin:0!important;
-      padding:.48rem .55rem!important;
-      border:1px solid var(--line)!important;
-      border-radius:8px!important;
-      font:inherit!important;
-      text-transform:uppercase;
+
+    .hub-btn:hover,
+    .hub-btn:focus-visible{
+      background:var(--blue-hover);
+      transform:translateY(-1px);
     }
-    .yds-colour-done{
-      border:1px solid var(--accent)!important;
-      background:var(--accent)!important;
-      color:#fff!important;
-      border-radius:9px!important;
-      padding:.48rem .7rem!important;
-      font-weight:850!important;
-      cursor:pointer;
-    }
-    .yds-colour-note{
-      margin:7px 0 0;
+
+    .hub-note{
       color:var(--muted);
-      font-size:.78rem;
-      line-height:1.3;
+      font-size:1.06rem;
+      line-height:1.55;
     }
 
-
-    /* 30 Aug 2026 — fitted drawing-board layout. The working Canvas owns the viewport. */
-    .canvas-offscreen-tools{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
-    body.canvas-active{height:100vh;overflow:hidden;background:#dfe8ed;}
-    body.canvas-active > main.page{width:100vw;max-width:none;height:100vh;margin:0;padding:.35rem .45rem;overflow:hidden;}
-    body.canvas-active .topbar,body.canvas-active .fun-banner{display:none!important;}
-    body.canvas-active #creativeWorkspace{
-      display:flex!important;flex-direction:column;width:100%;height:100%;margin:0;transform:none;padding:.35rem .45rem;
-      border-radius:12px;overflow:hidden;
-    }
-    body.canvas-active .canvas-compact-head{flex:0 0 42px;min-height:42px;margin:0 0 .3rem;gap:.4rem;}
-    body.canvas-active .canvas-compact-head h2{font-size:1rem;overflow:hidden;text-overflow:ellipsis;}
-    body.canvas-active .canvas-head-actions{flex-wrap:nowrap;gap:.25rem;}
-    body.canvas-active .canvas-head-actions .btn{padding:.36rem .58rem;font-size:.78rem;}
-    body.canvas-active .canvas-three-column{
-      flex:1 1 auto;min-height:0;height:calc(100vh - 54px);
-      display:grid;grid-template-columns:190px minmax(0,1fr) 235px;gap:.4rem;align-items:stretch;overflow:hidden;
-    }
-    body.canvas-active .canvas-side{
-      position:static;top:auto;height:100%;max-height:none;min-height:0;overflow:hidden;
-      gap:.28rem;padding:.3rem;border-radius:11px;box-shadow:none;
-    }
-    body.canvas-active .canvas-side .toolbar-row{gap:.22rem;padding:.3rem;border-radius:8px;}
-    body.canvas-active .canvas-side .toolbar-label{font-size:.76rem;padding-bottom:.12rem;}
-    body.canvas-active .canvas-side button,body.canvas-active .canvas-side select,body.canvas-active .canvas-side .toolbar-check{font-size:.74rem;line-height:1.15;}
-    body.canvas-active .canvas-side button{padding:.3rem .36rem;min-height:27px;}
-    body.canvas-active .canvas-side .canvas-tip,body.canvas-active .yds-colour-note{display:none!important;}
-    body.canvas-active .canvas-main-panel{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
-    body.canvas-active .compact-page-tabs{flex:0 0 28px;min-height:28px;margin:0 0 .2rem;overflow:hidden;}
-    body.canvas-active .canvas-shell{flex:1 1 auto;min-height:0;height:auto;overflow:hidden;}
-    body.canvas-active .canvas-stage{
-      width:100%;height:100%;min-height:0;padding:.25rem;border-radius:10px;overflow:hidden;
-      display:flex;align-items:center;justify-content:center;
-    }
-    body.canvas-active .canvas-pages{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-    body.canvas-active .canvas-page.portrait{
-      width:min(100%,calc((100vh - 88px) * 210 / 297));
-      height:min(100%,calc(100vh - 88px));aspect-ratio:210/297;
-    }
-    body.canvas-active .canvas-page.landscape{
-      width:min(100%,calc((100vh - 88px) * 297 / 210));
-      height:min(100%,calc(100vh - 88px));aspect-ratio:297/210;
-    }
-    body.canvas-active .yds-colour-popover{padding:.32rem;gap:.25rem;}
-    body.canvas-active .yds-colour-sv{height:105px;}
-    body.canvas-active .yds-colour-target{font-size:.72rem;margin:0;}
-    body.canvas-active .yds-colour-footer{gap:.25rem;}
-    body.canvas-active .yds-colour-hex{font-size:.72rem;padding:.3rem;}
-    @media(max-height:760px){
-      body.canvas-active .canvas-side .toolbar-row{padding:.22rem;gap:.15rem;}
-      body.canvas-active .canvas-side button{min-height:24px;padding:.22rem .3rem;}
-      body.canvas-active .yds-colour-sv{height:82px;}
+    .quick-links{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:0.5rem;
+      margin-top:0.38rem;
+      font-size:1rem;
+      font-weight:800;
     }
 
-    /* 31 Aug 2026 — keep text tools off the right panel and reclaim its full height. */
-    body.canvas-active #creativeWorkspace{position:relative;}
-    body.canvas-active .canvas-compact-head{
-      position:absolute;z-index:40;top:.32rem;left:194px;right:239px;
-      height:34px;min-height:34px;margin:0;justify-content:flex-start;
-      pointer-events:none;
-    }
-    body.canvas-active .canvas-compact-head h2{
-      display:block;position:absolute;left:-194px;top:.12rem;width:186px;
-      margin:0;font-size:.84rem;line-height:1.15;color:var(--accent-dark);
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
-    }
-    body.canvas-active .canvas-head-actions{
-      justify-content:flex-start;gap:.22rem;pointer-events:auto;
-    }
-    body.canvas-active .canvas-head-actions .btn{padding:.30rem .50rem;font-size:.75rem;}
-    body.canvas-active .canvas-three-column{
-      height:100%;min-height:0;margin:0;
-    }
-    body.canvas-active .canvas-main-panel{
-      position:relative;padding-top:38px;
-    }
-    body.canvas-active .canvas-side-left{
-      align-self:stretch;
-      margin-top:34px;
-      height:calc(100% - 34px);
-      overflow-y:auto;
-      overflow-x:hidden;
-    }
-    body.canvas-active .canvas-side-right{align-self:stretch;}
-    body.canvas-active .text-format-float{
-      position:absolute;z-index:35;top:70px;left:50%;transform:translateX(-50%);
-      width:min(920px,calc(100% - 12px));
-      display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;
-      gap:.25rem;padding:.28rem .35rem;margin:0;
-      border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.98);
-      box-shadow:0 6px 16px rgba(20,60,80,.12);
-    }
-    body.canvas-active .text-format-float[hidden]{display:none!important;}
-    body.canvas-active .draw-mode-note{display:none!important;}
-    body.canvas-active .selected-note:empty{display:none!important;}
-    body.canvas-active .text-format-float .toolbar-label{border:0;padding:0 .2rem 0 0;margin:0;}
-    body.canvas-active .text-format-float select{width:auto;max-width:150px;min-height:27px;padding:.24rem .3rem;}
-    body.canvas-active .text-format-float .toolbar-check{width:auto;display:inline-flex;align-items:center;gap:.2rem;}
-    body.canvas-active .text-format-float .compact-button-row{width:auto;display:inline-flex;gap:.18rem;}
-    body.canvas-active .text-format-float button{width:auto;min-width:28px;min-height:27px;padding:.25rem .38rem;}
-    body.canvas-active .text-format-float .yds-colour-trigger{width:32px!important;min-width:32px;height:27px;flex:0 0 32px;}
-    @media(max-width:1100px){
-      body.canvas-active .canvas-compact-head{left:194px;right:224px;}
-      body.canvas-active .text-format-float{width:calc(100% - 8px);}
+    .quick-links a{
+      color:var(--blue);
+      text-underline-offset:3px;
     }
 
-    .tools-choice-backdrop{position:fixed;inset:0;z-index:5000;background:rgba(18,43,56,.28);display:flex;align-items:center;justify-content:center;padding:1rem}
-    .tools-choice-backdrop[hidden]{display:none!important}
-    .tools-choice-box{width:min(430px,94vw);background:#fff;border:1px solid var(--line);border-radius:16px;padding:1rem;box-shadow:0 18px 50px rgba(0,0,0,.22)}
-    .tools-choice-box h3{margin:0 0 .35rem;color:var(--accent-dark)}
-    .tools-choice-box p{margin:.25rem 0 .8rem;color:var(--muted);line-height:1.4}
-    .tools-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
-    .tools-choice-actions button{border:1px solid var(--accent);border-radius:11px;padding:.7rem .55rem;background:var(--accent);color:#fff;font:inherit;font-weight:850;cursor:pointer}
-    .tools-choice-actions button.secondary{background:#fff;color:var(--accent)}
-    .tools-choice-cancel{display:block;margin:.65rem auto 0;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;cursor:pointer}
+    .quick-links a:hover,
+    .quick-links a:focus-visible{
+      color:var(--blue-hover);
+    }
 
-    /* 4 Sep 2026 — work identity and text tools belong in the side panels, never over the artwork. */
-    body.canvas-active .text-format-side{display:flex!important;flex-direction:column;align-items:stretch;gap:.17rem;padding:.24rem;margin:0;}
-    body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;gap:.15rem;}
-    body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;min-height:25px;padding:.2rem .24rem;}
-    body.canvas-active .text-format-side select{width:100%;min-height:25px;padding:.18rem .25rem;}
-    body.canvas-active .text-format-side .toolbar-check{font-size:.72rem;min-height:25px;}
-    body.canvas-active .text-format-side > button{min-height:25px;padding:.2rem .25rem;}
-    body.canvas-active #objectToolbar .selected-note{display:none!important;}
-    body.canvas-active .canvas-side{padding-bottom:.18rem;}
-    body.canvas-active .canvas-side-left{margin-top:32px;height:calc(100% - 32px);}
-    .work-name-row label{font-size:.78rem;color:var(--accent-dark);font-weight:850;}
-    .work-name-row input{margin:0;padding:.38rem .45rem;font-size:.8rem;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      margin-top:0.38rem;
+      padding:0.34rem 0.7rem;
+      border:1px solid #cbe8d2;
+      border-radius:999px;
+      color:var(--green-ink);
+      background:var(--green);
+      font-size:0.98rem;
+      font-weight:850;
+      line-height:1.2;
+    }
 
-</style>
+    .side-stack{
+      display:flex;
+      flex-direction:column;
+      gap:1.15rem;
+    }
+
+    .info-card{
+      font-size:1.07rem;
+      line-height:1.6;
+    }
+
+    .info-card p{
+      margin:0.45rem 0 0;
+      color:var(--muted);
+    }
+
+    @media (max-width:920px){
+      .content-grid{ grid-template-columns:1fr; }
+      .hub-card{ max-width:none; }
+    }
+
+    @media (max-width:760px){
+      body{ font-size:17.5px; }
+      .topbar{ padding:0.95rem 0.85rem 0.25rem; }
+      .brand{ font-size:1.65rem; }
+      .logout-tab{ min-width:104px; font-size:0.98rem; }
+      .shell{ padding:0 0.85rem 1.6rem; }
+      .main-panel{ padding:1.1rem 0.95rem; }
+      .hub-row{ grid-template-columns:1fr; gap:0.55rem; }
+      .hub-btn{ width:100%; }
+    }
+  </style>
 </head>
+
 <body>
-  <main class="page">
-    <div class="topbar">
-      <div>
-        <p class="eyebrow">Sanctuary Club</p>
-        <h1>Design Studio</h1>
-        <div class="sub" id="modeIntro">Your common creative canvas.</div>
+  <div class="topbar">
+    <div class="brand">Members Hub</div>
+    <button class="logout-tab" type="button" onclick="memberLogout()">Home to Logout</button>
+  </div>
+
+  <div class="shell">
+  <main class="main-panel">
+
+    <h2 class="hub-heading">Welcome to the Sanctuary Club Members Hub</h2>
+
+    <p class="intro"><strong>From here you can...</strong></p>
+
+    <div class="hub-welcome-grid">
+
+      <div class="hub-welcome-card">
+        <strong>📅 See what's happening</strong>
+        <span>around the Club.</span>
       </div>
-      <div class="actions">
-        <a class="btn secondary" id="backTopBtn" href="your-design-studio.html">← Your Design Studio</a>
-        <button class="btn secondary" id="logoutBtn" type="button">Logout</button>
+
+      <div class="hub-welcome-card">
+        <strong>👥 Keep your information up to date</strong>
+        <span>and see your neighbours' contact details.</span>
       </div>
+
+      <div class="hub-welcome-card">
+        <strong>🎨 Create artwork, posters and notices</strong>
+        <span>using Your Design Studio.</span>
+      </div>
+
+      <div class="hub-welcome-card">
+        <strong>🌱 Join in</strong>
+        <span>Organise activities and contribute to Club life.</span>
+      </div>
+
     </div>
 
-    <div class="fun-banner" id="funBanner" hidden>
-      <strong>Just for fun.</strong> Create, print or save your work to your own computer. Nothing is published from this route.
-    </div>
-
-    <section class="card" id="creativeWorkspace" hidden>
-      <div class="canvas-compact-head">
-        <h2 id="creativeHeading">My Own Design</h2>
-        <div class="canvas-head-actions">
-          <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio</button>
-          <button class="btn secondary" id="loadCanvasBtn" type="button">Recover Draft</button>
-          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
-          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button>
-          <button class="btn" id="publishCanvasBtn" type="button" hidden>Publish</button>
-
-          <!-- These established controls remain in the page for the separate Tools page to call. -->
-          <span class="canvas-offscreen-tools" aria-hidden="true">
-            <button id="quickGuideBtn" type="button">Guide</button>
-            <button id="exportCanvasBtn" type="button">Save My Work</button>
-            <button id="importCanvasBtn" type="button">Open My Work</button>
-            <input id="importCanvasFileInput" type="file" accept=".sanctuary-yds,.json,application/json" hidden>
-            <button id="savePdfBtn" type="button">Save Viewable Copy</button>
-            <button id="printCanvasBtn" type="button">Print</button>
-          </span>
-        </div>
+      <div class="access-strip">
+        <p>
+          <strong>Your personal PIN opens the Members Hub.</strong>
+          Once you are signed in, all four principal sections below are available to you.
+        </p>
+        <p>
+          You’ll then be able to see everything that’s going on. To find out more about
+          the ways you can take part yourself, visit
+          <a class="role-link" href="club-roles.html">Club Roles</a>.
+        </p>
       </div>
 
-      <div class="canvas-three-column">
-        <aside class="canvas-side canvas-side-left" aria-label="Page and add tools">
-          <div class="toolbar-row work-name-row">
-            <span class="toolbar-label">Your work</span>
-            <label for="workNameInput">Name this work *</label>
-            <input id="workNameInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Bridge Beginners – October">
-          </div>
-          <div class="toolbar-row">
-            <span class="toolbar-label">Add</span>
-            <button id="addCanvasTextBtn" type="button">Add Text</button>
-            <button id="addCanvasImageBtn" type="button">Add Illustration</button>
-            <span class="canvas-tip">Choose an illustration already saved on your computer. You can create one yourself, download one you may use, or make one with AI and save it first.</span>
-            <button id="addCanvasDrawingBtn" class="draw-paint-launch" type="button">✏️ Draw / Paint</button>
-            <input id="canvasImageFileInput" type="file" accept="image/*" hidden>
-          </div>
+      <div class="content-grid">
+        <section class="hub-card" aria-labelledby="hubHeading">
+          <h1 id="hubHeading" class="hub-title">How can we help today?</h1>
 
-          <div class="toolbar-row">
-            <span class="toolbar-label">Pages</span>
-            <button id="addPageBtn" type="button">+ Add Page</button>
-            <button id="duplicatePageBtn" type="button">Duplicate Page</button>
-            <button id="movePageLeftBtn" type="button">← Move Page</button>
-            <button id="movePageRightBtn" type="button">Move Page →</button>
-            <button id="deletePageBtn" type="button">Delete Page</button>
-            <label class="toolbar-check">A4 orientation
-              <select id="orientationSelect"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
-            </label>
-          </div>
+          <div class="hub-list">
+            <div class="hub-row">
+              <a class="hub-btn" href="your-info.html">Your Information</a>
+              <div class="hub-note">
+                View or update the information your household has chosen to share
+                and manage your personal Membership PIN.
+              </div>
+            </div>
 
-          <div class="toolbar-row">
-            <span class="toolbar-label">Page numbers</span>
-            <label class="toolbar-check"><input id="pageNumbersCheck" type="checkbox"> Automatic</label>
-            <label class="toolbar-check"><input id="numberFirstPageCheck" type="checkbox" checked> Number first page</label>
-            <label class="toolbar-check">Position
-              <select id="pageNumberPosition"><option value="center">Bottom centre</option><option value="right">Bottom right</option></select>
-            </label>
-          </div>
+            <div class="hub-row">
+              <a class="hub-btn private-entry" href="members-directory.html">Members Directory</a>
+              <div class="hub-note">
+                Find the contact information that fellow residents have chosen
+                to share with other Sanctuary Club members.
+              </div>
+            </div>
 
-          <div class="toolbar-row">
-            <span class="toolbar-label">Page background</span>
-            <label class="toolbar-check">Colour 1 <input id="pageBackgroundColour1" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="pageBackgroundColour1" aria-label="Choose Colour 1" title="Choose Colour 1"></button></label>
-            <label class="toolbar-check">Colour 2 <input id="pageBackgroundColour2" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="pageBackgroundColour2" aria-label="Choose Colour 2" title="Choose Colour 2"></button></label>
-            <label class="toolbar-check">Direction
-              <select id="pageGradientDirection">
-                <option value="180deg">Top to bottom</option>
-                <option value="90deg">Left to right</option>
-                <option value="135deg">Diagonal</option>
-              </select>
-            </label>
-            <button id="applyPageGradientBtn" type="button">Graded page</button>
-            <button id="applyPageSolidBtn" type="button">Solid page</button>
-          </div>
+            <div class="hub-row">
+              <a class="hub-btn" href="my-studio.html">My Studio</a>
+              <div class="hub-note">
+                Create, edit and manage publications for your chosen roles.
+                Your Design Studio provides everything you need to produce attractive,
+                professional-looking publications with ease.
+                <div class="quick-links" aria-label="Events available now">
+                  <a href="events-calendar.html">Calendar</a>
+                  <span aria-hidden="true">•</span>
+                  <a href="events.html">Events List</a>
+                </div>
 
+                <span class="pill">Available now</span>
+              </div>
+            </div>
 
-        </aside>
-
-        <div class="canvas-main-panel">
-          <div class="page-tabs compact-page-tabs" id="pageTabs"></div>
-          <div class="canvas-shell">
-            <div class="canvas-stage">
-              <div class="canvas-pages" id="creativePages"></div>
+            <div class="hub-row">
+              <a class="hub-btn private-entry" href="notices-preview.html">Club Information</a>
+              <div class="hub-note">
+                Read Club and community news, notices and useful information.
+                The internal privacy divisions of this section can be added as
+                its content develops.
+                <br />
+                <span class="pill">Membership PIN required</span>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <aside class="canvas-side canvas-side-right" aria-label="Selected item tools">
+        <aside class="side-stack" aria-label="Member information">
+          <section class="info-card">
+            <h2 class="info-title">🔒 Privacy &amp; Security</h2>
+            <p>
+              Sanctuary Club holds only the information needed to provide its
+              community services and uses it solely for the benefit of residents.
+            </p>
+            <p>
+              Your personal Membership PIN cannot be viewed or recovered by an
+              Administrator. If it is forgotten, it can only be reset safely.
+            </p>
+          </section>
 
-
-          <div class="toolbar-row image-toolbar" id="imageToolbar" hidden>
-            <span class="toolbar-label">Illustration</span>
-            <button id="imageFitBtn" type="button">Fit whole image</button>
-            <button id="imageFillBtn" type="button">Fill box</button>
-            <button id="replaceCanvasImageBtn" type="button">Replace</button>
-          </div>
-
-          <div class="toolbar-row drawing-toolbar" id="drawingToolbar" hidden>
-            <span class="toolbar-label">Draw / Paint</span>
-            <div class="compact-button-row wrap-buttons">
-              <button id="drawPencilBtn" type="button">✏️ Pencil</button>
-              <button id="drawLineBtn" type="button">Line</button>
-              <button id="drawRectBtn" type="button">Rectangle</button>
-              <button id="drawOvalBtn" type="button">Oval</button>
-              <button id="drawFillBtn" type="button">🪣 Fill</button>
-              <button id="drawEraserBtn" type="button">Eraser</button>
-            </div>
-            <label class="toolbar-check">Line <input id="drawLineColour" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawLineColour" aria-label="Choose line colour" title="Choose line colour"></button></label>
-            <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
-              <button class="mini-swatch" type="button" data-colour="#173042" style="background:#173042" aria-label="Navy"></button>
-              <button class="mini-swatch" type="button" data-colour="#1f6f8b" style="background:#1f6f8b" aria-label="Blue"></button>
-              <button class="mini-swatch" type="button" data-colour="#2f6f4e" style="background:#2f6f4e" aria-label="Green"></button>
-              <button class="mini-swatch" type="button" data-colour="#7b3345" style="background:#7b3345" aria-label="Burgundy"></button>
-              <button class="mini-swatch" type="button" data-colour="#68436f" style="background:#68436f" aria-label="Plum"></button>
-              <button class="mini-swatch" type="button" data-colour="#d98324" style="background:#d98324" aria-label="Orange"></button>
-            </span>
-            <label class="toolbar-check">Thickness
-              <select id="drawThickness">
-                <option value="2">Fine</option>
-                <option value="5" selected>Medium</option>
-                <option value="9">Thick</option>
-                <option value="15">Very thick</option>
-              </select>
-            </label>
-            <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
-            <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
-            <label class="toolbar-check"><input id="drawNoOutline" type="checkbox"> No outline</label>
-            <div class="compact-button-row drawing-edit-actions">
-              <button id="editDrawingBtn" type="button">Edit Drawing</button>
-              <button id="finishDrawingBtn" type="button">End Drawing</button>
-            </div>
-            <span class="draw-mode-note" id="drawModeNote"></span>
-          </div>
-
-          <div id="ydsColourPopover" class="yds-colour-popover" role="group" aria-label="Colour palette">
-            <p class="yds-colour-target">Colour palette — <span id="ydsColourTarget">Page colour 1</span></p>
-            <div id="ydsColourSV" class="yds-colour-sv" aria-label="Choose tint or shade">
-              <span id="ydsColourMarker" class="yds-colour-marker"></span>
-            </div>
-            <input id="ydsHueRange" class="yds-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Colour hue">
-            <div class="yds-colour-footer">
-              <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
-              <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
-              <button id="ydsColourDone" class="yds-colour-done" type="button">Apply</button>
-            </div>
-            <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
-          </div>
-
-          <div class="toolbar-row" id="objectToolbar">
-            <span class="toolbar-label">Selection</span>
-            <div class="object-move-grid" aria-label="Move selected box">
-              <button class="move-up" id="nudgeUpBtn" type="button" title="Move up">↑</button>
-              <button class="move-left" id="nudgeLeftBtn" type="button" title="Move left">←</button>
-              <button class="move-centre" id="centreObjectBtn" type="button" title="Centre horizontally">Centre</button>
-              <button class="move-right" id="nudgeRightBtn" type="button" title="Move right">→</button>
-              <button class="move-down" id="nudgeDownBtn" type="button" title="Move down">↓</button>
-            </div>
-            <div class="compact-button-row wrap-buttons">
-              <button id="overlayObjectBtn" type="button" title="Bring selected box in front of all other boxes">Overlay</button>
-              <button id="underlayObjectBtn" type="button" title="Send selected box behind all other boxes">Underlay</button>
-              <button id="duplicateObjectBtn" type="button">Duplicate</button>
-              <button id="deleteObjectBtn" type="button">Delete</button>
-              <button id="undoCanvasBtn" type="button">Undo</button>
-              <button id="redoCanvasBtn" type="button">Redo</button>
-            </div>
-            <span class="selected-note" id="selectedObjectNote">Nothing selected.</span>
-          </div>
-
-          <div class="toolbar-row format-toolbar text-format-side" id="formatToolbar">
-            <span class="toolbar-label">Text</span>
-            <select id="fontFamilySelect" aria-label="Font">
-              <option value="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Sanctuary Sans</option>
-              <option value="Georgia,serif">Georgia</option>
-              <option value="'Times New Roman',serif">Times New Roman</option>
-              <option value="Arial,sans-serif">Arial</option>
-              <option value="Verdana,sans-serif">Verdana</option>
-              <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
-            </select>
-            <label class="toolbar-check">Size
-              <select id="fontSizeInput" aria-label="Font size">
-                <option value="8">8</option>
-                <option value="10">10</option>
-                <option value="12">12</option>
-                <option value="14">14</option>
-                <option value="16">16</option>
-                <option value="18" selected>18</option>
-                <option value="20">20</option>
-                <option value="24">24</option>
-                <option value="28">28</option>
-                <option value="32">32</option>
-                <option value="36">36</option>
-                <option value="48">48</option>
-                <option value="60">60</option>
-                <option value="72">72</option>
-                <option value="96">96</option>
-              </select>
-            </label>
-            <div class="compact-button-row">
-              <button id="formatBoldBtn" type="button"><strong>B</strong></button>
-              <button id="formatItalicBtn" type="button"><em>I</em></button>
-              <button id="formatUnderlineBtn" type="button"><u>U</u></button>
-            </div>
-            <div class="compact-button-row">
-              <button id="alignLeftBtn" type="button">Left</button>
-              <button id="alignCentreBtn" type="button">Centre</button>
-              <button id="alignRightBtn" type="button">Right</button>
-            </div>
-            <label class="toolbar-check">Text colour <input id="textColourInput" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="textColourInput" aria-label="Choose text colour" title="Choose text colour"></button></label>
-            <label class="toolbar-check">Panel colour 1 <input id="backgroundColourInput" class="yds-colour-source" type="text" value="#ffffff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="backgroundColourInput" aria-label="Choose panel colour 1" title="Choose panel colour 1"></button></label>
-            <label class="toolbar-check">Panel colour 2 (graded) <input id="panelTintColourInput" class="yds-colour-source" type="text" value="#e9f4f8" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="panelTintColourInput" aria-label="Choose panel colour 2" title="Choose panel colour 2"></button></label>
-            <label class="toolbar-check">Direction
-              <select id="panelGradientDirection">
-                <option value="180deg">Top to bottom</option>
-                <option value="90deg">Left to right</option>
-                <option value="135deg">Diagonal</option>
-              </select>
-            </label>
-            <button id="gradedPanelBtn" type="button">Graded panel</button>
-            <button id="solidPanelBtn" type="button">Solid panel</button>
-            <button id="transparentBackgroundBtn" type="button">Transparent panel</button>
-          </div>
+          <section class="info-card">
+            <h2 class="info-title">🌿 Our Aim</h2>
+            <p>
+              Sanctuary Club has been designed by members for members. We believe
+              the computer should do the thinking so that members can simply enjoy
+              being part of the community.
+            </p>
+          </section>
         </aside>
       </div>
-    </section>
-  </main>
-
-  <div id="toolsChoice" class="tools-choice-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="toolsChoiceTitle">
-    <div class="tools-choice-box">
-      <h3 id="toolsChoiceTitle">Tools &amp; Guide</h3>
-      <p>Use this screen, or keep your Canvas full-size here and put Tools &amp; Guide on a genuine second screen.</p>
-      <div class="tools-choice-actions">
-        <button id="toolsThisScreenBtn" type="button">Use this screen</button>
-        <button id="toolsSecondScreenBtn" class="secondary" type="button">Use second screen</button>
-      </div>
-      <button id="toolsChoiceCancelBtn" class="tools-choice-cancel" type="button">Cancel</button>
-    </div>
+    </main>
   </div>
 
   <script>
-    "use strict";
+    document.querySelectorAll(".private-entry").forEach(link => {
+      link.addEventListener("click", event => {
+        const destination = link.getAttribute("href") || "members-info.html";
 
-    const PAGE_PARAMS=new URLSearchParams(location.search);
-    const FUN_MODE=["write","create"].includes((PAGE_PARAMS.get("fun")||"").toLowerCase()) ? (PAGE_PARAMS.get("fun")||"").toLowerCase() : "";
-    const IS_FUN_MODE=Boolean(FUN_MODE);
-    const CANVAS_MODE=(PAGE_PARAMS.get("mode")||"").toLowerCase();
-
-    const PUBLICATION_TYPE=
-      (PAGE_PARAMS.get("type")||"standing").toLowerCase();
-
-    const PUBLICATION_DESTINATION=
-      (PAGE_PARAMS.get("destination")||"").toLowerCase();
-
-    const PUBLICATION_RETENTION=
-      (PAGE_PARAMS.get("retention")||"permanent").toLowerCase();
-
-    const PUBLICATION_APPROVAL=
-      (PAGE_PARAMS.get("approval")||"").toLowerCase();
-
-    const API_BASE=
-      "https://sanctuary-backend-8iqc.onrender.com";
-    const MODE_LABELS={
-      activity:"Activity Organiser",
-      writer:"Writer",
-      artist:"Artist",
-      committee:"Committee",
-      panel:"Residents Association",
-      services:"Services",
-      host:"Dated Notice"
-    };
-    const MODE_ROLES={
-      activity:["activity_organiser"],
-      writer:["writer","news_contributor"],
-      artist:["artist"],
-      committee:["committee","secretary","committee_secretary"],
-      panel:["panel","residents_association","ra_secretary","panel_secretary"],
-      services:["services"],
-      host:["host"]
-    };
-    const DATED_SOURCE_ROLES={
-      host:["host"],
-      activity:["activity_organiser"],
-      committee:["committee","secretary","committee_secretary"],
-      panel:["panel","residents_association","ra_secretary","panel_secretary"],
-      services:["services"]
-    };
-    const DATED_SOURCE_LABELS={
-      host:"Host Event",
-      activity:"Activity",
-      committee:"Committee",
-      panel:"Residents Association",
-      services:"Service"
-    };
-
-    const creativeWorkspace=document.getElementById("creativeWorkspace");
-    const creativePages=document.getElementById("creativePages");
-    const pageTabs=document.getElementById("pageTabs");
-    const formatToolbar=document.getElementById("formatToolbar");
-    const imageToolbar=document.getElementById("imageToolbar");
-    const drawingToolbar=document.getElementById("drawingToolbar");
-    const objectToolbar=document.getElementById("objectToolbar");
-    const canvasImageFileInput=document.getElementById("canvasImageFileInput");
-    const importCanvasFileInput=document.getElementById("importCanvasFileInput");
-    const orientationSelect=document.getElementById("orientationSelect");
-    const pageNumbersCheck=document.getElementById("pageNumbersCheck");
-    const numberFirstPageCheck=document.getElementById("numberFirstPageCheck");
-    const pageNumberPosition=document.getElementById("pageNumberPosition");
-    const creativeHeading=document.getElementById("creativeHeading");
-    const workNameInput=document.getElementById("workNameInput");
-    const selectedObjectNote=document.getElementById("selectedObjectNote");
-    const fontFamilySelect=document.getElementById("fontFamilySelect");
-    const fontSizeInput=document.getElementById("fontSizeInput");
-    const textColourInput=document.getElementById("textColourInput");
-    const backgroundColourInput=document.getElementById("backgroundColourInput");
-    const panelTintColourInput=document.getElementById("panelTintColourInput");
-    const panelGradientDirection=document.getElementById("panelGradientDirection");
-    const pageBackgroundColour1=document.getElementById("pageBackgroundColour1");
-    const pageBackgroundColour2=document.getElementById("pageBackgroundColour2");
-    const pageGradientDirection=document.getElementById("pageGradientDirection");
-    const drawLineColour=document.getElementById("drawLineColour");
-    const drawFillColour=document.getElementById("drawFillColour");
-    const drawThickness=document.getElementById("drawThickness");
-    const drawNoFill=document.getElementById("drawNoFill");
-    const drawNoOutline=document.getElementById("drawNoOutline");
-    const drawModeNote=document.getElementById("drawModeNote");
-    const funBanner=document.getElementById("funBanner");
-    const modeIntro=document.getElementById("modeIntro");
-    const backTopBtn=document.getElementById("backTopBtn");
-    const logoutBtn=document.getElementById("logoutBtn");
-
-    let publicationImage="";
-    let currentCanvasMode=CANVAS_MODE||"artist";
-    let pageBackgroundMode="solid";
-    let panelBackgroundMode="solid";
-    let selectedItem=null,currentPageIndex=0,pendingImageAction="add",zCounter=20;
-    let undoStack=[],redoStack=[],typingSnapshotTaken=false;
-    let savedTextRange=null;
-    let drawingTool="pencil",drawingEditingItem=null,drawingPointerActive=false;
-    const DRAFT_KEY="sanctuaryCreativeCanvasDraftV3";
-    const TOOLS_STATE_KEY="sanctuaryYdsToolsWorkV1";
-    const TOOLS_RETURN_KEY="sanctuaryYdsToolsReturnV1";
-    const TOOLS_ACTION_KEY="sanctuaryYdsToolsActionV1";
-
-    /* Consistent YDS colour chooser */
-    const ydsColourPopover=document.getElementById("ydsColourPopover");
-    const ydsColourSV=document.getElementById("ydsColourSV");
-    const ydsColourMarker=document.getElementById("ydsColourMarker");
-    const ydsHueRange=document.getElementById("ydsHueRange");
-    const ydsColourPreview=document.getElementById("ydsColourPreview");
-    const ydsColourHex=document.getElementById("ydsColourHex");
-    const ydsColourDone=document.getElementById("ydsColourDone");
-    const ydsColourTarget=document.getElementById("ydsColourTarget");
-    let activeColourInput=null;
-    let activeColourTrigger=null;
-    let pickerHue=0,pickerSat=0,pickerVal=1;
-
-    function normaliseHex(value){
-      let s=String(value||"").trim().replace(/^#/,"");
-      if(/^[0-9a-f]{3}$/i.test(s))s=s.split("").map(c=>c+c).join("");
-      return /^[0-9a-f]{6}$/i.test(s)?`#${s.toUpperCase()}`:null;
-    }
-
-    function hexToRgb(hex){
-      const h=normaliseHex(hex)||"#FFFFFF";
-      return {
-        r:parseInt(h.slice(1,3),16),
-        g:parseInt(h.slice(3,5),16),
-        b:parseInt(h.slice(5,7),16)
-      };
-    }
-
-    function rgbToHsvColour(r,g,b){
-      r/=255;g/=255;b/=255;
-      const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
-      let h=0;
-      if(d){
-        if(max===r)h=((g-b)/d)%6;
-        else if(max===g)h=(b-r)/d+2;
-        else h=(r-g)/d+4;
-        h*=60;if(h<0)h+=360;
-      }
-      return {h,s:max?d/max:0,v:max};
-    }
-
-    function hsvToHex(h,s,v){
-      const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;
-      let r=0,g=0,b=0;
-      if(h<60){r=c;g=x}else if(h<120){r=x;g=c}else if(h<180){g=c;b=x}
-      else if(h<240){g=x;b=c}else if(h<300){r=x;b=c}else{r=c;b=x}
-      const part=n=>Math.round((n+m)*255).toString(16).padStart(2,"0");
-      return `#${part(r)}${part(g)}${part(b)}`.toUpperCase();
-    }
-
-    function refreshColourPicker(dispatchInput=true){
-      const hex=hsvToHex(pickerHue,pickerSat,pickerVal);
-      ydsColourSV.style.setProperty("--picker-hue",String(pickerHue));
-      ydsHueRange.value=String(Math.round(pickerHue));
-      ydsColourMarker.style.left=`${pickerSat*100}%`;
-      ydsColourMarker.style.top=`${(1-pickerVal)*100}%`;
-      ydsColourPreview.style.background=hex;
-      ydsColourHex.value=hex;
-      if(activeColourInput){
-        activeColourInput.value=hex;
-        if(activeColourTrigger)activeColourTrigger.style.setProperty("--yds-colour",hex);
-        if(dispatchInput)activeColourInput.dispatchEvent(new Event("input",{bubbles:true}));
-      }
-    }
-
-    function setPickerFromHex(hex,dispatchInput=false){
-      const rgb=hexToRgb(hex),hsv=rgbToHsvColour(rgb.r,rgb.g,rgb.b);
-      pickerHue=hsv.h;pickerSat=hsv.s;pickerVal=hsv.v;
-      refreshColourPicker(dispatchInput);
-    }
-
-    const COLOUR_TARGET_LABELS={
-      pageBackgroundColour1:"Page colour 1",
-      pageBackgroundColour2:"Page colour 2",
-      textColourInput:"Text colour",
-      backgroundColourInput:"Panel colour 1",
-      panelTintColourInput:"Panel colour 2",
-      drawLineColour:"Drawing line",
-      drawFillColour:"Drawing fill"
-    };
-
-    function openYdsColourPicker(input,trigger){
-      activeColourInput=input;
-      activeColourTrigger=trigger;
-      document.querySelectorAll(".yds-colour-trigger.active-colour").forEach(btn=>btn.classList.remove("active-colour"));
-      trigger?.classList.add("active-colour");
-      if(ydsColourTarget)ydsColourTarget.textContent=COLOUR_TARGET_LABELS[input.id]||"Selected colour";
-      setPickerFromHex(input.value||"#FFFFFF",false);
-    }
-
-    function closeYdsColourPicker(){
-      if(activeColourInput)activeColourInput.dispatchEvent(new Event("change",{bubbles:true}));
-    }
-
-    function wireColourTrigger(trigger){
-      const id=trigger?.dataset?.colourFor;
-      const input=id?document.getElementById(id):null;
-      if(!input)return;
-      const refresh=()=>trigger.style.setProperty("--yds-colour",normaliseHex(input.value)||"#FFFFFF");
-      refresh();
-      trigger.addEventListener("click",e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        openYdsColourPicker(input,trigger);
+        sessionStorage.setItem("hubGateReason", "member-pin");
+        sessionStorage.setItem("hubGateDestination", destination);
       });
-      input.addEventListener("input",refresh);
-      input.addEventListener("change",refresh);
-      input.addEventListener("ydscolourrefresh",refresh);
-    }
-
-    document.querySelectorAll(".yds-colour-trigger[data-colour-for]").forEach(wireColourTrigger);
-
-    function svPointer(e){
-      const r=ydsColourSV.getBoundingClientRect();
-      pickerSat=clamp((e.clientX-r.left)/r.width,0,1);
-      pickerVal=1-clamp((e.clientY-r.top)/r.height,0,1);
-      refreshColourPicker(true);
-    }
-
-    ydsColourSV.addEventListener("pointerdown",e=>{
-      e.preventDefault();
-      try{ydsColourSV.setPointerCapture(e.pointerId)}catch{}
-      svPointer(e);
     });
-    ydsColourSV.addEventListener("pointermove",e=>{
-      if(e.buttons!==1)return;
-      svPointer(e);
-    });
-    ydsHueRange.addEventListener("input",()=>{
-      pickerHue=Number(ydsHueRange.value)||0;
-      refreshColourPicker(true);
-    });
-    ydsColourHex.addEventListener("change",()=>{
-      const hex=normaliseHex(ydsColourHex.value);
-      if(hex)setPickerFromHex(hex,true);
-      else refreshColourPicker(false);
-    });
-    ydsColourHex.addEventListener("keydown",e=>{
-      if(e.key==="Enter"){
-        e.preventDefault();
-        const hex=normaliseHex(ydsColourHex.value);
-        if(hex)setPickerFromHex(hex,true);
-        closeYdsColourPicker();
-      }
-    });
-    ydsColourDone.addEventListener("click",closeYdsColourPicker);
 
-    // The palette is always visible. Start it on Page colour 1 so the slider
-    // is immediately usable before any canvas object has been selected.
-    const initialColourTrigger=document.querySelector('[data-colour-for="pageBackgroundColour1"]');
-    if(initialColourTrigger)openYdsColourPicker(pageBackgroundColour1,initialColourTrigger);
-
-
-    function clean(v){return String(v||"").trim()}
-    function normaliseRole(value){
-      const raw=clean(value).toLowerCase().replace(/[\s-]+/g,"_");
-      const aliases={activity:"activity_organiser",organiser:"activity_organiser",activity_organizer:"activity_organiser",news:"news_contributor",community_news:"news_contributor",residents_association_panel:"panel",residents_panel:"panel",residents_association:"panel",association_panel:"panel",service_publisher:"services"};
-      return aliases[raw]||raw;
-    }
-    function storedRoles(){
-      let roles=[];
-      try{roles=JSON.parse(sessionStorage.getItem("hostAreaRoles")||localStorage.getItem("hostAreaRoles")||"[]");}catch(_){roles=[];}
-      return [...new Set((Array.isArray(roles)?roles:[]).map(normaliseRole).filter(Boolean))];
-    }
-    function readEventHandoff(){
-      try{return JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null")}catch(_){return null}
-    }
-    function datedSource(){
-      const handoff=readEventHandoff();
-      return normaliseRole(PAGE_PARAMS.get("source")||handoff?.source||"host");
-    }
-    function authorisedForMode(){
-      if(IS_FUN_MODE)return true;
-      const roles=storedRoles();
-      if(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated"){
-        const required=DATED_SOURCE_ROLES[datedSource()]||[];
-        return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
-      }
-      const required=MODE_ROLES[CANVAS_MODE];
-      if(!required||!required.length)return false;
-      return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
-    }
-    function hasStudioSession(){
-      const resident=sessionStorage.getItem("currentResidentId")||localStorage.getItem("currentResidentId")||sessionStorage.getItem("verifiedResidentId")||localStorage.getItem("verifiedResidentId")||"";
-      return Boolean(resident&&storedRoles().length);
-    }
-
-    function pages(){return [...creativePages.querySelectorAll(".canvas-page")]}
-    function currentPage(){return pages()[currentPageIndex]||pages()[0]||null}
-    function currentItems(){const p=currentPage();return p?[...p.querySelectorAll(".canvas-item")]:[]}
-    function pct(n,total){return total?`${(n/total)*100}%`:"0%"}
-    function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
-
-    function syncDrawingData(){
-      pages().forEach(p=>p.querySelectorAll('.canvas-item[data-kind="drawing"]').forEach(d=>{
-        const canvas=d.querySelector(".drawing-surface");
-        if(canvas){
-          try{d.dataset.drawingData=canvas.toDataURL("image/png")}catch(err){console.warn("Drawing could not be captured.",err)}
-        }
-      }));
-    }
-    function snapshotState(){
-      syncDrawingData();
-      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||"")});
-    }
-
-    function portableProject(){
-      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated")?readEventHandoff():null,state:JSON.parse(snapshotState())};
-    }
-    function safeProjectFilename(){
-      const label=clean(workNameInput?.value||creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
-      return `${label}.sanctuary-yds`;
-    }
-    function exportPortableProject(){
+    function memberLogout(){
       try{
-        const blob=new Blob([JSON.stringify(portableProject(),null,2)],{type:"application/json"});
-        const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=safeProjectFilename();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
-        alert(IS_FUN_MODE?"Your editable creation has been saved to your computer. If you later enter through Info, you can open it again in Your Design Studio.":"Your editable Design Studio work has been saved to your computer.");
-      }catch(err){console.error(err);alert("Your work could not be saved to your computer.");}
-    }
-    function importPortableProjectFile(file){
-      if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const project=JSON.parse(String(reader.result||""));if(project?.format!=="sanctuary-yds"||!project?.state)throw new Error("Not a Sanctuary Design Studio project.");if(!confirm("Open this saved Design Studio work? Any unsaved Canvas changes will be replaced."))return;undoStack=[];redoStack=[];restoreState(JSON.stringify(project.state));updateUndoRedo();if(!IS_FUN_MODE&&(project.origin==="just-for-fun"||project.editorialRequired===true)){sessionStorage.setItem("sanctuaryImportedEditorialRequired","true");alert("Saved work opened. Because it was created outside an authenticated publishing role, it will be treated as a new Writer/Artist creation and will require editorial approval before publication.");}else{alert("Saved Design Studio work opened.");}}catch(err){console.error(err);alert("This saved file could not be opened as Design Studio work.");}finally{importCanvasFileInput.value="";}};reader.readAsText(file);
-    }
-    function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
-    function restoreState(raw){
-      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
-    }
-    function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
-    function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
-    function updateUndoRedo(){document.getElementById("undoCanvasBtn").disabled=!undoStack.length;document.getElementById("redoCanvasBtn").disabled=!redoStack.length}
-
-    function createPage(copyHtml=""){
-      const p=document.createElement("div");p.className=`canvas-page ${orientationSelect.value}`;p.innerHTML=copyHtml||`<div class="canvas-safe-area"></div><div class="canvas-guide v"></div><div class="canvas-guide h"></div><div class="canvas-empty-hint">Choose Add Text, Add Illustration or Draw / Paint to begin.</div><div class="page-number center"></div>`;creativePages.appendChild(p);bindPageItems(p);return p
-    }
-    function ensurePage(){if(!pages().length){createPage();currentPageIndex=0;renderPageTabs();showCurrentPage();updatePageNumbers()}}
-    function addPage(){pushUndo();createPage();currentPageIndex=pages().length-1;renderPageTabs();showCurrentPage();updatePageNumbers()}
-    function duplicatePage(){const p=currentPage();if(!p)return;pushUndo();const clone=p.cloneNode(true);creativePages.insertBefore(clone,p.nextSibling);bindPageItems(clone);currentPageIndex+=1;renderPageTabs();showCurrentPage();updatePageNumbers()}
-    function deletePage(){if(pages().length<=1){if(confirm("Clear the only page?")){pushUndo();currentPage().querySelectorAll(".canvas-item").forEach(x=>x.remove());updateEmptyHint();selectItem(null)}return}if(!confirm("Delete this page?"))return;pushUndo();currentPage().remove();currentPageIndex=clamp(currentPageIndex,0,pages().length-1);renderPageTabs();showCurrentPage();updatePageNumbers();selectItem(null)}
-    function movePage(dir){const p=currentPage(),all=pages(),idx=all.indexOf(p),target=idx+dir;if(!p||target<0||target>=all.length)return;pushUndo();if(dir<0)creativePages.insertBefore(p,all[target]);else creativePages.insertBefore(all[target],p);currentPageIndex=target;renderPageTabs();showCurrentPage();updatePageNumbers()}
-    function renderPageTabs(){pageTabs.innerHTML="";pages().forEach((p,i)=>{const b=document.createElement("button");b.type="button";b.className=`page-tab${i===currentPageIndex?" active":""}`;b.textContent=`Page ${i+1}`;b.addEventListener("click",()=>{currentPageIndex=i;showCurrentPage();renderPageTabs();selectItem(null)});pageTabs.appendChild(b)});document.getElementById("movePageLeftBtn").disabled=currentPageIndex<=0;document.getElementById("movePageRightBtn").disabled=currentPageIndex>=pages().length-1;document.getElementById("deletePageBtn").disabled=!pages().length}
-    function showCurrentPage(){pages().forEach((p,i)=>p.hidden=i!==currentPageIndex);updateEmptyHint();requestAnimationFrame(()=>containCurrentPage())}
-    function applyOrientation(){pages().forEach(p=>{p.classList.toggle("portrait",orientationSelect.value==="portrait");p.classList.toggle("landscape",orientationSelect.value==="landscape")});requestAnimationFrame(()=>containCurrentPage())}
-    function updatePageNumbers(){pages().forEach((p,i)=>{const n=p.querySelector(".page-number");if(!n)return;const show=pageNumbersCheck.checked&&(numberFirstPageCheck.checked||i>0);n.textContent=show?String(i+1):"";n.className=`page-number ${pageNumberPosition.value}`})}
-    function updateEmptyHint(){const p=currentPage();if(!p)return;const hint=p.querySelector(".canvas-empty-hint");if(hint)hint.style.display=p.querySelector(".canvas-item")?"none":"block"}
-
-    function makeCanvasItem(kind,text="",src="",opts={}){
-      ensurePage();const p=currentPage();if(kind==="image"&&p.querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return null}
-      pushUndo();
-      const d=document.createElement("div");d.className="canvas-item";d.dataset.kind=kind;d.style.left=opts.left||`${8+(currentItems().length*5)%28}%`;d.style.top=opts.top||`${8+(currentItems().length*7)%52}%`;d.style.width=opts.width||(kind==="title"?"72%":kind==="image"?"42%":"58%");d.style.height=opts.height||(kind==="title"?"13%":kind==="image"?"30%":"20%");d.style.zIndex=String(++zCounter);
-      const content=document.createElement("div");content.className="item-content";
-      if(kind==="image"){
-        const img=new Image();img.alt="Publication illustration";img.src=src||publicationImage||"";if(!img.src){undoStack.pop();updateUndoRedo();alert("Choose an illustration first.");return null}content.appendChild(img);
-      }else if(kind==="drawing"){
-        d.style.width=opts.width||"70%";d.style.height=opts.height||"42%";
-        const canvas=document.createElement("canvas");canvas.className="drawing-surface";canvas.width=1400;canvas.height=840;content.appendChild(canvas);
-        d.dataset.drawingData="";
-      }else{
-        content.contentEditable="true";content.spellcheck=true;content.textContent=text||(kind==="title"?"Type your title":"Type or paste text");
-      }
-      d.appendChild(content);addItemChrome(d);p.appendChild(d);bindCanvasItem(d);updateEmptyHint();selectItem(d);if(kind==="drawing")beginDrawingEdit(d);return d
-    }
-    function addItemChrome(d){if(d.querySelector(".drag-handle"))return;const drag=document.createElement("div");drag.className="drag-handle";drag.textContent="Move";drag.setAttribute("contenteditable","false");d.appendChild(drag);["nw","n","ne","e","se","s","sw","w"].forEach(pos=>{const h=document.createElement("span");h.className=`resize-handle ${pos}`;h.dataset.resize=pos;h.setAttribute("contenteditable","false");d.appendChild(h)})}
-    function bindPageItems(p){p.querySelectorAll(".canvas-item").forEach(d=>{d.dataset.bound="";addItemChrome(d);bindCanvasItem(d)})}
-    function rebindCanvas(){pages().forEach(bindPageItems)}
-    function bindCanvasItem(d){
-      if(d.dataset.bound==="1")return;
-      d.dataset.bound="1";
-
-      d.addEventListener("pointerdown",e=>{
-        if(e.target.closest(".resize-handle")||e.target.closest(".drag-handle"))return;
-        // A direct click on an object makes it the top object.
-        // The Move handle does not change layer order; manual Overlay / Underlay remain available.
-        selectItem(d,true);
-        if(d.dataset.kind==="image") startDrag(e,d,d);
-      });
-
-      const content=d.querySelector(".item-content");
-      if(content&&d.dataset.kind!=="image"&&d.dataset.kind!=="drawing"){
-        content.addEventListener("focus",()=>{selectItem(d);typingSnapshotTaken=false});
-        content.addEventListener("beforeinput",()=>{if(!typingSnapshotTaken){pushUndo();typingSnapshotTaken=true}});
-        content.addEventListener("paste",e=>handleRichPaste(e,d));
-        content.addEventListener("input",()=>scheduleForwardFlow(d));
-        content.addEventListener("mouseup",()=>rememberTextSelection(d));
-        content.addEventListener("keyup",()=>rememberTextSelection(d));
-        content.addEventListener("blur",()=>{typingSnapshotTaken=false;pushOverflowForward(d)});
-      }
-
-      if(d.dataset.kind==="drawing"){
-        const canvas=d.querySelector(".drawing-surface");
-        if(canvas){
-          hydrateDrawingCanvas(d);
-          canvas.addEventListener("pointerdown",e=>drawingPointerDown(e,d));
-          canvas.addEventListener("pointermove",e=>drawingPointerMove(e,d));
-          canvas.addEventListener("pointerup",e=>drawingPointerUp(e,d));
-          canvas.addEventListener("pointercancel",e=>drawingPointerUp(e,d));
-        }
-      }
-
-      const drag=d.querySelector(".drag-handle");
-      if(drag) drag.addEventListener("pointerdown",e=>startDrag(e,d,drag));
-      d.querySelectorAll(".resize-handle").forEach(h=>h.addEventListener("pointerdown",e=>startResize(e,d,h.dataset.resize)));
-    }
-
-    function selectItem(d,bringToFront=false){
-      if(selectedItem&&selectedItem!==d)selectedItem.classList.remove("selected");
-      if(drawingEditingItem&&drawingEditingItem!==d)finishDrawingEdit();
-      if(selectedItem!==d)savedTextRange=null;
-      selectedItem=d||null;
-      if(selectedItem){
-        containItem(selectedItem);
-        selectedItem.classList.add("selected");
-        if(bringToFront){
-          selectedItem.style.zIndex=String(++zCounter);
-        }
-      }
-      const kind=selectedItem?.dataset.kind||"";
-      // Keep the right-hand Selection panel permanently visible.
-      // Clicking blank canvas only deselects; object creation belongs to the explicit Add controls.
-      objectToolbar.hidden=false;
-      formatToolbar.hidden=false;
-      imageToolbar.hidden=!selectedItem||kind!=="image";
-      drawingToolbar.hidden=!selectedItem||kind!=="drawing";
-
-      const needsSelection=[
-        "nudgeUpBtn","nudgeLeftBtn","centreObjectBtn","nudgeRightBtn","nudgeDownBtn",
-        "overlayObjectBtn","underlayObjectBtn","duplicateObjectBtn","deleteObjectBtn"
-      ];
-      needsSelection.forEach(id=>{
-        const control=document.getElementById(id);
-        if(control)control.disabled=!selectedItem;
-      });
-
-      selectedObjectNote.textContent="";
-      if(selectedItem&&kind!=="image"&&kind!=="drawing")syncFormatControls();
-      if(selectedItem&&kind==="drawing")setDrawingTool(drawingTool);
-    }
-
-    function syncFormatControls(){
-      const c=selectedItem?.querySelector(".item-content");
-      if(!c)return;
-      fontFamilySelect.value=[...fontFamilySelect.options].some(o=>o.value===c.style.fontFamily)?c.style.fontFamily:fontFamilySelect.options[0].value;
-      fontSizeInput.value=parseInt(c.style.fontSize)||parseInt(getComputedStyle(c).fontSize)||18;
-      textColourInput.value=rgbToHex(getComputedStyle(c).color)||"#173042";
-      const bg=getComputedStyle(c).backgroundColor;
-      backgroundColourInput.value=bg==="rgba(0, 0, 0, 0)"?"#ffffff":rgbToHex(bg)||"#ffffff";
-      textColourInput.dispatchEvent(new Event("ydscolourrefresh"));
-      backgroundColourInput.dispatchEvent(new Event("ydscolourrefresh"));
-    }
-    function rgbToHex(rgb){const m=String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);return m?"#"+m.slice(1,4).map(x=>Number(x).toString(16).padStart(2,"0")).join(""):""}
-
-    function setCurrentPageSolidBackground(){
-      const p=currentPage(); if(!p)return;
-      pushUndo();
-      pageBackgroundMode="solid";
-      p.style.background=pageBackgroundColour1.value;
-    }
-
-    function setCurrentPageGradientBackground(){
-      const p=currentPage(); if(!p)return;
-      pushUndo();
-      pageBackgroundMode="gradient";
-      p.style.background=`linear-gradient(${pageGradientDirection.value}, ${pageBackgroundColour1.value}, ${pageBackgroundColour2.value})`;
-    }
-
-    function setSelectedPanelSolidBackground(){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      const content=selectedItem.querySelector(".item-content"); if(!content)return;
-      pushUndo();
-      panelBackgroundMode="solid";
-      content.style.backgroundImage="none";
-      content.style.backgroundColor=backgroundColourInput.value;
-      syncFormatControls();
-    }
-
-    function setSelectedPanelGradientBackground(){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      const content=selectedItem.querySelector(".item-content"); if(!content)return;
-      pushUndo();
-      panelBackgroundMode="gradient";
-      content.style.backgroundColor=backgroundColourInput.value;
-      content.style.backgroundImage=`linear-gradient(${panelGradientDirection.value}, ${backgroundColourInput.value}, ${panelTintColourInput.value})`;
-      syncFormatControls();
-    }
-
-    function setSelectedPanelTransparent(){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      const content=selectedItem.querySelector(".item-content"); if(!content)return;
-      pushUndo();
-      content.style.backgroundImage="none";
-      content.style.backgroundColor="transparent";
-      syncFormatControls();
-    }
-
-    function captureCurrentTextSelection(){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      rememberTextSelection(selectedItem);
-    }
-
-    function rememberTextSelection(d){
-      if(!d || d!==selectedItem || d.dataset.kind==="image" || d.dataset.kind==="drawing")return;
-      const content=d.querySelector(".item-content");
-      const selection=window.getSelection();
-      if(!content || !selection || !selection.rangeCount)return;
-      const range=selection.getRangeAt(0);
-      if(
-        content.contains(range.startContainer) &&
-        content.contains(range.endContainer) &&
-        !range.collapsed
-      ){
-        savedTextRange=range.cloneRange();
-      }
-    }
-
-    function restoreTextSelection(){
-      if(!savedTextRange || !selectedItem)return false;
-      const content=selectedItem.querySelector(".item-content");
-      if(!content)return false;
-      try{
-        if(
-          !content.contains(savedTextRange.startContainer) ||
-          !content.contains(savedTextRange.endContainer)
-        ){
-          savedTextRange=null;
-          return false;
-        }
-        const selection=window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(savedTextRange);
-        return !savedTextRange.collapsed;
-      }catch(_){
-        savedTextRange=null;
-        return false;
-      }
-    }
-
-    function refreshSavedTextSelection(){
-      const selection=window.getSelection();
-      if(selection && selection.rangeCount && !selection.getRangeAt(0).collapsed){
-        savedTextRange=selection.getRangeAt(0).cloneRange();
-      }else{
-        savedTextRange=null;
-      }
-    }
-
-    function applySelectedTextCommand(command,value,boxFallback){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      const content=selectedItem.querySelector(".item-content");
-      pushUndo();
-      if(restoreTextSelection()){
-        content.focus({preventScroll:true});
-        try{document.execCommand("styleWithCSS",false,true)}catch(_){}
-        document.execCommand(command,false,value??null);
-        refreshSavedTextSelection();
-        return;
-      }
-      boxFallback(content);
-      syncFormatControls();
-    }
-
-    function applySelectedInlineStyle(prop,value,boxFallback){
-      if(!selectedItem || selectedItem.dataset.kind==="image" || selectedItem.dataset.kind==="drawing")return;
-      const content=selectedItem.querySelector(".item-content");
-      pushUndo();
-      if(restoreTextSelection()){
-        const selection=window.getSelection();
-        const range=selection.getRangeAt(0);
-        const span=document.createElement("span");
-        const cssName=prop.replace(/[A-Z]/g,m=>"-"+m.toLowerCase());
-        span.style.setProperty(cssName,value,"important");
-        try{
-          const fragment=range.extractContents();
-          span.appendChild(fragment);
-          range.insertNode(span);
-          const newRange=document.createRange();
-          newRange.selectNodeContents(span);
-          selection.removeAllRanges();
-          selection.addRange(newRange);
-          savedTextRange=newRange.cloneRange();
-          content.focus({preventScroll:true});
-          return;
-        }catch(_){
-          savedTextRange=null;
-        }
-      }
-      boxFallback(content);
-      syncFormatControls();
-      content.focus({preventScroll:true});
-    }
-
-    function applySelectedFontSize(px){
-      const size=`${clamp(parseInt(px)||18,8,96)}px`;
-      applySelectedInlineStyle("fontSize",size,content=>{content.style.fontSize=size});
-    }
-
-    function applySelectedTextColour(colour){
-      applySelectedInlineStyle("color",colour,content=>{content.style.color=colour});
-    }
-
-
-    function hydrateDrawingCanvas(d){
-      const canvas=d.querySelector(".drawing-surface");
-      if(!canvas)return;
-      const saved=d.dataset.drawingData||"";
-      if(!saved)return;
-      const img=new Image();
-      img.onload=()=>{
-        const ctx=canvas.getContext("2d");
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      };
-      img.src=saved;
-    }
-    function beginDrawingEdit(d){
-      if(!d||d.dataset.kind!=="drawing")return;
-      drawingEditingItem=d;
-      d.classList.add("drawing-edit");
-      selectItem(d);
-      drawModeNote.textContent="";
-    }
-    function finishDrawingEdit(){
-      if(!drawingEditingItem)return;
-      syncDrawingData();
-      drawingEditingItem.classList.remove("drawing-edit");
-      drawingEditingItem=null;
-      drawingPointerActive=false;
-      drawModeNote.textContent="";
-    }
-    function setDrawingTool(tool){
-      drawingTool=tool;
-      ["drawPencilBtn","drawLineBtn","drawRectBtn","drawOvalBtn","drawFillBtn","drawEraserBtn"].forEach(id=>{
-        const b=document.getElementById(id);
-        if(!b)return;
-        const map={drawPencilBtn:"pencil",drawLineBtn:"line",drawRectBtn:"rect",drawOvalBtn:"oval",drawFillBtn:"fill",drawEraserBtn:"eraser"};
-        b.classList.toggle("active",map[id]===tool);
-      });
-    }
-    function drawingPoint(e,canvas){
-      const r=canvas.getBoundingClientRect();
-      return {
-        x:(e.clientX-r.left)*(canvas.width/r.width),
-        y:(e.clientY-r.top)*(canvas.height/r.height)
-      };
-    }
-    function drawingStyle(ctx){
-      ctx.lineCap="round";
-      ctx.lineJoin="round";
-      ctx.lineWidth=Number(drawThickness.value)||5;
-      ctx.strokeStyle=drawLineColour.value;
-      ctx.fillStyle=drawFillColour.value;
-    }
-    let drawStart=null,drawSavedImage=null,lastDrawPoint=null;
-    function drawingPointerDown(e,d){
-      if(drawingEditingItem!==d)return;
-      e.preventDefault();
-      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
-      pushUndo();
-      drawingPointerActive=true;drawStart=pt;lastDrawPoint=pt;
-      try{canvas.setPointerCapture(e.pointerId)}catch{}
-      if(drawingTool==="fill"){floodFillCanvas(canvas,Math.round(pt.x),Math.round(pt.y),hexToRgba(drawFillColour.value,255));drawingPointerActive=false;syncDrawingData();return}
-      if(["line","rect","oval"].includes(drawingTool))drawSavedImage=ctx.getImageData(0,0,canvas.width,canvas.height);
-      drawingStyle(ctx);
-      if(drawingTool==="pencil"){ctx.globalCompositeOperation="source-over";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
-      if(drawingTool==="eraser"){ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
-    }
-    function drawingPointerMove(e,d){
-      if(!drawingPointerActive||drawingEditingItem!==d)return;
-      e.preventDefault();
-      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
-      drawingStyle(ctx);
-      if(drawingTool==="pencil"){
-        ctx.globalCompositeOperation="source-over";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
-      }else if(drawingTool==="eraser"){
-        ctx.globalCompositeOperation="destination-out";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
-      }else if(["line","rect","oval"].includes(drawingTool)&&drawSavedImage){
-        ctx.globalCompositeOperation="source-over";ctx.putImageData(drawSavedImage,0,0);drawingStyle(ctx);
-        const x=drawStart.x,y=drawStart.y,w=pt.x-x,h=pt.y-y;
-        ctx.beginPath();
-        if(drawingTool==="line"){ctx.moveTo(x,y);ctx.lineTo(pt.x,pt.y);if(!drawNoOutline.checked)ctx.stroke()}
-        else if(drawingTool==="rect"){
-          if(!drawNoFill.checked)ctx.fillRect(x,y,w,h);
-          if(!drawNoOutline.checked)ctx.strokeRect(x,y,w,h);
-        }else{
-          ctx.ellipse(x+w/2,y+h/2,Math.abs(w/2),Math.abs(h/2),0,0,Math.PI*2);
-          if(!drawNoFill.checked)ctx.fill();
-          if(!drawNoOutline.checked)ctx.stroke();
-        }
-      }
-    }
-    function drawingPointerUp(e,d){
-      if(!drawingPointerActive)return;
-      drawingPointerActive=false;
-      const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d");
-      try{ctx.closePath()}catch{}
-      ctx.globalCompositeOperation="source-over";
-      drawSavedImage=null;drawStart=null;lastDrawPoint=null;
-      syncDrawingData();
-    }
-    function hexToRgba(hex,a=255){
-      const h=String(hex||"#000000").replace("#","");
-      return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16),a];
-    }
-    function samePixel(data,i,target){
-      return data[i]===target[0]&&data[i+1]===target[1]&&data[i+2]===target[2]&&data[i+3]===target[3];
-    }
-    function floodFillCanvas(canvas,startX,startY,fill){
-      const ctx=canvas.getContext("2d"),img=ctx.getImageData(0,0,canvas.width,canvas.height),data=img.data,w=canvas.width,h=canvas.height;
-      if(startX<0||startY<0||startX>=w||startY>=h)return;
-      const si=(startY*w+startX)*4,target=[data[si],data[si+1],data[si+2],data[si+3]];
-      if(target.every((v,i)=>v===fill[i]))return;
-      const stack=[[startX,startY]],seen=new Uint8Array(w*h);
-      while(stack.length){
-        const [x,y]=stack.pop(),pi=y*w+x;
-        if(seen[pi])continue;seen[pi]=1;
-        const i=pi*4;
-        if(!samePixel(data,i,target))continue;
-        data[i]=fill[0];data[i+1]=fill[1];data[i+2]=fill[2];data[i+3]=fill[3];
-        if(x>0)stack.push([x-1,y]);if(x<w-1)stack.push([x+1,y]);if(y>0)stack.push([x,y-1]);if(y<h-1)stack.push([x,y+1]);
-      }
-      ctx.putImageData(img,0,0);
-    }
-
-    function containItem(d){
-      if(!d||!d.isConnected)return;
-      const p=d.closest(".canvas-page");
-      if(!p||p.hidden)return;
-      const pr=p.getBoundingClientRect();
-      const dr=d.getBoundingClientRect();
-      if(!pr.width||!pr.height||!dr.width||!dr.height)return;
-
-      let width=Math.min(dr.width,pr.width);
-      let height=Math.min(dr.height,pr.height);
-      if(width!==dr.width)d.style.width=pct(width,pr.width);
-      if(height!==dr.height)d.style.height=pct(height,pr.height);
-
-      const fresh=d.getBoundingClientRect();
-      let left=fresh.left-pr.left;
-      let top=fresh.top-pr.top;
-      left=clamp(left,0,Math.max(0,pr.width-fresh.width));
-      top=clamp(top,0,Math.max(0,pr.height-fresh.height));
-      d.style.left=pct(left,pr.width);
-      d.style.top=pct(top,pr.height);
-    }
-
-    function containCurrentPage(){
-      const p=currentPage();
-      if(!p||p.hidden)return;
-      p.querySelectorAll(".canvas-item").forEach(containItem);
-    }
-
-    function startDrag(e,d,captureTarget=e.currentTarget){
-      if(e.button!==undefined&&e.button!==0)return;
-      e.preventDefault();
-      e.stopPropagation();
-
-      if(d.dataset.kind==="drawing")finishDrawingEdit();
-      selectItem(d,false);
-      pushUndo();
-
-      const p=d.closest(".canvas-page")||currentPage();
-      if(!p)return;
-      containItem(d);
-
-      const pr=p.getBoundingClientRect();
-      const dr=d.getBoundingClientRect();
-      const guideV=p.querySelector(".canvas-guide.v");
-      const guideH=p.querySelector(".canvas-guide.h");
-      const handle=captureTarget||d;
-      const isFlowBox=!!d.dataset.flowGroup;
-      const startX=e.clientX;
-      const startY=e.clientY;
-      const baseLeft=dr.left-pr.left;
-      const baseTop=dr.top-pr.top;
-      const boxWidth=dr.width;
-      const boxHeight=dr.height;
-
-      handle.classList.add("moving");
-      document.body.style.userSelect="none";
-
-      const move=ev=>{
-        let l=baseLeft+(ev.clientX-startX);
-        let t=baseTop+(ev.clientY-startY);
-        l=clamp(l,0,Math.max(0,pr.width-boxWidth));
-        t=clamp(t,0,Math.max(0,pr.height-boxHeight));
-
-        if(guideV)guideV.style.display="none";
-        if(guideH)guideH.style.display="none";
-
-        if(!isFlowBox){
-          const cx=l+boxWidth/2;
-          const cy=t+boxHeight/2;
-          const snap=7;
-          if(Math.abs(cx-pr.width/2)<snap){
-            l=pr.width/2-boxWidth/2;
-            if(guideV){guideV.style.left="50%";guideV.style.display="block";}
-          }
-          if(Math.abs(cy-pr.height/2)<snap){
-            t=pr.height/2-boxHeight/2;
-            if(guideH){guideH.style.top="50%";guideH.style.display="block";}
-          }
-        }
-
-        d.style.left=pct(l,pr.width);
-        d.style.top=pct(t,pr.height);
-      };
-
-      const up=()=>{
-        if(guideV)guideV.style.display="none";
-        if(guideH)guideH.style.display="none";
-        containItem(d);
-        handle.classList.remove("moving");
-        document.body.style.userSelect="";
-        window.removeEventListener("pointermove",move,true);
-        window.removeEventListener("pointerup",up,true);
-        window.removeEventListener("pointercancel",up,true);
-      };
-
-      window.addEventListener("pointermove",move,true);
-      window.addEventListener("pointerup",up,true);
-      window.addEventListener("pointercancel",up,true);
-    }
-
-    function startResize(e,d,dir){
-      if(e.button!==undefined && e.button!==0)return;
-      e.preventDefault();
-      e.stopPropagation();
-
-      if(d.dataset.kind==="drawing")finishDrawingEdit();
-      selectItem(d);
-      pushUndo();
-
-      const handle=e.currentTarget;
-      const p=d.closest(".canvas-page")||currentPage();
-      if(!p)return;
-
-      containItem(d);
-
-      const pr=p.getBoundingClientRect();
-      const dr=d.getBoundingClientRect();
-      const minW=Math.min(70,pr.width);
-      const minH=Math.min(42,pr.height);
-      const base={l:dr.left-pr.left,t:dr.top-pr.top,w:dr.width,h:dr.height};
-      base.r=base.l+base.w;
-      base.b=base.t+base.h;
-
-      const isImage=d.dataset.kind==="image";
-      const ratio=base.w/Math.max(1,base.h);
-
-      try{handle.setPointerCapture(e.pointerId)}catch{}
-
-      const move=ev=>{
-        const px=clamp(ev.clientX-pr.left,0,pr.width);
-        const py=clamp(ev.clientY-pr.top,0,pr.height);
-
-        let l=base.l,t=base.t,w=base.w,h=base.h;
-
-        if(isImage){
-          if(!/[ns]/.test(dir)||!/[ew]/.test(dir))return;
-
-          const wantedW=dir.includes("e")
-            ? Math.max(minW,px-base.l)
-            : Math.max(minW,base.r-px);
-
-          const wantedH=dir.includes("s")
-            ? Math.max(minH,py-base.t)
-            : Math.max(minH,base.b-py);
-
-          let scale=Math.min(wantedW/base.w,wantedH/base.h);
-          scale=Math.max(scale,minW/base.w,minH/base.h);
-
-          const maxWByX=dir.includes("w")?base.r:(pr.width-base.l);
-          const maxHByY=dir.includes("n")?base.b:(pr.height-base.t);
-          scale=Math.min(scale,Math.min(maxWByX/base.w,maxHByY/base.h));
-
-          w=base.w*scale;
-          h=base.h*scale;
-          if(dir.includes("w"))l=base.r-w;
-          if(dir.includes("n"))t=base.b-h;
-        }else{
-          if(dir.includes("e"))w=clamp(px-base.l,minW,pr.width-base.l);
-          if(dir.includes("s"))h=clamp(py-base.t,minH,pr.height-base.t);
-          if(dir.includes("w")){
-            l=clamp(px,0,base.r-minW);
-            w=base.r-l;
-          }
-          if(dir.includes("n")){
-            t=clamp(py,0,base.b-minH);
-            h=base.b-t;
-          }
-        }
-
-        l=clamp(l,0,Math.max(0,pr.width-minW));
-        t=clamp(t,0,Math.max(0,pr.height-minH));
-        w=clamp(w,minW,Math.max(minW,pr.width-l));
-        h=clamp(h,minH,Math.max(minH,pr.height-t));
-
-        d.style.left=pct(l,pr.width);
-        d.style.top=pct(t,pr.height);
-        d.style.width=pct(w,pr.width);
-        d.style.height=pct(h,pr.height);
-      };
-
-      const up=()=>{
-        containItem(d);
-        pushOverflowForward(d);
-        try{handle.releasePointerCapture(e.pointerId)}catch{}
-        handle.removeEventListener("pointermove",move);
-        handle.removeEventListener("pointerup",up);
-        handle.removeEventListener("pointercancel",up);
-      };
-
-      handle.addEventListener("pointermove",move);
-      handle.addEventListener("pointerup",up);
-      handle.addEventListener("pointercancel",up);
-    }
-
-    function normaliseCurrentPageLayers(){
-      const p=currentPage();
-      if(!p)return [];
-      const items=[...p.querySelectorAll(".canvas-item")];
-      const ordered=items
-        .map((item,index)=>({
-          item,
-          index,
-          z:Number.parseInt(item.style.zIndex||getComputedStyle(item).zIndex||"0",10)||0
-        }))
-        .sort((a,b)=>a.z-b.z||a.index-b.index);
-      ordered.forEach((entry,index)=>{entry.item.style.zIndex=String(10+index)});
-      zCounter=Math.max(10,10+ordered.length-1);
-      return ordered.map(entry=>entry.item);
-    }
-
-    function moveSelectedLayer(direction){
-      if(!selectedItem)return;
-      if(selectedItem.dataset.kind==="drawing")finishDrawingEdit();
-      const p=currentPage();
-      if(!p)return;
-
-      const ordered=normaliseCurrentPageLayers();
-      if(ordered.length<2)return;
-      const at=ordered.indexOf(selectedItem);
-      if(at<0)return;
-
-      // Make the two controls completely predictable:
-      // Overlay = front of every object; Underlay = behind every object.
-      if(direction>0 && at===ordered.length-1)return;
-      if(direction<0 && at===0)return;
-
-      pushUndo();
-      ordered.splice(at,1);
-      if(direction>0)ordered.push(selectedItem);
-      else ordered.unshift(selectedItem);
-      ordered.forEach((item,index)=>{item.style.zIndex=String(10+index)});
-      zCounter=Math.max(10,10+ordered.length-1);
-      selectItem(selectedItem,false);
-    }
-
-    function moveSelectedBy(dx,dy){
-      if(!selectedItem)return;
-      if(selectedItem.dataset.kind==="drawing")finishDrawingEdit();
-      pushUndo();
-      const p=currentPage(),pr=p.getBoundingClientRect(),dr=selectedItem.getBoundingClientRect();
-      let l=dr.left-pr.left+dx,t=dr.top-pr.top+dy;
-      l=clamp(l,0,pr.width-dr.width);t=clamp(t,0,pr.height-dr.height);
-      selectedItem.style.left=pct(l,pr.width);selectedItem.style.top=pct(t,pr.height);containItem(selectedItem);
-    }
-    function centreSelected(){
-      if(!selectedItem)return;
-      if(selectedItem.dataset.kind==="drawing")finishDrawingEdit();
-      pushUndo();
-      const p=currentPage(),pr=p.getBoundingClientRect(),dr=selectedItem.getBoundingClientRect();
-      selectedItem.style.left=pct((pr.width-dr.width)/2,pr.width);containItem(selectedItem);
-    }
-
-    function sanitiseRichHtml(rawHtml,plainText=""){
-      if(!rawHtml)return plainText?plainText.split(/\r?\n/).map(line=>`<p>${escapeHtml(line)||"<br>"}</p>`).join(""):"";
-      const parser=new DOMParser();
-      const doc=parser.parseFromString(rawHtml,"text/html");
-      const allowed=new Set(["P","DIV","BR","H1","H2","H3","H4","H5","H6","STRONG","B","EM","I","U","UL","OL","LI","BLOCKQUOTE","SPAN","IMG"]);
-      const styleAllowed=new Set(["font-weight","font-style","text-decoration","text-align","font-size","color","background-color","font-family"]);
-      const cleanNode=node=>{
-        if(node.nodeType===Node.TEXT_NODE)return document.createTextNode(node.nodeValue||"");
-        if(node.nodeType!==Node.ELEMENT_NODE)return document.createDocumentFragment();
-        const tag=node.tagName.toUpperCase();
-        if(!allowed.has(tag)){
-          const frag=document.createDocumentFragment();
-          [...node.childNodes].forEach(child=>frag.appendChild(cleanNode(child)));
-          return frag;
-        }
-        const el=document.createElement(tag.toLowerCase());
-        if(tag==="IMG"){
-          const src=node.getAttribute("src")||"";
-          if(/^data:image\//i.test(src)||/^https?:\/\//i.test(src))el.src=src;
-          el.alt=node.getAttribute("alt")||"Illustration";
-        }
-        const style=node.getAttribute("style")||"";
-        style.split(";").forEach(part=>{
-          const [rawProp,...rest]=part.split(":");
-          const prop=(rawProp||"").trim().toLowerCase(),value=rest.join(":").trim();
-          if(styleAllowed.has(prop)&&value&&!/url\s*\(/i.test(value))el.style.setProperty(prop,value);
-        });
-        if(node.getAttribute("align"))el.style.textAlign=node.getAttribute("align");
-        [...node.childNodes].forEach(child=>el.appendChild(cleanNode(child)));
-        return el;
-      };
-      const out=document.createElement("div");
-      [...doc.body.childNodes].forEach(node=>out.appendChild(cleanNode(node)));
-      return out.innerHTML;
-    }
-
-    function escapeHtml(value){
-      return String(value||"").replace(/[&<>\"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
-    }
-
-    function flowBoxOnPage(page,groupId,existing=null){
-      const d=existing||document.createElement("div");
-      d.className="canvas-item";
-      d.dataset.kind="text";
-      d.dataset.flowGroup=groupId;
-      d.style.left="7%";d.style.top="6%";d.style.width="86%";d.style.height="88%";d.style.zIndex=String(++zCounter);
-      let content=d.querySelector(".item-content");
-      if(!content){content=document.createElement("div");content.className="item-content";d.appendChild(content)}
-      content.contentEditable="true";content.spellcheck=true;
-      if(!existing){addItemChrome(d);page.appendChild(d);bindCanvasItem(d)}
-      containItem(d);
-      return d;
-    }
-
-    function nextFlowBox(d){
-      const group=d.dataset.flowGroup;
-      if(!group)return null;
-      const all=pages();
-      const page=d.closest(".canvas-page");
-      const index=all.indexOf(page);
-      if(index>=0&&all[index+1]){
-        const found=all[index+1].querySelector(`.canvas-item[data-flow-group="${group}"]`);
-        if(found)return found;
-      }
-      const next=document.createElement("div");
-      next.className=`canvas-page ${orientationSelect.value}`;
-      next.innerHTML=`<div class="canvas-safe-area"></div><div class="canvas-guide v"></div><div class="canvas-guide h"></div><div class="canvas-empty-hint">Choose Add Text, Add Illustration or Draw / Paint to begin.</div><div class="page-number center"></div>`;
-      next.dataset.flowPage=group;
-      creativePages.insertBefore(next,page.nextSibling);
-      bindPageItems(next);
-      return flowBoxOnPage(next,group);
-    }
-
-    function splitOversizeTextNode(node,content,d){
-      const text=(node.textContent||"").trim();
-      if(!text)return;
-      const tag=(node.nodeType===Node.ELEMENT_NODE&&/^H[1-6]$|^P$|^DIV$|^LI$/.test(node.tagName))?node.tagName.toLowerCase():"p";
-      const words=text.split(/\s+/);
-      let current=document.createElement(tag),nextWords=[];
-      if(node.nodeType===Node.ELEMENT_NODE)current.style.cssText=node.style.cssText;
-      content.appendChild(current);
-      for(let i=0;i<words.length;i++){
-        const before=current.textContent;
-        current.textContent=(before?before+" ":"")+words[i];
-        if(content.scrollHeight>content.clientHeight+2){
-          current.textContent=before;
-          nextWords=words.slice(i);
-          break;
-        }
-      }
-      if(!nextWords.length)return;
-      const next=nextFlowBox(d),nextContent=next.querySelector(".item-content");
-      const rest=document.createElement(tag);rest.style.cssText=current.style.cssText;rest.textContent=nextWords.join(" ");
-      nextContent.insertBefore(rest,nextContent.firstChild);
-      pushOverflowForward(next);
-    }
-
-    function pushOverflowForward(d){
-      if(!d?.dataset?.flowGroup||!d.isConnected)return;
-      const content=d.querySelector(".item-content");
-      if(!content||content.clientHeight===0)return;
-      let safety=200;
-      while(content.scrollHeight>content.clientHeight+2&&safety--){
-        const node=content.lastChild;
-        if(!node)break;
-        content.removeChild(node);
-        if(!content.childNodes.length){
-          splitOversizeTextNode(node,content,d);
-          break;
-        }
-        const next=nextFlowBox(d),nextContent=next.querySelector(".item-content");
-        nextContent.insertBefore(node,nextContent.firstChild);
-        if(nextContent.scrollHeight>nextContent.clientHeight+2)pushOverflowForward(next);
-      }
-      renderPageTabs();updatePageNumbers();updateEmptyHint();
-    }
-
-    let flowTimer=null;
-    function scheduleForwardFlow(d){
-      if(!d?.dataset?.flowGroup)return;
-      clearTimeout(flowTimer);
-      flowTimer=setTimeout(()=>pushOverflowForward(d),300);
-    }
-
-    function flowRichPasteIntoPages(d,html){
-      pushUndo();
-      const group=`flow-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
-      const firstPage=d.closest(".canvas-page")||currentPage();
-      const firstIndex=pages().indexOf(firstPage);
-      flowBoxOnPage(firstPage,group,d);
-      const content=d.querySelector(".item-content");
-      content.innerHTML="";
-      const holder=document.createElement("div");holder.innerHTML=html;
-      [...holder.childNodes].forEach(node=>content.appendChild(node.cloneNode(true)));
-      pushOverflowForward(d);
-      currentPageIndex=Math.max(0,firstIndex);renderPageTabs();showCurrentPage();updatePageNumbers();selectItem(d);
-    }
-
-    function handleRichPaste(e,d){
-      const clipboard=e.clipboardData;
-      if(!clipboard)return;
-      const rawHtml=clipboard.getData("text/html")||"";
-      const plain=clipboard.getData("text/plain")||"";
-      const imageFiles=[...(clipboard.files||[])].filter(file=>/^image\//i.test(file.type));
-
-      /* Ordinary copy-and-paste should behave like Word/browser editing.
-         The normal input listener will handle any subsequent text flow. */
-      if(!imageFiles.length){
-        const probe=document.createElement("div");
-        if(rawHtml)probe.innerHTML=rawHtml;
-        const substantial=plain.length>900||probe.querySelectorAll("p,div,h1,h2,h3,h4,h5,h6,li,img").length>8;
-        if(!substantial)return;
-
-        e.preventDefault();
-        const safe=sanitiseRichHtml(rawHtml,plain);
-        flowRichPasteIntoPages(d,safe);
-        return;
-      }
-
-      if(imageFiles.length&&!rawHtml&&!plain){
-        e.preventDefault();
-        pushUndo();
-        imageFiles.forEach(file=>{
-          const reader=new FileReader();
-          reader.onload=()=>{
-            const img=document.createElement("img");img.src=reader.result;img.alt="Illustration";
-            d.querySelector(".item-content").appendChild(img);
-            scheduleForwardFlow(d);
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    }
-
-    function applyTextStyle(prop,value){if(!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing")return;pushUndo();selectedItem.querySelector(".item-content").style[prop]=value;syncFormatControls()}
-    function toggleTextStyle(prop,onValue="normal",offValue="normal"){if(!selectedItem||selectedItem.dataset.kind==="image")return;const c=selectedItem.querySelector(".item-content"),current=getComputedStyle(c)[prop];pushUndo();c.style[prop]=current===onValue?offValue:onValue}
-    function deleteSelected(){
-      if(!selectedItem)return;
-      if(!confirm("Remove this item?"))return;
-      pushUndo();
-      selectedItem.remove();
-      selectedItem=null;
-      selectItem(null);
-      updateEmptyHint();
-    }
-    function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="image"&&currentPage().querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return}if(kind==="drawing")syncDrawingData();pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);containItem(clone);updateEmptyHint()}
-
-    function friendlyDateTime(value){
-      const raw=clean(value); if(!raw)return ""; const d=new Date(raw); if(Number.isNaN(d.getTime()))return raw;
-      return d.toLocaleString("en-GB",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
-    }
-    function eventNoticeFacts(e){
-      const time=[e.start_time,e.end_time].filter(Boolean).join(" – ");
-      const contact=[e.producer_email,e.producer_mobile,e.producer_landline].filter(Boolean).join(" • ");
-      const lines=[
-        e.event_date?`Date: ${friendlyDateTime(e.event_date+"T00:00") .replace(/,? 00:00$/,"")}`:"",
-        time?`Time: ${time}`:"", e.venue?`Venue: ${e.venue}`:"",
-        e.producer_name?`Produced by: ${e.producer_name} (${e.producer_resident_id||e.producer_member_id||""})`:"",
-        contact?`Contact: ${contact}`:"", e.event_id?`Event Ref: ${e.event_id}`:""
-      ];
-      if(e.event_mode!=="post") lines.push(
-        e.capacity_total?`Places available: ${e.capacity_total}`:"",
-        e.members_booking_open_at?`Members booking opens: ${friendlyDateTime(e.members_booking_open_at)}`:"",
-        e.guests_booking_open_at?`Guest booking opens: ${friendlyDateTime(e.guests_booking_open_at)}`:"",
-        e.booking_close_at?`Booking closes: ${friendlyDateTime(e.booking_close_at)}`:"",
-        e.cancellation_cutoff_at?`Cancellation cutoff: ${friendlyDateTime(e.cancellation_cutoff_at)}`:"",
-        e.refund_cutoff_at?`Refund cutoff: ${friendlyDateTime(e.refund_cutoff_at)}`:"",
-        e.payment_required&&e.cost_per_place?`Cost: £${Number(e.cost_per_place).toFixed(2)} per place`:"",
-        e.payment_instructions?`Payment: ${e.payment_instructions}`:"", e.payment_refund_info||e.payment_note||""
-      );
-      return lines.filter(Boolean).join("\n");
-    }
-    function openEventCanvasFromHandoff(){
-      const e=readEventHandoff();
-      if(!e)return false;
-      const source=normaliseRole(e.source||PAGE_PARAMS.get("source")||"host");
-      const sourceLabel=DATED_SOURCE_LABELS[source]||"Dated";
-      const scope=clean(e.scope_name||PAGE_PARAMS.get("scope_name")||"");
-      const heading=`${sourceLabel}${scope?" — "+scope:""} — Notice`;
-      openCreativeWorkspace(true,heading);
-      if(workNameInput)workNameInput.value=clean(e.title||heading);
-      makeCanvasItem("title",e.title||"Notice","",{left:"8%",top:"6%",width:"84%",height:"12%"});
-      makeCanvasItem("text",eventNoticeFacts(e),"",{left:"8%",top:"22%",width:"84%",height:"34%"});
-      makeCanvasItem("text","Add your invitation, description or other wording here.","",{left:"8%",top:"61%",width:"84%",height:"27%"});
-      undoStack=[];redoStack=[];updateUndoRedo();selectItem(null);
-      return true;
-    }
-
-    function openCreativeWorkspace(fresh=false,label="Creative Canvas"){
-      document.body.classList.add("canvas-active");
-      creativeWorkspace.hidden=false;
-      creativeHeading.textContent=label||"My Own Design";
-      if(fresh||!pages().length){
-        creativePages.innerHTML="";
-        currentPageIndex=0;
-        undoStack=[];
-        redoStack=[];
-        // Artist work opens in Landscape by default; all other YDS routes open in Portrait.
-        // The Role Holder can switch orientation at any time and saved work retains its chosen setting.
-        orientationSelect.value=(CANVAS_MODE==="artist")?"landscape":"portrait";
-        createPage();
-        applyOrientation();
-        renderPageTabs();
-        showCurrentPage();
-        updatePageNumbers();
-        selectItem(null);
-        updateUndoRedo();
-      }
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
-    function openPrintableGuide(){
-      window.location.href="library-publications.html?id=design-studio-guide";
-    }
-
-    function saveDraft(){if(!requireWorkName())return;try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so members will not need to manage image sizes themselves.")}}
-    function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
-    function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
-
-    function safeViewFilename(){
-      const label=clean(creativeHeading?.textContent||"Sanctuary creation")
-        .replace(/[^\w\s-]/g,"")
-        .trim()
-        .replace(/\s+/g,"-")
-        .toLowerCase()||"sanctuary-creation";
-      return `${label}-view.html`;
-    }
-
-    function standaloneViewHtml(){
-      syncDrawingData();
-
-      const pageClones=pages().map((page,pageIndex)=>{
-        const clone=page.cloneNode(true);
-        clone.hidden=false;
-        clone.removeAttribute("hidden");
-        clone.querySelectorAll(".selected,.drawing-edit").forEach(el=>{
-          el.classList.remove("selected","drawing-edit");
-        });
-        clone.querySelectorAll(".drag-handle,.resize-handle,.canvas-guide,.canvas-safe-area,.canvas-empty-hint").forEach(el=>el.remove());
-
-        const originals=[...page.querySelectorAll('.canvas-item[data-kind="drawing"]')];
-        const drawings=[...clone.querySelectorAll('.canvas-item[data-kind="drawing"]')];
-        drawings.forEach((item,i)=>{
-          const originalCanvas=originals[i]?.querySelector(".drawing-surface");
-          const clonedCanvas=item.querySelector(".drawing-surface");
-          if(!clonedCanvas)return;
-          const img=document.createElement("img");
-          img.alt="Drawing";
-          try{
-            img.src=originalCanvas?originalCanvas.toDataURL("image/png"):(item.dataset.drawingData||"");
-          }catch(_){
-            img.src=item.dataset.drawingData||"";
-          }
-          img.style.width="100%";
-          img.style.height="100%";
-          img.style.objectFit="contain";
-          img.style.display="block";
-          clonedCanvas.replaceWith(img);
-        });
-
-        clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
-        return clone.outerHTML;
-      }).join("\n");
-
-      const title=clean(creativeHeading?.textContent||"Sanctuary Design Studio");
-      return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(title||"Sanctuary Design Studio")}</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.viewer-note{max-width:900px;margin:0 auto 18px;padding:12px 16px;border-radius:12px;background:#fff;border:1px solid #d7e3ea;color:#31506b;font-weight:700}
-.canvas-page{position:relative;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.16);overflow:hidden;margin:0 auto 24px;page-break-after:always;break-after:page}
-.canvas-page:last-child{page-break-after:auto;break-after:auto}
-.canvas-page.portrait{width:min(100%,210mm);aspect-ratio:210/297}
-.canvas-page.landscape{width:min(100%,297mm);aspect-ratio:297/210}
-.canvas-item{position:absolute;min-width:70px;min-height:42px;border:0;background:transparent;overflow:visible}
-.canvas-item .item-content{position:absolute;inset:0;overflow:hidden;white-space:pre-wrap;word-break:break-word;padding:.45rem;background:transparent}
-.canvas-item .item-content img{max-width:100%;max-height:100%;display:block;margin:auto;object-fit:contain}
-.canvas-item[data-kind="image"] .item-content,.canvas-item[data-kind="drawing"] .item-content{padding:0;display:flex;align-items:center;justify-content:center}
-.canvas-item[data-kind="image"] img{width:100%;height:100%;object-fit:contain}
-.canvas-item.fill img{object-fit:cover}
-.canvas-item[data-flow-group] .item-content{white-space:normal;line-height:1.5}
-.canvas-item[data-flow-group] .item-content p{margin:.35em 0 .75em}
-.canvas-item[data-flow-group] .item-content h1,.canvas-item[data-flow-group] .item-content h2,.canvas-item[data-flow-group] .item-content h3{margin:.45em 0 .35em;line-height:1.18}
-.canvas-item[data-flow-group] .item-content ul,.canvas-item[data-flow-group] .item-content ol{margin:.35em 0 .75em;padding-left:1.5em}
-.page-number{position:absolute;bottom:1.3%;font-size:12px;color:#61727e;z-index:950;pointer-events:none}.page-number.center{left:50%;transform:translateX(-50%)}.page-number.right{right:3.5%}
-@media print{body{padding:0;background:#fff}.viewer-note{display:none}.canvas-page{box-shadow:none;margin:0 auto}}
-
-    /* Right-side space fix: keep Draw / Paint, Selection and the complete palette visible together. */
-    .canvas-side-right{gap:.22rem;padding:.28rem;overflow-y:auto;overflow-x:hidden;}
-    .canvas-side-right .toolbar-row{gap:.2rem;padding:.3rem;}
-    #drawingToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.2rem;}
-    #drawingToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .2rem;font-size:.76rem;}
-    #drawingToolbar .swatch-row{justify-content:space-between;gap:.12rem;}
-    #drawingToolbar .mini-swatch{width:21px;height:21px!important;}
-    #drawingToolbar .toolbar-check{font-size:.78rem;min-height:28px;}
-    #drawingToolbar select{min-width:82px;padding:.22rem .3rem;}
-    #drawingToolbar .drawing-edit-actions{display:flex;gap:.2rem;}
-    #drawingToolbar .drawing-edit-actions button{flex:1 1 0;width:auto;min-width:0;padding:.28rem .2rem;font-size:.77rem;}
-    #drawingToolbar .draw-mode-note{display:none!important;}
-    #objectToolbar .object-move-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:.18rem;}
-    #objectToolbar .object-move-grid .move-up,
-    #objectToolbar .object-move-grid .move-left,
-    #objectToolbar .object-move-grid .move-centre,
-    #objectToolbar .object-move-grid .move-right,
-    #objectToolbar .object-move-grid .move-down{grid-column:auto;}
-    #objectToolbar .object-move-grid button{min-height:29px;padding:.2rem .1rem;font-size:.78rem;}
-    #objectToolbar .compact-button-row.wrap-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.18rem;}
-    #objectToolbar .compact-button-row.wrap-buttons button{width:100%;min-height:29px;padding:.22rem .12rem;font-size:.73rem;}
-    #objectToolbar .selected-note{display:none!important;}
-    .canvas-side-right .yds-colour-popover{margin:0;padding:.32rem;}
-    .canvas-side-right .yds-colour-target{margin:0 0 .22rem;font-size:.78rem;}
-    .canvas-side-right .yds-colour-sv{height:82px;}
-    .canvas-side-right .yds-hue-range{margin:.22rem 0;}
-    .canvas-side-right .yds-colour-footer{gap:.22rem;}
-    .canvas-side-right .yds-colour-note{display:none!important;}
-</style>
-</head>
-<body>
-<div class="viewer-note">View-only copy saved from Sanctuary Club — Your Design Studio.</div>
-${pageClones}
-</body>
-</html>`;
-    }
-
-    function saveCanvasViewCopy(){
-      try{
-        selectItem(null);
-        const html=standaloneViewHtml();
-        const blob=new Blob([html],{type:"text/html;charset=utf-8"});
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement("a");
-        a.href=url;
-        a.download=safeViewFilename();
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url),1000);
-        alert("A viewable copy has been saved to your computer. Open the .html file in your normal web browser. Use Save My Work separately if you want an editable YDS copy.");
-      }catch(err){
-        console.error(err);
-        alert("The viewable copy could not be saved. Your YDS work remains unchanged.");
-      }
-    }
-
- /*
-  =========================================================
-  YDS PUBLISHING
-  =========================================================
-*/
-
-function getAuthToken(){
-
-  return (
-    sessionStorage.getItem("authToken") ||
-    localStorage.getItem("authToken") ||
-    sessionStorage.getItem("memberToken") ||
-    localStorage.getItem("memberToken") ||
-    ""
-  );
-
-}
-
-
-function isDatedWorkflow(){
-  return CANVAS_MODE === "host" && PUBLICATION_TYPE === "dated";
-}
-
-function publishingAllowed(){
-  if(IS_FUN_MODE) return false;
-  if(isDatedWorkflow()) return Boolean(readEventHandoff());
-  return Boolean(PUBLICATION_DESTINATION);
-}
-
-
-function editorialApprovalRequired(){
-
-  return (
-    CANVAS_MODE === "writer" ||
-    CANVAS_MODE === "artist" ||
-    PUBLICATION_APPROVAL === "editor"
-  );
-
-}
-
-
-function publicationButtonLabel(){
-
-  return editorialApprovalRequired()
-    ? "Submit for Publication"
-    : "Publish";
-
-}
-
-
-function firstUsefulText(){
-
-  const ignored = new Set([
-    "",
-    "Type your title",
-    "Type or paste text",
-    "Start writing here…"
-  ]);
-
-
-  for(const item of pages()){
-
-    const boxes =
-      item.querySelectorAll(
-        '.canvas-item[data-kind="text"] .item-content, ' +
-        '.canvas-item[data-kind="title"] .item-content'
-      );
-
-
-    for(const box of boxes){
-
-      const text =
-        clean(
-          box.textContent
-        );
-
-
-      if(
-        text &&
-        !ignored.has(text)
-      ){
-
-        const firstLine =
-          text
-            .split(/\r?\n/)
-            .map(clean)
-            .find(Boolean);
-
-
-        if(firstLine){
-          return firstLine.slice(0,120);
-        }
-
-      }
-
-    }
-
-  }
-
-
-  return "";
-
-}
-
-
-function publicationCanvasData(){
-
-  syncDrawingData();
-
-  return {
-    format:
-      "sanctuary-yds-publication",
-
-    version:
-      1,
-
-    mode:
-      CANVAS_MODE,
-
-    publication_type:
-      PUBLICATION_TYPE,
-
-    destination:
-      PUBLICATION_DESTINATION,
-
-    retention:
-      PUBLICATION_RETENTION,
-
-    approval:
-      PUBLICATION_APPROVAL,
-
-    state:
-      JSON.parse(
-        snapshotState()
-      )
-  };
-
-}
-
-
-function cleanPublicationPagesHtml(){
-
-  syncDrawingData();
-
-
-  const wrapper =
-    document.createElement(
-      "div"
-    );
-
-
-  pages().forEach(page => {
-
-    const clone =
-      page.cloneNode(true);
-
-
-    clone.hidden =
-      false;
-
-
-    clone
-      .querySelectorAll(
-        ".drag-handle, " +
-        ".resize-handle, " +
-        ".canvas-guide, " +
-        ".canvas-safe-area, " +
-        ".canvas-empty-hint"
-      )
-      .forEach(
-        element =>
-          element.remove()
-      );
-
-
-    clone
-      .querySelectorAll(
-        ".canvas-item"
-      )
-      .forEach(item => {
-
-        item.classList.remove(
-          "selected",
-          "drawing-edit"
-        );
-
-      });
-
-
-    clone
-      .querySelectorAll(
-        "[contenteditable]"
-      )
-      .forEach(element => {
-
-        element.removeAttribute(
-          "contenteditable"
-        );
-
-      });
-
-
-    wrapper.appendChild(
-      clone
-    );
-
-  });
-
-
-  return wrapper.innerHTML;
-
-}
-
-
-function currentDatedWipKey(){
-  return sessionStorage.getItem("sanctuaryCurrentDatedWipKey")||localStorage.getItem("sanctuaryCurrentDatedWipKey")||"";
-}
-
-async function publishDatedCanvas(){
-  const token=getAuthToken();
-  const handoff=readEventHandoff();
-  if(!token||!handoff){
-    alert("Your dated Work in Progress could not be found. Please return to Your Design Studio and reopen it.");
-    return;
-  }
-
-  finishDrawingEdit();
-  selectItem(null);
-
-  const payload={...(handoff.event_payload||{})};
-  payload.status="published";
-  payload.workflow_status="published";
-  payload.notice_published=true;
-  payload.yds_notice_pending=false;
-  payload.notice_title=clean(handoff.title||payload.title||firstUsefulText()||"Notice");
-  payload.notice_body_html=cleanPublicationPagesHtml();
-  payload.notice_body=payload.notice_body_html;
-  payload.notice_summary=clean(handoff.title||payload.title||"");
-  payload.source=handoff.source||payload.source||"host";
-  payload.producer_role=handoff.producer_role||payload.producer_role||payload.source;
-  payload.scope_id=handoff.scope_id||payload.scope_id||"";
-  payload.scope_name=handoff.scope_name||payload.scope_name||"";
-  payload.producer_resident_id=handoff.producer_resident_id||payload.host_resident_id||"";
-  payload.producer_member_id=handoff.producer_member_id||payload.host_member_id||"";
-  payload.retention_rule="event-date-plus-60-days";
-  payload.canvas_data=publicationCanvasData();
-
-  const existingId=clean(handoff.event_id||payload.event_id||"");
-  const method=existingId?"PUT":"POST";
-  const url=existingId?`${API_BASE}/api/events/${encodeURIComponent(existingId)}`:`${API_BASE}/api/events`;
-  const button=document.getElementById("publishCanvasBtn");
-  const oldText=button?.textContent||"Publish";
-  if(button){button.disabled=true;button.textContent="Publishing…";}
-
-  try{
-    const response=await fetch(url,{method,headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},body:JSON.stringify(payload)});
-    const data=await response.json().catch(()=>({}));
-    if(!response.ok||data.success===false) throw new Error(data.message||`Publication failed (${response.status})`);
-
-    const event=data.event||data.item||{};
-    const eventId=clean(data.event_id||event.event_id||existingId);
-    if(eventId) sessionStorage.setItem("sanctuaryCurrentEventId",eventId);
-
-    handoff.workflow_status="published";
-    handoff.event_id=eventId||existingId;
-    sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(handoff));
-
-    const wipKey=currentDatedWipKey();
-    if(wipKey){localStorage.removeItem(wipKey);sessionStorage.removeItem(wipKey);}
-    localStorage.removeItem("sanctuaryCurrentDatedWipKey");
-    sessionStorage.removeItem("sanctuaryCurrentDatedWipKey");
-
-    alert("Published. Calendar, Events List and linked Notice are now live together.");
-    if(eventId) location.href=`events-details.html?event_id=${encodeURIComponent(eventId)}`;
-    else location.href="your-design-studio.html";
-  }catch(error){
-    console.error(error);
-    alert(error.message||"Your dated item could not be published. Your Work in Progress remains saved.");
-  }finally{
-    if(button){button.disabled=false;button.textContent=oldText;}
-  }
-}
-
-async function publishCanvas(){
-
-  if(
-    !publishingAllowed()
-  ){
-    return;
-  }
-
-  if(isDatedWorkflow()){
-    return publishDatedCanvas();
-  }
-
-
-  const token =
-    getAuthToken();
-
-
-  if(!token){
-
-    alert(
-      "Your Design Studio session has expired. Please return to Your Design Studio and sign in again."
-    );
-
-    return;
-  }
-
-
-  finishDrawingEdit();
-
-  selectItem(null);
-
-
-  const suggestedTitle =
-    firstUsefulText();
-
-
-  const enteredTitle =
-    window.prompt(
-      "Title for this Library item:",
-      suggestedTitle
-    );
-
-
-  if(
-    enteredTitle === null
-  ){
-    return;
-  }
-
-
-  const title =
-    clean(
-      enteredTitle
-    );
-
-
-  if(!title){
-
-    alert(
-      "Please give your work a title before publishing it."
-    );
-
-    return;
-  }
-
-
-  const button =
-    document.getElementById(
-      "publishCanvasBtn"
-    );
-
-
-  const oldText =
-    button.textContent;
-
-
-  button.disabled =
-    true;
-
-
-  button.textContent =
-    editorialApprovalRequired()
-      ? "Submitting…"
-      : "Publishing…";
-
-
-  try{
-
-    const payload = {
-
-      title,
-
-      mode:
-        CANVAS_MODE,
-
-      publication_type:
-        PUBLICATION_TYPE,
-
-      destination:
-        PUBLICATION_DESTINATION,
-
-      retention:
-        PUBLICATION_RETENTION,
-
-      approval:
-        PUBLICATION_APPROVAL,
-
-      privacy:
-        CANVAS_MODE === "panel"
-          ? "role"
-          : "access",
-
-      creator_name:
-        sessionStorage.getItem(
-          "currentDisplayName"
-        ) ||
-        localStorage.getItem(
-          "currentDisplayName"
-        ) ||
-        "",
-
-      body_html:
-        cleanPublicationPagesHtml(),
-
-      canvas_data:
-        publicationCanvasData()
-
-    };
-
-
-    const response =
-      await fetch(
-        `${API_BASE}/api/library-publications`,
-        {
-          method:
-            "POST",
-
-          headers:{
-            "Content-Type":
-              "application/json",
-
-            "Authorization":
-              `Bearer ${token}`
-          },
-
-          body:
-            JSON.stringify(
-              payload
-            )
-        }
-      );
-
-
-    const data =
-      await response.json()
-        .catch(
-          () => ({})
-        );
-
-
-    if(
-      !response.ok ||
-      data.success === false
-    ){
-
-      throw new Error(
-        data.message ||
-        `Publication failed (${response.status})`
-      );
-
-    }
-
-
-    /*
-      Once successfully handed to the backend,
-      keep its identity available to later editing
-      work in this browser session.
-    */
-
-    const publication =
-      data.publication ||
-      {};
-
-
-    if(
-      publication.publication_id
-    ){
-
-      sessionStorage.setItem(
-        "sanctuaryCurrentPublicationId",
-        publication.publication_id
-      );
-
-    }
-
-
-    if(
-      publication.status === "submitted"
-    ){
-
-      alert(
-        "Your work has been submitted for editorial approval."
-      );
-
-    }else{
-
-      alert(
-        "Your work has been published to the Library."
-      );
-
-    }
-
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-
-    alert(
-      error.message ||
-      "Your work could not be published."
-    );
-
-
-  }finally{
-
-    button.disabled =
-      false;
-
-
-    button.textContent =
-      oldText;
-
-  }
-
-}
-
-
-function configurePublishingButton(){
-
-  const button =
-    document.getElementById(
-      "publishCanvasBtn"
-    );
-
-
-  if(!button){
-    return;
-  }
-
-
-  if(
-    !publishingAllowed()
-  ){
-
-    button.hidden =
-      true;
-
-    return;
-  }
-
-
-  button.hidden =
-    false;
-
-
-  button.textContent =
-    publicationButtonLabel();
-
-}
-    
-    const toolsChoice=document.getElementById("toolsChoice");
-    function holdWorkForTools(){
-      sessionStorage.setItem(TOOLS_STATE_KEY,snapshotState());
-      sessionStorage.setItem(TOOLS_RETURN_KEY,window.location.href);
-      sessionStorage.removeItem(TOOLS_ACTION_KEY);
-    }
-    document.getElementById("canvasToolsBtn").addEventListener("click",()=>{toolsChoice.hidden=false;});
-    document.getElementById("toolsChoiceCancelBtn").addEventListener("click",()=>{toolsChoice.hidden=true;});
-    document.getElementById("toolsThisScreenBtn").addEventListener("click",()=>{
-      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools & Guide. Please use Save Draft first, then try again.");}
-    });
-    document.getElementById("toolsSecondScreenBtn").addEventListener("click",()=>{
-      try{
-        holdWorkForTools();
-        const w=window.open("design-studio-tools.html?screen=second","sanctuaryYdsTools","width=760,height=850,resizable=yes,scrollbars=yes");
-        if(!w) alert("Your browser blocked the second Tools window. Please allow pop-ups for Sanctuary Club, or choose Use this screen.");
-        toolsChoice.hidden=true;
-      }catch(err){console.error(err);alert("Tools & Guide could not be opened safely. Please use this screen instead.");}
-    });
-    window.addEventListener("message",event=>{
-      if(event.origin!==window.location.origin)return;
-      const data=event.data||{};
-      if(data.type!=="sanctuary-yds-tools-action")return;
-      const action=String(data.action||"");
-      if(action) sessionStorage.setItem(TOOLS_ACTION_KEY,action);
-      runToolsActionIfRequested();
-    });
-    document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{window.location.href=IS_FUN_MODE?"library.html":"your-design-studio.html";});
-    document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
-    orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});
-    document.getElementById("quickGuideBtn").addEventListener("click",openPrintableGuide);
-    function requireWorkName(){
-      if(clean(workNameInput?.value))return true;
-      alert("Please name this work before you begin, so you can find it again later.");
-      workNameInput?.focus();
-      return false;
-    }
-    document.getElementById("addCanvasTextBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("text")});document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{if(!requireWorkName())return;pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"})});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
-    canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
-    document.addEventListener("selectionchange",()=>{
-      const selection=window.getSelection();
-      if(!selection||!selection.rangeCount||selection.isCollapsed)return;
-      const range=selection.getRangeAt(0);
-      const content=selectedItem?.querySelector(".item-content");
-      if(content&&content.contains(range.startContainer)&&content.contains(range.endContainer)){
-        savedTextRange=range.cloneRange();
-      }
-    });
-    formatToolbar.addEventListener("pointerdown",captureCurrentTextSelection,true);
-
-    fontFamilySelect.addEventListener("change",()=>applySelectedInlineStyle("fontFamily",fontFamilySelect.value,content=>{content.style.fontFamily=fontFamilySelect.value}));
-    fontSizeInput.addEventListener("change",()=>applySelectedFontSize(fontSizeInput.value));
-    document.getElementById("formatBoldBtn").addEventListener("click",()=>applySelectedTextCommand("bold",null,content=>{content.style.fontWeight=parseInt(getComputedStyle(content).fontWeight)>=700?"400":"700"}));
-    document.getElementById("formatItalicBtn").addEventListener("click",()=>applySelectedTextCommand("italic",null,content=>{content.style.fontStyle=getComputedStyle(content).fontStyle==="italic"?"normal":"italic"}));
-    document.getElementById("formatUnderlineBtn").addEventListener("click",()=>applySelectedTextCommand("underline",null,content=>{content.style.textDecoration=getComputedStyle(content).textDecorationLine.includes("underline")?"none":"underline"}));
-    document.getElementById("alignLeftBtn").addEventListener("click",()=>applyTextStyle("textAlign","left"));
-    document.getElementById("alignCentreBtn").addEventListener("click",()=>applyTextStyle("textAlign","center"));
-    document.getElementById("alignRightBtn").addEventListener("click",()=>applyTextStyle("textAlign","right"));
-    textColourInput.addEventListener("input",()=>applySelectedTextColour(textColourInput.value));
-    backgroundColourInput.addEventListener("input",()=>{
-      if(panelBackgroundMode==="gradient") setSelectedPanelGradientBackground();
-      else setSelectedPanelSolidBackground();
-    });
-    panelTintColourInput.addEventListener("input",()=>{
-      if(selectedItem && selectedItem.dataset.kind!=="image" && selectedItem.dataset.kind!=="drawing"){
-        panelBackgroundMode="gradient";
-        setSelectedPanelGradientBackground();
-      }
-    });
-    pageBackgroundColour1.addEventListener("input",()=>{
-      if(pageBackgroundMode==="gradient") setCurrentPageGradientBackground();
-      else setCurrentPageSolidBackground();
-    });
-    pageBackgroundColour2.addEventListener("input",()=>{
-      pageBackgroundMode="gradient";
-      setCurrentPageGradientBackground();
-    });
-    pageGradientDirection.addEventListener("change",()=>{if(pageBackgroundMode==="gradient")setCurrentPageGradientBackground();});
-    panelGradientDirection.addEventListener("change",()=>{if(panelBackgroundMode==="gradient")setSelectedPanelGradientBackground();});
-    document.getElementById("gradedPanelBtn").addEventListener("click",setSelectedPanelGradientBackground);
-    document.getElementById("solidPanelBtn").addEventListener("click",setSelectedPanelSolidBackground);
-    document.getElementById("transparentBackgroundBtn").addEventListener("click",setSelectedPanelTransparent);
-    document.getElementById("applyPageGradientBtn").addEventListener("click",setCurrentPageGradientBackground);
-    document.getElementById("applyPageSolidBtn").addEventListener("click",setCurrentPageSolidBackground);
-    document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));
-    document.getElementById("drawLineBtn").addEventListener("click",()=>setDrawingTool("line"));
-    document.getElementById("drawRectBtn").addEventListener("click",()=>setDrawingTool("rect"));
-    document.getElementById("drawOvalBtn").addEventListener("click",()=>setDrawingTool("oval"));
-    document.getElementById("drawFillBtn").addEventListener("click",()=>setDrawingTool("fill"));
-    document.getElementById("drawEraserBtn").addEventListener("click",()=>setDrawingTool("eraser"));
-    ["drawRectBtn","drawOvalBtn"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{if(drawNoFill.checked&&drawNoOutline.checked)drawNoFill.checked=false;}));
-
-    document.getElementById("editDrawingBtn").addEventListener("click",()=>{if(selectedItem?.dataset.kind==="drawing")beginDrawingEdit(selectedItem)});
-    document.getElementById("finishDrawingBtn").addEventListener("click",finishDrawingEdit);
-    document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
-    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Recover the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be recovered.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);
-    document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);
-    document.getElementById("importCanvasBtn").addEventListener("click",()=>{importCanvasFileInput.value="";importCanvasFileInput.click()});
-    importCanvasFileInput.addEventListener("change",()=>importPortableProjectFile(importCanvasFileInput.files&&importCanvasFileInput.files[0]));
-document
-  .getElementById(
-    "savePdfBtn"
-  )
-  .addEventListener(
-    "click",
-    saveCanvasViewCopy
-  );
-
-document
-  .getElementById(
-    "printCanvasBtn"
-  )
-  .addEventListener(
-    "click",
-    printCanvas
-  );
-
-
-document
-  .getElementById(
-    "publishCanvasBtn"
-  )
-  .addEventListener(
-    "click",
-    publishCanvas
-  );
-
-
-    document.addEventListener("keydown",e=>{if(creativeWorkspace.hidden)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redoCanvas():undoCanvas()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redoCanvas()}else if(e.key==="Delete"&&selectedItem&&!drawingEditingItem&&!document.activeElement?.isContentEditable){deleteSelected()}});
-    creativePages.addEventListener("pointerdown",e=>{
-      // Blank canvas never creates an object. It only clears the current selection.
-      if(e.target.classList.contains("canvas-page")||e.target.classList.contains("canvas-safe-area")||e.target.classList.contains("canvas-empty-hint")){
-        finishDrawingEdit();
-        selectItem(null);
-      }
-    });
-    window.addEventListener("afterprint",()=>{document.body.classList.remove("print-canvas");showCurrentPage()});
-    updateUndoRedo();
-
-
-
-    function initialiseCanvasPage(){
-      if(IS_FUN_MODE){
-        funBanner.hidden=false;
-        modeIntro.textContent="A creative space for pleasure — no publishing rights from this route.";
-        backTopBtn.href="library.html";
-        backTopBtn.textContent="Library";
-        document.getElementById("backFromCanvasBtn").textContent="← Library";
-        openCreativeWorkspace(true,FUN_MODE==="write"?"Just for fun — Write Something":"Just for fun — Create Something");
-        if(FUN_MODE==="write"){
-          makeCanvasItem("text","Start writing here…","",{left:"8%",top:"10%",width:"84%",height:"78%"});
-          undoStack=[];redoStack=[];updateUndoRedo();selectItem(null);
-        }
-        return;
-      }
-
-      if(!hasStudioSession()||!authorisedForMode()){
-        window.location.replace("your-design-studio.html");
-        return;
-      }
-
-      const label=MODE_LABELS[CANVAS_MODE]||"Design Studio";
-      modeIntro.textContent=`Working as: ${label}.`;
-      document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
-
-      if(PAGE_PARAMS.get("open")==="event-canvas"&&isDatedWorkflow()){
-        const e=readEventHandoff();
-        const source=normaliseRole(e?.source||PAGE_PARAMS.get("source")||"host");
-        const sourceLabel=DATED_SOURCE_LABELS[source]||"Dated";
-        const scope=clean(e?.scope_name||PAGE_PARAMS.get("scope_name")||"");
-        modeIntro.textContent=`Working on private Work in Progress: ${sourceLabel}${scope?" — "+scope:""}. Nothing appears in Calendar, Events List or Notices until you press Publish.`;
-        if(openEventCanvasFromHandoff())return;
-      }
-
-      openCreativeWorkspace(true,label);
-    }
-
-    logoutBtn.addEventListener("click",()=>{
-      try{["authToken","memberToken","currentMemberId","currentResidentId","verifiedResidentId","hostAreaVerified","hostAreaRoles","currentDisplayName"].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)});}catch(e){console.warn("Logout cleanup failed.",e)}
-      window.location.href="members-info.html";
-    });
-
-    initialiseCanvasPage();
-    configurePublishingButton();
-
-    // Returning from Tools & Guide: restore the exact work that was on screen,
-    // then perform any requested action on that same work.
-    try{
-      const toolsState=sessionStorage.getItem(TOOLS_STATE_KEY);
-      const toolsReturn=sessionStorage.getItem(TOOLS_RETURN_KEY);
-      const returningFromTools=toolsState && toolsReturn && toolsReturn===window.location.href;
-      if(returningFromTools){
-        restoreState(toolsState);
-        sessionStorage.removeItem(TOOLS_STATE_KEY);
-        sessionStorage.removeItem(TOOLS_RETURN_KEY);
-        const toolsAction=sessionStorage.getItem(TOOLS_ACTION_KEY)||"";
-        sessionStorage.removeItem(TOOLS_ACTION_KEY);
-        setTimeout(()=>{
-          if(toolsAction==="save-work") document.getElementById("exportCanvasBtn")?.click();
-          else if(toolsAction==="open-work") document.getElementById("importCanvasBtn")?.click();
-          else if(toolsAction==="save-view") document.getElementById("savePdfBtn")?.click();
-          else if(toolsAction==="print") document.getElementById("printCanvasBtn")?.click();
-        },80);
-      }
-    }catch(err){
-      console.error("Could not restore work after Tools & Guide.",err);
+        sessionStorage.removeItem("sanctuaryAccess");
+        sessionStorage.removeItem("sanctuaryAccessTime");
+        sessionStorage.removeItem("sanctuaryMDAccess");
+        sessionStorage.removeItem("sanctuaryMDAccessTime");
+        localStorage.removeItem("authToken");
+        sessionStorage.removeItem("authToken");
+        localStorage.removeItem("memberToken");
+        sessionStorage.removeItem("memberToken");
+      }catch(e){}
+
+      window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>

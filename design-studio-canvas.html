@@ -443,6 +443,7 @@
 
     /* 4 Sep 2026 — work identity and text tools belong in the side panels, never over the artwork. */
     body.canvas-active .text-format-side{display:flex!important;flex-direction:column;align-items:stretch;gap:.17rem;padding:.24rem;margin:0;}
+    body.canvas-active #formatToolbar[hidden]{display:none!important;}
     body.canvas-active .text-format-side .compact-button-row{display:flex;width:100%;gap:.15rem;}
     body.canvas-active .text-format-side .compact-button-row button{flex:1 1 0;width:auto;min-height:25px;padding:.2rem .24rem;}
     body.canvas-active .text-format-side select{width:100%;min-height:25px;padding:.18rem .25rem;}
@@ -2694,6 +2695,14 @@ function configurePublishingButton(){
       const content=selectedItem?.querySelector(".item-content");
       if(content&&content.contains(range.startContainer)&&content.contains(range.endContainer)){
         savedTextRange=range.cloneRange();
+        formatToolbar.hidden=false;
+        const rightTools=document.querySelector(".canvas-side-right");
+        if(rightTools){
+          requestAnimationFrame(()=>{
+            const targetTop=Math.max(0,formatToolbar.offsetTop-rightTools.clientHeight+formatToolbar.offsetHeight+6);
+            rightTools.scrollTop=targetTop;
+          });
+        }
       }
     });
     formatToolbar.addEventListener("pointerdown",captureCurrentTextSelection,true);

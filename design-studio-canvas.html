@@ -589,11 +589,16 @@
             <span class="toolbar-label">Draw / Paint</span>
             <div class="compact-button-row wrap-buttons">
               <button id="drawPencilBtn" type="button">✏️ Pencil</button>
+              <button id="drawBrushBtn" type="button">🖌️ Brush</button>
               <button id="drawLineBtn" type="button">Line</button>
               <button id="drawRectBtn" type="button">Rectangle</button>
               <button id="drawOvalBtn" type="button">Oval</button>
-              <button id="drawFillBtn" type="button">🪣 Fill</button>
+              <button id="drawFillBtn" type="button">🪣 Paint Bucket</button>
               <button id="drawEraserBtn" type="button">Eraser</button>
+            </div>
+            <div class="compact-button-row drawing-history-actions">
+              <button id="drawUndoBtn" type="button">↶ Undo Last Action</button>
+              <button id="drawRedoBtn" type="button">↷ Redo</button>
             </div>
             <label class="toolbar-check">Line <input id="drawLineColour" class="yds-colour-source" type="text" value="#173042" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawLineColour" aria-label="Choose line colour" title="Choose line colour"></button></label>
             <span class="swatch-row" id="drawLineSwatches" aria-label="Quick line colours">
@@ -612,7 +617,8 @@
                 <option value="15">Very thick</option>
               </select>
             </label>
-            <label class="toolbar-check">Shape fill <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape fill colour" title="Choose shape fill colour"></button></label>
+            <label class="toolbar-check">Fill shape <input id="drawFillColour" class="yds-colour-source" type="text" value="#d9ecff" aria-hidden="true" tabindex="-1"><button type="button" class="yds-colour-trigger" data-colour-for="drawFillColour" aria-label="Choose shape or paint-bucket colour" title="Choose fill colour"></button></label>
+            <button id="mixColourBtn" type="button">🎨 Mix Colour</button>
             <label class="toolbar-check"><input id="drawNoFill" type="checkbox" checked> No fill</label>
             <label class="toolbar-check"><input id="drawNoOutline" type="checkbox"> No outline</label>
             <div class="compact-button-row drawing-edit-actions">
@@ -631,9 +637,41 @@
             <div class="yds-colour-footer">
               <span id="ydsColourPreview" class="yds-colour-preview" aria-hidden="true"></span>
               <input id="ydsColourHex" class="yds-colour-hex" type="text" maxlength="7" value="#FFFFFF" aria-label="Hex colour">
-              <button id="ydsColourDone" class="yds-colour-done" type="button">Apply</button>
+              <button id="ydsColourDone" class="yds-colour-done" type="button">Use Colour</button>
             </div>
             <p class="yds-colour-note">Choose a colour button above, slide through the rainbow, then click the tint or shade you want.</p>
+          </div>
+
+          <div id="colourMixer" class="colour-mixer" hidden aria-label="Mix colours">
+            <div id="colourMixerHandle" class="colour-mixer-handle">
+              <strong>🎨 Mix Colour</strong>
+              <button id="closeColourMixer" type="button" aria-label="Close colour mixer">×</button>
+            </div>
+            <div class="colour-mixer-body">
+              <div class="colour-mixer-pots">
+                <label>Colour A <input id="mixColourA" type="color" value="#ffd700"></label>
+                <span>+</span>
+                <label>Colour B <input id="mixColourB" type="color" value="#4472c4"></label>
+              </div>
+              <label class="mix-balance">Mix
+                <input id="mixBalance" type="range" min="0" max="100" value="50">
+              </label>
+              <div class="mix-result-row">
+                <span>Result</span>
+                <span id="mixResult" class="mix-result" aria-label="Mixed colour"></span>
+                <code id="mixResultHex">#808080</code>
+              </div>
+              <div class="mix-target-row">
+                <span>Use for</span>
+                <button id="mixForLine" class="active" type="button">Line / Brush</button>
+                <button id="mixForFill" type="button">Fill</button>
+              </div>
+              <div class="mix-actions">
+                <button id="useMixedColour" type="button">Use This Colour</button>
+                <button id="cancelMixedColour" type="button">Cancel</button>
+              </div>
+              <p class="mix-note">Mix two colours as you would on a palette. Move the slider towards the colour you want more of.</p>
+            </div>
           </div>
 
           <div class="toolbar-row" id="textBackgroundToolbar">
@@ -1065,7 +1103,7 @@
     }
     function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
     function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
-    function updateUndoRedo(){document.getElementById("undoCanvasBtn").disabled=!undoStack.length;document.getElementById("redoCanvasBtn").disabled=!redoStack.length}
+    function updateUndoRedo(){document.getElementById("undoCanvasBtn").disabled=!undoStack.length;document.getElementById("redoCanvasBtn").disabled=!redoStack.length;const du=document.getElementById("drawUndoBtn"),dr=document.getElementById("drawRedoBtn");if(du)du.disabled=!undoStack.length;if(dr)dr.disabled=!redoStack.length}
 
     function createPage(copyHtml=""){
       const p=document.createElement("div");p.className=`canvas-page ${orientationSelect.value}`;p.innerHTML=copyHtml||`<div class="canvas-safe-area"></div><div class="canvas-guide v"></div><div class="canvas-guide h"></div><div class="canvas-empty-hint">Choose Add Text, Add Illustration or Draw / Paint to begin.</div><div class="page-number center"></div>`;creativePages.appendChild(p);bindPageItems(p);return p
@@ -1371,10 +1409,10 @@
     }
     function setDrawingTool(tool){
       drawingTool=tool;
-      ["drawPencilBtn","drawLineBtn","drawRectBtn","drawOvalBtn","drawFillBtn","drawEraserBtn"].forEach(id=>{
+      ["drawPencilBtn","drawBrushBtn","drawLineBtn","drawRectBtn","drawOvalBtn","drawFillBtn","drawEraserBtn"].forEach(id=>{
         const b=document.getElementById(id);
         if(!b)return;
-        const map={drawPencilBtn:"pencil",drawLineBtn:"line",drawRectBtn:"rect",drawOvalBtn:"oval",drawFillBtn:"fill",drawEraserBtn:"eraser"};
+        const map={drawPencilBtn:"pencil",drawBrushBtn:"brush",drawLineBtn:"line",drawRectBtn:"rect",drawOvalBtn:"oval",drawFillBtn:"fill",drawEraserBtn:"eraser"};
         b.classList.toggle("active",map[id]===tool);
       });
     }
@@ -1403,7 +1441,7 @@
       if(drawingTool==="fill"){floodFillCanvas(canvas,Math.round(pt.x),Math.round(pt.y),hexToRgba(drawFillColour.value,255));drawingPointerActive=false;syncDrawingData();return}
       if(["line","rect","oval"].includes(drawingTool))drawSavedImage=ctx.getImageData(0,0,canvas.width,canvas.height);
       drawingStyle(ctx);
-      if(drawingTool==="pencil"){ctx.globalCompositeOperation="source-over";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
+      if(drawingTool==="pencil"||drawingTool==="brush"){ctx.globalCompositeOperation="source-over";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
       if(drawingTool==="eraser"){ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.moveTo(pt.x,pt.y)}
     }
     function drawingPointerMove(e,d){
@@ -1411,10 +1449,14 @@
       e.preventDefault();
       const canvas=d.querySelector(".drawing-surface"),ctx=canvas.getContext("2d"),pt=drawingPoint(e,canvas);
       drawingStyle(ctx);
-      if(drawingTool==="pencil"){
-        ctx.globalCompositeOperation="source-over";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
+      if(drawingTool==="pencil"||drawingTool==="brush"){
+        ctx.globalCompositeOperation="source-over";
+        ctx.lineWidth=drawingTool==="brush"?Math.max(12,(Number(drawThickness.value)||5)*2.6):(Number(drawThickness.value)||5);
+        ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
       }else if(drawingTool==="eraser"){
-        ctx.globalCompositeOperation="destination-out";ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
+        ctx.globalCompositeOperation="destination-out";
+        ctx.lineWidth=Math.max(28,(Number(drawThickness.value)||5)*4);
+        ctx.lineTo(pt.x,pt.y);ctx.stroke();lastDrawPoint=pt;
       }else if(["line","rect","oval"].includes(drawingTool)&&drawSavedImage){
         ctx.globalCompositeOperation="source-over";ctx.putImageData(drawSavedImage,0,0);drawingStyle(ctx);
         const x=drawStart.x,y=drawStart.y,w=pt.x-x,h=pt.y-y;
@@ -2085,6 +2127,42 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
     #drawingToolbar .drawing-edit-actions{display:flex;gap:.2rem;}
     #drawingToolbar .drawing-edit-actions button{flex:1 1 0;width:auto;min-width:0;padding:.28rem .2rem;font-size:.77rem;}
     #drawingToolbar .draw-mode-note{display:none!important;}
+    #drawingToolbar .drawing-history-actions{display:grid;grid-template-columns:1.5fr .8fr;gap:.2rem;}
+    #drawingToolbar .drawing-history-actions button{width:100%;min-height:30px;padding:.25rem .2rem;font-size:.76rem;}
+    #mixColourBtn{width:100%;min-height:30px;}
+    .colour-mixer{
+      position:fixed;
+      left:50%;
+      top:48%;
+      transform:translate(-50%,-50%);
+      z-index:5000;
+      width:min(360px,calc(100vw - 30px));
+      border:1px solid #9eb9c4;
+      border-radius:14px;
+      background:#f8fcfd;
+      box-shadow:0 14px 40px rgba(18,55,70,.28);
+      overflow:hidden;
+    }
+    .colour-mixer[hidden]{display:none!important;}
+    .colour-mixer-handle{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:.55rem .7rem;background:#e6f2f6;cursor:move;user-select:none;
+      border-bottom:1px solid #bdd1d8;
+    }
+    .colour-mixer-handle button{font-size:1.2rem;line-height:1;padding:.1rem .45rem;}
+    .colour-mixer-body{padding:.7rem;display:grid;gap:.65rem;}
+    .colour-mixer-pots{display:flex;align-items:end;justify-content:center;gap:.7rem;}
+    .colour-mixer-pots label{display:grid;gap:.25rem;font-size:.82rem;font-weight:700;}
+    .colour-mixer-pots input[type="color"]{width:72px;height:48px;padding:2px;border:1px solid #9eb9c4;border-radius:9px;background:#fff;}
+    .mix-balance{display:grid;gap:.25rem;font-size:.82rem;font-weight:700;}
+    .mix-result-row{display:flex;align-items:center;justify-content:center;gap:.55rem;}
+    .mix-result{width:54px;height:34px;border-radius:8px;border:1px solid #8da9b4;background:#808080;}
+    .mix-target-row{display:flex;align-items:center;justify-content:center;gap:.3rem;flex-wrap:wrap;font-size:.8rem;}
+    .mix-target-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+    .mix-actions{display:grid;grid-template-columns:1fr .7fr;gap:.35rem;}
+    .mix-actions button{width:100%;}
+    .mix-note{margin:0;font-size:.75rem;line-height:1.35;color:#4b6570;}
+
     #objectToolbar .object-move-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:.18rem;}
     #objectToolbar .object-move-grid .move-up,
     #objectToolbar .object-move-grid .move-left,
@@ -2794,6 +2872,7 @@ function configurePublishingButton(){
     document.getElementById("applyPageGradientBtn").addEventListener("click",setCurrentPageGradientBackground);
     document.getElementById("applyPageSolidBtn").addEventListener("click",setCurrentPageSolidBackground);
     document.getElementById("drawPencilBtn").addEventListener("click",()=>setDrawingTool("pencil"));
+    document.getElementById("drawBrushBtn").addEventListener("click",()=>setDrawingTool("brush"));
     document.getElementById("drawLineBtn").addEventListener("click",()=>setDrawingTool("line"));
     document.getElementById("drawRectBtn").addEventListener("click",()=>setDrawingTool("rect"));
     document.getElementById("drawOvalBtn").addEventListener("click",()=>setDrawingTool("oval"));
@@ -2803,6 +2882,90 @@ function configurePublishingButton(){
 
     document.getElementById("editDrawingBtn").addEventListener("click",()=>{if(selectedItem?.dataset.kind==="drawing")beginDrawingEdit(selectedItem)});
     document.getElementById("finishDrawingBtn").addEventListener("click",finishDrawingEdit);
+    document.getElementById("drawUndoBtn").addEventListener("click",undoCanvas);
+    document.getElementById("drawRedoBtn").addEventListener("click",redoCanvas);
+
+    // Temporary artist's palette: two-colour paint-like mixing.
+    const colourMixer=document.getElementById("colourMixer");
+    const mixColourA=document.getElementById("mixColourA");
+    const mixColourB=document.getElementById("mixColourB");
+    const mixBalance=document.getElementById("mixBalance");
+    const mixResult=document.getElementById("mixResult");
+    const mixResultHex=document.getElementById("mixResultHex");
+    let mixedColourTarget="line";
+
+    function hexRgb(hex){
+      const h=String(hex||"#000000").replace("#","");
+      return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)||0);
+    }
+    function rgbHex(rgb){
+      return "#"+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");
+    }
+    // Approximate pigment mixing: weighted geometric blend darkens mixtures
+    // slightly, producing a more paint-like result than plain screen RGB averaging.
+    function mixPaintColours(a,b,t){
+      const A=hexRgb(a),B=hexRgb(b),p=Math.max(0,Math.min(1,t));
+      return rgbHex(A.map((v,i)=>{
+        const linear=(1-p)*v+p*B[i];
+        const pigment=Math.sqrt(Math.max(0,v)*Math.max(0,B[i]));
+        const strength=4*p*(1-p);
+        return linear*(1-.22*strength)+pigment*(.22*strength);
+      }));
+    }
+    function refreshMixedColour(){
+      const hex=mixPaintColours(mixColourA.value,mixColourB.value,Number(mixBalance.value)/100);
+      mixResult.style.background=hex;
+      mixResultHex.textContent=hex.toUpperCase();
+      return hex;
+    }
+    function setMixedTarget(target){
+      mixedColourTarget=target;
+      document.getElementById("mixForLine").classList.toggle("active",target==="line");
+      document.getElementById("mixForFill").classList.toggle("active",target==="fill");
+    }
+    function openColourMixer(){
+      colourMixer.hidden=false;
+      refreshMixedColour();
+    }
+    function closeColourMixer(){colourMixer.hidden=true}
+    document.getElementById("mixColourBtn").addEventListener("click",openColourMixer);
+    document.getElementById("closeColourMixer").addEventListener("click",closeColourMixer);
+    document.getElementById("cancelMixedColour").addEventListener("click",closeColourMixer);
+    document.getElementById("mixForLine").addEventListener("click",()=>setMixedTarget("line"));
+    document.getElementById("mixForFill").addEventListener("click",()=>setMixedTarget("fill"));
+    [mixColourA,mixColourB,mixBalance].forEach(el=>el.addEventListener("input",refreshMixedColour));
+    document.getElementById("useMixedColour").addEventListener("click",()=>{
+      const hex=refreshMixedColour();
+      const target=mixedColourTarget==="fill"?drawFillColour:drawLineColour;
+      target.value=hex;
+      target.dispatchEvent(new Event("ydscolourrefresh"));
+      closeColourMixer();
+    });
+
+    // The mixer floats over the canvas and can be moved out of the artist's way.
+    (()=>{
+      const handle=document.getElementById("colourMixerHandle");
+      let dragging=false,dx=0,dy=0;
+      handle.addEventListener("pointerdown",e=>{
+        if(e.target.closest("button"))return;
+        const r=colourMixer.getBoundingClientRect();
+        colourMixer.style.transform="none";
+        colourMixer.style.left=r.left+"px";
+        colourMixer.style.top=r.top+"px";
+        dragging=true;dx=e.clientX-r.left;dy=e.clientY-r.top;
+        try{handle.setPointerCapture(e.pointerId)}catch{}
+      });
+      handle.addEventListener("pointermove",e=>{
+        if(!dragging)return;
+        const maxX=Math.max(0,window.innerWidth-colourMixer.offsetWidth);
+        const maxY=Math.max(0,window.innerHeight-colourMixer.offsetHeight);
+        colourMixer.style.left=Math.max(0,Math.min(maxX,e.clientX-dx))+"px";
+        colourMixer.style.top=Math.max(0,Math.min(maxY,e.clientY-dy))+"px";
+      });
+      const stop=()=>dragging=false;
+      handle.addEventListener("pointerup",stop);
+      handle.addEventListener("pointercancel",stop);
+    })();
     document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
     document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Recover the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be recovered.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);
     document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);

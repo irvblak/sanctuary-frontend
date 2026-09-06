@@ -1206,11 +1206,6 @@
       imageToolbar.hidden=!selectedItem||kind!=="image";
       drawingToolbar.hidden=!selectedItem||kind!=="drawing";
 
-      const rightTools=document.querySelector(".canvas-side-right");
-      if(rightTools && selectedItem && kind==="drawing"){
-        requestAnimationFrame(()=>{rightTools.scrollTop=0;});
-      }
-
       const needsSelection=[
         "nudgeUpBtn","nudgeLeftBtn","centreObjectBtn","nudgeRightBtn","nudgeDownBtn",
         "overlayObjectBtn","underlayObjectBtn","duplicateObjectBtn","deleteObjectBtn"

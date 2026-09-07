@@ -475,6 +475,16 @@
     .work-name-row label{font-size:.78rem;color:var(--accent-dark);font-weight:850;}
     .work-name-row input{margin:0;padding:.38rem .45rem;font-size:.8rem;}
 
+
+    /* Editor/Curator review: submitted work is visible but cannot be altered. */
+    body.editor-review .canvas-item{pointer-events:none!important}
+    body.editor-review #creativeWorkspace input,
+    body.editor-review #creativeWorkspace select,
+    body.editor-review #creativeWorkspace textarea{pointer-events:none}
+    body.editor-review #creativeWorkspace .canvas-side-left button,
+    body.editor-review #creativeWorkspace .canvas-side-right button,
+    body.editor-review #creativeWorkspace .canvas-toolbar button{pointer-events:none;opacity:.45}
+
 </style>
 </head>
 <body>
@@ -782,7 +792,17 @@
     const PAGE_PARAMS=new URLSearchParams(location.search);
     const FUN_MODE=["write","create"].includes((PAGE_PARAMS.get("fun")||"").toLowerCase()) ? (PAGE_PARAMS.get("fun")||"").toLowerCase() : "";
     const IS_FUN_MODE=Boolean(FUN_MODE);
-    const CANVAS_MODE=(PAGE_PARAMS.get("mode")||"").toLowerCase();
+    let CANVAS_MODE=(PAGE_PARAMS.get("mode")||"").toLowerCase();
+    const IS_VAULT_OPEN=Boolean(PAGE_PARAMS.get("vault"));
+    const IS_EDITOR_REVIEW=Boolean(PAGE_PARAMS.get("review"));
+
+    /* A Vault/Editor opening carries its original Studio mode inside the saved project. */
+    try{
+      const pendingVaultOpen=JSON.parse(sessionStorage.getItem("sanctuaryVaultOpenWork")||"null");
+      const savedMode=String(pendingVaultOpen?.project?.mode||"").toLowerCase();
+      if(!CANVAS_MODE && savedMode) CANVAS_MODE=savedMode;
+    }catch(_){}
+
 
     const PUBLICATION_TYPE=
       (PAGE_PARAMS.get("type")||"standing").toLowerCase();
@@ -2492,6 +2512,74 @@ async function publishDatedCanvas(){
   }
 }
 
+
+async function saveCanvasToVault(){
+  const token=getAuthToken();
+  if(!token) throw new Error("Your Design Studio session has expired. Please return to Your Design Studio and sign in again.");
+  const title=clean(workNameInput?.value||firstUsefulText()||"");
+  if(!title) throw new Error("Please give your work a title before submitting it.");
+  const existing=sessionStorage.getItem("sanctuaryCurrentVaultWorkId")||"";
+  const payload={
+    work_id:existing,
+    title,
+    hat:MODE_LABELS[CANVAS_MODE]||CANVAS_MODE||"Studio work",
+    work_type:CANVAS_MODE||"studio",
+    project:portableProject()
+  };
+  const response=await fetch(`${API_BASE}/api/vault`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+    body:JSON.stringify(payload)
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||data.success===false) throw new Error(data.message||`Vault save failed (${response.status})`);
+  const id=clean(data.item?.work_id||existing);
+  if(!id) throw new Error("The Vault did not return a work reference.");
+  sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);
+  return {id,token};
+}
+
+async function submitEditorialCanvas(){
+  if(IS_EDITOR_REVIEW) return;
+  if(!editorialApprovalRequired()) return;
+  if(!requireWorkName()) return;
+
+  finishDrawingEdit();
+  selectItem(null);
+
+  const button=document.getElementById("submitCanvasBtn");
+  const oldText=button?.textContent||"Artists & Writers: Submit for Publication";
+  if(button){button.disabled=true;button.textContent="Submitting…";}
+
+  try{
+    const {id,token}=await saveCanvasToVault();
+
+    let response=await fetch(`${API_BASE}/api/vault/${encodeURIComponent(id)}/complete`,{
+      method:"POST",
+      headers:{"Authorization":`Bearer ${token}`}
+    });
+    let data=await response.json().catch(()=>({}));
+    if(!response.ok||data.success===false) throw new Error(data.message||`Could not complete the work (${response.status})`);
+
+    response=await fetch(`${API_BASE}/api/vault/${encodeURIComponent(id)}/submit`,{
+      method:"POST",
+      headers:{"Authorization":`Bearer ${token}`}
+    });
+    data=await response.json().catch(()=>({}));
+    if(!response.ok||data.success===false) throw new Error(data.message||`Could not submit the work (${response.status})`);
+
+    alert(CANVAS_MODE==="artist"
+      ? "Your work has been sent to the Curator."
+      : "Your work has been sent to the Editor.");
+    window.location.href="my-vault.html";
+  }catch(error){
+    console.error(error);
+    alert(error.message||"Your work could not be submitted.");
+  }finally{
+    if(button){button.disabled=false;button.textContent=oldText;}
+  }
+}
+
 async function publishCanvas(){
 
   if(
@@ -2737,7 +2825,7 @@ function configurePublishingButton(){
   const publishButton=document.getElementById("publishCanvasBtn");
   if(!submitButton||!publishButton)return;
 
-  if(IS_FUN_MODE){
+  if(IS_FUN_MODE || IS_EDITOR_REVIEW){
     submitButton.disabled=true;
     publishButton.disabled=true;
     return;
@@ -2775,7 +2863,12 @@ function configurePublishingButton(){
       if(action) sessionStorage.setItem(TOOLS_ACTION_KEY,action);
       runToolsActionIfRequested();
     });
-    document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{window.location.href=IS_FUN_MODE?"library.html":"your-design-studio.html";});
+    document.getElementById("backFromCanvasBtn").addEventListener("click",()=>{
+      if(IS_FUN_MODE) window.location.href="library.html";
+      else if(IS_EDITOR_REVIEW) window.location.href="editor-desk.html";
+      else if(IS_VAULT_OPEN) window.location.href="my-vault.html";
+      else window.location.href="your-design-studio.html";
+    });
     document.getElementById("addPageBtn").addEventListener("click",addPage);document.getElementById("duplicatePageBtn").addEventListener("click",duplicatePage);document.getElementById("deletePageBtn").addEventListener("click",deletePage);document.getElementById("movePageLeftBtn").addEventListener("click",()=>movePage(-1));document.getElementById("movePageRightBtn").addEventListener("click",()=>movePage(1));
     orientationSelect.addEventListener("change",()=>{pushUndo();applyOrientation()});pageNumbersCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});numberFirstPageCheck.addEventListener("change",()=>{pushUndo();updatePageNumbers()});pageNumberPosition.addEventListener("change",()=>{pushUndo();updatePageNumbers()});
     document.getElementById("quickGuideBtn").addEventListener("click",openPrintableGuide);
@@ -3001,7 +3094,7 @@ document
   )
   .addEventListener(
     "click",
-    ()=>{ if(editorialApprovalRequired()) publishCanvas(); }
+    ()=>{ if(editorialApprovalRequired()) submitEditorialCanvas(); }
   );
 
 document
@@ -3042,14 +3135,26 @@ document
         return;
       }
 
-      if(!hasStudioSession()||!authorisedForMode()){
+      const trustedVaultOpening=IS_VAULT_OPEN||IS_EDITOR_REVIEW;
+      if(!hasStudioSession()||(!trustedVaultOpening&&!authorisedForMode())){
         window.location.replace("your-design-studio.html");
         return;
       }
 
       const label=MODE_LABELS[CANVAS_MODE]||"Design Studio";
       modeIntro.textContent=`Working as: ${label}.`;
-      document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
+
+      if(IS_EDITOR_REVIEW){
+        backTopBtn.href="editor-desk.html";
+        backTopBtn.textContent="← Editor’s Desk";
+        document.getElementById("backFromCanvasBtn").textContent="← Editor’s Desk";
+      }else if(IS_VAULT_OPEN){
+        backTopBtn.href="my-vault.html";
+        backTopBtn.textContent="← My Vault";
+        document.getElementById("backFromCanvasBtn").textContent="← My Vault";
+      }else{
+        document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
+      }
 
       if(PAGE_PARAMS.get("open")==="event-canvas"&&isDatedWorkflow()){
         const e=readEventHandoff();
@@ -3081,6 +3186,14 @@ document
         sessionStorage.removeItem("sanctuaryVaultOpenWork");
       }
     }catch(err){console.error("Vault work could not be restored",err);}
+
+    if(IS_EDITOR_REVIEW){
+      document.body.classList.add("editor-review");
+      modeIntro.textContent="Review copy — submitted work is locked. Return to the Editor’s Desk to approve it or return it for reworking.";
+      document.querySelectorAll("#creativePages [contenteditable]").forEach(el=>el.removeAttribute("contenteditable"));
+      const vaultButton=document.getElementById("myVaultBtn");
+      if(vaultButton) vaultButton.disabled=true;
+    }
 
     configurePublishingButton();
 

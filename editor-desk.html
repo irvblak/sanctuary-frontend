@@ -1,1 +1,56 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editor’s Desk | Sanctuary Club</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="access.js?v=EDITOR_DESK_1"></script>
+  <style>
+    :root{--ink:#173847;--muted:#5f7078;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8;--soft:#eef6f7;--return:#8a5a00}
+    *{box-sizing:border-box} body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1.5}
+    .page{width:min(1100px,calc(100% - 32px));margin:0 auto;padding:28px 0 44px}.topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:20px}
+    .eyebrow{margin:0;color:var(--muted);font-weight:700;font-size:.88rem;text-transform:uppercase;letter-spacing:.08em}h1{margin:.1rem 0 0;font-size:2rem}h2{margin:.1rem 0 .4rem;font-size:1.35rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.68rem 1rem;background:var(--accent);color:#fff;text-decoration:none;font-weight:800;cursor:pointer;font:inherit}.btn.secondary{background:#fff;color:var(--accent)}.btn.return{background:#fff;color:var(--return);border-color:#c9a24b}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 26px rgba(23,56,71,.07)}.intro{margin-bottom:18px}.intro p{margin:.35rem 0;color:var(--muted)}
+    .statusline{padding:.8rem 1rem;background:var(--soft);border:1px solid var(--line);border-radius:12px;color:var(--muted);margin:12px 0 18px}.desk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .work{border:1px solid var(--line);border-radius:15px;padding:18px;background:#fff}.work h3{margin:0 0 .25rem;font-size:1.12rem}.meta{font-size:.9rem;color:var(--muted);margin:.15rem 0}.badge{display:inline-block;border-radius:999px;padding:.22rem .55rem;background:var(--soft);font-size:.78rem;font-weight:800;margin:.4rem 0}
+    .actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem}.actions .btn{font-size:.9rem;padding:.52rem .75rem}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;background:#fbfdfd;grid-column:1/-1}
+    dialog{width:min(620px,calc(100% - 28px));border:1px solid var(--line);border-radius:16px;padding:0;color:var(--ink)}dialog::backdrop{background:rgba(0,0,0,.28)}.dialog-inner{padding:22px}textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:10px;padding:.75rem;font:inherit;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:.55rem;flex-wrap:wrap;margin-top:.8rem}
+    @media(max-width:760px){.desk-grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.page{width:min(100% - 20px,1100px)}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar"><div><p class="eyebrow">Sanctuary Club</p><h1>Editor’s Desk</h1></div><a class="btn secondary" href="my-studio.html">← My Studio</a></div>
+    <section class="card">
+      <div class="intro"><h2>Work awaiting your attention</h2><p>Open submitted work, approve it for publication, or return it to the member for reworking with a short note.</p></div>
+      <div id="status" class="statusline">Opening the Editor’s Desk…</div><div id="deskGrid" class="desk-grid"></div>
+    </section>
+  </main>
+  <dialog id="returnDialog"><div class="dialog-inner"><h2>Return for reworking</h2><p>Please give the member a short note explaining what you would like them to look at.</p><textarea id="returnNote" placeholder="Editor’s note"></textarea><div class="dialog-actions"><button class="btn secondary" id="cancelReturn" type="button">Cancel</button><button class="btn return" id="confirmReturn" type="button">Return to Member</button></div></div></dialog>
+<script>
+(() => {
+  "use strict";
+  const API_BASE="https://sanctuary-backend-8iqc.onrender.com";
+  const grid=document.getElementById("deskGrid"), status=document.getElementById("status"), returnDialog=document.getElementById("returnDialog"), returnNote=document.getElementById("returnNote"), cancelReturn=document.getElementById("cancelReturn"), confirmReturn=document.getElementById("confirmReturn");
+  let items=[], returningId="";
+  function token(){return localStorage.getItem("memberToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("authToken")||sessionStorage.getItem("authToken")||""}
+  async function api(path,options={}){const headers=Object.assign({},options.headers||{}),t=token();if(t)headers.Authorization="Bearer "+t;if(options.body&&!headers["Content-Type"])headers["Content-Type"]="application/json";const res=await fetch(API_BASE+path,Object.assign({},options,{headers}));const text=await res.text();let data={};try{data=text?JSON.parse(text):{}}catch(_){data={message:text}}if(!res.ok)throw new Error(data.message||("Request failed ("+res.status+")"));return data}
+  function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c])}
+  function niceDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString("en-GB",{dateStyle:"medium",timeStyle:"short"})}
+  function workLabel(item){const type=String(item.work_type||item.hat||"").toLowerCase();if(type.includes("artist")||type==="art")return"Art";if(type.includes("writer")||type==="writing")return"Writing";return item.work_type||item.hat||"Submitted work"}
+  function render(){status.textContent=items.length?`${items.length} item${items.length===1?"":"s"} awaiting attention.`:"Nothing is waiting for attention at present.";if(!items.length){grid.innerHTML='<div class="empty">The desk is clear.</div>';return}grid.innerHTML=items.map(item=>`<article class="work"><h3>${esc(item.title||"Untitled work")}</h3><div class="badge">${esc(workLabel(item))}</div><p class="meta">From: ${esc(item.owner_resident_id||item.owner_member_id||"Member")}</p><p class="meta">Submitted: ${esc(niceDate(item.submitted_at||item.updated_at))}</p><div class="actions"><button class="btn secondary open-work" data-id="${esc(item.work_id)}">Open Work</button><button class="btn publish-work" data-id="${esc(item.work_id)}">Approve &amp; Publish</button><button class="btn return return-work" data-id="${esc(item.work_id)}">Return for Reworking</button></div></article>`).join("")}
+  async function load(){try{const data=await api("/api/editor/vault");items=Array.isArray(data.items)?data.items:[];render()}catch(err){status.textContent=err.message||"The Editor’s Desk could not be opened.";grid.innerHTML=""}}
+  async function openWork(id){try{status.textContent="Opening submitted work…";const data=await api("/api/vault/"+encodeURIComponent(id));sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(data.item));sessionStorage.setItem("sanctuaryEditorReviewWork",id);window.location.href="design-studio-canvas.html?review="+encodeURIComponent(id)}catch(err){status.textContent=err.message}}
+  async function publishWork(id){if(!confirm("Approve this work for publication?"))return;try{await api("/api/editor/vault/"+encodeURIComponent(id)+"/publish",{method:"POST"});await load()}catch(err){alert(err.message)}}
+  function askReturn(id){returningId=id;returnNote.value="";returnDialog.showModal();setTimeout(()=>returnNote.focus(),0)}
+  cancelReturn.addEventListener("click",()=>{returningId="";returnDialog.close()});
+  confirmReturn.addEventListener("click",async()=>{const note=returnNote.value.trim();if(!note){alert("Please add a short note for the member.");return}try{confirmReturn.disabled=true;await api("/api/editor/vault/"+encodeURIComponent(returningId)+"/return",{method:"POST",body:JSON.stringify({note})});returnDialog.close();returningId="";await load()}catch(err){alert(err.message)}finally{confirmReturn.disabled=false}});
+  grid.addEventListener("click",e=>{const b=e.target.closest("button[data-id]");if(!b)return;const id=b.dataset.id;if(b.classList.contains("open-work"))openWork(id);else if(b.classList.contains("publish-work"))publishWork(id);else if(b.classList.contains("return-work"))askReturn(id)});
+  load();
+})();
+</script>
+</body>
+</html>

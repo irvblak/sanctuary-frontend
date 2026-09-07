@@ -500,10 +500,10 @@
         <h2 id="creativeHeading">My Own Design</h2>
         <div class="canvas-head-actions">
           <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio</button>
-          <button class="btn secondary" id="loadCanvasBtn" type="button">Recover Draft</button>
-          <button class="btn secondary" id="saveCanvasBtn" type="button">Save Draft</button>
+          <button class="btn secondary" id="myVaultBtn" type="button">My Vault</button>
+          <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
+          <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
           <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button>
-          <button class="btn" id="publishCanvasBtn" type="button" hidden>Publish</button>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
           <span class="canvas-offscreen-tools" aria-hidden="true">
@@ -2733,36 +2733,19 @@ async function publishCanvas(){
 
 
 function configurePublishingButton(){
+  const submitButton=document.getElementById("submitCanvasBtn");
+  const publishButton=document.getElementById("publishCanvasBtn");
+  if(!submitButton||!publishButton)return;
 
-  const button =
-    document.getElementById(
-      "publishCanvasBtn"
-    );
-
-
-  if(!button){
+  if(IS_FUN_MODE){
+    submitButton.disabled=true;
+    publishButton.disabled=true;
     return;
   }
 
-
-  if(
-    !publishingAllowed()
-  ){
-
-    button.hidden =
-      true;
-
-    return;
-  }
-
-
-  button.hidden =
-    false;
-
-
-  button.textContent =
-    publicationButtonLabel();
-
+  const editorial=editorialApprovalRequired();
+  submitButton.disabled=!editorial;
+  publishButton.disabled=editorial||!publishingAllowed();
 }
     
     const toolsChoice=document.getElementById("toolsChoice");
@@ -2774,7 +2757,7 @@ function configurePublishingButton(){
     document.getElementById("canvasToolsBtn").addEventListener("click",()=>{toolsChoice.hidden=false;});
     document.getElementById("toolsChoiceCancelBtn").addEventListener("click",()=>{toolsChoice.hidden=true;});
     document.getElementById("toolsThisScreenBtn").addEventListener("click",()=>{
-      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools & Guide. Please use Save Draft first, then try again.");}
+      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools & Guide. Please return to the Canvas and try again.");}
     });
     document.getElementById("toolsSecondScreenBtn").addEventListener("click",()=>{
       try{
@@ -2968,7 +2951,28 @@ function configurePublishingButton(){
       handle.addEventListener("pointercancel",stop);
     })();
     document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
-    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("loadCanvasBtn").addEventListener("click",()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw){alert("No Creative Canvas draft is saved on this device.");return}if(confirm("Recover the saved Creative Canvas draft? Any unsaved Canvas changes will be replaced.")){try{undoStack=[];redoStack=[];restoreState(raw);updateUndoRedo()}catch(err){console.error(err);alert("The saved draft could not be recovered.")}}});document.getElementById("saveCanvasBtn").addEventListener("click",saveDraft);
+    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("myVaultBtn").addEventListener("click",async()=>{
+      if(IS_FUN_MODE){window.location.href="my-vault.html";return;}
+      if(!requireWorkName())return;
+      const token=getAuthToken();
+      if(!token){alert("Please return to Your Design Studio and sign in again.");return;}
+      const existing=sessionStorage.getItem("sanctuaryCurrentVaultWorkId")||"";
+      const payload={
+        work_id:existing,
+        title:clean(workNameInput?.value||""),
+        hat:MODE_LABELS[CANVAS_MODE]||CANVAS_MODE||"Studio work",
+        work_type:CANVAS_MODE||"studio",
+        project:portableProject()
+      };
+      try{
+        const response=await fetch(`${API_BASE}/api/vault`,{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},body:JSON.stringify(payload)});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok||data.success===false)throw new Error(data.message||`Vault save failed (${response.status})`);
+        const id=clean(data.item?.work_id||existing);
+        if(id)sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);
+        window.location.href="my-vault.html";
+      }catch(err){console.error(err);alert(err.message||"Your work could not be saved to My Vault.");}
+    });
     document.getElementById("exportCanvasBtn").addEventListener("click",exportPortableProject);
     document.getElementById("importCanvasBtn").addEventListener("click",()=>{importCanvasFileInput.value="";importCanvasFileInput.click()});
     importCanvasFileInput.addEventListener("change",()=>importPortableProjectFile(importCanvasFileInput.files&&importCanvasFileInput.files[0]));
@@ -2993,11 +2997,20 @@ document
 
 document
   .getElementById(
+    "submitCanvasBtn"
+  )
+  .addEventListener(
+    "click",
+    ()=>{ if(editorialApprovalRequired()) publishCanvas(); }
+  );
+
+document
+  .getElementById(
     "publishCanvasBtn"
   )
   .addEventListener(
     "click",
-    publishCanvas
+    ()=>{ if(!editorialApprovalRequired()) publishCanvas(); }
   );
 
 
@@ -3056,6 +3069,19 @@ document
     });
 
     initialiseCanvasPage();
+    try{
+      const vaultOpenRaw=sessionStorage.getItem("sanctuaryVaultOpenWork");
+      if(vaultOpenRaw){
+        const vaultOpen=JSON.parse(vaultOpenRaw);
+        const project=vaultOpen?.project;
+        if(project?.format==="sanctuary-yds"&&project?.state){
+          restoreState(JSON.stringify(project.state));
+          if(vaultOpen.work_id)sessionStorage.setItem("sanctuaryCurrentVaultWorkId",vaultOpen.work_id);
+        }
+        sessionStorage.removeItem("sanctuaryVaultOpenWork");
+      }
+    }catch(err){console.error("Vault work could not be restored",err);}
+
     configurePublishingButton();
 
     // Returning from Tools & Guide: restore the exact work that was on screen,

@@ -1,1 +1,124 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gallery | Sanctuary Club</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <script src="access.js?v=LIB_GALLERY_1"></script>
+  <style>
+    :root{--ink:#1f2a37;--muted:#52606f;--blue:#123a78;--line:#d8e1ec;--paper:#fff;--soft:#f7fbff}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:21px;line-height:1.58;color:var(--ink);background:linear-gradient(180deg,#d9ecff 0%,#f4f8fc 44%,#fff 100%)}
+    .topbar{max-width:1180px;margin:auto;padding:1.2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+    .brand{color:var(--blue);font-size:2rem;font-weight:850}
+    .links{display:flex;gap:.55rem;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.65rem 1rem;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--blue);text-decoration:none;font-weight:800}
+    .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+    main{max-width:1180px;margin:auto;padding:0 1rem 2.5rem}
+    .panel{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:1.5rem;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    h1{margin:.1rem 0 .35rem;color:var(--blue);font-size:2.15rem;line-height:1.2}
+    .intro{margin:0 0 1.35rem;font-weight:600}
+    .status{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--soft);font-weight:650}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+    .card{border:1px solid var(--line);border-radius:17px;background:#fff;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,.06)}
+    .preview{height:180px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#f8fbff,#eef4fa);font-size:3.2rem}
+    .card-body{padding:1rem}
+    .card h2{margin:0 0 .35rem;color:var(--blue);font-size:1.25rem;line-height:1.3}
+    .meta{margin:0 0 .75rem;color:var(--muted);font-size:.96rem;font-weight:600}
+    .open{display:inline-flex;padding:.55rem .85rem;border-radius:12px;background:var(--blue);color:#fff;text-decoration:none;font-weight:800}
+    .viewer{margin-top:1.25rem;border-top:1px solid var(--line);padding-top:1.25rem}
+    .viewer[hidden]{display:none}
+    .viewer-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+    .artboard{margin:1rem auto 0;max-width:100%;overflow:auto;padding:1rem;background:#eef2f6;border-radius:16px}
+    .page{position:relative;margin:0 auto;background:#fff;box-shadow:0 5px 20px rgba(0,0,0,.18);transform-origin:top left}
+    .page .canvas-item{position:absolute}
+    @media(max-width:620px){body{font-size:18px}.topbar{align-items:flex-start}.panel{padding:1rem}.brand{font-size:1.65rem}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">The Gallery</div>
+    <div class="links">
+      <a class="btn" href="library.html">← Library</a>
+      <a class="btn primary" href="members-info.html">Members Hub</a>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <h1>Gallery</h1>
+      <p class="intro">Artwork created by Sanctuary Club members and approved for display by the Curator.</p>
+      <div id="status" class="status">Loading the Gallery…</div>
+      <div id="grid" class="grid" hidden></div>
+      <section id="viewer" class="viewer" hidden>
+        <div class="viewer-head">
+          <div><h1 id="viewTitle"></h1><p id="viewMeta" class="meta"></p></div>
+          <button id="closeViewer" class="btn" type="button">Back to Gallery</button>
+        </div>
+        <div id="artboard" class="artboard"></div>
+      </section>
+    </section>
+  </main>
+<script>
+(function(){
+"use strict";
+const API="https://sanctuary-backend-8iqc.onrender.com";
+const status=document.getElementById("status"),grid=document.getElementById("grid"),viewer=document.getElementById("viewer"),artboard=document.getElementById("artboard");
+let items=[];
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function dateLabel(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}
+
+function renderCards(){
+ if(!items.length){status.textContent="There is no published artwork in the Gallery yet.";status.hidden=false;grid.hidden=true;return}
+ status.hidden=true;grid.hidden=false;
+ grid.innerHTML=items.map(x=>`<article class="card"><div class="preview">🖼️</div><div class="card-body"><h2>${esc(x.title||"Untitled work")}</h2><p class="meta">${esc(x.creator_name||"Sanctuary member")}${x.published_at?" · "+esc(dateLabel(x.published_at)):""}</p><a class="open" href="?id=${encodeURIComponent(x.publication_id)}">View artwork</a></div></article>`).join("");
+}
+
+function canvasHtml(project){
+ const state=project&&project.state;
+ if(!state||typeof state!=="object")return null;
+ let parsed=state;
+ // Older portable projects can contain state as a JSON string.
+ if(typeof state==="string"){try{parsed=JSON.parse(state)}catch(_){return null}}
+ const html=parsed.html||parsed.canvasHtml||parsed.pagesHtml||"";
+ if(!html)return null;
+ return {html,orientation:parsed.orientation||"portrait"};
+}
+
+async function showItem(id){
+ const r=await fetch(`${API}/api/library-publications/${encodeURIComponent(id)}`,{cache:"no-store",headers:{"Accept":"application/json"}});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok||!d.publication)throw new Error("Artwork could not be loaded.");
+ const x=d.publication;
+ document.getElementById("viewTitle").textContent=x.title||"Untitled work";
+ document.getElementById("viewMeta").textContent=[x.creator_name||"",dateLabel(x.published_at)].filter(Boolean).join(" · ");
+ const canvas=canvasHtml(x.canvas_data);
+ artboard.innerHTML="";
+ if(!canvas){artboard.innerHTML='<div class="status">This published work is safely in the Library, but its visual preview is not available.</div>'}
+ else{
+   const page=document.createElement("div");page.className="page";page.innerHTML=canvas.html;
+   const landscape=String(canvas.orientation).toLowerCase()==="landscape";
+   page.style.width=landscape?"1123px":"794px";page.style.minHeight=landscape?"794px":"1123px";
+   artboard.appendChild(page);
+ }
+ grid.hidden=true;status.hidden=true;viewer.hidden=false;
+}
+
+async function load(){
+ try{
+  const r=await fetch(`${API}/api/library-publications?category=gallery`,{cache:"no-store",headers:{"Accept":"application/json"}});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||d.success===false)throw new Error(d.message||"Gallery could not be loaded.");
+  items=Array.isArray(d.publications)?d.publications:[];
+  const id=new URLSearchParams(location.search).get("id");
+  if(id)await showItem(id);else renderCards();
+ }catch(e){status.textContent=e.message||"The Gallery could not be loaded.";status.hidden=false}
+}
+document.getElementById("closeViewer").addEventListener("click",()=>{history.replaceState(null,"","library-gallery.html");viewer.hidden=true;renderCards()});
+load();
+})();
+</script>
+</body>
+</html>

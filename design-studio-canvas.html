@@ -3173,8 +3173,17 @@ document
       window.location.href="members-info.html";
     });
 
-    initialiseCanvasPage();
+        initialiseCanvasPage();
+
+    // A normal Studio opening starts a new piece of work.
+    // Only an explicit Vault opening may retain an existing Vault reference.
+    if(!IS_VAULT_OPEN && !IS_EDITOR_REVIEW){
+      sessionStorage.removeItem("sanctuaryCurrentVaultWorkId");
+      sessionStorage.removeItem("sanctuaryVaultOpenWork");
+    }
+
     try{
+      const vaultOpenRaw=sessionStorage.getItem("sanctuaryVaultOpenWork");
       const vaultOpenRaw=sessionStorage.getItem("sanctuaryVaultOpenWork");
       if(vaultOpenRaw){
         const vaultOpen=JSON.parse(vaultOpenRaw);

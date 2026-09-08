@@ -3174,8 +3174,14 @@ document
     });
 
         initialiseCanvasPage();
-        try{
-      const vaultOpenRaw=sessionStorage.getItem("sanctuaryVaultOpenWork");
+
+    // A normal Studio opening starts a new Vault item.
+    // Existing Vault work and Editor/Curator review retain their own work reference.
+    if(!IS_VAULT_OPEN && !IS_EDITOR_REVIEW){
+      sessionStorage.removeItem("sanctuaryCurrentVaultWorkId");
+    }
+
+    try{
       const vaultOpenRaw=sessionStorage.getItem("sanctuaryVaultOpenWork");
       if(vaultOpenRaw){
         const vaultOpen=JSON.parse(vaultOpenRaw);

@@ -3175,11 +3175,10 @@ document
 
         initialiseCanvasPage();
 
-    // A normal Studio opening starts a new piece of work.
-    // Only an explicit Vault opening may retain an existing Vault reference.
+    // A normal Studio opening starts a new Vault item.
+    // Existing Vault work and Editor/Curator review retain their own work reference.
     if(!IS_VAULT_OPEN && !IS_EDITOR_REVIEW){
       sessionStorage.removeItem("sanctuaryCurrentVaultWorkId");
-      sessionStorage.removeItem("sanctuaryVaultOpenWork");
     }
 
     try{

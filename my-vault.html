@@ -1,134 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Studio | Sanctuary Club</title>
-  <script src="access.js?v=MY_STUDIO_4"></script>
-  <style>
-    :root{--ink:#173847;--muted:#5f7078;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1.5}
-    .page{width:min(1000px,calc(100% - 32px));margin:0 auto;padding:28px 0 44px}
-    .topbar{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}
-    .eyebrow{margin:0;color:var(--muted);font-weight:700;font-size:.88rem;text-transform:uppercase;letter-spacing:.08em}
-    h1{margin:.1rem 0 0;font-size:2rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.72rem 1.1rem;background:var(--accent);color:#fff;text-decoration:none;font-weight:800}
-    .btn.secondary{background:#fff;color:var(--accent)}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,40px);box-shadow:0 8px 26px rgba(23,56,71,.07)}
-    .intro{text-align:center;margin:0 auto 26px;max-width:760px}
-    .intro h2{font-size:1.55rem;margin:0 0 .45rem}
-    .intro p{margin:.25rem 0;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .panel{border:1px solid var(--line);border-radius:16px;padding:22px;background:#fbfdfd}
-    .panel h3{margin:0 0 .55rem;font-size:1.18rem}
-    .panel p{margin:.45rem 0}
-    .or{margin-top:1rem!important}
-    .enter{text-align:center;margin-top:26px}
-    .enter .btn{font-size:1.08rem;padding:.85rem 1.35rem}
-    .enter-actions{display:flex;justify-content:center;gap:.7rem;flex-wrap:wrap}
-    .small{font-size:.92rem;color:var(--muted);margin-top:.6rem}
-    .hidden{display:none!important}
-    @media(max-width:720px){
-      .grid{grid-template-columns:1fr}
-      .topbar{align-items:flex-start;flex-direction:column}
-      .page{width:min(100% - 20px,1000px)}
-    }
-  
-    /* Comfort & Confidence typography */
-    body{font-size:21px;line-height:1.58}
-    h1{font-size:2.15rem;font-weight:800}
-    h2{font-size:1.48rem;font-weight:800}
-    .intro p,.panel p,.dialog-inner p{color:var(--ink);font-size:1rem;font-weight:600;line-height:1.62}
-    .small,.meta,.statusline,.empty{font-size:.96rem;color:var(--ink);font-weight:600}
-    .eyebrow{font-size:.84rem;font-weight:800}
-    .btn,.tab,.actions .btn{font-size:1rem;font-weight:800}
-    .badge{font-size:.88rem}
-
-  </style>
-</head>
-<body>
-  <main class="page">
-    <div class="topbar">
-      <div>
-        <p class="eyebrow">Sanctuary Club</p>
-        <h1>My Studio</h1>
-      </div>
-      <a class="btn secondary" href="members-info.html">← Members Hub</a>
-    </div>
-
-    <section class="card">
-      <div class="intro">
-        <h2>What happens to my Studio work?</h2>
-        <p>It depends on the hat you are wearing when you create something and what you want to happen when you are satisfied with it.</p>
-      </div>
-
-      <div class="grid">
-        <section class="panel">
-          <h3>I want to just be creative</h3>
-          <p>If it is a piece of writing or art you have created purely for your own pleasure, you can keep the editable work safely in My Vault and return to it whenever you wish.</p>
-          <p class="or"><strong>OR — and why not do this instead?</strong></p>
-          <p>You can submit it to the Editor for approval. It might then be placed in the Library Reading Room or Gallery for everyone to enjoy.</p>
-          <p>Why not teach or join a Computer Art class? Who knows, you might even have your very own Exhibition one day. 😉</p>
-        </section>
-
-        <section class="panel">
-          <h3>I want to be informative</h3>
-          <p>If you are wearing your Event Host, Activity Organiser, Teacher, Club Committee, Residents Association or Condo Admin hat, the Studio knows the capacity in which you are working and can guide your work towards the right destination.</p>
-          <p>Dated events, activities and classes can go to the Calendar &amp; Events List with their related poster or Notice. Permanent information can be sent to its proper Library shelf.</p>
-          <p>You concentrate on the content and the design. The computer does the filing.</p>
-        </section>
-      </div>
-
-      <div class="enter">
-        <div class="enter-actions">
-          <a class="btn" href="your-design-studio.html">Enter Your Design Studio</a>
-          <a class="btn secondary" href="my-vault.html">My Vault</a>
-          <a id="editorDeskBtn" class="btn secondary hidden" href="editor-desk.html">Editor’s Desk</a>
-        </div>
-        <div class="small">Create something new, or reopen work you have already put away.</div>
-      </div>
-    </section>
-  </main>
-
-<script>
-(() => {
-  "use strict";
-
-  function token(){
-    return localStorage.getItem("memberToken")
-      || sessionStorage.getItem("memberToken")
-      || localStorage.getItem("authToken")
-      || sessionStorage.getItem("authToken")
-      || "";
-  }
-
-  function payload(){
-    try{
-      const t = token();
-      const part = t.split(".")[1];
-      if(!part) return {};
-      let s = part.replace(/-/g, "+").replace(/_/g, "/");
-      while(s.length % 4) s += "=";
-      return JSON.parse(atob(s));
-    }catch(_){
-      return {};
-    }
-  }
-
-  const data = payload();
-  const roles = Array.isArray(data.roles)
-    ? data.roles.map(r => String(r).trim().toLowerCase())
-    : [];
-
-  const canUseEditorsDesk = roles.some(role =>
-    ["copy_editor","art_editor","editor","admin","admin_club"].includes(role)
-  );
-
-  if(canUseEditorsDesk){
-    document.getElementById("editorDeskBtn").classList.remove("hidden");
-  }
-})();
-</script>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Vault | Sanctuary Club</title><script src="access.js?v=MY_VAULT_3"></script>
+<style>
+:root{--ink:#173847;--muted:#50656f;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8}
+*{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:21px;line-height:1.58}
+.page{width:min(1120px,calc(100% - 32px));margin:auto;padding:28px 0 48px}.topbar,.work-head{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}
+.eyebrow{margin:0;color:var(--muted);font-weight:800;font-size:.84rem;text-transform:uppercase;letter-spacing:.08em}h1{margin:.1rem 0;font-size:2.15rem}h2{font-size:1.48rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,36px);box-shadow:0 8px 26px rgba(23,56,71,.07);margin-bottom:22px}
+.intro p,.intro li,.status,.meta,.empty{font-weight:600}.intro li{margin:.35rem 0}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.72rem 1.05rem;background:var(--accent);color:#fff;text-decoration:none;font-size:1rem;font-weight:800;cursor:pointer}.btn.secondary{background:#fff;color:var(--accent)}.btn:disabled{opacity:.5}
+.work-list{display:grid;gap:16px}.work{border:1px solid var(--line);border-radius:16px;padding:20px;background:#f9fbfb}.work-head{align-items:flex-start;margin:0}.work h3{margin:0;font-size:1.18rem}.meta{font-size:.96rem}.badge{border:1px solid var(--line);border-radius:999px;padding:.2rem .65rem;background:#fff;font-size:.88rem;font-weight:800;white-space:nowrap}.note{margin:.7rem 0;padding:.65rem .8rem;border-left:4px solid var(--accent);background:#fff;font-weight:600}.actions{margin-top:14px}.empty{border:1px dashed var(--line);border-radius:14px;padding:22px;background:#f9fbfb}
+@media(max-width:700px){.page{width:min(100% - 20px,1120px)}.topbar,.work-head{align-items:flex-start;flex-direction:column}}
+</style></head><body><main class="page">
+<div class="topbar"><div><p class="eyebrow">Your Design Studio</p><h1>My Vault</h1></div><a class="btn secondary" href="my-studio.html">← My Studio</a></div>
+<section class="card intro"><h2>What happens to your work</h2>
+<p>Work in Progress is kept here in your Vault and can be reopened and continued whenever you want to carry on.</p>
+<p>Once you are happy with it and would like it to be published, the computer automatically places it in the appropriate Library section or sends it to the Curator or Editor:</p>
+<ul><li>If it’s Art, it goes to the Curator, who will approve it and place it in the Gallery or get back to you to discuss it.</li>
+<li>Similarly, if it’s written work, your Editor will either send it to the Reading Room or get back to you.</li>
+<li>If you are an Activity Organiser or Teacher and want to let members know when an event or class is happening, it goes immediately on the Calendar and into the Events List.</li>
+<li>If you want to update a Guide or publish a Notice, it will go directly to the appropriate Library section.</li></ul></section>
+<section class="card"><h2>Your Vault</h2><p id="status" class="status">Opening your Vault…</p><div id="list" class="work-list"></div></section>
+</main><script>
+(()=>{"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",list=document.getElementById("list"),status=document.getElementById("status");
+const token=()=>localStorage.getItem("memberToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("authToken")||sessionStorage.getItem("authToken")||"";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const label=s=>({wip:"Work in Progress",completed:"Completed",submitted:"Submitted",returned:"Returned for Reworking",published:"Published"})[String(s||"").toLowerCase()]||s||"Work in Progress";
+const date=v=>{if(!v)return"";let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})};
+async function openWork(id){try{let r=await fetch(`${API}/api/vault/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Could not open work (${r.status})`);sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(d.item));sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);location.href=`design-studio-canvas.html?vault=${encodeURIComponent(id)}`}catch(e){alert(e.message||"This work could not be opened.")}}
+function render(items){list.innerHTML="";if(!items.length){list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';return}
+items.forEach(i=>{let locked=["submitted","published"].includes(String(i.status||"").toLowerCase()),a=document.createElement("article");a.className="work";a.innerHTML=`<div class="work-head"><div><h3>${esc(i.title||"Untitled work")}</h3><div class="meta">${esc(i.hat||i.work_type||"Studio work")}${i.updated_at?" · Last saved "+esc(date(i.updated_at)):""}</div></div><span class="badge">${esc(label(i.status))}</span></div>${i.editor_note?`<div class="note"><strong>Editor/Curator note:</strong> ${esc(i.editor_note)}</div>`:""}<div class="actions">${locked?`<button class="btn secondary" disabled>${esc(label(i.status))} — locked</button>`:`<button class="btn continue" data-id="${esc(i.work_id)}">Continue Working</button>`}</div>`;list.appendChild(a)});list.querySelectorAll(".continue").forEach(b=>b.onclick=()=>openWork(b.dataset.id))}
+async function load(){if(!token()){status.textContent="Your Studio session has expired. Please return to My Studio.";return}try{let r=await fetch(`${API}/api/vault`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Your Vault could not be opened (${r.status})`);let items=Array.isArray(d.items)?d.items:[];status.textContent=items.length?`${items.length} ${items.length===1?"item":"items"} in your Vault.`:"Your Vault is ready.";render(items)}catch(e){status.textContent="Your Vault could not be opened.";list.innerHTML=`<div class="empty">${esc(e.message||"Please try again shortly.")}</div>`}}
+load()})();
+</script></body></html>

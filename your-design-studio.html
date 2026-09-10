@@ -3148,16 +3148,9 @@
         try{
 
           const verified =
-            (
-              sessionStorage.getItem(
-                "hostAreaVerified"
-              ) === "true"
-            ) ||
-            (
-              localStorage.getItem(
-                "hostAreaVerified"
-              ) === "true"
-            );
+            sessionStorage.getItem(
+              "hostAreaVerified"
+            ) === "true";
 
 
           if(!verified){

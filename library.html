@@ -33,7 +33,7 @@
       margin:0;
       min-height:100vh;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      font-size:18px;
+      font-size:20px;
       font-weight:500;
       line-height:1.55;
       color:var(--ink);
@@ -383,6 +383,30 @@
       font-weight:800;
     }
 
+
+    /* Reusable lower Library levels. Any department/category may grow further without redesign. */
+    details.library-subbranch{
+      grid-column:1/-1;
+      border:1px solid #d5e2ef;
+      border-radius:13px;
+      background:#fff;
+      overflow:hidden;
+    }
+    summary.subbranch-heading{
+      padding:.72rem .8rem;
+      color:var(--blue);
+      font-weight:800;
+      cursor:pointer;
+      list-style:none;
+    }
+    summary.subbranch-heading::-webkit-details-marker{display:none}
+    .tertiary-list{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:.55rem;
+      padding:0 .7rem .7rem;
+    }
+
     .footer-note{
       margin-top:1.15rem;
       color:var(--muted);
@@ -402,7 +426,7 @@
     }
 
     @media(max-width:620px){
-      body{font-size:17px}
+      body{font-size:19px}
       .topbar{padding:.9rem .8rem .25rem;align-items:flex-start}
       .brand{font-size:1.65rem}
       .top-actions{justify-content:flex-start}
@@ -433,20 +457,12 @@
   <div class="shell">
     <main class="main-panel">
 
-      <p class="intro">
-        <strong>Welcome to the Sanctuary Club Library.</strong><br>
-      </p>
-
-      <div class="library-rule">
-        <strong>Art and Written work created in the studio by members.</strong>
-      </div>
-
       <h1 class="section-heading">Library departments</h1>
 
       <div class="library-grid">
 
         <!-- CLUB ACTIVITIES -->
-        <details class="library-branch" open>
+        <details class="library-branch">
           <summary class="branch-heading">
             <span class="branch-icon">🌱</span>
             <span class="branch-title-wrap">
@@ -479,7 +495,7 @@
         </details>
 
         <!-- CLUB NEWS -->
-        <details class="library-branch" open>
+        <details class="library-branch">
           <summary class="branch-heading">
             <span class="branch-icon">📰</span>
             <span class="branch-title-wrap">
@@ -551,7 +567,7 @@
             </p>
 
             <div class="sub-list">
-              <div class="sub-item future">Members’ Art<small>Self-created or AI-assisted artwork by members.</small></div>
+              <a class="sub-item" href="library-gallery.html">Members’ Art<small>Self-created or AI-assisted artwork by members.</small><span class="available">Available now</span></a>
             </div>
           </div>
         </details>
@@ -609,8 +625,8 @@
           <summary class="branch-heading">
             <span class="branch-icon">🌿</span>
             <span class="branch-title-wrap">
-              <span class="branch-title">Website Help</span>
-              <span class="branch-subtitle">Help, teaching and learning for Sanctuary Club and Your Design Studio</span>
+              <span class="branch-title">Web Assist</span>
+              <span class="branch-subtitle">Website help, teaching and Guides &amp; Manuals</span>
             </span>
             <span class="arrow">›</span>
           </summary>
@@ -628,6 +644,7 @@
               <div class="sub-item future">Artist<small>Help and learning for Art Studio, Canvas and visual publishing.</small></div>
               <div class="sub-item future">Committee<small>Help and learning for Committee Your Design Studio facilities.</small></div>
               <div class="sub-item future">Residents Association<small>Help and learning for Residents Association Your Design Studio facilities.</small></div>
+              <a class="sub-item" href="library-publications.html?id=design-studio-guide">Guides &amp; Manuals<small>Practical Website, Club and Condominium guides and manuals, with further divisions added as needed.</small><span class="available">Available now</span></a>
             </div>
           </div>
         </details>
@@ -650,62 +667,17 @@
 
             <div class="sub-list">
               <div class="sub-item future">Useful Numbers<small>Contact numbers members may find useful.</small></div>
-              <div class="sub-item future">Workmen &amp; Trades<small>Local trades and practical contacts.</small></div>
               <div class="sub-item future">Places to Eat<small>Restaurants, cafés and other recommendations.</small></div>
               <div class="sub-item future">Places to Visit<small>Days out, attractions and interesting places.</small></div>
+              <a class="sub-item" href="privacy-charter.html">Privacy &amp; Security<small>The Club’s important standing statement on privacy, security and personal information.</small><span class="available">Available now</span></a>
+              <div class="sub-item future">Administration<small>How the Club and website are managed, including procedures, services and running costs.</small><span class="coming">Member-readable section</span></div>
+              <div class="sub-item future">Help &amp; Information<small>Additional useful help and reference material.</small><span class="coming">Developing</span></div>
+              <div class="sub-item future">Backend Administration<small>A separately protected technical area for designated Backend Administrators only.</small><span class="coming">Protected area</span></div>
             </div>
           </div>
         </details>
 
       </div>
-
-      <h2 class="section-heading">Reference &amp; help</h2>
-
-      <div class="reference-grid">
-        <a class="reference-card" href="library-publications.html?id=design-studio-guide">
-          Guides
-          <small>Practical Club, Role and Website guides. Start with the Your Design Studio Quick Guide.</small>
-          <span class="available">Available now</span>
-        </a>
-
-        <a class="reference-card" href="privacy-charter.html">
-          Privacy &amp; Security
-          <small>The Club’s important standing statement on privacy, security and personal information.</small>
-          <span class="available">Available now</span>
-        </a>
-
-        <div class="reference-card future">
-          Administration
-          <small>The Administration classroom: how the Club and website are managed, including procedures, services and running costs.</small>
-          <span class="coming">Member-readable section</span>
-        </div>
-
-        <div class="reference-card future">
-          More Help &amp; Information
-          <small>Additional useful help and reference material can be added here as the Library develops.</small>
-          <span class="coming">Developing</span>
-        </div>
-
-        <div class="reference-card future">
-          Backend Administration
-          <small>A separately protected technical area for designated Backend Administrators only.</small>
-          <span class="coming">Protected area — later phase</span>
-        </div>
-      </div>
-
-      <div class="vault-note">
-        <strong>My Vault is different from the Library.</strong>
-        The Library helps members find published material by subject. My Vault will keep each member’s own YDS work and permanent editable masters.
-        <div class="vault-shelves" aria-label="Future My Vault shelves">
-          <span class="vault-shelf">WIP</span>
-          <span class="vault-shelf">Completed</span>
-          <span class="vault-shelf">Published</span>
-        </div>
-      </div>
-
-      <p class="footer-note">
-        Events are deliberately not filed here. Event Notices belong with the Calendar and Events List and follow their own retention arrangements.
-      </p>
 
     </main>
   </div>
@@ -731,6 +703,17 @@
         window.location.replace("members-info.html");
       }
     })();
+  </script>
+
+  <script>
+    document.querySelectorAll("details.library-branch").forEach(branch => {
+      branch.addEventListener("toggle", () => {
+        if(!branch.open) return;
+        document.querySelectorAll("details.library-branch").forEach(other => {
+          if(other !== branch) other.open = false;
+        });
+      });
+    });
   </script>
 
 </body>

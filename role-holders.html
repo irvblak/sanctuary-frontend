@@ -109,44 +109,188 @@ const HELPER_SPECIALISMS=[
 ["committee","Committee"],
 ["residents_association","Residents Association"]
 ];
+
 const registerContent=document.getElementById("registerContent");
 const statusBox=document.getElementById("statusBox");
 const clean=v=>String(v||"").trim();
 const normaliseRole=r=>clean(r).toLowerCase().replace(/[\s-]+/g,"_");
 const normaliseScope=s=>clean(s).toLowerCase().replace(/_/g,"-");
+const normaliseTutorScope=s=>clean(s).toLowerCase().replace(/[\s-]+/g,"_");
+
 const rolesFor=r=>Array.isArray(r?.roles)?r.roles.map(normaliseRole).filter(Boolean):[];
-const scopesFor=r=>{const raw=r?.activity_scopes??r?.activityScopes??[];return Array.isArray(raw)?raw.map(normaliseScope).filter(Boolean):[]};
-const normaliseHelperScope=s=>clean(s).toLowerCase().replace(/[\s-]+/g,"_");
-const helperScopesFor=r=>{const raw=r?.helper_scopes??r?.helperScopes??[];return Array.isArray(raw)?raw.map(normaliseHelperScope).filter(Boolean):[]};
-function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
-function setStatus(m,e=false){statusBox.textContent=m;statusBox.classList.toggle("error",!!e);statusBox.hidden=!m}
+
+const scopesFor=r=>{
+ const raw=r?.activity_scopes??r?.activityScopes??[];
+ return Array.isArray(raw)?raw.map(normaliseScope).filter(Boolean):[];
+};
+
+const tutorScopesFor=r=>{
+ const raw=
+   r?.tutor_scopes ??
+   r?.tutorScopes ??
+   r?.helper_scopes ??
+   r?.helperScopes ??
+   [];
+ return Array.isArray(raw)?raw.map(normaliseTutorScope).filter(Boolean):[];
+};
+
+function escapeHtml(v){
+ return String(v??"")
+   .replace(/&/g,"&amp;")
+   .replace(/</g,"&lt;")
+   .replace(/>/g,"&gt;")
+   .replace(/"/g,"&quot;")
+   .replace(/'/g,"&#39;");
+}
+
+function setStatus(m,e=false){
+ statusBox.textContent=m;
+ statusBox.classList.toggle("error",!!e);
+ statusBox.hidden=!m;
+}
+
 async function loadRoleDirectory(){
- const response=await fetch(`${BACKEND_URL}/api/role-directory`,{method:"GET",headers:{"Accept":"application/json"},mode:"cors"});
+ const response=await fetch(`${BACKEND_URL}/api/role-directory`,{
+   method:"GET",
+   headers:{"Accept":"application/json"},
+   mode:"cors"
+ });
+
  const data=await response.json().catch(()=>null);
- if(!response.ok||!data||data.success!==true||!Array.isArray(data.residents)) throw new Error(data?.message||"The Role Register could not be loaded.");
+
+ if(
+   !response.ok ||
+   !data ||
+   data.success!==true ||
+   !Array.isArray(data.residents)
+ ){
+   throw new Error(
+     data?.message ||
+     "The Role Register could not be loaded."
+   );
+ }
+
  return data.residents;
 }
-function holderKey(h){return clean(h.resident_id)||(clean(h.member_id)+"|"+clean(h.name))}
-function uniqueSorted(list){const seen=new Set();return list.filter(h=>{const k=holderKey(h);if(!k||seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>clean(a.name).localeCompare(clean(b.name),"en",{sensitivity:"base"}))}
-function holdersWithRole(residents,role){return uniqueSorted(residents.filter(r=>rolesFor(r).includes(role)))}
-function holderHtml(h){const name=clean(h.name)||"Member",ref=clean(h.resident_id);return `<span class="holder">${escapeHtml(name)}${ref?` <span class="holder-ref">(${escapeHtml(ref)})</span>`:""}</span>`}
-function holdersHtml(list){const c=uniqueSorted(list);return c.length?c.map(holderHtml).join(", "):`<span class="empty">—</span>`}
-function fillCell(id,list){const el=document.getElementById(id);if(el)el.innerHTML=holdersHtml(list)}
-function renderEventHosts(residents){document.getElementById("eventHosts").innerHTML=`<div class="role-line"><div class="role-name">Current Event Hosts</div><div class="holders">${holdersHtml(holdersWithRole(residents,"host"))}</div></div>`}
+
+function holderKey(h){
+ return clean(h.resident_id) ||
+   (clean(h.member_id)+"|"+clean(h.name));
+}
+
+function uniqueSorted(list){
+ const seen=new Set();
+
+ return list
+   .filter(h=>{
+     const k=holderKey(h);
+     if(!k||seen.has(k)) return false;
+     seen.add(k);
+     return true;
+   })
+   .sort((a,b)=>
+     clean(a.name).localeCompare(
+       clean(b.name),
+       "en",
+       {sensitivity:"base"}
+     )
+   );
+}
+
+function holdersWithRole(residents,role){
+ return uniqueSorted(
+   residents.filter(r=>rolesFor(r).includes(role))
+ );
+}
+
+function holderHtml(h){
+ const name=clean(h.name)||"Member";
+ const ref=clean(h.resident_id);
+
+ return `<span class="holder">${escapeHtml(name)}${
+   ref
+     ? ` <span class="holder-ref">(${escapeHtml(ref)})</span>`
+     : ""
+ }</span>`;
+}
+
+function holdersHtml(list){
+ const c=uniqueSorted(list);
+
+ return c.length
+   ? c.map(holderHtml).join(", ")
+   : `<span class="empty">—</span>`;
+}
+
+function fillCell(id,list){
+ const el=document.getElementById(id);
+ if(el) el.innerHTML=holdersHtml(list);
+}
+
+function renderEventHosts(residents){
+ document.getElementById("eventHosts").innerHTML=
+   `<div class="role-line">
+      <div class="role-name">Current Event Hosts</div>
+      <div class="holders">
+        ${holdersHtml(holdersWithRole(residents,"host"))}
+      </div>
+    </div>`;
+}
+
 function renderActivities(residents){
- const tbody=document.getElementById("activityOrganisers");tbody.innerHTML="";
+ const tbody=document.getElementById("activityOrganisers");
+ tbody.innerHTML="";
+
  ACTIVITIES.forEach(([scope,label])=>{
-   const organisers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("activity_organiser")&&scopesFor(r).includes(scope)));
-   const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr);
+   const organisers=uniqueSorted(
+     residents.filter(r=>
+       rolesFor(r).includes("activity_organiser") &&
+       scopesFor(r).includes(scope)
+     )
+   );
+
+   const tr=document.createElement("tr");
+
+   tr.innerHTML=
+     `<td>${escapeHtml(label)}</td>
+      <td>${holdersHtml(organisers)}</td>`;
+
+   tbody.appendChild(tr);
  });
 }
+
 function renderWebsiteHelpersTutors(residents){
- const tbody=document.getElementById("websiteHelpersTutors");tbody.innerHTML="";
+ const tbody=document.getElementById("websiteHelpersTutors");
+ tbody.innerHTML="";
+
  HELPER_SPECIALISMS.forEach(([scope,label])=>{
-   const helpers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));
-   const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(helpers)}</td>`;tbody.appendChild(tr);
+   const holders=uniqueSorted(
+     residents.filter(r=>{
+       const roles=rolesFor(r);
+
+       const isHelper=
+         roles.includes("website_helper");
+
+       const isTutor=
+         roles.includes("tutor");
+
+       return (
+         (isHelper || isTutor) &&
+         tutorScopesFor(r).includes(scope)
+       );
+     })
+   );
+
+   const tr=document.createElement("tr");
+
+   tr.innerHTML=
+     `<td>${escapeHtml(label)}</td>
+      <td>${holdersHtml(holders)}</td>`;
+
+   tbody.appendChild(tr);
  });
 }
+ 
 function renderRegister(residents){
  renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpersTutors(residents);
  fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));

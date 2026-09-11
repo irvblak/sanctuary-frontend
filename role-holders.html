@@ -18,8 +18,14 @@ a{font:inherit}.topbar{max-width:1100px;margin:0 auto;padding:1.1rem 1rem .45rem
 h1{margin:0 0 .55rem;color:var(--blue);font-size:1.72rem;line-height:1.2}.intro{max-width:900px;margin:0;color:#4b6173;font-weight:650}.intro+.intro{margin-top:.5rem}
 .intro-note{margin:1rem 0 1.4rem;padding:.88rem 1rem;border:1px solid #c8dcea;border-radius:13px;background:#eef7fa;color:#315c6d}
 .register-section{margin-top:1.15rem;overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.05)}
-.section-heading{margin:0;padding:.88rem 1rem;background:var(--blue);color:#fff;font-size:1.16rem;font-weight:850}
-.section-body{padding:1rem;background:var(--soft)}.subheading{margin:1rem 0 .55rem;color:var(--blue);font-size:1rem;font-weight:850}.subheading:first-child{margin-top:0}
+.section-heading{margin:0}
+.section-toggle{width:100%;border:0;padding:.88rem 1rem;background:var(--blue);color:#fff;font:inherit;font-size:1.16rem;font-weight:850;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.section-toggle:hover,.section-toggle:focus-visible{background:var(--blue-dark)}
+.section-toggle::after{content:"▾";font-size:1rem;transition:transform .18s ease}
+.register-section.open .section-toggle::after{transform:rotate(180deg)}
+.section-body{display:none;padding:1rem;background:var(--soft)}
+.register-section.open .section-body{display:block}
+.subheading{margin:1rem 0 .55rem;color:var(--blue);font-size:1rem;font-weight:850}.subheading:first-child{margin-top:0}
 .role-line{display:grid;grid-template-columns:minmax(180px,280px) 1fr;gap:1rem;padding:.72rem .8rem;border:1px solid #d5e2eb;border-radius:12px;background:#fff}
 .role-name{color:#223b50;font-weight:850}.holders{color:#334b5e;overflow-wrap:anywhere}.holder{font-weight:750}.holder-ref{color:var(--muted);font-weight:650;white-space:nowrap}.empty{color:var(--muted);font-style:italic}
 table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid #d5e2eb;border-radius:12px;background:#fff}
@@ -29,7 +35,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 .join-note{margin-top:1.3rem;padding:1rem 1.05rem;border:1px solid #c8dcea;border-radius:14px;background:#f3f9fd;color:#31506b}.join-note strong{color:var(--blue)}
 .motto{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line);color:#31506b;text-align:center;font-weight:850;line-height:1.55}
 @media(max-width:700px){body{font-size:17px}.topbar{align-items:flex-start;flex-direction:column}.panel{padding:1rem;border-radius:15px}.role-line{grid-template-columns:1fr;gap:.25rem}table,thead,tbody,th,td,tr{display:block}thead{display:none}table{border:none;background:transparent}tr{margin-bottom:.6rem;border:1px solid #d5e2eb;border-radius:12px;overflow:hidden;background:#fff}td{width:auto!important;border-bottom:none}td:first-child{padding-bottom:.25rem;color:#223b50;font-weight:850}td:last-child{padding-top:.25rem}}
-@media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}}
+@media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}.section-body{display:block!important}.section-toggle::after{display:none}}
 </style>
 </head>
 <body>
@@ -37,281 +43,73 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 <div class="shell"><main class="panel">
 <h1>Sanctuary Club Role Register</h1>
 <p class="intro">The Role Register shows the members currently helping to run the Club, its activities, publications, website and Residents Association.</p>
-<p class="intro">Some roles may be shared by more than one member. Activity Organisers are shown against the particular activities they organise, and Website Helpers &amp; Tutors against their specialisms.</p>
+<p class="intro">Some roles may be shared by more than one member. Activity Organisers are shown against the particular activities they organise, and Website Helpers against the areas in which they help.</p>
 <div class="intro-note">This is a live Register. Changes made by an Administrator to current role assignments appear here automatically.</div>
 
 <div id="registerContent" hidden>
-<section class="register-section"><h2 class="section-heading">Events &amp; Activities</h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Events &amp; Activities</button></h2><div class="section-body">
 <h3 class="subheading">Event Hosts</h3><div id="eventHosts"></div>
 <h3 class="subheading">Activity Organisers</h3>
 <table><thead><tr><th>Activity</th><th>Organiser(s)</th></tr></thead><tbody id="activityOrganisers"></tbody></table>
 </div></section>
-
-<section class="register-section"><h2 class="section-heading">Committee</h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Committee</button></h2><div class="section-body">
 <table><thead><tr><th>Office</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Chair</td><td id="committeeChair"></td></tr>
-<tr><td>Secretary</td><td id="committeeSecretary"></td></tr>
-<tr><td>Treasurer</td><td id="committeeTreasurer"></td></tr>
-<tr><td>Officers</td><td id="committeeOfficers"></td></tr>
+<tr><td>Chair</td><td id="committeeChair"></td></tr><tr><td>Secretary</td><td id="committeeSecretary"></td></tr><tr><td>Treasurer</td><td id="committeeTreasurer"></td></tr><tr><td>Officers</td><td id="committeeOfficers"></td></tr>
 </tbody></table></div></section>
-
-<section class="register-section"><h2 class="section-heading">Residents Association</h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Residents Association</button></h2><div class="section-body">
 <table><thead><tr><th>Office</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Chair</td><td id="raChair"></td></tr>
-<tr><td>Secretary</td><td id="raSecretary"></td></tr>
-<tr><td>Treasurer</td><td id="raTreasurer"></td></tr>
-<tr><td>Officers</td><td id="raOfficers"></td></tr>
+<tr><td>Chair</td><td id="raChair"></td></tr><tr><td>Secretary</td><td id="raSecretary"></td></tr><tr><td>Treasurer</td><td id="raTreasurer"></td></tr><tr><td>Officers</td><td id="raOfficers"></td></tr>
 </tbody></table></div></section>
-
-<section class="register-section"><h2 class="section-heading">Creative &amp; Editorial</h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Creative &amp; Editorial</button></h2><div class="section-body">
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Writers</td><td id="writers"></td></tr>
-<tr><td>Artists</td><td id="artists"></td></tr>
-<tr><td>Copy Editor</td><td id="copyEditors"></td></tr>
-<tr><td>Art Editor</td><td id="artEditors"></td></tr>
+<tr><td>Writers</td><td id="writers"></td></tr><tr><td>Artists</td><td id="artists"></td></tr><tr><td>Copy Editor</td><td id="copyEditors"></td></tr><tr><td>Art Editor</td><td id="artEditors"></td></tr>
 </tbody></table></div></section>
-
-<section class="register-section"><h2 class="section-heading">Other Club Roles</h2><div class="section-body">
-<h3 class="subheading">Website Helpers &amp; Tutors</h3>
-<table><thead><tr><th>Specialism</th><th>Helper(s) &amp; Tutor(s)</th></tr></thead><tbody id="websiteHelpersTutors"></tbody></table>
-
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Other Club Roles</button></h2><div class="section-body">
+<h3 class="subheading">Website Helpers</h3>
+<table><thead><tr><th>Area</th><th>Helper(s)</th></tr></thead><tbody id="websiteHelpers"></tbody></table>
 <h3 class="subheading">Other Roles</h3>
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Services</td><td id="services"></td></tr>
-<tr><td>Condominium Coordinator</td><td id="condominiumCoordinator"></td></tr>
+<tr><td>Services</td><td id="services"></td></tr><tr><td>Condominium Coordinator</td><td id="condominiumCoordinator"></td></tr>
 </tbody></table></div></section>
-
-<section class="register-section"><h2 class="section-heading">Administration</h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Administration</button></h2><div class="section-body">
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Admin Website</td><td id="adminWebsite"></td></tr>
-<tr><td>Admin Club</td><td id="adminClub"></td></tr>
+<tr><td>Admin Website</td><td id="adminWebsite"></td></tr><tr><td>Admin Club</td><td id="adminClub"></td></tr>
 </tbody></table></div></section>
 </div>
-
 <div class="status" id="statusBox">Loading the current Role Register…</div>
 <div class="join-note"><strong>Would you like to take on a Club role?</strong><br>If you would like to help with an event, activity, Club publication, the website or another part of Sanctuary Club, please ask an Administrator. Roles can be added or changed at any time.</div>
 <div class="motto">The computer does the thinking.<br>You do the creating.</div>
 </main></div>
-
 <script>
 (function(){
 "use strict";
 const BACKEND_URL="https://sanctuary-backend-8iqc.onrender.com";
-const ACTIVITIES=[
-["daffs-caff","Daff’s Caff"],["book-club","Book Club"],["bridge","Bridge"],["mahjong","Mahjong"],["rummikub","Rummikub"],["bowls","Bowls"],["table-tennis","Table Tennis"],["cookery","Cookery"],["walking-group","Walking Group"],["art-group","Art Group"],["gardening","Gardening"],["computer-art","Computer Art"]
-];
-const HELPER_SPECIALISMS=[
-["webassist","WebAssist"],
-["event_organiser","Event Organiser"],
-["activity_organiser","Activity Organiser"],
-["writer","Writer"],
-["artist","Artist"],
-["committee","Committee"],
-["residents_association","Residents Association"]
-];
-
+const ACTIVITIES=[["daffs-caff","Daff’s Caff"],["book-club","Book Club"],["bridge","Bridge"],["mahjong","Mahjong"],["rummikub","Rummikub"],["bowls","Bowls"],["table-tennis","Table Tennis"],["cookery","Cookery"],["walking-group","Walking Group"],["art-group","Art Group"],["gardening","Gardening"],["computer-art","Computer Art"]];
+const HELPER_SCOPES=[["general_website_help","General Website Help"],["studio_help","Studio Help"]];
 const registerContent=document.getElementById("registerContent");
 const statusBox=document.getElementById("statusBox");
 const clean=v=>String(v||"").trim();
 const normaliseRole=r=>clean(r).toLowerCase().replace(/[\s-]+/g,"_");
 const normaliseScope=s=>clean(s).toLowerCase().replace(/_/g,"-");
-const normaliseTutorScope=s=>clean(s).toLowerCase().replace(/[\s-]+/g,"_");
-
+const normaliseHelperScope=s=>clean(s).toLowerCase().replace(/[\s-]+/g,"_");
 const rolesFor=r=>Array.isArray(r?.roles)?r.roles.map(normaliseRole).filter(Boolean):[];
-
-const scopesFor=r=>{
- const raw=r?.activity_scopes??r?.activityScopes??[];
- return Array.isArray(raw)?raw.map(normaliseScope).filter(Boolean):[];
-};
-
-const tutorScopesFor=r=>{
- const raw=
-   r?.tutor_scopes ??
-   r?.tutorScopes ??
-   r?.helper_scopes ??
-   r?.helperScopes ??
-   [];
- return Array.isArray(raw)?raw.map(normaliseTutorScope).filter(Boolean):[];
-};
-
-function escapeHtml(v){
- return String(v??"")
-   .replace(/&/g,"&amp;")
-   .replace(/</g,"&lt;")
-   .replace(/>/g,"&gt;")
-   .replace(/"/g,"&quot;")
-   .replace(/'/g,"&#39;");
-}
-
-function setStatus(m,e=false){
- statusBox.textContent=m;
- statusBox.classList.toggle("error",!!e);
- statusBox.hidden=!m;
-}
-
-async function loadRoleDirectory(){
- const response=await fetch(`${BACKEND_URL}/api/role-directory`,{
-   method:"GET",
-   headers:{"Accept":"application/json"},
-   mode:"cors"
- });
-
- const data=await response.json().catch(()=>null);
-
- if(
-   !response.ok ||
-   !data ||
-   data.success!==true ||
-   !Array.isArray(data.residents)
- ){
-   throw new Error(
-     data?.message ||
-     "The Role Register could not be loaded."
-   );
- }
-
- return data.residents;
-}
-
-function holderKey(h){
- return clean(h.resident_id) ||
-   (clean(h.member_id)+"|"+clean(h.name));
-}
-
-function uniqueSorted(list){
- const seen=new Set();
-
- return list
-   .filter(h=>{
-     const k=holderKey(h);
-     if(!k||seen.has(k)) return false;
-     seen.add(k);
-     return true;
-   })
-   .sort((a,b)=>
-     clean(a.name).localeCompare(
-       clean(b.name),
-       "en",
-       {sensitivity:"base"}
-     )
-   );
-}
-
-function holdersWithRole(residents,role){
- return uniqueSorted(
-   residents.filter(r=>rolesFor(r).includes(role))
- );
-}
-
-function holderHtml(h){
- const name=clean(h.name)||"Member";
- const ref=clean(h.resident_id);
-
- return `<span class="holder">${escapeHtml(name)}${
-   ref
-     ? ` <span class="holder-ref">(${escapeHtml(ref)})</span>`
-     : ""
- }</span>`;
-}
-
-function holdersHtml(list){
- const c=uniqueSorted(list);
-
- return c.length
-   ? c.map(holderHtml).join(", ")
-   : `<span class="empty">—</span>`;
-}
-
-function fillCell(id,list){
- const el=document.getElementById(id);
- if(el) el.innerHTML=holdersHtml(list);
-}
-
-function renderEventHosts(residents){
- document.getElementById("eventHosts").innerHTML=
-   `<div class="role-line">
-      <div class="role-name">Current Event Hosts</div>
-      <div class="holders">
-        ${holdersHtml(holdersWithRole(residents,"host"))}
-      </div>
-    </div>`;
-}
-
-function renderActivities(residents){
- const tbody=document.getElementById("activityOrganisers");
- tbody.innerHTML="";
-
- ACTIVITIES.forEach(([scope,label])=>{
-   const organisers=uniqueSorted(
-     residents.filter(r=>
-       rolesFor(r).includes("activity_organiser") &&
-       scopesFor(r).includes(scope)
-     )
-   );
-
-   const tr=document.createElement("tr");
-
-   tr.innerHTML=
-     `<td>${escapeHtml(label)}</td>
-      <td>${holdersHtml(organisers)}</td>`;
-
-   tbody.appendChild(tr);
- });
-}
-
-function renderWebsiteHelpersTutors(residents){
- const tbody=document.getElementById("websiteHelpersTutors");
- tbody.innerHTML="";
-
- HELPER_SPECIALISMS.forEach(([scope,label])=>{
-   const holders=uniqueSorted(
-     residents.filter(r=>{
-       const roles=rolesFor(r);
-
-       const isHelper=
-         roles.includes("website_helper");
-
-       const isTutor=
-         roles.includes("tutor");
-
-       return (
-         (isHelper || isTutor) &&
-         tutorScopesFor(r).includes(scope)
-       );
-     })
-   );
-
-   const tr=document.createElement("tr");
-
-   tr.innerHTML=
-     `<td>${escapeHtml(label)}</td>
-      <td>${holdersHtml(holders)}</td>`;
-
-   tbody.appendChild(tr);
- });
-}
- 
-function renderRegister(residents){
- renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpersTutors(residents);
- fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));
- fillCell("committeeSecretary",holdersWithRole(residents,"committee_secretary"));
- fillCell("committeeTreasurer",holdersWithRole(residents,"committee_treasurer"));
- fillCell("committeeOfficers",holdersWithRole(residents,"committee_officer"));
- fillCell("raChair",holdersWithRole(residents,"ra_chair"));
- fillCell("raSecretary",holdersWithRole(residents,"ra_secretary"));
- fillCell("raTreasurer",holdersWithRole(residents,"ra_treasurer"));
- fillCell("raOfficers",holdersWithRole(residents,"ra_officer"));
- fillCell("writers",holdersWithRole(residents,"writer"));
- fillCell("artists",holdersWithRole(residents,"artist"));
- fillCell("copyEditors",holdersWithRole(residents,"copy_editor"));
- fillCell("artEditors",holdersWithRole(residents,"art_editor"));
- fillCell("services",holdersWithRole(residents,"services"));
- fillCell("condominiumCoordinator",holdersWithRole(residents,"condominium_coordinator"));
- fillCell("adminWebsite",holdersWithRole(residents,"admin_website"));
- fillCell("adminClub",holdersWithRole(residents,"admin_club"));
- registerContent.hidden=false;
-}
-async function initialise(){try{setStatus("Loading the current Role Register…");const residents=await loadRoleDirectory();renderRegister(residents);setStatus("")}catch(error){console.error(error);registerContent.hidden=true;setStatus(error.message||"The Role Register could not be loaded.",true)}}
+const scopesFor=r=>{const raw=r?.activity_scopes??r?.activityScopes??[];return Array.isArray(raw)?raw.map(normaliseScope).filter(Boolean):[]};
+const helperScopesFor=r=>{const raw=r?.helper_scopes??r?.helperScopes??r?.tutor_scopes??r?.tutorScopes??[];return Array.isArray(raw)?raw.map(normaliseHelperScope).filter(Boolean):[]};
+function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function setStatus(m,e=false){statusBox.textContent=m;statusBox.classList.toggle("error",!!e);statusBox.hidden=!m}
+async function loadRoleDirectory(){const response=await fetch(`${BACKEND_URL}/api/role-directory`,{method:"GET",headers:{"Accept":"application/json"},mode:"cors"});const data=await response.json().catch(()=>null);if(!response.ok||!data||data.success!==true||!Array.isArray(data.residents)){throw new Error(data?.message||"The Role Register could not be loaded.")}return data.residents}
+function holderKey(h){return clean(h.resident_id)||(clean(h.member_id)+"|"+clean(h.name))}
+function uniqueSorted(list){const seen=new Set();return list.filter(h=>{const k=holderKey(h);if(!k||seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>clean(a.name).localeCompare(clean(b.name),"en",{sensitivity:"base"}))}
+function holdersWithRole(residents,role){return uniqueSorted(residents.filter(r=>rolesFor(r).includes(role)))}
+function holderHtml(h){const name=clean(h.name)||"Member";const ref=clean(h.resident_id);return `<span class="holder">${escapeHtml(name)}${ref?` <span class="holder-ref">(${escapeHtml(ref)})</span>`:""}</span>`}
+function holdersHtml(list){const c=uniqueSorted(list);return c.length?c.map(holderHtml).join(", "):`<span class="empty">—</span>`}
+function fillCell(id,list){const el=document.getElementById(id);if(el)el.innerHTML=holdersHtml(list)}
+function renderEventHosts(residents){document.getElementById("eventHosts").innerHTML=`<div class="role-line"><div class="role-name">Current Event Hosts</div><div class="holders">${holdersHtml(holdersWithRole(residents,"host"))}</div></div>`}
+function renderActivities(residents){const tbody=document.getElementById("activityOrganisers");tbody.innerHTML="";ACTIVITIES.forEach(([scope,label])=>{const organisers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("activity_organiser")&&scopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr)})}
+function renderWebsiteHelpers(residents){const tbody=document.getElementById("websiteHelpers");tbody.innerHTML="";HELPER_SCOPES.forEach(([scope,label])=>{const holders=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td>`;tbody.appendChild(tr)})}
+function renderRegister(residents){renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpers(residents);fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));fillCell("committeeSecretary",holdersWithRole(residents,"committee_secretary"));fillCell("committeeTreasurer",holdersWithRole(residents,"committee_treasurer"));fillCell("committeeOfficers",holdersWithRole(residents,"committee_officer"));fillCell("raChair",holdersWithRole(residents,"ra_chair"));fillCell("raSecretary",holdersWithRole(residents,"ra_secretary"));fillCell("raTreasurer",holdersWithRole(residents,"ra_treasurer"));fillCell("raOfficers",holdersWithRole(residents,"ra_officer"));fillCell("writers",holdersWithRole(residents,"writer"));fillCell("artists",holdersWithRole(residents,"artist"));fillCell("copyEditors",holdersWithRole(residents,"copy_editor"));fillCell("artEditors",holdersWithRole(residents,"art_editor"));fillCell("services",holdersWithRole(residents,"services"));fillCell("condominiumCoordinator",holdersWithRole(residents,"condominium_coordinator"));fillCell("adminWebsite",holdersWithRole(residents,"admin_website"));fillCell("adminClub",holdersWithRole(residents,"admin_club"));registerContent.hidden=false}
+function setupAccordions(){const sections=Array.from(document.querySelectorAll(".register-section"));sections.forEach(section=>{const button=section.querySelector(".section-toggle");if(!button)return;button.addEventListener("click",()=>{const wasOpen=section.classList.contains("open");sections.forEach(other=>{other.classList.remove("open");const otherButton=other.querySelector(".section-toggle");if(otherButton)otherButton.setAttribute("aria-expanded","false")});if(!wasOpen){section.classList.add("open");button.setAttribute("aria-expanded","true")}})})}
+async function initialise(){try{setStatus("Loading the current Role Register…");const residents=await loadRoleDirectory();renderRegister(residents);setupAccordions();setStatus("")}catch(error){console.error(error);registerContent.hidden=true;setStatus(error.message||"The Role Register could not be loaded.",true)}}
 initialise();
 })();
 </script>

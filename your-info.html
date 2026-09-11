@@ -1017,6 +1017,43 @@
     return [];
   }
 
+  const ACTIVITY_SCOPE_LABELS = {
+    "daffs-caff":"Daff’s Caff",
+    "book-club":"Book Club",
+    "bridge":"Bridge",
+    "mahjong":"Mahjong",
+    "rummikub":"Rummikub",
+    "bowls":"Bowls",
+    "table-tennis":"Table Tennis",
+    "cookery":"Cookery",
+    "walking-group":"Walking Group",
+    "art-group":"Art Group",
+    "gardening":"Gardening",
+    "computer-art":"Computer Art"
+  };
+
+  function normaliseActivityScope(scope){
+    return String(scope || "")
+      .trim()
+      .toLowerCase()
+      .replace(/_/g,"-");
+  }
+
+  function activityScopesFromResident(resident){
+    const raw =
+      resident?.activity_scopes ??
+      resident?.activityScopes ??
+      [];
+
+    if (!Array.isArray(raw)) return [];
+
+    return [...new Set(
+      raw
+        .map(normaliseActivityScope)
+        .filter(Boolean)
+    )];
+  }
+
   function mergeResidentRoleRecords(...residentGroups){
     const merged = new Map();
 
@@ -1026,15 +1063,54 @@
       group.forEach((resident,index) => {
         const key = residentKey(resident,index);
         const previous = merged.get(key) || {};
-        const previousRoles = Array.isArray(previous.roles) ? previous.roles : [];
-        const nextRoles = Array.isArray(resident?.roles) ? resident.roles : [];
+
+        const previousRoles =
+          Array.isArray(previous.roles)
+            ? previous.roles
+            : [];
+
+        const nextRoles =
+          Array.isArray(resident?.roles)
+            ? resident.roles
+            : [];
+
+        const previousActivityScopes =
+          activityScopesFromResident(previous);
+
+        const nextActivityScopes =
+          activityScopesFromResident(resident);
 
         merged.set(key,{
           ...previous,
           ...resident,
-          resident_id: resident?.resident_id || resident?.residentId || previous.resident_id || key,
-          resident_index: resident?.resident_index ?? resident?.residentIndex ?? previous.resident_index ?? (index + 1),
-          roles:[...new Set([...previousRoles,...nextRoles].map(normaliseRole).filter(Boolean))]
+
+          resident_id:
+            resident?.resident_id ||
+            resident?.residentId ||
+            previous.resident_id ||
+            key,
+
+          resident_index:
+            resident?.resident_index ??
+            resident?.residentIndex ??
+            previous.resident_index ??
+            (index + 1),
+
+          roles:[
+            ...new Set(
+              [...previousRoles,...nextRoles]
+                .map(normaliseRole)
+                .filter(Boolean)
+            )
+          ],
+
+          activity_scopes:[
+            ...new Set(
+              [...previousActivityScopes,...nextActivityScopes]
+                .map(normaliseActivityScope)
+                .filter(Boolean)
+            )
+          ]
         });
       });
     });
@@ -1062,30 +1138,49 @@
     renderRoles();
   }
 
- function roleIconSvg(iconId, colourClass = ""){
-  if (!iconId) return `<span class="role-icon" aria-hidden="true">•</span>`;
+  function roleIconSvg(iconId, colourClass = ""){
+    if (!iconId){
+      return `<span class="role-icon" aria-hidden="true">•</span>`;
+    }
 
-  return `
-    <svg class="role-icon ${colourClass}" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-      <use href="assets/icons/icons.svg#${escapeHtml(iconId)}"></use>
-    </svg>
-  `;
-}
+    return `
+      <svg class="role-icon ${colourClass}" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <use href="assets/icons/icons.svg#${escapeHtml(iconId)}"></use>
+      </svg>
+    `;
+  }
 
-  function roleBadgeHtml(role){
-  const detail = ROLE_DETAILS[role] || {
-    label:role.replace(/_/g," "),
-    icon:"",
-    colour:""
-  };
+  function roleBadgeHtml(role,resident = null){
+    const detail = ROLE_DETAILS[role] || {
+      label:role.replace(/_/g," "),
+      icon:"",
+      colour:""
+    };
 
-  return `
-    <span class="role-badge" title="${escapeHtml(detail.label)}">
-      ${roleIconSvg(detail.icon, detail.colour)}
-      <span>${escapeHtml(detail.label)}</span>
-    </span>
-  `;
-}
+    let label = detail.label;
+
+    if (role === "activity_organiser"){
+      const scopes = activityScopesFromResident(resident);
+
+      if (scopes.length){
+        const scopeLabels = scopes.map(scope =>
+          ACTIVITY_SCOPE_LABELS[scope] ||
+          scope
+            .replace(/-/g," ")
+            .replace(/\b\w/g,letter => letter.toUpperCase())
+        );
+
+        label += ` — ${scopeLabels.join(", ")}`;
+      }
+    }
+
+    return `
+      <span class="role-badge" title="${escapeHtml(label)}">
+        ${roleIconSvg(detail.icon, detail.colour)}
+        <span>${escapeHtml(label)}</span>
+      </span>
+    `;
+  }
 
   function renderRoles(){
     roleBadges.innerHTML = "";
@@ -1095,7 +1190,11 @@
     // Older login responses may provide roles without a resident record.
     // Keep them visible as Resident 1 until the household residents load.
     if (!rows.length && activeRoles.length){
-      rows = [{resident:{resident_index:1},index:0,roles:activeRoles}];
+      rows = [{
+        resident:{resident_index:1},
+        index:0,
+        roles:activeRoles
+      }];
     }
 
     rows.forEach(entry => {
@@ -1104,11 +1203,15 @@
 
       const label = document.createElement("div");
       label.className = "household-role-label";
-      label.textContent = residentRoleLabel(entry.resident, entry.index);
+      label.textContent =
+        residentRoleLabel(entry.resident, entry.index);
 
       const badges = document.createElement("div");
       badges.className = "household-role-badges";
-      badges.innerHTML = entry.roles.map(roleBadgeHtml).join("");
+
+      badges.innerHTML = entry.roles
+        .map(role => roleBadgeHtml(role,entry.resident))
+        .join("");
 
       row.append(label,badges);
       roleBadges.appendChild(row);
@@ -1116,7 +1219,7 @@
 
     roleStrip.classList.toggle("show", rows.length > 0);
   }
-
+  
   function setLoginIntro(){
   
   if (pageIntro){

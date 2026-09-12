@@ -1189,6 +1189,183 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         </div>
 
       </div>
+      `
+  },
+
+
+  /*
+    =========================================================
+    SANCTUARY CLUB ADMINISTRATION — WHO DOES WHAT?
+    =========================================================
+  */
+
+  "administration-structure": {
+    kind: "notice",
+
+    title: "Sanctuary Club Administration — Who Does What?",
+
+    privacy: "access",
+
+    approval: "direct",
+
+    owner: "Sanctuary Club",
+
+    updated: "12 September 2026",
+
+    summary:
+      "A simple explanation of the different administrative roles and how responsibility is shared and protected.",
+
+    body: `
+      <p class="lead">
+        Sanctuary Club uses different kinds of administration for
+        different purposes. They are deliberately kept separate so
+        that people have the authority they need — and no more.
+      </p>
+
+      <h2>Club Administrators</h2>
+
+      <p>
+        <strong>Club Administrators (CA)</strong> look after the ordinary
+        administration of Sanctuary Club through the website.
+      </p>
+
+      <p>
+        Their responsibilities may include maintaining membership information,
+        helping with PIN problems, allocating Club roles, dealing with members
+        joining or leaving, and helping with the ordinary administration of
+        Events, Activities and Club information.
+      </p>
+
+      <p>
+        Club Administrators are themselves Sanctuary members.
+      </p>
+
+      <h2>Website Administrators</h2>
+
+      <p>
+        <strong>Website Administrators (WA)</strong> develop and look after
+        the Sanctuary Club website itself.
+      </p>
+
+      <p>
+        Their work may include maintaining and improving the website,
+        correcting faults, developing new facilities, looking after its
+        structure and technical services, and keeping sufficient information
+        and documentation for its future development.
+      </p>
+
+      <p>
+        An important part of Website Administration is continuity.
+        A Website Administrator may work alongside another developer,
+        share the work and knowledge involved, and in due course enable
+        somebody else to take over responsibility for the website.
+      </p>
+
+      <p>
+        Website Administrators can also provide a technical point of referral
+        for Website Helpers when a problem goes beyond ordinary member help.
+        Website Helpers remain a co-operative member-help network;
+        the Website Administrator does not supervise or control them.
+      </p>
+
+      <p>
+        Because Website Administrators may have powerful access to the website
+        and its development facilities, Website Administration has its own
+        separately protected access. Being shown as a Website Administrator
+        in the Role Register identifies the office-holder to members;
+        the Role Register entry does not itself provide technical access.
+      </p>
+
+      <h2>Backend Administrators</h2>
+
+      <p>
+        <strong>Backend Administrators (BA)</strong> safeguard the protected
+        technical foundations and continuity of Sanctuary Club.
+      </p>
+
+      <p>
+        There are three separately protected Backend Administrator offices:
+        a Primary Backend Administrator and two Backup Backend Administrators.
+        These are offices rather than permanent appointments to particular people.
+      </p>
+
+      <p>
+        A Backend Administrator need not be involved in the everyday development
+        of the website. The role exists particularly to ensure that protected
+        technical control and recovery of the system do not depend upon one person.
+      </p>
+
+      <p>
+        Backend Administration is kept separate from ordinary Club and
+        Website Administration. A person may hold more than one of these
+        responsibilities where appropriate, but one does not automatically
+        confer another.
+      </p>
+
+      <h2>Changing a Backend Administrator</h2>
+
+      <p>
+        Normally, the appointment, removal or replacement of a Backend
+        Administrator requires approval by
+        <strong>two existing Backend Administrators</strong>.
+      </p>
+
+      <p>
+        A new office-holder receives new protected credentials.
+        A previous office-holder's credentials are not passed on.
+      </p>
+
+      <h2>Emergency safeguard</h2>
+
+      <p>
+        If fewer than two Backend Administrators remain available,
+        the remaining Backend Administrator together with
+        <strong>two current Residents Association Officers</strong>
+        may authorise an emergency replacement.
+      </p>
+
+      <p>
+        If no Backend Administrator remains available,
+        <strong>three current Residents Association Officers</strong>
+        may authorise recovery of one Backend Administrator office.
+        The normal arrangements should then be restored as soon as practicable.
+      </p>
+
+      <p>
+        Changes of Backend Administrator are recorded.
+        Detailed recovery instructions, credentials and other sensitive
+        technical information are kept separately in the protected
+        Backend Administration area.
+      </p>
+
+      <h2>Keeping the responsibilities separate</h2>
+
+      <p>
+        A Club Administrator administers the Club using the website.
+      </p>
+
+      <p>
+        A Website Administrator develops and looks after the website
+        through which the Club operates.
+      </p>
+
+      <p>
+        A Backend Administrator safeguards the protected technical
+        foundations and recovery of the system.
+      </p>
+
+      <div class="motto">
+        <strong>
+          People should have the authority they need for their job —
+          and no more.
+        </strong>
+      </div>
+
+      <p>
+        Keeping these responsibilities clear helps Sanctuary Club remain
+        straightforward to run, properly protected and capable of being
+        handed on safely in the future.
+      </p>
     `
   }
 

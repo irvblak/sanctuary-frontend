@@ -311,7 +311,7 @@
             type="submit"
             class="primary"
           >
-            Reset my PIN
+        Request PIN reset
           </button>
 
           <button
@@ -386,7 +386,7 @@
     }
 
     resetBtn.disabled = true;
-    resetBtn.textContent = "Resetting…";
+    resetBtn.textContent = "Sending request…";
     statusBox.innerHTML = "";
 
     try{
@@ -409,7 +409,7 @@
       if(!response.ok || !data.success){
         throw new Error(
           data.message ||
-          "We could not reset your PIN."
+          "We could not send your request."
         );
       }
 

@@ -107,6 +107,20 @@
     .reset-panel textarea{min-height:82px;background:#fff;}
     .reset-results{margin-top:.75rem;padding:.75rem;border-radius:12px;background:#fff;border:1px solid #ead49a;line-height:1.55;white-space:pre-wrap;font-weight:700;}
 
+    .pin-request-panel{margin-top:1rem;padding:1rem;border:1px solid #b8d4ea;border-radius:14px;background:#f5fbff;}
+    .pin-request-panel h2{margin:0;color:#003366;font-size:1.25rem;}
+    .pin-request-panel p{margin:.35rem 0 .8rem;line-height:1.55;color:#334b5c;font-weight:600;}
+    .pin-request-list{display:grid;gap:.8rem;margin-top:.8rem;}
+    .pin-request-card{background:#fff;border:1px solid #cfe0ed;border-radius:12px;padding:.9rem;}
+    .pin-request-head{display:flex;justify-content:space-between;gap:.8rem;flex-wrap:wrap;align-items:flex-start;}
+    .pin-request-member{font-size:1.1rem;font-weight:900;color:#003366;}
+    .pin-request-date{color:#566b79;font-weight:700;}
+    .pin-request-contact{margin-top:.65rem;padding:.65rem .75rem;background:#f8fbfd;border-radius:10px;line-height:1.55;}
+    .pin-request-contact strong{color:#173e5c;}
+    .pin-request-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem;align-items:center;}
+    .pin-request-empty{padding:.85rem;background:#fff;border:1px solid #cfe0ed;border-radius:10px;font-weight:800;color:#36566c;}
+    .pin-request-status{font-weight:800;color:#40586a;}
+
     .hidden{display:none;}
 
     .opts{
@@ -254,36 +268,41 @@
       It loads the current information from the Sanctuary backend and uses browser-local data only as a fallback.
     </p>
 
-    <!-- PIN gate (reuse YI PIN store) -->
-      <div class="gate hidden" id="gateBox">
+    <div class="gate hidden" id="gateBox">
       <div style="font-weight:900; color:#003366;">Unlock with your YI PIN</div>
       <p class="muted" style="margin:0.35rem 0 0.1rem;">
         Use your <strong>membership number</strong> (e.g. SM55) and the same <strong>4-digit PIN</strong> you set in Your Information.
       </p>
-
       <div class="row">
-        <div>
-          <label>Membership number</label>
-          <input id="adminMemberId" value="SM55" autocomplete="off" />
-        </div>
-        <div>
-          <label>PIN</label>
-          <input id="adminPin" class="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" />
-        </div>
-
+        <div><label>Membership number</label><input id="adminMemberId" value="SM55" autocomplete="off" /></div>
+        <div><label>PIN</label><input id="adminPin" class="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" /></div>
         <button id="unlockBtn" class="action" type="button" disabled>Unlock</button>
         <button id="lockBtn" class="action secondary hidden" type="button">Lock</button>
-
         <span class="muted" id="gateMsg"></span>
       </div>
     </div>
 
-    <!-- Admin area (hidden until unlocked) -->
     <div id="adminArea" class="hidden">
+
+      <section class="pin-request-panel" aria-labelledby="pinRequestsHeading">
+        <div class="pin-request-head">
+          <div>
+            <h2 id="pinRequestsHeading">PIN Reset Requests</h2>
+            <p>
+              Before approving a request, satisfy yourself independently that it is genuine.
+              Any contact details shown below are simply information already held in Your Information;
+              they are <strong>not required</strong> for a member to request or receive a reset.
+            </p>
+          </div>
+          <button id="refreshPinRequestsBtn" class="action secondary" type="button">Refresh Requests</button>
+        </div>
+        <div id="pinRequestsStatus" class="pin-request-status" aria-live="polite"></div>
+        <div id="pinRequestsList" class="pin-request-list"></div>
+      </section>
 
       <section class="reset-panel" aria-labelledby="resetPinHeading">
         <h2 id="resetPinHeading">Reset Membership PINs</h2>
-        <p>Enter one or more membership numbers, separated by commas, spaces or new lines. Each selected membership will be returned to the temporary Starter PIN <strong>2468</strong>. The resident must then choose a new private household PIN.</p>
+        <p>Enter one or more membership numbers, separated by commas, spaces or new lines. Each selected membership will be returned to the temporary Starter PIN <strong>2468</strong>. The member must then choose a new private household PIN.</p>
         <label for="resetMemberIds">Membership numbers</label>
         <textarea id="resetMemberIds" placeholder="SC25&#10;SM18&#10;SC07"></textarea>
         <div class="row">
@@ -294,23 +313,15 @@
         <div id="resetPinsResults" class="reset-results hidden" aria-live="polite"></div>
       </section>
 
-      <div style="font-weight:900; color:#003366; margin:0.9rem 0 0.35rem;">
-        Copy-ready email list (per resident, deduped)
-      </div>
-
-      <div class="opts">
-        <label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label>
-      </div>
-
+      <div style="font-weight:900; color:#003366; margin:0.9rem 0 0.35rem;">Copy-ready email list (per resident, deduped)</div>
+      <div class="opts"><label><input type="checkbox" id="onlyJoined" checked> Only joined residences</label></div>
       <textarea id="emailList" readonly></textarea>
-
       <div class="row" style="margin-top:0.6rem;">
         <button id="copyEmails" class="action" type="button">Copy all shown emails</button>
         <button id="emailAllShown" class="action secondary" type="button">Email all shown (BCC)</button>
         <button id="downloadCsv" class="action secondary" type="button">Download mail-merge CSV</button>
         <span class="muted" id="stats"></span>
       </div>
-
       <div class="selection-bar">
         <button id="selectAllEmails" class="action secondary" type="button">Select all with email</button>
         <button id="clearEmailSelection" class="action secondary" type="button">Clear selection</button>
@@ -326,20 +337,10 @@
         </div>
         <div class="panel-body">
           <table>
-            <thead>
-              <tr>
-                <th class="select-cell">
-                  <input id="selectAllHeader" type="checkbox" aria-label="Select all residents with email">
-                </th>
-                <th style="width:130px;"></th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Landline</th>
-                <th>Joined</th>
-                <th>Updated</th>
-              </tr>
-            </thead>
+            <thead><tr>
+              <th class="select-cell"><input id="selectAllHeader" type="checkbox" aria-label="Select all residents with email"></th>
+              <th style="width:130px;"></th><th>Name</th><th>Email</th><th>Mobile</th><th>Landline</th><th>Joined</th><th>Updated</th>
+            </tr></thead>
             <tbody id="gridRows"></tbody>
           </table>
         </div>
@@ -354,11 +355,8 @@
 </main>
 
 <script>
-  // Must match your YI keys & hashing recipe
   const STORAGE_KEY = "sanctuaryMembers";
   const PIN_KEY = "sanctuaryPins";
-
-  // Remember unlocked state for this browser tab only
   const ADMIN_SESSION_KEY = "sanctuaryAdminUnlocked";
   const BACKEND_URL = "https://sanctuary-backend-8iqc.onrender.com";
 
@@ -368,36 +366,22 @@
   const lockBtn = document.getElementById("lockBtn");
   const gateMsg = document.getElementById("gateMsg");
 
-  function baseId(raw){
-    return String(raw || "").trim().split("/")[0]; // SM55/1 -> SM55
-  }
-
+  function baseId(raw){ return String(raw || "").trim().split("/")[0]; }
   let currentStore = {};
   let currentRows = [];
   const selectedResidentIds = new Set();
 
-  function loadStore(){
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
-  }
+  function loadStore(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
 
   async function loadBackendStore(){
     const token = getAdminToken();
     const headers = { "Accept":"application/json" };
     if (token) headers.Authorization = `Bearer ${token}`;
-
-    const response = await fetch(`${BACKEND_URL}/api/members-directory`, {
-      method:"GET",
-      cache:"no-store",
-      headers
-    });
-
+    const response = await fetch(`${BACKEND_URL}/api/members-directory`, {method:"GET",cache:"no-store",headers});
     const data = await response.json().catch(() => null);
-
     if (!response.ok || !data || data.success === false || !data.members || typeof data.members !== "object"){
       throw new Error(data?.message || `Members could not be loaded (${response.status}).`);
     }
-
     return data.members;
   }
 
@@ -415,11 +399,7 @@
     }
   }
 
-  function loadPins(){
-    try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; }
-    catch { return {}; }
-  }
-
+  function loadPins(){ try { return JSON.parse(localStorage.getItem(PIN_KEY)) || {}; } catch { return {}; } }
   function onlyDigits4(s){ return /^[0-9]{4}$/.test(s); }
 
   async function sha256Hex(str){
@@ -427,12 +407,7 @@
     const buf = await crypto.subtle.digest("SHA-256", enc);
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
   }
-
-  // Must match YI exactly
-  async function pinHash(memberId, pin){
-    return sha256Hex(`${memberId}::${pin}::sanctuary`);
-  }
-
+  async function pinHash(memberId, pin){ return sha256Hex(`${memberId}::${pin}::sanctuary`); }
 
   function getAdminToken(){
     return localStorage.getItem("adminToken") ||
@@ -441,31 +416,139 @@
            sessionStorage.getItem("sanctuaryAdminToken") || "";
   }
 
+  function escapeHtml(value){
+    return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  function formatRequestDate(value){
+    if (!value) return "";
+    try{
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value);
+      return d.toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"});
+    }catch{ return String(value); }
+  }
+
+  async function adminPinRequestAction(requestId, action){
+    const token = getAdminToken();
+    if (!token) throw new Error("Admin login token not found. Please log in again.");
+    const response = await fetch(`${BACKEND_URL}/api/admin/pin-reset-requests/${encodeURIComponent(requestId)}/${action}`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`}
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success === false) throw new Error(data.message || `Request could not be ${action}d.`);
+    return data;
+  }
+
+  async function loadPinResetRequests(){
+    const list = document.getElementById("pinRequestsList");
+    const status = document.getElementById("pinRequestsStatus");
+    const refresh = document.getElementById("refreshPinRequestsBtn");
+    const token = getAdminToken();
+
+    list.innerHTML = "";
+    status.textContent = "Loading requests…";
+    refresh.disabled = true;
+
+    try{
+      if (!token) throw new Error("Admin login token not found. Please log in again.");
+      const response = await fetch(`${BACKEND_URL}/api/admin/pin-reset-requests`, {
+        method:"GET", cache:"no-store",
+        headers:{"Accept":"application/json","Authorization":`Bearer ${token}`}
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === false) throw new Error(data.message || "PIN reset requests could not be loaded.");
+
+      const requests = Array.isArray(data.requests) ? data.requests : [];
+      status.textContent = requests.length
+        ? `${requests.length} request${requests.length === 1 ? "" : "s"} waiting.`
+        : "";
+
+      if (!requests.length){
+        list.innerHTML = `<div class="pin-request-empty">No PIN reset requests are waiting.</div>`;
+        return;
+      }
+
+      list.innerHTML = requests.map(item => {
+        const contacts = Array.isArray(item.contacts) ? item.contacts : [];
+        const contactHtml = contacts.length ? contacts.map(c => {
+          const details = [
+            c.email ? `<strong>Email:</strong> ${escapeHtml(c.email)}` : "",
+            c.mobile ? `<strong>Mobile:</strong> ${escapeHtml(c.mobile)}` : "",
+            c.landline ? `<strong>Landline:</strong> ${escapeHtml(c.landline)}` : ""
+          ].filter(Boolean).join(" &nbsp; • &nbsp;");
+          return `<div class="pin-request-contact">
+            <strong>${escapeHtml(c.name || c.resident_id || "Member")}</strong>
+            ${details ? `<br>${details}` : `<br><span class="muted">No contact details held.</span>`}
+          </div>`;
+        }).join("") : `<div class="pin-request-contact"><span class="muted">No contact details are held for this membership. This does not prevent approval once the Club Administrator has independently verified the member.</span></div>`;
+
+        const repeat = Number(item.repeat_count || 1);
+        return `<article class="pin-request-card" data-request-id="${escapeHtml(item.request_id)}">
+          <div class="pin-request-head">
+            <div>
+              <div class="pin-request-member">${escapeHtml(item.member_id)}</div>
+              <div class="pin-request-date">Requested ${escapeHtml(formatRequestDate(item.requested_at))}${repeat > 1 ? ` • ${repeat} requests received` : ""}</div>
+            </div>
+          </div>
+          ${contactHtml}
+          <div class="pin-request-actions">
+            <button class="action approve-pin-request" type="button" data-id="${escapeHtml(item.request_id)}" data-member="${escapeHtml(item.member_id)}">Approve Reset to 2468</button>
+            <button class="action secondary dismiss-pin-request" type="button" data-id="${escapeHtml(item.request_id)}" data-member="${escapeHtml(item.member_id)}">Dismiss Request</button>
+          </div>
+        </article>`;
+      }).join("");
+
+      list.querySelectorAll(".approve-pin-request").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const member = btn.dataset.member;
+          if (!window.confirm(`Have you independently satisfied yourself that the PIN reset request for ${member} is genuine?\n\nIf you approve it, the membership PIN will be reset to the temporary Starter PIN 2468.`)) return;
+          try{
+            status.textContent = `Approving ${member}…`;
+            await adminPinRequestAction(btn.dataset.id, "approve");
+            status.textContent = `${member} has been reset to the temporary Starter PIN 2468.`;
+            await loadPinResetRequests();
+          }catch(err){ status.textContent = err.message || "The request could not be approved."; }
+        });
+      });
+
+      list.querySelectorAll(".dismiss-pin-request").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const member = btn.dataset.member;
+          if (!window.confirm(`Dismiss the PIN reset request for ${member}?\n\nThe existing PIN will not be changed.`)) return;
+          try{
+            status.textContent = `Dismissing ${member}…`;
+            await adminPinRequestAction(btn.dataset.id, "dismiss");
+            status.textContent = `${member}'s request has been dismissed. The PIN was not changed.`;
+            await loadPinResetRequests();
+          }catch(err){ status.textContent = err.message || "The request could not be dismissed."; }
+        });
+      });
+    }catch(err){
+      status.textContent = err.message || "PIN reset requests could not be loaded.";
+      list.innerHTML = "";
+    }finally{
+      refresh.disabled = false;
+    }
+  }
+
   function parseMembershipIds(value){
-    return [...new Set(
-      String(value || "").toUpperCase().split(/[\s,;]+/).map(baseId)
-        .filter(id => /^(SM|SC)\d+$/.test(id))
-    )];
+    return [...new Set(String(value || "").toUpperCase().split(/[\s,;]+/).map(baseId).filter(id => /^(SM|SC)\d+$/.test(id)))];
   }
 
   async function resetOneMembershipPin(memberId){
     const token = getAdminToken();
     if (!token) throw new Error("Admin login token not found. Please log in again.");
-
     const response = await fetch(`${BACKEND_URL}/api/admin/reset-member-pin`, {
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
       body:JSON.stringify({member_id:memberId})
     });
-
     const raw = await response.text();
     let data = {};
-    try{ data = raw ? JSON.parse(raw) : {}; }
-    catch(_){ data = {success:false,message:raw || `HTTP ${response.status}`}; }
-
-    if (!response.ok || data.success === false){
-      throw new Error(data.message || `Reset failed (${response.status})`);
-    }
+    try{ data = raw ? JSON.parse(raw) : {}; } catch(_){ data = {success:false,message:raw || `HTTP ${response.status}`}; }
+    if (!response.ok || data.success === false) throw new Error(data.message || `Reset failed (${response.status})`);
   }
 
   async function resetSelectedPins(){
@@ -474,340 +557,137 @@
     const status = document.getElementById("resetPinsStatus");
     const resultsBox = document.getElementById("resetPinsResults");
     const ids = parseMembershipIds(input.value);
-
-    resultsBox.classList.add("hidden");
-    resultsBox.textContent = "";
-    status.textContent = "";
-
-    if (!ids.length){
-      status.textContent = "Enter at least one valid membership number.";
-      input.focus();
-      return;
-    }
-
+    resultsBox.classList.add("hidden"); resultsBox.textContent = ""; status.textContent = "";
+    if (!ids.length){ status.textContent = "Enter at least one valid membership number."; input.focus(); return; }
     if (!window.confirm(`Reset ${ids.length} membership PIN${ids.length === 1 ? "" : "s"} to 2468?\n\n${ids.join(", ")}`)) return;
-
-    button.disabled = true;
-    status.textContent = "Resetting…";
-
-    const lines = [];
-    let succeeded = 0;
-
+    button.disabled = true; status.textContent = "Resetting…";
+    const lines = []; let succeeded = 0;
     for (const id of ids){
-      try{
-        await resetOneMembershipPin(id);
-        succeeded++;
-        lines.push(`✓ ${id} reset to 2468`);
-      }catch(err){
-        lines.push(`✗ ${id}: ${err.message || "Reset failed"}`);
-      }
+      try{ await resetOneMembershipPin(id); succeeded++; lines.push(`✓ ${id} reset to 2468`); }
+      catch(err){ lines.push(`✗ ${id}: ${err.message || "Reset failed"}`); }
     }
-
-    resultsBox.textContent = lines.join("\n");
-    resultsBox.classList.remove("hidden");
-    status.textContent = `${succeeded} of ${ids.length} reset successfully.`;
-    button.disabled = false;
+    resultsBox.textContent = lines.join("\n"); resultsBox.classList.remove("hidden");
+    status.textContent = `${succeeded} of ${ids.length} reset successfully.`; button.disabled = false;
   }
 
-  function fmtDate(ms){
-    if (!ms) return "";
-    try { return new Date(ms).toLocaleString(); }
-    catch { return ""; }
-  }
-
-  function isEmailLike(s){
-    const v = String(s || "").trim();
-    if (!v) return false;
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  }
+  function fmtDate(ms){ if (!ms) return ""; try { return new Date(ms).toLocaleString(); } catch { return ""; } }
+  function isEmailLike(s){ const v = String(s || "").trim(); return !!v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
   function buildRows(store, onlyJoined){
-    const rows = [];
-    const emails = new Set();
-    const keys = Object.keys(store).sort();
-
+    const rows = [], emails = new Set(), keys = Object.keys(store).sort();
     keys.forEach(membershipId => {
-      const entry = store[membershipId] || {};
-      const joined = !!entry.joined;
-      const updated = entry.updated || null;
+      const entry = store[membershipId] || {}, joined = !!entry.joined, updated = entry.updated || null;
       const residents = Array.isArray(entry.residents) ? entry.residents : [];
-
       if (onlyJoined && !joined) return;
-
       residents.forEach((r, idx) => {
-        const rid = `${membershipId}/${idx + 1}`;
-        const name = String(r?.name || "").trim();
-        const email = String(r?.email || "").trim();
-        const mobile = String(r?.mobile || "").trim();
-        const landline = (idx === 0 ? String(r?.landline || "").trim() : "");
-
+        const rid = `${membershipId}/${idx + 1}`, name = String(r?.name || "").trim(), email = String(r?.email || "").trim();
+        const mobile = String(r?.mobile || "").trim(), landline = (idx === 0 ? String(r?.landline || "").trim() : "");
         if (isEmailLike(email)) emails.add(email);
-
-        rows.push({
-          rid, name, email, mobile, landline,
-          hasEmail:isEmailLike(email),
-          joined: joined ? "Yes" : "No",
-          updated: fmtDate(updated)
-        });
+        rows.push({rid,name,email,mobile,landline,hasEmail:isEmailLike(email),joined:joined ? "Yes" : "No",updated:fmtDate(updated)});
       });
     });
-
-    return {
-      rows,
-      emails:[...emails].sort((a,b) => a.localeCompare(b, "en-GB", {sensitivity:"base"}))
-    };
-  }
-
-  function escapeHtml(value){
-    return String(value ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#39;");
+    return {rows,emails:[...emails].sort((a,b) => a.localeCompare(b,"en-GB",{sensitivity:"base"}))};
   }
 
   function uniqueEmails(rows){
-    const seen = new Set();
-    const out = [];
-
-    rows.forEach(row => {
-      if (!row.hasEmail) return;
-      const key = row.email.toLowerCase();
-      if (seen.has(key)) return;
-      seen.add(key);
-      out.push(row.email);
-    });
-
+    const seen = new Set(), out = [];
+    rows.forEach(row => { if (!row.hasEmail) return; const key = row.email.toLowerCase(); if (!seen.has(key)){ seen.add(key); out.push(row.email); } });
     return out;
   }
-
-  function selectedRows(){
-    return currentRows.filter(row => selectedResidentIds.has(row.rid) && row.hasEmail);
-  }
+  function selectedRows(){ return currentRows.filter(row => selectedResidentIds.has(row.rid) && row.hasEmail); }
 
   function updateSelectionStatus(){
-    const selected = selectedRows();
-    const emails = uniqueEmails(selected);
-    const availableCount = currentRows.filter(row => row.hasEmail).length;
-
-    document.getElementById("selectionStatus").textContent =
-      `${selected.length} resident${selected.length === 1 ? "" : "s"} selected • ${emails.length} unique email${emails.length === 1 ? "" : "s"}`;
-
+    const selected = selectedRows(), emails = uniqueEmails(selected), availableCount = currentRows.filter(row => row.hasEmail).length;
+    document.getElementById("selectionStatus").textContent = `${selected.length} resident${selected.length === 1 ? "" : "s"} selected • ${emails.length} unique email${emails.length === 1 ? "" : "s"}`;
     const header = document.getElementById("selectAllHeader");
-    if (header){
-      header.checked = availableCount > 0 && selected.length === availableCount;
-      header.indeterminate = selected.length > 0 && selected.length < availableCount;
-    }
-
+    if (header){ header.checked = availableCount > 0 && selected.length === availableCount; header.indeterminate = selected.length > 0 && selected.length < availableCount; }
     document.getElementById("copySelectedEmails").disabled = emails.length === 0;
     document.getElementById("emailSelected").disabled = emails.length === 0;
   }
 
   function setAllVisibleSelected(selected){
-    currentRows.forEach(row => {
-      if (!row.hasEmail) return;
-      if (selected) selectedResidentIds.add(row.rid);
-      else selectedResidentIds.delete(row.rid);
-    });
-
-    document.querySelectorAll(".resident-select").forEach(box => {
-      box.checked = selected;
-    });
-
+    currentRows.forEach(row => { if (!row.hasEmail) return; if (selected) selectedResidentIds.add(row.rid); else selectedResidentIds.delete(row.rid); });
+    document.querySelectorAll(".resident-select").forEach(box => { box.checked = selected; });
     updateSelectionStatus();
   }
 
   async function copyEmailList(emails){
     const text = emails.join(", ");
-    if (!text){
-      alert("No email addresses selected.");
-      return;
-    }
-
-    try{
-      await navigator.clipboard.writeText(text);
-      alert(`${emails.length} email address${emails.length === 1 ? "" : "es"} copied.`);
-    }catch{
-      alert("Copy failed (browser blocked). You can manually select and copy the email list.");
-    }
+    if (!text){ alert("No email addresses selected."); return; }
+    try{ await navigator.clipboard.writeText(text); alert(`${emails.length} email address${emails.length === 1 ? "" : "es"} copied.`); }
+    catch{ alert("Copy failed (browser blocked). You can manually select and copy the email list."); }
   }
 
   function openBccEmail(emails){
     const unique = [...new Set(emails.filter(isEmailLike))];
-    if (!unique.length){
-      alert("No valid email addresses selected.");
-      return;
-    }
-
-    const href = `mailto:?bcc=${encodeURIComponent(unique.join(","))}`;
-    window.location.href = href;
+    if (!unique.length){ alert("No valid email addresses selected."); return; }
+    window.location.href = `mailto:?bcc=${encodeURIComponent(unique.join(","))}`;
   }
 
   async function render(){
     document.getElementById("stats").textContent = "Loading members…";
     document.getElementById("gridRows").innerHTML = "";
-
-    const store = await getCurrentStore();
-    const onlyJoined = document.getElementById("onlyJoined").checked;
-    const out = buildRows(store, onlyJoined);
+    const store = await getCurrentStore(), onlyJoined = document.getElementById("onlyJoined").checked, out = buildRows(store, onlyJoined);
     currentRows = out.rows;
-
-    // Remove selections that are no longer visible after filtering/reloading.
     const visibleIds = new Set(currentRows.map(row => row.rid));
-    [...selectedResidentIds].forEach(id => {
-      if (!visibleIds.has(id)) selectedResidentIds.delete(id);
-    });
-
+    [...selectedResidentIds].forEach(id => { if (!visibleIds.has(id)) selectedResidentIds.delete(id); });
     document.getElementById("emailList").value = out.emails.join(", ");
-    document.getElementById("stats").textContent =
-      `${out.emails.length} unique emails • ${out.rows.length} resident rows`;
-
+    document.getElementById("stats").textContent = `${out.emails.length} unique emails • ${out.rows.length} resident rows`;
     const tbody = document.getElementById("gridRows");
     tbody.innerHTML = out.rows.map(r => `
       <tr class="${r.hasEmail ? "" : "no-email"}">
-        <td class="select-cell">
-          <input
-            class="resident-select"
-            type="checkbox"
-            data-rid="${escapeHtml(r.rid)}"
-            ${selectedResidentIds.has(r.rid) ? "checked" : ""}
-            ${r.hasEmail ? "" : "disabled"}
-            aria-label="${r.hasEmail ? `Select ${escapeHtml(r.name || r.rid)} for email` : "No valid email address"}"
-          >
-        </td>
-        <td class="idcell">${escapeHtml(r.rid)}</td>
-        <td>${escapeHtml(r.name)}</td>
-        <td>${escapeHtml(r.email)}</td>
-        <td>${escapeHtml(r.mobile)}</td>
-        <td>${escapeHtml(r.landline)}</td>
-        <td>${escapeHtml(r.joined)}</td>
-        <td>${escapeHtml(r.updated)}</td>
-      </tr>
-    `).join("");
-
-    tbody.querySelectorAll(".resident-select").forEach(box => {
-      box.addEventListener("change", () => {
-        const rid = box.dataset.rid;
-        if (box.checked) selectedResidentIds.add(rid);
-        else selectedResidentIds.delete(rid);
-        updateSelectionStatus();
-      });
-    });
-
+        <td class="select-cell"><input class="resident-select" type="checkbox" data-rid="${escapeHtml(r.rid)}" ${selectedResidentIds.has(r.rid) ? "checked" : ""} ${r.hasEmail ? "" : "disabled"} aria-label="${r.hasEmail ? `Select ${escapeHtml(r.name || r.rid)} for email` : "No valid email address"}"></td>
+        <td class="idcell">${escapeHtml(r.rid)}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.email)}</td><td>${escapeHtml(r.mobile)}</td><td>${escapeHtml(r.landline)}</td><td>${escapeHtml(r.joined)}</td><td>${escapeHtml(r.updated)}</td>
+      </tr>`).join("");
+    tbody.querySelectorAll(".resident-select").forEach(box => box.addEventListener("change", () => {
+      const rid = box.dataset.rid; if (box.checked) selectedResidentIds.add(rid); else selectedResidentIds.delete(rid); updateSelectionStatus();
+    }));
     updateSelectionStatus();
   }
 
   async function downloadMailMergeCSV(){
     const store = Object.keys(currentStore).length ? currentStore : await getCurrentStore();
-    const onlyJoined = document.getElementById("onlyJoined").checked;
-    const out = buildRows(store, onlyJoined);
-
-    const headers = ["ResidentID","Name","Email","Mobile","Landline","Joined","Updated"];
-    const lines = [headers.join(",")];
-
-    out.rows.forEach(r => {
-      const vals = [r.rid,r.name,r.email,r.mobile,r.landline,r.joined,r.updated]
-        .map(v => `"${String(v ?? "").replaceAll('"','""')}"`);
-      lines.push(vals.join(","));
-    });
-
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "sanctuary-mail-merge.csv";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    const out = buildRows(store, document.getElementById("onlyJoined").checked);
+    const lines = [["ResidentID","Name","Email","Mobile","Landline","Joined","Updated"].join(",")];
+    out.rows.forEach(r => lines.push([r.rid,r.name,r.email,r.mobile,r.landline,r.joined,r.updated].map(v => `"${String(v ?? "").replaceAll('"','""')}"`).join(",")));
+    const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8"}), url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = "sanctuary-mail-merge.csv"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   }
 
   function setAdminUnlocked(state){
-  if (state) sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
-  else sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    if (state) sessionStorage.setItem(ADMIN_SESSION_KEY, "1"); else sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    document.getElementById("gateBox").classList.toggle("hidden", state);
+    document.getElementById("adminArea").classList.toggle("hidden", !state);
+    lockBtn.classList.toggle("hidden", !state); unlockBtn.classList.toggle("hidden", state);
+    if (state){ render(); loadPinResetRequests(); }
+  }
 
-  document.getElementById("gateBox").classList.toggle("hidden", state);
-  document.getElementById("adminArea").classList.toggle("hidden", !state);
-  lockBtn.classList.toggle("hidden", !state);
-  unlockBtn.classList.toggle("hidden", state);
-
-  if (state) render();
-}
   async function handleUnlock(){
-    const memberId = baseId(adminMemberIdEl.value);
-    const pin = String(adminPinEl.value || "").trim();
-
+    const memberId = baseId(adminMemberIdEl.value), pin = String(adminPinEl.value || "").trim();
     if (!memberId) return;
-    if (!onlyDigits4(pin)) { gateMsg.textContent = "Enter a 4-digit PIN."; return; }
-
+    if (!onlyDigits4(pin)){ gateMsg.textContent = "Enter a 4-digit PIN."; return; }
     const pins = loadPins();
-    if (!pins[memberId]) {
-      gateMsg.textContent = `No PIN found for ${memberId}. Set it once in Your Information.`;
-      return;
-    }
-
+    if (!pins[memberId]){ gateMsg.textContent = `No PIN found for ${memberId}. Set it once in Your Information.`; return; }
     const hashed = await pinHash(memberId, pin);
-    if (hashed !== pins[memberId]) {
-      gateMsg.textContent = "Incorrect PIN.";
-      return;
-    }
-
-    gateMsg.textContent = "";
-    setAdminUnlocked(true);
-  }
-  
-  function refreshUnlockBtn(){
-    const memberId = baseId(adminMemberIdEl.value);
-    unlockBtn.disabled = !memberId;
+    if (hashed !== pins[memberId]){ gateMsg.textContent = "Incorrect PIN."; return; }
+    gateMsg.textContent = ""; setAdminUnlocked(true);
   }
 
-  // UI wiring
-  adminMemberIdEl.addEventListener("input", () => {
-    gateMsg.textContent = "";
-    refreshUnlockBtn();
-  });
+  function refreshUnlockBtn(){ unlockBtn.disabled = !baseId(adminMemberIdEl.value); }
 
+  adminMemberIdEl.addEventListener("input", () => { gateMsg.textContent = ""; refreshUnlockBtn(); });
   unlockBtn.addEventListener("click", handleUnlock);
+  lockBtn.addEventListener("click", () => { setAdminUnlocked(false); adminPinEl.value = ""; gateMsg.textContent = ""; });
 
-  lockBtn.addEventListener("click", () => {
-    setAdminUnlocked(false);
-    adminPinEl.value = "";
-    gateMsg.textContent = "";
-  });
-
-  document.getElementById("onlyJoined").addEventListener("change", () => {
-    if (sessionStorage.getItem(ADMIN_SESSION_KEY) === "1") render();
-  });
-
-  document.getElementById("copyEmails").addEventListener("click", async () => {
-    await copyEmailList(uniqueEmails(currentRows));
-  });
-
-  document.getElementById("emailAllShown").addEventListener("click", () => {
-    openBccEmail(uniqueEmails(currentRows));
-  });
-
-  document.getElementById("selectAllEmails").addEventListener("click", () => {
-    setAllVisibleSelected(true);
-  });
-
-  document.getElementById("clearEmailSelection").addEventListener("click", () => {
-    setAllVisibleSelected(false);
-  });
-
-  document.getElementById("selectAllHeader").addEventListener("change", event => {
-    setAllVisibleSelected(event.currentTarget.checked);
-  });
-
-  document.getElementById("copySelectedEmails").addEventListener("click", async () => {
-    await copyEmailList(uniqueEmails(selectedRows()));
-  });
-
-  document.getElementById("emailSelected").addEventListener("click", () => {
-    openBccEmail(uniqueEmails(selectedRows()));
-  });
-
+  document.getElementById("refreshPinRequestsBtn").addEventListener("click", loadPinResetRequests);
+  document.getElementById("onlyJoined").addEventListener("change", () => { if (sessionStorage.getItem(ADMIN_SESSION_KEY) === "1") render(); });
+  document.getElementById("copyEmails").addEventListener("click", async () => await copyEmailList(uniqueEmails(currentRows)));
+  document.getElementById("emailAllShown").addEventListener("click", () => openBccEmail(uniqueEmails(currentRows)));
+  document.getElementById("selectAllEmails").addEventListener("click", () => setAllVisibleSelected(true));
+  document.getElementById("clearEmailSelection").addEventListener("click", () => setAllVisibleSelected(false));
+  document.getElementById("selectAllHeader").addEventListener("change", event => setAllVisibleSelected(event.currentTarget.checked));
+  document.getElementById("copySelectedEmails").addEventListener("click", async () => await copyEmailList(uniqueEmails(selectedRows())));
+  document.getElementById("emailSelected").addEventListener("click", () => openBccEmail(uniqueEmails(selectedRows())));
   document.getElementById("resetPinsBtn").addEventListener("click", resetSelectedPins);
   document.getElementById("clearResetListBtn").addEventListener("click", () => {
     document.getElementById("resetMemberIds").value = "";
@@ -815,17 +695,11 @@
     document.getElementById("resetPinsResults").textContent = "";
     document.getElementById("resetPinsResults").classList.add("hidden");
   });
-
   document.getElementById("downloadCsv").addEventListener("click", downloadMailMergeCSV);
 
-  // Admin access is already controlled by admin-guard.js.
-// No additional YI PIN unlock is required here.
-window.addEventListener("DOMContentLoaded", function(){
-  setAdminUnlocked(true);
-});
+  window.addEventListener("DOMContentLoaded", function(){ setAdminUnlocked(true); });
 </script>
 
-<!-- Centralised logout -->
 <script src="admin-logout.js" defer></script>
 </body>
 </html>

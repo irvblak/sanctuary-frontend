@@ -118,6 +118,26 @@
     .pin-request-contact{margin-top:.65rem;padding:.65rem .75rem;background:#f8fbfd;border-radius:10px;line-height:1.55;}
     .pin-request-contact strong{color:#173e5c;}
     .pin-request-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.75rem;align-items:center;}
+    .pin-request-clear{
+      display:flex;
+      align-items:flex-start;
+      gap:.65rem;
+      margin-top:.75rem;
+      padding:.75rem;
+      border:1px solid #e1c66f;
+      border-radius:10px;
+      background:#fff9e7;
+      color:#563f00;
+      font-size:1rem;
+      font-weight:800;
+      line-height:1.4;
+    }
+    .pin-request-clear input{
+      width:auto;
+      margin:.2rem 0 0;
+      transform:scale(1.25);
+      flex:0 0 auto;
+    }
     .pin-request-empty{padding:.85rem;background:#fff;border:1px solid #cfe0ed;border-radius:10px;font-weight:800;color:#36566c;}
     .pin-request-status{font-weight:800;color:#40586a;}
 
@@ -429,12 +449,13 @@
     }catch{ return String(value); }
   }
 
-  async function adminPinRequestAction(requestId, action){
+  async function adminPinRequestAction(requestId, action, options = {}){
     const token = getAdminToken();
     if (!token) throw new Error("Admin login token not found. Please log in again.");
     const response = await fetch(`${BACKEND_URL}/api/admin/pin-reset-requests/${encodeURIComponent(requestId)}/${action}`, {
       method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`}
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+      body:JSON.stringify(options)
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || data.success === false) throw new Error(data.message || `Request could not be ${action}d.`);
@@ -493,6 +514,10 @@
             </div>
           </div>
           ${contactHtml}
+          <label class="pin-request-clear">
+            <input class="clear-yi-on-approve" type="checkbox">
+            <span>Also clear all Your Information data. This removes every name and contact detail held for this membership.</span>
+          </label>
           <div class="pin-request-actions">
             <button class="action approve-pin-request" type="button" data-id="${escapeHtml(item.request_id)}" data-member="${escapeHtml(item.member_id)}">Approve Reset to 2468</button>
             <button class="action secondary dismiss-pin-request" type="button" data-id="${escapeHtml(item.request_id)}" data-member="${escapeHtml(item.member_id)}">Dismiss Request</button>
@@ -503,11 +528,18 @@
       list.querySelectorAll(".approve-pin-request").forEach(btn => {
         btn.addEventListener("click", async () => {
           const member = btn.dataset.member;
-          if (!window.confirm(`Have you independently satisfied yourself that the PIN reset request for ${member} is genuine?\n\nIf you approve it, the membership PIN will be reset to the temporary Starter PIN 2468.`)) return;
+          const card = btn.closest(".pin-request-card");
+          const clearYi = Boolean(card?.querySelector(".clear-yi-on-approve")?.checked);
+          const clearWarning = clearYi
+            ? "\n\nALL Your Information names and contact details for this membership will also be permanently cleared."
+            : "\n\nYour Information will be left unchanged.";
+          if (!window.confirm(`Have you independently satisfied yourself that the PIN reset request for ${member} is genuine?\n\nIf you approve it, the membership PIN will be reset to the temporary Starter PIN 2468.${clearWarning}`)) return;
           try{
             status.textContent = `Approving ${member}…`;
-            await adminPinRequestAction(btn.dataset.id, "approve");
-            status.textContent = `${member} has been reset to the temporary Starter PIN 2468.`;
+            const result = await adminPinRequestAction(btn.dataset.id, "approve", {clear_yi: clearYi});
+            status.textContent = result.yi_cleared
+              ? `${member} has been reset to 2468 and all Your Information data has been cleared.`
+              : `${member} has been reset to the temporary Starter PIN 2468. Your Information was not changed.`;
             await loadPinResetRequests();
           }catch(err){ status.textContent = err.message || "The request could not be approved."; }
         });

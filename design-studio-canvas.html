@@ -816,6 +816,15 @@
     const PUBLICATION_APPROVAL=
       (PAGE_PARAMS.get("approval")||"").toLowerCase();
 
+    const PUBLICATION_ACTING_ROLE=
+      (PAGE_PARAMS.get("acting_role")||"").toLowerCase();
+
+    const PUBLICATION_DEPARTMENT=
+      (PAGE_PARAMS.get("department")||CANVAS_MODE||"").toLowerCase();
+
+    const PUBLICATION_WORK_KIND=
+      (PAGE_PARAMS.get("work_kind")||"useful-lasting").toLowerCase();
+
     const API_BASE=
       "https://sanctuary-backend-8iqc.onrender.com";
     const MODE_LABELS={
@@ -825,7 +834,12 @@
       committee:"Committee",
       panel:"Residents Association",
       services:"Services",
-      host:"Dated Notice"
+      host:"Event Host",
+      "information-officer":"Information Officer",
+      "website-helper":"Website Helper",
+      condominium:"Condominium Coordinator",
+      editorial:"Editorial",
+      administration:"Administration"
     };
     const MODE_ROLES={
       activity:["activity_organiser"],
@@ -834,7 +848,12 @@
       committee:["committee","secretary","committee_secretary"],
       panel:["panel","residents_association","ra_secretary","panel_secretary"],
       services:["services"],
-      host:["host"]
+      host:["host"],
+      "information-officer":["information_officer"],
+      "website-helper":["website_helper"],
+      condominium:["condominium_coordinator","condo_admin"],
+      editorial:["copy_editor","art_editor","editor"],
+      administration:["admin_website","admin_club"]
     };
     const DATED_SOURCE_ROLES={
       host:["host"],
@@ -2360,6 +2379,15 @@ function publicationCanvasData(){
     approval:
       PUBLICATION_APPROVAL,
 
+    acting_role:
+      PUBLICATION_ACTING_ROLE,
+
+    department:
+      PUBLICATION_DEPARTMENT,
+
+    work_kind:
+      PUBLICATION_WORK_KIND,
+
     state:
       JSON.parse(
         snapshotState()
@@ -2686,6 +2714,15 @@ async function publishCanvas(){
 
       approval:
         PUBLICATION_APPROVAL,
+
+      acting_role:
+        PUBLICATION_ACTING_ROLE,
+
+      department:
+        PUBLICATION_DEPARTMENT,
+
+      work_kind:
+        PUBLICATION_WORK_KIND,
 
       privacy:
         CANVAS_MODE === "panel"

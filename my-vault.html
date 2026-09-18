@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Vault | Sanctuary Club</title><script src="access.js?v=MY_VAULT_3"></script>
+<title>My Vault | Sanctuary Club</title><script src="access.js?v=MY_VAULT_4"></script>
+<script>
+(function(){
+  const verified = sessionStorage.getItem("hostAreaVerified") === "true";
+  const resident = sessionStorage.getItem("currentResidentId") || "";
+  if(!verified || !resident){
+    sessionStorage.setItem("ydsReturnAfterVerify","my-vault.html");
+    window.location.replace("your-design-studio.html?return=my-vault.html");
+  }
+})();
+</script>
 <style>
 :root{--ink:#173847;--muted:#50656f;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8}
 *{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:21px;line-height:1.58}
@@ -11,7 +21,7 @@
 .work-list{display:grid;gap:16px}.work{border:1px solid var(--line);border-radius:16px;padding:20px;background:#f9fbfb}.work-head{align-items:flex-start;margin:0}.work h3{margin:0;font-size:1.18rem}.meta{font-size:.96rem}.badge{border:1px solid var(--line);border-radius:999px;padding:.2rem .65rem;background:#fff;font-size:.88rem;font-weight:800;white-space:nowrap}.note{margin:.7rem 0;padding:.65rem .8rem;border-left:4px solid var(--accent);background:#fff;font-weight:600}.actions{margin-top:14px}.empty{border:1px dashed var(--line);border-radius:14px;padding:22px;background:#f9fbfb}
 @media(max-width:700px){.page{width:min(100% - 20px,1120px)}.topbar,.work-head{align-items:flex-start;flex-direction:column}}
 </style></head><body><main class="page">
-<div class="topbar"><div><p class="eyebrow">Your Design Studio</p><h1>My Vault</h1></div><a class="btn secondary" href="my-studio.html">← My Studio</a></div>
+<div class="topbar"><div><p class="eyebrow">Your Design Studio</p><h1>My Vault</h1></div><a class="btn secondary" href="your-design-studio.html">← Your Design Studio</a></div>
 <section class="card intro"><h2>What happens to your work</h2>
 <p>Work in Progress is kept here in your Vault and can be reopened and continued whenever you want to carry on.</p>
 <p>Once you are happy with it and would like it to be published, the computer automatically places it in the appropriate Library section or sends it to the Curator or Editor:</p>

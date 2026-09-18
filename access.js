@@ -232,7 +232,7 @@
     try {
 
       const part =
-        token.split(".")[1];
+        token.split(".")[0];
 
 
       if (!part) {
@@ -311,6 +311,12 @@
 
     if (
       !data ||
+      !Number(data.exp) ||
+      !(
+        data.mid ||
+        data.memberId ||
+        data.member_id
+      ) ||
       tokenHasExpired(
         data
       )
@@ -534,6 +540,7 @@
       "host-state-of-play.html",
 
       "my-studio.html",
+      "my-vault.html",
       "your-design-studio.html",
 
       "design-studio.html",
@@ -567,6 +574,7 @@
       "host-state-of-play.html",
 
       "my-studio.html",
+      "my-vault.html",
       "your-design-studio.html",
 
       "design-studio.html",
@@ -615,7 +623,13 @@
 
       pageName.startsWith(
         "service-"
-      )
+      ) ||
+
+      pageName ===
+        "your-design-studio.html" ||
+
+      pageName ===
+        "my-studio.html"
     );
   }
 
@@ -699,6 +713,10 @@
 
       destination.startsWith(
         "my-studio"
+      ) ||
+
+      destination.startsWith(
+        "my-vault"
       ) ||
 
       destination.startsWith(
@@ -1285,6 +1303,19 @@
       page
     )
   ) {
+
+    if(page === "my-vault.html"){
+      sessionStorage.setItem(
+        "ydsReturnAfterVerify",
+        "my-vault.html"
+      );
+
+      location.replace(
+        "your-design-studio.html?return=my-vault.html"
+      );
+
+      return;
+    }
 
     sessionStorage.setItem(
       "hubGateReason",

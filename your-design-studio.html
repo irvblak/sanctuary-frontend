@@ -15,7 +15,7 @@
     content="noindex, nofollow"
   />
 
-  <script src="access.js?v=YDS_FRONT_DOOR_2"></script>
+  <script src="access.js?v=YDS_FRONT_DOOR_3"></script>
 
   <style>
     :root{
@@ -961,6 +961,15 @@
           Members Hub
         </a>
 
+        <a
+          class="btn secondary"
+          id="myVaultLink"
+          href="my-vault.html"
+          hidden
+        >
+          My Vault
+        </a>
+
         <button
           class="btn secondary"
           id="logoutBtn"
@@ -1262,6 +1271,11 @@
         choiceButtons:
           document.getElementById(
             "choiceButtons"
+          ),
+
+        myVaultLink:
+          document.getElementById(
+            "myVaultLink"
           )
 
       };
@@ -2919,6 +2933,14 @@
           }
 
 
+          if(window.SanctuaryAccess){
+            window.SanctuaryAccess.grantPrivateSession();
+            window.SanctuaryAccess.setRoute(
+              window.SanctuaryAccess.routes.info
+            );
+          }
+
+
           const values = {
 
             currentMemberId:
@@ -3015,6 +3037,11 @@
           `Signed in as ${residentRef} (${memberId})`;
 
 
+        if(els.myVaultLink){
+          els.myVaultLink.hidden = false;
+        }
+
+
         renderMemberRoles(
           roles
         );
@@ -3023,6 +3050,25 @@
         renderStudio(
           roles
         );
+
+
+        const returnTarget =
+          new URLSearchParams(location.search)
+            .get("return") ||
+          sessionStorage.getItem(
+            "ydsReturnAfterVerify"
+          ) ||
+          "";
+
+        if(returnTarget === "my-vault.html"){
+          sessionStorage.removeItem(
+            "ydsReturnAfterVerify"
+          );
+          window.location.replace(
+            "my-vault.html"
+          );
+          return;
+        }
 
 
         window.scrollTo({
@@ -3231,9 +3277,46 @@
       */
 
 
+      function decodeStudioToken(token){
+        try{
+          const part = String(token || "").split(".")[0];
+          if(!part) return {};
+
+          let normalised = part
+            .replace(/-/g,"+")
+            .replace(/_/g,"/");
+
+          while(normalised.length % 4){
+            normalised += "=";
+          }
+
+          return JSON.parse(
+            decodeURIComponent(
+              Array.from(atob(normalised))
+                .map(char =>
+                  "%" + char.charCodeAt(0)
+                    .toString(16)
+                    .padStart(2,"0")
+                )
+                .join("")
+            )
+          );
+        }catch(_){
+          return {};
+        }
+      }
+
+
       function restoreStudioSession(){
 
         try{
+
+          if(
+            !window.SanctuaryAccess ||
+            !window.SanctuaryAccess.verifiedPrivateAccess()
+          ){
+            return false;
+          }
 
           const verified =
             sessionStorage.getItem(
@@ -3266,6 +3349,41 @@
             memberIdFromResidentRef(
               residentRef
             );
+
+
+          const token =
+            sessionStorage.getItem("authToken") ||
+            localStorage.getItem("authToken") ||
+            sessionStorage.getItem("memberToken") ||
+            localStorage.getItem("memberToken") ||
+            "";
+
+          const tokenData =
+            decodeStudioToken(token);
+
+          const tokenResident =
+            clean(
+              tokenData.rid ||
+              tokenData.resident_id ||
+              tokenData.residentId
+            ).toUpperCase();
+
+          const tokenMember =
+            memberIdFromResidentRef(
+              tokenData.mid ||
+              tokenData.member_id ||
+              tokenData.memberId ||
+              ""
+            );
+
+          if(
+            !tokenResident ||
+            tokenResident !== residentRef ||
+            !tokenMember ||
+            tokenMember !== memberId
+          ){
+            return false;
+          }
 
 
           const displayName =

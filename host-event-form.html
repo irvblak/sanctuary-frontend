@@ -5,7 +5,7 @@
   <title>Host or Post an Event | Your Design Studio | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <script src="access.js"></script>
+  <script src="access.js?v=YDS_DATED_1"></script>
 
   <style>
     :root{
@@ -566,6 +566,7 @@ const els = {
 };
 
 let authToken =
+  sessionStorage.getItem("ydsAuthToken") ||
   sessionStorage.getItem("authToken") ||
   localStorage.getItem("authToken") ||
   sessionStorage.getItem("adminToken") ||
@@ -1413,6 +1414,7 @@ async function scrapEvent(){
 
 function logout(){
   [
+    "ydsAuthToken",
     "authToken",
     "currentMemberId",
     "currentResidentId",

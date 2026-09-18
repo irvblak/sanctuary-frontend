@@ -204,6 +204,10 @@
   function getMemberToken() {
 
     return (
+      sessionStorage.getItem(
+        "ydsAuthToken"
+      ) ||
+
       localStorage.getItem(
         "memberToken"
       ) ||

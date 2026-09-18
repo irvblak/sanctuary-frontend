@@ -15,7 +15,7 @@
     content="noindex, nofollow"
   />
 
-  <script src="access.js?v=YDS_FRONT_DOOR_3"></script>
+  <script src="access.js?v=YDS_FRONT_DOOR_4"></script>
 
   <style>
     :root{
@@ -2930,6 +2930,11 @@
               "authToken",
               token
             );
+
+            sessionStorage.setItem(
+              "ydsAuthToken",
+              token
+            );
           }
 
 
@@ -3352,10 +3357,7 @@
 
 
           const token =
-            sessionStorage.getItem("authToken") ||
-            localStorage.getItem("authToken") ||
-            sessionStorage.getItem("memberToken") ||
-            localStorage.getItem("memberToken") ||
+            sessionStorage.getItem("ydsAuthToken") ||
             "";
 
           const tokenData =
@@ -3529,6 +3531,7 @@
             try{
 
               [
+                "ydsAuthToken",
                 "hostAreaVerified",
                 "hostAreaRoles",
                 "currentResidentId",

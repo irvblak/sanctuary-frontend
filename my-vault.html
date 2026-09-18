@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Vault | Sanctuary Club</title><script src="access.js?v=MY_VAULT_4"></script>
+<title>My Vault | Sanctuary Club</title><script src="access.js?v=MY_VAULT_5"></script>
 <script>
 (function(){
   const verified = sessionStorage.getItem("hostAreaVerified") === "true";
@@ -32,7 +32,7 @@
 <section class="card"><h2>Your Vault</h2><p id="status" class="status">Opening your Vault…</p><div id="list" class="work-list"></div></section>
 </main><script>
 (()=>{"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",list=document.getElementById("list"),status=document.getElementById("status");
-const token=()=>localStorage.getItem("memberToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("authToken")||sessionStorage.getItem("authToken")||"";
+const token=()=>sessionStorage.getItem("ydsAuthToken")||"";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const label=s=>({wip:"Work in Progress",completed:"Completed",submitted:"Submitted",returned:"Returned for Reworking",published:"Published"})[String(s||"").toLowerCase()]||s||"Work in Progress";
 const date=v=>{if(!v)return"";let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})};

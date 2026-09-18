@@ -1748,6 +1748,16 @@
     btnLoadResident.addEventListener("click",loadResidentByRef);
     btnSaveRoles.addEventListener("click",saveRoles);
 
+    btnLogout.addEventListener("click",(event) => {
+      event.preventDefault();
+
+      try{
+        localStorage.removeItem(TOKEN_KEY);
+      }catch(_){}
+
+      window.location.replace("admin-login.html");
+    });
+
     addResidentRefEl.addEventListener("keydown",(e) => {
       if(e.key === "Enter"){
         e.preventDefault();

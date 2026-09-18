@@ -1281,14 +1281,18 @@
 
       const STUDIO_CHOICES = [
 
-        { key:"writer", label:"Writer", description:"Write something for yourself or for possible publication in the Reading Room.", iconId:"role-news", roles:[], always:true },
-        { key:"artist", label:"Artist", description:"Create artwork for yourself or for possible publication in the Gallery.", iconId:"role-artist", roles:[], always:true },
-        { key:"host", label:"Event Host", description:"Create and announce an Event you are hosting.", iconId:"role-host", roles:["host"] },
-        { key:"activity", label:"Activity Organiser", description:"Create information and dated Notices for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"] },
-        { key:"teacher", label:"Teacher", description:"Create information, classes and Notices for a subject you teach.", iconId:"role-helper", roles:["tutor","teacher"] },
-        { key:"committee", label:"Committee Member", description:"Create authorised Committee information and Notices.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary"] },
-        { key:"panel", label:"Panel Member", description:"Create authorised Residents Association information and Notices.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"] },
-        { key:"condo", label:"Condo Admin", description:"Prepare condominium reports and information for its Library shelf.", iconId:"role-services", roles:["condominium_coordinator","condo_admin"] }
+        { key:"host", label:"Event Host", description:"Work as an Event Host.", iconId:"role-host", roles:["host"], mode:"host", destination:"notices-news", department:"event-hosts", guide:"event-host" },
+        { key:"activity", label:"Activity Organiser", description:"Work for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"], mode:"activity", destination:"club-activities", department:"club-activities", guide:"activity-organiser" },
+        { key:"writer", label:"Writer", description:"Work as a Club Writer.", iconId:"role-news", roles:["writer","news_contributor"], mode:"writer", destination:"members-articles-stories", department:"writers", guide:"writer" },
+        { key:"artist", label:"Artist", description:"Work as a Club Artist.", iconId:"role-artist", roles:["artist"], mode:"artist", destination:"gallery", department:"artists", guide:"artist" },
+        { key:"committee", label:"Committee", description:"Work in your Committee role.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"], mode:"committee", destination:"notices-news", department:"committee", guide:"club-publications" },
+        { key:"panel", label:"Residents Association", description:"Work in your Residents Association role.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"], mode:"panel", destination:"notices-news", department:"residents-association", guide:"residents-association-panel" },
+        { key:"services", label:"Services", description:"Publish authorised Services information.", iconId:"role-services", roles:["services"], mode:"services", destination:"notices-news", department:"services", guide:"services" },
+        { key:"information-officer", label:"Information Officer", description:"Publish miscellaneous Club information.", iconId:"role-news", roles:["information_officer"], mode:"information-officer", destination:"useful-information", department:"general-useful-information" },
+        { key:"website-helper", label:"Website Helper", description:"Publish website help and supporting information.", iconId:"role-helper", roles:["website_helper"], mode:"website-helper", destination:"guides-help", department:"website-helpers" },
+        { key:"condo", label:"Condominium Coordinator", description:"Publish practical condominium information.", iconId:"role-services", roles:["condominium_coordinator","condo_admin"], mode:"condominium", destination:"useful-information", department:"condominium" },
+        { key:"editorial", label:"Editorial", description:"Work in your Copy Editor or Art Editor role.", iconId:"role-editor", roles:["copy_editor","art_editor","editor"], mode:"editorial", destination:"guides-help", department:"editorial" },
+        { key:"administration", label:"Administration", description:"Publish Club or website administration information.", iconId:"role-admin", roles:["admin_website","admin_club"], mode:"administration", destination:"useful-information", department:"administration" }
 
       ];
       
@@ -1580,6 +1584,7 @@
       };
 
       let currentActivityScopes = [];
+      let currentStudioRoles = [];
 
 
       function cleanActivityScope(value){
@@ -2079,10 +2084,6 @@
           an automatic publishing qualification.
         */
 
-        if(choice.always){
-          return true;
-        }
-
         return hasAnyRole(
           roles,
           choice.roles
@@ -2271,7 +2272,7 @@
           "click",
           () =>
             openChoice(
-              choice.key
+              choice
             )
         );
 
@@ -2493,7 +2494,87 @@
       }
 
 
-      function openChoice(key){
+      function openUniversalChoice(choice){
+
+        const actingRole =
+          choice.roles.find(role => currentStudioRoles.includes(role)) || "";
+
+        const approval =
+          ["writer","artist"].includes(choice.mode)
+            ? "editor"
+            : "self";
+
+        const common = {
+          acting_role:actingRole,
+          department:choice.department
+        };
+
+        const buttons = [
+          actionButton(
+            "Dated & Happening",
+            datedRoute(
+              choice.key,
+              {
+                ...common,
+                work_kind:"dated-happening"
+              }
+            )
+          ),
+          actionButton(
+            "Useful & Lasting",
+            standingRoute(
+              choice.mode,
+              choice.destination,
+              {
+                ...common,
+                work_kind:"useful-lasting",
+                approval
+              }
+            ),
+            true
+          ),
+          actionButton(
+            "Interesting & Creative",
+            standingRoute(
+              choice.mode,
+              choice.destination,
+              {
+                ...common,
+                work_kind:"interesting-creative",
+                approval
+              }
+            ),
+            true
+          )
+        ];
+
+        if(choice.guide){
+          buttons.push(guideButton(choice.guide));
+        }
+
+        setChoiceContent(
+          choice.label,
+          `
+            <p><strong>Dated &amp; Happening</strong> goes to Calendar, Events List and its Notice.</p>
+            <p><strong>Useful &amp; Lasting</strong> goes to Library → ${choice.label} → Useful &amp; Lasting → your name.</p>
+            <p><strong>Interesting &amp; Creative</strong> goes to Library → ${choice.label} → Interesting &amp; Creative → your name.</p>
+            ${["writer","artist"].includes(choice.mode)
+              ? "<p>Writer and Artist work is sent for editorial approval before publication.</p>"
+              : "<p>Your Library work publishes directly when you choose Publish.</p>"}
+          `,
+          buttons
+        );
+      }
+
+
+      function openChoice(choice){
+
+        if(choice && typeof choice === "object"){
+          openUniversalChoice(choice);
+          return;
+        }
+
+        const key = choice;
 
         if(key === "host"){
 
@@ -2890,8 +2971,9 @@
       function recognisedStudioRole(
         roles
       ){
-        /* Every authenticated member may enter as Writer or Artist. */
-        return true;
+        return STUDIO_CHOICES.some(
+          choice => isChoiceAssigned(choice, roles)
+        );
       }
 
 
@@ -2903,6 +2985,12 @@
         roles,
         resolvedName = ""
       ){
+
+        currentStudioRoles = [
+          ...new Set(
+            roles.map(normaliseRole).filter(Boolean)
+          )
+        ];
 
         const name =
           resolvedName ||

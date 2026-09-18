@@ -961,6 +961,18 @@
         data = { success:false, message:text || `HTTP ${res.status}` };
       }
 
+      if(res.status === 401){
+        try{ localStorage.removeItem(TOKEN_KEY); }catch(_){}
+
+        if(typeof window.scExpireAdminSession === "function"){
+          window.scExpireAdminSession();
+        }else{
+          window.location.replace("admin-login.html?reason=session-expired");
+        }
+
+        throw new Error("Admin session expired. Please sign in again.");
+      }
+
       if(!res.ok || data.success === false){
         throw new Error(data.message || `HTTP ${res.status}`);
       }

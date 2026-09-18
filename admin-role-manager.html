@@ -753,6 +753,14 @@
                   <span>Coordinates practical condominium information, equipment and building matters.</span>
                 </div>
               </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleInformationOfficer" />
+                <div class="roleText">
+                  <strong>Information Officer</strong>
+                  <span>Publishes miscellaneous Club information that does not belong to another role.</span>
+                </div>
+              </label>
             </div>
 
             <div class="scopePanel" id="websiteHelperScopePanel">
@@ -841,6 +849,7 @@
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
     const roleCondominiumCoordinatorEl = $("roleCondominiumCoordinator");
+    const roleInformationOfficerEl = $("roleInformationOfficer");
 
     const roleAdminWebsiteEl = $("roleAdminWebsite");
     const roleAdminClubEl = $("roleAdminClub");
@@ -900,6 +909,7 @@
       website_helper: "Website Helper",
       services: "Services",
       condominium_coordinator: "Condominium Coordinator",
+      information_officer: "Information Officer",
 
       admin_website: "Admin Website",
       admin_club: "Admin Club",
@@ -1316,6 +1326,7 @@
         roleWebsiteHelperEl,
         roleServicesEl,
         roleCondominiumCoordinatorEl,
+        roleInformationOfficerEl,
         roleAdminWebsiteEl,
         roleAdminClubEl
       ].forEach(el => el.checked = false);
@@ -1443,6 +1454,7 @@
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
       roleCondominiumCoordinatorEl.checked = roles.includes("condominium_coordinator");
+      roleInformationOfficerEl.checked = roles.includes("information_officer");
 
       roleAdminWebsiteEl.checked = roles.includes("admin_website");
       roleAdminClubEl.checked = roles.includes("admin_club");
@@ -1483,6 +1495,7 @@
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");
       if(roleCondominiumCoordinatorEl.checked) roles.push("condominium_coordinator");
+      if(roleInformationOfficerEl.checked) roles.push("information_officer");
 
       if(roleAdminWebsiteEl.checked) roles.push("admin_website");
       if(roleAdminClubEl.checked) roles.push("admin_club");

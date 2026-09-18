@@ -506,9 +506,14 @@ const params = new URLSearchParams(location.search);
 const eventMode = String(params.get("mode") || "host").toLowerCase() === "post" ? "post" : "host";
 
 const rawSource = String(params.get("source") || (eventMode === "host" ? "host" : "host")).toLowerCase();
-const datedSource = ["host","activity","committee","panel","services"].includes(rawSource)
+const datedSource = [
+  "host","activity","committee","panel","services",
+  "information-officer","website-helper","condo",
+  "editorial","administration","writer","artist"
+].includes(rawSource)
   ? rawSource
   : (eventMode === "host" ? "host" : "host");
+const actingRole = String(params.get("acting_role") || "").toLowerCase();
 
 const scopeId = String(params.get("scope") || "").trim();
 const scopeName = String(params.get("scope_name") || "").trim();
@@ -631,7 +636,7 @@ async function apiFetch(path, options={}){
 
 function decodeTokenPayload(token){
   try{
-    let part = clean(token).split(".")[1] || "";
+    let part = clean(token).split(".")[0] || "";
     if(!part) return {};
     part = part.replace(/-/g,"+").replace(/_/g,"/");
     while(part.length % 4) part += "=";
@@ -678,10 +683,22 @@ function roleAllowsMode(roles){
   const allowed = {
     host:["host"],
     activity:["activity_organiser"],
-    committee:["committee","secretary","committee_secretary"],
-    panel:["panel","ra_secretary"],
-    services:["services"]
+    committee:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"],
+    panel:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"],
+    services:["services"],
+    "information-officer":["information_officer"],
+    "website-helper":["website_helper"],
+    condo:["condominium_coordinator","condo_admin"],
+    editorial:["copy_editor","art_editor","editor"],
+    administration:["admin_website","admin_club"],
+    writer:["writer","news_contributor"],
+    artist:["artist"]
   };
+
+  if(actingRole){
+    return roles.includes(actingRole) &&
+      (allowed[datedSource] || []).includes(actingRole);
+  }
 
   return (allowed[datedSource] || []).some(role=>roles.includes(role));
 }
@@ -751,6 +768,13 @@ const SOURCE_LABELS = {
   committee:"Committee",
   panel:"Residents Association",
   services:"Services"
+  ,"information-officer":"Information Officer"
+  ,"website-helper":"Website Helper"
+  ,condo:"Condominium Coordinator"
+  ,editorial:"Editorial"
+  ,administration:"Administration"
+  ,writer:"Writer"
+  ,artist:"Artist"
 };
 
 const SOURCE_TITLES = {
@@ -759,6 +783,13 @@ const SOURCE_TITLES = {
   committee:"Prepare dated Committee material",
   panel:"Prepare dated Residents Association material",
   services:"Prepare dated Service information"
+  ,"information-officer":"Prepare dated Club information"
+  ,"website-helper":"Prepare dated website information"
+  ,condo:"Prepare dated condominium information"
+  ,editorial:"Prepare dated editorial information"
+  ,administration:"Prepare dated administration information"
+  ,writer:"Prepare dated Writer information"
+  ,artist:"Prepare dated Artist information"
 };
 
 const SOURCE_GUIDES = {
@@ -1030,7 +1061,7 @@ function buildPayload(){
     event_id:editEventId,
     event_mode:eventMode,
     source:datedSource,
-    producer_role:datedSource,
+    producer_role:actingRole || datedSource,
     scope_id:scopeId,
     scope_name:scopeName,
     workflow_status:"draft",
@@ -1182,7 +1213,7 @@ function buildHandoff(payload,eventId){
     event_id:eventId || "",
     event_mode:eventMode,
     source:datedSource,
-    producer_role:datedSource,
+    producer_role:actingRole || datedSource,
     scope_id:scopeId,
     scope_name:scopeName,
 

@@ -6,6 +6,8 @@
 
   <title>Admin Dashboard — Sanctuary Club</title>
 
+  <script src="admin-guard.js?v=AG_3"></script>
+
   <link rel="stylesheet" href="styles-main.css?v=ADMIN_5" />
 
   <style>
@@ -267,16 +269,10 @@
       <div class="footer-row">
         <button class="plain-btn" id="logoutBtn" type="button">Logout</button>
         <a class="home-link" href="members-info.html">Members Hub</a>
-        <a class="home-link" href="index.html">Home</a>
       </div>
     </div>
   </div>
 
-  <script>
-    document.getElementById("logoutBtn")?.addEventListener("click", function () {
-      localStorage.removeItem("adminToken");
-      window.location.replace("admin-login.html");
-    });
-  </script>
+  <script src="admin-logout.js?v=ALO_2"></script>
 </body>
 </html>

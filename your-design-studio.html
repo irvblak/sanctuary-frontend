@@ -2395,17 +2395,6 @@
           });
       }
 
-
-
-      function guideButton(roleKey){
-        return actionButton(
-          "Guide",
-          `role-guide.html?role=${encodeURIComponent(roleKey)}`,
-          true
-        );
-      }
-
-
       function datedRoute(source, extraParams = {}){
         const params = new URLSearchParams({
           mode: source === "host" ? "host" : "post",
@@ -2458,8 +2447,7 @@
                 {section:"club-activities"}
               ),
               true
-            ),
-            guideButton("activity-organiser")
+            )
           ];
         }
 
@@ -2499,10 +2487,6 @@
             )
           );
         });
-
-        buttons.push(
-          guideButton("activity-organiser")
-        );
 
         return buttons;
       }
@@ -2562,16 +2546,12 @@
           )
         ];
 
-        if(choice.guide){
-          buttons.push(guideButton(choice.guide));
-        }
-
         setChoiceContent(
           choice.label,
           `
             <p><strong>Dated &amp; Happening</strong> goes to Calendar, Events List and its Notice.</p>
-            <p><strong>Useful &amp; Lasting</strong> goes to Library → ${choice.label} → Useful &amp; Lasting → your name.</p>
-            <p><strong>Interesting &amp; Creative</strong> goes to Library → ${choice.label} → Interesting &amp; Creative → your name.</p>
+            <p><strong>Useful &amp; Lasting</strong> goes to Library Section → ${choice.label} → Useful &amp; Lasting → your name.</p>
+            <p><strong>Interesting &amp; Creative</strong> goes to Library Section → ${choice.label} → Interesting &amp; Creative → your name.</p>
             ${["writer","artist"].includes(choice.mode)
               ? "<p>Writer and Artist work is sent for editorial approval before publication.</p>"
               : "<p>Your Library work publishes directly when you choose Publish.</p>"}
@@ -2610,8 +2590,7 @@
               actionButton(
                 "Create an Event",
                 datedRoute("host")
-              ),
-              guideButton("event-host")
+              )
             ]
           );
 
@@ -2677,8 +2656,7 @@
                     approval:"editor"
                   }
                 )
-              ),
-              guideButton("writer")
+              )
             ]
           );
 
@@ -2712,8 +2690,7 @@
                     approval:"editor"
                   }
                 )
-              ),
-              guideButton("artist")
+              )
             ]
           );
 
@@ -2777,8 +2754,7 @@
                   }
                 ),
                 true
-              ),
-              guideButton("club-publications")
+              )
             ]
           );
 
@@ -2829,8 +2805,7 @@
                   }
                 ),
                 true
-              ),
-              guideButton("residents-association-panel")
+              )
             ]
           );
 
@@ -2893,8 +2868,7 @@
                   {section:"services"}
                 ),
                 true
-              ),
-              guideButton("services")
+              )
             ]
           );
 

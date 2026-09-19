@@ -513,7 +513,9 @@
           <button class="btn secondary" id="myVaultBtn" type="button">My Vault</button>
           <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
-          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button>
+          <button class="btn secondary" id="libraryPlacementBtn" type="button">For the Library</button>
+          <button class="btn secondary" id="classroomPlacementBtn" type="button">For the Classroom</button>
+          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools</button>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
           <span class="canvas-offscreen-tools" aria-hidden="true">
@@ -776,8 +778,8 @@
 
   <div id="toolsChoice" class="tools-choice-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="toolsChoiceTitle">
     <div class="tools-choice-box">
-      <h3 id="toolsChoiceTitle">Tools &amp; Guide</h3>
-      <p>Use this screen, or keep your Canvas full-size here and put Tools &amp; Guide on a genuine second screen.</p>
+      <h3 id="toolsChoiceTitle">Tools</h3>
+      <p>Use this screen, or keep your Canvas full-size here and put Tools on a genuine second screen.</p>
       <div class="tools-choice-actions">
         <button id="toolsThisScreenBtn" type="button">Use this screen</button>
         <button id="toolsSecondScreenBtn" class="secondary" type="button">Use second screen</button>
@@ -824,6 +826,9 @@
 
     const PUBLICATION_WORK_KIND=
       (PAGE_PARAMS.get("work_kind")||"useful-lasting").toLowerCase();
+    let PUBLICATION_TERTIARY=(PAGE_PARAMS.get("tertiary")||PAGE_PARAMS.get("scope_name")||"").trim();
+    let PUBLICATION_CLASSROOM=(PAGE_PARAMS.get("classroom")||"").trim();
+    let PUBLICATION_LEARNING_TYPE=(PAGE_PARAMS.get("learning_type")||"").trim().toLowerCase();
 
     const API_BASE=
       "https://sanctuary-backend-8iqc.onrender.com";
@@ -1122,7 +1127,7 @@
     }
     function snapshotState(){
       syncDrawingData();
-      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||"")});
+      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||""),tertiaryCategory:PUBLICATION_TERTIARY,classroom:PUBLICATION_CLASSROOM,learningType:PUBLICATION_LEARNING_TYPE});
     }
 
     function portableProject(){
@@ -1144,7 +1149,7 @@
     }
     function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
     function restoreState(raw){
-      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
+      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";PUBLICATION_TERTIARY=state.tertiaryCategory||PUBLICATION_TERTIARY;PUBLICATION_CLASSROOM=state.classroom||PUBLICATION_CLASSROOM;PUBLICATION_LEARNING_TYPE=state.learningType||PUBLICATION_LEARNING_TYPE;updatePlacementButtons();rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
     }
     function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
     function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
@@ -2389,6 +2394,10 @@ function publicationCanvasData(){
     work_kind:
       PUBLICATION_WORK_KIND,
 
+    tertiary_category:PUBLICATION_TERTIARY,
+    classroom:PUBLICATION_CLASSROOM,
+    learning_type:PUBLICATION_LEARNING_TYPE,
+
     state:
       JSON.parse(
         snapshotState()
@@ -2571,6 +2580,7 @@ async function saveCanvasToVault(){
 async function submitEditorialCanvas(){
   if(IS_EDITOR_REVIEW) return;
   if(!editorialApprovalRequired()) return;
+  if(!requireLibraryPlacement()) return;
   if(!requireWorkName()) return;
 
   finishDrawingEdit();
@@ -2620,7 +2630,7 @@ async function publishCanvas(){
   if(isDatedWorkflow()){
     return publishDatedCanvas();
   }
-
+  if(!requireLibraryPlacement()) return;
 
   const token =
     getAuthToken();
@@ -2724,6 +2734,10 @@ async function publishCanvas(){
 
       work_kind:
         PUBLICATION_WORK_KIND,
+
+      tertiary_category:PUBLICATION_TERTIARY,
+      classroom:PUBLICATION_CLASSROOM,
+      learning_type:PUBLICATION_LEARNING_TYPE,
 
       privacy:
         CANVAS_MODE === "panel"
@@ -2858,6 +2872,8 @@ async function publishCanvas(){
 }
 
 
+function placementSuggestions(){const s=clean(PAGE_PARAMS.get("scope_name")||"");if(s)return[s];return({host:["Planning & Preparation","Bookings & Payments","Hosting the Event","After the Event"],writer:["Articles","Stories & Recollections","Reviews & Recommendations"],artist:["Art","Photography","AI-assisted Art"],committee:["News & Announcements","Meetings & Club Business","Administration"],panel:["News & Notices","Meetings","Minutes & Decisions","Reference Documents"],services:["Services Directory","Service Information"],"information-officer":["News & Announcements","Meetings & Club Business","General Club Information"],"website-helper":["Getting Started","Using the Website","Troubleshooting"],condominium:["General Information","Maintenance & Services","Reference Documents"],editorial:["Editorial Guidance","Publishing Standards"],administration:["Club Administration","Website Administration","Privacy & Security"]})[CANVAS_MODE]||["General"]}function updatePlacementButtons(){const a=document.getElementById("libraryPlacementBtn"),b=document.getElementById("classroomPlacementBtn"),off=IS_FUN_MODE||IS_EDITOR_REVIEW||isDatedWorkflow();if(a){a.hidden=off;a.textContent=PUBLICATION_TERTIARY?"For the Library ✓":"For the Library";a.title=PUBLICATION_TERTIARY?"Library tertiary subject: "+PUBLICATION_TERTIARY:"Choose the tertiary subject"}if(b){b.hidden=off;b.textContent=PUBLICATION_CLASSROOM?"For the Classroom ✓":"For the Classroom";b.title=PUBLICATION_CLASSROOM?"School classroom: "+PUBLICATION_CLASSROOM+" — "+PUBLICATION_LEARNING_TYPE:"Also show teaching material in the School"}}function chooseLibraryPlacement(){const s=placementSuggestions(),a=prompt("Where in this Library Section should the work be filed?\n\nSuggestions:\n• "+s.join("\n• ")+"\n\nType the tertiary subject:",PUBLICATION_TERTIARY||s[0]||"");if(a===null)return false;const v=clean(a);if(!v){alert("Please enter a tertiary subject.");return false}PUBLICATION_TERTIARY=v;updatePlacementButtons();return true}function chooseClassroomPlacement(){if(!PUBLICATION_TERTIARY&&!chooseLibraryPlacement())return;const d=clean(PAGE_PARAMS.get("scope_name")||MODE_LABELS[CANVAS_MODE]||"General"),a=prompt("Which School classroom should also show this work?",PUBLICATION_CLASSROOM||d);if(a===null||!clean(a))return;const t=prompt("Is this a Guide, Lesson or Manual?",PUBLICATION_LEARNING_TYPE||"Guide");if(t===null)return;const v=clean(t).toLowerCase().replace(/s$/,"");if(!["guide","lesson","manual"].includes(v)){alert("Please enter Guide, Lesson or Manual.");return}PUBLICATION_CLASSROOM=clean(a);PUBLICATION_LEARNING_TYPE=v;updatePlacementButtons()}function requireLibraryPlacement(){if(IS_FUN_MODE||IS_EDITOR_REVIEW||isDatedWorkflow()||PUBLICATION_TERTIARY)return true;alert("Please choose For the Library before publishing, so the work knows its tertiary destination.");document.getElementById("libraryPlacementBtn")?.focus();return false}document.getElementById("libraryPlacementBtn")?.addEventListener("click",chooseLibraryPlacement);document.getElementById("classroomPlacementBtn")?.addEventListener("click",chooseClassroomPlacement);
+
 function configurePublishingButton(){
   const submitButton=document.getElementById("submitCanvasBtn");
   const publishButton=document.getElementById("publishCanvasBtn");
@@ -2883,7 +2899,7 @@ function configurePublishingButton(){
     document.getElementById("canvasToolsBtn").addEventListener("click",()=>{toolsChoice.hidden=false;});
     document.getElementById("toolsChoiceCancelBtn").addEventListener("click",()=>{toolsChoice.hidden=true;});
     document.getElementById("toolsThisScreenBtn").addEventListener("click",()=>{
-      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools & Guide. Please return to the Canvas and try again.");}
+      try{holdWorkForTools();window.location.href="design-studio-tools.html?screen=single";}catch(err){console.error(err);alert("Your work could not be carried safely to Tools. Please return to the Canvas and try again.");}
     });
     document.getElementById("toolsSecondScreenBtn").addEventListener("click",()=>{
       try{
@@ -2891,7 +2907,7 @@ function configurePublishingButton(){
         const w=window.open("design-studio-tools.html?screen=second","sanctuaryYdsTools","width=760,height=850,resizable=yes,scrollbars=yes");
         if(!w) alert("Your browser blocked the second Tools window. Please allow pop-ups for Sanctuary Club, or choose Use this screen.");
         toolsChoice.hidden=true;
-      }catch(err){console.error(err);alert("Tools & Guide could not be opened safely. Please use this screen instead.");}
+      }catch(err){console.error(err);alert("Tools could not be opened safely. Please use this screen instead.");}
     });
     window.addEventListener("message",event=>{
       if(event.origin!==window.location.origin)return;
@@ -3240,9 +3256,10 @@ document
       if(vaultButton) vaultButton.disabled=true;
     }
 
+    updatePlacementButtons();
     configurePublishingButton();
 
-    // Returning from Tools & Guide: restore the exact work that was on screen,
+    // Returning from Tools: restore the exact work that was on screen,
     // then perform any requested action on that same work.
     try{
       const toolsState=sessionStorage.getItem(TOOLS_STATE_KEY);
@@ -3262,7 +3279,7 @@ document
         },80);
       }
     }catch(err){
-      console.error("Could not restore work after Tools & Guide.",err);
+      console.error("Could not restore work after Tools.",err);
     }
   </script>
 

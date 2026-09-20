@@ -513,8 +513,6 @@
           <button class="btn secondary" id="myVaultBtn" type="button">My Vault</button>
           <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
-          <button class="btn secondary" id="libraryPlacementBtn" type="button">For the Library</button>
-          <button class="btn secondary" id="classroomPlacementBtn" type="button">For the Classroom</button>
           <button class="btn secondary" id="canvasToolsBtn" type="button">Tools</button>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
@@ -826,7 +824,7 @@
 
     const PUBLICATION_WORK_KIND=
       (PAGE_PARAMS.get("work_kind")||"useful-lasting").toLowerCase();
-    let PUBLICATION_TERTIARY=(PAGE_PARAMS.get("tertiary")||PAGE_PARAMS.get("scope_name")||"").trim();
+    let PUBLICATION_TERTIARY=(PAGE_PARAMS.get("subcategory_name")||PAGE_PARAMS.get("tertiary")||PAGE_PARAMS.get("scope_name")||"").trim();
     let PUBLICATION_CLASSROOM=(PAGE_PARAMS.get("classroom")||"").trim();
     let PUBLICATION_LEARNING_TYPE=(PAGE_PARAMS.get("learning_type")||"").trim().toLowerCase();
 
@@ -2652,7 +2650,7 @@ async function publishCanvas(){
 
 
   const suggestedTitle =
-    firstUsefulText();
+    clean(workNameInput?.value || firstUsefulText());
 
 
   const enteredTitle =
@@ -2710,6 +2708,9 @@ async function publishCanvas(){
     const payload = {
 
       title,
+
+      summary:
+        firstUsefulText(),
 
       mode:
         CANVAS_MODE,
@@ -2872,7 +2873,8 @@ async function publishCanvas(){
 }
 
 
-function placementSuggestions(){const s=clean(PAGE_PARAMS.get("scope_name")||"");if(s)return[s];return({host:["Planning & Preparation","Bookings & Payments","Hosting the Event","After the Event"],writer:["Articles","Stories & Recollections","Reviews & Recommendations"],artist:["Art","Photography","AI-assisted Art"],committee:["News & Announcements","Meetings & Club Business","Administration"],panel:["News & Notices","Meetings","Minutes & Decisions","Reference Documents"],services:["Services Directory","Service Information"],"information-officer":["News & Announcements","Meetings & Club Business","General Club Information"],"website-helper":["Getting Started","Using the Website","Troubleshooting"],condominium:["General Information","Maintenance & Services","Reference Documents"],editorial:["Editorial Guidance","Publishing Standards"],administration:["Club Administration","Website Administration","Privacy & Security"]})[CANVAS_MODE]||["General"]}function updatePlacementButtons(){const a=document.getElementById("libraryPlacementBtn"),b=document.getElementById("classroomPlacementBtn"),off=IS_FUN_MODE||IS_EDITOR_REVIEW||isDatedWorkflow();if(a){a.hidden=off;a.textContent=PUBLICATION_TERTIARY?"For the Library ✓":"For the Library";a.title=PUBLICATION_TERTIARY?"Library tertiary subject: "+PUBLICATION_TERTIARY:"Choose the tertiary subject"}if(b){b.hidden=off;b.textContent=PUBLICATION_CLASSROOM?"For the Classroom ✓":"For the Classroom";b.title=PUBLICATION_CLASSROOM?"School classroom: "+PUBLICATION_CLASSROOM+" — "+PUBLICATION_LEARNING_TYPE:"Also show teaching material in the School"}}function chooseLibraryPlacement(){const s=placementSuggestions(),a=prompt("Where in this Library Section should the work be filed?\n\nSuggestions:\n• "+s.join("\n• ")+"\n\nType the tertiary subject:",PUBLICATION_TERTIARY||s[0]||"");if(a===null)return false;const v=clean(a);if(!v){alert("Please enter a tertiary subject.");return false}PUBLICATION_TERTIARY=v;updatePlacementButtons();return true}function chooseClassroomPlacement(){if(!PUBLICATION_TERTIARY&&!chooseLibraryPlacement())return;const d=clean(PAGE_PARAMS.get("scope_name")||MODE_LABELS[CANVAS_MODE]||"General"),a=prompt("Which School classroom should also show this work?",PUBLICATION_CLASSROOM||d);if(a===null||!clean(a))return;const t=prompt("Is this a Guide, Lesson or Manual?",PUBLICATION_LEARNING_TYPE||"Guide");if(t===null)return;const v=clean(t).toLowerCase().replace(/s$/,"");if(!["guide","lesson","manual"].includes(v)){alert("Please enter Guide, Lesson or Manual.");return}PUBLICATION_CLASSROOM=clean(a);PUBLICATION_LEARNING_TYPE=v;updatePlacementButtons()}function requireLibraryPlacement(){if(IS_FUN_MODE||IS_EDITOR_REVIEW||isDatedWorkflow()||PUBLICATION_TERTIARY)return true;alert("Please choose For the Library before publishing, so the work knows its tertiary destination.");document.getElementById("libraryPlacementBtn")?.focus();return false}document.getElementById("libraryPlacementBtn")?.addEventListener("click",chooseLibraryPlacement);document.getElementById("classroomPlacementBtn")?.addEventListener("click",chooseClassroomPlacement);
+function updatePlacementButtons(){}
+function requireLibraryPlacement(){return true;}
 
 function configurePublishingButton(){
   const submitButton=document.getElementById("submitCanvasBtn");

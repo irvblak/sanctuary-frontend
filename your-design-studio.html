@@ -2507,57 +2507,61 @@
           department:choice.department
         };
 
-        const buttons = [
-          actionButton(
-            "Dated & Happening",
-            datedRoute(
-              choice.key,
-              {
-                ...common,
-                work_kind:"dated-happening"
-              }
-            )
-          ),
-          actionButton(
-            "Useful & Lasting",
-            standingRoute(
-              choice.mode,
-              choice.destination,
-              {
-                ...common,
+        const activityScopes = choice.key === "activity"
+          ? (currentActivityScopes.length ? currentActivityScopes : restoreActivityScopes())
+          : [];
+
+        const routeFor = (destination, scope = "") => {
+          const scopeName = scope ? (ACTIVITY_SCOPE_LABELS[scope] || scope) : "";
+          const routing = {
+            ...common,
+            section:choice.department,
+            subcategory:scope,
+            subcategory_name:scopeName,
+            scope,
+            scope_name:scopeName
+          };
+
+          return destination === "calendar"
+            ? datedRoute(choice.key, {...routing, work_kind:"dated-happening"})
+            : standingRoute(choice.mode, choice.destination, {
+                ...routing,
+                tertiary:scopeName,
                 work_kind:"useful-lasting",
                 approval
-              }
-            ),
-            true
-          ),
-          actionButton(
-            "Interesting & Creative",
-            standingRoute(
-              choice.mode,
-              choice.destination,
-              {
-                ...common,
-                work_kind:"interesting-creative",
-                approval
-              }
-            ),
-            true
-          )
-        ];
+              });
+        };
+
+        const initialScope = activityScopes[0] || "";
+        const calendarButton = actionButton("Calendar", routeFor("calendar", initialScope));
+        const libraryButton = actionButton("Library", routeFor("library", initialScope), true);
+
+        calendarButton.id = "calendarRouteButton";
+        libraryButton.id = "libraryRouteButton";
+
+        let selector = "";
+        if(activityScopes.length > 1){
+          selector = `
+            <label for="activityRouteScope"><strong>Which activity?</strong></label>
+            <select id="activityRouteScope">
+              ${activityScopes.map(scope => `<option value="${scope}">${ACTIVITY_SCOPE_LABELS[scope] || scope}</option>`).join("")}
+            </select>
+          `;
+        }
 
         setChoiceContent(
           choice.label,
-          `
-            <p><strong>Dated &amp; Happening</strong> goes to Calendar, Events List and its Notice.</p>
-            <p><strong>Useful &amp; Lasting</strong> goes to Library Section → ${choice.label} → Useful &amp; Lasting → your name.</p>
-            <p><strong>Interesting &amp; Creative</strong> goes to Library Section → ${choice.label} → Interesting &amp; Creative → your name.</p>
-            ${["writer","artist"].includes(choice.mode)
-              ? "<p>Writer and Artist work is sent for editorial approval before publication.</p>"
-              : "<p>Your Library work publishes directly when you choose Publish.</p>"}
-          `,
-          buttons
+          selector,
+          [calendarButton, libraryButton]
         );
+
+        const scopeSelect = document.getElementById("activityRouteScope");
+        if(scopeSelect){
+          scopeSelect.addEventListener("change", () => {
+            calendarButton.href = routeFor("calendar", scopeSelect.value);
+            libraryButton.href = routeFor("library", scopeSelect.value);
+          });
+        }
       }
 
 

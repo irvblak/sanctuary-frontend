@@ -1156,6 +1156,10 @@
           id="choiceButtons"
         ></div>
 
+        <p class="route-note" id="routeNote" hidden>
+          Choose a button and your work will go there automatically.
+        </p>
+
       </section>
 
 
@@ -1277,6 +1281,11 @@
         choiceButtons:
           document.getElementById(
             "choiceButtons"
+          ),
+
+        routeNote:
+          document.getElementById(
+            "routeNote"
           ),
 
         myVaultLink:
@@ -2380,6 +2389,10 @@
           "";
 
 
+        els.routeNote.hidden =
+          true;
+
+
         buttons.forEach(
           button =>
             els.choiceButtons
@@ -2567,6 +2580,8 @@
           selector,
           [calendarButton, libraryButton, schoolButton]
         );
+
+        els.routeNote.hidden = false;
 
         document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(button=>button.addEventListener("click",()=>{
           document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(other=>other.classList.toggle("selected",other===button));
@@ -3188,6 +3203,15 @@
                 )
               ])
             ];
+
+
+          if(loginData?.yds_access === false || loginData?.member?.yds_access === false){
+            setStatus(
+              "err",
+              "Your roles are listed in the Role Register, but Design Studio access has not been enabled."
+            );
+            return;
+          }
 
 
           storeActivityScopes(

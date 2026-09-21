@@ -587,6 +587,14 @@
 
           <h2>Assign roles</h2>
 
+          <label class="roleBox" style="margin-bottom:1rem;">
+            <input type="checkbox" id="allowYdsAccess" checked />
+            <div class="roleText">
+              <strong>Allow access to Your Design Studio</strong>
+              <span>Normally on. Untick to keep this member and their appointments in the Role Register without allowing Studio work.</span>
+            </div>
+          </label>
+
           <div class="roleSection">
             <h3>Events &amp; Activities</h3>
             <div class="roleGrid">
@@ -829,6 +837,7 @@
     const legacyBox = $("legacyBox");
 
     const roleHostEl = $("roleHost");
+    const allowYdsAccessEl = $("allowYdsAccess");
     const roleActivityOrganiserEl = $("roleActivityOrganiser");
 
     const roleCommitteeChairEl = $("roleCommitteeChair");
@@ -1444,6 +1453,7 @@
       clearRoleChecks();
 
       roleHostEl.checked = roles.includes("host");
+      allowYdsAccessEl.checked = selectedResident?.yds_access !== false;
       roleActivityOrganiserEl.checked = roles.includes("activity_organiser");
 
       roleCommitteeChairEl.checked = roles.includes("committee_chair");
@@ -1709,6 +1719,7 @@
             name:selectedResident.name,
             email:memberEmailEl.value.trim(),
             roles:roles,
+            yds_access:allowYdsAccessEl.checked,
             activity_scopes:activityScopes,
             helper_scopes:helperScopes
           })

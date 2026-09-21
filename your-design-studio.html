@@ -647,6 +647,12 @@
       margin-top:.9rem;
     }
 
+    .route-subchoices{display:flex;flex-wrap:wrap;gap:.55rem;margin:.75rem 0}
+    .route-subchoice{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .72rem;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--accent-dark);font-weight:850;cursor:pointer}
+    .route-subchoice.selected{border-color:var(--accent);background:var(--accent-soft)}
+    .beret-mark{width:27px;height:17px;border-radius:70% 65% 45% 50%;transform:rotate(-7deg);background:#476d9d;box-shadow:inset -5px -3px rgba(0,0,0,.13)}
+    .route-subchoice[data-sub="modern"] .beret-mark{background:#8f4b9d}.route-subchoice[data-sub="traditional"] .beret-mark{background:#875f32}
+
 
     /* ---------- Event workspace ---------- */
 
@@ -1150,6 +1156,10 @@
           id="choiceButtons"
         ></div>
 
+        <p class="route-note" id="routeNote" hidden>
+          Choose a button and your work will go there automatically.
+        </p>
+
       </section>
 
 
@@ -1273,6 +1283,11 @@
             "choiceButtons"
           ),
 
+        routeNote:
+          document.getElementById(
+            "routeNote"
+          ),
+
         myVaultLink:
           document.getElementById(
             "myVaultLink"
@@ -1295,18 +1310,15 @@
 
       const STUDIO_CHOICES = [
 
-        { key:"host", label:"Event Host", description:"Work as an Event Host.", iconId:"role-host", roles:["host"], mode:"host", destination:"notices-news", department:"event-hosts", guide:"event-host" },
+        { key:"host", label:"Event Host", description:"Work as an Event Host.", iconId:"role-host", roles:["host"], mode:"host", destination:"notices-news", department:"events", guide:"event-host" },
         { key:"activity", label:"Activity Organiser", description:"Work for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"], mode:"activity", destination:"club-activities", department:"club-activities", guide:"activity-organiser" },
-        { key:"writer", label:"Writer", description:"Work as a Club Writer.", iconId:"role-news", roles:["writer","news_contributor"], mode:"writer", destination:"members-articles-stories", department:"writers", guide:"writer" },
-        { key:"artist", label:"Artist", description:"Work as a Club Artist.", iconId:"role-artist", roles:["artist"], mode:"artist", destination:"gallery", department:"artists", guide:"artist" },
-        { key:"committee", label:"Committee", description:"Work in your Committee role.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"], mode:"committee", destination:"notices-news", department:"committee", guide:"club-publications" },
-        { key:"panel", label:"Residents Association", description:"Work in your Residents Association role.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"], mode:"panel", destination:"notices-news", department:"residents-association", guide:"residents-association-panel" },
-        { key:"services", label:"Services", description:"Publish authorised Services information.", iconId:"role-services", roles:["services"], mode:"services", destination:"notices-news", department:"services", guide:"services" },
+        { key:"writer", label:"Writer", description:"Work as a Club Writer.", iconId:"role-news", roles:["writer","news_contributor"], mode:"writer", destination:"members-articles-stories", department:"reading-room", guide:"writer" },
+        { key:"artist", label:"Artist", description:"Work as a Club Artist.", iconId:"role-artist", roles:["artist"], mode:"artist", destination:"gallery", department:"gallery", guide:"artist", fixedSubcategories:[["photo","Photo"],["modern","Modern"],["traditional","Traditional"]] },
+        { key:"committee", label:"Committee Member", description:"Work as a Committee Member.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"], mode:"committee", destination:"notices-news", department:"committee-news-information", guide:"club-publications" },
+        { key:"panel", label:"Residents Association Panel Member", description:"Work as a Residents Association Panel Member.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"], mode:"panel", destination:"notices-news", department:"residents-association-news-information", guide:"residents-association-panel" },
         { key:"information-officer", label:"Information Officer", description:"Publish miscellaneous Club information.", iconId:"role-news", roles:["information_officer"], mode:"information-officer", destination:"useful-information", department:"general-useful-information" },
-        { key:"website-helper", label:"Website Helper", description:"Publish website help and supporting information.", iconId:"role-helper", roles:["website_helper"], mode:"website-helper", destination:"guides-help", department:"website-helpers" },
-        { key:"condo", label:"Condominium Coordinator", description:"Publish practical condominium information.", iconId:"role-services", roles:["condominium_coordinator","condo_admin"], mode:"condominium", destination:"useful-information", department:"condominium" },
-        { key:"editorial", label:"Editorial", description:"Work in your Copy Editor or Art Editor role.", iconId:"role-editor", roles:["copy_editor","art_editor","editor"], mode:"editorial", destination:"guides-help", department:"editorial" },
-        { key:"administration", label:"Administration", description:"Publish Club or website administration information.", iconId:"role-admin", roles:["admin_website","admin_club"], mode:"administration", destination:"useful-information", department:"administration" }
+        { key:"website-helper", label:"Website Helper", description:"Publish website help and supporting information.", iconId:"role-helper", roles:["website_helper"], mode:"website-helper", destination:"guides-help", department:"website-help" },
+        { key:"administration", label:"Administration", description:"Publish administration information.", iconId:"role-admin", roles:["admin_website","admin_club"], mode:"administration", destination:"useful-information", department:"administration", roleSubcategories:{admin_website:["website-administration","Website Administration"],admin_club:["club-condominium-administration","Club & Condominium Administration"]} }
 
       ];
       
@@ -1595,6 +1607,7 @@
         "art-group":"Art Group",
         "gardening":"Gardening",
         "computer-art":"Computer Art"
+        ,"fitness":"Fitness"
       };
 
       let currentActivityScopes = [];
@@ -1623,6 +1636,7 @@
           "art-group":"art-group",
           "gardening":"gardening",
           "computer-art":"computer-art"
+          ,"fitness":"fitness"
         };
 
         return aliases[raw] || "";
@@ -2375,6 +2389,10 @@
           "";
 
 
+        els.routeNote.hidden =
+          true;
+
+
         buttons.forEach(
           button =>
             els.choiceButtons
@@ -2507,12 +2525,22 @@
           department:choice.department
         };
 
-        const activityScopes = choice.key === "activity"
-          ? (currentActivityScopes.length ? currentActivityScopes : restoreActivityScopes())
-          : [];
+        let subcategories = [];
+        if(choice.key === "activity"){
+          subcategories = (currentActivityScopes.length ? currentActivityScopes : restoreActivityScopes())
+            .map(scope => [scope, ACTIVITY_SCOPE_LABELS[scope] || scope]);
+        }else if(Array.isArray(choice.fixedSubcategories)){
+          subcategories = choice.fixedSubcategories;
+        }else if(choice.roleSubcategories){
+          subcategories = choice.roles
+            .filter(role => currentStudioRoles.includes(role) && choice.roleSubcategories[role])
+            .map(role => choice.roleSubcategories[role])
+            .filter((item,index,list)=>list.findIndex(other=>other[0]===item[0])===index);
+        }
 
         const routeFor = (destination, scope = "") => {
-          const scopeName = scope ? (ACTIVITY_SCOPE_LABELS[scope] || scope) : "";
+          const match=subcategories.find(item=>item[0]===scope);
+          const scopeName = match ? match[1] : "";
           const routing = {
             ...common,
             section:choice.department,
@@ -2527,41 +2555,40 @@
             : standingRoute(choice.mode, choice.destination, {
                 ...routing,
                 tertiary:scopeName,
+                collection:destination,
                 work_kind:"useful-lasting",
                 approval
               });
         };
 
-        const initialScope = activityScopes[0] || "";
+        const initialScope = subcategories[0]?.[0] || "";
         const calendarButton = actionButton("Calendar", routeFor("calendar", initialScope));
         const libraryButton = actionButton("Library", routeFor("library", initialScope), true);
+        const schoolButton = actionButton("School", routeFor("school", initialScope), true);
 
         calendarButton.id = "calendarRouteButton";
         libraryButton.id = "libraryRouteButton";
+        schoolButton.id = "schoolRouteButton";
 
         let selector = "";
-        if(activityScopes.length > 1){
-          selector = `
-            <label for="activityRouteScope"><strong>Which activity?</strong></label>
-            <select id="activityRouteScope">
-              ${activityScopes.map(scope => `<option value="${scope}">${ACTIVITY_SCOPE_LABELS[scope] || scope}</option>`).join("")}
-            </select>
-          `;
+        if(subcategories.length > 1){
+          selector = `<div class="route-subchoices" id="routeSubchoices">${subcategories.map(([key,label],index)=>`<button class="route-subchoice${index===0?" selected":""}" type="button" data-sub="${key}">${choice.key==="artist"?'<span class="beret-mark"></span>':""}${label}</button>`).join("")}</div>`;
         }
 
         setChoiceContent(
           choice.label,
           selector,
-          [calendarButton, libraryButton]
+          [calendarButton, libraryButton, schoolButton]
         );
 
-        const scopeSelect = document.getElementById("activityRouteScope");
-        if(scopeSelect){
-          scopeSelect.addEventListener("change", () => {
-            calendarButton.href = routeFor("calendar", scopeSelect.value);
-            libraryButton.href = routeFor("library", scopeSelect.value);
-          });
-        }
+        els.routeNote.hidden = false;
+
+        document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(button=>button.addEventListener("click",()=>{
+          document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(other=>other.classList.toggle("selected",other===button));
+          calendarButton.href=routeFor("calendar",button.dataset.sub);
+          libraryButton.href=routeFor("library",button.dataset.sub);
+          schoolButton.href=routeFor("school",button.dataset.sub);
+        }));
       }
 
 
@@ -3176,6 +3203,15 @@
                 )
               ])
             ];
+
+
+          if(loginData?.yds_access === false || loginData?.member?.yds_access === false){
+            setStatus(
+              "err",
+              "Your roles are listed in the Role Register, but Design Studio access has not been enabled."
+            );
+            return;
+          }
 
 
           storeActivityScopes(

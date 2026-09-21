@@ -39,12 +39,10 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link" href="library.html">Library</a><a class="top-link" href="members-info.html">Members Hub</a></div></div>
+<div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link" href="library.html">Library</a><a class="top-link" href="school.html">School</a><a class="top-link" href="members-info.html">Members Hub</a></div></div>
 <div class="shell"><main class="panel">
 <h1>Sanctuary Club Role Register</h1>
-<p class="intro">The Role Register shows the members currently helping to run the Club, its activities, publications, website and Residents Association.</p>
-<p class="intro">Some roles may be shared by more than one member. Activity Organisers are shown against the particular activities they organise, and Website Helpers against the areas in which they help.</p>
-<div class="intro-note">This is a live Register. Changes made by an Administrator to current role assignments appear here automatically.</div>
+<p class="intro">Current Role Holders and the activities or responsibilities attached to their appointment.</p>
 
 <div id="registerContent" hidden>
 <section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Events &amp; Activities</button></h2><div class="section-body">
@@ -52,28 +50,28 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 <h3 class="subheading">Activity Organisers</h3>
 <table><thead><tr><th>Activity</th><th>Organiser(s)</th></tr></thead><tbody id="activityOrganisers"></tbody></table>
 </div></section>
-<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Committee</button></h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Committee Members</button></h2><div class="section-body">
 <table><thead><tr><th>Office</th><th>Current holder(s)</th></tr></thead><tbody>
 <tr><td>Chair</td><td id="committeeChair"></td></tr><tr><td>Secretary</td><td id="committeeSecretary"></td></tr><tr><td>Treasurer</td><td id="committeeTreasurer"></td></tr><tr><td>Officers</td><td id="committeeOfficers"></td></tr>
 </tbody></table></div></section>
-<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Residents Association</button></h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Residents Association Panel Members</button></h2><div class="section-body">
 <table><thead><tr><th>Office</th><th>Current holder(s)</th></tr></thead><tbody>
 <tr><td>Chair</td><td id="raChair"></td></tr><tr><td>Secretary</td><td id="raSecretary"></td></tr><tr><td>Treasurer</td><td id="raTreasurer"></td></tr><tr><td>Officers</td><td id="raOfficers"></td></tr>
 </tbody></table></div></section>
-<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Creative &amp; Editorial</button></h2><div class="section-body">
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Writers Artists and Editors</button></h2><div class="section-body">
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Writers</td><td id="writers"></td></tr><tr><td>Artists</td><td id="artists"></td></tr><tr><td>Copy Editor</td><td id="copyEditors"></td></tr><tr><td>Art Editor</td><td id="artEditors"></td></tr>
+<tr><td>Writer</td><td id="writers"></td></tr><tr><td>Artist</td><td id="artists"></td></tr><tr><td>Copy Editor</td><td id="copyEditors"></td></tr><tr><td>Art Editor or Curator</td><td id="artEditors"></td></tr>
 </tbody></table></div></section>
-<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Other Club Roles</button></h2><div class="section-body">
-<h3 class="subheading">Website Helpers</h3>
+<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Website Help and Other Roles</button></h2><div class="section-body">
+<h3 class="subheading">Website Helper</h3>
 <table><thead><tr><th>Area</th><th>Helper(s)</th></tr></thead><tbody id="websiteHelpers"></tbody></table>
 <h3 class="subheading">Other Roles</h3>
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Services</td><td id="services"></td></tr><tr><td>Condominium Coordinator</td><td id="condominiumCoordinator"></td></tr><tr><td>Information Officer</td><td id="informationOfficer"></td></tr>
+<tr><td>Information Officer</td><td id="informationOfficer"></td></tr><tr><td>Services</td><td id="services"></td></tr>
 </tbody></table></div></section>
 <section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">Administration</button></h2><div class="section-body">
 <table><thead><tr><th>Role</th><th>Current holder(s)</th></tr></thead><tbody>
-<tr><td>Admin Website</td><td id="adminWebsite"></td></tr><tr><td>Admin Club</td><td id="adminClub"></td></tr>
+<tr><td>Website Administration</td><td id="adminWebsite"></td></tr><tr><td>Club &amp; Condominium Administration</td><td id="adminClub"></td></tr>
 </tbody></table></div></section>
 </div>
 <div class="status" id="statusBox">Loading the current Role Register…</div>
@@ -84,7 +82,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 (function(){
 "use strict";
 const BACKEND_URL="https://sanctuary-backend-8iqc.onrender.com";
-const ACTIVITIES=[["daffs-caff","Daff’s Caff"],["book-club","Book Club"],["bridge","Bridge"],["mahjong","Mahjong"],["rummikub","Rummikub"],["bowls","Bowls"],["table-tennis","Table Tennis"],["cookery","Cookery"],["walking-group","Walking Group"],["art-group","Art Group"],["gardening","Gardening"],["computer-art","Computer Art"]];
+const ACTIVITIES=[["daffs-caff","Daff’s Caff"],["book-club","Book Club"],["bridge","Bridge"],["mahjong","Mahjong"],["rummikub","Rummikub"],["bowls","Bowls"],["table-tennis","Table Tennis"],["cookery","Cookery"],["fitness","Fitness"],["walking-group","Walking Group"],["art-group","Art Group"],["gardening","Gardening"],["computer-art","Computer Art"]];
 const HELPER_SCOPES=[["general_website_help","General Website Help"],["studio_help","Studio Help"]];
 const registerContent=document.getElementById("registerContent");
 const statusBox=document.getElementById("statusBox");
@@ -101,13 +99,14 @@ async function loadRoleDirectory(){const response=await fetch(`${BACKEND_URL}/ap
 function holderKey(h){return clean(h.resident_id)||(clean(h.member_id)+"|"+clean(h.name))}
 function uniqueSorted(list){const seen=new Set();return list.filter(h=>{const k=holderKey(h);if(!k||seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>clean(a.name).localeCompare(clean(b.name),"en",{sensitivity:"base"}))}
 function holdersWithRole(residents,role){return uniqueSorted(residents.filter(r=>rolesFor(r).includes(role)))}
+function holdersWithRoles(residents,roles){return uniqueSorted(residents.filter(r=>roles.some(role=>rolesFor(r).includes(role))))}
 function holderHtml(h){const name=clean(h.name)||"Member";const ref=clean(h.resident_id);return `<span class="holder">${escapeHtml(name)}${ref?` <span class="holder-ref">(${escapeHtml(ref)})</span>`:""}</span>`}
 function holdersHtml(list){const c=uniqueSorted(list);return c.length?c.map(holderHtml).join(", "):`<span class="empty">—</span>`}
 function fillCell(id,list){const el=document.getElementById(id);if(el)el.innerHTML=holdersHtml(list)}
 function renderEventHosts(residents){document.getElementById("eventHosts").innerHTML=`<div class="role-line"><div class="role-name">Current Event Hosts</div><div class="holders">${holdersHtml(holdersWithRole(residents,"host"))}</div></div>`}
 function renderActivities(residents){const tbody=document.getElementById("activityOrganisers");tbody.innerHTML="";ACTIVITIES.forEach(([scope,label])=>{const organisers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("activity_organiser")&&scopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr)})}
 function renderWebsiteHelpers(residents){const tbody=document.getElementById("websiteHelpers");tbody.innerHTML="";HELPER_SCOPES.forEach(([scope,label])=>{const holders=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td>`;tbody.appendChild(tr)})}
-function renderRegister(residents){renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpers(residents);fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));fillCell("committeeSecretary",holdersWithRole(residents,"committee_secretary"));fillCell("committeeTreasurer",holdersWithRole(residents,"committee_treasurer"));fillCell("committeeOfficers",holdersWithRole(residents,"committee_officer"));fillCell("raChair",holdersWithRole(residents,"ra_chair"));fillCell("raSecretary",holdersWithRole(residents,"ra_secretary"));fillCell("raTreasurer",holdersWithRole(residents,"ra_treasurer"));fillCell("raOfficers",holdersWithRole(residents,"ra_officer"));fillCell("writers",holdersWithRole(residents,"writer"));fillCell("artists",holdersWithRole(residents,"artist"));fillCell("copyEditors",holdersWithRole(residents,"copy_editor"));fillCell("artEditors",holdersWithRole(residents,"art_editor"));fillCell("services",holdersWithRole(residents,"services"));fillCell("condominiumCoordinator",holdersWithRole(residents,"condominium_coordinator"));fillCell("informationOfficer",holdersWithRole(residents,"information_officer"));fillCell("adminWebsite",holdersWithRole(residents,"admin_website"));fillCell("adminClub",holdersWithRole(residents,"admin_club"));registerContent.hidden=false}
+function renderRegister(residents){renderEventHosts(residents);renderActivities(residents);renderWebsiteHelpers(residents);fillCell("committeeChair",holdersWithRole(residents,"committee_chair"));fillCell("committeeSecretary",holdersWithRole(residents,"committee_secretary"));fillCell("committeeTreasurer",holdersWithRole(residents,"committee_treasurer"));fillCell("committeeOfficers",holdersWithRole(residents,"committee_officer"));fillCell("raChair",holdersWithRole(residents,"ra_chair"));fillCell("raSecretary",holdersWithRole(residents,"ra_secretary"));fillCell("raTreasurer",holdersWithRole(residents,"ra_treasurer"));fillCell("raOfficers",holdersWithRole(residents,"ra_officer"));fillCell("writers",holdersWithRoles(residents,["writer","news_contributor"]));fillCell("artists",holdersWithRole(residents,"artist"));fillCell("copyEditors",holdersWithRoles(residents,["copy_editor","editor"]));fillCell("artEditors",holdersWithRole(residents,"art_editor"));fillCell("services",holdersWithRole(residents,"services"));fillCell("informationOfficer",holdersWithRole(residents,"information_officer"));fillCell("adminWebsite",holdersWithRole(residents,"admin_website"));fillCell("adminClub",holdersWithRoles(residents,["admin_club","condominium_coordinator","condo_admin"]));registerContent.hidden=false}
 function setupAccordions(){const sections=Array.from(document.querySelectorAll(".register-section"));sections.forEach(section=>{const button=section.querySelector(".section-toggle");if(!button)return;button.addEventListener("click",()=>{const wasOpen=section.classList.contains("open");sections.forEach(other=>{other.classList.remove("open");const otherButton=other.querySelector(".section-toggle");if(otherButton)otherButton.setAttribute("aria-expanded","false")});if(!wasOpen){section.classList.add("open");button.setAttribute("aria-expanded","true")}})})}
 async function initialise(){try{setStatus("Loading the current Role Register…");const residents=await loadRoleDirectory();renderRegister(residents);setupAccordions();setStatus("")}catch(error){console.error(error);registerContent.hidden=true;setStatus(error.message||"The Role Register could not be loaded.",true)}}
 initialise();

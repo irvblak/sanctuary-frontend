@@ -810,6 +810,9 @@
     const PUBLICATION_DESTINATION=
       (PAGE_PARAMS.get("destination")||"").toLowerCase();
 
+    const PUBLICATION_COLLECTION=
+      (PAGE_PARAMS.get("collection")||"library").toLowerCase();
+
     const PUBLICATION_RETENTION=
       (PAGE_PARAMS.get("retention")||"permanent").toLowerCase();
 
@@ -1129,7 +1132,7 @@
     }
 
     function portableProject(){
-      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated")?readEventHandoff():null,state:JSON.parse(snapshotState())};
+      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,collection:PUBLICATION_COLLECTION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:(CANVAS_MODE==="host"&&PUBLICATION_TYPE==="dated")?readEventHandoff():null,state:JSON.parse(snapshotState())};
     }
     function safeProjectFilename(){
       const label=clean(workNameInput?.value||creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
@@ -2377,6 +2380,9 @@ function publicationCanvasData(){
     destination:
       PUBLICATION_DESTINATION,
 
+    collection:
+      PUBLICATION_COLLECTION,
+
     retention:
       PUBLICATION_RETENTION,
 
@@ -2721,6 +2727,9 @@ async function publishCanvas(){
       destination:
         PUBLICATION_DESTINATION,
 
+      collection:
+        PUBLICATION_COLLECTION,
+
       retention:
         PUBLICATION_RETENTION,
 
@@ -2840,7 +2849,7 @@ async function publishCanvas(){
     }else{
 
       alert(
-        "Your work has been published to the Library."
+        `Your work has been published to the ${PUBLICATION_COLLECTION === "school" ? "School" : "Library"}.`
       );
 
     }

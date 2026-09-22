@@ -473,35 +473,28 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "18 August 2026",
+    updated: "22 September 2026",
 
     summary:
       "What happens to work created in Your Design Studio and where it may go.",
 
     body: `
       <p class="lead">
-        Your Design Studio uses one common design tool.
-        The route you choose before entering the Studio tells the computer
-        what kind of work you are creating and what may happen to it afterwards.
+        Choose the role you are carrying out, then choose
+        <strong>Calendar</strong>, <strong>Library</strong> or <strong>School</strong>.
+        The same Design Studio is used for every role.
       </p>
 
       <p>
-        Wherever the correct destination is already known,
-        the computer should make that decision automatically.
-        You should be asked to choose only when there is a genuine choice to make.
+        The website uses your role and any activity or subject you selected
+        to file the finished work automatically.
       </p>
 
-      <h2>Your work while you create it</h2>
+      <h2>While you are working</h2>
 
       <p>
-        You can use the Studio simply for your own pleasure.
-        You may print your work or save an editable copy to your computer
-        without publishing it anywhere.
-      </p>
-
-      <p>
-        If you think you may want to submit your work later,
-        you may also keep a draft so that you can return to it.
+        Name the work and use <strong>My Vault</strong> to keep it private and editable.
+        Return to the Vault whenever you want to continue.
       </p>
 
       <h2>Events</h2>
@@ -513,26 +506,26 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        While an Event is current, it can appear automatically in the
-        Calendar, Events List and Event Notices.
+        Enter the Event facts first, then continue to Notice Design.
+        Nothing is visible to members until you publish.
       </p>
 
       <p>
-        After the Event date it disappears from the current displays.
-        A compact Events List-style record may remain permanently
-        in the Library archive.
+        Publishing makes the Calendar entry, Events List entry and linked Notice
+        live together. Booking information is used automatically where required.
       </p>
 
       <h2>Activities</h2>
 
       <p>
-        A dated Activity may appear in the Calendar, Events List
-        and Notices while it is current.
+        Choose <strong>Calendar</strong> for a dated Activity.
+        It follows the same Calendar, Events List and Notice route as an Event.
       </p>
 
       <p>
-        General information about an Activity may instead become
-        an editable standing publication in the appropriate Library section.
+        Choose <strong>Library</strong> for interesting or lasting Activity material,
+        or <strong>School</strong> for guides, lessons and manuals.
+        It is filed automatically under that Activity.
       </p>
 
       <h2>Writers and Artists</h2>
@@ -552,9 +545,8 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       </p>
 
       <p>
-        Approved Writer work may appear as current News
-        or become a permanent Library publication.
-        Approved Artist work may be included in the Library Gallery.
+        Approved Writer work is filed in the Reading Room.
+        Approved Artist work is filed in the Gallery under Photo, Modern or Traditional.
       </p>
 
       <p>
@@ -566,34 +558,23 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       <h2>Committee</h2>
 
       <p>
-        Committee News &amp; Notices use the same Design Studio framework
-        and the same publishing facilities wherever they are appropriate.
+        Committee work uses the same Calendar, Library and School choices.
       </p>
 
       <p>
-        The type of material being created determines its destination,
-        privacy and whether it forms part of the permanent Library record.
+        The website files it under Committee News &amp; Information.
       </p>
 
       <h2>Residents Association Panel</h2>
 
       <p>
-        Residents Association Panel work is a separate protected area.
-        Wherever practical it can use the same Sanctuary Club software
-        and facilities, while keeping its own authority, privacy
-        and records distinct.
+        Panel work uses the same Calendar, Library and School choices
+        and is filed under Residents Association News &amp; Information.
       </p>
 
       <p>
-        The detailed publishing arrangements for the Residents Association Panel
-        will be determined separately.
-      </p>
-
-      <h2>Services</h2>
-
-      <p>
-        Dated Service information may be treated like an Event while current.
-        Standing Service information may remain as an editable Library publication.
+        Apply the appropriate member-only protection before publishing
+        material that should not be generally visible.
       </p>
 
       <h2>Privacy and publication</h2>

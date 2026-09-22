@@ -398,7 +398,7 @@
       <section class="card" id="bookingSection">
         <h2>Bookings, Guests &amp; Cut-off Dates</h2>
         <p id="bookingNoticeOnlyNote" class="notice-only-note">Not needed for this dated item. Booking controls apply only to hosted Events.</p>
-        <p class="help">These details feed Booking, Guest Booking, the Event Notice and State of Play.</p>
+        <p class="help">Enter the booking limits and dates once; the website will use them for member and guest bookings, the Event Notice and State of Play.</p>
 
         <div class="booking-grid">
           <div>
@@ -436,7 +436,7 @@
       <section class="card" id="paymentSection">
         <h2>Payment</h2>
         <p id="paymentNoticeOnlyNote" class="notice-only-note">Not needed for this dated item. Payment arrangements apply only to hosted Events.</p>
-        <p class="help">Use this for payable hosted events. Payment collection itself remains outside the website for now.</p>
+        <p class="help">For a payable Event, enter the price and tell members how and when to pay. Payment is arranged outside the website.</p>
 
         <div class="payment-grid">
           <div>
@@ -955,8 +955,7 @@ function applyMode(){
   els.detailsHeading.textContent = "Calendar & Events List Details";
 
   els.pageSubtitle.textContent =
-    "Enter the factual details needed for Calendar & Events List first. " +
-    "They remain private Work in Progress while you prepare the linked Notice in Your Design Studio.";
+    "Enter the Event facts once. The website will use them in the Calendar, Events List, linked Notice, bookings and State of Play.";
 
   els.modeNote.textContent =
     datedSource === "host"

@@ -22,13 +22,11 @@
 @media(max-width:700px){.page{width:min(100% - 20px,1120px)}.topbar,.work-head{align-items:flex-start;flex-direction:column}}
 </style></head><body><main class="page">
 <div class="topbar"><div><p class="eyebrow">Your Design Studio</p><h1>My Vault</h1></div><a class="btn secondary" href="your-design-studio.html">← Your Design Studio</a></div>
-<section class="card intro"><h2>What happens to your work</h2>
-<p>Work in Progress is kept here in your Vault and can be reopened and continued whenever you want to carry on.</p>
-<p>Once you are happy with it and would like it to be published, the computer automatically places it in the appropriate Library section or sends it to the Curator or Editor:</p>
-<ul><li>If it’s Art, it goes to the Curator, who will approve it and place it in the Gallery or get back to you to discuss it.</li>
-<li>Similarly, if it’s written work, your Editor will either send it to the Reading Room or get back to you.</li>
-<li>If you are an Activity Organiser or Teacher and want to let members know when an event or class is happening, it goes immediately on the Calendar and into the Events List.</li>
-<li>If you want to update a Guide or publish a Notice, it will go directly to the appropriate Library section.</li></ul></section>
+<section class="card intro"><h2>What happens next</h2>
+<p>Your unfinished work is kept here and can be reopened whenever you want to continue.</p>
+<ul><li><strong>Calendar:</strong> publishing makes the dated item, its Events List entry and linked Notice live together.</li>
+<li><strong>Library or School:</strong> the website files published work under the role and subject you selected.</li>
+<li><strong>Writer or Artist work:</strong> Submit sends it to the Editor or Curator; it remains private until approved.</li></ul></section>
 <section class="card"><h2>Your Vault</h2><p id="status" class="status">Opening your Vault…</p><div id="list" class="work-list"></div></section>
 </main><script>
 (()=>{"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",list=document.getElementById("list"),status=document.getElementById("status");
@@ -39,6 +37,6 @@ const date=v=>{if(!v)return"";let d=new Date(v);return isNaN(d)?String(v):d.toLo
 async function openWork(id){try{let r=await fetch(`${API}/api/vault/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Could not open work (${r.status})`);sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(d.item));sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);location.href=`design-studio-canvas.html?vault=${encodeURIComponent(id)}`}catch(e){alert(e.message||"This work could not be opened.")}}
 function render(items){list.innerHTML="";if(!items.length){list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';return}
 items.forEach(i=>{let locked=["submitted","published"].includes(String(i.status||"").toLowerCase()),a=document.createElement("article");a.className="work";a.innerHTML=`<div class="work-head"><div><h3>${esc(i.title||"Untitled work")}</h3><div class="meta">${esc(i.hat||i.work_type||"Studio work")}${i.updated_at?" · Last saved "+esc(date(i.updated_at)):""}</div></div><span class="badge">${esc(label(i.status))}</span></div>${i.editor_note?`<div class="note"><strong>Editor/Curator note:</strong> ${esc(i.editor_note)}</div>`:""}<div class="actions">${locked?`<button class="btn secondary" disabled>${esc(label(i.status))} — locked</button>`:`<button class="btn continue" data-id="${esc(i.work_id)}">Continue Working</button>`}</div>`;list.appendChild(a)});list.querySelectorAll(".continue").forEach(b=>b.onclick=()=>openWork(b.dataset.id))}
-async function load(){if(!token()){status.textContent="Your Studio session has expired. Please return to My Studio.";return}try{let r=await fetch(`${API}/api/vault`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Your Vault could not be opened (${r.status})`);let items=Array.isArray(d.items)?d.items:[];status.textContent=items.length?`${items.length} ${items.length===1?"item":"items"} in your Vault.`:"Your Vault is ready.";render(items)}catch(e){status.textContent="Your Vault could not be opened.";list.innerHTML=`<div class="empty">${esc(e.message||"Please try again shortly.")}</div>`}}
+async function load(){if(!token()){status.textContent="Your Studio session has expired. Please return to Your Design Studio.";return}try{let r=await fetch(`${API}/api/vault`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Your Vault could not be opened (${r.status})`);let items=Array.isArray(d.items)?d.items:[];status.textContent=items.length?`${items.length} ${items.length===1?"item":"items"} in your Vault.`:"Your Vault is ready.";render(items)}catch(e){status.textContent="Your Vault could not be opened.";list.innerHTML=`<div class="empty">${esc(e.message||"Please try again shortly.")}</div>`}}
 load()})();
 </script></body></html>

@@ -112,7 +112,7 @@ window.SANCTUARY_ROLE_GUIDES = {
       ],
       [
         "Typical work",
-        "Writer and Artist work are the principal categories currently expected to require editorial approval."
+        "Writer and Artist work is sent to the Editor or Curator and remains private until it is approved."
       ],
       [
         "Maintaining standards",
@@ -258,7 +258,7 @@ window.SANCTUARY_ROLE_GUIDES = {
     sections: [
       [
         "Role administration",
-        "Administrators allocate and withdraw roles and, as the scoped-role model develops, assign the appropriate subcategories or scopes."
+        "Administrators allocate or withdraw roles, assign any Activity or Website Helper areas, and may allow or block Design Studio access without removing a member from the Role Register."
       ],
       [
         "Library administration",

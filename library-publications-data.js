@@ -125,7 +125,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         For a simple practical explanation, return to the Library and choose
         <strong>Your Access &amp; Privacy — at a Glance</strong>.
         For the fuller explanation, choose
-        <strong>Privacy, Security &amp; Data Protection Charter</strong>.
+        <strong>Privacy, Security &amp; Data Protection Notice</strong>.
       </p>
     `
   },
@@ -723,7 +723,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
   "privacy-security": {
     kind: "publication",
 
-    title: "Privacy, Security & Data Protection Charter",
+    title: "Privacy, Security & Data Protection Notice",
 
     privacy: "access",
 
@@ -731,329 +731,242 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
     owner: "Sanctuary Club",
 
-    updated: "18 August 2026",
+    updated: "23 September 2026",
 
     summary:
       "How Sanctuary Club protects members, their information and their privacy.",
 
     body: `
+      <p><strong>Version 1.2 — 23 September 2026</strong></p>
+
       <p class="lead">
-        <strong>
-          Built on neighbourly trust. Designed to grow responsibly.
-        </strong>
+        This Notice explains what personal information Sanctuary Club holds,
+        why it is needed, who may see it and how it is protected.
+      </p>
+
+      <h2>Conformity and Proportionate Protection</h2>
+
+      <p>
+        Sanctuary Club intends to handle personal information in accordance with
+        the UK General Data Protection Regulation, the Data Protection Act 2018
+        and the Data (Use and Access) Act 2025, together with any other
+        data-protection rules applicable to its activities.
       </p>
 
       <p>
-        <strong>Version 1.1</strong>
-      </p>
-
-      <h2>Our Privacy Promise</h2>
-
-      <p>
-        Privacy and security are built into Sanctuary Club,
-        not added as an afterthought.
-        The website has been designed specifically for our community
-        so that members can enjoy its benefits without having to understand
-        the technology protecting them.
+        The Information Commissioner’s Office (ICO) is the UK’s independent
+        regulator for data protection. Sanctuary Club takes account of ICO
+        guidance when establishing and reviewing its privacy and security arrangements.
       </p>
 
       <p>
-        Personal information is kept behind Personal PIN access;
-        generally available Club information is deliberately separated
-        from private member information; administrative powers are restricted;
-        and only the information needed to provide each Club facility
-        is used or displayed.
+        Sanctuary Club is a small, non-commercial community website holding a
+        limited amount of information for identifiable Club and Residents
+        Association purposes. Its safeguards are designed to be appropriate and
+        proportionate to the nature, amount and sensitivity of that information
+        and to the risks involved.
       </p>
 
       <p>
-        Sanctuary Club has been created by members, for members.
-        Its purpose is to strengthen our community, make it easier to organise
-        activities and events, improve communication and provide useful
-        information for everyone who belongs to the Club.
+        This Notice records the safeguards and working procedures adopted for the
+        website. It is not a claim that any computer system can be completely secure.
       </p>
 
-      <p>
-        We do not make extravagant claims about security.
-        Our aim is to provide sensible, proportionate protection
-        which is continually reviewed as Sanctuary Club develops,
-        so that members can use the Club comfortably and with confidence.
-      </p>
+      <h2>The Privacy Promise</h2>
 
-      <h2>Our Principles</h2>
-
-      <p>Sanctuary Club is committed to:</p>
+      <p>Sanctuary Club:</p>
 
       <ul>
-        <li>
-          collecting only the minimum personal information needed
-          to operate the Club;
-        </li>
+        <li>holds only the personal information reasonably needed to provide its facilities;</li>
+        <li>uses it only for authorised Club purposes and, where separately authorised, Residents Association purposes;</li>
+        <li>keeps private member services behind Personal PIN access;</li>
+        <li>separates generally available Club information from personal and protected information;</li>
+        <li>limits administrative and Role Holder access to what is needed for each responsibility;</li>
+        <li>allows members to decide what optional contact information they provide and share;</li>
+        <li>does not sell personal information or use it for commercial advertising or marketing.</li>
+      </ul>
 
-        <li>
-          using personal information only for legitimate Sanctuary Club
-          purposes and, where separately authorised,
-          Residents Association purposes;
-        </li>
+      <h2>Information Held</h2>
 
-        <li>
-          protecting personal information through appropriate technical
-          and organisational safeguards;
-        </li>
+      <p>Depending on how a member uses Sanctuary Club, information may include:</p>
 
-        <li>
-          restricting access to information according to authorised
-          responsibilities;
-        </li>
-
-        <li>
-          being open and transparent about what information is held
-          and why it is needed;
-        </li>
-
-        <li>
-          continually reviewing and improving our privacy and security
-          arrangements.
-        </li>
+      <ul>
+        <li>name;</li>
+        <li>household Membership Number and individual resident reference;</li>
+        <li>email address, telephone numbers and other contact information provided by the member;</li>
+        <li>Club or Residents Association roles undertaken by the member;</li>
+        <li>Event bookings, cancellations and related information;</li>
+        <li>work created, saved or published through Your Design Studio;</li>
+        <li>necessary administrative and security records.</li>
       </ul>
 
       <p>
-        Sanctuary Club is a community service.
+        Only information reasonably required to operate the relevant facility is
+        requested or retained. Members decide what optional contact information
+        they provide and make available through the Members Directory.
+      </p>
+
+      <h2>How Information Is Used</h2>
+
+      <p>Personal information may be used to:</p>
+
+      <ul>
+        <li>identify a member correctly and provide access to private services;</li>
+        <li>maintain the Members Directory;</li>
+        <li>organise Events and Activities and administer bookings;</li>
+        <li>enable authorised Role Holders to carry out their responsibilities;</li>
+        <li>send authorised Club or Residents Association information to members;</li>
+        <li>maintain appropriate security and audit records;</li>
+        <li>support and improve Sanctuary Club facilities.</li>
+      </ul>
+
+      <p>
+        Information collected for Sanctuary Club is not used for unrelated purposes.
+        Residents Association information is handled under the authority and
+        safeguards appropriate to the Residents Association.
+      </p>
+
+      <h2>The Full Membership Database</h2>
+
+      <p>
+        The full membership database is used by the Club and the Residents
+        Association Panel to send authorised information by email directly to members.
       </p>
 
       <p>
-        It has not been created for commercial purposes, advertising or marketing,
-        and members’ personal information is never sold or shared for
-        commercial gain.
+        Because it contains the combined membership and contact records, it has
+        additional security beyond the ordinary member areas of the website.
+        Access is restricted to specifically appointed Backend Administrators and
+        is not available merely because a person holds another Club or Panel role.
+      </p>
+
+      <p>
+        Authorised email information may be produced only for an approved Club or
+        Residents Association communication. Access and administrative actions are
+        recorded in the appropriate audit trail.
+      </p>
+
+      <h2>Who Can See Information?</h2>
+
+      <ul>
+        <li>Members may see information that other members have chosen to share through the Members Directory.</li>
+        <li>Event Hosts may see only the booking and contact information needed to manage their own Events.</li>
+        <li>Role Holders may see only the information needed for their authorised work.</li>
+        <li>Club Administrators may carry out the member and role administration assigned to them.</li>
+        <li>Backend Administrators have separately protected access to the full membership database and technical administration.</li>
+        <li>Residents Association information is available only through the appropriate authorised route.</li>
+      </ul>
+
+      <p>
+        Holding one role does not automatically provide access to information
+        belonging to another role or responsibility.
       </p>
 
       <h2>The Starter PIN</h2>
 
       <p>
         Every new membership begins with the temporary Starter PIN
-        <strong>2468</strong>.
+        <strong>2468</strong>. It must be replaced with a private four-digit
+        household PIN before private member services are used.
       </p>
 
       <p>
-        If you forget your Personal PIN, you can use the
-        <strong>Forgotten your PIN?</strong> facility to restore
-        the temporary Starter PIN automatically.
+        If a PIN is forgotten, the member may submit a reset request. A Club
+        Administrator will independently confirm that the request is genuine
+        before resetting the membership to 2468. The member must then choose a
+        new private PIN.
       </p>
 
-      <p>
-        Where a surname is already recorded, you will be asked for it
-        as a simple check of the membership details.
-        If no surname has yet been recorded, your Membership Number is sufficient.
-      </p>
-
-      <p>
-        After signing in with the Starter PIN,
-        you will be asked to choose your own new Personal PIN
-        before using private member services.
-      </p>
-
-      <h2>Your Personal PIN</h2>
-
-      <p>
-        Your Personal PIN protects access to your private member services.
-      </p>
-
-      <p>For your security:</p>
+      <h2>The Private Membership PIN</h2>
 
       <ul>
-        <li>
-          only you should know your Personal PIN;
-        </li>
-
-        <li>
-          Administrators cannot view, recover or tell you your Personal PIN;
-        </li>
-
-        <li>
-          if your PIN is forgotten, it can only be reset to the temporary
-          Starter PIN, allowing you to choose a new Personal PIN.
-        </li>
+        <li>Members should not disclose their PIN unnecessarily.</li>
+        <li>Administrators cannot view, recover or tell a member their private PIN.</li>
+        <li>A forgotten PIN can be replaced only through the authorised reset process.</li>
+        <li>The temporary Starter PIN cannot be retained as the new private PIN.</li>
       </ul>
 
       <p>
-        This approach has been deliberately chosen so that no Administrator
-        can know or recover a member’s Personal PIN.
+        A PIN identifies the household membership. Where individual authority is
+        required, the resident reference and appointed role are also checked.
       </p>
 
-      <h2>What Information Is Held?</h2>
+      <h2>Security Arrangements</h2>
 
-      <p>
-        Depending upon how you use Sanctuary Club, information may include:
-      </p>
+      <p>Proportionate safeguards include:</p>
 
       <ul>
-        <li>your name;</li>
-        <li>your member reference;</li>
-        <li>your household Membership Number;</li>
-        <li>your contact details, where you choose to provide them;</li>
-        <li>the voluntary Club roles you undertake;</li>
-        <li>event bookings and related information.</li>
+        <li>PIN-protected member access and separately protected Backend Administration;</li>
+        <li>restricted permissions based on appointed responsibilities;</li>
+        <li>separation of generally available, member-only and administratively protected information;</li>
+        <li>password and PIN storage designed so that the original private value cannot simply be read;</li>
+        <li>time-limited sessions and fresh sign-in where appropriate;</li>
+        <li>appropriate activity and administrative audit records;</li>
+        <li>controlled procedures for PIN resets and changes to personal information;</li>
+        <li>review whenever facilities or data use change.</li>
       </ul>
 
       <p>
-        Information connected specifically with Residents Association business
-        is handled within the appropriate separately protected arrangements.
+        Members also help by keeping their PIN private, signing out on shared
+        devices and reporting anything that appears unusual.
       </p>
 
-      <p>
-        Only information reasonably required to operate Sanctuary Club is held.
-      </p>
+      <h2>Accuracy and Member Choice</h2>
 
-      <p>
-        Members remain free to decide how much optional contact information
-        they wish to provide.
-      </p>
-
-      <h2>How Your Information Is Used</h2>
-
-      <p>
-        Your Club information is used only for purposes connected
-        with Sanctuary Club.
-      </p>
-
-      <p>Typical examples include:</p>
+      <p>Members may:</p>
 
       <ul>
-        <li>identifying members correctly;</li>
-        <li>organising events and activities;</li>
-        <li>administering bookings;</li>
-        <li>
-          enabling authorised volunteers to carry out their responsibilities;
-        </li>
-        <li>
-          helping members communicate with one another where appropriate;
-        </li>
-        <li>improving the services provided by Sanctuary Club.</li>
+        <li>see, correct or update their household information;</li>
+        <li>choose what optional contact information they provide;</li>
+        <li>change their private Membership PIN;</li>
+        <li>ask what information is held and why;</li>
+        <li>ask a Club Administrator about clearing their voluntary Your Information data.</li>
       </ul>
 
       <p>
-        Personal information is never used for commercial marketing
-        or unrelated purposes.
+        Where Your Information is cleared, it is cleared as a whole rather than
+        selectively. Necessary security, booking, audit or administrative records
+        may still need to be retained for their proper purpose.
       </p>
 
-      <h2>Who Can See Your Information?</h2>
+      <h2>Retention</h2>
 
       <p>
-        Most personal information is available only to Sanctuary members
-        after secure sign-in.
+        Information is kept only for as long as reasonably needed for the facility
+        or record concerned. Current Event information, booking records, published
+        material, administrative records and audit information may therefore have
+        different retention periods.
       </p>
 
-      <p>
-        The full members database has
-        <strong>additional software protection</strong>
-        and is not available through the ordinary member areas of the website.
-      </p>
+      <h2>Questions or Concerns</h2>
 
       <p>
-        Access to the full database — including the facility used to email
-        members who have registered an email address — is restricted to
-        <strong>three members specifically appointed by the membership</strong>
-        for that purpose.
+        A member should first raise any data-protection concern with a Club
+        Administrator. It will be acknowledged within 30 days, investigated and
+        answered without undue delay.
       </p>
 
       <p>
-        Other authorised role holders may have access only to the particular
-        information needed to carry out their responsibilities.
-        This does not give them access to the full members database.
+        If the member remains dissatisfied, they may complain directly to the
+        Information Commissioner’s Office at
+        <a href="https://ico.org.uk/" target="_blank" rel="noopener">ico.org.uk</a>.
       </p>
+
+      <h2>Review and Responsibility</h2>
 
       <p>
-        Residents Association Panel information is protected separately
-        and is available only to those with the appropriate authority.
+        This Notice describes the safeguards and procedures applying at the date
+        shown above. It must be reviewed whenever data use, access responsibilities,
+        the website’s technical arrangements or the applicable rules materially change.
       </p>
-
-      <h2>Looking After Your Information</h2>
-
-      <p>
-        Sanctuary Club uses reasonable technical and organisational measures
-        to help protect personal information from unauthorised access, misuse,
-        accidental loss or inappropriate disclosure.
-      </p>
-
-      <p>
-        As the Club develops, its security arrangements and operating procedures
-        will continue to be reviewed and strengthened wherever appropriate.
-      </p>
-
-      <h2>Your Rights</h2>
-
-      <p>Members are entitled to:</p>
-
-      <ul>
-        <li>
-          know what personal information Sanctuary Club holds about them;
-        </li>
-
-        <li>
-          ask for inaccurate information to be corrected;
-        </li>
-
-        <li>
-          change their own Personal PIN at any time;
-        </li>
-
-        <li>
-          ask questions about how their information is used.
-        </li>
-      </ul>
-
-      <p>
-        Questions or concerns will always be treated respectfully, fairly
-        and as promptly as possible.
-      </p>
-
-      <h2>Looking Ahead</h2>
-
-      <p>
-        Sanctuary Club is intended to grow alongside our community.
-      </p>
-
-      <p>
-        New facilities and services will continue to be developed,
-        but privacy, security and responsible stewardship of members’
-        information will remain fundamental design principles.
-      </p>
-
-      <p>
-        This Charter reflects Sanctuary Club as it is today.
-        It will be reviewed and updated as the Club develops
-        so that members and those entrusted with Club responsibilities
-        continue to benefit from good governance, clear policies
-        and appropriate safeguards.
-      </p>
-
-      <h2>Our Commitment</h2>
 
       <p>
         <strong>
-          Technology should help neighbours, not worry them.
+          Personal information should be available only to the people who need it,
+          for an authorised purpose, and with protection appropriate to the
+          information involved.
         </strong>
       </p>
-
-      <p>
-        Everything we do will continue to be guided by that simple principle.
-      </p>
-
-      <p>
-        Our aim is to strengthen our community while respecting every member’s
-        privacy, dignity and trust.
-      </p>
-
-      <p>
-        That is the commitment made by Sanctuary Club to every member,
-        today and in the future.
-      </p>
-
-      <div class="motto">
-        <strong>
-          The computer does the thinking.<br>
-          You do the creating.
-        </strong>
-      </div>
     `
   
     },

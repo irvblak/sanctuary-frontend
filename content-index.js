@@ -18,7 +18,7 @@
     const definitions=section.subcategories||[];
     if(definitions.length){
       const seen=new Set();
-      definitions.forEach(([key,label])=>{const matching=[...subMap.entries()].filter(([name])=>S.slug(name)===key).flatMap(([,list])=>list);seen.add(key);content+=subcategoryHtml(label,matching)});
+      definitions.forEach(([key,label])=>{const matching=[...subMap.entries()].filter(([name])=>S.slug(name)===key).flatMap(([,list])=>list);const links=collection==="library"?section.subcategoryLinks?.[key]:null;seen.add(key);content+=subcategoryHtml(label,matching,links)});
       [...subMap.entries()].forEach(([name,list])=>{if(name&& !seen.has(S.slug(name)))content+=subcategoryHtml(name,list)});
       const direct=subMap.get("")||[];if(direct.length)content+=subcategoryHtml("Other published work",direct);
     }else{
@@ -29,7 +29,7 @@
     const fixedLinks=linkList?linkList.map(([label,url])=>`<a class="section-link" href="${url}">${esc(label)}</a>`).join(" "):"";
     return `<details class="section"><summary><span class="icon">${section.icon}</span><span><strong>${esc(section.title)}</strong><small>${esc(section.hat)}</small></span><span class="arrow">›</span></summary><div class="section-body">${content}${galleryLink}${fixedLinks}</div></details>`;
   }
-  function subcategoryHtml(name,items){return `<details class="subcategory"><summary>${esc(name)}</summary><div class="synopsis-list">${items.length?items.map(itemHtml).join(""):'<p class="empty">No published work yet.</p>'}</div></details>`}
+  function subcategoryHtml(name,items,links=[]){const fixed=links.length?links.map(([label,url])=>`<a class="synopsis" href="${url}"><strong>${esc(label)}</strong></a>`).join(""):"";return `<details class="subcategory"><summary>${esc(name)}</summary><div class="synopsis-list">${fixed}${items.length?items.map(itemHtml).join(""):fixed?"":'<p class="empty">No published work yet.</p>'}</div></details>`}
   function render(items){document.getElementById("sections").innerHTML=S.SECTIONS.map(section=>sectionHtml(section,items)).join("");document.querySelectorAll("details.section").forEach(section=>section.addEventListener("toggle",()=>{if(section.open)document.querySelectorAll("details.section").forEach(other=>{if(other!==section)other.open=false})}))}
   render([]);
   fetch(`${API}/api/library-publications`,{cache:"no-store",headers:{Accept:"application/json"}}).then(async response=>{const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"Published work could not be loaded.");const all=Array.isArray(data.publications)?data.publications:[];const items=all.filter(item=>S.publicationCollection(item)===collection);render(items);document.getElementById("status").textContent=items.length?`${items.length} published item${items.length===1?"":"s"}.`:"No work has been published here yet."}).catch(error=>{console.error(error);document.getElementById("status").textContent="Published work could not be loaded. Please try again shortly."});

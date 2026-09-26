@@ -1,0 +1,1122 @@
+<p><strong>Prepared 25 September 2026</strong></p>
+<p><strong>Status</strong></p>
+<blockquote>
+<p>This is a working draft. It records how the website currently
+operates and proposes a safe arrangement for custody, administration,
+training and succession. It does not become Association policy until the
+appropriate decisions have been properly made.</p>
+<p><strong>Important security rule</strong><br />
+Passwords, recovery codes, secret keys and private household PINs must
+never be written in this guide. They belong in a separately controlled
+confidential record.</p>
+</blockquote>
+<h1 id="contents">Contents</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Section</strong></th>
+<th><strong>Subject</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Purpose and guiding principles</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Governance and responsibilities</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>How the website fits together</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>The services we use</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>How ordinary website work is done</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>How a technical change is made</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Publishing and role holder work</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Membership administration and personal data</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Security and access</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Testing and deployment</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Routine checks and maintenance</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Faults and recovery</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Training and succession</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>Handover checklist</td>
+</tr>
+<tr class="odd">
+<td>Appendix A</td>
+<td>Confidential account register template</td>
+</tr>
+<tr class="even">
+<td>Appendix B</td>
+<td>Quick operating checklists</td>
+</tr>
+<tr class="odd">
+<td>Appendix C</td>
+<td>Glossary</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-to-use-this-draft">How to use this draft</h2>
+<p>The first four sections explain ownership, responsibility and the
+main systems. The middle sections describe ordinary work and technical
+changes. The final sections are practical checklists for training and
+eventual handover. Square brackets identify details that the Panel must
+decide or complete.</p>
+<h1 id="purpose-and-guiding-principles">1 Purpose and guiding
+principles</h1>
+<p>The Sanctuary website provides residents with a single, accessible
+place for community information, events, private member services,
+Residents Association material and useful Club records. This guide
+explains how the website is governed, operated, protected and passed
+safely from one group of volunteers to the next.</p>
+<h2 id="the-main-conclusion">The main conclusion</h2>
+<p>The website must not depend upon one individual. Subject to proper
+member approval, the Representative Panel should hold collective custody
+on behalf of the Sanctuary community, while suitably capable people
+carry out technical and administrative work under its authority.</p>
+<h2 id="guiding-principles">Guiding principles</h2>
+<ul>
+<li><p>The website exists to serve residents and support the purposes of
+the Sanctuary Residents’ Association and Club.</p></li>
+<li><p>The Panel decides policy. Technical access does not confer
+authority to make community decisions.</p></li>
+<li><p>Each administrator uses an individual account. Shared passwords
+are avoided.</p></li>
+<li><p>Access is limited to what each person needs for their
+work.</p></li>
+<li><p>Personal information is accessed only for an authorised task and
+is never used for another purpose.</p></li>
+<li><p>Changes are tested before publication and important actions leave
+an appropriate audit trail.</p></li>
+<li><p>At least two trained people must be able to maintain essential
+services and recover access.</p></li>
+<li><p>Instructions should be understandable by a willing successor who
+did not build the system.</p></li>
+</ul>
+<h2 id="what-this-guide-does-not-contain">What this guide does not
+contain</h2>
+<p>This guide does not contain passwords, recovery codes, private PINs,
+secret application keys, exported membership lists or copies of personal
+records. It also does not replace the Constitution, privacy notice or
+decisions properly made by members or the Panel.</p>
+<h1 id="governance-and-responsibilities">2 Governance and
+responsibilities</h1>
+<h2 id="proposed-governance-position">Proposed governance position</h2>
+<p>The incumbent Panel is recommended to become collective Website
+Custodian on behalf of residents. This proposal should be confirmed
+through a properly notified member decision. Until then, the website may
+be used to support the Association’s existing constitutional purposes,
+while permanent custody remains a proposal rather than an accomplished
+fact.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Role</strong></th>
+<th><strong>Main responsibility</strong></th>
+<th><strong>Authority and limits</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Members</td>
+<td>Approve the permanent governance position and any constitutional
+change.</td>
+<td>Retain the democratic authority of the Association.</td>
+</tr>
+<tr class="even">
+<td>Representative Panel</td>
+<td>Proposed collective custodian; sets policy, appoints and removes
+authorised people, and ensures continuity.</td>
+<td>Does not need to perform technical work itself. Must act within the
+Constitution and member decisions.</td>
+</tr>
+<tr class="odd">
+<td>Technical Adviser</td>
+<td>Explains options, develops and maintains the system, trains
+successors and reports material risks.</td>
+<td>Advises and implements authorised decisions; does not determine
+Association or Club policy.</td>
+</tr>
+<tr class="even">
+<td>Website Administrator</td>
+<td>Uses the protected backend administration system and performs
+authorised exceptional operations.</td>
+<td>Only a person with an enabled individual Website Administrator
+account. Destructive actions must be justified and audited.</td>
+</tr>
+<tr class="odd">
+<td>Club Administrator</td>
+<td>Handles agreed day-to-day membership and Club administration,
+including routine PIN work.</td>
+<td>Does not automatically receive source-code, hosting or destructive
+technical authority.</td>
+</tr>
+<tr class="even">
+<td>Role Holder</td>
+<td>Creates or maintains content within an assigned role or
+activity.</td>
+<td>May act only within the scope granted through the Role
+Register.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="initial-proposed-appointments">Initial proposed
+appointments</h2>
+<ul>
+<li><p>Panel: proposed collective Website Custodian, subject to proper
+approval.</p></li>
+<li><p>Irving Blakey: willing to serve as Technical Adviser if appointed
+by the Panel.</p></li>
+<li><p>Additional trained people: at least two should be identified and
+taught the system.</p></li>
+</ul>
+<h1 id="how-the-website-fits-together">3 How the website fits
+together</h1>
+<p>The website is not one program in one place. Several services work
+together. Understanding their separate jobs is the key to maintaining
+the system safely.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Part</strong></th>
+<th><strong>What it does</strong></th>
+<th><strong>Where it operates</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Website address</td>
+<td>Provides the memorable address residents enter.</td>
+<td>sanctuary-club.uk and its domain settings</td>
+</tr>
+<tr class="even">
+<td>Frontend</td>
+<td>Displays pages, menus, forms, calendars, notices, Library and Design
+Studio.</td>
+<td>Published by Netlify from source held in GitHub</td>
+</tr>
+<tr class="odd">
+<td>Backend</td>
+<td>Checks permissions, processes logins and PINs, stores and retrieves
+protected data, events and publications.</td>
+<td>Flask application hosted by Render</td>
+</tr>
+<tr class="even">
+<td>Database and stores</td>
+<td>Hold member, resident, event, booking, publication and audit
+information.</td>
+<td>Protected backend storage on Render</td>
+</tr>
+<tr class="odd">
+<td>Source repositories</td>
+<td>Hold the program files and change history.</td>
+<td>GitHub repositories</td>
+</tr>
+<tr class="even">
+<td>Development assistance</td>
+<td>Helps plan, write, review and test changes under human
+instruction.</td>
+<td>ChatGPT and Codex working with authorised repository access</td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-residents-journey">A resident’s journey</h2>
+<p>1. The resident visits sanctuary-club.uk.</p>
+<p>2. Netlify sends the visible page and its scripts to the resident’s
+browser.</p>
+<p>3. When protected information or an action is required, the page
+contacts the Render backend.</p>
+<p>4. The backend checks the submitted authority, performs the permitted
+operation and returns only the required result.</p>
+<p>5. Protected data remains in backend storage rather than being
+published with the visible website.</p>
+<h1 id="the-services-we-use">4 The services we use</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Service</strong></th>
+<th><strong>Purpose</strong></th>
+<th><strong>Custody requirement</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GitHub</td>
+<td>Stores the frontend and backend source code, records changes and
+provides the source used for deployment.</td>
+<td>At least two named technical custodians should have individual
+access. Repository ownership and recovery must not depend on one
+person.</td>
+</tr>
+<tr class="even">
+<td>Netlify</td>
+<td>Builds and publishes the frontend and provides deployment status and
+basic visitor analytics.</td>
+<td>At least two named custodians should have access and know how to
+inspect or restore a deployment.</td>
+</tr>
+<tr class="odd">
+<td>Render</td>
+<td>Runs the protected Flask backend and holds its persistent data
+storage.</td>
+<td>Access must be tightly limited. At least two authorised technical
+custodians need recovery capability.</td>
+</tr>
+<tr class="even">
+<td>Domain provider</td>
+<td>Controls sanctuary-club.uk and directs it to the published
+website.</td>
+<td>Renewal, ownership and recovery details must be recorded. The
+account must not be allowed to lapse.</td>
+</tr>
+<tr class="odd">
+<td>ChatGPT and Codex</td>
+<td>Assist with design, documentation, code changes, investigation and
+testing under Irving’s or a successor’s direction.</td>
+<td>They are tools, not custodians or decision makers. Personal data
+must not be supplied or accessed without specific authority.</td>
+</tr>
+<tr class="even">
+<td>Email and WhatsApp</td>
+<td>Notify residents and distribute approved information outside the
+website.</td>
+<td>Contact lists are used only for authorised communication and are not
+included in this guide.</td>
+</tr>
+<tr class="odd">
+<td>NatWest and FreeAgent</td>
+<td>Potential future finance services.</td>
+<td>Not presently integrated with the website. Any integration requires
+a separate decision and security review.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="account-ownership-record">Account ownership record</h2>
+<p>For every service, the confidential account register should state the
+legal or practical account holder, authorised users, recovery method,
+renewal date, payment method, two-factor authentication position and
+last access review. It should reference—but never reproduce—the secure
+location of credentials and recovery codes.</p>
+<h1 id="how-ordinary-website-work-is-done">5 How ordinary website work
+is done</h1>
+<p>Most useful work should be completed through the website itself. It
+should not require GitHub access or alteration of program code.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Task</strong></th>
+<th><strong>Normal route</strong></th>
+<th><strong>Who performs it</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Update personal details</td>
+<td>Your Information</td>
+<td>The household using its private PIN</td>
+</tr>
+<tr class="even">
+<td>Create or amend an event</td>
+<td>Host Area and Your Design Studio</td>
+<td>Authorised Event Host</td>
+</tr>
+<tr class="odd">
+<td>Manage bookings</td>
+<td>Host State of Play and member booking pages</td>
+<td>Host, member or authorised administrator as appropriate</td>
+</tr>
+<tr class="even">
+<td>Create Club or activity material</td>
+<td>Your Design Studio</td>
+<td>Assigned Role Holder</td>
+</tr>
+<tr class="odd">
+<td>Publish permanent material</td>
+<td>Your Design Studio to the appropriate Library section</td>
+<td>Assigned Role Holder; editorial approval where required</td>
+</tr>
+<tr class="even">
+<td>Assign roles</td>
+<td>Admin Role Manager</td>
+<td>Authorised administrator</td>
+</tr>
+<tr class="odd">
+<td>Process a PIN request</td>
+<td>Admin Members page</td>
+<td>Club Administrator after independent verification</td>
+</tr>
+<tr class="even">
+<td>Delete a membership</td>
+<td>Protected Website Administrator control</td>
+<td>Website Administrator only, with confirmation and audit record</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-code-is-not-required">When code is not required</h2>
+<p>New events, notices, role assignments, publications and ordinary
+membership changes are data or content. They should use the appropriate
+website controls. Code is required only when the behaviour, structure,
+security or appearance of the system itself must change.</p>
+<h1 id="how-a-technical-change-is-made">6 How a technical change is
+made</h1>
+<p>The following procedure reflects the current working method. It
+separates discussion, implementation, publication and verification so
+that an unfinished experiment does not quietly become the live
+system.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Step</strong></th>
+<th><strong>Action</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1 Define the need</td>
+<td>Describe the problem or desired outcome in ordinary language.
+Identify who is affected and whether personal data, finance or
+permissions are involved.</td>
+</tr>
+<tr class="even">
+<td>2 Agree the authority</td>
+<td>Confirm whether the change is routine technical maintenance, a Panel
+policy matter or something requiring members’ approval.</td>
+</tr>
+<tr class="odd">
+<td>3 Inspect the current system</td>
+<td>Review the relevant live behaviour and current source files before
+altering anything.</td>
+</tr>
+<tr class="even">
+<td>4 Prepare the change</td>
+<td>Edit the smallest appropriate set of frontend or backend files.
+Preserve unrelated work.</td>
+</tr>
+<tr class="odd">
+<td>5 Test safely</td>
+<td>Run syntax and structural checks, then test the affected user
+journey without using genuine personal data unless specifically
+authorised.</td>
+</tr>
+<tr class="even">
+<td>6 Review the result</td>
+<td>Explain what changed, what remains unchanged and any limitation or
+risk.</td>
+</tr>
+<tr class="odd">
+<td>7 Authorise publication</td>
+<td>Irving’s present instruction is the explicit phrase Update GitHub. A
+successor procedure should require similarly unambiguous authority.</td>
+</tr>
+<tr class="even">
+<td>8 Publish</td>
+<td>Commit the authorised files to the correct GitHub repository.
+Netlify or Render then deploys the relevant part.</td>
+</tr>
+<tr class="odd">
+<td>9 Verify live</td>
+<td>Check the deployment status and repeat the important user journey on
+sanctuary-club.uk.</td>
+</tr>
+<tr class="even">
+<td>10 Record and hand over</td>
+<td>Record the date, purpose, responsible person, files or service
+affected, test result and any follow-up work.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="change-classifications">Change classifications</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Class</strong></th>
+<th><strong>Example</strong></th>
+<th><strong>Approval</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Routine</td>
+<td>Correcting a broken link or explanatory wording without changing
+policy.</td>
+<td>Technical Adviser within agreed authority.</td>
+</tr>
+<tr class="even">
+<td>Operational</td>
+<td>Adding an approved activity, role route or administrative
+facility.</td>
+<td>Relevant Panel or Club authority, then technical
+implementation.</td>
+</tr>
+<tr class="odd">
+<td>Sensitive</td>
+<td>Permissions, personal data, membership deletion, finance or account
+recovery.</td>
+<td>Explicit authorised decision, careful testing and audit record.</td>
+</tr>
+<tr class="even">
+<td>Governance</td>
+<td>Ownership, custody, voting, official communications or
+constitutional responsibility.</td>
+<td>Proper member or Panel decision as required by the
+Constitution.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="publishing-and-role-holder-work">7 Publishing and role holder
+work</h1>
+<p>The Role Register identifies who may act in each capacity. A person
+may hold more than one role. When entering Your Design Studio, the
+person selects the relevant hat; that choice determines the authorised
+route and destination.</p>
+<h2 id="current-publishing-principle">Current publishing principle</h2>
+<ul>
+<li><p>Dated events are created for Calendar, Events List and their
+linked Notice.</p></li>
+<li><p>Standing or lasting material is published to the appropriate
+Library or School section.</p></li>
+<li><p>Writer and Artist work follows its editorial route before
+publication where required.</p></li>
+<li><p>The creator’s name, membership reference and publication date
+provide provenance.</p></li>
+<li><p>Work in progress remains private until publication.</p></li>
+</ul>
+<h2 id="publishing-checklist">Publishing checklist</h2>
+<ul>
+<li><p>Confirm that the author is wearing the correct role hat.</p></li>
+<li><p>Check the intended audience and whether the material is public,
+members-only or Residents Association material.</p></li>
+<li><p>Check names, dates, links, contact information and booking
+arrangements.</p></li>
+<li><p>Preview the completed item.</p></li>
+<li><p>Publish once to its authoritative destination; avoid unmanaged
+duplicate copies.</p></li>
+<li><p>Open the published item as a member would and confirm that onward
+links work.</p></li>
+</ul>
+<h1 id="membership-administration-and-personal-data">8 Membership
+administration and personal data</h1>
+<p>Membership administration is deliberately separated from technical
+custody. A household PIN permits that household to manage its own
+information. It does not confer administrator authority. Administrator
+access is used only for an authorised task.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Operation</strong></th>
+<th><strong>Authority</strong></th>
+<th><strong>Safeguard</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>View or amend household information</td>
+<td>Household using its private PIN.</td>
+<td>The PIN is not displayed to administrators.</td>
+</tr>
+<tr class="even">
+<td>Reset a forgotten PIN</td>
+<td>Club Administrator after independently confirming the request.</td>
+<td>Reset returns the household to temporary Starter PIN 2468; the
+member then chooses a new private PIN.</td>
+</tr>
+<tr class="odd">
+<td>Clear Your Information</td>
+<td>Club Administrator only when properly authorised.</td>
+<td>All YI data is cleared or nothing is cleared; no partial selective
+removal.</td>
+</tr>
+<tr class="even">
+<td>Delete a membership</td>
+<td>Website Administrator authenticated through the protected Website
+Administrator account system.</td>
+<td>Permanent confirmation, removal of linked identity records and
+appropriate audit trail.</td>
+</tr>
+<tr class="odd">
+<td>Export email addresses</td>
+<td>Authorised administrator for an approved communication.</td>
+<td>Use the minimum list required; do not retain unnecessary local
+copies.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="personal-data-rules">Personal data rules</h2>
+<ul>
+<li><p>Never copy live member data into test files, development
+discussions or training examples unless specifically authorised and
+necessary.</p></li>
+<li><p>Use invented membership references and contact details for
+testing.</p></li>
+<li><p>Do not send or publish a membership list merely because technical
+access makes it possible.</p></li>
+<li><p>Do not inspect personal records out of curiosity or for a purpose
+unrelated to the authorised task.</p></li>
+<li><p>Delete temporary exports as soon as the authorised task is
+complete.</p></li>
+<li><p>Report suspected disclosure, loss or unauthorised access
+immediately to the Panel and the person responsible for data
+protection.</p></li>
+</ul>
+<h1 id="security-and-access">9 Security and access</h1>
+<h2 id="individual-accounts">Individual accounts</h2>
+<p>GitHub, Netlify, Render and other important services should use
+individual named accounts where the service permits. This allows access
+to be removed without changing everyone’s credentials and makes
+responsibility clearer.</p>
+<h2 id="minimum-safeguards">Minimum safeguards</h2>
+<ul>
+<li><p>Use a unique strong password for every service.</p></li>
+<li><p>Enable two-factor authentication wherever available.</p></li>
+<li><p>Keep recovery codes offline in an agreed secure
+location.</p></li>
+<li><p>Give source-code and hosting access only to trained people who
+need it.</p></li>
+<li><p>Review access at least every six months and whenever a role
+holder changes.</p></li>
+<li><p>Disable access promptly when a person leaves the role.</p></li>
+<li><p>Never send passwords, secret keys or complete recovery details
+through ordinary email or WhatsApp.</p></li>
+<li><p>Do not place secrets in GitHub files, website pages, manuals or
+screenshots.</p></li>
+</ul>
+<h2 id="separation-of-authority">Separation of authority</h2>
+<p>Website Administrator status is separate from a Club Administrator
+role. A Club role must not silently acquire access to source code,
+hosting or destructive technical operations. Likewise, technical access
+does not entitle its holder to alter Club or Association policy.</p>
+<h1 id="testing-and-deployment">10 Testing and deployment</h1>
+<h2 id="frontend-deployment">Frontend deployment</h2>
+<p>A frontend change normally moves from the frontend GitHub repository
+to Netlify, which builds and publishes it at sanctuary-club.uk. A
+successful GitHub update is not by itself proof that the live deployment
+succeeded.</p>
+<h2 id="backend-deployment">Backend deployment</h2>
+<p>A backend change moves from the private backend GitHub repository to
+Render. Render starts or updates the Flask service. Backend changes
+require particular care because they may affect authentication,
+permissions, stored data and every page that calls the service.</p>
+<h2 id="minimum-live-test">Minimum live test</h2>
+<ul>
+<li><p>Confirm Netlify or Render reports a successful
+deployment.</p></li>
+<li><p>Open the live website in a fresh browser session or private
+window.</p></li>
+<li><p>Test the exact route that was changed.</p></li>
+<li><p>Test one nearby route that could reasonably have been
+affected.</p></li>
+<li><p>Check desktop and narrow-screen presentation when appearance
+changed.</p></li>
+<li><p>Confirm that protected pages still reject unauthorised
+access.</p></li>
+<li><p>Check that Logout works where relevant.</p></li>
+<li><p>Record the result and any limitation.</p></li>
+</ul>
+<h2 id="safe-test-data">Safe test data</h2>
+<p>Use clearly identified test households and invented contact
+information. Remove test records when they are no longer needed. Never
+delete a real membership merely to test the deletion facility.</p>
+<h1 id="routine-checks-and-maintenance">11 Routine checks and
+maintenance</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Frequency</strong></th>
+<th><strong>Check</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weekly while actively changing the site</td>
+<td>Review deployment failures, broken journeys reported by residents
+and important 404 errors.</td>
+</tr>
+<tr class="even">
+<td>Monthly</td>
+<td>Confirm the home page, Members Hub, Calendar, Library, login and
+Admin entry points open correctly.</td>
+</tr>
+<tr class="odd">
+<td>Monthly</td>
+<td>Review service usage and allowances on Netlify and Render and check
+that the backend is responding normally.</td>
+</tr>
+<tr class="even">
+<td>Quarterly</td>
+<td>Review Website Administrator accounts, technical custodians and
+contact details.</td>
+</tr>
+<tr class="odd">
+<td>Six-monthly</td>
+<td>Review all external-service access, two-factor authentication,
+recovery arrangements and domain renewal.</td>
+</tr>
+<tr class="even">
+<td>After every material change</td>
+<td>Confirm deployment, live behaviour, privacy boundary and rollback
+information.</td>
+</tr>
+<tr class="odd">
+<td>After any role change</td>
+<td>Remove unnecessary access, appoint replacements and complete a
+recorded handover.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="visitor-information">Visitor information</h2>
+<p>Netlify analytics may be used to view aggregate page visits and
+popular pages. The purpose is to understand whether the website is being
+used, not to identify or monitor individual residents. Any future
+analytics change should be checked against the published privacy
+notice.</p>
+<h1 id="faults-and-recovery">12 Faults and recovery</h1>
+<h2 id="first-response">First response</h2>
+<p>1. Record what the user attempted, the page address, the wording of
+any error and the approximate time.</p>
+<p>2. Decide whether the fault affects one device, one page, all members
+or the whole service.</p>
+<p>3. Check whether Netlify and Render report a failed deployment or
+service interruption.</p>
+<p>4. Avoid repeated speculative changes while the cause is unknown.</p>
+<p>5. If personal data or unauthorised access may be involved, stop
+ordinary investigation and notify the appropriate Panel contact
+immediately.</p>
+<h2 id="recovery-order">Recovery order</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Problem</strong></th>
+<th><strong>First recovery action</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>New frontend change broke a page</td>
+<td>Identify the last known good GitHub version and redeploy or revert
+only the affected authorised change.</td>
+</tr>
+<tr class="even">
+<td>Backend deployment failed</td>
+<td>Read the Render deployment log, correct the specific error and
+redeploy. Do not experiment against live member data.</td>
+</tr>
+<tr class="odd">
+<td>Domain no longer opens the site</td>
+<td>Check renewal and DNS settings before changing application
+code.</td>
+</tr>
+<tr class="even">
+<td>Administrator cannot sign in</td>
+<td>Check account status, token expiry and service availability. Use the
+agreed account-recovery route.</td>
+</tr>
+<tr class="odd">
+<td>Data appears missing</td>
+<td>Do not recreate or overwrite records immediately. Preserve evidence,
+check the data store and seek a second technical review.</td>
+</tr>
+<tr class="even">
+<td>Suspected security incident</td>
+<td>Restrict access where safe, preserve logs, inform the Panel and
+follow the agreed data-incident procedure.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="no-destructive-recovery-by-guesswork">No destructive recovery by
+guesswork</h2>
+<p>Do not delete databases, repositories, accounts or broad groups of
+files in an attempt to restore service. Establish the exact target,
+preserve a recoverable copy where possible and obtain a second check
+before any exceptional destructive action.</p>
+<h1 id="training-and-succession">13 Training and succession</h1>
+<p>The immediate continuity objective is to train at least two
+additional residents. Training should use the real system but avoid
+exposing personal data unnecessarily.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Session</strong></th>
+<th><strong>Outcome</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1 Orientation</td>
+<td>Explain the website’s purpose, governance, frontend, backend,
+repositories and external services.</td>
+</tr>
+<tr class="even">
+<td>2 Member journey</td>
+<td>Use the live site as an ordinary resident, Role Holder, Club
+Administrator and Website Administrator.</td>
+</tr>
+<tr class="odd">
+<td>3 Content work</td>
+<td>Create a harmless test item, preview it, publish it to the correct
+destination and remove it.</td>
+</tr>
+<tr class="even">
+<td>4 Source and deployment</td>
+<td>Locate both repositories, review a small change, observe a
+deployment and verify it live.</td>
+</tr>
+<tr class="odd">
+<td>5 Security and recovery</td>
+<td>Practise account-recovery procedures without disclosing permanent
+secrets; review incident and rollback steps.</td>
+</tr>
+<tr class="even">
+<td>6 Supervised operation</td>
+<td>The trainee completes an agreed routine change and documents the
+result while the Technical Adviser observes.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="competence-sign-off">Competence sign-off</h2>
+<p>The Panel should record which responsibilities each trained person
+can perform independently. Nobody needs access to every service merely
+to be useful. Full technical custody should be granted only when the
+person understands deployment, security, recovery and the limits of the
+role.</p>
+<h1 id="handover-checklist">14 Handover checklist</h1>
+<ul class="task-list">
+<li><p><label><input type="checkbox" />Panel decision naming the
+outgoing and incoming responsible people.</label></p></li>
+<li><p><label><input type="checkbox" />Current copy of this guide
+reviewed together.</label></p></li>
+<li><p><label><input type="checkbox" />Confidential account register
+reviewed without copying secrets into meeting papers.</label></p></li>
+<li><p><label><input type="checkbox" />GitHub repository access granted
+and tested.</label></p></li>
+<li><p><label><input type="checkbox" />Netlify access granted and a
+deployment reviewed.</label></p></li>
+<li><p><label><input type="checkbox" />Render access granted and the
+backend service identified.</label></p></li>
+<li><p><label><input type="checkbox" />Domain ownership, renewal and
+recovery confirmed.</label></p></li>
+<li><p><label><input type="checkbox" />Two-factor authentication enabled
+for the incoming person.</label></p></li>
+<li><p><label><input type="checkbox" />Website Administrator account
+created or enabled where authorised.</label></p></li>
+<li><p><label><input type="checkbox" />Outgoing access removed when no
+longer required.</label></p></li>
+<li><p><label><input type="checkbox" />Current risks, outstanding work
+and recent changes explained.</label></p></li>
+<li><p><label><input type="checkbox" />A harmless supervised test
+completed successfully.</label></p></li>
+<li><p><label><input type="checkbox" />Handover date, attendees and
+result recorded in the confidential administration
+record.</label></p></li>
+</ul>
+<h2 id="when-the-technical-adviser-is-unexpectedly-unavailable">When the
+Technical Adviser is unexpectedly unavailable</h2>
+<p>The Panel should contact the other named technical custodians,
+consult this guide and the confidential account register, and avoid
+unnecessary changes until control of GitHub, Netlify, Render and the
+domain has been confirmed. Routine content work may continue through the
+website if the system remains healthy.</p>
+<h1 id="appendix-a-confidential-account-register-template">Appendix A
+Confidential account register template</h1>
+<p>Complete and store this register separately under Panel control. Do
+not enter passwords, secret keys or recovery codes. Record only where
+the protected credential or recovery material is held.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Service</strong></th>
+<th><strong>Ownership and authorised users</strong></th>
+<th><strong>Security recovery and review</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GitHub</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+<tr class="even">
+<td>Netlify</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+<tr class="odd">
+<td>Render</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+<tr class="even">
+<td>Domain provider</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+<tr class="odd">
+<td>ChatGPT account or workspace</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+<tr class="even">
+<td>Administrative email</td>
+<td>Owner: [complete]<br />
+Users: [complete]</td>
+<td>2FA: [yes or no]<br />
+Recovery location: [secure reference]<br />
+Review: [date]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="service-details-to-record">Service details to record</h2>
+<ul>
+<li><p>Official service address and account or organisation
+name.</p></li>
+<li><p>Who is entitled to invite or remove another user.</p></li>
+<li><p>Renewal date, expected cost and approved payment source.</p></li>
+<li><p>Where invoices and service notices are sent.</p></li>
+<li><p>Where recovery codes or emergency instructions are securely
+held.</p></li>
+</ul>
+<h1 id="appendix-b-quick-operating-checklists">Appendix B Quick
+operating checklists</h1>
+<h2 id="before-publishing-a-technical-change">Before publishing a
+technical change</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox" />The purpose and authority are
+clear.</label></p></li>
+<li><p><label><input type="checkbox" />Current files have been
+inspected.</label></p></li>
+<li><p><label><input type="checkbox" />Unrelated work has been left
+untouched.</label></p></li>
+<li><p><label><input type="checkbox" />No genuine personal data has been
+copied into testing.</label></p></li>
+<li><p><label><input type="checkbox" />Syntax and relevant user journeys
+have been tested.</label></p></li>
+<li><p><label><input type="checkbox" />Publication has been explicitly
+authorised.</label></p></li>
+</ul>
+<h2 id="after-publication">After publication</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox" />GitHub shows the intended
+change.</label></p></li>
+<li><p><label><input type="checkbox" />Netlify or Render deployment
+succeeded.</label></p></li>
+<li><p><label><input type="checkbox" />The live page or operation
+works.</label></p></li>
+<li><p><label><input type="checkbox" />Nearby access and Logout
+behaviour remain correct.</label></p></li>
+<li><p><label><input type="checkbox" />The outcome has been
+recorded.</label></p></li>
+</ul>
+<h2 id="before-deleting-a-membership">Before deleting a membership</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox" />The exact household membership
+number is confirmed.</label></p></li>
+<li><p><label><input type="checkbox" />The Website Administrator has
+authority to act.</label></p></li>
+<li><p><label><input type="checkbox" />The effect on household members,
+roles and bookings is understood.</label></p></li>
+<li><p><label><input type="checkbox" />The permanent confirmation is
+completed.</label></p></li>
+<li><p><label><input type="checkbox" />The audit entry and resulting
+member list are checked.</label></p></li>
+</ul>
+<h1 id="appendix-c-glossary">Appendix C Glossary</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Term</strong></th>
+<th><strong>Meaning</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Backend</td>
+<td>The protected service that performs logins, permissions, data
+storage and other operations not safely handled by visible pages
+alone.</td>
+</tr>
+<tr class="even">
+<td>Deployment</td>
+<td>The process that turns an authorised source-code change into the
+live website or backend service.</td>
+</tr>
+<tr class="odd">
+<td>Domain</td>
+<td>The human-readable website address: sanctuary-club.uk.</td>
+</tr>
+<tr class="even">
+<td>Frontend</td>
+<td>The pages, styles and scripts delivered to a resident’s
+browser.</td>
+</tr>
+<tr class="odd">
+<td>GitHub</td>
+<td>The service holding source files and their change history.</td>
+</tr>
+<tr class="even">
+<td>Netlify</td>
+<td>The service that builds and publishes the frontend and provides
+deployment information and basic analytics.</td>
+</tr>
+<tr class="odd">
+<td>Render</td>
+<td>The service running the Flask backend and its protected persistent
+storage.</td>
+</tr>
+<tr class="even">
+<td>Repository</td>
+<td>A controlled collection of source files and their recorded
+history.</td>
+</tr>
+<tr class="odd">
+<td>Role Holder</td>
+<td>A resident authorised to perform work in a defined Club or
+Association capacity.</td>
+</tr>
+<tr class="even">
+<td>Technical Adviser</td>
+<td>A person appointed to advise on, develop, maintain and explain the
+system under Panel authority.</td>
+</tr>
+<tr class="odd">
+<td>Website Administrator</td>
+<td>A person with an individual protected account for exceptional
+backend administration.</td>
+</tr>
+<tr class="even">
+<td>Website Custodian</td>
+<td>The body responsible for ownership, continuity, oversight and the
+appointment of authorised technical people.</td>
+</tr>
+<tr class="odd">
+<td>Your Design Studio</td>
+<td>The website facility through which authorised Role Holders create
+and publish material.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="draft-decisions-still-required">Draft decisions still
+required</h1>
+<p>Before this guide becomes authoritative, the Panel and members as
+appropriate should settle the following points:</p>
+<ul>
+<li><p>Formal approval of the Panel as collective Website
+Custodian.</p></li>
+<li><p>Appointment and terms of reference of the Technical
+Adviser.</p></li>
+<li><p>Number and identity of Website Administrators and technical
+custodians.</p></li>
+<li><p>Ownership and recovery arrangements for every external service
+account.</p></li>
+<li><p>Where the confidential account register and recovery material
+will be held.</p></li>
+<li><p>Reporting frequency, access-review frequency and incident contact
+arrangements.</p></li>
+<li><p>Whether and how the permanent arrangement should be incorporated
+into the Constitution.</p></li>
+</ul>

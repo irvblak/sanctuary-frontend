@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Audit Log | Sanctuary Club</title>
+  <script src="admin-guard.js?v=AG_3"></script>
+  <script src="admin-logout.js?v=ALO_2" defer></script>
+  <style>
+    :root{--ink:#22384d;--muted:#5b6875;--blue:#005ea8;--dark:#003366;--line:#dbe6f3;--soft:#f5f9fd;--ok:#176a32}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(180deg,#d9ecff,#f5f9fc 45%,#fff);color:var(--ink);font:500 17px/1.48 system-ui,-apple-system,"Segoe UI",sans-serif}
+    .wrap{max-width:1180px;margin:2rem auto;padding:0 1rem 2rem}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.2rem;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    h1{margin:0;color:var(--dark);font-size:1.8rem}.intro{margin:.35rem 0 1rem;color:var(--muted)}
+    .filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7rem;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+    label{display:block;color:var(--dark);font-size:.84rem;font-weight:850}input,select{width:100%;margin-top:.25rem;padding:.62rem;border:1px solid #c7d5e3;border-radius:9px;background:#fff;color:var(--ink);font:inherit}
+    .buttons{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0}.btn{display:inline-flex;align-items:center;justify-content:center;padding:.62rem .85rem;border:1px solid #ccd8e5;border-radius:10px;background:#fff;color:var(--dark);font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .status{margin:.7rem 0;padding:.72rem .82rem;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--muted)}.status.good{background:#f1faf3;border-color:#cfe3d2;color:var(--ok)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:13px}table{width:100%;border-collapse:collapse;min-width:880px}th,td{padding:.66rem .7rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--dark);color:#fff;font-size:.84rem}tbody tr:nth-child(even){background:#fafcff}
+    details summary{color:var(--blue);font-weight:800;cursor:pointer}.detail{margin-top:.45rem;padding:.55rem .65rem;border:1px solid var(--line);border-radius:8px;background:#fff}.detail p{margin:.22rem 0}.empty{text-align:center;color:var(--muted);padding:1.3rem}
+    .retention{margin-top:1rem;color:var(--muted);font-size:.88rem}
+    @media(max-width:900px){.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.filters{grid-template-columns:1fr}.wrap{margin:.7rem auto;padding:.5rem}.card{padding:.8rem}}
+    @media print{body{background:#fff}.filters,.buttons,.top-actions{display:none!important}.wrap{max-width:none;margin:0;padding:0}.card{border:0;box-shadow:none}.table-wrap{overflow:visible}table{min-width:0;font-size:10pt}}
+  </style>
+</head>
+<body>
+  <main class="wrap"><section class="card">
+    <h1>Audit Log</h1>
+    <p class="intro">A limited record of consequential administrative actions. It cannot be edited or selectively deleted.</p>
+    <form class="filters" id="filters">
+      <label>From date<input type="date" id="fromDate"></label>
+      <label>To date<input type="date" id="toDate"></label>
+      <label>Action<select id="action"><option value="">All worthwhile actions</option><option value="ROLE_ASSIGNMENT_CHANGED">Role changes</option><option value="PIN_RESET_REQUEST_APPROVED">PIN requests approved</option><option value="PIN_RESET_REQUEST_DISMISSED">PIN requests dismissed</option><option value="PIN_RESET_BY_ADMIN">PIN reset by Admin</option><option value="LIBRARY_PUBLISHED">Library publication</option><option value="LIBRARY_UPDATED">Library update</option><option value="LIBRARY_WITHDRAWN">Library withdrawal</option><option value="EVENT_DELETED_BY_ADMIN">Event deletion</option><option value="EVENT_BOOKINGS_RESET">Booking reset</option><option value="ADMIN_ACCOUNT_CREATED">Website Administrator created</option><option value="ADMIN_LOGIN_BLOCKED">Blocked Admin sign-in</option></select></label>
+      <label>Record reference<input id="record" maxlength="80" placeholder="e.g. SM10/2 or EVT-001"></label>
+      <label>Performed by<input id="actor" maxlength="80" placeholder="Admin or resident ID"></label>
+    </form>
+    <div class="buttons">
+      <button class="btn primary" id="searchBtn" type="button">Search</button>
+      <button class="btn" id="clearBtn" type="button">Clear filters</button>
+      <button class="btn" type="button" onclick="window.print()">Print</button>
+      <a class="btn" href="admin-tools.html">System / Tools</a>
+      <a class="btn" href="admin-dashboard.html">Admin Dashboard</a>
+      <button class="btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+    <div class="status" id="status">Loading the Audit Log…</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date and time</th><th>Action</th><th>Record</th><th>Performed by</th><th>Result / details</th><th>Scheduled removal</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+    </table></div>
+    <p class="retention" id="retention"></p>
+  </section></main>
+  <script>
+  (()=>{
+    const API="https://sanctuary-backend-8iqc.onrender.com";
+    const token=localStorage.getItem("adminToken")||"";
+    const $=id=>document.getElementById(id);
+    const esc=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+    const localDate=value=>{const d=new Date(value);return Number.isNaN(d.getTime())?"":d.toLocaleString("en-GB",{dateStyle:"medium",timeStyle:"short"})};
+    const refFor=item=>item.member_id||String(item.details||"").split("|")[0].trim()||"—";
+    function epoch(date,end=false){if(!date)return 0;const d=new Date(date+(end?"T23:59:59":"T00:00:00"));return Math.floor(d.getTime()/1000)}
+    function row(item){return `<tr><td>${esc(localDate(item.occurred_at))}</td><td>${esc(item.action_label||item.action)}</td><td>${esc(refFor(item))}</td><td>${esc(item.resident_id||"System")}</td><td><details><summary>${esc(item.result||"Recorded")}</summary><div class="detail"><p><strong>Action:</strong> ${esc(item.action_label||item.action)}</p><p><strong>Record:</strong> ${esc(refFor(item))}</p><p><strong>Performed by:</strong> ${esc(item.resident_id||"System")}</p><p><strong>Details:</strong> ${esc(item.details||"No additional detail")}</p></div></details></td><td>${esc(localDate(item.expires_at))}</td></tr>`}
+    async function load(){
+      $("status").className="status";$("status").textContent="Loading the Audit Log…";
+      const q=new URLSearchParams({limit:"250"});
+      const from=epoch($("fromDate").value),to=epoch($("toDate").value,true);
+      if(from)q.set("from",from);if(to)q.set("to",to);
+      if($("action").value)q.set("action",$("action").value);
+      if($("record").value.trim())q.set("record",$("record").value.trim());
+      if($("actor").value.trim())q.set("actor",$("actor").value.trim());
+      try{
+        const response=await fetch(`${API}/api/admin/activity-log?${q}`,{headers:{Authorization:`Bearer ${token}`,Accept:"application/json"}});
+        if(response.status===401||response.status===403){if(window.scExpireAdminSession)window.scExpireAdminSession();else location.replace("admin-login.html");return}
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok||data.success===false)throw new Error(data.message||"Audit Log unavailable");
+        const items=Array.isArray(data.activities)?data.activities:[];
+        $("rows").innerHTML=items.length?items.map(row).join(""):'<tr><td colspan="6" class="empty">No matching audit entries.</td></tr>';
+        $("status").className="status good";$("status").textContent=`${items.length} audit entr${items.length===1?"y":"ies"} shown.`;
+        const routine=data.retention?.routine_days||730,security=data.retention?.security_days||180;
+        $("retention").textContent=`Routine entries are retained for ${routine} days. Short-lived security entries are retained for ${security} days. Expired entries are removed automatically.`;
+      }catch(error){console.error(error);$("status").textContent=error.message||"Unable to load the Audit Log.";$("rows").innerHTML='<tr><td colspan="6" class="empty">The Audit Log could not be loaded.</td></tr>'}
+    }
+    $("searchBtn").addEventListener("click",load);
+    $("clearBtn").addEventListener("click",()=>{$("filters").reset();load()});
+    load();
+  })();
+  </script>
+</body>
+</html>

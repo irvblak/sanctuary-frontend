@@ -2538,23 +2538,25 @@
             .filter((item,index,list)=>list.findIndex(other=>other[0]===item[0])===index);
         }
 
-        const routeFor = (destination, scope = "") => {
+        const routeFor = (destination, scope = "", filing = "") => {
           const match=subcategories.find(item=>item[0]===scope);
           const scopeName = match ? match[1] : "";
+          const filingName = filing === "news" ? "News" : filing === "info" ? "Info" : "";
           const routing = {
             ...common,
             section:choice.department,
             subcategory:scope,
-            subcategory_name:scopeName,
+            subcategory_name:destination === "library" ? filingName : scopeName,
             scope,
-            scope_name:scopeName
+            scope_name:scopeName,
+            filing
           };
 
           return destination === "calendar"
             ? datedRoute(choice.key, {...routing, work_kind:"dated-happening"})
             : standingRoute(choice.mode, choice.destination, {
                 ...routing,
-                tertiary:scopeName,
+                tertiary:destination === "library" ? filingName : scopeName,
                 collection:destination,
                 work_kind:"useful-lasting",
                 approval
@@ -2562,9 +2564,10 @@
         };
 
         const initialScope = subcategories[0]?.[0] || "";
-        const calendarButton = actionButton("Calendar", routeFor("calendar", initialScope));
-        const libraryButton = actionButton("Library", routeFor("library", initialScope), true);
-        const schoolButton = actionButton("School", routeFor("school", initialScope), true);
+        let selectedScope = initialScope;
+        const calendarButton = actionButton("Calendar", routeFor("calendar", selectedScope));
+        const libraryButton = actionButton("Library", "#", true);
+        const schoolButton = actionButton("School", routeFor("school", selectedScope), true);
 
         calendarButton.id = "calendarRouteButton";
         libraryButton.id = "libraryRouteButton";
@@ -2584,11 +2587,28 @@
         els.routeNote.hidden = false;
 
         document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(button=>button.addEventListener("click",()=>{
+          selectedScope=button.dataset.sub;
           document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(other=>other.classList.toggle("selected",other===button));
-          calendarButton.href=routeFor("calendar",button.dataset.sub);
-          libraryButton.href=routeFor("library",button.dataset.sub);
-          schoolButton.href=routeFor("school",button.dataset.sub);
+          calendarButton.href=routeFor("calendar",selectedScope);
+          schoolButton.href=routeFor("school",selectedScope);
         }));
+
+        libraryButton.addEventListener("click",event=>{
+          event.preventDefault();
+          const newsButton=actionButton("News",routeFor("library",selectedScope,"news"));
+          const infoButton=actionButton("Info",routeFor("library",selectedScope,"info"),true);
+          const backButton=actionButton("Back","#",true);
+          backButton.addEventListener("click",backEvent=>{
+            backEvent.preventDefault();
+            openUniversalChoice(choice);
+          });
+          setChoiceContent(
+            `${choice.label} — Library`,
+            `<p>Choose <strong>News</strong> or <strong>Info</strong>. Your work will be filed automatically in the ${choice.label} section of the Library.</p>`,
+            [newsButton,infoButton,backButton]
+          );
+          els.routeNote.hidden = false;
+        });
       }
 
 

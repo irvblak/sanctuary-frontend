@@ -239,6 +239,11 @@
       color:var(--brand-dark);
     }
 
+    .search-results{
+      max-height:280px;
+      margin-top:.65rem;
+    }
+
     .list{
       display:flex;
       flex-direction:column;
@@ -518,6 +523,20 @@
         <div class="msg warn" id="warnBox"></div>
         <div class="msg err" id="errBox"></div>
         <div class="msg ok" id="okBox"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Find a member</h2>
+        <div class="row">
+          <div class="field">
+            <label for="memberSearch">Name, membership number or member ref</label>
+            <input id="memberSearch" type="search" autocomplete="off" placeholder="Start typing a name or reference" />
+          </div>
+        </div>
+        <div class="hint">
+          Select a result to open that member’s role record.
+        </div>
+        <div class="list search-results hidden" id="memberSearchResults" aria-live="polite"></div>
       </div>
 
       <div class="panel">
@@ -827,6 +846,8 @@
     const btnLogout = $("btnLogout");
     const btnLoadResident = $("btnLoadResident");
     const addResidentRefEl = $("addResidentRef");
+    const memberSearchEl = $("memberSearch");
+    const memberSearchResults = $("memberSearchResults");
     const membersList = $("membersList");
 
     const memberNameEl = $("memberName");
@@ -1158,6 +1179,7 @@
         roles: rolesFor(resident),
         activity_scopes: activityScopesFor(resident),
         helper_scopes: helperScopesFor(resident),
+        yds_access: resident.yds_access !== false,
         source: "resident"
       };
     }
@@ -1188,6 +1210,7 @@
           roles:rolesFor(member),
           activity_scopes:activityScopesFor(member),
           helper_scopes:helperScopesFor(member),
+          yds_access:member.yds_access !== false,
           source:"legacy"
         });
       });
@@ -1411,6 +1434,70 @@
       modePill.textContent = "No member selected";
     }
 
+    function memberSearchMatches(query){
+      const wanted = String(query || "").trim().toLowerCase();
+      if(!wanted) return [];
+
+      return allResidents
+        .filter(resident => {
+          const haystack = [
+            resident.name,
+            resident.member_id,
+            resident.resident_id
+          ].map(value => String(value || "").toLowerCase());
+
+          return haystack.some(value => value.includes(wanted));
+        })
+        .slice(0,20);
+    }
+
+    function renderMemberSearch(){
+      const query = memberSearchEl.value.trim();
+      memberSearchResults.innerHTML = "";
+
+      if(!query){
+        memberSearchResults.classList.add("hidden");
+        return;
+      }
+
+      const matches = memberSearchMatches(query);
+      memberSearchResults.classList.remove("hidden");
+
+      if(!matches.length){
+        memberSearchResults.innerHTML = `<div class="empty">No matching member found.</div>`;
+        return;
+      }
+
+      matches.forEach(resident => {
+        const item = document.createElement("div");
+        item.className = "item";
+        item.innerHTML = `
+          <div class="item-title">${escapeHtml(resident.name || "(No name)")}</div>
+          <div class="item-meta">${escapeHtml(resident.resident_id)} · ${escapeHtml(displayRoles(resident.roles,resident.activity_scopes,resident.helper_scopes))}</div>
+        `;
+
+        item.onclick = () => {
+          selectResident(resident);
+          memberSearchEl.value = resident.name || resident.resident_id;
+          memberSearchResults.innerHTML = "";
+          memberSearchResults.classList.add("hidden");
+        };
+
+        memberSearchResults.appendChild(item);
+      });
+    }
+
+    function selectFirstSearchMatch(){
+      const matches = memberSearchMatches(memberSearchEl.value);
+      if(!matches.length) return;
+
+      selectResident(matches[0]);
+      memberSearchEl.value = matches[0].name || matches[0].resident_id;
+      memberSearchResults.innerHTML = "";
+      memberSearchResults.classList.add("hidden");
+    }
+
+
     function renderRoleHoldersList(){
       membersList.innerHTML = "";
 
@@ -1566,6 +1653,7 @@
 
         resetSelection();
         renderRoleHoldersList();
+        renderMemberSearch();
 
         clearBox(infoBox);
         showBox(
@@ -1758,6 +1846,16 @@
 
     btnRefresh.addEventListener("click",loadMembers);
     btnLoadResident.addEventListener("click",loadResidentByRef);
+    memberSearchEl.addEventListener("input",renderMemberSearch);
+    memberSearchEl.addEventListener("keydown",(event) => {
+      if(event.key === "Enter"){
+        event.preventDefault();
+        selectFirstSearchMatch();
+      } else if(event.key === "Escape"){
+        memberSearchEl.value = "";
+        renderMemberSearch();
+      }
+    });
     btnSaveRoles.addEventListener("click",saveRoles);
 
     btnLogout.addEventListener("click",(event) => {

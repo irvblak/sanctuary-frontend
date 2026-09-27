@@ -367,17 +367,21 @@ function getContactStatus(data) {
 }
 
 
-function statusLabel(status) {
+function statusLabel(status, privatePinSet = false) {
   if (status === "complete") {
-    return "🟢 Contact Info Complete";
+    return privatePinSet
+      ? "🟢 Contact info complete · Private PIN created"
+      : "🟠 Contact info complete · Private PIN required";
   }
 
   if (status === "partial") {
-    return "🟡 Contact Info Partial";
+    return privatePinSet
+      ? "🔵 Contact info incomplete · Private PIN created"
+      : "🟡 Contact info incomplete · Private PIN required";
   }
 
   if (status === "basic") {
-    return "🔵 Basic Member Entry";
+    return "Joined · No contact details entered";
   }
 
   return "";
@@ -505,14 +509,21 @@ function renderGrid(
     const status =
       getContactStatus(data);
 
+    const privatePinSet =
+      Boolean(data && data.private_pin_set);
+
     if (status === "complete") {
       btn.classList.add(
-        "contact-complete"
+        privatePinSet
+          ? "contact-complete"
+          : "contact-complete-pin-needed"
       );
 
     } else if (status === "partial") {
       btn.classList.add(
-        "contact-partial"
+        privatePinSet
+          ? "contact-partial-pin-set"
+          : "contact-partial"
       );
 
     } else if (status === "basic") {
@@ -527,7 +538,7 @@ function renderGrid(
     }
 
     btn.title =
-      statusLabel(status);
+      statusLabel(status, privatePinSet);
 
     btn.onclick = () => {
 
@@ -580,7 +591,7 @@ function renderGrid(
           <br>
 
           <span style="color:#666;">
-            ${escapeHtml(statusLabel(status))}
+            ${escapeHtml(statusLabel(status, privatePinSet))}
           </span>
           <br>
 
@@ -597,7 +608,8 @@ function renderGrid(
         displayId,
         data,
         detailArea,
-        status
+        status,
+        privatePinSet
       );
     };
 
@@ -617,7 +629,8 @@ function renderMemberDetail(
   memberId,
   data,
   container,
-  status
+  status,
+  privatePinSet
 ) {
   const heading =
     document.createElement("div");
@@ -632,7 +645,7 @@ function renderMemberDetail(
     <strong>
       ${escapeHtml(memberId)}
     </strong>
-    — ${escapeHtml(statusLabel(status))}
+    — ${escapeHtml(statusLabel(status, privatePinSet))}
   `;
 
   container.appendChild(heading);

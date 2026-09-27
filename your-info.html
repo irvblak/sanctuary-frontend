@@ -396,7 +396,7 @@
 
     .locked-note{display:none;border:1px solid rgba(138,91,0,.2);background:var(--warn-bg);color:var(--warn);border-radius:14px;padding:1rem;margin-top:1rem;font-weight:750;line-height:1.5}
     #memberPanel.locked .locked-note{display:block}
-    #memberPanel.locked .private-section{display:none}
+    #memberPanel.locked .personal-dashboard{display:none}
 
     .role-strip{
       display:none;
@@ -595,7 +595,7 @@
       </div>
 
       <div id="starterPinNotice" class="locked-note">
-        Please replace the temporary Starter PIN with your own four-digit household PIN before opening private member services. This small step helps protect everyone’s information.
+        You may enter and save your household information now. Please replace the temporary Starter PIN before opening the Members Directory or other private member services.
       </div>
 
       <div class="privacy-card">
@@ -1626,7 +1626,7 @@
 
     if (pinHelpText){
       pinHelpText.textContent = starterPinRequired
-        ? "This membership is currently using the temporary Starter PIN. Please choose your own household PIN before continuing."
+        ? "This membership is using the temporary Starter PIN. You may save your household information now, then create your private PIN."
         : "Household PIN personalised.";
     }
 
@@ -1989,11 +1989,12 @@
       activeMemberId.textContent = memberId;
       setInformationIntro();
       changePinBox.classList.remove("hidden");
+      await loadExistingFor(memberId);
 
       setStatus(
         pageStatus,
         "warn",
-        "Please replace the temporary 2468 PIN with your own Personal Private PIN."
+        "You may enter and save your information now. Create your Personal Private PIN before using other private member services."
       );
 
       return;

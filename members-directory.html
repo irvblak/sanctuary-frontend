@@ -172,6 +172,16 @@
       border-color: #b26a00;
     }
 
+    .member-button.contact-complete-pin-needed {
+      background: #ffe4bd;
+      border-color: #c65f00;
+    }
+
+    .member-button.contact-partial-pin-set {
+      background: #e3f2fd;
+      border-color: #1565c0;
+    }
+
     .member-button.contact-basic {
       background: #ffffff;
       border-color: #bbb;
@@ -222,6 +232,21 @@
     .blob.partial {
       background: #fff4d6;
       border-color: #b26a00;
+    }
+
+    .blob.complete-pin-needed {
+      background: #ffe4bd;
+      border-color: #c65f00;
+    }
+
+    .blob.partial-pin-set {
+      background: #e3f2fd;
+      border-color: #1565c0;
+    }
+
+    .blob.basic {
+      background: #ffffff;
+      border-color: #888;
     }
 
     .blob.inactive {
@@ -411,9 +436,11 @@
   </section>
 
   <div class="md-legend">
-    <span><span class="blob complete"></span> Complete contact details</span>
-    <span><span class="blob partial"></span> Some contact details</span>
-    <span><span class="blob inactive"></span> Joined (no contact details)</span>
+    <span><span class="blob complete"></span> Details complete · Private PIN created</span>
+    <span><span class="blob complete-pin-needed"></span> Details complete · Private PIN required</span>
+    <span><span class="blob partial-pin-set"></span> Details incomplete · Private PIN created</span>
+    <span><span class="blob partial"></span> Details incomplete · Private PIN required</span>
+    <span><span class="blob basic"></span> Joined · No details entered</span>
   </div>
 
   <h2>SCH (Clubhouse)</h2>

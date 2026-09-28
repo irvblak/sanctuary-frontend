@@ -1,7 +1,7 @@
 // access.js — Sanctuary Club access control
 // 8-hour general Sanctuary session,
 // Personal PIN protection
-// and What’s On / Library / Access All route awareness.
+// and What’s On / Access All route awareness.
 
 (function () {
   "use strict";
@@ -50,7 +50,7 @@
     =========================================================
     ENTRY ROUTES
 
-    "whats-on" = What’s On / Library
+    "whats-on" = What’s On
     "info"     = Access All
 
     The internal value "info" is retained so that
@@ -483,19 +483,11 @@
 
   /*
     =========================================================
-    GENERAL ACCESS PAGES
+    WHAT'S ON PAGES
 
-    These may be reached after the shared Sanctuary
-    Access Code through What’s On / Library.
-
-    The Library itself is deliberately open at this level.
-    Each Library item may then impose its own:
-
-      access
-      pin
-      role
-
-    protection.
+    These are the only pages available after entering
+    through What’s On: Calendar, Events List and the
+    published Event Notice selected from them.
     =========================================================
   */
 
@@ -504,17 +496,7 @@
 
       "events-calendar.html",
       "events.html",
-      "events-details.html",
-
-      "library.html",
-
-      "library-publications.html",
-      "library-publication.html",
-
-      "notices-preview.html",
-
-      "role-holders.html",
-      "website-helpers.html"
+      "events-details.html"
     ]);
 
 
@@ -525,7 +507,9 @@
     These are genuinely private facilities.
 
     They are deliberately NOT available merely because
-    someone has entered through What’s On / Library.
+    someone has entered through What’s On.
+    Library, School and all other member facilities belong
+    to the Access All journey.
     =========================================================
   */
 
@@ -693,14 +677,6 @@
       return true;
     }
 
-
-    /*
-      Do NOT treat every "library..." destination
-      as private.
-
-      Library protection now belongs to the
-      individual publication/item.
-    */
 
     return (
       destination.startsWith(
@@ -1075,12 +1051,12 @@
     =========================================================
     PROTECT PRIVATE LINKS
 
-    When someone arrived through What’s On / Library,
+    When someone arrived through What’s On,
     links to genuinely private Club facilities remain
     visible but are intercepted with the familiar
     Access All explanation.
 
-    General Library material is not intercepted here.
+    Library and all other member material remain outside this route.
     =========================================================
   */
 
@@ -1251,8 +1227,8 @@
 
 
   /*
-    Someone who entered through What’s On / Library
-    may remain only within the General access pages
+    Someone who entered through What’s On
+    may remain only within the live event pages
     unless a separately protected page handles itself.
   */
 

@@ -523,7 +523,7 @@
 
       <p class="sign-in-copy">
         <strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>.
-        Enter your Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>.
+        Enter your own property Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>.
         To protect your privacy, you will then create your own personal and private four-digit PIN.
         On later visits, use that private PIN instead.
       </p>
@@ -534,8 +534,9 @@
       
       <div class="row">
         <div class="field">
-          <label for="memberId">Membership number</label>
-          <input id="memberId" class="member-input" placeholder="SM55 or SC03" autocomplete="off" />
+          <label for="memberId">Your Membership number</label>
+          <input id="memberId" class="member-input" placeholder="e.g. SM55 or SC03" autocomplete="off" />
+          <div class="hint">SM55 and SC03 are examples only — enter your own property reference.</div>
         </div>
 
         <div class="field">
@@ -1602,7 +1603,7 @@
   }
 
   if (signInCopy){
-    signInCopy.innerHTML = '<strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>. Enter your Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>. To protect your privacy, you will then create your own personal and private four-digit PIN. On later visits, use that private PIN instead.';
+    signInCopy.innerHTML = '<strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>. Enter your own property Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>. To protect your privacy, you will then create your own personal and private four-digit PIN. On later visits, use that private PIN instead.';
   }
 }
 

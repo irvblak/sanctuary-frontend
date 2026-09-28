@@ -522,9 +522,10 @@
       <h1>Member Login</h1>
 
       <p class="sign-in-copy">
-        Enter your Membership Number and Personal PIN below.
-        This will take you to the Members Hub, from where you can open
-        Your Information, the Members Directory, My Studio and the Library.
+        <strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>.
+        Enter your Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>.
+        To protect your privacy, you will then create your own personal and private four-digit PIN.
+        On later visits, use that private PIN instead.
       </p>
       
       <p class="page-intro">
@@ -551,7 +552,7 @@
       </div>
 
       <div class="forgotten-note">
-         <strong>First visit?</strong> Change the 2468 temporary starter PIN to your own personal four digit PIN.<br />
+         <strong>First visit?</strong> The temporary Starter PIN for everyone is <strong>2468</strong>. Enter it above to begin.<br />
          <a class="forgotten-link" href="forgot-pin.html"><strong>Forgotten your PIN?</strong></a>
        </div>
       <div id="loginStatus" class="status info"></div>
@@ -1601,7 +1602,7 @@
   }
 
   if (signInCopy){
-    signInCopy.innerHTML = "After signing in, the Members Hub gives you access to Your Information, the Members Directory, My Studio and the Library.";
+    signInCopy.innerHTML = '<strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>. Enter your Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>. To protect your privacy, you will then create your own personal and private four-digit PIN. On later visits, use that private PIN instead.';
   }
 }
 

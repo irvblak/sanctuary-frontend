@@ -522,10 +522,11 @@
       <h1>Member Login</h1>
 
       <p class="sign-in-copy">
-        <strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>.
-        Enter your own property Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>.
-        To protect your privacy, you will then create your own personal and private four-digit PIN.
-        On later visits, use that private PIN instead.
+        <strong>First visit</strong><br />
+        <strong>Where you live is your Membership Number - one number for each household.</strong><br />
+        <strong>Enter your Membership Number below.</strong><br />
+        <strong>First time only; enter 2468 which is the Starter PIN for everyone. Then replace it with your own personal and private 4 digit PIN to access the member-only parts of the website.</strong><br />
+        <strong>This helps protect your privacy and the privacy and security of the website.</strong>
       </p>
       
       <p class="page-intro">
@@ -535,8 +536,7 @@
       <div class="row">
         <div class="field">
           <label for="memberId">Your Membership number</label>
-          <input id="memberId" class="member-input" placeholder="e.g. SM55 or SC03" autocomplete="off" />
-          <div class="hint">SM55 and SC03 are examples only — enter your own property reference.</div>
+          <input id="memberId" class="member-input" placeholder="Enter your Membership Number" autocomplete="off" />
         </div>
 
         <div class="field">
@@ -553,7 +553,6 @@
       </div>
 
       <div class="forgotten-note">
-         <strong>First visit?</strong> The temporary Starter PIN for everyone is <strong>2468</strong>. Enter it above to begin.<br />
          <a class="forgotten-link" href="forgot-pin.html"><strong>Forgotten your PIN?</strong></a>
        </div>
       <div id="loginStatus" class="status info"></div>
@@ -1603,7 +1602,7 @@
   }
 
   if (signInCopy){
-    signInCopy.innerHTML = '<strong>First visit:</strong> every household starts with the temporary PIN <strong>2468</strong>. Enter your own property Membership Number and 2468 below, then choose <strong>Open Members Hub</strong>. To protect your privacy, you will then create your own personal and private four-digit PIN. On later visits, use that private PIN instead.';
+    signInCopy.innerHTML = '<strong>First visit</strong><br><strong>Where you live is your Membership Number - one number for each household.</strong><br><strong>Enter your Membership Number below.</strong><br><strong>First time only; enter 2468 which is the Starter PIN for everyone. Then replace it with your own personal and private 4 digit PIN to access the member-only parts of the website.</strong><br><strong>This helps protect your privacy and the privacy and security of the website.</strong>';
   }
 }
 

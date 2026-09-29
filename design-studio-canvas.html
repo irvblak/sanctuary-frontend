@@ -2619,7 +2619,9 @@ async function publishDatedCanvas(){
     scope_name:handoff.scope_name||basePayload.scope_name||"",
     producer_resident_id:handoff.producer_resident_id||basePayload.host_resident_id||"",
     producer_member_id:handoff.producer_member_id||basePayload.host_member_id||"",
-    retention_rule:"event-date-plus-60-days",canvas_data:publicationCanvasData()
+    retention_rule:"event-date-plus-60-days",
+    source_vault_work_id:sessionStorage.getItem("sanctuaryCurrentVaultWorkId")||basePayload.source_vault_work_id||"",
+    canvas_data:publicationCanvasData()
   });
   basePayload.notice_body=basePayload.notice_body_html;
 

@@ -1119,6 +1119,27 @@
             return saved;
           }
         }
+
+        /* Older Vault copies may retain the artwork but not its route marker.
+           Recover the matching private dated WIP still held on this device. */
+        const candidates=[];
+        for(let index=0;index<localStorage.length;index++){
+          const key=localStorage.key(index)||"";
+          if(!key.startsWith("sanctuaryDatedWip:"))continue;
+          const saved=JSON.parse(localStorage.getItem(key)||"null");
+          if(saved&&normaliseRole(saved.source||"host")==="host"){
+            candidates.push({key,saved});
+          }
+        }
+        const vaultTitle=clean(PENDING_VAULT_OPEN?.title||PENDING_VAULT_PROJECT?.state?.workName||"").toLowerCase();
+        const exact=candidates.filter(item=>clean(item.saved.title||"").toLowerCase()===vaultTitle);
+        const chosen=exact.length===1?exact[0]:(candidates.length===1?candidates[0]:null);
+        if(chosen){
+          sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(chosen.saved));
+          sessionStorage.setItem("sanctuaryCurrentDatedWipKey",chosen.key);
+          localStorage.setItem("sanctuaryCurrentDatedWipKey",chosen.key);
+          return chosen.saved;
+        }
       }catch(_){}
       return null;
     }
@@ -2305,7 +2326,10 @@ function getAuthToken(){
 
 
 function isDatedWorkflow(){
-  return CANVAS_MODE === "host" && PUBLICATION_TYPE === "dated";
+  return CANVAS_MODE === "host" && (
+    PUBLICATION_TYPE === "dated" ||
+    Boolean(readEventHandoff())
+  );
 }
 
 function publishingAllowed(){

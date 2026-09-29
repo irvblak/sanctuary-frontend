@@ -2652,10 +2652,19 @@ async function publishDatedCanvas(){
     if(eventId)sessionStorage.setItem("sanctuaryCurrentEventId",eventId);
     handoff.workflow_status="published";handoff.event_id=eventId;
     sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(handoff));
+
+    let vaultWarning="";
+    try{
+      await saveCanvasToVault("published");
+    }catch(vaultError){
+      console.error("The Event is live but its Vault status could not be updated.",vaultError);
+      vaultWarning=" The Event is live, but My Vault could not be updated just now.";
+    }
+
     const wipKey=currentDatedWipKey();
     if(wipKey){localStorage.removeItem(wipKey);sessionStorage.removeItem(wipKey);}
     localStorage.removeItem("sanctuaryCurrentDatedWipKey");sessionStorage.removeItem("sanctuaryCurrentDatedWipKey");
-    alert(dates.length>1?`Published on ${dates.length} dates. Calendar, Events List and each linked Notice are now live.`:"Published. Calendar, Events List and linked Notice are now live together.");
+    alert((dates.length>1?`Published on ${dates.length} dates. Calendar, Events List and each linked Notice are now live.`:"Published. Calendar, Events List and linked Notice are now live together.")+vaultWarning);
     location.href=eventId?`events-details.html?event_id=${encodeURIComponent(eventId)}`:"your-design-studio.html";
   }catch(error){
     console.error(error);
@@ -2665,7 +2674,7 @@ async function publishDatedCanvas(){
 }
 
 
-async function saveCanvasToVault(){
+async function saveCanvasToVault(statusOverride=""){
   const token=getAuthToken();
   if(!token) throw new Error("Your Design Studio session has expired. Please return to Your Design Studio and sign in again.");
   const title=clean(workNameInput?.value||firstUsefulText()||"");
@@ -2676,6 +2685,7 @@ async function saveCanvasToVault(){
     title,
     hat:MODE_LABELS[CANVAS_MODE]||CANVAS_MODE||"Studio work",
     work_type:CANVAS_MODE||"studio",
+    status:statusOverride,
     project:portableProject()
   };
   const response=await fetch(`${API_BASE}/api/vault`,{

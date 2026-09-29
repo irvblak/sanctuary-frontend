@@ -214,6 +214,54 @@
       text-align:left;
     }
 
+    .body-box.canvas-rendered{
+      white-space:normal;
+      padding:22px 30px 26px;
+      overflow:hidden;
+    }
+
+    .published-canvas-shell{
+      position:relative;
+      width:100%;
+      margin:0 auto;
+      overflow:hidden;
+    }
+
+    .published-canvas-shell .canvas-page{
+      position:absolute;
+      top:0;
+      left:0;
+      margin:0;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:0 10px 24px rgba(26,59,92,.12);
+    }
+
+    .published-canvas-shell .canvas-item{
+      position:absolute;
+      box-sizing:border-box;
+    }
+
+    .published-canvas-shell .item-content{
+      position:absolute;
+      inset:0;
+      box-sizing:border-box;
+      overflow:hidden;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+
+    .published-canvas-shell .canvas-item[data-kind="image"] .item-content{
+      padding:0 !important;
+    }
+
+    .published-canvas-shell img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
     .placeholder{
       color:#71879a;
       font-style:italic;
@@ -423,6 +471,16 @@
         font-size:10pt;
         line-height:1.45;
         min-height:0;
+      }
+
+      .body-box.canvas-rendered{
+        max-height:none;
+        overflow:visible;
+        padding:4mm 0;
+      }
+
+      .published-canvas-shell .canvas-page{
+        box-shadow:none;
       }
 
       .pill-row{
@@ -1171,9 +1229,93 @@ function getEventHostMemberId(e){
       }
     }
 
+    function sanitisePublishedCanvasHtml(rawHtml){
+      const template = document.createElement("template");
+      template.innerHTML = String(rawHtml || "");
+
+      template.content
+        .querySelectorAll("script,iframe,object,embed,link,meta,base,form,input,button,textarea,select,option")
+        .forEach(node => node.remove());
+
+      template.content.querySelectorAll("*").forEach(node => {
+        Array.from(node.attributes).forEach(attribute => {
+          const name = attribute.name.toLowerCase();
+          const value = String(attribute.value || "").trim();
+
+          if (name.startsWith("on") || name === "srcdoc"){
+            node.removeAttribute(attribute.name);
+            return;
+          }
+
+          if ((name === "src" || name === "href") &&
+              !/^(?:https?:|data:image\/(?:png|jpe?g|gif|webp);base64,|\/|\.\.?\/)/i.test(value)){
+            node.removeAttribute(attribute.name);
+            return;
+          }
+
+          if (name === "style" &&
+              /(?:javascript\s*:|expression\s*\(|url\s*\()/i.test(value)){
+            node.removeAttribute("style");
+          }
+        });
+      });
+
+      return template.innerHTML;
+    }
+
+    function fitPublishedCanvasPages(){
+      bodyBox.querySelectorAll(".published-canvas-shell").forEach(shell => {
+        const page = shell.querySelector(".canvas-page");
+        if (!page) return;
+
+        const naturalWidth = Number(page.dataset.publishedWidth) || 1122;
+        const naturalHeight = Number(page.dataset.publishedHeight) || 794;
+        const availableWidth = Math.max(1, shell.clientWidth);
+        const scale = Math.min(1, availableWidth / naturalWidth);
+        const displayedWidth = naturalWidth * scale;
+
+        shell.style.height = `${Math.ceil(naturalHeight * scale)}px`;
+        page.style.width = `${naturalWidth}px`;
+        page.style.height = `${naturalHeight}px`;
+        page.style.left = `${Math.max(0, (availableWidth - displayedWidth) / 2)}px`;
+        page.style.transformOrigin = "top left";
+        page.style.transform = `scale(${scale})`;
+      });
+    }
+
+    function renderPublishedCanvas(rawHtml){
+      bodyBox.classList.add("canvas-rendered");
+      bodyBox.innerHTML = sanitisePublishedCanvasHtml(rawHtml);
+
+      bodyBox.querySelectorAll(".canvas-page").forEach(page => {
+        const naturalWidth =
+          parseFloat(page.style.width) ||
+          Number(page.getAttribute("width")) ||
+          (page.classList.contains("landscape") ? 1122 : 794);
+        const naturalHeight =
+          parseFloat(page.style.height) ||
+          Number(page.getAttribute("height")) ||
+          (page.classList.contains("landscape") ? 794 : 1122);
+
+        page.dataset.publishedWidth = naturalWidth;
+        page.dataset.publishedHeight = naturalHeight;
+
+        const shell = document.createElement("div");
+        shell.className = "published-canvas-shell";
+        page.parentNode.insertBefore(shell, page);
+        shell.appendChild(page);
+      });
+
+      requestAnimationFrame(fitPublishedCanvasPages);
+    }
+
     function renderSummaryAndBody(e){
       const summary = pick(e.notice_summary, e.summary);
+      const bodyHtml = pick(e.notice_body_html, e.body_html);
       const body = pick(e.notice_body, e.body, e.notice_text, e.details, e.description);
+      const canvasHtml = bodyHtml || (
+        /class=["'][^"']*canvas-page\b/i.test(String(body || "")) ? body : ""
+      );
 
       if (summary){
         summaryBox.textContent = summary;
@@ -1183,12 +1325,22 @@ function getEventHostMemberId(e){
         summaryBox.classList.add("hidden");
       }
 
-      if (body){
+      if (canvasHtml){
+        renderPublishedCanvas(canvasHtml);
+      }else if (body){
+        bodyBox.classList.remove("canvas-rendered");
         bodyBox.textContent = body;
       }else{
+        bodyBox.classList.remove("canvas-rendered");
         bodyBox.innerHTML = '<span class="placeholder">No further notice text has been added.</span>';
       }
     }
+
+    window.addEventListener("resize", function(){
+      if (bodyBox.classList.contains("canvas-rendered")){
+        fitPublishedCanvasPages();
+      }
+    });
 
     function renderContactDetails(e){
       const name = pick(e.host_name, e.contact_name, e.author_name, e.producer_name);

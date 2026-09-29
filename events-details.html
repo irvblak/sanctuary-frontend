@@ -618,8 +618,12 @@
     State of Play
   </a>
 
-  <a id="editBtnBottom" class="btn btn-discreet" href="host-event-form.html">
+  <a id="editBtnBottom" class="btn btn-discreet" href="my-vault.html">
     Edit Notice
+  </a>
+
+  <a id="editDetailsBtnBottom" class="btn btn-discreet" href="host-event-form.html">
+    Edit Event Details
   </a>
 </div>
 
@@ -686,6 +690,7 @@
     const bookBtnTop = document.getElementById("bookBtnTop");
     const bookBtnBottom = document.getElementById("bookBtnBottom");
     const editBtnBottom = document.getElementById("editBtnBottom");
+    const editDetailsBtnBottom = document.getElementById("editDetailsBtnBottom");
     const hsopBtnBottom = document.getElementById("hsopBtnBottom");
     const hostTools = document.getElementById("hostTools");
 
@@ -914,7 +919,18 @@ function getEventHostMemberId(e){
       hsopBtnBottom.href =
         `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
-      editBtnBottom.href =
+      const vaultWorkId = pick(
+        e.source_vault_work_id,
+        e.sourceVaultWorkId,
+        e.vault_work_id,
+        e.vaultWorkId
+      );
+
+      editBtnBottom.href = vaultWorkId
+        ? `my-vault.html?v=NOTICE_EDIT_1&vault=${encodeURIComponent(vaultWorkId)}&event_id=${encodeURIComponent(EVENT_ID)}`
+        : `my-vault.html?v=NOTICE_EDIT_1&event_id=${encodeURIComponent(EVENT_ID)}`;
+
+      editDetailsBtnBottom.href =
         `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
       const mayManage = viewerCanManageNotice(e);
@@ -1432,7 +1448,8 @@ bookingDetailsBox.classList.remove("hidden");
 
       bookBtnTop.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       bookBtnBottom.href = `event-booking.html?event_id=${encodeURIComponent(EVENT_ID)}`;
-      editBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      editBtnBottom.href = `my-vault.html?v=NOTICE_EDIT_1&event_id=${encodeURIComponent(EVENT_ID)}`;
+      editDetailsBtnBottom.href = `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
       hsopBtnBottom.href = `host-state-of-play.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
       try{

@@ -2008,23 +2008,12 @@
 
       function extractDisplayName(data){
 
+        /*
+          A household may contain several residents. Prefer the resident
+          selected by the full reference (for example SM55/2), rather than
+          a household-level label which may merely say "Resident 1".
+        */
         const candidates = [
-
-          data?.preferred_name,
-          data?.preferredName,
-          data?.first_name,
-          data?.firstName,
-          data?.display_name,
-          data?.displayName,
-          data?.name,
-
-          data?.member?.preferred_name,
-          data?.member?.preferredName,
-          data?.member?.first_name,
-          data?.member?.firstName,
-          data?.member?.display_name,
-          data?.member?.displayName,
-          data?.member?.name,
 
           data?.resident?.preferred_name,
           data?.resident?.preferredName,
@@ -2034,13 +2023,29 @@
           data?.resident?.displayName,
           data?.resident?.name,
 
+          data?.preferred_name,
+          data?.preferredName,
+          data?.first_name,
+          data?.firstName,
+          data?.display_name,
+          data?.displayName,
+          data?.name,
+
           sessionStorage.getItem(
             "currentDisplayName"
           ),
 
           localStorage.getItem(
             "currentDisplayName"
-          )
+          ),
+
+          data?.member?.preferred_name,
+          data?.member?.preferredName,
+          data?.member?.first_name,
+          data?.member?.firstName,
+          data?.member?.display_name,
+          data?.member?.displayName,
+          data?.member?.name
 
         ];
 
@@ -2049,8 +2054,22 @@
           const value of candidates
         ){
 
+          const fullName =
+            clean(value);
+
+
+          if(
+            !fullName ||
+            /^(?:resident|member)(?:\s*\d+)?$/i.test(
+              fullName
+            )
+          ){
+            continue;
+          }
+
+
           const name =
-            firstWord(value);
+            firstWord(fullName);
 
 
           if(name){

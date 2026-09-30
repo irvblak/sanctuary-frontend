@@ -783,8 +783,8 @@
           for (const ev of show){
             const pill = document.createElement("a");
             const t = timeHM(ev.dateObj);
-            pill.className = "pill" + (isPastEvent(ev) ? " past" : "");
-            pill.style.background = isPastEvent(ev) ? "" : categoryColor(ev.category);
+            pill.className = "pill";
+            pill.style.background = categoryColor(ev.category);
             pill.href = eventHref(ev);
             pill.title = `${ev.id} — ${ev.title} — ${t}${ev.hostName ? " — Host: " + ev.hostName : ""}`;
             pill.innerHTML = `

@@ -322,7 +322,7 @@
         <div>
           <h1>Events Diary – List View</h1>
           <div class="subtitle">
-            Upcoming and current Sanctuary Club events in date order. Past events are removed from this main list once they have finished.
+            Upcoming and today’s Sanctuary Club events in date order. Each event leaves this list the following day.
           </div>
         </div>
 
@@ -522,10 +522,17 @@
       return parseDateTimeOnDate(ev.event_date, ev.end_time, 23, 59);
     }
 
-    function isUpcomingOrCurrent(ev){
-      const finish = eventFinishDate(ev);
-      if(!finish) return false;
-      return finish.getTime() >= Date.now();
+    function eventListExpiry(ev){
+      const eventDay = parseYMD(ev.event_date);
+      if(!eventDay) return null;
+      eventDay.setDate(eventDay.getDate() + 1);
+      eventDay.setHours(0, 0, 0, 0);
+      return eventDay;
+    }
+
+    function isVisibleInEventsList(ev){
+      const expiry = eventListExpiry(ev);
+      return !!expiry && Date.now() < expiry.getTime();
     }
 
     function showInfo(msg){
@@ -599,7 +606,7 @@
         .filter(Boolean)
         .filter(ev => !!ev.backendId)
         .filter(ev => catOn[ev.category] !== false)
-        .filter(ev => ev.finishDateObj.getTime() >= Date.now())
+        .filter(ev => isVisibleInEventsList(ev.raw))
         .sort((a, b) => a.startDateObj - b.startDateObj);
     }
 

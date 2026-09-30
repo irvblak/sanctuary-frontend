@@ -660,6 +660,13 @@
       return d;
     }
 
+    function calendarRetentionStart(){
+      const policyStart = new Date(2026, 8, 28, 0, 0, 0, 0);
+      const rollingStart = startOfToday();
+      rollingStart.setFullYear(rollingStart.getFullYear() - 1);
+      return rollingStart > policyStart ? rollingStart : policyStart;
+    }
+
     function isPastEvent(ev){
       const dayOnly = new Date(ev.dateObj.getFullYear(), ev.dateObj.getMonth(), ev.dateObj.getDate(), 0, 0, 0, 0);
       return dayOnly < startOfToday();
@@ -691,6 +698,7 @@
         })
         .filter(Boolean)
         .filter(ev => !!ev.backendId)
+        .filter(ev => ev.dateObj.getTime() >= calendarRetentionStart().getTime())
         .filter(ev => catOn[ev.category] !== false)
         .sort((a, b) => a.dateObj - b.dateObj);
     }

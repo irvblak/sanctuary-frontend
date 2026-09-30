@@ -1,0 +1,43 @@
+(function(){
+  "use strict";
+
+  function samePage(url){
+    try{
+      const here=new URL(location.href);
+      const there=new URL(url,location.href);
+      return here.pathname===there.pathname&&here.search===there.search;
+    }catch(_){return false}
+  }
+
+  function previousPage(event){
+    event.preventDefault();
+    if(history.length>1&&!samePage(document.referrer)){
+      history.back();
+      return;
+    }
+    location.href="members-info.html";
+  }
+
+  function makeBar(position){
+    const nav=document.createElement("nav");
+    nav.className="sanctuary-site-navigation sanctuary-site-navigation-"+position;
+    nav.setAttribute("aria-label",position==="top"?"Page navigation":"Page navigation at end of page");
+    nav.innerHTML='<a href="#" class="sanctuary-nav-back">← Previous Page</a><a href="events-calendar.html">Calendar</a><a href="members-info.html">Members Hub</a>';
+    nav.querySelector(".sanctuary-nav-back").addEventListener("click",previousPage);
+    return nav;
+  }
+
+  function install(){
+    if(!document.body||document.querySelector(".sanctuary-site-navigation"))return;
+
+    const style=document.createElement("style");
+    style.textContent=".sanctuary-site-navigation{width:min(1180px,calc(100% - 24px));margin:8px auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font:800 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif}.sanctuary-site-navigation a{display:inline-flex;align-items:center;justify-content:center;padding:7px 11px;border:1px solid #cbd9e4;border-radius:999px;background:#fff;color:#174f73;text-decoration:none;box-shadow:0 3px 10px rgba(20,60,80,.06)}.sanctuary-site-navigation a:hover,.sanctuary-site-navigation a:focus{background:#eef6fb;border-color:#6f9eb8}.sanctuary-site-navigation-bottom{margin-top:18px;margin-bottom:14px}@media print{.sanctuary-site-navigation{display:none!important}}";
+    document.head.appendChild(style);
+
+    document.body.insertBefore(makeBar("top"),document.body.firstChild);
+    document.body.appendChild(makeBar("bottom"));
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});
+  else install();
+})();

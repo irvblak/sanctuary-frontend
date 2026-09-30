@@ -1346,3 +1346,13 @@
   }
 
 })();
+
+/* Shared member navigation. */
+(function(){
+  if(document.querySelector('script[data-sanctuary-navigation]'))return;
+  const script=document.createElement("script");
+  script.src="site-navigation.js?v=NAV_1";
+  script.defer=true;
+  script.dataset.sanctuaryNavigation="true";
+  (document.head||document.documentElement).appendChild(script);
+})();

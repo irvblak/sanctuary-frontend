@@ -925,7 +925,12 @@
       }
 
     }
-  </style>
+  
+.route-selector{display:grid;gap:10px;margin:12px 0 4px;}
+.route-selector label{font-weight:700;color:#3c2f26;}
+.route-selector select{width:100%;padding:12px;border:1px solid #cdbcae;border-radius:10px;background:#fff;color:#2f2925;font:inherit;}
+.route-note{margin:8px 0 0;color:#675a51;line-height:1.45;}
+</style>
 </head>
 
 
@@ -1157,7 +1162,7 @@
         ></div>
 
         <p class="route-note" id="routeNote" hidden>
-          Choose a button and your work will go there automatically.
+          Choose where this work belongs. The website will file it automatically.
         </p>
 
       </section>
@@ -1595,19 +1600,22 @@
 
 
       const ACTIVITY_SCOPE_LABELS = {
-        "daffs-caff":"Daff’s Caff",
+        "art-club":"Art Club",
         "book-club":"Book Club",
-        "bridge":"Bridge",
-        "mahjong":"Mahjong",
-        "rummikub":"Rummikub",
         "bowls":"Bowls",
-        "table-tennis":"Table Tennis",
+        "bridge":"Bridge",
+        "computer-art":"Computer Art",
         "cookery":"Cookery",
-        "walking-group":"Walking Group",
-        "art-group":"Art Group",
+        "daffs-caff":"Daff’s Caff",
+        "fitness":"Fitness",
         "gardening":"Gardening",
-        "computer-art":"Computer Art"
-        ,"fitness":"Fitness"
+        "mahjong":"Mahjong",
+        "quiz":"Quiz",
+        "raconteurs":"Raconteurs",
+        "rummikub":"Rummikub",
+        "spa":"Spa",
+        "table-tennis":"Table Tennis",
+        "walking-group":"Walking Group"
       };
 
       let currentActivityScopes = [];
@@ -1623,20 +1631,24 @@
           .replace(/^-+|-+$/g,"");
 
         const aliases = {
+          "art-club":"art-club",
+          "art-group":"art-club",
+          "book-club":"book-club",
+          "bowls":"bowls",
+          "bridge":"bridge",
+          "computer-art":"computer-art",
+          "cookery":"cookery",
           "daffs-caff":"daffs-caff",
           "daff-s-caff":"daffs-caff",
-          "book-club":"book-club",
-          "bridge":"bridge",
-          "mahjong":"mahjong",
-          "rummikub":"rummikub",
-          "bowls":"bowls",
-          "table-tennis":"table-tennis",
-          "cookery":"cookery",
-          "walking-group":"walking-group",
-          "art-group":"art-group",
+          "fitness":"fitness",
           "gardening":"gardening",
-          "computer-art":"computer-art"
-          ,"fitness":"fitness"
+          "mahjong":"mahjong",
+          "quiz":"quiz",
+          "raconteurs":"raconteurs",
+          "rummikub":"rummikub",
+          "spa":"spa",
+          "table-tennis":"table-tennis",
+          "walking-group":"walking-group"
         };
 
         return aliases[raw] || "";
@@ -2530,103 +2542,81 @@
 
 
       function openUniversalChoice(choice){
+        const actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
+        const approval=["writer","artist"].includes(choice.mode)?"editor":"self";
+        const common={acting_role:actingRole,department:choice.department};
+        let subcategories=[];
 
-        const actingRole =
-          choice.roles.find(role => currentStudioRoles.includes(role)) || "";
-
-        const approval =
-          ["writer","artist"].includes(choice.mode)
-            ? "editor"
-            : "self";
-
-        const common = {
-          acting_role:actingRole,
-          department:choice.department
-        };
-
-        let subcategories = [];
-        if(choice.key === "activity"){
-          subcategories = (currentActivityScopes.length ? currentActivityScopes : restoreActivityScopes())
-            .map(scope => [scope, ACTIVITY_SCOPE_LABELS[scope] || scope]);
+        if(choice.key==="activity"){
+          subcategories=(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes())
+            .map(scope=>[scope,ACTIVITY_SCOPE_LABELS[scope]||scope]);
+          if(!subcategories.length){
+            setChoiceContent(choice.label,"<p>No Activity has yet been assigned to you. A Club Administrator can add the appropriate Activity in the Role Register.</p>",[]);
+            return;
+          }
         }else if(Array.isArray(choice.fixedSubcategories)){
-          subcategories = choice.fixedSubcategories;
+          subcategories=choice.fixedSubcategories;
         }else if(choice.roleSubcategories){
-          subcategories = choice.roles
-            .filter(role => currentStudioRoles.includes(role) && choice.roleSubcategories[role])
-            .map(role => choice.roleSubcategories[role])
+          subcategories=choice.roles
+            .filter(role=>currentStudioRoles.includes(role)&&choice.roleSubcategories[role])
+            .map(role=>choice.roleSubcategories[role])
             .filter((item,index,list)=>list.findIndex(other=>other[0]===item[0])===index);
         }
 
-        const routeFor = (destination, scope = "", filing = "") => {
-          const match=subcategories.find(item=>item[0]===scope);
-          const scopeName = match ? match[1] : "";
-          const filingName = filing === "news" ? "News" : filing === "info" ? "Info" : "";
-          const routing = {
-            ...common,
-            section:choice.department,
-            subcategory:scope,
-            subcategory_name:destination === "library" ? filingName : scopeName,
-            scope,
-            scope_name:scopeName,
-            filing
-          };
+        let selectedScope=subcategories[0]?.[0]||"";
 
-          return destination === "calendar"
-            ? datedRoute(choice.key, {...routing, work_kind:"dated-happening"})
-            : standingRoute(choice.mode, choice.destination, {
-                ...routing,
-                tertiary:destination === "library" ? filingName : scopeName,
-                collection:destination,
-                work_kind:"useful-lasting",
-                approval
-              });
+        const routeFor=(destination,filing="")=>{
+          const match=subcategories.find(item=>item[0]===selectedScope);
+          const scopeName=match?match[1]:"";
+          const routing={...common,section:choice.department,subcategory:selectedScope,subcategory_name:scopeName,scope:selectedScope,scope_name:scopeName,filing};
+
+          if(destination==="calendar"){
+            return datedRoute(choice.key,{...routing,work_kind:"dated-happening"});
+          }
+
+          return standingRoute(choice.mode,choice.destination,{
+            ...routing,
+            tertiary:scopeName,
+            collection:"library",
+            work_kind:filing==="learning"?"learning":"information",
+            approval
+          });
         };
 
-        const initialScope = subcategories[0]?.[0] || "";
-        let selectedScope = initialScope;
-        const calendarButton = actionButton("Calendar", routeFor("calendar", selectedScope));
-        const libraryButton = actionButton("Library", "#", true);
-        const schoolButton = actionButton("School", routeFor("school", selectedScope), true);
+        const calendarButton=actionButton("Calendar",routeFor("calendar"));
+        const libraryButton=actionButton("Library","#",true);
+        let selector="";
 
-        calendarButton.id = "calendarRouteButton";
-        libraryButton.id = "libraryRouteButton";
-        schoolButton.id = "schoolRouteButton";
-
-        let selector = "";
-        if(subcategories.length > 1){
-          selector = `<div class="route-subchoices" id="routeSubchoices">${subcategories.map(([key,label],index)=>`<button class="route-subchoice${index===0?" selected":""}" type="button" data-sub="${key}">${choice.key==="artist"?'<span class="beret-mark"></span>':""}${label}</button>`).join("")}</div>`;
+        if(subcategories.length>1){
+          selector=`<label class="route-selector"><strong>Choose the part of your role this work belongs to</strong><select id="roleScopeSelect">${subcategories.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label>`;
+        }else if(subcategories.length===1){
+          selector=`<p><strong>This work will be filed under:</strong> ${subcategories[0][1]}</p>`;
         }
 
-        setChoiceContent(
-          choice.label,
-          selector,
-          [calendarButton, libraryButton, schoolButton]
-        );
+        setChoiceContent(choice.label,selector,[calendarButton,libraryButton]);
+        els.routeNote.hidden=false;
 
-        els.routeNote.hidden = false;
-
-        document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(button=>button.addEventListener("click",()=>{
-          selectedScope=button.dataset.sub;
-          document.querySelectorAll("#routeSubchoices .route-subchoice").forEach(other=>other.classList.toggle("selected",other===button));
-          calendarButton.href=routeFor("calendar",selectedScope);
-          schoolButton.href=routeFor("school",selectedScope);
-        }));
+        const scopeSelect=document.getElementById("roleScopeSelect");
+        if(scopeSelect){
+          scopeSelect.addEventListener("change",()=>{
+            selectedScope=scopeSelect.value;
+            calendarButton.href=routeFor("calendar");
+          });
+        }
 
         libraryButton.addEventListener("click",event=>{
           event.preventDefault();
-          const newsButton=actionButton("News",routeFor("library",selectedScope,"news"));
-          const infoButton=actionButton("Info",routeFor("library",selectedScope,"info"),true);
+          const informationButton=actionButton("Information or created work",routeFor("library","information"));
+          const learningButton=actionButton("Learning — advice, guides, lessons or manuals",routeFor("library","learning"),true);
           const backButton=actionButton("Back","#",true);
-          backButton.addEventListener("click",backEvent=>{
-            backEvent.preventDefault();
-            openUniversalChoice(choice);
-          });
+          backButton.addEventListener("click",backEvent=>{backEvent.preventDefault();openUniversalChoice(choice);});
+          const selected=subcategories.find(item=>item[0]===selectedScope);
           setChoiceContent(
             `${choice.label} — Library`,
-            `<p>Choose <strong>News</strong> or <strong>Info</strong>. Your work will be filed automatically in the ${choice.label} section of the Library.</p>`,
-            [newsButton,infoButton,backButton]
+            `<p>Choose what kind of lasting work this is.${selected?` It will be filed under <strong>${selected[1]}</strong>.`:""}</p>`,
+            [informationButton,learningButton,backButton]
           );
-          els.routeNote.hidden = false;
+          els.routeNote.hidden=false;
         });
       }
 

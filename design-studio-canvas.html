@@ -154,7 +154,8 @@
     .compact-button-row.wrap-buttons{flex-wrap:wrap;}
     .compact-button-row.wrap-buttons button{flex:1 1 46%;}
     .canvas-main-panel{min-width:0;}
-    .compact-page-tabs{min-height:34px;margin:0 0 .35rem;justify-content:center;}
+    .compact-page-tabs{min-height:34px;margin:0;justify-content:center;}
+    .canvas-head-actions .compact-page-tabs{display:inline-flex;min-height:0;align-items:center;flex-wrap:nowrap;}
     .compact-page-tabs .page-tab{padding:.3rem .62rem;font-size:.82rem;}
     .canvas-shell{margin-top:0;}
     .canvas-stage{min-height:0;padding:.55rem;border-radius:14px;}
@@ -515,6 +516,7 @@
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
           <button class="btn secondary" id="repeatDatesBtn" type="button" hidden>Add another date</button>
           <button class="btn secondary" id="canvasToolsBtn" type="button">Tools</button>
+          <div class="page-tabs compact-page-tabs" id="pageTabs" aria-label="Pages"></div>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
           <span class="canvas-offscreen-tools" aria-hidden="true">
@@ -599,7 +601,6 @@
         </aside>
 
         <div class="canvas-main-panel">
-          <div class="page-tabs compact-page-tabs" id="pageTabs"></div>
           <div class="canvas-shell">
             <div class="canvas-stage">
               <div class="canvas-pages" id="creativePages"></div>
@@ -881,16 +882,30 @@
     const DATED_SOURCE_ROLES={
       host:["host"],
       activity:["activity_organiser"],
+      writer:["writer","news_contributor"],
+      artist:["artist"],
       committee:["committee","secretary","committee_secretary"],
       panel:["panel","residents_association","ra_secretary","panel_secretary"],
-      services:["services"]
+      services:["services"],
+      "information-officer":["information_officer"],
+      "website-helper":["website_helper"],
+      condominium:["condominium_coordinator","condo_admin"],
+      editorial:["copy_editor","art_editor","editor"],
+      administration:["admin_website","admin_club"]
     };
     const DATED_SOURCE_LABELS={
-      host:"Host Event",
-      activity:"Activity",
+      host:"Event Host",
+      activity:"Activity Organiser",
+      writer:"Writer",
+      artist:"Artist",
       committee:"Committee",
       panel:"Residents Association",
-      services:"Service"
+      services:"Services",
+      "information-officer":"Information Officer",
+      "website-helper":"Website Helper",
+      condominium:"Condominium Coordinator",
+      editorial:"Editorial",
+      administration:"Administration"
     };
 
     const creativeWorkspace=document.getElementById("creativeWorkspace");
@@ -2347,6 +2362,8 @@ function publishingAllowed(){
 
 function editorialApprovalRequired(){
 
+  if(isDatedWorkflow()) return false;
+
   return (
     CANVAS_MODE === "writer" ||
     CANVAS_MODE === "artist" ||
@@ -2969,7 +2986,7 @@ async function publishCanvas(){
     }else{
 
       alert(
-        `Your work has been published to the ${PUBLICATION_COLLECTION === "school" ? "School" : "Library"}.`
+        "Your work has been published to the Library."
       );
 
     }

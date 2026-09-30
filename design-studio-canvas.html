@@ -807,6 +807,23 @@
     "use strict";
 
     const PAGE_PARAMS=new URLSearchParams(location.search);
+
+    function loadCachedVaultState(workId){
+      if(!workId||!window.indexedDB)return Promise.resolve(null);
+      return new Promise(resolve=>{
+        const request=indexedDB.open("sanctuaryStudioCache",1);
+        request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains("canvases"))request.result.createObjectStore("canvases")};
+        request.onerror=()=>resolve(null);
+        request.onsuccess=()=>{
+          const db=request.result;
+          const tx=db.transaction("canvases","readonly");
+          const get=tx.objectStore("canvases").get(workId);
+          get.onsuccess=()=>{resolve(get.result||null);db.close();};
+          get.onerror=()=>{resolve(null);db.close();};
+        };
+      });
+    }
+    const CACHED_VAULT_STATE_PROMISE=loadCachedVaultState(PAGE_PARAMS.get("vault")||"");
     const FUN_MODE=["write","create"].includes((PAGE_PARAMS.get("fun")||"").toLowerCase()) ? (PAGE_PARAMS.get("fun")||"").toLowerCase() : "";
     const IS_FUN_MODE=Boolean(FUN_MODE);
     const IS_VAULT_OPEN=Boolean(PAGE_PARAMS.get("vault"));
@@ -3406,6 +3423,17 @@ document
         if(project?.format==="sanctuary-yds"&&project?.state){
           restoreState(JSON.stringify(project.state));
           if(vaultOpen.work_id)sessionStorage.setItem("sanctuaryCurrentVaultWorkId",vaultOpen.work_id);
+        }else if(project?.format==="sanctuary-yds"&&vaultOpen.work_id){
+          sessionStorage.setItem("sanctuaryCurrentVaultWorkId",vaultOpen.work_id);
+          CACHED_VAULT_STATE_PROMISE.then(state=>{
+            if(!state)return;
+            try{
+              restoreState(JSON.stringify(state));
+              configurePublishingButton();
+            }catch(err){
+              console.error("The large Vault canvas could not be restored",err);
+            }
+          });
         }
       }
     }catch(err){console.error("Vault work could not be restored",err);}

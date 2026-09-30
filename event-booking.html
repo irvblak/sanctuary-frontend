@@ -394,7 +394,7 @@
     <div class="grid">
       <section class="card">
         <h1 id="mainHeading">Book or register interest</h1>
-        <p id="mainIntro" class="subhead"></p>
+        <p id="mainIntro" class="subhead" hidden></p>
 
         <div class="divider"></div>
 
@@ -516,14 +516,7 @@
               <input id="memberMobileInput" type="text" />
             </label>
           </div>
-      <div class="small">
-  Contact details shown here are taken from Your Information.
-  They help the Host communicate with you, but are not required for
-  booking. You may update your contact details at any time in
-  Your Information.
-</div>    
-
-          <label>
+<label>
             Response
             <div class="response-box">
               <label class="choice">
@@ -535,8 +528,7 @@
                 Interest only
               </label>
             </div>
-            <span class="small">If an existing record is found, the saved type should reload here automatically.</span>
-          </label>
+</label>
 
           <div class="field-grid">
             <label>
@@ -561,9 +553,7 @@
             <button id="refundBtn" class="btn-secondary" type="button" disabled>Request refund</button>
             <button id="cancelBtn" class="btn-danger" type="button" disabled>Cancel</button>
           </div>
-
-          <div id="bookingHelpText" class="small">A saved booking should be reloaded after Member lookup. The form can then be amended and saved again.</div>
-        </form>
+</form>
       </section>
     </div>
   </div>
@@ -1667,6 +1657,7 @@ async function saveBooking(event){
       document.title = "Book for Member | Sanctuary Club";
 
       mainHeading.textContent = "Book for Member";
+      mainIntro.hidden = false;
       mainIntro.textContent =
         "Host/Admin mode. Look up the member by membership number, then add, update or cancel the booking on that member's behalf.";
 
@@ -1680,13 +1671,7 @@ async function saveBooking(event){
       if (pinLookupLabel){
         pinLookupLabel.style.display = "none";
       }
-      
-      if (bookingHelpText){
-        bookingHelpText.textContent =
-          "A saved booking should be reloaded after Member lookup. The Host/Admin may then amend the form and save again on the member's behalf.";
-      }
-
-      memberIdInput.placeholder = "Member to book for";
+memberIdInput.placeholder = "Member to book for";
       lookupBtn.textContent = "Lookup member";
     }
 

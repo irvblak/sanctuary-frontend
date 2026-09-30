@@ -34,7 +34,44 @@ const token=()=>sessionStorage.getItem("ydsAuthToken")||"";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const label=s=>({wip:"Work in Progress",completed:"Completed",submitted:"Submitted",returned:"Returned for Reworking",published:"Published"})[String(s||"").toLowerCase()]||s||"Work in Progress";
 const date=v=>{if(!v)return"";let d=new Date(v);return isNaN(d)?String(v):d.toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})};
-async function openWork(id){try{let r=await fetch(`${API}/api/vault/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw Error(d.message||`Could not open work (${r.status})`);sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(d.item));sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);location.href=`design-studio-canvas.html?v=DATED_REPEAT_3&vault=${encodeURIComponent(id)}`}catch(e){alert(e.message||"This work could not be opened.")}}
+async function openWork(id){
+  try{
+    let r=await fetch(`${API}/api/vault/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${token()}`}});
+    let d=await r.json().catch(()=>({}));
+    if(!r.ok||d.success===false)throw Error(d.message||`Could not open work (${r.status})`);
+
+    const item=d.item||{};
+    if(requestedEvent){
+      const eventResponse=await fetch(`${API}/api/events/${encodeURIComponent(requestedEvent)}`);
+      const eventData=await eventResponse.json().catch(()=>({}));
+      if(eventResponse.ok&&eventData.success!==false){
+        const event=eventData.event||eventData.item||eventData||{};
+        const project={...(item.project||{})};
+        const existing={...(project.datedHandoff||{})};
+        project.mode=project.mode||"host";
+        project.publicationType="dated";
+        project.destination="calendar";
+        project.datedHandoff={
+          ...existing,
+          event_id:requestedEvent,
+          event_date:event.event_date||existing.event_date||"",
+          title:event.title||item.title||existing.title||"",
+          source:event.source||event.producer_role||existing.source||"host",
+          producer_role:event.producer_role||event.source||existing.producer_role||"host",
+          event_payload:{...(existing.event_payload||{}),...event,event_id:requestedEvent}
+        };
+        item.project=project;
+      }
+    }
+
+    sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(item));
+    sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);
+    const eventQuery=requestedEvent?`&event_id=${encodeURIComponent(requestedEvent)}`:"";
+    location.href=`design-studio-canvas.html?v=VAULT_ROUTE_1&vault=${encodeURIComponent(id)}${eventQuery}`;
+  }catch(e){
+    alert(e.message||"This work could not be opened.");
+  }
+}
 function render(items){list.innerHTML="";if(!items.length){list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';return}
 items.forEach(i=>{let locked=i.locked===true,a=document.createElement("article"),actionLabel=String(i.status||"").toLowerCase()==="published"?"Edit Published Work":"Continue Working";a.className="work";a.innerHTML=`<div class="work-head"><div><h3>${esc(i.title||"Untitled work")}</h3><div class="meta">${esc(i.hat||i.work_type||"Studio work")}${i.updated_at?" · Last saved "+esc(date(i.updated_at)):""}</div></div><span class="badge">${esc(label(i.status))}</span></div>${i.editor_note?`<div class="note"><strong>Editor/Curator note:</strong> ${esc(i.editor_note)}</div>`:""}<div class="actions">${locked?`<button class="btn secondary" disabled>${esc(label(i.status))} — locked</button>`:`<button class="btn continue" data-id="${esc(i.work_id)}">${actionLabel}</button>`}</div>`;list.appendChild(a)});list.querySelectorAll(".continue").forEach(b=>b.onclick=()=>openWork(b.dataset.id))}
 const params=new URLSearchParams(location.search);

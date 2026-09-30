@@ -3410,33 +3410,6 @@ document
       }
     }catch(err){console.error("Vault work could not be restored",err);}
 
-    /*
-      Keep the selected Vault work and the current on-screen edits available
-      when the browser refreshes this page.
-    */
-    function cacheOpenVaultCanvas(){
-      if(!IS_VAULT_OPEN || !PENDING_VAULT_OPEN || !pages().length) return;
-      try{
-        const cached={...PENDING_VAULT_OPEN};
-        const project={...(cached.project||PENDING_VAULT_PROJECT||{})};
-        project.format="sanctuary-yds";
-        project.version=project.version||3;
-        project.mode=CANVAS_MODE;
-        project.publicationType=PUBLICATION_TYPE;
-        project.destination=PUBLICATION_DESTINATION;
-        project.collection=PUBLICATION_COLLECTION;
-        project.retention=PUBLICATION_RETENTION;
-        project.approval=PUBLICATION_APPROVAL;
-        project.datedHandoff=isDatedWorkflow()?readEventHandoff():null;
-        project.state=JSON.parse(snapshotState());
-        cached.project=project;
-        cached.title=clean(workNameInput?.value||cached.title||"");
-        sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(cached));
-      }catch(err){
-        console.error("The current Vault canvas could not be cached for refresh",err);
-      }
-    }
-    window.addEventListener("beforeunload",cacheOpenVaultCanvas);
 
     if(IS_EDITOR_REVIEW){
       document.body.classList.add("editor-review");

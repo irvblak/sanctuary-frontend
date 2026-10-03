@@ -931,6 +931,7 @@
 .route-selector select{width:100%;padding:12px;border:1px solid #cdbcae;border-radius:10px;background:#fff;color:#2f2925;font:inherit;}
 .route-note{margin:8px 0 0;color:#675a51;line-height:1.45;}
 </style>
+<script src="content-structure.js?v=STRUCTURE_2"></script>
 </head>
 
 
@@ -1599,24 +1600,7 @@
 
 
 
-      const ACTIVITY_SCOPE_LABELS = {
-        "art-club":"Art Club",
-        "book-club":"Book Club",
-        "bowls":"Bowls",
-        "bridge":"Bridge",
-        "computer-art":"Computer Art",
-        "cookery":"Cookery",
-        "daffs-caff":"Daff’s Caff",
-        "fitness":"Fitness",
-        "gardening":"Gardening",
-        "mahjong":"Mahjong",
-        "quiz":"Quiz",
-        "raconteurs":"Raconteurs",
-        "rummikub":"Rummikub",
-        "spa":"Spa",
-        "table-tennis":"Table Tennis",
-        "walking-group":"Walking Group"
-      };
+      const ACTIVITY_SCOPE_LABELS = Object.fromEntries(SanctuaryContentStructure.ACTIVITIES);
 
       let currentActivityScopes = [];
       let currentStudioRoles = [];
@@ -1647,6 +1631,8 @@
           "raconteurs":"raconteurs",
           "rummikub":"rummikub",
           "spa":"spa",
+          "spa-ladies":"spa-ladies",
+          "spa-gentlemen":"spa-gentlemen",
           "table-tennis":"table-tennis",
           "walking-group":"walking-group"
         };

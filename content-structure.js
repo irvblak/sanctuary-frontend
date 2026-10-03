@@ -4,7 +4,7 @@
     ["art-club","Art Club"],["book-club","Book Club"],["bowls","Bowls"],["bridge","Bridge"],
     ["computer-art","Computer Art"],["cookery","Cookery"],["daffs-caff","Daff’s Caff"],["fitness","Fitness"],
     ["gardening","Gardening"],["mahjong","Mahjong"],["quiz","Quiz"],["raconteurs","Raconteurs"],
-    ["rummikub","Rummikub"],["spa","Spa"],["table-tennis","Table Tennis"],["walking-group","Walking Group"]
+    ["rummikub","Rummikub"],["spa","Spa"],["spa-ladies","Spa — Ladies"],["spa-gentlemen","Spa — Gentlemen"],["table-tennis","Table Tennis"],["walking-group","Walking Group"]
   ];
   const SECTIONS=[
     {key:"events",title:"Events",hat:"Event Host",icon:"🎪",libraryDescription:"Event Notices and lasting Event information."},
@@ -12,9 +12,9 @@
     {key:"reading-room",title:"Reading Room",hat:"Writer",icon:"✍️",libraryDescription:"Articles, stories and other writing by members."},
     {key:"gallery",title:"Gallery",hat:"Artist",icon:"🎨",libraryDescription:"Photography, modern art and traditional artwork by members.",subcategories:[["photo","Photo"],["modern","Modern"],["traditional","Traditional"]],gallery:true},
     {key:"committee-news-information",title:"Committee News & Information",hat:"Committee Member",icon:"📰",libraryDescription:"Club news, notices, meetings and Committee information."},
-    {key:"residents-association-news-information",title:"Residents Association News & Information (RAN&I)",hat:"Residents Association Panel Member",icon:"👥",libraryDescription:"Panel news, notices and Residents Association information.",subcategories:[["news","News"],["info","Info"]],subcategoryLinks:{"info":[["Sanctuary Website Custody and Operating Guide","swcg-draft.html"],["The Sanctuary Website Audit Trail","audit-trail-notice.html"]]}},
+    {key:"residents-association-news-information",title:"Residents Association News & Information (RAN&I)",hat:"Residents Association Panel Member",icon:"👥",libraryDescription:"Panel news, notices and Residents Association information.",subcategories:[["news","News"],["info","Info"]]},
     {key:"general-useful-information",title:"General & Useful Information",hat:"Information Officer",icon:"💡",libraryDescription:"Useful information, recommendations, services and contacts.",subcategories:[["general-information","General Information"],["places-to-go","Places to Go"],["places-to-eat","Places to Eat"],["artisans-services","Artisans & Services"],["useful-contacts","Useful Contacts"]],subcategoryLinks:{"general-information":[["Privacy, Security & Data Protection Notice","library-publications.html?id=privacy-security"]]}},
-    {key:"administration",title:"Administration",hat:"Administration",icon:"🛠️",libraryDescription:"Website, Club and condominium administrative information.",subcategories:[["website-administration","Website Administration"],["club-condominium-administration","Club & Condominium Administration"]]},
+    {key:"administration",title:"Administration",hat:"Administration",icon:"🛠️",libraryDescription:"Website, Club and condominium administrative information.",subcategories:[["website-administration","Website Administration"],["club-condominium-administration","Club & Condominium Administration"]],subcategoryLinks:{"website-administration":[["Sanctuary Website Custody and Operating Guide","swcg-draft.html"],["The Sanctuary Website Audit Trail","audit-trail-notice.html"]]}},
     {key:"website-help",title:"Website Help",hat:"Website Helper",icon:"🌿",libraryDescription:"Practical website help and supporting information."},
     {key:"learning",title:"Learning",hat:"All Role Holders",icon:"📘",libraryDescription:"Advice, guides, lessons and manuals from Role Holders.",dynamicSubcategories:true,subcategories:[
       ["event-host","Event Host"],["activity-organiser","Activity Organiser"],["writer","Writer"],["artist","Artist"],

@@ -490,6 +490,7 @@
       margin-top:.45rem;
     }
   </style>
+<script src="content-structure.js?v=STRUCTURE_2"></script>
 </head>
 
 <body>
@@ -897,24 +898,7 @@
     let currentRoleHolders = [];
     let selectedResident = null;
 
-    const ACTIVITY_SCOPES = [
-      ["art-club", "Art Club"],
-      ["book-club", "Book Club"],
-      ["bowls", "Bowls"],
-      ["bridge", "Bridge"],
-      ["computer-art", "Computer Art"],
-      ["cookery", "Cookery"],
-      ["daffs-caff", "Daff’s Caff"],
-      ["fitness", "Fitness"],
-      ["gardening", "Gardening"],
-      ["mahjong", "Mahjong"],
-      ["quiz", "Quiz"],
-      ["raconteurs", "Raconteurs"],
-      ["rummikub", "Rummikub"],
-      ["spa", "Spa"],
-      ["table-tennis", "Table Tennis"],
-      ["walking-group", "Walking Group"]
-    ];
+    const ACTIVITY_SCOPES = SanctuaryContentStructure.ACTIVITIES;
 
     const HELPER_SCOPES = [
       ["general_website_help", "General Website Help"],

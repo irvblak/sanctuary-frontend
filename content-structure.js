@@ -4,12 +4,13 @@
     ["art-club","Art Club"],["book-club","Book Club"],["bowls","Bowls"],["bridge","Bridge"],
     ["computer-art","Computer Art"],["cookery","Cookery"],["daffs-caff","Daff’s Caff"],["fitness","Fitness"],
     ["gardening","Gardening"],["mahjong","Mahjong"],["quiz","Quiz"],["raconteurs","Raconteurs"],
-    ["rummikub","Rummikub"],["spa","Spa"],["spa-ladies","Spa — Ladies"],["spa-gentlemen","Spa — Gentlemen"],["table-tennis","Table Tennis"],["walking-group","Walking Group"]
+    ["rummikub","Rummikub"],["spa","Spa"],["table-tennis","Table Tennis"],["walking-group","Walking Group"]
   ];
+  const ACTIVITY_SUBCATEGORIES={spa:[["ladies","Ladies"],["gentlemen","Gentlemen"]]};
   const SECTIONS=[
     {key:"events",title:"Events",hat:"Event Host",icon:"🎪",libraryDescription:"Event Notices and lasting Event information."},
     {key:"club-activities",title:"Club Activities",hat:"Activity Organiser",icon:"🌱",libraryDescription:"Information and work from each Club activity.",subcategories:ACTIVITIES},
-    {key:"reading-room",title:"Reading Room",hat:"Writer",icon:"✍️",libraryDescription:"Articles, stories and other writing by members."},
+    {key:"reading-room",title:"Reading Room",hat:"Writer",icon:"✍️",libraryDescription:"Articles, stories and courteous correspondence by members.",subcategories:[["articles-stories","Articles & Stories"],["letter-to-committee","Letter to the Committee"],["letter-to-panel","Letter to the Panel"]]},
     {key:"gallery",title:"Gallery",hat:"Artist",icon:"🎨",libraryDescription:"Photography, modern art and traditional artwork by members.",subcategories:[["photo","Photo"],["modern","Modern"],["traditional","Traditional"]],gallery:true},
     {key:"committee-news-information",title:"Committee News & Information",hat:"Committee Member",icon:"📰",libraryDescription:"Club news, notices, meetings and Committee information."},
     {key:"residents-association-news-information",title:"Residents Association News & Information (RAN&I)",hat:"Residents Association Panel Member",icon:"👥",libraryDescription:"Panel news, notices and Residents Association information.",subcategories:[["news","News"],["info","Info"]]},
@@ -38,5 +39,5 @@
   function publicationSection(item){return publicationWorkKind(item)==="learning"?"learning":originalSection(item)}
   function publicationCollection(){return"library"}
   function publicationSubcategory(item){const canvas=item&&item.canvas_data&&typeof item.canvas_data==="object"?item.canvas_data:{};const scope=String(item?.subcategory_name||item?.tertiary_category||canvas.subcategory_name||canvas.tertiary_category||canvas.scope_name||"").trim();if(publicationWorkKind(item)!=="learning")return scope;const section=SECTIONS.find(entry=>entry.key===originalSection(item));const role=section?.hat||section?.title||"Role Holder";return scope&&slug(scope)!==slug(role)?role+" — "+scope:role}
-  global.SanctuaryContentStructure={ACTIVITIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
+  global.SanctuaryContentStructure={ACTIVITIES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
 })(window);

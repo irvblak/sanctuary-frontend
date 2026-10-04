@@ -1333,7 +1333,16 @@ function getEventHostMemberId(e){
         /class=["'][^"']*canvas-page\b/i.test(String(body || "")) ? body : ""
       );
 
-      if (summary){
+      const noticeTitle = String(pick(e.notice_title, e.title) || "").trim();
+      const summaryText = String(summary || "").trim();
+      const summaryDuplicatesTitle = Boolean(
+        canvasHtml &&
+        summaryText &&
+        noticeTitle &&
+        summaryText.toLocaleLowerCase() === noticeTitle.toLocaleLowerCase()
+      );
+
+      if (summary && !summaryDuplicatesTitle){
         summaryBox.textContent = summary;
         summaryBox.classList.remove("hidden");
       }else{

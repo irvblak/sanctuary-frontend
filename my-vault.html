@@ -17,7 +17,7 @@
 .page{width:min(1120px,calc(100% - 32px));margin:auto;padding:28px 0 48px}.topbar,.work-head{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}
 .eyebrow{margin:0;color:var(--muted);font-weight:800;font-size:.84rem;text-transform:uppercase;letter-spacing:.08em}h1{margin:.1rem 0;font-size:2.15rem}h2{font-size:1.48rem}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,36px);box-shadow:0 8px 26px rgba(23,56,71,.07);margin-bottom:22px}
-.intro p,.intro li,.status,.meta,.empty{font-weight:600}.intro li{margin:.35rem 0}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.72rem 1.05rem;background:var(--accent);color:#fff;text-decoration:none;font-size:1rem;font-weight:800;cursor:pointer}.btn.secondary{background:#fff;color:var(--accent)}.btn:disabled{opacity:.5}
+.intro p,.intro li,.status,.meta,.empty{font-weight:600}.intro li{margin:.35rem 0}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;padding:.72rem 1.05rem;background:var(--accent);color:#fff;text-decoration:none;font-size:1rem;font-weight:800;cursor:pointer}.btn.secondary{background:#fff;color:var(--accent)}.btn.danger{background:#fff;color:#9b2c2c;border-color:#c86b6b}.btn.danger:hover{background:#fff3f3}.btn:disabled{opacity:.5}
 .work-list{display:grid;gap:16px}.work{border:1px solid var(--line);border-radius:16px;padding:20px;background:#f9fbfb}.work-head{align-items:flex-start;margin:0}.work h3{margin:0;font-size:1.18rem}.meta{font-size:.96rem}.badge{border:1px solid var(--line);border-radius:999px;padding:.2rem .65rem;background:#fff;font-size:.88rem;font-weight:800;white-space:nowrap}.note{margin:.7rem 0;padding:.65rem .8rem;border-left:4px solid var(--accent);background:#fff;font-weight:600}.actions{margin-top:14px}.empty{border:1px dashed var(--line);border-radius:14px;padding:22px;background:#f9fbfb}
 @media(max-width:700px){.page{width:min(100% - 20px,1120px)}.topbar,.work-head{align-items:flex-start;flex-direction:column}}
 </style><script src="site-navigation.js?v=NAV_1" defer></script></head><body><main class="page">
@@ -27,9 +27,9 @@
 <ul><li><strong>Calendar:</strong> publishing makes the dated item, its Events List entry and linked Notice live together.</li>
 <li><strong>Library or School:</strong> the website files published work under the role and subject you selected.</li>
 <li><strong>Writer or Artist work:</strong> Submit sends it to the Editor or Curator; it remains private until approved.</li></ul></section>
-<section class="card"><h2>Your Vault</h2><p id="status" class="status">Opening your Vault…</p><div id="list" class="work-list"></div></section>
+<section class="card"><div class="work-head"><h2>Your Vault</h2><button class="btn danger" id="deleteAllBtn" type="button" hidden>Delete All</button></div><p id="status" class="status">Opening your Vault…</p><div id="list" class="work-list"></div></section>
 </main><script>
-(()=>{"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",list=document.getElementById("list"),status=document.getElementById("status");
+(()=>{"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",list=document.getElementById("list"),status=document.getElementById("status"),deleteAllBtn=document.getElementById("deleteAllBtn");
 const token=()=>sessionStorage.getItem("ydsAuthToken")||"";
 function vaultCache(){
   return new Promise((resolve,reject)=>{
@@ -107,8 +107,43 @@ async function openWork(id){
     alert(e.message||"This work could not be opened.");
   }
 }
-function render(items){list.innerHTML="";if(!items.length){list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';return}
-items.forEach(i=>{let locked=i.locked===true,a=document.createElement("article"),actionLabel=String(i.status||"").toLowerCase()==="published"?"Edit Published Work":"Continue Working";a.className="work";a.innerHTML=`<div class="work-head"><div><h3>${esc(i.title||"Untitled work")}</h3><div class="meta">${esc(i.hat||i.work_type||"Studio work")}${i.updated_at?" · Last saved "+esc(date(i.updated_at)):""}</div></div><span class="badge">${esc(label(i.status))}</span></div>${i.editor_note?`<div class="note"><strong>Editor/Curator note:</strong> ${esc(i.editor_note)}</div>`:""}<div class="actions">${locked?`<button class="btn secondary" disabled>${esc(label(i.status))} — locked</button>`:`<button class="btn continue" data-id="${esc(i.work_id)}">${actionLabel}</button>`}</div>`;list.appendChild(a)});list.querySelectorAll(".continue").forEach(b=>b.onclick=()=>openWork(b.dataset.id))}
+async function deleteWork(id,title){
+  if(!confirm(`Delete “${title||"this item"}” from My Vault?\n\nThis removes the Vault copy only. It does not withdraw anything already published.`))return;
+  try{
+    const r=await fetch(`${API}/api/vault/${encodeURIComponent(id)}`,{method:"DELETE",headers:{Authorization:`Bearer ${token()}`}});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.success===false)throw Error(d.message||`Could not delete this Vault item (${r.status})`);
+    await load();
+  }catch(e){alert(e.message||"This Vault item could not be deleted.");}
+}
+async function deleteAll(){
+  if(!confirm("Delete ALL items from your My Vault?\n\nThis cannot be undone. It removes your Vault copies only and does not withdraw anything already published."))return;
+  try{
+    deleteAllBtn.disabled=true;
+    const r=await fetch(`${API}/api/vault`,{method:"DELETE",headers:{Authorization:`Bearer ${token()}`}});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.success===false)throw Error(d.message||`Your Vault could not be cleared (${r.status})`);
+    await load();
+  }catch(e){alert(e.message||"Your Vault could not be cleared.");}
+  finally{deleteAllBtn.disabled=false;}
+}
+function render(items){
+  list.innerHTML="";
+  deleteAllBtn.hidden=!items.length;
+  if(!items.length){
+    list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';
+    return;
+  }
+  items.forEach(i=>{
+    let locked=i.locked===true,a=document.createElement("article"),actionLabel=String(i.status||"").toLowerCase()==="published"?"Edit Published Work":"Continue Working";
+    a.className="work";
+    a.innerHTML=`<div class="work-head"><div><h3>${esc(i.title||"Untitled work")}</h3><div class="meta">${esc(i.hat||i.work_type||"Studio work")}${i.updated_at?" · Last saved "+esc(date(i.updated_at)):""}</div></div><span class="badge">${esc(label(i.status))}</span></div>${i.editor_note?`<div class="note"><strong>Editor/Curator note:</strong> ${esc(i.editor_note)}</div>`:""}<div class="actions">${locked?`<button class="btn secondary" disabled>${esc(label(i.status))} — locked</button>`:`<button class="btn continue" data-id="${esc(i.work_id)}">${actionLabel}</button>`} <button class="btn danger delete" data-id="${esc(i.work_id)}" data-title="${esc(i.title||"Untitled work")}">Delete</button></div>`;
+    list.appendChild(a);
+  });
+  list.querySelectorAll(".continue").forEach(b=>b.onclick=()=>openWork(b.dataset.id));
+  list.querySelectorAll(".delete").forEach(b=>b.onclick=()=>deleteWork(b.dataset.id,b.dataset.title));
+}
+deleteAllBtn.addEventListener("click",deleteAll);
 const params=new URLSearchParams(location.search);
 const requestedVault=String(params.get("vault")||"").trim();
 const requestedEvent=String(params.get("event_id")||"").trim();

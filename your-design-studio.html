@@ -2125,6 +2125,22 @@
       ){
 
         /*
+          Writer and Artist are permanent creative facilities for any
+          member who has supplied a name (or chosen publishing name).
+          They are not appointed Club roles.
+        */
+        if(
+          (choice.key === "writer" || choice.key === "artist") &&
+          clean(
+            sessionStorage.getItem("currentDisplayName") ||
+            localStorage.getItem("currentDisplayName") ||
+            ""
+          )
+        ){
+          return true;
+        }
+
+        /*
           Administrator is deliberately NOT
           an automatic publishing qualification.
         */
@@ -3238,22 +3254,6 @@
           );
 
 
-          if(
-            !recognisedStudioRole(
-              roles
-            )
-          ){
-
-            setStatus(
-              "err",
-              "No Design Studio publishing or creative role is currently assigned to this member."
-            );
-
-
-            return;
-          }
-
-
           const displayName =
             extractDisplayName(
               selected.resident ||
@@ -3262,6 +3262,23 @@
             extractDisplayName(
               loginData
             );
+
+
+          if(
+            !displayName &&
+            !recognisedStudioRole(
+              roles
+            )
+          ){
+
+            setStatus(
+              "err",
+              "Please add your name or publishing name in Your Information before using the creative Studio facilities."
+            );
+
+
+            return;
+          }
 
 
           storeSession(
@@ -3467,8 +3484,11 @@
           if(
             !residentRef ||
             !memberId ||
-            !recognisedStudioRole(
-              roles
+            (
+              !displayName &&
+              !recognisedStudioRole(
+                roles
+              )
             )
           ){
             return false;

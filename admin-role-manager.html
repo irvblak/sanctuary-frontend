@@ -722,22 +722,6 @@
             <h3>Creative &amp; Editorial</h3>
             <div class="roleGrid">
               <label class="roleBox">
-                <input type="checkbox" id="roleWriter" />
-                <div class="roleText">
-                  <strong>Writer</strong>
-                  <span>Creates written material for editorial review and publication.</span>
-                </div>
-              </label>
-
-              <label class="roleBox">
-                <input type="checkbox" id="roleArtist" />
-                <div class="roleText">
-                  <strong>Artist</strong>
-                  <span>Creates artwork and visual publications using Your Design Studio.</span>
-                </div>
-              </label>
-
-              <label class="roleBox">
                 <input type="checkbox" id="roleCopyEditor" />
                 <div class="roleText">
                   <strong>Copy Editor</strong>
@@ -872,8 +856,6 @@
     const roleRaTreasurerEl = $("roleRaTreasurer");
     const roleRaOfficerEl = $("roleRaOfficer");
 
-    const roleWriterEl = $("roleWriter");
-    const roleArtistEl = $("roleArtist");
     const roleCopyEditorEl = $("roleCopyEditor");
     const roleArtEditorEl = $("roleArtEditor");
 
@@ -950,6 +932,9 @@
     ]);
 
     const TEMPORARILY_RETAINED_LEGACY_ROLES = new Set(["admin"]);
+    LEGACY_ROLES.add("writer");
+    LEGACY_ROLES.add("artist");
+    LEGACY_ROLES.add("news_contributor");
 
     function showBox(el,msg){
       el.textContent = msg;
@@ -1351,8 +1336,6 @@
         roleRaSecretaryEl,
         roleRaTreasurerEl,
         roleRaOfficerEl,
-        roleWriterEl,
-        roleArtistEl,
         roleCopyEditorEl,
         roleArtEditorEl,
         roleWebsiteHelperEl,
@@ -1540,11 +1523,6 @@
       roleRaTreasurerEl.checked = roles.includes("ra_treasurer");
       roleRaOfficerEl.checked = roles.includes("ra_officer");
 
-      roleWriterEl.checked =
-        roles.includes("writer") ||
-        roles.includes("news_contributor");
-
-      roleArtistEl.checked = roles.includes("artist");
       roleCopyEditorEl.checked = roles.includes("copy_editor");
       roleArtEditorEl.checked = roles.includes("art_editor");
 
@@ -1584,8 +1562,6 @@
       if(roleRaTreasurerEl.checked) roles.push("ra_treasurer");
       if(roleRaOfficerEl.checked) roles.push("ra_officer");
 
-      if(roleWriterEl.checked) roles.push("writer");
-      if(roleArtistEl.checked) roles.push("artist");
       if(roleCopyEditorEl.checked) roles.push("copy_editor");
       if(roleArtEditorEl.checked) roles.push("art_editor");
 

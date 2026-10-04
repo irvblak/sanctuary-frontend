@@ -1631,8 +1631,8 @@
           "raconteurs":"raconteurs",
           "rummikub":"rummikub",
           "spa":"spa",
-          "spa-ladies":"spa-ladies",
-          "spa-gentlemen":"spa-gentlemen",
+          "spa-ladies":"spa",
+          "spa-gentlemen":"spa",
           "table-tennis":"table-tennis",
           "walking-group":"walking-group"
         };
@@ -2698,27 +2698,20 @@
             "Writer",
             `
               <p>
-                Create an article, story, reminiscence or other piece of writing.
-                Your Work in Progress remains private and editable until you submit it.
+                Create an article, story or letter. Your Work in Progress remains private
+                and editable until you submit it.
               </p>
 
               <p>
-                When it is ready, submit it to an Editor.
-                Approved work is filed automatically in the Reading Room.
+                Articles and stories go to an Editor. Letters provide a courteous,
+                recorded way for members to raise questions or concerns with the
+                Committee or Panel and for the appropriate Secretary to respond.
               </p>
             `,
             [
-              actionButton(
-                "Create an Article or Story",
-                standingRoute(
-                  "writer",
-                  "members-articles-stories",
-                  {
-                    section:"reading-room",
-                    approval:"editor"
-                  }
-                )
-              )
+              actionButton("Article or Story",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"articles-stories",subcategory_name:"Articles & Stories",approval:"editor"})),
+              actionButton("Letter to the Committee",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"letter-to-committee",subcategory_name:"Letter to the Committee",approval:"ra_secretary"})),
+              actionButton("Letter to the Panel",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"letter-to-panel",subcategory_name:"Letter to the Panel",approval:"committee_secretary"}))
             ]
           );
 

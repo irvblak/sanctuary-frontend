@@ -786,6 +786,14 @@
             <h3>Administration</h3>
             <div class="roleGrid">
               <label class="roleBox">
+                <input type="checkbox" id="roleWebsiteCustodian" />
+                <div class="roleText">
+                  <strong>Website Custodian</strong>
+                  <span>Protected stewardship role. Maximum four; no more than half may be serving Panel members.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
                 <input type="checkbox" id="roleAdminWebsite" />
                 <div class="roleText">
                   <strong>Website Administration</strong>
@@ -864,6 +872,7 @@
     const roleCondominiumCoordinatorEl = $("roleCondominiumCoordinator");
     const roleInformationOfficerEl = $("roleInformationOfficer");
 
+    const roleWebsiteCustodianEl = $("roleWebsiteCustodian");
     const roleAdminWebsiteEl = $("roleAdminWebsite");
     const roleAdminClubEl = $("roleAdminClub");
 
@@ -911,6 +920,7 @@
       condominium_coordinator: "Condominium Coordinator",
       information_officer: "Information Officer",
 
+      website_custodian: "Website Custodian",
       admin_website: "Website Administration",
       admin_club: "Club & Condominium Administration",
 
@@ -1342,6 +1352,7 @@
         roleServicesEl,
         roleCondominiumCoordinatorEl,
         roleInformationOfficerEl,
+        roleWebsiteCustodianEl,
         roleAdminWebsiteEl,
         roleAdminClubEl
       ].forEach(el => el.checked = false);
@@ -1531,6 +1542,7 @@
       roleCondominiumCoordinatorEl.checked = roles.includes("condominium_coordinator");
       roleInformationOfficerEl.checked = roles.includes("information_officer");
 
+      roleWebsiteCustodianEl.checked = roles.includes("website_custodian");
       roleAdminWebsiteEl.checked = roles.includes("admin_website");
       roleAdminClubEl.checked = roles.includes("admin_club");
 
@@ -1570,6 +1582,7 @@
       if(roleCondominiumCoordinatorEl.checked) roles.push("condominium_coordinator");
       if(roleInformationOfficerEl.checked) roles.push("information_officer");
 
+      if(roleWebsiteCustodianEl.checked) roles.push("website_custodian");
       if(roleAdminWebsiteEl.checked) roles.push("admin_website");
       if(roleAdminClubEl.checked) roles.push("admin_club");
 

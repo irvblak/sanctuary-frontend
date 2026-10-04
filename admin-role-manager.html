@@ -736,6 +736,14 @@
                   <span>Reviews artwork and visual material for publication.</span>
                 </div>
               </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleArtTeacher" />
+                <div class="roleText">
+                  <strong>Art Teacher</strong>
+                  <span>Creates YDS and art teaching material and may publish it for Learning and/or the Gallery.</span>
+                </div>
+              </label>
             </div>
           </div>
 
@@ -866,6 +874,7 @@
 
     const roleCopyEditorEl = $("roleCopyEditor");
     const roleArtEditorEl = $("roleArtEditor");
+    const roleArtTeacherEl = $("roleArtTeacher");
 
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
@@ -914,6 +923,7 @@
       artist: "Artist",
       copy_editor: "Copy Editor",
       art_editor: "Art Editor",
+      art_teacher: "Art Teacher",
 
       website_helper: "Website Helper",
       services: "Services",
@@ -1536,6 +1546,7 @@
 
       roleCopyEditorEl.checked = roles.includes("copy_editor");
       roleArtEditorEl.checked = roles.includes("art_editor");
+      roleArtTeacherEl.checked = roles.includes("art_teacher");
 
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
@@ -1576,6 +1587,7 @@
 
       if(roleCopyEditorEl.checked) roles.push("copy_editor");
       if(roleArtEditorEl.checked) roles.push("art_editor");
+      if(roleArtTeacherEl.checked) roles.push("art_teacher");
 
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");

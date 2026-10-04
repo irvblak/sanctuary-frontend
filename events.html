@@ -327,6 +327,7 @@
         </div>
 
         <div class="controls">
+          <button class="btn" id="pastEventsBtn" type="button">Past Events</button>
           <a class="btn" href="events-calendar.html">View as calendar</a>
         </div>
       </div>
@@ -379,6 +380,7 @@
 
     const catOn = Object.fromEntries(CATEGORY_DEFS.map(c => [c.key, true]));
     let EVENTS = [];
+    let showingPastEvents = false;
 
     const filtersEl = document.getElementById("filters");
     const eventsBody = document.getElementById("eventsBody");
@@ -388,6 +390,7 @@
     const membersHubLink = document.getElementById("membersHubLink");
     const createEventLink = document.getElementById("createEventLink");
     const closePageBtn = document.getElementById("closePageBtn");
+    const pastEventsBtn = document.getElementById("pastEventsBtn");
 
     function parseYMD(dateStr){
       const text = String(dateStr || "").trim();
@@ -535,6 +538,20 @@
       return !!expiry && Date.now() < expiry.getTime();
     }
 
+    function calendarRetentionStart(){
+      const policyStart = new Date(2026, 8, 28, 0, 0, 0, 0);
+      const rollingStart = new Date();
+      rollingStart.setHours(0, 0, 0, 0);
+      rollingStart.setFullYear(rollingStart.getFullYear() - 1);
+      return rollingStart > policyStart ? rollingStart : policyStart;
+    }
+
+    function isPastEventWithinRetention(ev){
+      const start = eventStartDate(ev);
+      if(!start) return false;
+      return !isVisibleInEventsList(ev) && start.getTime() >= calendarRetentionStart().getTime();
+    }
+
     function showInfo(msg){
       infoBox.textContent = msg;
       infoBox.classList.add("show");
@@ -606,8 +623,12 @@
         .filter(Boolean)
         .filter(ev => !!ev.backendId)
         .filter(ev => catOn[ev.category] !== false)
-        .filter(ev => isVisibleInEventsList(ev.raw))
-        .sort((a, b) => a.startDateObj - b.startDateObj);
+        .filter(ev => showingPastEvents
+          ? isPastEventWithinRetention(ev.raw)
+          : isVisibleInEventsList(ev.raw))
+        .sort((a, b) => showingPastEvents
+          ? b.startDateObj - a.startDateObj
+          : a.startDateObj - b.startDateObj);
     }
 
     function renderFilters(){
@@ -635,7 +656,7 @@
       if (!rows.length){
         eventsBody.innerHTML = `
           <tr>
-            <td colspan="5" class="empty">No upcoming events match your current filters.</td>
+            <td colspan="5" class="empty">${showingPastEvents ? "No past events match your current filters." : "No upcoming events match your current filters."}</td>
           </tr>
         `;
         return;
@@ -687,16 +708,23 @@
 
         const totalCount = EVENTS.filter(ev => !!eventStartDate(ev)).length;
         const visibleCount = normalisedEvents().length;
-        const pastCount = Math.max(0, totalCount - visibleCount);
+        const retainedPastCount = EVENTS.filter(ev => isPastEventWithinRetention(ev)).length;
 
         renderFilters();
         renderTable();
 
-        showInfo(`${visibleCount} upcoming/current event${visibleCount === 1 ? "" : "s"} shown.`);
-        if (!totalCount){
-          showWarn("There are no events yet.");
-        } else if (pastCount > 0){
-          showWarn(`${pastCount} past event${pastCount === 1 ? "" : "s"} hidden from the main list.`);
+        if(showingPastEvents){
+          showInfo(`${visibleCount} past event${visibleCount === 1 ? "" : "s"} shown from the Calendar's one-year history.`);
+          clearWarn();
+        }else{
+          showInfo(`${visibleCount} upcoming/current event${visibleCount === 1 ? "" : "s"} shown.`);
+          if (!totalCount){
+            showWarn("There are no events yet.");
+          } else if (retainedPastCount > 0){
+            showWarn(`${retainedPastCount} past event${retainedPastCount === 1 ? "" : "s"} available through Past Events.`);
+          }else{
+            clearWarn();
+          }
         }
       }catch(err){
         EVENTS = [];
@@ -706,6 +734,29 @@
         showErr(err.message || "Could not load events.");
       }
     }
+
+    function updatePastEventsView(){
+      pastEventsBtn.textContent = showingPastEvents ? "Current Events" : "Past Events";
+      renderTable();
+      const count = normalisedEvents().length;
+      if(showingPastEvents){
+        showInfo(`${count} past event${count === 1 ? "" : "s"} shown from the Calendar's one-year history.`);
+        clearWarn();
+      }else{
+        showInfo(`${count} upcoming/current event${count === 1 ? "" : "s"} shown.`);
+        const retainedPastCount = EVENTS.filter(ev => isPastEventWithinRetention(ev)).length;
+        if(retainedPastCount){
+          showWarn(`${retainedPastCount} past event${retainedPastCount === 1 ? "" : "s"} available through Past Events.`);
+        }else{
+          clearWarn();
+        }
+      }
+    }
+
+    pastEventsBtn.addEventListener("click", () => {
+      showingPastEvents = !showingPastEvents;
+      updatePastEventsView();
+    });
 
     function applyRouteNavigation(){
       const access = window.SanctuaryAccess;

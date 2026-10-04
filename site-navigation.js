@@ -36,6 +36,8 @@
     const links=['<a href="#" class="sanctuary-nav-back">← Previous Page</a>'];
     if(options.showCalendar)links.push('<a href="events-calendar.html">Calendar</a>');
     if(options.showHub)links.push('<a href="members-info.html">Members Hub</a>');
+    if(options.showRoleRegister)links.push('<a href="role-holders.html">Role Register</a>');
+    if(options.showRoleHolders)links.push('<a href="role-guide.html">Role Holders</a>');
     nav.innerHTML=links.join("");
 
     nav.querySelector(".sanctuary-nav-back").addEventListener("click",previousPage);
@@ -56,7 +58,9 @@
     */
     const options={
       showCalendar:!hasExistingLink("events-calendar.html"),
-      showHub:!hasExistingLink("members-info.html")
+      showHub:!hasExistingLink("members-info.html"),
+      showRoleRegister:!hasExistingLink("role-holders.html"),
+      showRoleHolders:!hasExistingLink("role-guide.html")
     };
 
     document.body.insertBefore(makeBar("top",options),document.body.firstChild);

@@ -37,7 +37,7 @@
     if(options.showCalendar)links.push('<a href="events-calendar.html">Calendar</a>');
     if(options.showHub)links.push('<a href="members-info.html">Members Hub</a>');
     if(options.showRoleRegister)links.push('<a href="role-holders.html">Role Register</a>');
-    if(options.showRoleHolders)links.push('<a href="role-guide.html">Role Holders</a>');
+    if(options.showRoleHolders)links.push('<a href="library.html#learning">Role Holders</a>');
     nav.innerHTML=links.join("");
 
     nav.querySelector(".sanctuary-nav-back").addEventListener("click",previousPage);
@@ -60,7 +60,7 @@
       showCalendar:!hasExistingLink("events-calendar.html"),
       showHub:!hasExistingLink("members-info.html"),
       showRoleRegister:!hasExistingLink("role-holders.html"),
-      showRoleHolders:!hasExistingLink("role-guide.html")
+      showRoleHolders:!Array.from(document.querySelectorAll("a[href]")).some(link=>String(link.textContent||"").trim()==="Role Holders")
     };
 
     document.body.insertBefore(makeBar("top",options),document.body.firstChild);

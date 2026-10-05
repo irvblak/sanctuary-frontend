@@ -930,8 +930,9 @@ function getEventHostMemberId(e){
         ? `my-vault.html?v=NOTICE_EDIT_1&vault=${encodeURIComponent(vaultWorkId)}&event_id=${encodeURIComponent(EVENT_ID)}`
         : `my-vault.html?v=NOTICE_EDIT_1&event_id=${encodeURIComponent(EVENT_ID)}`;
 
-      editDetailsBtnBottom.href =
-        `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
+      editDetailsBtnBottom.href = vaultWorkId
+        ? `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}&vault=${encodeURIComponent(vaultWorkId)}`
+        : `host-event-form.html?event_id=${encodeURIComponent(EVENT_ID)}`;
 
       const mayManage = viewerCanManageNotice(e);
       hostTools.classList.toggle("hidden", !mayManage);

@@ -1140,14 +1140,16 @@
     }
     function readEventHandoff(){
       try{
+        /* When Event details have just been edited in PanE, that fresh handoff
+           is authoritative. The Vault still supplies the existing artwork. */
+        const direct=JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null");
+        if(direct)return direct;
+
         const vaultHandoff=PENDING_VAULT_PROJECT?.datedHandoff||null;
         if(vaultHandoff){
           sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(vaultHandoff));
           return vaultHandoff;
         }
-
-        const direct=JSON.parse(sessionStorage.getItem("sanctuaryEventCanvasHandoff")||"null");
-        if(direct)return direct;
 
         const currentKey=sessionStorage.getItem("sanctuaryCurrentDatedWipKey")||localStorage.getItem("sanctuaryCurrentDatedWipKey")||"";
         if(currentKey){

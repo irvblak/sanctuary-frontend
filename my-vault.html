@@ -96,11 +96,47 @@ async function openWork(id){
       }
     }
 
-    const canvasState=item.project?.state||null;
+    const project=item.project||{};
+    const handoff=project.datedHandoff||{};
+    const eventId=String(
+      requestedEvent ||
+      handoff.event_id ||
+      handoff.eventId ||
+      handoff.event_payload?.event_id ||
+      handoff.event_payload?.eventId ||
+      project.event_id ||
+      project.eventId ||
+      ""
+    ).trim();
+    const isPublishedDatedWork=
+      String(item.status||"").toLowerCase()==="published" &&
+      (project.publicationType==="dated" || Boolean(eventId));
+
+    const canvasState=project.state||null;
     if(canvasState)await cacheCanvasState(id,canvasState);
     const lightweight=lightweightVaultItem(item);
     sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(lightweight));
     sessionStorage.setItem("sanctuaryCurrentVaultWorkId",id);
+
+    if(isPublishedDatedWork && eventId){
+      sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify({
+        ...handoff,
+        event_id:eventId,
+        event_payload:{...(handoff.event_payload||{}),event_id:eventId}
+      }));
+      const detailParams=new URLSearchParams({
+        event_id:eventId,
+        from:"vault",
+        vault:id
+      });
+      const source=String(handoff.source||handoff.producer_role||"host").trim();
+      if(source)detailParams.set("source",source);
+      if(handoff.scope_id)detailParams.set("scope",handoff.scope_id);
+      if(handoff.scope_name)detailParams.set("scope_name",handoff.scope_name);
+      location.href=`host-event-form.html?${detailParams.toString()}`;
+      return;
+    }
+
     const eventQuery=requestedEvent?`&event_id=${encodeURIComponent(requestedEvent)}`:"";
     location.href=`design-studio-canvas.html?v=VAULT_ROUTE_1&vault=${encodeURIComponent(id)}${eventQuery}`;
   }catch(e){

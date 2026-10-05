@@ -626,6 +626,14 @@
                 </div>
               </label>
 
+              <label class="roleBox" id="clubhousePublisherRoleBox">
+                <input type="checkbox" id="roleClubhousePublisher" />
+                <div class="roleText">
+                  <strong>Clubhouse Publisher</strong>
+                  <span>SCH/1 only. Admin-enabled access for Clubhouse Events/Notices, its own Vault, and view-only RR/RH.</span>
+                </div>
+              </label>
+
               <label class="roleBox">
                 <input type="checkbox" id="roleActivityOrganiser" />
                 <div class="roleText">
@@ -859,6 +867,7 @@
     const legacyBox = $("legacyBox");
 
     const roleHostEl = $("roleHost");
+    const roleClubhousePublisherEl = $("roleClubhousePublisher");
     const allowYdsAccessEl = $("allowYdsAccess");
     const roleActivityOrganiserEl = $("roleActivityOrganiser");
 
@@ -907,6 +916,7 @@
 
     const ROLE_LABELS = {
       host: "Event Host",
+      clubhouse_publisher: "Clubhouse Publisher",
       activity_organiser: "Activity Organiser",
 
       committee_chair: "Committee Chair",
@@ -1537,7 +1547,11 @@
       roleCommitteeChairEl.checked = roles.includes("committee_chair");
       roleCommitteeSecretaryEl.checked = roles.includes("committee_secretary");
       roleCommitteeTreasurerEl.checked = roles.includes("committee_treasurer");
-      roleCommitteeOfficerEl.checked = roles.includes("committee_officer");
+      roleClubhousePublisherEl.checked = roles.includes("clubhouse_publisher");
+      roleClubhousePublisherEl.disabled = selectedResident.resident_id !== "SCH/1";
+      if(selectedResident.resident_id !== "SCH/1") roleClubhousePublisherEl.checked = false;
+
+            roleCommitteeOfficerEl.checked = roles.includes("committee_officer");
 
       roleRaChairEl.checked = roles.includes("ra_chair");
       roleRaSecretaryEl.checked = roles.includes("ra_secretary");
@@ -1573,6 +1587,7 @@
       const roles = [];
 
       if(roleHostEl.checked) roles.push("host");
+      if(roleClubhousePublisherEl.checked) roles.push("clubhouse_publisher");
       if(roleActivityOrganiserEl.checked) roles.push("activity_organiser");
 
       if(roleCommitteeChairEl.checked) roles.push("committee_chair");

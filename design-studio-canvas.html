@@ -3390,6 +3390,13 @@ document
         document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
       }
 
+      if(IS_VAULT_OPEN&&PENDING_VAULT_PROJECT){
+        /* Editing published Vault work: the Vault is the sole authority for
+           which Canvas to restore. PanE/session handoff supplies Event facts. */
+        openCreativeWorkspace(true,label);
+        return;
+      }
+
       if(PAGE_PARAMS.get("open")==="event-canvas"&&isDatedWorkflow()){
         const e=readEventHandoff();
         const source=normaliseRole(e?.source||PAGE_PARAMS.get("source")||"host");
@@ -3419,7 +3426,9 @@ document
       const vaultOpen=PENDING_VAULT_OPEN;
       const project=PENDING_VAULT_PROJECT;
       if(vaultOpen){
-        if(project?.datedHandoff){
+        /* Do not replace a fresh PanE edit with the older handoff stored in
+           the Vault. Only fall back to the Vault handoff when none exists. */
+        if(project?.datedHandoff&&!sessionStorage.getItem("sanctuaryEventCanvasHandoff")){
           sessionStorage.setItem("sanctuaryEventCanvasHandoff",JSON.stringify(project.datedHandoff));
         }
         if(project?.format==="sanctuary-yds"&&project?.state){

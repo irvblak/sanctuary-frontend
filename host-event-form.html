@@ -518,6 +518,30 @@ const actingRole = String(params.get("acting_role") || "").toLowerCase();
 const scopeId = String(params.get("scope") || "").trim();
 const scopeName = String(params.get("scope_name") || "").trim();
 const editVaultId = String(params.get("vault") || "").trim();
+function vaultCache(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open("sanctuaryStudioCache",1);
+    request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains("canvases"))request.result.createObjectStore("canvases")};
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error||new Error("Canvas cache could not be opened."));
+  });
+}
+async function cacheCanvasState(id,state){
+  const db=await vaultCache();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction("canvases","readwrite");
+    tx.objectStore("canvases").put(state,id);
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error||new Error("Canvas cache could not be written."));
+  });
+  db.close();
+}
+function lightweightVaultItem(item){
+  const copy={...item,project:{...(item?.project||{})}};
+  delete copy.project.state;
+  return copy;
+}
+
 
 let editEventId = String(params.get("event_id") || "").trim();
 
@@ -1307,7 +1331,26 @@ async function saveEvent(){
     if(scopeId) canvasParams.set("scope",scopeId);
     if(scopeName) canvasParams.set("scope_name",scopeName);
     if(editEventId) canvasParams.set("event_id",editEventId);
-    if(editVaultId) canvasParams.set("vault",editVaultId);
+    if(editVaultId){
+      canvasParams.set("vault",editVaultId);
+
+      /* Make Edit Event Details enter Canvas exactly like a genuine Vault
+         opening: fetch this exact work, cache its artwork, then retain only
+         the lightweight project metadata in session storage. */
+      const vaultResponse = await fetch(`${API_BASE}/api/vault/${encodeURIComponent(editVaultId)}`,{
+        headers:{Authorization:`Bearer ${authToken}`}
+      });
+      const vaultData = await vaultResponse.json().catch(()=>({}));
+      if(!vaultResponse.ok || vaultData.success===false){
+        throw new Error(vaultData.message || "The published Notice could not be loaded from My Vault.");
+      }
+      const vaultItem = vaultData.item || {};
+      if(vaultItem.project?.state){
+        await cacheCanvasState(editVaultId,vaultItem.project.state);
+      }
+      sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(lightweightVaultItem(vaultItem)));
+      sessionStorage.setItem("sanctuaryCurrentVaultWorkId",editVaultId);
+    }
 
     window.setTimeout(()=>{
       location.href = `design-studio-canvas.html?${canvasParams.toString()}`;

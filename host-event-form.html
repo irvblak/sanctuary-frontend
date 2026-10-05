@@ -517,6 +517,7 @@ const actingRole = String(params.get("acting_role") || "").toLowerCase();
 
 const scopeId = String(params.get("scope") || "").trim();
 const scopeName = String(params.get("scope_name") || "").trim();
+const editVaultId = String(params.get("vault") || "").trim();
 
 let editEventId = String(params.get("event_id") || "").trim();
 
@@ -1306,6 +1307,7 @@ async function saveEvent(){
     if(scopeId) canvasParams.set("scope",scopeId);
     if(scopeName) canvasParams.set("scope_name",scopeName);
     if(editEventId) canvasParams.set("event_id",editEventId);
+    if(editVaultId) canvasParams.set("vault",editVaultId);
 
     window.setTimeout(()=>{
       location.href = `design-studio-canvas.html?${canvasParams.toString()}`;

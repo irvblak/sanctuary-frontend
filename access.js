@@ -455,7 +455,8 @@
       "privacy-charter.html",
 
       "admin-login.html",
-      "admin-signin.html"
+      "admin-signin.html",
+      "sanctuary-publishing.html"
     ]);
 
 
@@ -496,7 +497,8 @@
 
       "events-calendar.html",
       "events.html",
-      "events-details.html"
+      "events-details.html",
+      "sanctuary-publishing.html"
     ]);
 
 

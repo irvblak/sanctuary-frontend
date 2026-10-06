@@ -455,8 +455,7 @@
       "privacy-charter.html",
 
       "admin-login.html",
-      "admin-signin.html",
-      "sanctuary-publishing.html"
+      "admin-signin.html"
     ]);
 
 

@@ -630,7 +630,7 @@
                 <input type="checkbox" id="roleClubhousePublisher" />
                 <div class="roleText">
                   <strong>Clubhouse Publisher</strong>
-                  <span>SCH/1 or SCH/3 only. Admin-enabled access for Clubhouse Events/Notices, its own Vault, and view-only RR/RH.</span>
+                  <span>SC1 or SC2 only. Admin-enabled access for Clubhouse Events/Notices, its own Vault, and view-only RR/RH.</span>
                 </div>
               </label>
 
@@ -1548,7 +1548,7 @@
       roleCommitteeSecretaryEl.checked = roles.includes("committee_secretary");
       roleCommitteeTreasurerEl.checked = roles.includes("committee_treasurer");
       roleClubhousePublisherEl.checked = roles.includes("clubhouse_publisher");
-      const clubhouseIdentity = ["SCH/1","SCH/3"].includes(selectedResident.resident_id);
+      const clubhouseIdentity = ["SC1","SC2"].includes(selectedResident.resident_id);
       roleClubhousePublisherEl.disabled = !clubhouseIdentity;
       if(!clubhouseIdentity) roleClubhousePublisherEl.checked = false;
 
@@ -1682,34 +1682,26 @@
         return;
       }
 
-      if(!ref.includes("/")){
-        showBox(warnBox,"Please use a member-level reference such as SM55/1, not just SM55.");
-        return;
-      }
-
-      const parts = ref.split("/");
-      const wantedMemberId = cleanId(parts[0]);
-      const wantedIndex = parseInt(parts[1],10);
-
-      if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
-        showBox(warnBox,"Please use a valid member reference such as SM55/1.");
-        return;
-      }
+      const specialClubhouseIdentities = {
+        SC1:{ member_id:"SC1", resident_index:1, name:"Sanctuary Club House" },
+        SC2:{ member_id:"SC2", resident_index:1, name:"Sanctuary Court Manager" }
+      };
 
       try{
         showBox(infoBox,`Loading ${ref}…`);
 
-        // SCH/1 and SCH/3 are deliberate non-personal Clubhouse identities.
+        // SC1 and SC2 are deliberate non-personal publishing identities.
         // They can be selected for their tightly restricted Admin-enabled role
         // even though they do not exist as ordinary residents in Members Information.
-        if(["SCH/1","SCH/3"].includes(ref)){
+        if(specialClubhouseIdentities[ref]){
+          const identity = specialClubhouseIdentities[ref];
           const existingRoleRecord =
             allResidents.find(r => cleanId(r.resident_id) === ref);
           selectResident({
             resident_id:ref,
-            member_id:"SCH",
-            resident_index:wantedIndex,
-            name:ref === "SCH/1" ? "Sanctuary Club House" : "Sanctuary Court Manager",
+            member_id:identity.member_id,
+            resident_index:identity.resident_index,
+            name:identity.name,
             email:"",
             roles:existingRoleRecord ? rolesFor(existingRoleRecord) : [],
             activity_scopes:[],
@@ -1719,6 +1711,22 @@
           });
           clearBox(infoBox);
           showBox(infoBox,`Loaded ${ref}. Assign Clubhouse Publisher, then save.`);
+          return;
+        }
+
+        if(!ref.includes("/")){
+          clearBox(infoBox);
+          showBox(warnBox,"Please use SC1, SC2, or a member-level reference such as SM55/1.");
+          return;
+        }
+
+        const parts = ref.split("/");
+        const wantedMemberId = cleanId(parts[0]);
+        const wantedIndex = parseInt(parts[1],10);
+
+        if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
+          clearBox(infoBox);
+          showBox(warnBox,"Please use SC1, SC2, or a valid member reference such as SM55/1.");
           return;
         }
 

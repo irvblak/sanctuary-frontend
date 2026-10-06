@@ -6,7 +6,7 @@
   const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const date=value=>{if(!value)return"";const d=new Date(value);return Number.isNaN(d.getTime())?"":d.toLocaleDateString("en-GB")};
   const itemHtml=item=>{
-    const href=item.category==="gallery"?`library-gallery.html?id=${encodeURIComponent(item.publication_id||"")}`:`library-publications.html?id=${encodeURIComponent(item.publication_id||"")}`;
+    const readerId=item.legacy_id||item.publication_id||""; const href=item.category==="gallery"?`library-gallery.html?id=${encodeURIComponent(item.publication_id||"")}`:`library-publications.html?id=${encodeURIComponent(readerId)}`;
     const meta=[item.creator_name,item.creator_resident_id,date(item.published_at)].filter(Boolean).join(" · ");
     return `<a class="synopsis" href="${href}"><strong>${esc(item.title||"Untitled")}</strong>${item.summary?`<span>${esc(item.summary)}</span>`:""}<small>${esc(meta)}</small></a>`;
   };

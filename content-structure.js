@@ -28,7 +28,7 @@
       "artist":[["Artist Guide","role-guide.html?role=artist"]],
       "committee-member":[["Committee Publications Guide","role-guide.html?role=club-publications"]],
       "residents-association-panel-member":[["Residents Association Guide","role-guide.html?role=residents-association-panel"]],
-      "art-teacher":[["Your Design Studio — Quick Guide","library-publications.html?id=design-studio-guide"],["Your Design Studio — Publishing Guide","library-publications.html?id=design-studio-publishing"]],
+      "art-teacher":[],
       "administration":[["Administration Structure","library-publications.html?id=administration-structure"]],
       "website-helper":[["Website Helper Guide","role-guide.html?role=website-helper"],["Your Design Studio Guide","library-publications.html?id=design-studio-guide"]]
     }}

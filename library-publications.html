@@ -584,13 +584,6 @@
           return;
         }
 
-        if (staticPublication) {
-          renderPublication(
-            staticPublication
-          );
-          return;
-        }
-
         try {
           const response =
             await fetch(
@@ -609,11 +602,8 @@
                 () => ({})
               );
 
-          if (
-            !response.ok ||
-            data.success === false ||
-            !data.publication
-          ) {
+          if (!response.ok || data.success === false || !data.publication) {
+            if (staticPublication) { renderPublication(staticPublication); return; }
             showMissingPublication();
             return;
           }
@@ -630,6 +620,7 @@
             error
           );
 
+          if (staticPublication) { renderPublication(staticPublication); return; }
           showMissingPublication();
         }
       }

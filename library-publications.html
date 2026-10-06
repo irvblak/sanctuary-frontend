@@ -470,6 +470,10 @@
           );
         }
 
+        if (item.published) {
+          meta.push(`<span><strong>Published:</strong> ${escapeHtml(item.published)}</span>`);
+        }
+
         if (item.updated) {
           meta.push(
             `<span><strong>Updated:</strong> ${
@@ -484,9 +488,14 @@
         metaElement.hidden =
           meta.length === 0;
 
-        bodyElement.innerHTML =
-          item.body ||
-          "";
+        let historyHtml = "";
+        if (item.previous_publication_id) {
+          historyHtml += `<p class="tip"><strong>Updated edition.</strong> This updates the publication of ${escapeHtml(item.previous_published_label || "an earlier date")}. <a href="library-publications.html?id=${encodeURIComponent(item.previous_publication_id)}">View previous edition</a>.</p>`;
+        }
+        if (item.superseded_by_publication_id) {
+          historyHtml += `<p class="tip"><strong>Earlier edition.</strong> <a href="library-publications.html?id=${encodeURIComponent(item.superseded_by_publication_id)}">View the updated edition</a>.</p>`;
+        }
+        bodyElement.innerHTML = historyHtml + (item.body || "");
 
         publicationElement.hidden =
           false;
@@ -534,6 +543,10 @@
           }
         }
 
+        const published = item.published_at || item.created_at || "";
+        const previousPublished = item.previous_published_at || "";
+        const formatDate = value => { if (!value) return ""; const d=new Date(value); return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); };
+
         return {
           title:
             item.title ||
@@ -548,8 +561,14 @@
             item.owner ||
             "Sanctuary Club",
 
+          published: formatDate(published),
+
           updated:
             updatedLabel,
+
+          previous_publication_id: item.previous_publication_id || "",
+          previous_published_label: formatDate(previousPublished),
+          superseded_by_publication_id: item.superseded_by_publication_id || "",
 
           body:
             item.body_html ||

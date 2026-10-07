@@ -591,6 +591,7 @@ const els = {
 };
 
 let authToken =
+  sessionStorage.getItem("schPublishingToken") ||
   sessionStorage.getItem("ydsAuthToken") ||
   sessionStorage.getItem("authToken") ||
   localStorage.getItem("authToken") ||
@@ -680,6 +681,19 @@ function tokenRoles(){
   const p = decodeTokenPayload(authToken);
   const raw = Array.isArray(p.roles) ? p.roles : p.role ? [p.role] : [];
   return raw.map(normalRole).filter(Boolean);
+}
+
+function validSchPublisher(){
+  const p = decodeTokenPayload(authToken);
+  const rid = clean(p.rid || "").toUpperCase();
+  return Boolean(
+    p &&
+    p.account_type === "sch_publisher" &&
+    p.restricted === true &&
+    (rid === "SCH/1" || rid === "SCH/2") &&
+    Number(p.exp) &&
+    Date.now() < Number(p.exp) * 1000
+  );
 }
 
 function storedRoles(){
@@ -1507,11 +1521,25 @@ async function initialise(){
   }
 
   let roles = storedRoles();
-  roles = await refreshAuthorityRoles(memberId,residentId,roles);
 
-  if(!roleAllowsMode(roles)){
-    location.replace("your-design-studio.html");
-    return;
+  // SCH publishing identities have already authenticated with their own
+  // restricted Publishing PIN. They may use only the host Event/Notice
+  // route here; they must never be promoted into general YDS access.
+  const schPublisher = validSchPublisher();
+
+  if(schPublisher){
+    if(datedSource !== "host"){
+      location.replace("sanctuary-publishing.html");
+      return;
+    }
+    roles = [...new Set([...roles,"clubhouse_publisher"])];
+  }else{
+    roles = await refreshAuthorityRoles(memberId,residentId,roles);
+
+    if(!roleAllowsMode(roles)){
+      location.replace("your-design-studio.html");
+      return;
+    }
   }
 
   verifiedResidentId = residentId;

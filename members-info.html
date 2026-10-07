@@ -17,6 +17,12 @@
       --muted:#52606f;
       --blue:#123a78;
       --blue-hover:#0f3166;
+      --library:#21633f;
+      --library-hover:#194d31;
+      --learning:#7a263a;
+      --learning-hover:#621e2f;
+      --roles:#9a6a12;
+      --roles-hover:#7d550d;
       --soft-blue:#f7fbff;
       --green:#eef9f1;
       --green-ink:#245b33;
@@ -192,6 +198,11 @@
       transform:translateY(-1px);
     }
 
+    .hub-btn.library-btn{ background:var(--library); box-shadow:0 4px 12px rgba(33,99,63,.22); }
+    .hub-btn.library-btn:hover,.hub-btn.library-btn:focus-visible{ background:var(--library-hover); }
+    .role-link.role-register-link{ color:var(--roles); }
+    .role-link.role-register-link:hover,.role-link.role-register-link:focus-visible{ color:var(--roles-hover); }
+
     .hub-note{
       color:var(--muted);
       font-size:1.06rem;
@@ -311,7 +322,7 @@
         <p>
           You’ll then be able to see everything that’s going on, and see which members have
           taken on which roles wihin each of the five sections below  
-          <a class="role-link" href="role-holders.html">in the Role Register</a>
+          <a class="role-link role-register-link" href="role-holders.html">in the Role Register</a>
           (contact a Club Administrator if you’d like to know more or adopt a role yourself).
         </p>
       </div>
@@ -341,7 +352,7 @@
               <a class="hub-btn" href="your-design-studio.html">Your Design Studio</a>
               <div class="hub-note">
                 Choose one of your appointed roles, create the work and select
-                Calendar, Library or School. The website will send it to the right place.
+                Calendar, Library or Learning. The website will send it to the right place.
                 <div class="quick-links" aria-label="Events available now">
                   <a href="events-calendar.html">Calendar</a>
                   <span aria-hidden="true">•</span>
@@ -353,7 +364,7 @@
             </div>
 
 <div class="hub-row">
-  <a class="hub-btn private-entry" href="library.html">Library</a>
+  <a class="hub-btn library-btn private-entry" href="library.html">Library</a>
   <div class="hub-note">
     Visit the Club Library for members’ artwork and writing,
     Club news, notices, guides and other useful information.

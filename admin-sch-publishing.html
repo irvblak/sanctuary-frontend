@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <title>SCH Publishing Access — Sanctuary Club</title>
+  <title>SCH Publishing Administration — Sanctuary Club</title>
   <script src="admin-guard.js?v=AG_3"></script>
   <link rel="stylesheet" href="styles-main.css?v=ADMIN_5" />
   <style>
@@ -30,15 +30,16 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>SCH Publishing Access</h1>
+      <h1>SCH Publishing Administration</h1>
       <p class="intro">
-        View or change the current four-digit Publishing PIN for each Sanctuary publishing identity.
+        Enable or disable each Sanctuary publishing identity and view or change its current four-digit Publishing PIN.
       </p>
 
       <div class="identity" data-rid="SCH/1/M">
         <h2>SCH/1/M — Sanctuary Club House</h2>
         <p>Mews publishing identity.</p>
         <div class="controls">
+          <label><input class="enabled" type="checkbox" /> Publishing enabled</label>
           <div>
             <label for="pinM">Current PIN</label>
             <input id="pinM" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
@@ -52,6 +53,7 @@
         <h2>SCH/2/C — Sanctuary Court</h2>
         <p>Court publishing identity.</p>
         <div class="controls">
+          <label><input class="enabled" type="checkbox" /> Publishing enabled</label>
           <div>
             <label for="pinC">Current PIN</label>
             <input id="pinC" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
@@ -84,14 +86,17 @@
       if (!res.ok || data.success === false) return;
       (data.identities || []).forEach(item => {
         const box = Array.from(document.querySelectorAll(".identity")).find(el => el.dataset.rid === item.residentId);
-        if (box && item.pin) box.querySelector("input").value = item.pin;
+        if (box){
+          if (item.pin) box.querySelector('input:not(.enabled)').value = item.pin;
+          box.querySelector(".enabled").checked = item.enabled === true;
+        }
       });
     }catch(_err){}
   }
 
   async function setPin(box){
     const rid = box.dataset.rid;
-    const input = box.querySelector("input");
+    const input = box.querySelector('input:not(.enabled)');
     const button = box.querySelector("button");
     const msg = box.querySelector(".msg");
     const pin = input.value.trim();
@@ -139,10 +144,45 @@
     }
   }
 
+  async function setEnabled(box){
+    const rid = box.dataset.rid;
+    const checkbox = box.querySelector(".enabled");
+    const msg = box.querySelector(".msg");
+    const token = adminToken();
+    if (!token){
+      checkbox.checked = !checkbox.checked;
+      msg.className = "msg err";
+      msg.textContent = "Admin session not found. Please sign in again.";
+      return;
+    }
+    checkbox.disabled = true;
+    try{
+      const res = await fetch(API + "/api/admin/sch-publishing/" + encodeURIComponent(rid) + "/enabled", {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + token
+        },
+        body:JSON.stringify({ enabled: checkbox.checked })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success === false) throw new Error(data.message || "Publishing access could not be changed.");
+      msg.className = "msg ok";
+      msg.textContent = checkbox.checked ? "Publishing enabled." : "Publishing disabled.";
+    }catch(err){
+      checkbox.checked = !checkbox.checked;
+      msg.className = "msg err";
+      msg.textContent = err.message || "Publishing access could not be changed.";
+    }finally{
+      checkbox.disabled = false;
+    }
+  }
+
   loadPins();
 
   document.querySelectorAll(".identity").forEach(box => {
     box.querySelector("button").addEventListener("click", () => setPin(box));
+    box.querySelector(".enabled").addEventListener("change", () => setEnabled(box));
   });
 })();
 </script>

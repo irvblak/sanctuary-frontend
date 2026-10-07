@@ -1494,58 +1494,66 @@ function logout(){
 async function initialise(){
   applyMode();
 
-  if(!authToken){
-    location.replace("your-design-studio.html");
-    return;
-  }
+  // SCH publishers have already authenticated with their own Publishing PIN.
+  // Keep them on the restricted Event route and out of ordinary YDS authority.
+  if(validSchPublisher()){
+    const tokenData = decodeTokenPayload(authToken);
+    const residentId = clean(tokenData.rid || "").toUpperCase();
 
-  const residentId = clean(
-    sessionStorage.getItem("currentResidentId") ||
-    localStorage.getItem("currentResidentId") ||
-    sessionStorage.getItem("currentHostResidentId") ||
-    localStorage.getItem("currentHostResidentId") ||
-    ""
-  ).toUpperCase();
-
-  const memberId = baseMemberId(
-    sessionStorage.getItem("currentMemberId") ||
-    localStorage.getItem("currentMemberId") ||
-    sessionStorage.getItem("currentHostMemberId") ||
-    localStorage.getItem("currentHostMemberId") ||
-    residentId
-  );
-
-  if(!residentId || !memberId){
-    location.replace("your-design-studio.html");
-    return;
-  }
-
-  let roles = storedRoles();
-
-  // SCH publishing identities have already authenticated with their own
-  // restricted Publishing PIN. They may use only the host Event/Notice
-  // route here; they must never be promoted into general YDS access.
-  const schPublisher = validSchPublisher();
-
-  if(schPublisher){
-    if(datedSource !== "host"){
+    if(datedSource !== "host" || !["SCH/1","SCH/2"].includes(residentId)){
       location.replace("sanctuary-publishing.html");
       return;
     }
-    roles = [...new Set([...roles,"clubhouse_publisher"])];
+
+    verifiedResidentId = residentId;
+    verifiedMemberId = residentId;
+    producer = {
+      name: residentId === "SCH/1" ? "Sanctuary Club House" : "Sanctuary Court",
+      email: "",
+      mobile: "",
+      landline: ""
+    };
+    els.identityBox.textContent = `Sanctuary Publisher recognised: ${producer.name} (${residentId})`;
+    els.identityBox.classList.add("show");
   }else{
+    if(!authToken){
+      location.replace("your-design-studio.html");
+      return;
+    }
+
+    const residentId = clean(
+      sessionStorage.getItem("currentResidentId") ||
+      localStorage.getItem("currentResidentId") ||
+      sessionStorage.getItem("currentHostResidentId") ||
+      localStorage.getItem("currentHostResidentId") ||
+      ""
+    ).toUpperCase();
+
+    const memberId = baseMemberId(
+      sessionStorage.getItem("currentMemberId") ||
+      localStorage.getItem("currentMemberId") ||
+      sessionStorage.getItem("currentHostMemberId") ||
+      localStorage.getItem("currentHostMemberId") ||
+      residentId
+    );
+
+    if(!residentId || !memberId){
+      location.replace("your-design-studio.html");
+      return;
+    }
+
+    let roles = storedRoles();
     roles = await refreshAuthorityRoles(memberId,residentId,roles);
 
     if(!roleAllowsMode(roles)){
       location.replace("your-design-studio.html");
       return;
     }
+
+    verifiedResidentId = residentId;
+    verifiedMemberId = memberId;
+    await loadProducer(memberId,residentId);
   }
-
-  verifiedResidentId = residentId;
-  verifiedMemberId = memberId;
-
-  await loadProducer(memberId,residentId);
 
   const savedWip = readStoredWip();
   if(savedWip){

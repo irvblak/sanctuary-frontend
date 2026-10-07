@@ -1119,6 +1119,19 @@
 
   function protectPrivateLinks() {
 
+    /*
+      An authenticated SCH publisher has already crossed its own restricted
+      Publishing-PIN threshold. Do not let the What's On link protector
+      hijack its permitted Event/Notice workflow and send it toward YDS.
+    */
+    if (
+      validSchPublishingSession()
+    ) {
+
+      return;
+    }
+
+
     if (
       !isWhatsOnRoute()
     ) {

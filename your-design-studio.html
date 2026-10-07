@@ -1163,7 +1163,7 @@
         ></div>
 
         <p class="route-note" id="routeNote" hidden>
-          Choose where this work belongs. The website will file it automatically.
+          <strong>Choose where your work belongs, and it will automatically go to the Calendar or the appropriate section in the Library</strong>
         </p>
 
       </section>
@@ -2616,14 +2616,14 @@
 
         libraryButton.addEventListener("click",event=>{
           event.preventDefault();
-          const informationButton=actionButton("Information or created work",routeFor("library","information"));
-          const learningButton=actionButton("Learning — advice, guides, lessons or manuals",routeFor("library","learning"),true);
+          const informationButton=actionButton("Library or Gallery",routeFor("library","information"));
+          const learningButton=actionButton("Learning & Teaching",routeFor("library","learning"),true);
           const backButton=actionButton("Back","#",true);
           backButton.addEventListener("click",backEvent=>{backEvent.preventDefault();openUniversalChoice(choice);});
           const selected=subcategories.find(item=>item[0]===selectedScope);
           setChoiceContent(
             `${choice.label} — Library`,
-            `<p>Choose what kind of lasting work this is.${selected?` It will be filed under <strong>${selected[1]}</strong>.`:""}</p>`,
+            `<p><strong>Choose where to place your work</strong></p>`,
             [informationButton,learningButton,backButton]
           );
           els.routeNote.hidden=false;

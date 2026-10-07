@@ -355,6 +355,62 @@
 
 
   /*
+    SCH/1 and SCH/2 are restricted publishing identities, not members.
+    Their Publishing PIN is their authentication threshold. Once a valid
+    SCH publishing session exists, do not send them through the ordinary
+    member Personal-PIN gate on their permitted Event/Notice workflow.
+  */
+  const SCH_PUBLISHING_PAGES =
+    new Set([
+      "sanctuary-publishing.html",
+      "host-event-form.html",
+      "host-my-events.html",
+      "design-studio-canvas.html",
+      "events-calendar.html",
+      "events.html",
+      "events-details.html"
+    ]);
+
+
+  function validSchPublishingSession() {
+
+    const token =
+      sessionStorage.getItem(
+        "schPublishingToken"
+      ) || "";
+
+    if (!token) {
+      return false;
+    }
+
+    const data =
+      decodeJwtPayload(
+        token
+      );
+
+    return Boolean(
+      data &&
+      data.account_type === "sch_publisher" &&
+      data.restricted === true &&
+      (data.rid === "SCH/1" || data.rid === "SCH/2") &&
+      Number(data.exp) &&
+      !tokenHasExpired(data)
+    );
+  }
+
+
+  function schPublishingAccessForPage(
+    pageName
+  ) {
+
+    return (
+      SCH_PUBLISHING_PAGES.has(pageName) &&
+      validSchPublishingSession()
+    );
+  }
+
+
+  /*
     =========================================================
     ROUTE HELPERS
     =========================================================
@@ -1279,6 +1335,10 @@
     ) &&
 
     !verifiedPrivateAccess() &&
+
+    !schPublishingAccessForPage(
+      page
+    ) &&
 
     !independentlyProtectedPage(
       page

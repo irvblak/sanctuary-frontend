@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>SCH Publishing Access — Sanctuary Club</title>
+  <script src="admin-guard.js?v=AG_3"></script>
+  <link rel="stylesheet" href="styles-main.css?v=ADMIN_5" />
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#d9ecff 0%,#f2f7fb 45%,#fff 100%);color:#222;min-height:100vh}
+    .wrap{max-width:760px;margin:2.25rem auto;padding:0 1rem 2rem}
+    .card{background:#fff;border-radius:16px;padding:1.25rem;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #dbe6f3}
+    h1{margin:0 0 .4rem;color:#003366;font-size:1.75rem}
+    .intro{margin:0 0 1.2rem;color:#5b6875;line-height:1.45}
+    .identity{padding:1rem;margin-top:.9rem;border:1px solid #dbe6f3;border-radius:12px;background:#fbfdff}
+    .identity h2{margin:0 0 .3rem;color:#003366;font-size:1.08rem}
+    .identity p{margin:.15rem 0 .8rem;color:#526476}
+    .controls{display:flex;gap:.65rem;align-items:end;flex-wrap:wrap}
+    label{display:block;font-weight:700;font-size:.9rem;margin-bottom:.3rem}
+    input{width:9rem;padding:.7rem;border:1px solid #cbd7e4;border-radius:9px;font-size:1rem}
+    button{padding:.72rem 1rem;border:0;border-radius:9px;background:#005ea8;color:#fff;font-weight:800;cursor:pointer}
+    button:disabled{opacity:.55;cursor:default}
+    .msg{min-height:1.4rem;margin-top:.65rem;font-weight:700;font-size:.92rem}
+    .ok{color:#176b3a}.err{color:#a12622}
+    .footer{margin-top:1.2rem;border-top:1px solid #e4edf7;padding-top:1rem}
+    .footer a{color:#005ea8;font-weight:700;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>SCH Publishing Access</h1>
+      <p class="intro">
+        Set or reset the four-digit Publishing PIN for each Sanctuary publishing identity.
+        The PIN is stored securely and cannot be displayed afterwards.
+      </p>
+
+      <div class="identity" data-rid="SCH/1/M">
+        <h2>SCH/1/M — Sanctuary Club House</h2>
+        <p>Mews publishing identity.</p>
+        <div class="controls">
+          <div>
+            <label for="pinM">New four-digit PIN</label>
+            <input id="pinM" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+          </div>
+          <button type="button">Set / Reset PIN</button>
+        </div>
+        <div class="msg" aria-live="polite"></div>
+      </div>
+
+      <div class="identity" data-rid="SCH/2/C">
+        <h2>SCH/2/C — Sanctuary Court</h2>
+        <p>Court publishing identity.</p>
+        <div class="controls">
+          <div>
+            <label for="pinC">New four-digit PIN</label>
+            <input id="pinC" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
+          </div>
+          <button type="button">Set / Reset PIN</button>
+        </div>
+        <div class="msg" aria-live="polite"></div>
+      </div>
+
+      <div class="footer"><a href="admin-dashboard.html">← Admin Dashboard</a></div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const API = "https://sanctuary-backend-8iqc.onrender.com";
+
+  function adminToken(){
+    return sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || "";
+  }
+
+  async function setPin(box){
+    const rid = box.dataset.rid;
+    const input = box.querySelector("input");
+    const button = box.querySelector("button");
+    const msg = box.querySelector(".msg");
+    const pin = input.value.trim();
+
+    msg.className = "msg";
+    msg.textContent = "";
+
+    if (!/^\d{4}$/.test(pin)){
+      msg.classList.add("err");
+      msg.textContent = "Enter exactly four digits.";
+      return;
+    }
+
+    if (!confirm("Set the Publishing PIN for " + rid + "?")) return;
+
+    const token = adminToken();
+    if (!token){
+      msg.classList.add("err");
+      msg.textContent = "Admin session not found. Please sign in again.";
+      return;
+    }
+
+    button.disabled = true;
+    try{
+      const res = await fetch(API + "/api/admin/sch-publishing/" + encodeURIComponent(rid) + "/pin", {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + token
+        },
+        body:JSON.stringify({ pin })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success === false){
+        throw new Error(data.message || "PIN could not be changed.");
+      }
+      input.value = "";
+      msg.classList.add("ok");
+      msg.textContent = "Publishing PIN set successfully.";
+    }catch(err){
+      msg.classList.add("err");
+      msg.textContent = err.message || "PIN could not be changed.";
+    }finally{
+      button.disabled = false;
+    }
+  }
+
+  document.querySelectorAll(".identity").forEach(box => {
+    box.querySelector("button").addEventListener("click", () => setPin(box));
+  });
+})();
+</script>
+</body>
+</html>

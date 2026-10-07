@@ -234,7 +234,7 @@
       }
 
       const isAdmin = roles.includes("admin");
-      const isHost = roles.includes("host");
+      const isHost = roles.includes("host") || roles.includes("clubhouse_publisher");
 
       function setModeText(){
         if(mode === "sop"){
@@ -346,7 +346,11 @@
         const hm = hostMember(ev);
 
         if(currentResidentId && hr && hr === currentResidentId.toUpperCase()) return true;
-        if(currentMemberId && hm && hm === currentMemberId.toUpperCase()) return true;
+
+        // SCH/1/M and SCH/2/C are separate publishing identities. Do not
+        // collapse them to the common SCH prefix when listing My Events.
+        const isSch = /^SCH\/\d+\/[A-Z]$/.test(String(currentResidentId || "").toUpperCase());
+        if(!isSch && currentMemberId && hm && hm === currentMemberId.toUpperCase()) return true;
 
         return false;
       }

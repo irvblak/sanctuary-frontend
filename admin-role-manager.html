@@ -630,7 +630,7 @@
                 <input type="checkbox" id="roleClubhousePublisher" />
                 <div class="roleText">
                   <strong>Clubhouse Publisher</strong>
-                  <span>SCH/1/M or SCH/2/C only. Admin-enabled access for Clubhouse Events/Notices, its own Vault, and view-only RR/RH.</span>
+                  <span>SCH/1 or SCH/2 only. Admin-enabled access for Clubhouse Events/Notices, its own Vault, and view-only RR/RH.</span>
                 </div>
               </label>
 
@@ -1548,7 +1548,7 @@
       roleCommitteeSecretaryEl.checked = roles.includes("committee_secretary");
       roleCommitteeTreasurerEl.checked = roles.includes("committee_treasurer");
       roleClubhousePublisherEl.checked = roles.includes("clubhouse_publisher");
-      const clubhouseIdentity = ["SCH/1/M","SCH/2/C"].includes(selectedResident.resident_id);
+      const clubhouseIdentity = ["SCH/1","SCH/2"].includes(selectedResident.resident_id);
       roleClubhousePublisherEl.disabled = !clubhouseIdentity;
       if(!clubhouseIdentity) roleClubhousePublisherEl.checked = false;
 
@@ -1683,14 +1683,14 @@
       }
 
       const specialClubhouseIdentities = {
-        "SCH/1/M":{ member_id:"SCH", resident_index:1, name:"Sanctuary Club House — Mews" },
-        "SCH/2/C":{ member_id:"SCH", resident_index:2, name:"Sanctuary Court — Court" }
+        "SCH/1":{ member_id:"SCH", resident_index:1, name:"Sanctuary Club House — Mews" },
+        "SCH/2":{ member_id:"SCH", resident_index:2, name:"Sanctuary Court — Court" }
       };
 
       try{
         showBox(infoBox,`Loading ${ref}…`);
 
-        // SCH/1/M and SCH/2/C are deliberate non-personal publishing identities.
+        // SCH/1 and SCH/2 are deliberate non-personal publishing identities.
         // They can be selected for their tightly restricted Admin-enabled role
         // even though they do not exist as ordinary residents in Members Information.
         if(specialClubhouseIdentities[ref]){
@@ -1716,7 +1716,7 @@
 
         if(!ref.includes("/")){
           clearBox(infoBox);
-          showBox(warnBox,"Please use SCH/1/M, SCH/2/C, or a member-level reference such as SM55/1.");
+          showBox(warnBox,"Please use SCH/1, SCH/2, or a member-level reference such as SM55/1.");
           return;
         }
 
@@ -1726,7 +1726,7 @@
 
         if(!wantedMemberId || !Number.isFinite(wantedIndex) || wantedIndex < 1){
           clearBox(infoBox);
-          showBox(warnBox,"Please use SCH/1/M, SCH/2/C, or a valid member reference such as SM55/1.");
+          showBox(warnBox,"Please use SCH/1, SCH/2, or a valid member reference such as SM55/1.");
           return;
         }
 

@@ -347,7 +347,7 @@
 
         if(currentResidentId && hr && hr === currentResidentId.toUpperCase()) return true;
 
-        // SCH/1/M and SCH/2/C are separate publishing identities. Do not
+        // SCH/1 and SCH/2 are separate publishing identities. Do not
         // collapse them to the common SCH prefix when listing My Events.
         const isSch = /^SCH\/\d+\/[A-Z]$/.test(String(currentResidentId || "").toUpperCase());
         if(!isSch && currentMemberId && hm && hm === currentMemberId.toUpperCase()) return true;

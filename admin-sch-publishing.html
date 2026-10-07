@@ -32,8 +32,7 @@
     <div class="card">
       <h1>SCH Publishing Access</h1>
       <p class="intro">
-        Set or reset the four-digit Publishing PIN for each Sanctuary publishing identity.
-        The PIN is stored securely and cannot be displayed afterwards.
+        View or change the current four-digit Publishing PIN for each Sanctuary publishing identity.
       </p>
 
       <div class="identity" data-rid="SCH/1/M">
@@ -41,10 +40,10 @@
         <p>Mews publishing identity.</p>
         <div class="controls">
           <div>
-            <label for="pinM">New four-digit PIN</label>
+            <label for="pinM">Current PIN</label>
             <input id="pinM" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
           </div>
-          <button type="button">Set / Reset PIN</button>
+          <button type="button">Save PIN</button>
         </div>
         <div class="msg" aria-live="polite"></div>
       </div>
@@ -54,10 +53,10 @@
         <p>Court publishing identity.</p>
         <div class="controls">
           <div>
-            <label for="pinC">New four-digit PIN</label>
+            <label for="pinC">Current PIN</label>
             <input id="pinC" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" />
           </div>
-          <button type="button">Set / Reset PIN</button>
+          <button type="button">Save PIN</button>
         </div>
         <div class="msg" aria-live="polite"></div>
       </div>
@@ -72,6 +71,22 @@
 
   function adminToken(){
     return sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || "";
+  }
+
+  async function loadPins(){
+    const token = adminToken();
+    if (!token) return;
+    try{
+      const res = await fetch(API + "/api/admin/sch-publishing", {
+        headers:{ "Authorization":"Bearer " + token }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success === false) return;
+      (data.identities || []).forEach(item => {
+        const box = Array.from(document.querySelectorAll(".identity")).find(el => el.dataset.rid === item.residentId);
+        if (box && item.pin) box.querySelector("input").value = item.pin;
+      });
+    }catch(_err){}
   }
 
   async function setPin(box){
@@ -113,9 +128,9 @@
       if (!res.ok || data.success === false){
         throw new Error(data.message || "PIN could not be changed.");
       }
-      input.value = "";
+      input.value = pin;
       msg.classList.add("ok");
-      msg.textContent = "Publishing PIN set successfully.";
+      msg.textContent = "Publishing PIN saved successfully.";
     }catch(err){
       msg.classList.add("err");
       msg.textContent = err.message || "PIN could not be changed.";
@@ -123,6 +138,8 @@
       button.disabled = false;
     }
   }
+
+  loadPins();
 
   document.querySelectorAll(".identity").forEach(box => {
     box.querySelector("button").addEventListener("click", () => setPin(box));

@@ -3370,10 +3370,16 @@ document
       }
 
       const trustedVaultOpening=IS_VAULT_OPEN||IS_EDITOR_REVIEW;
-      if(!hasStudioSession()||(!trustedVaultOpening&&!authorisedForMode())){
-        window.location.replace("your-design-studio.html");
-        return;
-      }
+      const schEventHandoff=
+  Boolean(window.SanctuaryAccess?.validSchPublishingSession?.()) &&
+  isDatedWorkflow() &&
+  Boolean(readEventHandoff()) &&
+  datedSource()==="host";
+
+if(!schEventHandoff&&(!hasStudioSession()||(!trustedVaultOpening&&!authorisedForMode()))){
+  window.location.replace("your-design-studio.html");
+  return;
+}
 
       const label=MODE_LABELS[CANVAS_MODE]||"Design Studio";
       modeIntro.textContent=`Working as: ${label}.`;

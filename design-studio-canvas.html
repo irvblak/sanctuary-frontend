@@ -2354,6 +2354,7 @@ ${pageClones}
 function getAuthToken(){
 
   return (
+    sessionStorage.getItem("schPublishingToken") ||
     sessionStorage.getItem("ydsAuthToken") ||
     sessionStorage.getItem("authToken") ||
     localStorage.getItem("authToken") ||

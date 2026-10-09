@@ -5,7 +5,7 @@
   <title>Host or Post an Event | Your Design Studio | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <script src="access.js?v=SCH_GATE_20261009_2"></script>
+  <script src="access.js?v=NOTICE_TOOLS_20261009_1"></script>
 
   <style>
     :root{
@@ -608,7 +608,18 @@ function activeSchPublishingToken(){
   }
 }
 
+function noticeAdminToken(){
+  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
+  try {
+    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
+    while (body.length % 4) body += "=";
+    const data = JSON.parse(atob(body));
+    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
+  } catch (_) { return ""; }
+}
+
 let authToken =
+  (params.get("admin") === "1" ? noticeAdminToken() : "") ||
   activeSchPublishingToken() ||
   sessionStorage.getItem("ydsAuthToken") ||
   sessionStorage.getItem("authToken") ||
@@ -627,6 +638,7 @@ function clean(v){ return String(v == null ? "" : v).trim(); }
 
 function baseMemberId(v){
   const raw = clean(v).toUpperCase();
+  if (/^SCH\/[12]$/.test(raw)) return raw;
   const m = raw.match(/^([A-Z]{2}\d+)/);
   return m ? m[1] : raw.split("/")[0];
 }
@@ -1359,7 +1371,8 @@ async function saveEvent(){
       from:"dated-form"
     });
 
-    canvasParams.set("v","DATED_REPEAT_3");
+    canvasParams.set("v","NOTICE_LAYOUT_20261009");
+    if(params.get("admin") === "1" && noticeAdminToken()) canvasParams.set("admin","1");
     if(scopeId) canvasParams.set("scope",scopeId);
     if(scopeName) canvasParams.set("scope_name",scopeName);
     if(editEventId) canvasParams.set("event_id",editEventId);
@@ -1514,7 +1527,14 @@ async function initialise(){
 
   // SCH publishers have already authenticated with their own Publishing PIN.
   // Keep them on the restricted Event route and out of ordinary YDS authority.
-  if(validSchPublisher()){
+  if(params.get("admin") === "1" && noticeAdminToken()){
+    const check = await apiFetch("/api/admin/whoami",{headers:{Authorization:`Bearer ${authToken}`}});
+    if (!check.is_admin) throw new Error("Website Admin sign-in is required.");
+    verifiedResidentId = "ADMIN";
+    verifiedMemberId = "ADMIN";
+    els.identityBox.textContent = "Website Admin — Event management";
+    els.identityBox.classList.add("show");
+  }else if(validSchPublisher()){
     const tokenData = decodeTokenPayload(authToken);
     const residentId = clean(tokenData.rid || "").toUpperCase();
 
@@ -1646,3 +1666,4 @@ initialise();
 </script>
 </body>
 </html>
+

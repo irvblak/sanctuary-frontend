@@ -1191,6 +1191,14 @@
             "click",
             event => {
 
+              // Sign-in can change the route after this listener was attached.
+              if (
+                !isWhatsOnRoute() ||
+                schPublishingAccessForPage(destinationPage(target))
+              ) {
+                return;
+              }
+
               event.preventDefault();
               event.stopPropagation();
 

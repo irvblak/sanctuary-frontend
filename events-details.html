@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=WHATS_ON_2"></script>
+  <script src="access.js?v=NOTICE_TOOLS_20261009_1"></script>
 
   <style>
     :root{
@@ -612,7 +612,7 @@
       </div>
 
       <div id="hostTools" class="bottom-actions host-tools no-print hidden">
-  <div class="host-note">For Event Host use.</div>
+  <div class="host-note">Event management</div>
 
   <a id="hsopBtnBottom" class="btn btn-discreet" href="host-state-of-play.html">
     State of Play
@@ -625,6 +625,7 @@
   <a id="editDetailsBtnBottom" class="btn btn-discreet" href="host-event-form.html">
     Edit Event Details
   </a>
+  <button id="deleteNoticeBtn" class="btn btn-discreet" type="button">Delete</button>
 </div>
 
   <script>
@@ -732,22 +733,14 @@
   return tokenMemberId();
 }
 function getWorkingToken(){
-  return (
-    localStorage.getItem("adminToken") ||
-    sessionStorage.getItem("adminToken") ||
-    localStorage.getItem("sanctuaryAdminToken") ||
-    sessionStorage.getItem("sanctuaryAdminToken") ||
-    localStorage.getItem("memberToken") ||
-    sessionStorage.getItem("memberToken") ||
-    localStorage.getItem("authToken") ||
-    sessionStorage.getItem("authToken") ||
-    ""
-  );
+  const admin = noticeAdminToken();
+  if (admin) return admin;
+  return sessionStorage.getItem("authToken") || sessionStorage.getItem("memberToken") || localStorage.getItem("memberToken") || localStorage.getItem("authToken") || "";
 }
 
 function decodeJwtPayload(token){
   try{
-    const part = String(token || "").split(".")[1];
+    const part = String(token || "").split(".")[0];
     if (!part) return {};
 
     let normalised = part.replace(/-/g, "+").replace(/_/g, "/");
@@ -787,28 +780,28 @@ function tokenMemberId(){
   );
 }
 
-function isAdminViewer(){
-  if (
-    localStorage.getItem("adminToken") ||
-    sessionStorage.getItem("adminToken") ||
-    localStorage.getItem("sanctuaryAdminToken") ||
-    sessionStorage.getItem("sanctuaryAdminToken")
-  ) {
-    return true;
-  }
-
-  return tokenRoles().includes("admin");
+function noticeAdminToken(){
+  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
+  try {
+    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
+    while (body.length % 4) body += "=";
+    const data = JSON.parse(atob(body));
+    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
+  } catch (_) { return ""; }
 }
-
+function isAdminViewer(){ return Boolean(noticeAdminToken()); }
 
 function normaliseResidentId(value){
   const raw = String(value || "").trim().toUpperCase();
   if (!raw) return "";
+  if (/^SCH\/[12]$/.test(raw)) return raw;
   const match = raw.match(/(?:SM|SC)\d+\/\d+/);
   return match ? match[0] : "";
 }
 
 function getViewerResidentId(){
+  const active = decodeJwtPayload(getWorkingToken());
+  if (active.account_type === "sch_publisher") return normaliseResidentId(active.rid);
   const stored = normaliseResidentId(
     localStorage.getItem("currentResidentId") ||
     sessionStorage.getItem("currentResidentId") ||
@@ -894,10 +887,16 @@ function getEventHostMemberId(e){
           • any signed-in Administrator; or
           • the Host membership that owns this event.
       */
+      if (isAdminViewer()) return true;
       if (window.SanctuaryAccess?.isWhatsOnRoute?.()) return false;
 
-      if (isAdminViewer()) return true;
-
+      const tokenData = decodeJwtPayload(getWorkingToken());
+      if (!Number(tokenData.exp) || Number(tokenData.exp)*1000 <= Date.now()) return false;
+      const schOwner = String(e.host_resident_id || e.host_member_id || "").toUpperCase();
+      if (/^SCH\/[12]$/.test(schOwner)) {
+        return tokenData.account_type === "sch_publisher" && tokenData.rid === schOwner;
+      }
+      if (tokenData.account_type === "sch_publisher") return false;
       const viewerResident = getViewerResidentId();
       const hostResident = getEventHostResidentId(e);
 
@@ -938,6 +937,25 @@ function getEventHostMemberId(e){
       hostTools.classList.toggle("hidden", !mayManage);
 
       if (!mayManage) return;
+      const adminQuery = isAdminViewer() ? "&admin=1" : "";
+      hsopBtnBottom.href += adminQuery;
+      editDetailsBtnBottom.href += adminQuery;
+      if (/^SCH\/[12]$/.test(String(e.host_resident_id || e.host_member_id || "").toUpperCase()) || isAdminViewer()) {
+        editBtnBottom.href = editDetailsBtnBottom.href;
+      }
+      document.getElementById("deleteNoticeBtn").onclick = async function(){
+        if (!confirm("Delete this Event, its Notice and all associated bookings? Save any booking or payment records first. This cannot be undone.")) return;
+        this.disabled = true;
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/events/${encodeURIComponent(EVENT_ID)}`, {
+            method:"DELETE", headers:{"Content-Type":"application/json",Authorization:`Bearer ${getWorkingToken()}`},
+            body:JSON.stringify({confirm_scrap:true})
+          });
+          const result = await response.json().catch(()=>({}));
+          if (!response.ok || result.success === false) throw new Error(result.message || "The Event could not be deleted.");
+          location.href = "events.html";
+        } catch(error) { showMessage(error.message,"error"); this.disabled = false; }
+      };
 
       /*
         Carry the already established working identity into the Host
@@ -1343,7 +1361,7 @@ function getEventHostMemberId(e){
         summaryText.toLocaleLowerCase() === noticeTitle.toLocaleLowerCase()
       );
 
-      if (summary && !summaryDuplicatesTitle){
+      if (summary && !canvasHtml && !summaryDuplicatesTitle){
         summaryBox.textContent = summary;
         summaryBox.classList.remove("hidden");
       }else{
@@ -1353,6 +1371,10 @@ function getEventHostMemberId(e){
 
       if (canvasHtml){
         renderPublishedCanvas(canvasHtml);
+        // The artwork supplies its own title; keep metadata for the event list.
+        const hasDesignedTitle = Boolean(bodyBox.querySelector('.canvas-item[data-kind="title"]'));
+        titleText.classList.toggle("hidden", hasDesignedTitle);
+        if (hasDesignedTitle) titleGraphic.style.display = "none";
       }else if (body){
         bodyBox.classList.remove("canvas-rendered");
         bodyBox.textContent = body;
@@ -1504,3 +1526,4 @@ bookingDetailsBox.classList.remove("hidden");
   <script src="wa-admin.js?v=WA_1"></script>
 </body>
 </html>
+

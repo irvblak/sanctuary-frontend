@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js"></script>
+  <script src="access.js?v=NOTICE_TOOLS_20261009_1"></script>
 
   <style>
     :root{
@@ -1034,8 +1034,20 @@
       `;
     }
 
+function noticeAdminToken(){
+  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
+  try {
+    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
+    while (body.length % 4) body += "=";
+    const data = JSON.parse(atob(body));
+    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
+  } catch (_) { return ""; }
+}
+
     function getAuthToken(){
       return (
+        (new URLSearchParams(location.search).get("admin") === "1" ? noticeAdminToken() : "") ||
+        sessionStorage.getItem("authToken") ||
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken") ||
         localStorage.getItem("sanctuaryAuthToken") ||
@@ -1262,3 +1274,4 @@
   </script>
 </body>
 </html>
+

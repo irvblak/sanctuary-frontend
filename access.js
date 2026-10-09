@@ -365,6 +365,7 @@
       "sanctuary-publishing.html",
       "host-event-form.html",
       "host-my-events.html",
+      "host-state-of-play.html",
       "design-studio-canvas.html",
       "events-calendar.html",
       "events.html",
@@ -1194,6 +1195,7 @@
               // Sign-in can change the route after this listener was attached.
               if (
                 !isWhatsOnRoute() ||
+                (noticeAdminToken() && new URL(target,location.href).searchParams.get("admin") === "1") ||
                 schPublishingAccessForPage(destinationPage(target))
               ) {
                 return;
@@ -1271,6 +1273,21 @@
     });
 
 
+function noticeAdminToken(){
+  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
+  try {
+    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
+    while (body.length % 4) body += "=";
+    const data = JSON.parse(atob(body));
+    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
+  } catch (_) { return ""; }
+}
+
+  function noticeAdminAccess(){
+    return new URLSearchParams(location.search).get("admin") === "1" &&
+      ["host-event-form.html","host-state-of-play.html","design-studio-canvas.html"].includes(page) && Boolean(noticeAdminToken());
+  }
+
   /*
     =========================================================
     PAGE ENTRY
@@ -1315,6 +1332,8 @@
   if (
     isWhatsOnRoute() &&
 
+    !noticeAdminAccess() &&
+
     !WHATS_ON_ALLOWED.has(
       page
     ) &&
@@ -1358,6 +1377,8 @@
     ) &&
 
     !verifiedPrivateAccess() &&
+
+    !noticeAdminAccess() &&
 
     !schPublishingAccessForPage(
       page
@@ -1440,3 +1461,4 @@
   script.dataset.sanctuaryNavigation="true";
   (document.head||document.documentElement).appendChild(script);
 })();
+

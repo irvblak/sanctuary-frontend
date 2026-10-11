@@ -931,7 +931,7 @@
 .route-selector select{width:100%;padding:12px;border:1px solid #cdbcae;border-radius:10px;background:#fff;color:#2f2925;font:inherit;}
 .route-note{margin:8px 0 0;color:#675a51;line-height:1.45;}
 </style>
-<script src="content-structure.js?v=STRUCTURE_2"></script>
+<script src="content-structure.js?v=ROLE_SHELVES_20261011"></script>
 </head>
 
 
@@ -1321,12 +1321,16 @@
         { key:"activity", label:"Activity Organiser", description:"Work for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"], mode:"activity", destination:"club-activities", department:"club-activities", guide:"activity-organiser" },
         { key:"writer", label:"Writer", description:"Work as a Club Writer.", iconId:"role-news", roles:["writer","news_contributor"], mode:"writer", destination:"members-articles-stories", department:"reading-room", guide:"writer" },
         { key:"artist", label:"Artist", description:"Create artwork for the Gallery.", iconId:"role-artist", roles:["artist"], mode:"artist", destination:"gallery", department:"gallery", guide:"artist", fixedSubcategories:[["photo","Photo"],["modern","Modern"],["traditional","Traditional"]] },
-        { key:"art-teacher", label:"Art Teacher", description:"Create YDS or art teaching material, or work for the Gallery.", iconId:"role-artist", roles:["art_teacher"], mode:"art-teacher", destination:"gallery", department:"gallery", fixedSubcategories:[["library-guide","Library Guide"],["for-gallery","For the Gallery"]] },
+        { key:"art-teacher", label:"Art Teacher", description:"Create YDS or art teaching material, or work for the Gallery.", iconId:"role-artist", roles:["art_teacher"], mode:"art-teacher", destination:"gallery", department:"gallery", fixedSubcategories:[["art-teacher","Art Teacher"]] },
         { key:"committee", label:"Committee Member", description:"Work as a Committee Member.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"], mode:"committee", destination:"notices-news", department:"committee-news-information", guide:"club-publications" },
         { key:"panel", label:"Residents Association Panel Member", description:"Work as a Residents Association Panel Member.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"], mode:"panel", destination:"notices-news", department:"residents-association-news-information", guide:"residents-association-panel" },
         { key:"information-officer", label:"Information Officer", description:"Publish miscellaneous Club information.", iconId:"role-news", roles:["information_officer"], mode:"information-officer", destination:"useful-information", department:"general-useful-information", fixedSubcategories:[["general-information","General Information"],["places-to-go","Places to Go"],["places-to-eat","Places to Eat"],["artisans-services","Artisans & Services"],["useful-contacts","Useful Contacts"]] },
         { key:"website-helper", label:"Website Helper", description:"Publish website help and supporting information.", iconId:"role-helper", roles:["website_helper"], mode:"website-helper", destination:"guides-help", department:"website-help" },
-        { key:"administration", label:"Administration & Governance", description:"Publish website governance or Club and condominium administration information.", iconId:"role-admin", roles:["admin_website","admin_club"], mode:"administration", destination:"administration", department:"administration", roleSubcategories:{admin_website:["website","Website"],admin_club:["club-condominium-administration","Club & Condominium Administration"]} }
+        { key:"copy-editor", label:"Copy Editor", description:"Prepare editorial information or teaching material.", iconId:"role-news", roles:["copy_editor","editor"], mode:"editorial", destination:"guides-help", department:"website-help" },
+        { key:"art-editor", label:"Art Editor or Curator", description:"Prepare Gallery information or teaching material.", iconId:"role-artist", roles:["art_editor"], mode:"editorial", destination:"gallery", department:"gallery", fixedSubcategories:[["art-editor","Art Editor or Curator"]] },
+        { key:"services", label:"Services", description:"Prepare service information or teaching material.", iconId:"role-helper", roles:["services"], mode:"services", destination:"notices-news", department:"services" },
+        { key:"website-custodian", label:"Website Custodian (WC)", description:"Prepare website custody information or teaching material.", iconId:"role-admin", roles:["website_custodian"], mode:"administration", destination:"administration", department:"administration", fixedSubcategories:[["website-custodian","Website Custodian (WC)"]] },
+        { key:"administration", label:"Administration & Governance", description:"Publish website governance or Club and condominium administration information.", iconId:"role-admin", roles:["admin_website","admin_club","condominium_coordinator","condo_admin"], mode:"administration", destination:"administration", department:"administration", roleSubcategories:{admin_website:["website","Website"],admin_club:["club-condominium-administration","Club & Condominium Administration"],condominium_coordinator:["club-condominium-administration","Club & Condominium Administration"],condo_admin:["club-condominium-administration","Club & Condominium Administration"]} }
 
       ];
       
@@ -2552,7 +2556,7 @@
 
 
       function openUniversalChoice(choice){
-        const actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
+        let actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
         const approval=["writer","artist"].includes(choice.mode)?"editor":"self";
         const common={acting_role:actingRole,department:choice.department};
         let subcategories=[];
@@ -2581,7 +2585,7 @@
           const routing={...common,section:choice.department,subcategory:selectedScope,subcategory_name:scopeName,scope:selectedScope,scope_name:scopeName,filing};
 
           if(destination==="calendar"){
-            return datedRoute(choice.key,{...routing,work_kind:"dated-happening"});
+            return datedRoute(choice.mode,{...routing,work_kind:"dated-happening"});
           }
 
           return standingRoute(choice.mode,choice.destination,{
@@ -2610,6 +2614,7 @@
         if(scopeSelect){
           scopeSelect.addEventListener("change",()=>{
             selectedScope=scopeSelect.value;
+            if(choice.roleSubcategories){actingRole=choice.roles.find(role=>currentStudioRoles.includes(role)&&choice.roleSubcategories[role]?.[0]===selectedScope)||actingRole;common.acting_role=actingRole;}
             calendarButton.href=routeFor("calendar");
           });
         }

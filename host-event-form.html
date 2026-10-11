@@ -509,7 +509,7 @@ const rawSource = String(params.get("source") || (eventMode === "host" ? "host" 
 const datedSource = [
   "host","activity","committee","panel","services",
   "information-officer","website-helper","condo",
-  "editorial","administration","writer","artist"
+  "editorial","administration","writer","artist","art-teacher"
 ].includes(rawSource)
   ? rawSource
   : (eventMode === "host" ? "host" : "host");
@@ -760,8 +760,9 @@ function roleAllowsMode(roles){
     "website-helper":["website_helper"],
     condo:["condominium_coordinator","condo_admin"],
     editorial:["copy_editor","art_editor","editor"],
-    administration:["admin_website","admin_club"],
+    administration:["admin_website","admin_club","website_custodian","condominium_coordinator","condo_admin"],
     writer:["writer","news_contributor"],
+    "art-teacher":["art_teacher"],
     artist:["artist"]
   };
 
@@ -833,6 +834,7 @@ async function refreshAuthorityRoles(memberId,residentId,roles){
 }
 
 const SOURCE_LABELS = {
+  "art-teacher":"Art Teacher",
   host:"Event Host",
   activity:"Activity Organiser",
   committee:"Committee",

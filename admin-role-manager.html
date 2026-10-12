@@ -490,7 +490,7 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=ROLE_SHELVES_20261011"></script>
+<script src="content-structure.js?v=INDEX_20261012"></script>
 </head>
 
 <body>
@@ -727,7 +727,7 @@
           </div>
 
           <div class="roleSection">
-            <h3>Creative &amp; Editorial</h3>
+            <h3>Curators &amp; Editors</h3>
             <div class="roleGrid">
               <label class="roleBox">
                 <input type="checkbox" id="roleCopyEditor" />
@@ -745,13 +745,7 @@
                 </div>
               </label>
 
-              <label class="roleBox">
-                <input type="checkbox" id="roleArtTeacher" />
-                <div class="roleText">
-                  <strong>Art Teacher</strong>
-                  <span>Creates YDS and art teaching material and may publish it for Learning and/or the Gallery.</span>
-                </div>
-              </label>
+              <input type="checkbox" id="roleArtTeacher" hidden aria-hidden="true" />
             </div>
           </div>
 
@@ -932,7 +926,7 @@
       writer: "Writer",
       artist: "Artist",
       copy_editor: "Copy Editor",
-      art_editor: "Art Editor",
+      art_editor: "Art Editor or Curator",
       art_teacher: "Art Teacher",
 
       website_helper: "Website Helper",
@@ -951,6 +945,8 @@
       news_contributor: "Writer (legacy)",
       editor: "Editor (legacy)"
     };
+
+    SanctuaryContentStructure.REGISTER_GROUPS.forEach(group=>group.roles.forEach(([role,label,id])=>{const input=document.getElementById(id);const text=input?.closest("label")?.querySelector("strong");if(text)text.textContent=label;}));
 
     const LEGACY_ROLES = new Set([
       "admin",
@@ -1918,3 +1914,4 @@
   </script>
 </body>
 </html>
+

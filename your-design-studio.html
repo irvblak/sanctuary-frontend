@@ -931,7 +931,7 @@
 .route-selector select{width:100%;padding:12px;border:1px solid #cdbcae;border-radius:10px;background:#fff;color:#2f2925;font:inherit;}
 .route-note{margin:8px 0 0;color:#675a51;line-height:1.45;}
 </style>
-<script src="content-structure.js?v=ROLE_SHELVES_20261011"></script>
+<script src="content-structure.js?v=INDEX_20261012"></script>
 </head>
 
 
@@ -1115,7 +1115,7 @@
         </h3>
 
         <p class="you-may">
-          Choose from the Studio hats available to you.
+          Choose what your work is for, then select Calendar, Library or Learning &amp; Teaching.
         </p>
 
         <div
@@ -1137,6 +1137,8 @@
 
 
       <!-- ROLE CHOICES -->
+
+      <div id="contentDirectory"></div>
 
       <div
         class="studio-grid"
@@ -1314,25 +1316,7 @@
       */
 
 
-      const STUDIO_CHOICES = [
-
-        { key:"host", label:"Event Host", description:"Work as an Event Host.", iconId:"role-host", roles:["host"], mode:"host", destination:"notices-news", department:"events", guide:"event-host" },
-        { key:"clubhouse", label:"Sanctuary Club House", description:"Prepare and manage Clubhouse Events and Notices.", iconId:"role-host", roles:["clubhouse_publisher"], mode:"host", destination:"notices-news", department:"events", guide:"event-host" },
-        { key:"activity", label:"Activity Organiser", description:"Work for an Activity you organise.", iconId:"role-activity", roles:["activity_organiser"], mode:"activity", destination:"club-activities", department:"club-activities", guide:"activity-organiser" },
-        { key:"writer", label:"Writer", description:"Work as a Club Writer.", iconId:"role-news", roles:["writer","news_contributor"], mode:"writer", destination:"members-articles-stories", department:"reading-room", guide:"writer" },
-        { key:"artist", label:"Artist", description:"Create artwork for the Gallery.", iconId:"role-artist", roles:["artist"], mode:"artist", destination:"gallery", department:"gallery", guide:"artist", fixedSubcategories:[["photo","Photo"],["modern","Modern"],["traditional","Traditional"]] },
-        { key:"art-teacher", label:"Art Teacher", description:"Create YDS or art teaching material, or work for the Gallery.", iconId:"role-artist", roles:["art_teacher"], mode:"art-teacher", destination:"gallery", department:"gallery", fixedSubcategories:[["art-teacher","Art Teacher"]] },
-        { key:"committee", label:"Committee Member", description:"Work as a Committee Member.", iconId:"role-committee", roles:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"], mode:"committee", destination:"notices-news", department:"committee-news-information", guide:"club-publications" },
-        { key:"panel", label:"Residents Association Panel Member", description:"Work as a Residents Association Panel Member.", iconId:"role-panel", roles:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"], mode:"panel", destination:"notices-news", department:"residents-association-news-information", guide:"residents-association-panel" },
-        { key:"information-officer", label:"Information Officer", description:"Publish miscellaneous Club information.", iconId:"role-news", roles:["information_officer"], mode:"information-officer", destination:"useful-information", department:"general-useful-information", fixedSubcategories:[["general-information","General Information"],["places-to-go","Places to Go"],["places-to-eat","Places to Eat"],["artisans-services","Artisans & Services"],["useful-contacts","Useful Contacts"]] },
-        { key:"website-helper", label:"Website Helper", description:"Publish website help and supporting information.", iconId:"role-helper", roles:["website_helper"], mode:"website-helper", destination:"guides-help", department:"website-help" },
-        { key:"copy-editor", label:"Copy Editor", description:"Prepare editorial information or teaching material.", iconId:"role-news", roles:["copy_editor","editor"], mode:"editorial", destination:"guides-help", department:"website-help" },
-        { key:"art-editor", label:"Art Editor or Curator", description:"Prepare Gallery information or teaching material.", iconId:"role-artist", roles:["art_editor"], mode:"editorial", destination:"gallery", department:"gallery", fixedSubcategories:[["art-editor","Art Editor or Curator"]] },
-        { key:"services", label:"Services", description:"Prepare service information or teaching material.", iconId:"role-helper", roles:["services"], mode:"services", destination:"notices-news", department:"services" },
-        { key:"website-custodian", label:"Website Custodian (WC)", description:"Prepare website custody information or teaching material.", iconId:"role-admin", roles:["website_custodian"], mode:"administration", destination:"administration", department:"administration", fixedSubcategories:[["website-custodian","Website Custodian (WC)"]] },
-        { key:"administration", label:"Administration & Governance", description:"Publish website governance or Club and condominium administration information.", iconId:"role-admin", roles:["admin_website","admin_club","condominium_coordinator","condo_admin"], mode:"administration", destination:"administration", department:"administration", roleSubcategories:{admin_website:["website","Website"],admin_club:["club-condominium-administration","Club & Condominium Administration"],condominium_coordinator:["club-condominium-administration","Club & Condominium Administration"],condo_admin:["club-condominium-administration","Club & Condominium Administration"]} }
-
-      ];
+      const STUDIO_CHOICES = SanctuaryContentStructure.PRODUCTION_HATS;
       
       /*
         Role badges may include roles which do not themselves
@@ -1379,12 +1363,6 @@
           roles:["artist"],
           iconId:"role-artist",
           tooltip:"Artist"
-        },
-
-        {
-          roles:["art_teacher"],
-          iconId:"role-artist",
-          tooltip:"Art Teacher"
         },
 
         {
@@ -2376,6 +2354,11 @@
             );
           });
 
+        const requestedHat=new URLSearchParams(location.search).get("hat");
+        const matched=STUDIO_CHOICES.find(choice=>choice.key===requestedHat&&isChoiceAssigned(choice,roles));
+        if(matched)openUniversalChoice(matched);
+        if(roles.some(role=>["copy_editor","art_editor","editor"].includes(role))){const review=actionButton("Open review desk","editor-desk.html",true);els.studioGrid.appendChild(review);}
+
         /* State of Play, booking tools and existing dated work are deliberately
            not duplicated on the Studio front door. */
         if(els.existingTools){
@@ -2556,392 +2539,29 @@
 
 
       function openUniversalChoice(choice){
-        let actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
-        const approval=["writer","artist"].includes(choice.mode)?"editor":"self";
-        const common={acting_role:actingRole,department:choice.department};
-        let subcategories=[];
-
-        if(choice.key==="activity"){
-          subcategories=(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes())
-            .map(scope=>[scope,ACTIVITY_SCOPE_LABELS[scope]||scope]);
-          if(!subcategories.length){
-            setChoiceContent(choice.label,"<p>No Activity has yet been assigned to you. A Club Administrator can add the appropriate Activity in the Role Register.</p>",[]);
-            return;
-          }
-        }else if(Array.isArray(choice.fixedSubcategories)){
-          subcategories=choice.fixedSubcategories;
-        }else if(choice.roleSubcategories){
-          subcategories=choice.roles
-            .filter(role=>currentStudioRoles.includes(role)&&choice.roleSubcategories[role])
-            .map(role=>choice.roleSubcategories[role])
-            .filter((item,index,list)=>list.findIndex(other=>other[0]===item[0])===index);
-        }
-
-        let selectedScope=subcategories[0]?.[0]||"";
-
-        const routeFor=(destination,filing="")=>{
-          const match=subcategories.find(item=>item[0]===selectedScope);
-          const scopeName=match?match[1]:"";
-          const routing={...common,section:choice.department,subcategory:selectedScope,subcategory_name:scopeName,scope:selectedScope,scope_name:scopeName,filing};
-
-          if(destination==="calendar"){
-            return datedRoute(choice.mode,{...routing,work_kind:"dated-happening"});
-          }
-
-          return standingRoute(choice.mode,choice.destination,{
-            ...routing,
-            tertiary:scopeName,
-            collection:"library",
-            work_kind:filing==="learning"?"learning":"information",
-            approval
-          });
-        };
-
-        const calendarButton=actionButton("Calendar",routeFor("calendar"));
-        const libraryButton=actionButton("Library","#",true);
-        let selector="";
-
-        if(subcategories.length>1){
-          selector=`<label class="route-selector"><strong>Choose the part of your role this work belongs to</strong><select id="roleScopeSelect">${subcategories.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label>`;
-        }else if(subcategories.length===1){
-          selector=`<p><strong>This work will be filed under:</strong> ${subcategories[0][1]}</p>`;
-        }
-
-        setChoiceContent(choice.label,selector,[calendarButton,libraryButton]);
-        els.routeNote.hidden=false;
-
-        const scopeSelect=document.getElementById("roleScopeSelect");
-        if(scopeSelect){
-          scopeSelect.addEventListener("change",()=>{
-            selectedScope=scopeSelect.value;
-            if(choice.roleSubcategories){actingRole=choice.roles.find(role=>currentStudioRoles.includes(role)&&choice.roleSubcategories[role]?.[0]===selectedScope)||actingRole;common.acting_role=actingRole;}
-            calendarButton.href=routeFor("calendar");
-          });
-        }
-
-        libraryButton.addEventListener("click",event=>{
-          event.preventDefault();
-          const informationButton=actionButton("Library or Gallery",routeFor("library","information"));
-          const learningButton=actionButton("Learning & Teaching",routeFor("library","learning"),true);
-          const backButton=actionButton("Back","#",true);
-          backButton.addEventListener("click",backEvent=>{backEvent.preventDefault();openUniversalChoice(choice);});
-          const selected=subcategories.find(item=>item[0]===selectedScope);
-          setChoiceContent(
-            `${choice.label} — Library`,
-            `<p><strong>Choose where to place your work</strong></p>`,
-            [informationButton,learningButton,backButton]
-          );
-          els.routeNote.hidden=false;
+        const S=SanctuaryContentStructure;
+        const actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
+        const subjects=S.hatSubjects(choice,choice.key==="activity"?(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes()):undefined);
+        if(choice.key==="activity"&&!subjects.length){setChoiceContent(choice.label,"<p>No activity has been assigned. Please ask a Club Administrator.</p>",[]);return;}
+        let selectedSubject=subjects[0]?.[0]||"",selectedSubdivision="",selectedStream="teaching";
+        const links={calendar:actionButton("Calendar","#"),information:actionButton("Library","#",true),learning:actionButton("Learning & Teaching","#",true)};
+        const selector=subjects.length?`<label class="route-selector">Subject<select id="roleScopeSelect">${subjects.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label><div id="roleSubdivision"></div>`:"";
+        setChoiceContent(choice.label,selector,Object.values(links));els.routeNote.hidden=true;
+        function update(){Object.entries(links).forEach(([kind,link])=>{link.href=S.creationTarget(choice,kind,selectedSubject,selectedSubdivision,selectedStream,actingRole);});}
+        function subdivisions(){const box=document.getElementById("roleSubdivision");if(!box){update();return;}const values=S.hatSubdivision(choice,selectedSubject);selectedSubdivision=values[0]?.[0]||"";box.innerHTML=values.length?`<label class="route-selector">Subdivision<select id="roleSubdivisionSelect">${values.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label>`:"";document.getElementById("roleSubdivisionSelect")?.addEventListener("change",e=>{selectedSubdivision=e.target.value;update();});update();}
+        document.getElementById("roleScopeSelect")?.addEventListener("change",e=>{selectedSubject=e.target.value;subdivisions();});subdivisions();
+        links.learning.addEventListener("click",e=>{
+          e.preventDefault();const enter=actionButton("Create work","#");const back=actionButton("Back","#",true);
+          setChoiceContent(choice.label+" — Learning & Teaching",'<label class="route-selector">Choose a shelf<select id="learningStreamSelect"><option value="learning">Learning</option><option value="teaching" selected>Teaching</option></select></label>',[enter,back]);
+          const setLink=()=>{enter.href=S.creationTarget(choice,"learning",selectedSubject,selectedSubdivision,selectedStream,actingRole);};
+          document.getElementById("learningStreamSelect").addEventListener("change",event=>{selectedStream=event.target.value;setLink();});setLink();back.addEventListener("click",event=>{event.preventDefault();openUniversalChoice(choice);});
         });
       }
 
 
       function openChoice(choice){
-
-        if(choice && typeof choice === "object"){
-          openUniversalChoice(choice);
-          return;
-        }
-
-        const key = choice;
-
-        if(key === "host"){
-
-          setChoiceContent(
-            "Host an Event",
-            `
-              <p>
-                Start with the factual Event details needed for the Calendar and Events List.
-                When those are saved, you can continue directly to the linked Notice.
-              </p>
-
-              <p>
-                Your work remains private and editable while it is Work in Progress.
-                Nothing appears in Calendar, Events List or Notices until you choose <strong>Publish</strong>.
-                Published dated material is removed automatically 60 days after its date.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create an Event",
-                datedRoute("host")
-              )
-            ]
-          );
-
-          return;
-        }
-
-
-        if(key === "activity"){
-
-          const scoped =
-            currentActivityScopes.length ||
-            restoreActivityScopes().length;
-
-          setChoiceContent(
-            "Activity Organiser",
-            `
-              <p>
-                ${scoped
-                  ? "Choose the Activity and what you want to create."
-                  : "Choose what you want to create. When Activity scopes are assigned in the Role Manager, your own Activities will be shown here automatically."}
-              </p>
-
-              <p>
-                A dated Activity goes through Calendar & Events List before its linked Notice.
-                Standing Activity information goes directly to the Design Studio and is filed automatically under Club Activities.
-              </p>
-
-              <p>
-                Work in Progress stays private until you publish it.
-                Dated material follows the 60-day rule; standing material remains until it is withdrawn.
-              </p>
-            `,
-            activityButtons()
-          );
-
-          return;
-        }
-
-
-        if(key === "writer"){
-
-          setChoiceContent(
-            "Writer",
-            `
-              <p>
-                Create an article, story or letter. Your Work in Progress remains private
-                and editable until you submit it.
-              </p>
-
-              <p>
-                Articles and stories go to an Editor. Letters provide a courteous,
-                recorded way for members to raise questions or concerns with the
-                Committee or Panel and for the appropriate Secretary to respond.
-              </p>
-            `,
-            [
-              actionButton("Article or Story",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"articles-stories",subcategory_name:"Articles & Stories",approval:"editor"})),
-              actionButton("Letter to the Committee",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"letter-to-committee",subcategory_name:"Letter to the Committee",approval:"ra_secretary"})),
-              actionButton("Letter to the Panel",standingRoute("writer","members-articles-stories",{section:"reading-room",subcategory:"letter-to-panel",subcategory_name:"Letter to the Panel",approval:"committee_secretary"}))
-            ]
-          );
-
-          return;
-        }
-
-
-        if(key === "artist"){
-
-          setChoiceContent(
-            "Artist",
-            `
-              <p>
-                Create artwork or other visual work in the Design Studio.
-                Your Work in Progress remains private and editable until you submit it.
-              </p>
-
-              <p>
-                When it is ready, submit it to an Editor.
-                Approved work is filed automatically in the Gallery.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create Gallery Work",
-                standingRoute(
-                  "artist",
-                  "gallery",
-                  {
-                    section:"gallery",
-                    approval:"editor"
-                  }
-                )
-              )
-            ]
-          );
-
-          return;
-        }
-
-
-        if(key === "committee"){
-
-          setChoiceContent(
-            "Committee",
-            `
-              <p>
-                Choose the kind of authorised Committee material you want to create.
-                Dated material goes first to Calendar & Events List and then to its linked Notice.
-              </p>
-
-              <p>
-                Standing material goes directly to the Design Studio and is filed automatically
-                in the appropriate Club Publications section.
-                Work in Progress remains private until it is published.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create dated Committee Notice",
-                datedRoute("committee")
-              ),
-              actionButton(
-                "Committee News",
-                standingRoute(
-                  "committee",
-                  "notices-news",
-                  {
-                    section:"club-publications",
-                    subcategory:"news"
-                  }
-                ),
-                true
-              ),
-              actionButton(
-                "Useful Information",
-                standingRoute(
-                  "committee",
-                  "useful-information",
-                  {
-                    section:"club-publications",
-                    subcategory:"useful-information"
-                  }
-                ),
-                true
-              ),
-              actionButton(
-                "Meeting Information",
-                standingRoute(
-                  "committee",
-                  "notices-news",
-                  {
-                    section:"club-publications",
-                    subcategory:"meetings"
-                  }
-                ),
-                true
-              )
-            ]
-          );
-
-          return;
-        }
-
-
-        if(key === "panel"){
-
-          setChoiceContent(
-            "Residents Association",
-            `
-              <p>
-                Choose the kind of authorised Residents Association material you want to create.
-                Dated material goes first to Calendar & Events List and then to its linked Notice.
-              </p>
-
-              <p>
-                Standing material goes directly to the Design Studio and is filed automatically
-                under Residents Association. Work in Progress remains private until it is published.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create dated Residents Association Notice",
-                datedRoute("panel")
-              ),
-              actionButton(
-                "Residents Association News",
-                standingRoute(
-                  "panel",
-                  "notices-news",
-                  {
-                    section:"residents-association",
-                    subcategory:"news"
-                  }
-                ),
-                true
-              ),
-              actionButton(
-                "Meeting Information",
-                standingRoute(
-                  "panel",
-                  "notices-news",
-                  {
-                    section:"residents-association",
-                    subcategory:"meetings"
-                  }
-                ),
-                true
-              )
-            ]
-          );
-
-          return;
-        }
-
-
-        if(key === "teacher"){
-
-          setChoiceContent(
-            "Teacher",
-            `<p>Create a class or teaching Notice, or prepare standing information for the subject you teach.</p>`,
-            [
-              actionButton("Create a dated Class Notice", datedRoute("tutor")),
-              actionButton("Create teaching information", standingRoute("tutor", "guides", {section:"website-help"}), true)
-            ]
-          );
-          return;
-        }
-
-
-        if(key === "condo"){
-
-          setChoiceContent(
-            "Condo Admin",
-            `<p>Prepare a condominium report or other standing information. It will be routed to the dedicated Condominium Library shelf.</p>`,
-            [
-              actionButton("Create Condominium information", standingRoute("condominium_coordinator", "condominium", {section:"condominium"}), true)
-            ]
-          );
-          return;
-        }
-
-
-        if(key === "services"){
-
-          setChoiceContent(
-            "Services",
-            `
-              <p>
-                Choose dated information for Calendar & Events List, or standing information
-                for the authorised Service.
-              </p>
-
-              <p>
-                Work in Progress remains private until it is published.
-                Dated material follows the 60-day rule; standing information remains until withdrawn.
-              </p>
-            `,
-            [
-              actionButton(
-                "Create dated Service Notice",
-                datedRoute("services")
-              ),
-              actionButton(
-                "Create standing Service information",
-                standingRoute(
-                  "services",
-                  "notices-news",
-                  {section:"services"}
-                ),
-                true
-              )
-            ]
-          );
-
-          return;
-        }
+        const hat=typeof choice==="object"?choice:STUDIO_CHOICES.find(item=>item.key===choice);
+        if(hat)openUniversalChoice(hat);
       }
 
       function storeSession(
@@ -3638,5 +3258,6 @@
     })();
   </script>
 
-</body>
+<script src="content-directory.js?v=INDEX_20261012"></script></body>
 </html>
+

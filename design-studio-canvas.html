@@ -511,11 +511,11 @@
         <h2 id="creativeHeading">My Own Design</h2>
         <div class="canvas-head-actions">
           <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio</button>
-          <button class="btn secondary" id="myVaultBtn" type="button">My Vault</button>
+          <button class="btn secondary" id="myVaultBtn" type="button">Save to My Vault</button>
           <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
           <button class="btn secondary" id="repeatDatesBtn" type="button" hidden>Add another date</button>
-          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools</button>
+          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button>
           <div class="page-tabs compact-page-tabs" id="pageTabs" aria-label="Pages"></div>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
@@ -855,14 +855,15 @@
       (PAGE_PARAMS.get("approval")||PENDING_VAULT_PROJECT?.approval||"").toLowerCase();
 
     const PUBLICATION_ACTING_ROLE=
-      (PAGE_PARAMS.get("acting_role")||"").toLowerCase();
+      (PAGE_PARAMS.get("acting_role")||PENDING_VAULT_PROJECT?.acting_role||"").toLowerCase();
 
     const PUBLICATION_DEPARTMENT=
-      (PAGE_PARAMS.get("department")||CANVAS_MODE||"").toLowerCase();
+      (PAGE_PARAMS.get("department")||PENDING_VAULT_PROJECT?.department||CANVAS_MODE||"").toLowerCase();
 
     const PUBLICATION_WORK_KIND=
-      (PAGE_PARAMS.get("work_kind")||"useful-lasting").toLowerCase();
+      (PAGE_PARAMS.get("work_kind")||PENDING_VAULT_PROJECT?.work_kind||"useful-lasting").toLowerCase();
     let PUBLICATION_TERTIARY=(PAGE_PARAMS.get("subcategory_name")||PAGE_PARAMS.get("tertiary")||PAGE_PARAMS.get("scope_name")||"").trim();
+    let PUBLICATION_LEARNING_STREAM=(PAGE_PARAMS.get("learning_stream")||PENDING_VAULT_PROJECT?.learningStream||"teaching").toLowerCase();
     let PUBLICATION_CLASSROOM=(PAGE_PARAMS.get("classroom")||"").trim();
     let PUBLICATION_LEARNING_TYPE=(PAGE_PARAMS.get("learning_type")||"").trim().toLowerCase();
 
@@ -1198,13 +1199,14 @@
         const required=DATED_SOURCE_ROLES[datedSource()]||[];
         return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
       }
+      if(["writer","artist"].includes(CANVAS_MODE)&&clean(sessionStorage.getItem("currentDisplayName")||localStorage.getItem("currentDisplayName"))&&getAuthToken())return true;
       const required=MODE_ROLES[CANVAS_MODE];
       if(!required||!required.length)return false;
       return required.some(role=>roles.includes(normaliseRole(role)))||roles.includes("admin");
     }
     function hasStudioSession(){
       const resident=sessionStorage.getItem("currentResidentId")||localStorage.getItem("currentResidentId")||sessionStorage.getItem("verifiedResidentId")||localStorage.getItem("verifiedResidentId")||"";
-      return Boolean(resident&&storedRoles().length);
+      return Boolean(resident&&(storedRoles().length||clean(sessionStorage.getItem("currentDisplayName")||localStorage.getItem("currentDisplayName"))));
     }
 
     function pages(){return [...creativePages.querySelectorAll(".canvas-page")]}
@@ -1223,11 +1225,11 @@
     }
     function snapshotState(){
       syncDrawingData();
-      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||""),tertiaryCategory:PUBLICATION_TERTIARY,classroom:PUBLICATION_CLASSROOM,learningType:PUBLICATION_LEARNING_TYPE});
+      return JSON.stringify({html:creativePages.innerHTML,currentPageIndex,orientation:orientationSelect.value,pageNumbers:pageNumbersCheck.checked,numberFirst:numberFirstPageCheck.checked,numberPosition:pageNumberPosition.value,zCounter,workName:clean(workNameInput?.value||""),tertiaryCategory:PUBLICATION_TERTIARY,classroom:PUBLICATION_CLASSROOM,learningType:PUBLICATION_LEARNING_TYPE,learningStream:PUBLICATION_LEARNING_STREAM});
     }
 
     function portableProject(){
-      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,collection:PUBLICATION_COLLECTION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:isDatedWorkflow()?readEventHandoff():null,state:JSON.parse(snapshotState())};
+      return {format:"sanctuary-yds",version:3,savedAt:new Date().toISOString(),origin:IS_FUN_MODE?"just-for-fun":"member-studio",funMode:FUN_MODE||"",mode:CANVAS_MODE,publicationType:PUBLICATION_TYPE,destination:PUBLICATION_DESTINATION,collection:PUBLICATION_COLLECTION,retention:PUBLICATION_RETENTION,approval:PUBLICATION_APPROVAL,acting_role:PUBLICATION_ACTING_ROLE,department:PUBLICATION_DEPARTMENT,work_kind:PUBLICATION_WORK_KIND,tertiary_category:PUBLICATION_TERTIARY,learning_stream:PUBLICATION_LEARNING_STREAM,learningStream:PUBLICATION_LEARNING_STREAM,editorialRequired:IS_FUN_MODE||["writer","artist"].includes(CANVAS_MODE)||PUBLICATION_APPROVAL==="editor",datedHandoff:isDatedWorkflow()?readEventHandoff():null,state:JSON.parse(snapshotState())};
     }
     function safeProjectFilename(){
       const label=clean(workNameInput?.value||creativeHeading?.textContent||"Sanctuary creation").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"sanctuary-creation";
@@ -1245,7 +1247,7 @@
     }
     function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
     function restoreState(raw){
-      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";PUBLICATION_TERTIARY=state.tertiaryCategory||PUBLICATION_TERTIARY;PUBLICATION_CLASSROOM=state.classroom||PUBLICATION_CLASSROOM;PUBLICATION_LEARNING_TYPE=state.learningType||PUBLICATION_LEARNING_TYPE;updatePlacementButtons();rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
+      finishDrawingEdit();const state=JSON.parse(raw);creativePages.innerHTML=state.html;currentPageIndex=clamp(state.currentPageIndex||0,0,Math.max(0,pages().length-1));orientationSelect.value=state.orientation||"portrait";pageNumbersCheck.checked=!!state.pageNumbers;numberFirstPageCheck.checked=state.numberFirst!==false;pageNumberPosition.value=state.numberPosition||"center";zCounter=state.zCounter||20;if(workNameInput)workNameInput.value=state.workName||"";PUBLICATION_TERTIARY=state.tertiaryCategory||PUBLICATION_TERTIARY;PUBLICATION_CLASSROOM=state.classroom||PUBLICATION_CLASSROOM;PUBLICATION_LEARNING_TYPE=state.learningType||PUBLICATION_LEARNING_TYPE;PUBLICATION_LEARNING_STREAM=state.learningStream||PUBLICATION_LEARNING_STREAM;updatePlacementButtons();rebindCanvas();applyOrientation();renderPageTabs();showCurrentPage();updatePageNumbers();requestAnimationFrame(()=>containCurrentPage());selectItem(null)
     }
     function undoCanvas(){if(!undoStack.length)return;redoStack.push(snapshotState());restoreState(undoStack.pop());updateUndoRedo()}
     function redoCanvas(){if(!redoStack.length)return;undoStack.push(snapshotState());restoreState(redoStack.pop());updateUndoRedo()}
@@ -2153,7 +2155,7 @@
       window.location.href="library-publications.html?id=design-studio-guide";
     }
 
-    function saveDraft(){if(!requireWorkName())return;try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Test draft saved on this device. Central member storage will replace this temporary method before Creative Canvas is signed off.")}catch(err){console.error(err);alert("This test draft is too large for temporary browser storage. Your Canvas remains on screen. Central member storage is planned so members will not need to manage image sizes themselves.")}}
+    function saveDraft(){if(!requireWorkName())return;try{localStorage.setItem(DRAFT_KEY,snapshotState());alert("Editable draft saved on this device.")}catch(err){console.error(err);alert("This draft is too large to save on this device. Your canvas remains open. Use My Vault or save an editable copy to your computer.")}}
     function loadDraftIfAvailable(){const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return false;if(!confirm("A saved Creative Canvas draft is available on this device. Open it?"))return false;try{restoreState(raw);return true}catch(err){console.error(err);return false}}
     function printCanvas(){selectItem(null);const orient=orientationSelect.value;let style=document.getElementById("dynamicPrintStyle");if(!style){style=document.createElement("style");style.id="dynamicPrintStyle";document.head.appendChild(style)}style.textContent=`@page { size: A4 ${orient}; margin: 0; }`;document.body.classList.add("print-canvas");pages().forEach(p=>p.hidden=false);window.print();setTimeout(()=>{document.body.classList.remove("print-canvas");showCurrentPage()},250)}
 
@@ -2531,6 +2533,7 @@ function publicationCanvasData(){
     tertiary_category:PUBLICATION_TERTIARY,
     classroom:PUBLICATION_CLASSROOM,
     learning_type:PUBLICATION_LEARNING_TYPE,
+    learning_stream:PUBLICATION_LEARNING_STREAM,
 
     state:
       JSON.parse(
@@ -2966,6 +2969,7 @@ async function publishCanvas(){
       tertiary_category:PUBLICATION_TERTIARY,
       classroom:PUBLICATION_CLASSROOM,
       learning_type:PUBLICATION_LEARNING_TYPE,
+      learning_stream:PUBLICATION_LEARNING_STREAM,
 
       privacy:
         CANVAS_MODE === "panel"
@@ -3555,4 +3559,5 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
 
 </body>
 </html>
+
 

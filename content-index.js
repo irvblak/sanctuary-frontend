@@ -1,38 +1,19 @@
 (function(){
-  "use strict";
-  const API="https://sanctuary-backend-8iqc.onrender.com";
-  const S=window.SanctuaryContentStructure;
-  const collection=document.body.dataset.collection||"library";
-  const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const date=value=>{if(!value)return"";const d=new Date(value);return Number.isNaN(d.getTime())?"":d.toLocaleDateString("en-GB")};
-  const itemHtml=item=>{
-    const readerId=item.legacy_id||item.publication_id||""; const href=item.category==="gallery"?`library-gallery.html?id=${encodeURIComponent(item.publication_id||"")}`:`library-publications.html?id=${encodeURIComponent(readerId)}`;
-    const meta=[item.creator_name,item.creator_resident_id,date(item.published_at)].filter(Boolean).join(" · ");
-    return `<a class="synopsis" href="${href}"><strong>${esc(item.title||"Untitled")}</strong>${item.summary?`<span>${esc(item.summary)}</span>`:""}<small>${esc(meta)}</small></a>`;
-  };
-  function sectionHtml(section,items){
-    const own=items.filter(item=>S.publicationSection(item)===section.key);
-    const subMap=new Map();
-    own.forEach(item=>{const sub=S.publicationSubcategory(item);if(!subMap.has(sub))subMap.set(sub,[]);subMap.get(sub).push(item)});
-    let content="";
-    const definitions=section.subcategories||[];
-    if(definitions.length||section.dynamicSubcategories){
-      const seen=new Set();
-      definitions.forEach(([key,label])=>{const matching=[...subMap.entries()].filter(([name])=>S.slug(name)===key).flatMap(([,list])=>list);const links=section.subcategoryLinks?.[key]||[];seen.add(key);content+=subcategoryHtml(label,matching,links)});
-      [...subMap.entries()].forEach(([name,list])=>{if(name&& !seen.has(S.slug(name)))content+=subcategoryHtml(name,list)});
-      const direct=subMap.get("")||[];if(direct.length)content+=subcategoryHtml("Other published work",direct);
-    }else{
-      content=`<div class="synopsis-list">${own.length?own.map(itemHtml).join(""):'<p class="empty">No published work yet.</p>'}</div>`;
-    }
-    const galleryLink=section.gallery&&collection==="library"?'<a class="section-link" href="library-gallery.html">Open Gallery</a>':"";
-    const linkList=section.libraryLinks;
-    const fixedLinks=linkList?linkList.map(([label,url])=>`<a class="section-link" href="${url}">${esc(label)}</a>`).join(" "):"";
-    const summary=section.libraryDescription||section.hat;
-    const summaryLine=summary?`<small>${esc(summary)}</small>`:"";
-    return `<details class="section" id="${section.key}"><summary><span class="icon">${section.icon}</span><span><strong>${esc(section.title)}</strong>${summaryLine}</span><span class="arrow">›</span></summary><div class="section-body">${content}${galleryLink}${fixedLinks}</div></details>`;
-  }
-  function subcategoryHtml(name,items,links=[]){const fixed=links.length?links.map(([label,url])=>`<a class="synopsis" href="${url}"><strong>${esc(label)}</strong></a>`).join(""):"";return `<details class="subcategory"><summary>${esc(name)}</summary><div class="synopsis-list">${fixed}${items.length?items.map(itemHtml).join(""):fixed?"":'<p class="empty">No published work yet.</p>'}</div></details>`}
-  function render(items){document.getElementById("sections").innerHTML=S.SECTIONS.map(section=>sectionHtml(section,items)).join("");document.querySelectorAll("details.section").forEach(section=>section.addEventListener("toggle",()=>{if(section.open)document.querySelectorAll("details.section").forEach(other=>{if(other!==section)other.open=false})}))}
-  render([]);
-  fetch(`${API}/api/library-publications`,{cache:"no-store",headers:{Accept:"application/json"}}).then(async response=>{const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"Published work could not be loaded.");const all=Array.isArray(data.publications)?data.publications:[];const items=all.filter(item=>S.publicationCollection(item)===collection).sort((a,b)=>new Date(b.published_at||b.created_at||0)-new Date(a.published_at||a.created_at||0));render(items);document.getElementById("status").textContent=items.length?`${items.length} published item${items.length===1?"":"s"}.`:"No work has been published here yet."}).catch(error=>{console.error(error);document.getElementById("status").textContent="Published work could not be loaded. Please try again shortly."});
+"use strict";const API="https://sanctuary-backend-8iqc.onrender.com",S=window.SanctuaryContentStructure,params=new URLSearchParams(location.search),selectedSection=params.get("section")||"",hatKey=params.get("hat")||"",subject=params.get("subject")||"",stream=params.get("stream")||"";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const date=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"":d.toLocaleDateString("en-GB")};
+function itemHtml(item){const id=item.legacy_id||item.publication_id||"",url=S.publicationSection(item)==="gallery"?"library-gallery.html?id="+encodeURIComponent(item.publication_id||""):"library-publications.html?id="+encodeURIComponent(id);return `<a class="synopsis" href="${url}"><strong>${esc(item.title||"Untitled")}</strong>${item.summary?`<span>${esc(item.summary)}</span>`:""}<small>${esc([item.creator_name,date(item.published_at)].filter(Boolean).join(" · "))}</small></a>`;}
+function shelf(label,items,links=[],key="",open=false){return `<details class="subcategory"${key?` data-shelf="${esc(key)}"`:""}${open?" open":""}><summary>${esc(label)}</summary><div class="synopsis-list">${links.map(([name,url])=>`<a class="synopsis" href="${esc(url)}"><strong>${esc(name)}</strong></a>`).join("")}${items.map(itemHtml).join("")}${!items.length&&!links.length?'<p class="empty">No published work yet.</p>':""}</div></details>`;}
+function learningHtml(section,items){return ["learning","teaching"].map(branch=>{const contents=S.PRODUCTION_HATS.map(hat=>{
+if(selectedSection==="learning"&&hatKey&&hatKey!==hat.key)return "";
+const own=items.filter(item=>S.publicationHatKey(item)===hat.key&&S.publicationLearningStream(item)===branch),links=branch==="teaching"?(section.subcategoryLinks?.[S.slug(hat.label)]||[]).filter(([,href])=>!own.some(item=>href.includes("id="+encodeURIComponent(item.legacy_id||item.publication_id||"__none__")))):[],grouped=new Map();
+own.forEach(item=>{let name=String(item.tertiary_category||item.canvas_data?.tertiary_category||"");if(["Art Teacher","Library Guide","For the Gallery"].includes(name))name="";if(!grouped.has(name))grouped.set(name,[]);grouped.get(name).push(item);});
+let content=links.map(([name,url])=>`<a class="synopsis" href="${esc(url)}"><strong>${esc(name)}</strong></a>`).join("")+(grouped.get("")||[]).map(itemHtml).join("");grouped.forEach((list,name)=>{if(name&&(!subject||S.slug(name)===S.slug(subject)))content+=shelf(name,list,[],S.slug(name),Boolean(subject));});if(!content)content='<p class="empty">No published work yet.</p>';
+return `<details class="subcategory" data-hat="${hat.key}"${selectedSection==="learning"&&hatKey===hat.key?" open":""}><summary>${esc(hat.label)}</summary><div class="synopsis-list">${content}</div></details>`;
+}).join("");return `<details class="subcategory" data-stream="${branch}"${selectedSection==="learning"&&(!stream||stream===branch)?" open":""}><summary>${branch==="learning"?"Learning":"Teaching"}</summary><div class="synopsis-list">${contents}</div></details>`;}).join("");}
+function ordinaryHtml(section,items){const map=new Map();items.forEach(item=>{const name=S.publicationSubcategory(item);if(!map.has(name))map.set(name,[]);map.get(name).push(item);});let html="",seen=new Set();
+(section.subcategories||[]).forEach(([key,label])=>{seen.add(key);const direct=[...map.entries()].filter(([name])=>S.slug(name)===key).flatMap(([,list])=>list),links=section.subcategoryLinks?.[key]||[],divisions=section.key==="club-activities"?(S.ACTIVITY_SUBCATEGORIES[key]||[]):[];
+if(divisions.length){const children=divisions.map(([,name])=>{const full=label+" — "+name;seen.add(S.slug(full));const own=[...map.entries()].filter(([value])=>S.slug(value)===S.slug(full)).flatMap(([,list])=>list);return shelf(name,own,[],S.slug(full),S.slug(subject)===S.slug(full));}).join("");html+=`<details class="subcategory" data-shelf="${key}"${S.slug(subject).startsWith(key)?" open":""}><summary>${esc(label)}</summary><div class="synopsis-list">${direct.map(itemHtml).join("")}${children}</div></details>`;}else html+=shelf(label,direct,links,key,S.slug(subject)===key);});
+map.forEach((list,name)=>{if(name&&!seen.has(S.slug(name)))html+=shelf(name,list,[],S.slug(name),S.slug(subject)===S.slug(name));});html+=(map.get("")||[]).map(itemHtml).join("");return html||'<p class="empty">No published work yet.</p>';}
+function render(items){document.getElementById("sections").innerHTML=S.SECTIONS.map(section=>{const own=items.filter(item=>S.publicationSection(item)===section.key),open=selectedSection===section.key||(!selectedSection&&location.hash==="#"+section.key);return `<details class="section" id="${section.key}"${open?" open":""}><summary><span class="icon">${section.icon}</span><span><strong>${esc(section.title)}</strong></span><span class="arrow">›</span></summary><div class="section-body">${section.key==="learning"?learningHtml(section,own):ordinaryHtml(section,own)}${section.gallery?'<a class="section-link" href="library-gallery.html">Open Gallery</a>':""}</div></details>`;}).join("");document.querySelectorAll("details.section").forEach(section=>section.addEventListener("toggle",()=>{if(section.open)document.querySelectorAll("details.section").forEach(other=>{if(other!==section)other.open=false})}));const heading=document.querySelector(".intro h1");if(heading&&selectedSection==="learning"){heading.textContent="Library Learning";heading.style.color="#7a263a";}if(selectedSection)document.getElementById(selectedSection)?.scrollIntoView({block:"start"});}
+render([]);fetch(`${API}/api/library-publications`,{cache:"no-store",headers:{Accept:"application/json"}}).then(async response=>{const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error("Published work could not be loaded.");const items=(Array.isArray(data.publications)?data.publications:[]).filter(item=>S.publicationCollection(item)==="library").sort((a,b)=>new Date(b.published_at||b.created_at||0)-new Date(a.published_at||a.created_at||0));render(items);document.getElementById("status").textContent=items.length?`${items.length} published item${items.length===1?"":"s"}.`:"No work has been published here yet.";}).catch(error=>{console.error(error);document.getElementById("status").textContent="Published work could not be loaded. Please try again shortly.";});
 })();

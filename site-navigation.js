@@ -36,8 +36,7 @@
     const links=['<a href="#" class="sanctuary-nav-back">← Previous Page</a>'];
     if(options.showCalendar)links.push('<a href="events-calendar.html">Calendar</a>');
     if(options.showHub)links.push('<a href="members-info.html">Members Hub</a>');
-    if(options.showRoleRegister)links.push('<a href="role-holders.html">Role Register</a>');
-    if(options.showRoleHolders)links.push('<a href="library.html#learning">Role Holders</a>');
+    if(position==="top"&&options.showRoleRegister)links.push('<a href="role-holders.html">Role Register</a>');
     nav.innerHTML=links.join("");
 
     nav.querySelector(".sanctuary-nav-back").addEventListener("click",previousPage);
@@ -45,7 +44,11 @@
   }
 
   function install(){
-    if(!document.body||document.querySelector(".sanctuary-site-navigation"))return;
+    if(!document.body)return;
+    document.querySelectorAll("a[href]").forEach(link=>{if(String(link.textContent||"").trim()==="Role Holders")link.remove();});
+    if(document.querySelector(".sanctuary-site-navigation"))return;
+    const page=location.pathname.split("/").pop().toLowerCase();
+    const memberPage=!/^(admin-|service-)/.test(page)&&!new Set(["index.html","member-login.html","forgot-pin.html","design-studio-canvas.html","design-studio-tools.html","host-area.html","host-event-form.html","host-notices-editor.html","committee-notices-editor.html","committeee-notices-editor-preview.html","editor-desk.html","sanctuary-publishing.html","zz-test.html"]).has(page);
 
     const style=document.createElement("style");
     style.textContent=".sanctuary-site-navigation{width:min(1180px,calc(100% - 24px));margin:8px auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font:800 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif}.sanctuary-site-navigation a{display:inline-flex;align-items:center;justify-content:center;padding:7px 11px;border:1px solid #cbd9e4;border-radius:999px;background:#fff;color:#174f73;text-decoration:none;box-shadow:0 3px 10px rgba(20,60,80,.06)}.sanctuary-site-navigation a:hover,.sanctuary-site-navigation a:focus{background:#eef6fb;border-color:#6f9eb8}.sanctuary-site-navigation-bottom{margin-top:18px;margin-bottom:14px}@media print{.sanctuary-site-navigation{display:none!important}}";
@@ -59,8 +62,7 @@
     const options={
       showCalendar:!hasExistingLink("events-calendar.html"),
       showHub:!hasExistingLink("members-info.html"),
-      showRoleRegister:!hasExistingLink("role-holders.html"),
-      showRoleHolders:!Array.from(document.querySelectorAll("a[href]")).some(link=>String(link.textContent||"").trim()==="Role Holders")
+      showRoleRegister:memberPage&&!hasExistingLink("role-holders.html")
     };
 
     document.body.insertBefore(makeBar("top",options),document.body.firstChild);

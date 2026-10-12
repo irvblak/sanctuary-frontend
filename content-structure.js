@@ -89,7 +89,7 @@
     const main=hatSubjects(hat).find(([key])=>key===subject);
     const sub=hatSubdivision(hat,subject).find(([key])=>key===subdivision);
     if(main)params.set("subject",main[1]+(sub?" — "+sub[1]:""));
-    if(kind==="learning")params.set("stream",stream==="learning"?"learning":"teaching");
+
     return "library.html?"+params.toString()+"#"+(kind==="learning"?"learning":hat.department);
   }
   function creationTarget(hat,kind,subject="",subdivision="",stream="teaching",actingRole=""){

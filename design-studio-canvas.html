@@ -1190,7 +1190,17 @@
     }
     function datedSource(){
       const handoff=readEventHandoff();
-      return normaliseRole(PAGE_PARAMS.get("source")||handoff?.source||"host");
+      // Route names and assigned role names are different namespaces.
+      // In particular, the activity route requires the activity_organiser role.
+      const source=clean(PAGE_PARAMS.get("source")||handoff?.source||"host")
+        .toLowerCase().replace(/[\s_]+/g,"-");
+      const routes={
+        "activity-organiser":"activity",
+        "activity-organizer":"activity",
+        organiser:"activity",
+        condo:"condominium"
+      };
+      return routes[source]||source;
     }
     function authorisedForMode(){
       if(IS_FUN_MODE)return true;
@@ -2704,7 +2714,7 @@ async function publishDatedCanvas(){
   const token=getAuthToken();
   const handoff=readEventHandoff();
   if(!token||!handoff){
-    alert("The Event route could not be recovered. Your poster remains safe in My Vault.");
+    alert("The Event route could not be recovered. Return to the event details form to recover the details saved privately in this browser.");
     return;
   }
   finishDrawingEdit();selectItem(null);
@@ -3471,7 +3481,7 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
 
       if(PAGE_PARAMS.get("open")==="event-canvas"&&isDatedWorkflow()){
         const e=readEventHandoff();
-        const source=normaliseRole(e?.source||PAGE_PARAMS.get("source")||"host");
+        const source=datedSource();
         const sourceLabel=DATED_SOURCE_LABELS[source]||"Dated";
         const scope=clean(e?.scope_name||PAGE_PARAMS.get("scope_name")||"");
         modeIntro.textContent=`Working on private Work in Progress: ${sourceLabel}${scope?" — "+scope:""}. Nothing appears in Calendar, Events List or Notices until you press Publish.`;

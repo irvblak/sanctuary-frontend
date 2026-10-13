@@ -968,7 +968,7 @@ function recoverWip(){
   setStatus(
     els.saveStatus,
     "ok",
-    "Your Work in Progress has been recovered. It is still private and has not been published."
+    "Your event details have been recovered from this browser. They are still private and have not been published or saved to My Vault."
   );
 }
 
@@ -1373,7 +1373,7 @@ async function saveEvent(){
       from:"dated-form"
     });
 
-    canvasParams.set("v","NOTICE_LAYOUT_20261009");
+    canvasParams.set("v","ACTIVITY_ROUTE_20261013");
     if(params.get("admin") === "1" && noticeAdminToken()) canvasParams.set("admin","1");
     if(scopeId) canvasParams.set("scope",scopeId);
     if(scopeName) canvasParams.set("scope_name",scopeName);

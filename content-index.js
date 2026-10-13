@@ -17,9 +17,10 @@ directory.hidden=true;list.hidden=false;status.hidden=false;
 if(heading){heading.textContent=[section?.title||"Published work",selectedSection==="learning"?hat?.label:"",subject].filter(Boolean).join(" — ");if(selectedSection==="learning")heading.style.color="#7a263a";}
 if(intro)intro.textContent="Select a title to open the work.";
 function render(items){const own=items.filter(item=>S.publicationSection(item)===selectedSection&&(!hatKey||selectedSection!=="learning"||S.publicationHatKey(item)===hatKey)&&(!subject||S.slug(subjectFor(item))===S.slug(subject))).sort((a,b)=>new Date(b.published_at||b.created_at||0)-new Date(a.published_at||a.created_at||0));const links=section?fixedLinks(section,own):[];
- list.innerHTML=`<section id="${esc(selectedSection)}"><p><a class="section-link" href="library.html#index">Published work index</a></p><div class="synopsis-list">${own.map(itemHtml).join("")}${links.map(([name,url])=>`<a class="synopsis" href="${esc(url)}"><strong>${esc(name)}</strong></a>`).join("")}${!own.length&&!links.length?'<p class="empty">No published work yet.</p>':""}</div></section>`;
+ list.innerHTML=`<section id="${esc(selectedSection)}"><p><a class="section-link" href="library.html#index">Back to Library</a></p><div class="synopsis-list">${own.map(itemHtml).join("")}${links.map(([name,url])=>`<a class="synopsis" href="${esc(url)}"><strong>${esc(name)}</strong></a>`).join("")}${!own.length&&!links.length?'<p class="empty">No published work yet.</p>':""}</div></section>`;
  status.textContent=own.length?`${own.length} published item${own.length===1?"":"s"}.`:"";
 }
 render([]);status.textContent="Loading published work…";
 fetch(`${API}/api/library-publications`,{cache:"no-store",headers:{Accept:"application/json"}}).then(async response=>{const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error("Published work could not be loaded.");render((Array.isArray(data.publications)?data.publications:[]).filter(item=>S.publicationCollection(item)==="library"));}).catch(error=>{console.error(error);status.textContent="Published work could not be loaded. Please try again shortly.";});
 })();
+

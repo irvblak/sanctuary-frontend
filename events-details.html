@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=RR_NAV_20261012"></script>
+  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
 
   <style>
     :root{
@@ -780,15 +780,7 @@ function tokenMemberId(){
   );
 }
 
-function noticeAdminToken(){
-  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
-  try {
-    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
-    while (body.length % 4) body += "=";
-    const data = JSON.parse(atob(body));
-    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
-  } catch (_) { return ""; }
-}
+function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""; }
 function isAdminViewer(){ return Boolean(noticeAdminToken()); }
 
 function normaliseResidentId(value){
@@ -938,6 +930,7 @@ function getEventHostMemberId(e){
 
       if (!mayManage) return;
       const adminQuery = isAdminViewer() ? "&admin=1" : "";
+      if(e.source)editDetailsBtnBottom.href += "&source="+encodeURIComponent(e.source);
       hsopBtnBottom.href += adminQuery;
       editDetailsBtnBottom.href += adminQuery;
       if (/^SCH\/[12]$/.test(String(e.host_resident_id || e.host_member_id || "").toUpperCase()) || isAdminViewer()) {
@@ -1470,6 +1463,7 @@ bookingDetailsBox.classList.remove("hidden");
     }
 
     async function loadNotice(){
+      await window.SanctuaryContentAccess?.ready;
       if (!EVENT_ID){
         showMessage("This page was opened without an event reference.", "err");
         titleText.textContent = "Notice not found";
@@ -1523,7 +1517,8 @@ bookingDetailsBox.classList.remove("hidden");
 
     loadNotice();
   </script>
-  <script src="wa-admin.js?v=WA_1"></script>
+  <script src="wa-admin.js?v=WC_WA_20261014"></script>
 </body>
 </html>
+
 

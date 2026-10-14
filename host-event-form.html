@@ -5,7 +5,7 @@
   <title>Host or Post an Event | Your Design Studio | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <script src="access.js?v=RR_NAV_20261012"></script>
+  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
 
   <style>
     :root{
@@ -608,15 +608,7 @@ function activeSchPublishingToken(){
   }
 }
 
-function noticeAdminToken(){
-  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
-  try {
-    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
-    while (body.length % 4) body += "=";
-    const data = JSON.parse(atob(body));
-    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
-  } catch (_) { return ""; }
-}
+function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""; }
 
 let authToken =
   (params.get("admin") === "1" ? noticeAdminToken() : "") ||
@@ -1130,6 +1122,7 @@ function buildPayload(){
 
   return {
     event_id:editEventId,
+    canvas_data:loadedEvent?.canvas_data||null,
     event_mode:eventMode,
     source:datedSource,
     producer_role:actingRole || datedSource,
@@ -1202,7 +1195,7 @@ async function loadEvent(){
   loadedEvent = e;
 
   const ownerResident = existingHostResident();
-  const isAdmin = storedRoles().includes("admin");
+  const isAdmin = Boolean(noticeAdminToken());
 
   if(!isAdmin && ownerResident && ownerResident !== verifiedResidentId){
     throw new Error("This Event belongs to a different Host/producer.");
@@ -1525,16 +1518,19 @@ function logout(){
 }
 
 async function initialise(){
+  await window.SanctuaryContentAccess?.ready;
+  if(params.get("admin") === "1") authToken = noticeAdminToken();
   applyMode();
 
   // SCH publishers have already authenticated with their own Publishing PIN.
   // Keep them on the restricted Event route and out of ordinary YDS authority.
   if(params.get("admin") === "1" && noticeAdminToken()){
-    const check = await apiFetch("/api/admin/whoami",{headers:{Authorization:`Bearer ${authToken}`}});
-    if (!check.is_admin) throw new Error("Website Admin sign-in is required.");
-    verifiedResidentId = "ADMIN";
-    verifiedMemberId = "ADMIN";
-    els.identityBox.textContent = "Website Admin — Event management";
+    const check = await apiFetch("/api/content-authority",{headers:{Authorization:`Bearer ${authToken}`}});
+    if (!check.can_manage_content) throw new Error("Content management authority is required.");
+    const identity = decodeTokenPayload(authToken);
+    verifiedResidentId = clean(identity.rid).toUpperCase() || "ADMIN";
+    verifiedMemberId = baseMemberId(identity.mid);
+    els.identityBox.textContent = "Website content management";
     els.identityBox.classList.add("show");
   }else if(validSchPublisher()){
     const tokenData = decodeTokenPayload(authToken);
@@ -1668,4 +1664,5 @@ initialise();
 </script>
 </body>
 </html>
+
 

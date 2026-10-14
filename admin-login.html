@@ -133,7 +133,7 @@
 <body>
   <div class="card">
     <h1>Admin Access</h1>
-    <p>Sign in with your admin username and password.</p>
+    <p id="adminAccessIntro">Sign in with your administrator username and password.</p>
 
     <div id="warn" class="msg warn"></div>
     <div id="ok" class="msg ok"></div>
@@ -165,7 +165,7 @@
     </form>
 
     <div class="footer">
-      <a href="index.html" aria-label="Back to Home">← Back</a>
+      <a href="your-info.html">Member sign-in</a>
       <span>Sanctuary Club</span>
     </div>
   </div>
@@ -174,6 +174,14 @@
     (function(){
       const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
       const TOKEN_KEY = "adminToken";
+      const policyPromise=fetch(BACKEND+"/auth/admin-access-policy",{cache:"no-store"}).then(async response=>{
+        const policy=await response.json().catch(()=>({}));
+        if(response.status!==404&&(!response.ok||policy.success!==true))throw new Error("Admin Access could not be checked.");
+        if(policy.wc_required)document.getElementById("adminAccessIntro").textContent="Website Custodians: first sign in with your member PIN, then enter your administrator username and password.";
+        return policy;
+      });
+      policyPromise.catch(()=>{});
+
 
       const warnEl = document.getElementById("warn");
       const okEl = document.getElementById("ok");
@@ -233,7 +241,10 @@
         }
 
         try{
-          const step = await postJson(`${BACKEND}/auth/admin-login`, { username, password });
+          const memberToken = sessionStorage.getItem("authToken") || sessionStorage.getItem("ydsAuthToken") || localStorage.getItem("authToken") || sessionStorage.getItem("memberToken") || localStorage.getItem("memberToken") || "";
+          const policy=await policyPromise;
+          if(policy.wc_required&&!memberToken){setBusy(false);show(warnEl,"First sign in with your member PIN using Member sign-in below.");return;}
+          const step = await postJson(`${BACKEND}/auth/admin-login`, { username, password, memberToken });
 
           if (!step.res.ok || !step.body || step.body.success !== true){
             setBusy(false);
@@ -264,3 +275,4 @@
   </script>
 </body>
 </html>
+

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Editor’s Desk | Sanctuary Club</title>
   <meta name="robots" content="noindex, nofollow" />
-  <script src="access.js?v=RR_NAV_20261012"></script>
+  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
   <style>
     :root{--ink:#173847;--muted:#5f7078;--accent:#2f7485;--line:#d9e2e5;--paper:#fff;--wash:#f4f8f8;--soft:#eef6f7;--return:#8a5a00}
     *{box-sizing:border-box} body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1.5}
@@ -46,13 +46,13 @@
   const API_BASE="https://sanctuary-backend-8iqc.onrender.com";
   const grid=document.getElementById("deskGrid"), status=document.getElementById("status"), returnDialog=document.getElementById("returnDialog"), returnNote=document.getElementById("returnNote"), cancelReturn=document.getElementById("cancelReturn"), confirmReturn=document.getElementById("confirmReturn");
   let items=[], returningId="";
-  function token(){return localStorage.getItem("memberToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("authToken")||sessionStorage.getItem("authToken")||""}
+  function token(){return window.SanctuaryContentAccess?.token()||sessionStorage.getItem("authToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("authToken")||localStorage.getItem("memberToken")||""}
   async function api(path,options={}){const headers=Object.assign({},options.headers||{}),t=token();if(t)headers.Authorization="Bearer "+t;if(options.body&&!headers["Content-Type"])headers["Content-Type"]="application/json";const res=await fetch(API_BASE+path,Object.assign({},options,{headers}));const text=await res.text();let data={};try{data=text?JSON.parse(text):{}}catch(_){data={message:text}}if(!res.ok)throw new Error(data.message||("Request failed ("+res.status+")"));return data}
   function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c])}
   function niceDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString("en-GB",{dateStyle:"medium",timeStyle:"short"})}
   function workLabel(item){const type=String(item.work_type||item.hat||"").toLowerCase();if(type.includes("artist")||type==="art")return"Art";if(type.includes("writer")||type==="writing")return"Writing";return item.work_type||item.hat||"Submitted work"}
   function render(){status.textContent=items.length?`${items.length} item${items.length===1?"":"s"} awaiting attention.`:"Nothing is waiting for attention at present.";if(!items.length){grid.innerHTML='<div class="empty">The desk is clear.</div>';return}grid.innerHTML=items.map(item=>`<article class="work"><h3>${esc(item.title||"Untitled work")}</h3><div class="badge">${esc(workLabel(item))}</div><p class="meta">From: ${esc(item.owner_resident_id||item.owner_member_id||"Member")}</p><p class="meta">Submitted: ${esc(niceDate(item.submitted_at||item.updated_at))}</p><div class="actions"><button class="btn secondary open-work" data-id="${esc(item.work_id)}">Open Work</button><button class="btn publish-work" data-id="${esc(item.work_id)}">Approve &amp; Publish</button><button class="btn return return-work" data-id="${esc(item.work_id)}">Return for Reworking</button></div></article>`).join("")}
-  async function load(){try{const data=await api("/api/editor/vault");items=Array.isArray(data.items)?data.items:[];render()}catch(err){status.textContent=err.message||"The Editor’s Desk could not be opened.";grid.innerHTML=""}}
+  async function load(){await window.SanctuaryContentAccess?.ready;try{const data=await api("/api/editor/vault");items=Array.isArray(data.items)?data.items:[];render()}catch(err){status.textContent=err.message||"The Editor’s Desk could not be opened.";grid.innerHTML=""}}
   async function openWork(id){try{status.textContent="Opening submitted work…";const data=await api("/api/vault/"+encodeURIComponent(id));sessionStorage.setItem("sanctuaryVaultOpenWork",JSON.stringify(data.item));sessionStorage.setItem("sanctuaryEditorReviewWork",id);window.location.href="design-studio-canvas.html?review="+encodeURIComponent(id)}catch(err){status.textContent=err.message}}
   async function publishWork(id){if(!confirm("Approve this work for publication?"))return;try{await api("/api/editor/vault/"+encodeURIComponent(id)+"/publish",{method:"POST"});await load()}catch(err){alert(err.message)}}
   function askReturn(id){returningId=id;returnNote.value="";returnDialog.showModal();setTimeout(()=>returnNote.focus(),0)}
@@ -64,3 +64,4 @@
 </script>
 </body>
 </html>
+

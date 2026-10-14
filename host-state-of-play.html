@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=RR_NAV_20261012"></script>
+  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
 
   <style>
     :root{
@@ -598,7 +598,8 @@
     </section>
   </main>
 
-  <script>
+  <script type="module">
+    await window.SanctuaryContentAccess?.ready;
     const API_BASE = "https://sanctuary-backend-8iqc.onrender.com";
     const $ = (id) => document.getElementById(id);
 
@@ -1034,15 +1035,7 @@
       `;
     }
 
-function noticeAdminToken(){
-  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
-  try {
-    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
-    while (body.length % 4) body += "=";
-    const data = JSON.parse(atob(body));
-    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
-  } catch (_) { return ""; }
-}
+function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""; }
 
     function getAuthToken(){
       return (
@@ -1274,4 +1267,5 @@ function noticeAdminToken(){
   </script>
 </body>
 </html>
+
 

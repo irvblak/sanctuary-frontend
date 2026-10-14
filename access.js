@@ -1273,15 +1273,7 @@
     });
 
 
-function noticeAdminToken(){
-  const token = sessionStorage.getItem("adminToken") || localStorage.getItem("adminToken") || sessionStorage.getItem("sanctuaryAdminToken") || localStorage.getItem("sanctuaryAdminToken") || "";
-  try {
-    let body = token.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");
-    while (body.length % 4) body += "=";
-    const data = JSON.parse(atob(body));
-    return Array.isArray(data.roles) && data.roles.includes("admin") && Number(data.exp)*1000 > Date.now() ? token : "";
-  } catch (_) { return ""; }
-}
+function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""; }
 
   function noticeAdminAccess(){
     return new URLSearchParams(location.search).get("admin") === "1" &&
@@ -1461,4 +1453,5 @@ function noticeAdminToken(){
   script.dataset.sanctuaryNavigation="true";
   (document.head||document.documentElement).appendChild(script);
 })();
+
 

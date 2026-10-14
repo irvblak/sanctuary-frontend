@@ -3,7 +3,7 @@
 // Personal PIN protection
 // and What’s On / Access All route awareness.
 
-(function () {
+(async function () {
   "use strict";
 
 
@@ -1280,6 +1280,8 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
       ["host-event-form.html","host-state-of-play.html","design-studio-canvas.html"].includes(page) && Boolean(noticeAdminToken());
   }
 
+  await window.SanctuaryContentAccess?.ready;
+
   /*
     =========================================================
     PAGE ENTRY
@@ -1453,5 +1455,6 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
   script.dataset.sanctuaryNavigation="true";
   (document.head||document.documentElement).appendChild(script);
 })();
+
 
 

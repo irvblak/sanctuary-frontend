@@ -8,7 +8,8 @@ const admins=[sessionStorage.getItem("adminToken"),localStorage.getItem("adminTo
 // Keep checks within the active resident's identity; stale tokens for another
 // resident must never grant authority after an account switch.
 const activeResident=String(sessionStorage.getItem("currentResidentId")||localStorage.getItem("currentResidentId")||decode(members[0]).rid||"").toUpperCase();
-const currentMembers=members.filter(t=>String(decode(t).rid||"").toUpperCase()===activeResident);
+const activeMembership=String(sessionStorage.getItem("currentMemberId")||localStorage.getItem("currentMemberId")||activeResident.split("/")[0]||decode(members[0]).mid||"").toUpperCase();
+const currentMembers=members.filter(t=>{const d=decode(t),rid=String(d.rid||"").toUpperCase();return rid?rid===activeResident:String(d.mid||"").toUpperCase()===activeMembership;});
 const candidates=[...new Set([...currentMembers.filter(t=>(decode(t).roles||[]).includes("admin_website")),...currentMembers,...admins])];
 let managerToken="";
 const api={decode,token:()=>managerToken,memberToken:()=>currentMembers[0]||"",ready:null};window.SanctuaryContentAccess=api;

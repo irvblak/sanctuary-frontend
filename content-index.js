@@ -13,11 +13,7 @@ function fixedLinks(section,items){let links=[];if(selectedSection==="learning")
  const seen=new Set();return links.filter(([,url])=>{if(seen.has(url))return false;seen.add(url);return !items.some(item=>url.includes("id="+encodeURIComponent(item.legacy_id||item.publication_id||"__none__")));});}
 if(!selectedSection){list.hidden=true;status.hidden=true;return;}
 const section=S.SECTIONS.find(entry=>entry.key===selectedSection),hat=S.PRODUCTION_HATS.find(entry=>entry.key===hatKey);
-directory.hidden=true;list.hidden=true;status.hidden=true;
-const introduction=document.getElementById("libraryIntroduction");
-const categoryLabel=selectedSection==="learning"?(hat?.label||""):(section?.title||"");
-window.SanctuaryLibraryIntroduction?.mount({section:selectedSection,hat:hatKey,subject,categoryLabel,host:introduction,onOpen:()=>{list.hidden=false;status.hidden=false;list.scrollIntoView?.({behavior:"smooth",block:"start"});}});
-document.querySelector(".intro").hidden=true;
+directory.hidden=true;list.hidden=false;status.hidden=false;
 if(heading){heading.textContent=[section?.title||"Published work",selectedSection==="learning"?hat?.label:"",subject].filter(Boolean).join(" — ");if(selectedSection==="learning")heading.style.color="#7a263a";}
 if(intro)intro.textContent="Select a title to open the work.";
 function render(items){const own=items.filter(item=>S.publicationSection(item)===selectedSection&&(!hatKey||selectedSection!=="learning"||S.publicationHatKey(item)===hatKey)&&(!subject||S.slug(subjectFor(item))===S.slug(subject))).sort((a,b)=>new Date(b.published_at||b.created_at||0)-new Date(a.published_at||a.created_at||0));const links=section?fixedLinks(section,own):[];

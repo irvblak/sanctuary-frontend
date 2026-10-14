@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const API="https://sanctuary-backend-8iqc.onrender.com",access=window.SanctuaryContentAccess;if(!access)return;
-async function request(path,options={}){const response=await fetch(API+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+(access.token()||sessionStorage.getItem("authToken")||sessionStorage.getItem("ydsAuthToken")||localStorage.getItem("authToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("memberToken")||""),...options.headers}});const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"The action could not be completed.");return data;}
+async function request(path,options={}){const response=await fetch(API+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+(access.token()||access.memberToken?.()||sessionStorage.getItem("authToken")||sessionStorage.getItem("ydsAuthToken")||localStorage.getItem("authToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("memberToken")||""),...options.headers}});const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"The action could not be completed.");return data;}
 async function editPublication(id){
  const data=await request('/api/library-publications/'+encodeURIComponent(id));const item=data.publication||{};
  if(!item.canvas_data?.state){
@@ -28,4 +28,5 @@ access.ready.then(async ok=>{
  document.querySelectorAll('[data-wa-admin-edit],[data-wa-admin-delete]').forEach(el=>el.hidden=false);
 });
 })();
+
 

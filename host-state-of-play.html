@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
+  <script src="content-access.js?v=WA_CONTROLS_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
 
   <style>
     :root{
@@ -547,8 +547,8 @@
       <form id="hostBookingForm">
         <div class="manager-grid">
           <label>
-            Membership number
-            <input id="managerMemberId" type="text" placeholder="e.g. SM55" autocomplete="off" />
+            Membership Number
+            <input id="managerMemberId" type="text" placeholder="e.g. SM55 or SC12" autocomplete="off" />
           </label>
 
           <label>
@@ -1040,6 +1040,8 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
     function getAuthToken(){
       return (
         (new URLSearchParams(location.search).get("admin") === "1" ? noticeAdminToken() : "") ||
+        window.SanctuaryContentAccess?.memberToken() ||
+        sessionStorage.getItem("ydsAuthToken") ||
         sessionStorage.getItem("authToken") ||
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken") ||
@@ -1267,5 +1269,6 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
   </script>
 </body>
 </html>
+
 
 

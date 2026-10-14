@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="content-access.js?v=WC_WA_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
+  <script src="content-access.js?v=WA_CONTROLS_20261014"></script><script src="access.js?v=WC_WA_20261014"></script>
 
   <style>
     :root{
@@ -735,7 +735,7 @@
 function getWorkingToken(){
   const admin = noticeAdminToken();
   if (admin) return admin;
-  return sessionStorage.getItem("authToken") || sessionStorage.getItem("memberToken") || localStorage.getItem("memberToken") || localStorage.getItem("authToken") || "";
+  return window.SanctuaryContentAccess?.memberToken() || sessionStorage.getItem("ydsAuthToken") || sessionStorage.getItem("authToken") || sessionStorage.getItem("memberToken") || localStorage.getItem("memberToken") || localStorage.getItem("authToken") || "";
 }
 
 function decodeJwtPayload(token){
@@ -1517,8 +1517,9 @@ bookingDetailsBox.classList.remove("hidden");
 
     loadNotice();
   </script>
-  <script src="wa-admin.js?v=WC_WA_20261014"></script>
+  <script src="wa-admin.js?v=WA_CONTROLS_20261014"></script>
 </body>
 </html>
+
 
 

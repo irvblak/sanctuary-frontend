@@ -165,7 +165,7 @@
     </form>
 
     <div class="footer">
-      <a href="your-info.html">Member sign-in</a>
+      <a href="members-info.html">Back to Members Hub</a>
       <span>Sanctuary Club</span>
     </div>
   </div>
@@ -177,7 +177,7 @@
       const policyPromise=fetch(BACKEND+"/auth/admin-access-policy",{cache:"no-store"}).then(async response=>{
         const policy=await response.json().catch(()=>({}));
         if(response.status!==404&&(!response.ok||policy.success!==true))throw new Error("Admin Access could not be checked.");
-        if(policy.wc_required)document.getElementById("adminAccessIntro").textContent="Website Custodians: first sign in with your member PIN, then enter your administrator username and password.";
+        if(policy.wc_required)document.getElementById("adminAccessIntro").textContent="Website Custodians: sign in with your administrator username and password.";
         return policy;
       });
       policyPromise.catch(()=>{});
@@ -241,10 +241,8 @@
         }
 
         try{
-          const memberToken = sessionStorage.getItem("authToken") || sessionStorage.getItem("ydsAuthToken") || localStorage.getItem("authToken") || sessionStorage.getItem("memberToken") || localStorage.getItem("memberToken") || "";
           const policy=await policyPromise;
-          if(policy.wc_required&&!memberToken){setBusy(false);show(warnEl,"First sign in with your member PIN using Member sign-in below.");return;}
-          const step = await postJson(`${BACKEND}/auth/admin-login`, { username, password, memberToken });
+          const step = await postJson(`${BACKEND}/auth/admin-login`, { username, password });
 
           if (!step.res.ok || !step.body || step.body.success !== true){
             setBusy(false);
@@ -275,4 +273,5 @@
   </script>
 </body>
 </html>
+
 

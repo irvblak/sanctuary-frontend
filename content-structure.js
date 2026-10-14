@@ -18,7 +18,7 @@
     {key:"administration",title:"Administration & Governance",hat:"Administration & Governance",icon:"🛠️",libraryDescription:"Website governance and Club and condominium administrative information.",subcategories:[["website","Website"],["website-custodian","Website Custodian"],["club-condominium-administration","Club & Condominium Administration"]],subcategoryLinks:{"website":[["Sanctuary Club Website Governance","website-governance.html"],["The Sanctuary Website Audit Trail","audit-trail-notice.html"],["Sanctuary Website Custody and Operating Guide","swcg-draft.html"]]}},
     {key:"services",title:"Services",hat:"Services",icon:"🔧",libraryDescription:"Service information and notices."},
     {key:"website-help",title:"Website Help",hat:"Website Helper",icon:"🌿",libraryDescription:"Practical website help and supporting information."},
-    {key:"learning",title:"Tuition & Guides",hat:"All Role Holders",icon:"📘",libraryDescription:"Tuition, lessons and guides from Role Holders.",dynamicSubcategories:true,subcategories:[
+    {key:"learning",title:"Library Education",hat:"All Role Holders",icon:"📘",libraryDescription:"Tuition, lessons and guides from Role Holders.",dynamicSubcategories:true,subcategories:[
       ["event-host","Event Host"],["activity-organiser","Activity Organiser"],["writer","Writer"],["artist","Artist"],
       ["committee-member","Committee Member"],["residents-association-panel-member","Residents Association Panel Member"],
       ["information-officer","Information Officer"],["services","Services"],["website-custodian-wc","Website Custodian (WC)"],["website-administration-wa","Website Administration (WA)"],["club-condominium-administration","Club & Condominium Administration"],["website-helper","Website Helper"]
@@ -118,4 +118,5 @@
 
   global.SanctuaryContentStructure={isManualPublication,REGISTER_GROUPS,PRODUCTION_HATS,hatSubjects,hatSubdivision,libraryTarget,creationTarget,publicationLearningStream,publicationHatKey,ACTIVITIES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
 })(window);
+
 

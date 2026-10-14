@@ -40,5 +40,6 @@
       .then(html=>{document.getElementById("document").innerHTML=html})
       .catch(error=>{console.error(error);document.getElementById("document").innerHTML="<h1>Draft temporarily unavailable</h1><p>Please return to the Library and try again shortly.</p>"});
   </script>
-</body>
+<script>fetch("https://sanctuary-backend-8iqc.onrender.com/api/library-publications/website-custody-manual").then(r=>r.ok?r.json():null).then(d=>{if(d?.publication?.publication_id)location.replace("library-publications.html?id="+encodeURIComponent(d.publication.publication_id));}).catch(()=>{});</script></body>
 </html>
+

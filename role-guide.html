@@ -65,5 +65,6 @@ h1{margin:0;color:var(--blue)}
   }
 })();
 </script>
-</body>
+<script>const guideRole=new URLSearchParams(location.search).get("role");if(guideRole)fetch("https://sanctuary-backend-8iqc.onrender.com/api/library-publications/role-guide-"+encodeURIComponent(guideRole)).then(r=>r.ok?r.json():null).then(d=>{if(d?.publication?.publication_id)location.replace("library-publications.html?id="+encodeURIComponent(d.publication.publication_id));}).catch(()=>{});</script></body>
 </html>
+

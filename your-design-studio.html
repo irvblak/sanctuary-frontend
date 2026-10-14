@@ -930,9 +930,11 @@
 .route-selector label{font-weight:700;color:#3c2f26;}
 .route-selector select{width:100%;padding:12px;border:1px solid #cdbcae;border-radius:10px;background:#fff;color:#2f2925;font:inherit;}
 .route-note{margin:8px 0 0;color:#675a51;line-height:1.45;}
+
+    #verifyCard{padding:1rem 1.2rem}#verifyCard h2{margin-bottom:.35rem}#verifyCard .sub{margin-bottom:.75rem}#verifyForm{display:flex;align-items:end;gap:.75rem;flex-wrap:wrap}#verifyForm>.form-grid{display:contents}#verifyForm .form-grid>label:first-child{width:150px}#verifyForm .form-grid>label:nth-child(2){width:175px}#verifyForm>.actions{margin:0}#verifyForm>.status{flex-basis:100%}#verifyBtn{min-height:46px}#verifyCard input{min-height:46px;padding:.55rem .65rem}#verifyCard .pin-wrap input{padding-right:4rem}.studio-preamble h2{margin:0 0 .75rem}.studio-preamble-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}.studio-preamble-grid>div{padding-top:.7rem;border-top:4px solid #c8d9e9}.studio-preamble-grid h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin:0 0 .35rem}.studio-preamble-grid p{margin:0;line-height:1.55}.studio-preamble-grid svg{width:25px;height:25px}.studio-preamble .education{border-color:#7a263a}.studio-preamble .reading{border-color:#21633f}.studio-preamble .creative{border-color:#805394}.studio-preamble .clarification{padding-top:.7rem;margin-top:.85rem;border-top:1px solid #d5e1eb}.studio-preamble .enjoy{color:#21633f;font-size:1.1rem;font-weight:850;margin:1rem 0 0}@media(max-width:700px){.studio-preamble-grid{grid-template-columns:1fr}}
 </style>
-<script src="content-structure.js?v=LIBRARY_VISUAL_20261013"></script>
-<link rel="stylesheet" href="directory-style.css?v=LIBRARY_VISUAL_20261013"></head>
+<script src="content-structure.js?v=LIBRARY_OPENINGS_20261014"></script>
+<link rel="stylesheet" href="directory-style.css?v=LIBRARY_OPENINGS_20261014"></head>
 
 
 <body>
@@ -1011,8 +1013,7 @@
 
       <p class="sub">
         Enter your resident reference and Personal PIN.
-        Your allocated roles will decide which Studio choices
-        are available to you.
+
       </p>
 
 
@@ -1069,7 +1070,7 @@
             id="verifyBtn"
             type="submit"
           >
-            Enter Your Design Studio
+            Enter your studio
           </button>
 
         </div>
@@ -1086,6 +1087,21 @@
     </section>
 
 
+
+
+    <section class="card studio-preamble" aria-labelledby="studioPreambleHeading">
+      <h2 id="studioPreambleHeading">Which cap will you don?</h2>
+      <p><strong>When you enter your studio, decide which cap you want to don, then decide where you want your work to go.</strong></p>
+      <div class="studio-preamble-grid">
+        <div><h3>Calendar</h3><p>If it’s to tell members when your event is happening, send it to the Calendar.</p></div>
+        <div class="education"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#graduation-cap"></use></svg>Library Education</h3><p>If it’s to explain how to do something connected with your activity or role, it’ll go on the appropriate shelf in the Library Education section.</p></div>
+        <div class="reading"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#book-open-text"></use></svg>Library Reading Room</h3><p>If it’s to do with your activity or role and just for general information, it will go to the appropriate shelf in the Library Reading Room.</p></div>
+        <div class="creative"><h3>Your Writer’s cap</h3><p>If you write a story, anecdote or anything else wearing your Writer’s cap, it will go to your Editor, who will publish it under your name and send it on to the Reading Room, or get back to you for a chat about it.</p></div>
+        <div class="creative"><h3>Your Artist’s cap</h3><p>If you create a piece of artwork wearing your Artist’s cap, you can keep it just for your own enjoyment or submit it to the Curator for consideration for inclusion in the Gallery.</p></div>
+      </div>
+      <p class="clarification">Teaching work by Writers and Artists follows the same Editor or Curator route to Library Education.</p>
+      <p class="enjoy">Whatever you decide to be or do, it’s all there to be enjoyed.</p>
+    </section>
 
     <!-- =====================================================
          STUDIO FRONT DOOR
@@ -1115,7 +1131,7 @@
         </h3>
 
         <p class="you-may">
-          Choose what your work is for, then select Calendar, Library or Learning &amp; Teaching.
+          Choose your cap, then choose Calendar, Library Reading Room or Library Education.
         </p>
 
         <div
@@ -1175,10 +1191,7 @@
       <!-- Retained as a hidden compatibility hook for existing JavaScript. -->
       <div id="existingTools" hidden></div>
 
-      <div class="motto">
-        The computer does the thinking.<br />
-        You do the creating.
-      </div>
+
 
     </section>
 
@@ -2392,7 +2405,7 @@
 
         if(label === "Library" || label === "Learning & Teaching"){
           const icon = label === "Library" ? "book-open-text" : "graduation-cap";
-          const description = label === "Library" ? "Create work for the Library" : "Create Learning & Teaching work";
+          const description = label === "Library" ? "Create work for the Library Reading Room" : "Create work for Library Education";
           link.setAttribute("aria-label", description);
           link.title = description;
           link.innerHTML = '<svg class="studio-destination-icon" aria-hidden="true" focusable="false"><use href="assets/icons/library-icons.svg#' + icon + '"></use></svg>';
@@ -2559,7 +2572,7 @@
         document.getElementById("roleScopeSelect")?.addEventListener("change",e=>{selectedSubject=e.target.value;subdivisions();});subdivisions();
         links.learning.addEventListener("click",e=>{
           e.preventDefault();const enter=actionButton("Create work","#");const back=actionButton("Back","#",true);
-          setChoiceContent(choice.label+" — Learning & Teaching",'<label class="route-selector">Choose a shelf<select id="learningStreamSelect"><option value="learning">Learning</option><option value="teaching" selected>Teaching</option></select></label>',[enter,back]);
+          setChoiceContent(choice.label+" — Library Education",'<label class="route-selector">Choose a shelf<select id="learningStreamSelect"><option value="learning">Learning</option><option value="teaching" selected>Teaching</option></select></label>',[enter,back]);
           const setLink=()=>{enter.href=S.creationTarget(choice,"learning",selectedSubject,selectedSubdivision,selectedStream,actingRole);};
           document.getElementById("learningStreamSelect").addEventListener("change",event=>{selectedStream=event.target.value;setLink();});setLink();back.addEventListener("click",event=>{event.preventDefault();openUniversalChoice(choice);});
         });
@@ -3265,7 +3278,8 @@
     })();
   </script>
 
-<script src="content-directory.js?v=LIBRARY_VISUAL_20261013"></script></body>
+<script src="content-directory.js?v=LIBRARY_OPENINGS_20261014"></script></body>
 </html>
+
 
 

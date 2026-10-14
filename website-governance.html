@@ -49,5 +49,5 @@ a{color:#123a78;font-weight:800}
 
 <div class="note"><strong>Library responsibility:</strong> Club Secretary.</div>
 </main>
-</body>
+<script>fetch("https://sanctuary-backend-8iqc.onrender.com/api/library-publications/website-governance").then(r=>r.ok?r.json():null).then(d=>{if(d?.publication?.publication_id)location.replace("library-publications.html?id="+encodeURIComponent(d.publication.publication_id));}).catch(()=>{});</script></body>
 </html>

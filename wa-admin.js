@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const API="https://sanctuary-backend-8iqc.onrender.com",access=window.SanctuaryContentAccess;if(!access)return;
-async function request(path,options={}){const response=await fetch(API+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+access.token(),...options.headers}});const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"The action could not be completed.");return data;}
+async function request(path,options={}){const response=await fetch(API+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+(access.token()||sessionStorage.getItem("authToken")||sessionStorage.getItem("ydsAuthToken")||localStorage.getItem("authToken")||sessionStorage.getItem("memberToken")||localStorage.getItem("memberToken")||""),...options.headers}});const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error(data.message||"The action could not be completed.");return data;}
 async function editPublication(id){
  const data=await request('/api/library-publications/'+encodeURIComponent(id));const item=data.publication||{};
  if(!item.canvas_data?.state){
@@ -19,11 +19,13 @@ async function editPublication(id){
  const q=new URLSearchParams({publication_id:id,mode:item.mode||canvas.mode||'writer',destination:canvas.destination||item.category||'library',collection:'library',type:'standing',admin:'1'});
  location.href='design-studio-canvas.html?'+q;
 }
-function publicationControl(id,parent){if(!id)return;parent.querySelector('[data-content-control]')?.remove();const box=document.createElement('span');box.dataset.contentControl='';box.style.cssText='display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px';for(const [label,action] of [['Edit',async()=>editPublication(id)],['Delete',async()=>{if(!confirm('Delete this published work? This cannot be undone.'))return;await request('/api/library-publications/'+encodeURIComponent(id),{method:'DELETE'});location.href='library.html';}]]){const button=document.createElement('button');button.type='button';button.textContent=label;button.className='btn';button.onclick=async()=>{button.disabled=true;try{await action();}catch(error){alert(error.message);}finally{button.disabled=false;}};box.append(button);}parent.append(box);}
-access.ready.then(ok=>{if(!ok)return;document.documentElement.dataset.waAdmin='true';
+function publicationControl(id,parent,canDelete=true){if(!id)return;parent.querySelector('[data-content-control]')?.remove();const box=document.createElement('span');box.dataset.contentControl='';box.style.cssText='display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px';for(const [label,action] of [['Edit',async()=>editPublication(id)],['Delete',async()=>{if(!confirm('Delete this published work? This cannot be undone.'))return;await request('/api/library-publications/'+encodeURIComponent(id),{method:'DELETE'});location.href='library.html';}]]){if(label==='Delete'&&!canDelete)continue;const button=document.createElement('button');button.type='button';button.textContent=label;button.className='btn';button.onclick=async()=>{button.disabled=true;try{await action();}catch(error){alert(error.message);}finally{button.disabled=false;}};box.append(button);}parent.append(box);}
+access.ready.then(async ok=>{
  const params=new URLSearchParams(location.search),path=location.pathname.toLowerCase();
- if(path.endsWith('/library-publications.html')&&/^PUB-\d+$/i.test(params.get('id')||''))publicationControl(params.get('id'),document.querySelector('main')||document.body);
+ if(path.endsWith('/library-publications.html')&&params.get('id')){try{const permission=await request('/api/library-publications/'+encodeURIComponent(params.get('id'))+'/permissions');if(permission.can_edit)publicationControl(permission.publication_id,document.querySelector('main')||document.body,permission.can_delete);}catch(error){/* Public readers need no editing controls. */}}
+ if(!ok)return;document.documentElement.dataset.waAdmin='true';
  if(path.endsWith('/library-gallery.html')){const viewer=document.getElementById('galleryViewer');const show=()=>{const id=viewer?.dataset.publicationId;if(id)publicationControl(id,viewer.querySelector('.viewer-actions')||viewer);};new MutationObserver(show).observe(viewer,{attributes:true,attributeFilter:['data-publication-id']});show();}
  document.querySelectorAll('[data-wa-admin-edit],[data-wa-admin-delete]').forEach(el=>el.hidden=false);
 });
 })();
+

@@ -43,5 +43,5 @@
   <p>Routine audit entries are retained for two years. Short-lived security entries are retained for six months unless they are needed for a continuing investigation. Expired entries are removed automatically.</p>
   <p class="note">The Audit Log cannot be edited or selectively erased. GitHub, Netlify and Render maintain their own technical and deployment histories, so the website does not duplicate those records.</p>
 </main>
-</body>
+<script>fetch("https://sanctuary-backend-8iqc.onrender.com/api/library-publications/audit-trail").then(r=>r.ok?r.json():null).then(d=>{if(d?.publication?.publication_id)location.replace("library-publications.html?id="+encodeURIComponent(d.publication.publication_id));}).catch(()=>{});</script></body>
 </html>

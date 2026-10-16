@@ -933,7 +933,7 @@
 
     #verifyCard{padding:1rem 1.2rem}#verifyCard h2{margin-bottom:.35rem}#verifyCard .sub{margin-bottom:.75rem}#verifyForm{display:flex;align-items:end;gap:.75rem;flex-wrap:wrap}#verifyForm>.form-grid{display:contents}#verifyForm .form-grid>label:first-child{width:260px;max-width:100%}#verifyForm .form-grid>label:nth-child(2){width:175px}#verifyForm>.actions{margin:0}#verifyForm>.status{flex-basis:100%}#verifyBtn{min-height:46px}#verifyCard input{min-height:46px;padding:.55rem .65rem}#verifyCard .pin-wrap input{padding-right:4rem}.studio-preamble h2{margin:0 0 .75rem}.studio-preamble-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}.studio-preamble-grid>div{padding-top:.7rem;border-top:4px solid #c8d9e9}.studio-preamble-grid h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin:0 0 .35rem}.studio-preamble-grid p{margin:0;line-height:1.55}.studio-preamble-grid svg{width:25px;height:25px}.studio-preamble .education{border-color:#7a263a}.studio-preamble .reading{border-color:#21633f}.studio-preamble .creative{border-color:#805394}.studio-preamble .clarification{padding-top:.7rem;margin-top:.85rem;border-top:1px solid #d5e1eb}.studio-preamble .enjoy{color:#21633f;font-size:1.1rem;font-weight:850;margin:1rem 0 0}@media(max-width:700px){.studio-preamble-grid{grid-template-columns:1fr}}
 </style>
-<script src="content-structure.js?v=LIBRARY_OPENINGS_20261014"></script>
+<script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
 <link rel="stylesheet" href="directory-style.css?v=LIBRARY_OPENINGS_20261014"></head>
 
 
@@ -967,6 +967,7 @@
 
 
       <div class="actions">
+        <a class="btn secondary" href="library.html"><img src="assets/icons/reading-room.png" alt="" width="28" height="28">Library</a>
 
         <a
           class="btn secondary"
@@ -1096,7 +1097,7 @@
         <div><h3>Calendar</h3><p>If it’s to tell members when your event is happening, send it to the Calendar.</p></div>
         <div class="education"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#graduation-cap"></use></svg>Library Education</h3><p>If it’s to explain how to do something connected with your activity or role, it’ll go on the appropriate shelf in the Library Education section.</p></div>
         <div class="reading"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#book-open-text"></use></svg>Library Reading Room</h3><p>If it’s to do with your activity or role and just for general information, it will go to the appropriate shelf in the Library Reading Room.</p></div>
-        <div class="creative"><h3><svg aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#role-news"></use></svg>Your Writer’s cap</h3><p>If you write a story, anecdote or anything else wearing your Writer’s cap, it will go to your Editor, who will publish it under your name and send it on to the Reading Room, or get back to you for a chat about it.</p></div>
+        <div class="creative"><h3><svg aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#role-news"></use></svg>Your Writer’s cap</h3><p>If you write a story, anecdote or article wearing your Writer’s cap, it will go to your Editor, who will publish it under your name and send it on to the Reading Room, or get back to you for a chat about it. Letters to the Panel go to the Mews or Court Secretary, according to your membership.</p></div>
         <div class="creative"><h3><svg aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#role-artist"></use></svg>Your Artist’s cap</h3><p>If you create a piece of artwork wearing your Artist’s cap, you can keep it just for your own enjoyment or submit it to the Curator for consideration for inclusion in the Gallery.</p></div>
       </div>
       <p class="clarification">Teaching work by Writers and Artists follows the same Editor or Curator route to Library Education.</p>
@@ -1341,6 +1342,9 @@
 
 
       const MEMBER_ROLE_ICONS = [
+        {roles:["court_committee_officer_1","court_committee_officer_2","court_committee_secretary"],iconId:"role-committee",tooltip:"Court Committee"},
+        {roles:["admin_club"],iconId:"role-admin",tooltip:"Club Admin"},
+        {roles:["admin_condo"],iconId:"role-admin",tooltip:"Condo Admin"},
 
         {
           roles:["host"],
@@ -2561,14 +2565,15 @@
 
       function openUniversalChoice(choice){
         const S=SanctuaryContentStructure;
-        const actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
-        const subjects=S.hatSubjects(choice,choice.key==="activity"?(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes()):undefined);
+        let actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
+        const subjects=S.hatSubjects(choice,choice.key==="activity"?(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes()):undefined,currentStudioRoles);
         if(choice.key==="activity"&&!subjects.length){setChoiceContent(choice.label,"<p>No activity has been assigned. Please ask a Club Administrator.</p>",[]);return;}
         let selectedSubject=subjects[0]?.[0]||"",selectedSubdivision="",selectedStream="teaching";
         const links={calendar:actionButton("Calendar","#"),information:actionButton("Library","#",true),learning:actionButton("Learning & Teaching","#",true)};
         const selector=subjects.length?`<label class="route-selector">Subject<select id="roleScopeSelect">${subjects.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label><div id="roleSubdivision"></div>`:"";
-        setChoiceContent(choice.label,selector,Object.values(links));els.routeNote.hidden=true;
-        function update(){Object.entries(links).forEach(([kind,link])=>{link.href=S.creationTarget(choice,kind,selectedSubject,selectedSubdivision,selectedStream,actingRole);});}
+        const reviewLetters=choice.key==="committee"?actionButton("Review Letters to the Panel","panel-letters.html"):null;
+        setChoiceContent(choice.label,selector,[...Object.values(links),...(reviewLetters?[reviewLetters]:[])]);els.routeNote.hidden=true;
+        function update(){if(reviewLetters)reviewLetters.href="panel-letters.html?area="+(selectedSubject==="court"?"Court":"Mews");if(choice.subjectRoles)actingRole=(choice.subjectRoles[selectedSubject]||[]).find(role=>currentStudioRoles.includes(role))||"";Object.entries(links).forEach(([kind,link])=>{link.href=S.creationTarget(choice,kind,selectedSubject,selectedSubdivision,selectedStream,actingRole);});}
         function subdivisions(){const box=document.getElementById("roleSubdivision");if(!box){update();return;}const values=S.hatSubdivision(choice,selectedSubject);selectedSubdivision=values[0]?.[0]||"";box.innerHTML=values.length?`<label class="route-selector">Subdivision<select id="roleSubdivisionSelect">${values.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label>`:"";document.getElementById("roleSubdivisionSelect")?.addEventListener("change",e=>{selectedSubdivision=e.target.value;update();});update();}
         document.getElementById("roleScopeSelect")?.addEventListener("change",e=>{selectedSubject=e.target.value;subdivisions();});subdivisions();
         links.learning.addEventListener("click",e=>{
@@ -3277,8 +3282,9 @@
     })();
   </script>
 
-<script src="content-directory.js?v=LIBRARY_OPENINGS_20261014"></script></body>
+<script src="content-directory.js?v=ROLE_SHELVES_20261016"></script></body>
 </html>
+
 
 
 

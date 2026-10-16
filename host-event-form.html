@@ -745,14 +745,14 @@ function roleAllowsMode(roles){
   const allowed = {
     host:["host"],
     activity:["activity_organiser"],
-    committee:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"],
+    committee:["committee_secretary","court_committee_secretary"],
     panel:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"],
     services:["services"],
     "information-officer":["information_officer"],
     "website-helper":["website_helper"],
-    condo:["condominium_coordinator","condo_admin"],
+    condo:["admin_condo"],
     editorial:["copy_editor","art_editor","editor"],
-    administration:["admin_website","admin_club","website_custodian","condominium_coordinator","condo_admin"],
+    administration:["admin_website","admin_club","admin_condo","website_custodian"],
     writer:["writer","news_contributor"],
     "art-teacher":["art_teacher"],
     artist:["artist"]
@@ -834,7 +834,7 @@ const SOURCE_LABELS = {
   services:"Services"
   ,"information-officer":"Information Officer"
   ,"website-helper":"Website Helper"
-  ,condo:"Condominium Coordinator"
+  ,condo:"Condo Admin"
   ,editorial:"Editorial"
   ,administration:"Administration"
   ,writer:"Writer"
@@ -1664,6 +1664,7 @@ initialise();
 </script>
 </body>
 </html>
+
 
 
 

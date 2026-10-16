@@ -882,7 +882,7 @@
       host:"Event Host",
       "information-officer":"Information Officer",
       "website-helper":"Website Helper",
-      condominium:"Condominium Coordinator",
+      condominium:"Condo Admin",
       editorial:"Editorial",
       administration:"Administration"
     };
@@ -891,15 +891,15 @@
       writer:["writer","news_contributor"],
       artist:["artist"],
       "art-teacher":["art_teacher"],
-      committee:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"],
+      committee:["committee_secretary","court_committee_secretary"],
       panel:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"],
       services:["services"],
       host:["host"],
       "information-officer":["information_officer"],
       "website-helper":["website_helper"],
-      condominium:["condominium_coordinator","condo_admin"],
+      condominium:["admin_condo"],
       editorial:["copy_editor","art_editor","editor"],
-      administration:["admin_website","admin_club","website_custodian","condominium_coordinator","condo_admin"]
+      administration:["admin_website","admin_club","admin_condo","website_custodian"]
     };
     const DATED_SOURCE_ROLES={
       host:["host"],
@@ -907,14 +907,14 @@
       writer:["writer","news_contributor"],
       artist:["artist"],
       "art-teacher":["art_teacher"],
-      committee:["committee","committee_chair","committee_secretary","committee_treasurer","committee_officer","secretary","treasurer"],
+      committee:["committee_secretary","court_committee_secretary"],
       panel:["panel","residents_association","ra_chair","ra_secretary","ra_treasurer","ra_officer","panel_secretary"],
       services:["services"],
       "information-officer":["information_officer"],
       "website-helper":["website_helper"],
-      condominium:["condominium_coordinator","condo_admin"],
+      condominium:["admin_condo"],
       editorial:["copy_editor","art_editor","editor"],
-      administration:["admin_website","admin_club","website_custodian","condominium_coordinator","condo_admin"]
+      administration:["admin_website","admin_club","admin_condo","website_custodian"]
     };
     const DATED_SOURCE_LABELS={
       host:"Event Host",
@@ -927,7 +927,7 @@
       services:"Services",
       "information-officer":"Information Officer",
       "website-helper":"Website Helper",
-      condominium:"Condominium Coordinator",
+      condominium:"Condo Admin",
       editorial:"Editorial",
       administration:"Administration"
     };
@@ -3599,6 +3599,7 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
 
 </body>
 </html>
+
 
 
 

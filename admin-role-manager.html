@@ -490,7 +490,7 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=DIRECT_INDEX_20261012"></script>
+<script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
 </head>
 
 <body>
@@ -545,7 +545,7 @@
         <div class="row">
           <div class="field small">
             <label for="addResidentRef">Member ref</label>
-            <input id="addResidentRef" placeholder="e.g. SM55/1" />
+            <input id="addResidentRef" placeholder="e.g. SM55/1 or SC12/2" />
           </div>
           <div class="actions-left">
             <button class="btn primary" id="btnLoadResident" type="button">Load member</button>
@@ -651,8 +651,8 @@
           </div>
 
           <div class="roleSection">
-            <h3>Committee Members</h3>
-            <div class="section-note">Committee office determines the member’s Committee publishing route in Your Design Studio.</div>
+            <h3>Mews Committee</h3>
+            <div class="section-note">The Secretary publishes Mews committee work. The other offices are appointments without committee publishing rights.</div>
             <div class="roleGrid">
               <label class="roleBox">
                 <input type="checkbox" id="roleCommitteeChair" />
@@ -666,7 +666,7 @@
                 <input type="checkbox" id="roleCommitteeSecretary" />
                 <div class="roleText">
                   <strong>Secretary</strong>
-                  <span>Committee Secretary and Committee publication point.</span>
+                  <span>Publishes Mews committee work and reviews Mews members’ Letters to the Panel.</span>
                 </div>
               </label>
 
@@ -688,8 +688,10 @@
             </div>
           </div>
 
+          <div class="roleSection"><h3>Court Committee</h3><div class="roleGrid"><label class="roleBox"><input type="checkbox" id="roleCourtOfficer1"/><div class="roleText"><strong>Officer 1</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtOfficer2"/><div class="roleText"><strong>Officer 2</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtSecretary"/><div class="roleText"><strong>Secretary</strong><span>Publishes Court committee work and reviews Court members’ Letters to the Panel.</span></div></label></div></div>
+
           <div class="roleSection">
-            <h3>Residents Association Panel Members</h3>
+            <h3>Residents Association</h3>
             <div class="section-note">Separate from Club Committee responsibilities.</div>
             <div class="roleGrid">
               <label class="roleBox">
@@ -769,14 +771,6 @@
               </label>
 
               <label class="roleBox">
-                <input type="checkbox" id="roleCondominiumCoordinator" />
-                <div class="roleText">
-                  <strong>Condominium Coordinator</strong>
-                  <span>Coordinates practical condominium information, equipment and building matters.</span>
-                </div>
-              </label>
-
-              <label class="roleBox">
                 <input type="checkbox" id="roleInformationOfficer" />
                 <div class="roleText">
                   <strong>Information Officer</strong>
@@ -810,17 +804,10 @@
                   <span>Working website administration across all hats. Actions affecting another person's work are recorded in the Audit Trail.</span>
                 </div>
               </label>
-
-              <label class="roleBox">
-                <input type="checkbox" id="roleAdminClub" />
-                <div class="roleText">
-                  <strong>Club &amp; Condominium Administration</strong>
-                  <span>Club administration, records and publication oversight.</span>
-                </div>
-              </label>
             </div>
           </div>
 
+          <div class="roleSection"><h3>Club &amp; Condo Admin</h3><div class="roleGrid"><label class="roleBox"><input type="checkbox" id="roleAdminClub"/><div class="roleText"><strong>Club Admin</strong><span>Publishes Club administration information and guides.</span></div></label><label class="roleBox"><input type="checkbox" id="roleAdminCondo"/><div class="roleText"><strong>Condo Admin</strong><span>Publishes condominium administration information and guides.</span></div></label></div></div>
           <div class="actions">
             <div class="actions-left">
               <button class="btn primary" id="btnSaveRoles" type="button" disabled>Save roles</button>
@@ -881,12 +868,16 @@
 
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
-    const roleCondominiumCoordinatorEl = $("roleCondominiumCoordinator");
     const roleInformationOfficerEl = $("roleInformationOfficer");
 
     const roleWebsiteCustodianEl = $("roleWebsiteCustodian");
     const roleAdminWebsiteEl = $("roleAdminWebsite");
     const roleAdminClubEl = $("roleAdminClub");
+    const roleCourtOfficer1El = $("roleCourtOfficer1");
+    const roleCourtOfficer2El = $("roleCourtOfficer2");
+    const roleCourtSecretaryEl = $("roleCourtSecretary");
+    const roleAdminCondoEl = $("roleAdminCondo");
+
 
     const activityScopePanel = $("activityScopePanel");
     const activityScopeGrid = $("activityScopeGrid");
@@ -913,10 +904,10 @@
       clubhouse_publisher: "Clubhouse Publisher",
       activity_organiser: "Activity Organiser",
 
-      committee_chair: "Committee Chair",
-      committee_secretary: "Committee Secretary",
-      committee_treasurer: "Committee Treasurer",
-      committee_officer: "Committee Officer",
+      committee_chair: "Mews Committee — Chair",
+      committee_secretary: "Mews Committee — Secretary",
+      committee_treasurer: "Mews Committee — Treasurer",
+      committee_officer: "Mews Committee — Officer",
 
       ra_chair: "Residents Association Chair",
       ra_secretary: "Residents Association Secretary",
@@ -931,12 +922,16 @@
 
       website_helper: "Website Helper",
       services: "Services",
-      condominium_coordinator: "Condominium Coordinator",
       information_officer: "Information Officer",
 
       website_custodian: "Website Custodian (WC)",
       admin_website: "Website Administration (WA)",
-      admin_club: "Club & Condominium Administration",
+      admin_club: "Club Admin",
+      court_committee_officer_1: "Court Committee — Officer 1",
+      court_committee_officer_2: "Court Committee — Officer 2",
+      court_committee_secretary: "Court Committee — Secretary",
+      admin_condo: "Condo Admin",
+
 
       admin: "Administrator (legacy)",
       committee: "Committee (legacy)",
@@ -1050,7 +1045,7 @@
 
     function rolesFor(obj){
       return Array.isArray(obj?.roles)
-        ? obj.roles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
+        ? obj.roles.map(r => String(r).trim().toLowerCase()).filter(role=>role&&role!=="condominium_coordinator")
         : [];
     }
 
@@ -1366,11 +1361,14 @@
         roleArtEditorEl,
         roleWebsiteHelperEl,
         roleServicesEl,
-        roleCondominiumCoordinatorEl,
         roleInformationOfficerEl,
         roleWebsiteCustodianEl,
         roleAdminWebsiteEl,
-        roleAdminClubEl
+        roleAdminClubEl,
+        roleCourtOfficer1El,
+        roleCourtOfficer2El,
+        roleCourtSecretaryEl,
+        roleAdminCondoEl
       ].forEach(el => el.checked = false);
 
       setSelectedActivityScopes([]);
@@ -1561,12 +1559,16 @@
 
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
-      roleCondominiumCoordinatorEl.checked = roles.includes("condominium_coordinator");
       roleInformationOfficerEl.checked = roles.includes("information_officer");
 
       roleWebsiteCustodianEl.checked = roles.includes("website_custodian");
       roleAdminWebsiteEl.checked = roles.includes("admin_website");
       roleAdminClubEl.checked = roles.includes("admin_club");
+      roleCourtOfficer1El.checked = roles.includes("court_committee_officer_1");
+      roleCourtOfficer2El.checked = roles.includes("court_committee_officer_2");
+      roleCourtSecretaryEl.checked = roles.includes("court_committee_secretary");
+      roleAdminCondoEl.checked = roles.includes("admin_condo");
+
 
       setSelectedActivityScopes(scopes);
       setSelectedHelperScopes(helperScopes);
@@ -1603,12 +1605,16 @@
 
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");
-      if(roleCondominiumCoordinatorEl.checked) roles.push("condominium_coordinator");
       if(roleInformationOfficerEl.checked) roles.push("information_officer");
 
       if(roleWebsiteCustodianEl.checked) roles.push("website_custodian");
       if(roleAdminWebsiteEl.checked) roles.push("admin_website");
       if(roleAdminClubEl.checked) roles.push("admin_club");
+      if(roleCourtOfficer1El.checked) roles.push("court_committee_officer_1");
+      if(roleCourtOfficer2El.checked) roles.push("court_committee_officer_2");
+      if(roleCourtSecretaryEl.checked) roles.push("court_committee_secretary");
+      if(roleAdminCondoEl.checked) roles.push("admin_condo");
+
 
       /*
         Retire old role names as soon as this member is saved.
@@ -1914,4 +1920,5 @@
   </script>
 </body>
 </html>
+
 

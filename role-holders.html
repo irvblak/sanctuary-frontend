@@ -38,7 +38,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 @media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}.section-body{display:block!important}.section-toggle::after{display:none}}
 .register-heading-content{display:flex;align-items:center;gap:.7rem;min-width:0;flex-wrap:wrap}.register-cap-icons{display:inline-flex;gap:.35rem;align-items:center;flex-wrap:wrap}.register-cap-icon{width:28px;height:28px;flex:0 0 28px;color:currentColor}.register-role-label{display:inline-flex;align-items:center;gap:.55rem}.register-role-label .register-cap-icon{width:24px;height:24px;flex-basis:24px}@media(max-width:600px){.register-heading-content{gap:.5rem}.register-cap-icon{width:24px;height:24px;flex-basis:24px}}
 </style>
-<script src="content-structure.js?v=DIRECT_INDEX_20261012"></script>
+<script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
 </head>
 <body>
 <div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link learning" href="library.html?section=learning#learning">Tuition &amp; Guides</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
@@ -82,7 +82,7 @@ function renderActivities(residents){const tbody=document.getElementById("activi
 function renderWebsiteHelpers(residents){const tbody=document.getElementById("websiteHelpers");tbody.innerHTML="";HELPER_SCOPES.forEach(([scope,label])=>{const holders=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td>`;tbody.appendChild(tr)})}
 function registerRoleIcon(role){
  const exact={host:'role-host',clubhouse_publisher:'role-host',activity_organiser:'role-activity',copy_editor:'role-editor',art_editor:'role-artist',website_helper:'role-helper',services:'role-services',information_officer:'role-news',condominium_coordinator:'role-admin',website_custodian:'role-admin',admin_website:'role-admin',admin_club:'role-admin'};
- return exact[role]||(role.startsWith('committee_')?(role==='committee_treasurer'?'role-treasurer':'role-committee'):role.startsWith('ra_')?'role-panel':'role-admin');
+ return exact[role]||((role.startsWith('committee_')||role.startsWith('court_committee_'))?(role==='committee_treasurer'?'role-treasurer':'role-committee'):role.startsWith('ra_')?'role-panel':'role-admin');
 }
 function registerIcon(id){return `<svg class="register-cap-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${id}"></use></svg>`;}
 function registerHeadingIcons(group){return `<span class="register-cap-icons" aria-hidden="true">${[...new Set(group.roles.map(([role])=>registerRoleIcon(role)))].map(registerIcon).join('')}</span>`;}
@@ -104,5 +104,6 @@ initialise();
 </script>
 </body>
 </html>
+
 
 

@@ -5,7 +5,7 @@
 <title>Role Register | Sanctuary Club</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<script src="access.js?v=RR_NAV_20261012"></script>
+<script src="access.js?v=MEMBER_ICONS_20261016"></script>
 <style>
 :root{--bg1:#d9ecff;--bg2:#f5f9fc;--ink:#263746;--muted:#60717f;--blue:#00ACA5;--blue-dark:#008D88;--library:#21633f;--learning:#7a263a;--hub:#123a78;--line:#d8e3ec;--soft:#f5f9fc;--white:#fff;--shadow:0 8px 24px rgba(0,0,0,.08)}
 *{box-sizing:border-box}
@@ -36,6 +36,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 .motto{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line);color:#31506b;text-align:center;font-weight:850;line-height:1.55}
 @media(max-width:700px){body{font-size:17px}.topbar{align-items:flex-start;flex-direction:column}.panel{padding:1rem;border-radius:15px}.role-line{grid-template-columns:1fr;gap:.25rem}table,thead,tbody,th,td,tr{display:block}thead{display:none}table{border:none;background:transparent}tr{margin-bottom:.6rem;border:1px solid #d5e2eb;border-radius:12px;overflow:hidden;background:#fff}td{width:auto!important;border-bottom:none}td:first-child{padding-bottom:.25rem;color:#223b50;font-weight:850}td:last-child{padding-top:.25rem}}
 @media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}.section-body{display:block!important}.section-toggle::after{display:none}}
+.register-heading-content{display:flex;align-items:center;gap:.7rem;min-width:0;flex-wrap:wrap}.register-cap-icons{display:inline-flex;gap:.35rem;align-items:center;flex-wrap:wrap}.register-cap-icon{width:28px;height:28px;flex:0 0 28px;color:currentColor}.register-role-label{display:inline-flex;align-items:center;gap:.55rem}.register-role-label .register-cap-icon{width:24px;height:24px;flex-basis:24px}@media(max-width:600px){.register-heading-content{gap:.5rem}.register-cap-icon{width:24px;height:24px;flex-basis:24px}}
 </style>
 <script src="content-structure.js?v=DIRECT_INDEX_20261012"></script>
 </head>
@@ -79,11 +80,17 @@ function fillCell(id,list){const el=document.getElementById(id);if(el)el.innerHT
 function renderEventHosts(residents){document.getElementById("eventHosts").innerHTML=`<div class="role-line"><div class="role-name">Current Event Hosts</div><div class="holders">${holdersHtml(holdersWithRole(residents,"host"))}</div></div>`}
 function renderActivities(residents){const tbody=document.getElementById("activityOrganisers");tbody.innerHTML="";ACTIVITIES.forEach(([scope,label])=>{const organisers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("activity_organiser")&&scopesFor(r).includes(scope)));const subdivisions=ACTIVITY_SUBCATEGORIES[scope]||[];const subtext=subdivisions.length?`<div style="margin-top:.2rem;color:var(--muted);font-size:.92em;font-weight:650">${subdivisions.map(([,name])=>escapeHtml(name)).join(" · ")}</div>`:"";const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}${subtext}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr)})}
 function renderWebsiteHelpers(residents){const tbody=document.getElementById("websiteHelpers");tbody.innerHTML="";HELPER_SCOPES.forEach(([scope,label])=>{const holders=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td>`;tbody.appendChild(tr)})}
+function registerRoleIcon(role){
+ const exact={host:'role-host',clubhouse_publisher:'role-host',activity_organiser:'role-activity',copy_editor:'role-editor',art_editor:'role-artist',website_helper:'role-helper',services:'role-services',information_officer:'role-news',condominium_coordinator:'role-admin',website_custodian:'role-admin',admin_website:'role-admin',admin_club:'role-admin'};
+ return exact[role]||(role.startsWith('committee_')?(role==='committee_treasurer'?'role-treasurer':'role-committee'):role.startsWith('ra_')?'role-panel':'role-admin');
+}
+function registerIcon(id){return `<svg class="register-cap-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${id}"></use></svg>`;}
+function registerHeadingIcons(group){return `<span class="register-cap-icons" aria-hidden="true">${[...new Set(group.roles.map(([role])=>registerRoleIcon(role)))].map(registerIcon).join('')}</span>`;}
 function renderRegister(residents){
  const S=SanctuaryContentStructure;
- registerContent.innerHTML=S.REGISTER_GROUPS.map(group=>`<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false">${escapeHtml(group.label)}</button></h2><div class="section-body"><table><thead><tr><th>Role or office</th><th>Current holder(s)</th></tr></thead><tbody>${group.roles.map(([role,label])=>{
+ registerContent.innerHTML=S.REGISTER_GROUPS.map(group=>`<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false"><span class="register-heading-content">${registerHeadingIcons(group)}<span>${escapeHtml(group.label)}</span></span></button></h2><div class="section-body"><table><thead><tr><th>Role or office</th><th>Current holder(s)</th></tr></thead><tbody>${group.roles.map(([role,label])=>{
    let holders=holdersWithRoles(residents,role==="copy_editor"?["copy_editor","editor"]:role==="condominium_coordinator"?["condominium_coordinator","condo_admin"]:[role]);
-   let row=`<tr><td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td></tr>`;
+   let row=`<tr><td><span class="register-role-label">${registerIcon(registerRoleIcon(role))}${escapeHtml(label)}</span></td><td>${holdersHtml(holders)}</td></tr>`;
    if(role==="activity_organiser")row+=`<tr><td colspan="2"><details><summary>Activities organised</summary><table><tbody>${S.ACTIVITIES.map(([scope,name])=>{const people=holders.filter(person=>scopesFor(person).includes(scope));const divisions=S.ACTIVITY_SUBCATEGORIES[scope]||[];return `<tr><td>${escapeHtml(name)}${divisions.length?`<details><summary>Subcategories</summary>${divisions.map(([,sub])=>`<div>${escapeHtml(sub)}</div>`).join("")}</details>`:""}</td><td>${holdersHtml(people)}</td></tr>`;}).join("")}</tbody></table></details></td></tr>`;
    if(role==="website_helper")row+=`<tr><td colspan="2"><details><summary>Website Helper areas</summary><table><tbody>${HELPER_SCOPES.map(([scope,name])=>`<tr><td>${escapeHtml(name)}</td><td>${holdersHtml(holders.filter(person=>helperScopesFor(person).includes(scope)))}</td></tr>`).join("")}</tbody></table></details></td></tr>`;
    return row;
@@ -97,4 +104,5 @@ initialise();
 </script>
 </body>
 </html>
+
 

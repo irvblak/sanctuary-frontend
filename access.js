@@ -1450,11 +1450,12 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
 (function(){
   if(document.querySelector('script[data-sanctuary-navigation]'))return;
   const script=document.createElement("script");
-  script.src="site-navigation.js?v=NAV_RR_20261012";
+  script.src="site-navigation.js?v=MEMBER_ICONS_20261016";
   script.defer=true;
   script.dataset.sanctuaryNavigation="true";
   (document.head||document.documentElement).appendChild(script);
 })();
+
 
 
 

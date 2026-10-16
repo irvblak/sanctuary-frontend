@@ -15,7 +15,7 @@
     content="noindex, nofollow"
   />
 
-  <script src="access.js?v=HOST_WA_CONTROLS_20261014"></script>
+  <script src="access.js?v=MEMBER_ICONS_20261016"></script>
 
   <style>
     :root{
@@ -2403,12 +2403,13 @@
           href;
 
 
-        if(label === "Library" || label === "Learning & Teaching"){
-          const icon = label === "Library" ? "book-open-text" : "graduation-cap";
-          const description = label === "Library" ? "Create work for the Library Reading Room" : "Create work for Library Education";
+        if(label === "Calendar" || label === "Library" || label === "Learning & Teaching"){
+          const icon = label === "Calendar" ? "calendar" : label === "Library" ? "reading" : "education";
+          const description = label === "Calendar" ? "Create an event for the Calendar" : label === "Library" ? "Create work for the Library Reading Room" : "Create work for Library Education";
           link.setAttribute("aria-label", description);
           link.title = description;
-          link.innerHTML = '<svg class="studio-destination-icon" aria-hidden="true" focusable="false"><use href="assets/icons/library-icons.svg#' + icon + '"></use></svg>';
+          link.dataset.destinationIcon = icon;
+          link.innerHTML = '<img class="sanctuary-destination-icon" src="assets/icons/'+(icon === "calendar" ? "calendar" : icon === "reading" ? "reading-room" : "library-education")+'.png" alt="" aria-hidden="true" width="34" height="34">';
         }else{
           link.textContent = label;
         }
@@ -3278,6 +3279,7 @@
 
 <script src="content-directory.js?v=LIBRARY_OPENINGS_20261014"></script></body>
 </html>
+
 
 
 

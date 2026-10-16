@@ -72,3 +72,6 @@
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});
   else install();
 })();
+
+
+(function(){const script=document.createElement("script");script.src="destination-icons.js?v=MEMBER_ICONS_20261016";script.defer=true;(document.head||document.documentElement).append(script);})();

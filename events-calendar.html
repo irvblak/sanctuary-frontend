@@ -7,7 +7,7 @@
 
   <meta name="robots" content="noindex, nofollow" />
 
-  <script src="access.js?v=RR_NAV_20261012"></script>
+  <script src="access.js?v=MEMBER_ICONS_20261016"></script>
 
   <style>
     :root{
@@ -831,7 +831,7 @@
       showInfo("Loading events…");
 
       try{
-        const data = await getJson(`${BACKEND_URL}/api/events`);
+        const data = await getJson(`${BACKEND_URL}/api/events?view=list`);
         EVENTS = Array.isArray(data.events) ? data.events : [];
         showInfo(`${EVENTS.length} event${EVENTS.length === 1 ? "" : "s"} loaded.`);
         renderLegend();
@@ -872,3 +872,4 @@
   </script>
 </body>
 </html>
+

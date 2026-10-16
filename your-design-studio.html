@@ -2371,6 +2371,26 @@
             );
           });
 
+        /* Correspondence is a membership right, independent of appointed hats. */
+        const lettersSection=document.createElement("article");
+        lettersSection.className="studio-tile active";
+        lettersSection.dataset.memberRight="letters-to-panel";
+        const lettersLink=actionButton("Library","panel-letters.html?compose=1",true);
+        lettersLink.setAttribute("aria-label","Write a letter to the Panel for secretarial review");
+        lettersLink.title="Write a letter to the Panel";
+        const lettersMark=document.createElement("div");
+        lettersMark.className="tile-mark";
+        lettersMark.appendChild(lettersLink);
+        const lettersCopy=document.createElement("div");
+        lettersCopy.className="tile-copy";
+        const lettersHeading=document.createElement("strong");
+        lettersHeading.textContent="Letters to the Panel";
+        const lettersNote=document.createElement("span");
+        lettersNote.textContent="Available to every member. Your Mews or Court Secretary will review and, where needed, edit your letter before publishing it in the Reading Room.";
+        lettersCopy.append(lettersHeading,lettersNote);
+        lettersSection.append(lettersMark,lettersCopy);
+        els.studioGrid.appendChild(lettersSection);
+
         const requestedHat=new URLSearchParams(location.search).get("hat");
         const matched=STUDIO_CHOICES.find(choice=>choice.key===requestedHat&&isChoiceAssigned(choice,roles));
         if(matched)openUniversalChoice(matched);

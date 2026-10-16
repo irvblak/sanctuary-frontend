@@ -95,7 +95,11 @@
         padding-top: 1rem;
       }
     }
-  </style>
+  .home-session-controls{display:flex;justify-content:flex-end}
+    .home-logout-button{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:46px;padding:.65rem 1rem;margin:0 0 1rem;border:2px solid #7a263a;border-radius:12px;background:#fff;color:#7a263a;font:750 1rem/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 3px 8px rgba(50,25,35,.1);cursor:pointer}
+    .home-logout-button:hover{background:#7a263a;color:#fff}
+    .home-logout-button:focus-visible{outline:3px solid #123a78;outline-offset:3px}
+    </style>
 </head>
 
 <body>
@@ -205,21 +209,12 @@
     <!-- RIGHT PANEL -->
     <div class="hero-panel" style="position:relative;">
 
-      <a
-        href="#"
-        id="logout-link"
-        style="
-          position:absolute;
-          top:0;
-          right:0;
-          font-size:0.85rem;
-          text-decoration:underline;
-          cursor:pointer;
-          display:none;
-        "
-      >
-        Logout
-      </a>
+      <div class="home-session-controls">
+        <button id="logout-link" class="home-logout-button" type="button" style="display:none">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5H5v14h4M14 8l4 4-4 4M9 12h9"/></svg>
+          <span>Log out</span>
+        </button>
+      </div>
 
       <div class="panel-message">
         <p>
@@ -502,8 +497,7 @@
 
         grantAccess();
 
-        logoutLink.style.display =
-          "inline";
+        logoutLink.style.display = "inline-flex";
 
         hideGate();
         clearPendingJourney();
@@ -586,8 +580,7 @@
       INITIAL PAGE STATE
     */
     if (hasValidAccess()) {
-      logoutLink.style.display =
-        "inline";
+      logoutLink.style.display = "inline-flex";
 
       refreshSessionAccess();
 

@@ -272,6 +272,8 @@
       </p>
     </div>
 
+<p class="administrator-follow-up">Advise any Website Administrator listed in the <a href="role-holders.html">Role Register</a> by Email, WhatsApp or text message that you have sent a Forgotten PIN reset request.</p>
+
     <div class="form-box">
 
       <h2>Confirm your membership</h2>
@@ -414,6 +416,7 @@
       }
 
       form.style.display = "none";
+      document.querySelector(".administrator-follow-up").hidden = true;
 
       statusBox.innerHTML = `
         <div class="status ok">
@@ -423,6 +426,7 @@
           <strong>Your existing PIN has not been changed.</strong>
           It will continue to work unless and until the reset is
           verified and approved.
+          <p class="administrator-follow-up">Advise any Website Administrator listed in the <a href="role-holders.html">Role Register</a> by Email, WhatsApp or text message that you have sent a Forgotten PIN reset request.</p>
         </div>
 
         <div class="success-next">
@@ -447,3 +451,4 @@
 
 </body>
 </html>
+

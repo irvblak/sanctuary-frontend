@@ -1379,9 +1379,9 @@
       // Clicking blank canvas only deselects; object creation belongs to the explicit Add controls.
       objectToolbar.hidden=false;
       const isTextItem=Boolean(selectedItem && kind!=="image" && kind!=="drawing");
-      // TEXT is contextual: adding/selecting a text box leaves it closed.
-      // Highlighting actual text opens the floating TEXT toolbox.
-      formatToolbar.hidden=true;
+      // Detached controls must remain available when focus leaves the canvas.
+      // Beside the canvas, retain the existing highlight-to-open behaviour.
+      formatToolbar.hidden=!(isTextItem&&formatToolbar.ownerDocument!==window.document);
       imageToolbar.hidden=!selectedItem||kind!=="image";
       drawingToolbar.hidden=!selectedItem||kind!=="drawing";
 
@@ -3222,6 +3222,10 @@ function configurePublishingButton(){
     document.getElementById("addCanvasTextBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("text")});document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{if(!requireWorkName())return;pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"})});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
     canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
     function positionFloatingTextToolbar(){
+      if(formatToolbar.ownerDocument!==window.document){
+        formatToolbar.hidden=!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing";
+        return;
+      }
       if(!selectedItem||formatToolbar.hidden)return;
       const itemRect=selectedItem.getBoundingClientRect();
       const toolRect=formatToolbar.getBoundingClientRect();
@@ -3238,9 +3242,13 @@ function configurePublishingButton(){
 
     document.addEventListener("selectionchange",()=>{
       const selection=window.getSelection();
-      if(!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing"||
-         !selection||!selection.rangeCount||selection.isCollapsed){
+      if(!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing"){
         formatToolbar.hidden=true;
+        return;
+      }
+      const detached=formatToolbar.ownerDocument!==window.document;
+      if(!selection||!selection.rangeCount||selection.isCollapsed){
+        formatToolbar.hidden=!detached;
         return;
       }
       const range=selection.getRangeAt(0);
@@ -3250,7 +3258,7 @@ function configurePublishingButton(){
         formatToolbar.hidden=false;
         requestAnimationFrame(positionFloatingTextToolbar);
       }else{
-        formatToolbar.hidden=true;
+        formatToolbar.hidden=!detached;
       }
     });
     formatToolbar.addEventListener("pointerdown",captureCurrentTextSelection,true);

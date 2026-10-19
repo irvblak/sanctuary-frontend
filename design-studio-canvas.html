@@ -473,6 +473,8 @@
     body.canvas-active #objectToolbar .selected-note{display:none!important;}
     body.canvas-active .canvas-side{padding-bottom:.18rem;}
     body.canvas-active .canvas-side-left{margin-top:32px;height:calc(100% - 32px);}
+    .artwork-size{margin:.25rem 0 0;font-size:.76rem;line-height:1.4;color:var(--muted);font-weight:600;}
+    .artwork-size.large{padding:.4rem;border-left:3px solid #9a6200;background:#fff5df;color:#704800;}
     .work-name-row label{font-size:.78rem;color:var(--accent-dark);font-weight:850;}
     .work-name-row input{margin:0;padding:.38rem .45rem;font-size:.8rem;}
 
@@ -564,12 +566,13 @@
             <span class="toolbar-label">Your work</span>
             <label for="workNameInput">Name this work *</label>
             <input id="workNameInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Bridge Beginners – October">
+            <p id="artworkSize" class="artwork-size" role="status" aria-live="polite"></p>
           </div>
           <div class="toolbar-row">
             <span class="toolbar-label">Add</span>
             <button id="addCanvasTextBtn" type="button">Add Text</button>
             <button id="addCanvasImageBtn" type="button">Add Illustration</button>
-            <span class="canvas-tip">Choose an illustration already saved on your computer. You can create one yourself, download one you may use, or make one with AI and save it first.</span>
+            <span class="canvas-tip">Add as many illustrations as you wish. Choose one already saved on your device. You can create one yourself, download one you may use, or make one with AI and save it first.</span>
             <button id="addCanvasDrawingBtn" class="draw-paint-launch" type="button">✏️ Draw / Paint</button>
             <input id="canvasImageFileInput" type="file" accept="image/*" hidden>
           </div>
@@ -818,6 +821,7 @@
   </div>
 
   <script src="yds-detached-tools.js?v=CANVAS_ONLY_20261017"></script>
+  <script src="yds-work-size.js?v=UNLIMITED_IMAGES_20261019"></script>
   <script>
   (function(){
     "use strict";
@@ -958,6 +962,7 @@
 
     const creativeWorkspace=document.getElementById("creativeWorkspace");
     const creativePages=document.getElementById("creativePages");
+    window.SanctuaryYdsWorkSize.watch(creativePages,document.getElementById("artworkSize"));
     const pageTabs=document.getElementById("pageTabs");
     const formatToolbar=document.getElementById("formatToolbar");
     const imageToolbar=document.getElementById("imageToolbar");
@@ -1305,7 +1310,7 @@
     function updateEmptyHint(){const p=currentPage();if(!p)return;const hint=p.querySelector(".canvas-empty-hint");if(hint)hint.style.display=p.querySelector(".canvas-item")?"none":"block"}
 
     function makeCanvasItem(kind,text="",src="",opts={}){
-      ensurePage();const p=currentPage();if(kind==="image"&&p.querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return null}
+      ensurePage();const p=currentPage();
       pushUndo();
       const d=document.createElement("div");d.className="canvas-item";d.dataset.kind=kind;d.style.left=opts.left||`${8+(currentItems().length*5)%28}%`;d.style.top=opts.top||`${8+(currentItems().length*7)%52}%`;d.style.width=opts.width||(kind==="title"?"72%":kind==="image"?"42%":"58%");d.style.height=opts.height||(kind==="title"?"13%":kind==="image"?"30%":"20%");d.style.zIndex=String(++zCounter);
       const content=document.createElement("div");content.className="item-content";
@@ -2122,7 +2127,7 @@
       selectItem(null);
       updateEmptyHint();
     }
-    function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="image"&&currentPage().querySelectorAll('.canvas-item[data-kind="image"]').length>=2){alert("Each A4 page can contain up to two illustrations.");return}if(kind==="drawing")syncDrawingData();pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);containItem(clone);updateEmptyHint()}
+    function duplicateSelected(){if(!selectedItem)return;const kind=selectedItem.dataset.kind;if(kind==="drawing")syncDrawingData();pushUndo();const clone=selectedItem.cloneNode(true);clone.dataset.bound="";const left=parseFloat(clone.style.left)||8,top=parseFloat(clone.style.top)||8;clone.style.left=`${clamp(left+3,0,90)}%`;clone.style.top=`${clamp(top+3,0,90)}%`;clone.style.zIndex=String(++zCounter);currentPage().appendChild(clone);bindCanvasItem(clone);selectItem(clone);containItem(clone);updateEmptyHint()}
 
     function friendlyDateTime(value){
       const raw=clean(value); if(!raw)return ""; const d=new Date(raw); if(Number.isNaN(d.getTime()))return raw;
@@ -3220,7 +3225,7 @@ function configurePublishingButton(){
       return false;
     }
     document.getElementById("addCanvasTextBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("text")});document.getElementById("addCanvasImageBtn").addEventListener("click",()=>{if(!requireWorkName())return;pendingImageAction="add";canvasImageFileInput.value="";canvasImageFileInput.click()});document.getElementById("addCanvasDrawingBtn").addEventListener("click",()=>{if(requireWorkName())makeCanvasItem("drawing","","",{left:"12%",top:"18%",width:"76%",height:"50%"})});document.getElementById("replaceCanvasImageBtn").addEventListener("click",()=>{if(!selectedItem||selectedItem.dataset.kind!=="image")return;pendingImageAction="replace";canvasImageFileInput.value="";canvasImageFileInput.click()});
-    canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.readAsDataURL(f)});
+    canvasImageFileInput.addEventListener("change",()=>{const f=canvasImageFileInput.files&&canvasImageFileInput.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{if(pendingImageAction==="replace"&&selectedItem?.dataset.kind==="image"){pushUndo();selectedItem.querySelector("img").src=r.result}else makeCanvasItem("image","",r.result)};r.onerror=()=>alert("This illustration could not be opened. Your existing work is unchanged. Please try the file again.");r.readAsDataURL(f)});
     function positionFloatingTextToolbar(){
       if(formatToolbar.ownerDocument!==window.document){
         formatToolbar.hidden=!selectedItem||selectedItem.dataset.kind==="image"||selectedItem.dataset.kind==="drawing";

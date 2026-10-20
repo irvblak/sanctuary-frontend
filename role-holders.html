@@ -37,8 +37,9 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 @media(max-width:700px){body{font-size:17px}.topbar{align-items:flex-start;flex-direction:column}.panel{padding:1rem;border-radius:15px}.role-line{grid-template-columns:1fr;gap:.25rem}table,thead,tbody,th,td,tr{display:block}thead{display:none}table{border:none;background:transparent}tr{margin-bottom:.6rem;border:1px solid #d5e2eb;border-radius:12px;overflow:hidden;background:#fff}td{width:auto!important;border-bottom:none}td:first-child{padding-bottom:.25rem;color:#223b50;font-weight:850}td:last-child{padding-top:.25rem}}
 @media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}.section-body{display:block!important}.section-toggle::after{display:none}}
 .register-heading-content{display:flex;align-items:center;gap:.7rem;min-width:0;flex-wrap:wrap}.register-cap-icons{display:inline-flex;gap:.35rem;align-items:center;flex-wrap:wrap}.register-cap-icon{width:28px;height:28px;flex:0 0 28px;color:currentColor}.register-role-label{display:inline-flex;align-items:center;gap:.55rem}.register-role-label .register-cap-icon{width:24px;height:24px;flex-basis:24px}@media(max-width:600px){.register-heading-content{gap:.5rem}.register-cap-icon{width:24px;height:24px;flex-basis:24px}}
+.activity-subcategory td:first-child{padding-left:2rem;font-weight:750}.activity-subcategory{background:#f5f9fd}
 </style>
-<script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
+<script src="content-structure.js?v=SPA_ENTERTAINMENT_20261020"></script>
 </head>
 <body>
 <div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link learning" href="library.html?section=learning#learning">Tuition &amp; Guides</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
@@ -91,7 +92,13 @@ function renderRegister(residents){
  registerContent.innerHTML=S.REGISTER_GROUPS.map(group=>`<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false"><span class="register-heading-content">${registerHeadingIcons(group)}<span>${escapeHtml(group.label)}</span></span></button></h2><div class="section-body"><table><thead><tr><th>Role or office</th><th>Current holder(s)</th></tr></thead><tbody>${group.roles.map(([role,label])=>{
    let holders=holdersWithRoles(residents,role==="copy_editor"?["copy_editor","editor"]:role==="condominium_coordinator"?["condominium_coordinator","condo_admin"]:[role]);
    let row=`<tr><td><span class="register-role-label">${registerIcon(registerRoleIcon(role))}${escapeHtml(label)}</span></td><td>${holdersHtml(holders)}</td></tr>`;
-   if(role==="activity_organiser")row+=`<tr><td colspan="2"><details><summary>Activities organised</summary><table><tbody>${S.ACTIVITIES.map(([scope,name])=>{const people=holders.filter(person=>scopesFor(person).includes(scope));const divisions=S.ACTIVITY_SUBCATEGORIES[scope]||[];return `<tr><td>${escapeHtml(name)}${divisions.length?`<details><summary>Subcategories</summary>${divisions.map(([,sub])=>`<div>${escapeHtml(sub)}</div>`).join("")}</details>`:""}</td><td>${holdersHtml(people)}</td></tr>`;}).join("")}</tbody></table></details></td></tr>`;
+   if(role==="activity_organiser")row+=`<tr><td colspan="2"><details><summary>Activities organised</summary><table><tbody>${S.ACTIVITIES.map(([scope,name])=>{
+     const divisions=S.ACTIVITY_SUBCATEGORIES[scope]||[];
+     const people=holders.filter(person=>scopesFor(person).includes(scope)||divisions.some(([key])=>scopesFor(person).includes(scope+"-"+key)));
+     const main=`<tr data-activity="${escapeHtml(scope)}"><td>${escapeHtml(name)}</td><td>${holdersHtml(people)}</td></tr>`;
+     const children=divisions.map(([key,sub])=>`<tr class="activity-subcategory" data-subcategory="${escapeHtml(scope+"-"+key)}"><td><span aria-hidden="true">↳ </span>${escapeHtml(sub)}</td><td>${holdersHtml(holders.filter(person=>scopesFor(person).includes(scope)||scopesFor(person).includes(scope+"-"+key)))}</td></tr>`).join("");
+     return main+children;
+   }).join("")}</tbody></table></details></td></tr>`;
    if(role==="website_helper")row+=`<tr><td colspan="2"><details><summary>Website Helper areas</summary><table><tbody>${HELPER_SCOPES.map(([scope,name])=>`<tr><td>${escapeHtml(name)}</td><td>${holdersHtml(holders.filter(person=>helperScopesFor(person).includes(scope)))}</td></tr>`).join("")}</tbody></table></details></td></tr>`;
    return row;
  }).join("")}</tbody></table></div></section>`).join("");registerContent.hidden=false;
@@ -104,6 +111,7 @@ initialise();
 </script>
 </body>
 </html>
+
 
 
 

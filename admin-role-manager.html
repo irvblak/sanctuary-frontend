@@ -490,7 +490,7 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
+<script src="content-structure.js?v=SPA_ENTERTAINMENT_20261020"></script>
 </head>
 
 <body>
@@ -666,7 +666,7 @@
                 <input type="checkbox" id="roleCommitteeSecretary" />
                 <div class="roleText">
                   <strong>Secretary</strong>
-                  <span>Publishes Mews committee work and reviews Mews members’ Letters to the Panel.</span>
+                  <span>Publishes Mews committee work and reviews Letters to the Mews Committee.</span>
                 </div>
               </label>
 
@@ -688,7 +688,7 @@
             </div>
           </div>
 
-          <div class="roleSection"><h3>Court Committee</h3><div class="roleGrid"><label class="roleBox"><input type="checkbox" id="roleCourtOfficer1"/><div class="roleText"><strong>Officer 1</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtOfficer2"/><div class="roleText"><strong>Officer 2</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtSecretary"/><div class="roleText"><strong>Secretary</strong><span>Publishes Court committee work and reviews Court members’ Letters to the Panel.</span></div></label></div></div>
+          <div class="roleSection"><h3>Court Committee</h3><div class="roleGrid"><label class="roleBox"><input type="checkbox" id="roleCourtOfficer1"/><div class="roleText"><strong>Officer 1</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtOfficer2"/><div class="roleText"><strong>Officer 2</strong><span>Court Committee appointment; no committee publishing rights.</span></div></label><label class="roleBox"><input type="checkbox" id="roleCourtSecretary"/><div class="roleText"><strong>Secretary</strong><span>Publishes Court committee work and reviews Letters to the Court Committee.</span></div></label></div></div>
 
           <div class="roleSection">
             <h3>Residents Association</h3>
@@ -706,7 +706,7 @@
                 <input type="checkbox" id="roleRaSecretary" />
                 <div class="roleText">
                   <strong>Secretary</strong>
-                  <span>Residents Association Secretary and publication point.</span>
+                  <span>Residents Association Secretary; reviews and publishes Letters to the Panel.</span>
                 </div>
               </label>
 
@@ -892,7 +892,7 @@
     let currentRoleHolders = [];
     let selectedResident = null;
 
-    const ACTIVITY_SCOPES = SanctuaryContentStructure.ACTIVITIES;
+    const ACTIVITY_SCOPES = SanctuaryContentStructure.ACTIVITY_APPOINTMENT_SCOPES;
 
     const HELPER_SCOPES = [
       ["general_website_help", "General Website Help"],
@@ -1920,5 +1920,6 @@
   </script>
 </body>
 </html>
+
 
 

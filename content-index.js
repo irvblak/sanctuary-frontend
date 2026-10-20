@@ -11,7 +11,7 @@ function fixedLinks(section,items){let links=[];if(selectedSection==="learning")
  if(!subject){if(hatKey){const hat=S.PRODUCTION_HATS.find(h=>h.key===hatKey);links=section.subcategoryLinks?.[S.slug(hat?.label||"")]||[];}else links=Object.values(section.subcategoryLinks||{}).flat();}
  }else if(subject){const definition=(section.subcategories||[]).find(([key,label])=>S.slug(subject)===key||S.slug(subject)===S.slug(label));links=definition?section.subcategoryLinks?.[definition[0]]||[]:[];}else links=Object.values(section.subcategoryLinks||{}).flat();
  const seen=new Set();return links.filter(([,url])=>{if(seen.has(url))return false;seen.add(url);return !items.some(item=>url.includes("id="+encodeURIComponent(item.legacy_id||item.publication_id||"__none__")));});}
-if(selectedSection==="letters-to-panel"){location.replace("panel-letters.html");return;}
+if(["letters-to-panel","letters-to-committee"].includes(selectedSection)){location.replace("panel-letters.html?destination="+(selectedSection==="letters-to-panel"?"panel":"committee"));return;}
 if(!selectedSection){list.hidden=true;status.hidden=true;return;}
 const section=S.SECTIONS.find(entry=>entry.key===selectedSection),hat=S.PRODUCTION_HATS.find(entry=>entry.key===hatKey);
 directory.hidden=true;list.hidden=false;status.hidden=false;
@@ -24,6 +24,7 @@ function render(items){const own=items.filter(item=>S.publicationSection(item)==
 render([]);status.textContent="Loading published work…";
 fetch(`${API}/api/library-publications`,{cache:"no-store",headers:{Accept:"application/json"}}).then(async response=>{const data=await response.json().catch(()=>({}));if(!response.ok||data.success===false)throw new Error("Published work could not be loaded.");render((Array.isArray(data.publications)?data.publications:[]).filter(item=>S.publicationCollection(item)==="library"));}).catch(error=>{console.error(error);status.textContent="Published work could not be loaded. Please try again shortly.";});
 })();
+
 
 
 

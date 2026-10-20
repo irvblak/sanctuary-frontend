@@ -1,0 +1,39 @@
+/* Studio entrance: retain the verified gate and reveal one branch at a time. */
+#studioCard .welcome{text-align:left;margin:0 0 1.1rem;padding-bottom:.7rem;border-bottom:1px solid #c5d5e6}
+#studioCard .greeting{font-size:1.1rem;margin:0 0 .25rem}
+#studioCard .verified-line{margin:0;font-size:.85rem}
+#studioCard #memberRoleStrip{display:none!important}
+#studioGrid.studio-grid{display:block}
+#studioGrid .entry-step{position:relative;margin-left:13px;padding:0 0 1.3rem 2rem;border-left:2px solid #c5d5e6}
+#studioGrid .entry-step:last-of-type{border-left-color:transparent}
+#studioGrid .entry-number{position:absolute;left:-15px;top:0;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#001f4d;color:#fff;font-size:.85rem}
+#studioGrid .entry-caprow,#studioGrid .entry-capicons,#studioGrid .entry-stephead{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+#studioGrid .entry-caprow{gap:1rem}
+#studioGrid h2,#studioGrid h3{color:#001f4d;font-size:1.13rem;margin:0;line-height:1.4}
+#studioGrid .entry-capicons{gap:.4rem}
+#studioGrid .entry-cap{display:grid;place-items:center;width:46px;height:46px;border:1px solid #bacde2;border-radius:10px;background:#fff;color:#001f4d;cursor:pointer;font:inherit}
+#studioGrid .entry-cap svg{width:27px;height:27px}
+#studioGrid .entry-cap[aria-pressed=true]{background:#001f4d;color:#fff;border-color:#001f4d}
+#studioGrid .entry-cap:hover{box-shadow:0 0 0 2px #afc8e4}
+#studioGrid .entry-cap:focus-visible,#studioGrid button:focus-visible{outline:3px solid #a86e16;outline-offset:3px}
+#studioGrid .entry-capname{font-weight:850;color:#001f4d;margin:.6rem 0 0}
+#studioGrid .entry-stephead{justify-content:space-between;margin-bottom:.55rem}
+#studioGrid .entry-hint{color:#425b76;margin:0 0 .75rem;line-height:1.5}
+#studioGrid .entry-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+#studioGrid .entry-option{display:flex;align-items:flex-start;gap:.65rem;text-align:left;min-height:85px;background:#fff;color:#001f4d;border:1px solid #c5d5e6;border-radius:11px;padding:.8rem;cursor:pointer;font:inherit}
+#studioGrid .entry-option:hover{border-color:#416b9d;background:#f1f6fd}
+#studioGrid .entry-option.compact{min-height:48px;align-items:center;padding:.6rem .8rem}
+#studioGrid .entry-option img{flex:0 0 28px;width:28px;height:28px;object-fit:contain}
+#studioGrid .entry-option strong{display:block;font-weight:850;font-size:.98rem}
+#studioGrid .entry-option small{display:block;font-size:.85rem;color:#425b76;line-height:1.45;margin-top:.2rem}
+#studioGrid .entry-selected{border:1px solid #c5d5e6;border-radius:10px;background:#fff;color:#001f4d;padding:.65rem .8rem;margin:0;font-weight:850}
+#studioGrid .entry-selected span{display:block;font-size:.85rem;line-height:1.45;font-weight:500;color:#425b76;margin-top:.2rem}
+#studioGrid .entry-change{font:inherit;font-size:.85rem;min-height:36px;padding:.3rem .6rem;border:1px solid #c5d5e6;border-radius:8px;background:#fff;color:#001f4d;cursor:pointer}
+#studioGrid .entry-ready{padding:1rem;border:1px solid #c5d5e6;border-radius:12px;background:#fff;color:#001f4d}
+#studioGrid .entry-ready p{margin:.4rem 0 .8rem;line-height:1.5}
+#studioGrid .entry-enter{background:#001f4d;border-color:#001f4d;gap:.6rem}
+#studioGrid .entry-review-tools{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+#studioGrid .entry-message{line-height:1.5;color:#425b76}
+#verifyForm .form-grid>label:first-child{width:215px}
+#verifyForm .form-grid>label:nth-child(2){width:155px}
+@media(max-width:640px){#studioGrid .entry-options{grid-template-columns:1fr}#studioGrid .entry-step{padding-left:1.35rem}#studioGrid .entry-option{min-height:70px}#verifyForm .form-grid>label{width:100%;max-width:100%}}

@@ -934,7 +934,8 @@
     #verifyCard{padding:1rem 1.2rem}#verifyCard h2{margin-bottom:.35rem}#verifyCard .sub{margin-bottom:.75rem}#verifyForm{display:flex;align-items:end;gap:.75rem;flex-wrap:wrap}#verifyForm>.form-grid{display:contents}#verifyForm .form-grid>label:first-child{width:260px;max-width:100%}#verifyForm .form-grid>label:nth-child(2){width:175px}#verifyForm>.actions{margin:0}#verifyForm>.status{flex-basis:100%}#verifyBtn{min-height:46px}#verifyCard input{min-height:46px;padding:.55rem .65rem}#verifyCard .pin-wrap input{padding-right:4rem}.studio-preamble h2{margin:0 0 .75rem}.studio-preamble-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}.studio-preamble-grid>div{padding-top:.7rem;border-top:4px solid #c8d9e9}.studio-preamble-grid h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin:0 0 .35rem}.studio-preamble-grid p{margin:0;line-height:1.55}.studio-preamble-grid svg{width:25px;height:25px}.studio-preamble .education{border-color:#7a263a}.studio-preamble .reading{border-color:#21633f}.studio-preamble .creative{border-color:#805394}.studio-preamble .clarification{padding-top:.7rem;margin-top:.85rem;border-top:1px solid #d5e1eb}.studio-preamble .enjoy{color:#21633f;font-size:1.1rem;font-weight:850;margin:1rem 0 0}@media(max-width:700px){.studio-preamble-grid{grid-template-columns:1fr}}
 </style>
 <script src="content-structure.js?v=ROLE_SHELVES_20261016"></script>
-<link rel="stylesheet" href="directory-style.css?v=LIBRARY_OPENINGS_20261014"></head>
+<link rel="stylesheet" href="directory-style.css?v=LIBRARY_OPENINGS_20261014"><link rel="stylesheet" href="yds-entry-tree.css?v=BRANCHING_20261020">
+</head>
 
 
 <body>
@@ -959,8 +960,8 @@
         </h1>
 
         <div class="sub">
-          Your place to create, manage and publish
-          attractive information for Sanctuary Club.
+          Choose your cap, then choose where your work will go.
+          Each choice opens the next branch.
         </div>
 
       </div>
@@ -1013,7 +1014,7 @@
       </h2>
 
       <p class="sub">
-        Enter your resident reference and Personal PIN.
+        Enter your resident reference and household PIN.
 
       </p>
 
@@ -1035,7 +1036,7 @@
 
 
           <label>
-            Personal PIN
+            Household PIN
 
             <span class="pin-wrap">
 
@@ -1071,7 +1072,7 @@
             id="verifyBtn"
             type="submit"
           >
-            Enter your studio
+            Open your studio
           </button>
 
         </div>
@@ -1089,20 +1090,6 @@
 
 
 
-
-    <section class="card studio-preamble" aria-labelledby="studioPreambleHeading">
-      <h2 id="studioPreambleHeading">Which cap will you don?</h2>
-      <p><strong>When you enter your studio, decide which cap you want to don, then decide where you want your work to go.</strong></p>
-      <div class="studio-preamble-grid">
-        <div><h3>Calendar</h3><p>If it’s to tell members when your event is happening, send it to the Calendar.</p></div>
-        <div class="education"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#graduation-cap"></use></svg>Library Education</h3><p>If it’s to explain how to do something connected with your activity or role, it’ll go on the appropriate shelf in the Library Education section.</p></div>
-        <div class="reading"><h3><svg aria-hidden="true"><use href="assets/icons/library-icons.svg#book-open-text"></use></svg>Library Reading Room</h3><p>If it’s to do with your activity or role and just for general information, it will go to the appropriate shelf in the Library Reading Room.</p></div>
-        <div class="creative"><h3><svg aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#role-news"></use></svg>Your Writer’s cap</h3><p>If you write a story, anecdote or article wearing your Writer’s cap, it will go to your Editor, who will publish it under your name and send it on to the Reading Room, or get back to you for a chat about it. Letters to the Panel go to the Mews or Court Secretary, according to your membership.</p></div>
-        <div class="creative"><h3><svg aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#role-artist"></use></svg>Your Artist’s cap</h3><p>If you create a piece of artwork wearing your Artist’s cap, you can keep it just for your own enjoyment or submit it to the Curator for consideration for inclusion in the Gallery.</p></div>
-      </div>
-      <p class="clarification">Teaching work by Writers and Artists follows the same Editor or Curator route to Library Education.</p>
-      <p class="enjoy">Whatever you decide to be or do, it’s all there to be enjoyed.</p>
-    </section>
 
     <!-- =====================================================
          STUDIO FRONT DOOR
@@ -1122,18 +1109,6 @@
         >
           Good morning.
         </h2>
-
-        <p class="welcome-line">
-          Welcome to Your Design Studio.
-        </p>
-
-        <h3 class="question">
-          Which hat are you wearing today?
-        </h3>
-
-        <p class="you-may">
-          Choose your cap, then choose Calendar, Library Reading Room or Library Education.
-        </p>
 
         <div
           class="member-role-strip"
@@ -1200,6 +1175,7 @@
 
 
 
+  <script src="yds-entry-tree.js?v=BRANCHING_20261020"></script>
   <script>
     (function(){
       "use strict";
@@ -2350,59 +2326,18 @@
 
 
 
-      function renderStudio(
-        roles
-      ){
-
-        els.studioGrid.innerHTML =
-          "";
-
-
-        /*
-          The front door shows only hats this member can actually wear.
-          Inactive/grey role tiles add clutter and belong in the Role Register,
-          not in the working Studio.
-        */
-        STUDIO_CHOICES
-          .filter(choice => isChoiceAssigned(choice, roles))
-          .forEach(choice => {
-            els.studioGrid.appendChild(
-              createChoiceTile(choice, roles)
-            );
-          });
-
-        /* Correspondence is a membership right, independent of appointed hats. */
-        const lettersSection=document.createElement("article");
-        lettersSection.className="studio-tile active";
-        lettersSection.dataset.memberRight="letters-to-panel";
-        const lettersLink=actionButton("Library","panel-letters.html?compose=1",true);
-        lettersLink.setAttribute("aria-label","Write a letter to the Panel for secretarial review");
-        lettersLink.title="Write a letter to the Panel";
-        const lettersMark=document.createElement("div");
-        lettersMark.className="tile-mark";
-        lettersMark.appendChild(lettersLink);
-        const lettersCopy=document.createElement("div");
-        lettersCopy.className="tile-copy";
-        const lettersHeading=document.createElement("strong");
-        lettersHeading.textContent="Letters to the Panel";
-        const lettersNote=document.createElement("span");
-        lettersNote.textContent="Available to every member. Your Mews or Court Secretary will review and, where needed, edit your letter before publishing it in the Reading Room.";
-        lettersCopy.append(lettersHeading,lettersNote);
-        lettersSection.append(lettersMark,lettersCopy);
-        els.studioGrid.appendChild(lettersSection);
-
-        const requestedHat=new URLSearchParams(location.search).get("hat");
-        const matched=STUDIO_CHOICES.find(choice=>choice.key===requestedHat&&isChoiceAssigned(choice,roles));
-        if(matched)openUniversalChoice(matched);
-        if(roles.some(role=>["copy_editor","art_editor","editor"].includes(role))){const review=actionButton("Open review desk","editor-desk.html",true);els.studioGrid.appendChild(review);}
-
-        /* State of Play, booking tools and existing dated work are deliberately
-           not duplicated on the Studio front door. */
-        if(els.existingTools){
-          els.existingTools.hidden = true;
-        }
+      let studioEntryTree=null;
+      function renderStudio(roles){
+        els.choiceOpening.hidden=true;
+        studioEntryTree=window.SanctuaryYdsEntryTree.mount({
+          root:els.studioGrid,
+          choices:STUDIO_CHOICES.filter(choice=>isChoiceAssigned(choice,roles)),
+          roles:currentStudioRoles,
+          activityScopes:currentActivityScopes.length?currentActivityScopes:restoreActivityScopes(),
+          requestedHat:new URLSearchParams(location.search).get("hat")||""
+        });
+        if(els.existingTools)els.existingTools.hidden=true;
       }
-
 
 
       function actionButton(
@@ -2583,32 +2518,12 @@
       }
 
 
-      function openUniversalChoice(choice){
-        const S=SanctuaryContentStructure;
-        let actingRole=choice.roles.find(role=>currentStudioRoles.includes(role))||"";
-        const subjects=S.hatSubjects(choice,choice.key==="activity"?(currentActivityScopes.length?currentActivityScopes:restoreActivityScopes()):undefined,currentStudioRoles);
-        if(choice.key==="activity"&&!subjects.length){setChoiceContent(choice.label,"<p>No activity has been assigned. Please ask a Club Administrator.</p>",[]);return;}
-        let selectedSubject=subjects[0]?.[0]||"",selectedSubdivision="",selectedStream="teaching";
-        const links={calendar:actionButton("Calendar","#"),information:actionButton("Library","#",true),learning:actionButton("Learning & Teaching","#",true)};
-        const selector=subjects.length?`<label class="route-selector">Subject<select id="roleScopeSelect">${subjects.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label><div id="roleSubdivision"></div>`:"";
-        const reviewLetters=choice.key==="committee"?actionButton("Review Letters to the Panel","panel-letters.html"):null;
-        setChoiceContent(choice.label,selector,[...Object.values(links),...(reviewLetters?[reviewLetters]:[])]);els.routeNote.hidden=true;
-        function update(){if(reviewLetters)reviewLetters.href="panel-letters.html?area="+(selectedSubject==="court"?"Court":"Mews");if(choice.subjectRoles)actingRole=(choice.subjectRoles[selectedSubject]||[]).find(role=>currentStudioRoles.includes(role))||"";Object.entries(links).forEach(([kind,link])=>{link.href=S.creationTarget(choice,kind,selectedSubject,selectedSubdivision,selectedStream,actingRole);});}
-        function subdivisions(){const box=document.getElementById("roleSubdivision");if(!box){update();return;}const values=S.hatSubdivision(choice,selectedSubject);selectedSubdivision=values[0]?.[0]||"";box.innerHTML=values.length?`<label class="route-selector">Subdivision<select id="roleSubdivisionSelect">${values.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label>`:"";document.getElementById("roleSubdivisionSelect")?.addEventListener("change",e=>{selectedSubdivision=e.target.value;update();});update();}
-        document.getElementById("roleScopeSelect")?.addEventListener("change",e=>{selectedSubject=e.target.value;subdivisions();});subdivisions();
-        links.learning.addEventListener("click",e=>{
-          e.preventDefault();const enter=actionButton("Create work","#");const back=actionButton("Back","#",true);
-          setChoiceContent(choice.label+" — Library Education",'<label class="route-selector">Choose a shelf<select id="learningStreamSelect"><option value="learning">Learning</option><option value="teaching" selected>Teaching</option></select></label>',[enter,back]);
-          const setLink=()=>{enter.href=S.creationTarget(choice,"learning",selectedSubject,selectedSubdivision,selectedStream,actingRole);};
-          document.getElementById("learningStreamSelect").addEventListener("change",event=>{selectedStream=event.target.value;setLink();});setLink();back.addEventListener("click",event=>{event.preventDefault();openUniversalChoice(choice);});
-        });
-      }
-
-
+      function openUniversalChoice(choice){studioEntryTree?.selectHat(choice.key);}
       function openChoice(choice){
         const hat=typeof choice==="object"?choice:STUDIO_CHOICES.find(item=>item.key===choice);
         if(hat)openUniversalChoice(hat);
       }
+
 
       function storeSession(
         data,
@@ -2825,7 +2740,7 @@
 
           setStatus(
             "err",
-            "Enter your resident reference and Personal PIN."
+            "Enter your resident reference and household PIN."
           );
 
 
@@ -3302,8 +3217,9 @@
     })();
   </script>
 
-<script src="content-directory.js?v=ROLE_SHELVES_20261016"></script></body>
+</body>
 </html>
+
 
 
 

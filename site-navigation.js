@@ -61,7 +61,7 @@
     */
     const options={
       showCalendar:!hasExistingLink("events-calendar.html"),
-      showHub:!hasExistingLink("members-info.html"),
+      showHub:page!=="members-info.html"&&!hasExistingLink("members-info.html"),
       showRoleRegister:memberPage&&!hasExistingLink("role-holders.html")
     };
 
@@ -75,3 +75,4 @@
 
 
 (function(){const script=document.createElement("script");script.src="destination-icons.js?v=MEMBER_ICONS_20261016";script.defer=true;(document.head||document.documentElement).append(script);})();
+

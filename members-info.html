@@ -274,12 +274,25 @@
       .hub-row{ grid-template-columns:1fr; gap:0.55rem; }
       .hub-btn{ width:100%; }
     }
+
+    .topbar{flex-wrap:wrap;gap:.8rem}
+    .hub-top-actions{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center}
+    .hub-top-link{display:inline-flex;align-items:center;justify-content:center;padding:.7rem .95rem;border-radius:12px;background:var(--blue);color:#fff;text-decoration:none;font-weight:800;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+    .hub-top-link:hover,.hub-top-link:focus-visible{background:var(--blue-hover)}
+    .hub-top-link:focus-visible{outline:3px solid #b17c27;outline-offset:3px}
+    @media(max-width:850px){.hub-top-actions{order:3;flex-basis:100%;justify-content:flex-start}.hub-top-link{flex:1}}
+    @media(max-width:450px){.brand{font-size:1.65rem}.hub-top-link{padding:.6rem .65rem;font-size:.95rem}.logout-tab{min-width:0;padding:.65rem .75rem;font-size:.95rem}}
   </style>
 </head>
 
 <body>
   <div class="topbar">
     <div class="brand">Members Hub</div>
+    <nav class="hub-top-actions" aria-label="Main member activities">
+      <a class="hub-top-link" href="events-calendar.html">Calendar</a>
+      <a class="hub-top-link" href="events.html">Events List</a>
+      <a class="hub-top-link" href="your-design-studio.html">Your Organiser</a>
+    </nav>
     <button class="logout-tab" type="button" onclick="memberLogout()">Home to Logout</button>
   </div>
 
@@ -348,20 +361,6 @@
               </div>
             </div>
 
-            <div class="hub-row">
-              <a class="hub-btn" href="your-design-studio.html">Your Organiser</a>
-              <div class="hub-note">
-                Choose one of your appointed roles, create the work and select
-                Calendar, Library or Learning &amp; Teaching.
-                <div class="quick-links" aria-label="Events available now">
-                  <a href="events-calendar.html">Calendar</a>
-                  <span aria-hidden="true">•</span>
-                  <a href="events.html">Events List</a>
-                </div>
-
-                <span class="pill">Available now</span>
-              </div>
-            </div>
 
 <div class="hub-row">
   <a class="hub-btn library-btn private-entry" href="library.html">Library</a>
@@ -451,5 +450,6 @@
   </script>
 </body>
 </html>
+
 
 

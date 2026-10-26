@@ -92,7 +92,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 .register-category .register-assignment{background:#fff}
 .register-category-note{margin:.5rem .7rem;padding:.6rem .8rem;background:#fff;border-left:4px solid var(--category-edge);color:var(--category-ink);font-size:.91rem}
 </style>
-<script src="content-structure.js?v=YO_LIBRARY_20261026"></script>
+<script src="content-structure.js?v=WRITER_LETTERS_20261026"></script>
 </head>
 <body>
 <div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link organiser" href="your-design-studio.html">Your Organiser</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
@@ -136,8 +136,8 @@ function registerIcon(id){return '<svg class="register-cap-icon" aria-hidden="tr
 function assignment(label,holders,role="",note=""){
  return '<div class="register-assignment"'+(role?' data-role="'+escapeHtml(role)+'"':'')+'><div class="register-assignment-name">'+escapeHtml(label)+'</div><div>'+holdersHtml(holders)+(note?'<span class="empty">'+escapeHtml(note)+'</span>':'')+'</div></div>';
 }
-function subgroup(label,holders,body,key=""){
- return '<details class="register-subgroup"'+(key?' data-subcategory="'+escapeHtml(key)+'"':'')+'><summary><span>'+escapeHtml(label)+'</span><span>'+holdersHtml(holders)+'</span></summary><div>'+body+'</div></details>';
+function subgroup(label,holders,body,key="",universal=false){
+ return '<details class="register-subgroup"'+(key?' data-subcategory="'+escapeHtml(key)+'"':'')+'><summary><span>'+escapeHtml(label)+'</span><span>'+(universal?'Available to all members':holdersHtml(holders))+'</span></summary><div>'+body+'</div></details>';
 }
 function renderRegister(residents){
  const S=SanctuaryContentStructure;
@@ -173,6 +173,8 @@ function renderRegister(residents){
    }).join("");
   }else if(key==="writer"){
    body=assignment("Editor",holders,"copy_editor");
+   body+='<div class="register-assignment"><div class="register-assignment-name">Letters to the Panel</div><div class="empty">Available to all members · reviewed by the Panel Secretary</div></div>';
+   body+=subgroup("Letters to the Committee",[],["Mews","Court"].map(area=>'<div class="register-assignment"><div class="register-assignment-name">'+area+'</div><div class="empty">Available to all members · reviewed by the '+area+' Committee Secretary</div></div>').join(""),"writer-committee-letters",true);
   }else if(key==="artist"){
    body=assignment("Curator",holders,"art_editor");
    body+=S.hatSubjects(hat).map(([,label])=>'<div class="register-assignment"><div class="register-assignment-name">'+escapeHtml(label)+'</div><div class="empty">Available to all members</div></div>').join("");
@@ -201,6 +203,7 @@ initialise();
 </script>
 </body>
 </html>
+
 
 
 

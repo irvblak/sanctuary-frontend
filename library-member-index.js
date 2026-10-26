@@ -28,11 +28,11 @@ function publication(item){
  return {section,category,subcategory,name:item.creator_name||(number?"Member":"Sanctuary Club"),number,title:item.title||"Untitled",summary:item.summary||"",date:item.created_at||"",url:key==="gallery"?"library-gallery.html?id="+encodeURIComponent(item.publication_id||""):"library-publications.html?id="+encodeURIComponent(item.legacy_id||item.publication_id||"")};
 }
 function letter(t){
- return {section:"Reading Room",category:t.destination==="panel"?"Letters to the Panel":"Letters to the Committees",subcategory:t.destination==="panel"?"":t.area||"",name:t.author_name||"Member",number:String(t.author_ref||"").toUpperCase(),title:t.title||"Untitled letter",summary:t.summary||"",date:t.created_at||"",url:"panel-letters.html?id="+encodeURIComponent(t.thread_id)};
+ return {section:"Reading Room",category:S.libraryDestination("writer").label,subcategory:t.destination==="panel"?"Letters to the Panel":"Letters to the Committee",letterArea:t.destination==="panel"?"":t.area||"",name:t.author_name||"Member",number:String(t.author_ref||"").toUpperCase(),title:t.title||"Untitled letter",summary:t.summary||"",date:t.created_at||"",url:"panel-letters.html?id="+encodeURIComponent(t.thread_id)};
 }
 function dateLabel(value){if(!value)return "Creation date not recorded";const d=new Date(value);return Number.isNaN(d.getTime())?"Creation date not recorded":"Created "+d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
 function card(row,showLocation){
- return '<article class="work-synopsis"><h5><a href="'+esc(row.url)+'">'+esc(row.title)+'</a></h5><p class="work-synopsis-meta">'+esc(dateLabel(row.date))+'<span aria-hidden="true"> · </span>'+esc(row.name)+(row.number?' <span class="work-member-ref">'+esc(row.number)+'</span>':"")+'</p>'+(row.summary?'<p class="work-synopsis-description">'+esc(row.summary)+'</p>':"")+(showLocation?'<p class="work-synopsis-shelf">'+esc([row.section,row.category,row.subcategory].filter(Boolean).join(" / "))+'</p>':"")+'</article>';
+ return '<article class="work-synopsis"><h5><a href="'+esc(row.url)+'">'+esc(row.title)+'</a></h5><p class="work-synopsis-meta">'+esc(dateLabel(row.date))+'<span aria-hidden="true"> · </span>'+esc(row.name)+(row.number?' <span class="work-member-ref">'+esc(row.number)+'</span>':"")+'</p>'+(row.summary?'<p class="work-synopsis-description">'+esc(row.summary)+'</p>':"")+(showLocation?'<p class="work-synopsis-shelf">'+esc([row.section,row.category,row.subcategory,row.letterArea].filter(Boolean).join(" / "))+'</p>':"")+'</article>';
 }
 function groups(rows,key){const map=new Map();for(const row of rows){const value=key(row);if(!map.has(value))map.set(value,[]);map.get(value).push(row);}return [...map.entries()].sort(([a],[b])=>compare(a,b));}
 function titleOrder(rows){return [...rows].sort((a,b)=>compare(a.title,b.title)||compare(a.name,b.name)||compare(a.number,b.number));}
@@ -45,18 +45,25 @@ function render(){
   const own=records.filter(row=>row.section===section);
   const categoryGroups=groups(own,row=>row.category);
   const destinations=section==="Gallery"?S.LIBRARY_DESTINATIONS.filter(d=>d.hat==="artist"):S.LIBRARY_DESTINATIONS;
-  if(section==="Reading Room")["Letters to the Panel","Letters to the Committees"].forEach(label=>{if(!categoryGroups.some(([name])=>name===label))categoryGroups.push([label,[]]);});
+
   destinations.forEach(({label})=>{if(!categoryGroups.some(([name])=>name===label))categoryGroups.push([label,[]]);});
   categoryGroups.sort(([a],[b])=>compare(a,b));
   const categories=categoryGroups.map(([label,items])=>{
    const subjectGroups=groups(items,row=>row.subcategory);
    const destination=S.LIBRARY_DESTINATIONS.find(d=>d.label===label);
-   if(label==="Letters to the Committees")["Mews","Court"].forEach(sub=>{if(!subjectGroups.some(([name])=>name===sub))subjectGroups.push([sub,[]]);});
-   if(destination)S.libraryDestinationSubjects(destination.hat).filter(sub=>!(section==="Tuition & Guides"&&sub==="Manuals")).forEach(sub=>{
+
+   if(destination)S.libraryDestinationSubjects(destination.hat).map(sub=>sub.startsWith("Letters to the Committee — ")?"Letters to the Committee":sub).filter(sub=>!(section==="Tuition & Guides"&&(sub==="Manuals"||sub.startsWith("Letters to ")))).forEach(sub=>{
     if(!subjectGroups.some(([name])=>S.slug(name)===S.slug(sub)))subjectGroups.push([sub,[]]);
    });
    subjectGroups.sort(([a],[b])=>compare(a,b));
    const subcategories=subjectGroups.map(([sub,rows])=>{
+    if(sub==="Letters to the Committee"){
+     const communities=["Mews","Court"].map(area=>{
+      const letters=rows.filter(row=>row.letterArea===area);
+      return heading(area,letters,titleOrder(letters).map(row=>card(row,false)).join("")||'<p class="work-index-empty">No published work yet.</p>',6,"work-index-subcategory");
+     }).join("");
+     return heading(sub,rows,communities,5,"work-index-subcategory");
+    }
     const cards=titleOrder(rows).map(row=>card(row,false)).join("");
     return sub?heading(sub,rows,cards||'<p class="work-index-empty">No published work yet.</p>',5,"work-index-subcategory"):cards;
    }).join("");
@@ -86,4 +93,5 @@ Promise.allSettled([read("/api/library-publications"),read("/api/panel-letters")
  status.textContent=(records.length?records.length+" published "+(records.length===1?"work":"works")+". Both indexes contain the same work.":"No published work yet.")+(errors.length?" "+errors.join(" ")+" Please reload to try again.":"");
 });
 })();
+
 

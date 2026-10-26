@@ -38,7 +38,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  }
  function readyText(hat){
   if(isLetter(hat))return 'Write your letter. It goes privately to '+(hat.key==='letters-to-panel'?'the Panel Secretary':'your '+area+' Committee Secretary')+' for review before publication in the Reading Room.';
-  if(state.destination==='private')return 'Your studio will open for work that is just for you. Save an editable copy to your device to continue later.';
+  if(state.destination==='private')return 'Your canvas will open for work that is just for you. Save an editable copy to your device to continue later.';
   if(state.destination==='calendar')return 'Enter the event details and go to your canvas to create your Poster/Notice.';
   if(state.destination==='learning')return 'Prepare your '+(state.kind==='lesson'?'lesson':'guide')+' for the corresponding Library learning shelf. '+(hat.key==='artist'?'Submit it to the Curator when ready.':hat.key==='writer'?'Submit it to the Editor when ready.':'Publish it when ready.');
   return hat.key==='artist'?'Create your artwork and submit it to the Curator. It stays private until approved for the Gallery.':hat.key==='writer'?'Write and illustrate your piece, then submit it to the Editor. It stays private until approved for publication.':'Create your information, then publish it to the appropriate Reading Room shelf.';
@@ -57,7 +57,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
    html+=step('Learning or teaching?','Choose whether you are recording your learning or helping others learn.','stream',[{key:'learning',label:'Learning',hint:'Record what you have learned or practised.'},{key:'teaching',label:'Teaching',hint:'Explain or demonstrate something for other members.'}]);complete=!!state.stream;
    if(complete){html+=step('What will you prepare?','','kind',[{key:'lesson',label:'Lesson',hint:'A topic or exercise to work through.'},{key:'guide',label:'Guide',hint:'An explanation or instructions to refer to.'}]);complete=!!state.kind;}
   }
-  if(complete){stepNumber++;const letter=isLetter(hat);html+='<section class="entry-step"><span class="entry-number" aria-hidden="true">'+stepNumber+'</span><div class="entry-ready"><h3>Ready to begin</h3><p>'+esc(readyText(hat))+'</p><a class="btn entry-enter" href="'+esc(target(hat))+'">'+(state.destination==='calendar'?'Enter event details':letter?'Write your letter':'Enter your studio')+' <span aria-hidden="true">→</span></a></div></section>';}
+  if(complete){stepNumber++;const letter=isLetter(hat);html+='<section class="entry-step"><span class="entry-number" aria-hidden="true">'+stepNumber+'</span><div class="entry-ready"><h3>Ready to begin</h3><p>'+esc(readyText(hat))+'</p><a class="btn entry-enter" href="'+esc(target(hat))+'">'+(state.destination==='calendar'?'Enter event details':letter?'Write your letter':'Open your canvas')+' <span aria-hidden="true">→</span></a></div></section>';}
   const tools=[];if(roles.some(r=>['ra_secretary','panel_secretary'].includes(r)))tools.push('<a class="btn secondary" href="panel-letters.html?destination=panel">Review Letters to the Panel</a>');if(roles.some(r=>['copy_editor','art_editor','editor'].includes(r)))tools.push('<a class="btn secondary" href="editor-desk.html">Open review desk</a>');
   for(const [role,community] of [['committee_secretary','Mews'],['court_committee_secretary','Court']])if(roles.includes(role))tools.push('<a class="btn secondary" href="panel-letters.html?destination=committee&amp;area='+community+'">Review Letters to the '+community+' Committee</a>');
   root.innerHTML=html+(tools.length?'<div class="entry-review-tools">'+tools.join('')+'</div>':'');
@@ -84,4 +84,5 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  render();return {selectHat(key){if(caps.some(h=>h.key===key)){clearFrom('hat');state.hat=key;render();}}};
 }};
 })(window);
+
 

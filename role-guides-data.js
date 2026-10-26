@@ -58,7 +58,7 @@ window.SANCTUARY_ROLE_GUIDES = {
     sections: [
       [
         "Creating work",
-        "Writers may prepare work in Your Design Studio or through the appropriate publication route."
+        "Writers may prepare work in Your Organiser or through the appropriate publication route."
       ],
       [
         "Editorial approval",
@@ -83,7 +83,7 @@ window.SANCTUARY_ROLE_GUIDES = {
     sections: [
       [
         "Creating work",
-        "Artists may use Your Design Studio and their own saved illustrations or artwork."
+        "Artists may use Your Organiser and their own saved illustrations or artwork."
       ],
       [
         "Editorial approval",
@@ -276,3 +276,4 @@ window.SANCTUARY_ROLE_GUIDES = {
   }
 
 };
+

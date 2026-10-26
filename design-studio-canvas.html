@@ -13,7 +13,7 @@
     /* Publishing workspace */
     .publish-workspace{margin-top:1rem}.workspace-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.layout-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:.9rem 0 1rem}.layout-choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:.75rem;cursor:pointer;font:inherit;text-align:left}.layout-choice.selected,.layout-choice:hover{border-color:var(--accent);background:var(--soft)}.layout-choice strong{display:block;color:var(--accent-dark);margin-bottom:.2rem}.workspace-grid{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(420px,1.15fr);gap:1rem}.editor-stack{display:flex;flex-direction:column;gap:.75rem}.editor-box{border:1px solid var(--line);border-radius:15px;padding:.85rem;background:#fff}.editor-box h3{color:var(--accent-dark);margin-bottom:.55rem}.editor-box textarea{min-height:120px;resize:vertical;width:100%;margin-top:.28rem;padding:.7rem .75rem;border:1px solid var(--line);border-radius:11px;font:inherit;background:#fff;color:var(--ink)}.colour-row,.small-actions,.image-sources{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.swatch{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}.swatch.selected{box-shadow:0 0 0 3px rgba(31,111,139,.22)}.small-actions button,.image-sources button{border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:999px;padding:.45rem .68rem;font-weight:850;cursor:pointer}.image-sources button{border-radius:12px;flex:1 1 120px}.preview-shell{background:#e7eef2;border-radius:18px;padding:1rem;display:flex;justify-content:center;align-items:flex-start;overflow:auto}.a4{width:min(100%,680px);aspect-ratio:210/297;background:#fff;box-shadow:0 14px 32px rgba(0,0,0,.16);padding:6%;display:grid;gap:2%;overflow:hidden}.a4.classic{grid-template-columns:1fr 1fr;grid-template-rows:auto 34% 1fr}.a4.classic .pub-title,.a4.classic .pub-body{grid-column:1/-1}.a4.picture{grid-template-columns:1fr;grid-template-rows:auto 52% 1fr}.a4.text{grid-template-columns:1fr;grid-template-rows:auto 1fr}.a4.text .pub-image,.a4.text .pub-info{display:none!important}.a4.split{grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}.a4.split .pub-title{grid-column:1/-1}.pub-panel{border:1px dashed #bfd0d9;border-radius:10px;padding:.9rem;overflow:auto;white-space:pre-wrap}.pub-title{display:flex;align-items:center;justify-content:center;text-align:center;font-size:2rem;font-weight:900;color:#17314a}.pub-image{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);background:#f8fbfd}.pub-image img{max-width:100%;max-height:100%;object-fit:contain}.pub-info{background:#f8fbfd}.pub-panel.empty{display:none}.workspace-status{margin:.55rem 0 0;color:var(--muted);font-size:.85rem;line-height:1.4}
 
-    /* Creative Canvas — common YDS production engine */
+    /* Creative Canvas — common YO production engine */
     .canvas-shell{margin-top:.8rem}.canvas-toolbar{display:grid;gap:.7rem;margin:.85rem 0}.toolbar-row{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;padding:.7rem;border:1px solid var(--line);border-radius:14px;background:#fff}.toolbar-label{font-size:.82rem;font-weight:900;color:var(--accent-dark);margin-right:.2rem;text-transform:uppercase;letter-spacing:.04em}.toolbar-row button,.toolbar-row select,.toolbar-row input[type="number"]{border:1px solid var(--line);background:var(--soft);color:var(--accent-dark);border-radius:10px;padding:.46rem .62rem;font:inherit;font-size:.88rem;font-weight:800}.toolbar-row button{cursor:pointer}.toolbar-row button:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.toolbar-row button:disabled{opacity:.42;cursor:not-allowed}.toolbar-row select{background:#fff}.toolbar-row input[type="number"]{width:72px;background:#fff}.toolbar-row input[type="color"]{width:38px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:#fff}.toolbar-check{display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);font-size:.88rem;font-weight:800}.toolbar-check input{width:auto;margin:0}.format-toolbar[hidden],.image-toolbar[hidden]{display:none!important}.page-tabs{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.7rem 0}.page-tab{border:1px solid var(--line);background:#fff;color:var(--accent-dark);border-radius:999px;padding:.42rem .72rem;font-weight:850;cursor:pointer}.page-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.canvas-stage{background:#dfe8ed;border-radius:18px;padding:1rem;overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:500px}.canvas-pages{width:100%;display:flex;justify-content:center}.canvas-page{position:relative;background:#fff;box-shadow:0 14px 32px rgba(0,0,0,.16);overflow:hidden;flex:0 0 auto}.canvas-page.portrait{width:min(100%,680px);aspect-ratio:210/297}.canvas-page.landscape{width:min(100%,860px);aspect-ratio:297/210}.canvas-page[hidden]{display:none}.canvas-safe-area{position:absolute;inset:3.5%;border:1px dashed rgba(31,111,139,.16);pointer-events:none}.canvas-guide{position:absolute;background:rgba(31,111,139,.45);pointer-events:none;z-index:900;display:none}.canvas-guide.v{top:0;bottom:0;width:1px}.canvas-guide.h{left:0;right:0;height:1px}.canvas-item{position:absolute;left:8%;top:8%;width:55%;height:18%;min-width:70px;min-height:42px;border:1px solid transparent;background:transparent;overflow:visible;z-index:10}.canvas-item.selected{border:1px dashed #4c93ad}.canvas-item .item-content{position:absolute;inset:0;overflow:hidden;outline:none;white-space:pre-wrap;word-break:break-word;padding:.45rem;background:transparent}
     .canvas-item .item-content img{max-width:100%;height:auto;display:block;margin:.45rem auto;object-fit:contain}
     .canvas-item[data-flow-group] .item-content{white-space:normal;line-height:1.5}
@@ -193,7 +193,7 @@
     .fun-banner[hidden]{display:none!important}
   
 
-    /* YDS colour chooser — same in Chrome and Firefox */
+    /* YO colour chooser — same in Chrome and Firefox */
     .yds-colour-source{
       position:absolute!important;
       width:1px!important;
@@ -512,7 +512,7 @@
         <div class="sub" id="modeIntro">Your common creative canvas.</div>
       </div>
       <div class="actions">
-        <a class="btn secondary" id="backTopBtn" href="your-design-studio.html">← Your Design Studio</a>
+        <a class="btn secondary" id="backTopBtn" href="your-design-studio.html">← Your Organiser</a>
         <button class="btn secondary" id="logoutBtn" type="button">Logout</button>
       </div>
     </div>
@@ -815,7 +815,7 @@
         <button id="toolsThisScreenBtn" type="button">Keep tools beside canvas</button>
         <button id="toolsSecondScreenBtn" class="secondary" type="button">Move all controls to a separate window</button>
       </div>
-      <div class="tools-file-actions"><button id="fullscreenFromToolsBtn" type="button">Full screen canvas</button><button type="button" data-canvas-file-action="save-work">Save editable copy to computer</button><button type="button" data-canvas-file-action="open-work">Open editable copy from computer</button><button type="button" data-canvas-file-action="save-view">Save viewable copy to computer</button><button type="button" data-canvas-file-action="print">Print artwork</button><a href="library-publications.html?id=design-studio-guide" target="_blank" rel="noopener">Open printable YDS Guide</a></div>
+      <div class="tools-file-actions"><button id="fullscreenFromToolsBtn" type="button">Full screen canvas</button><button type="button" data-canvas-file-action="save-work">Save editable copy to computer</button><button type="button" data-canvas-file-action="open-work">Open editable copy from computer</button><button type="button" data-canvas-file-action="save-view">Save viewable copy to computer</button><button type="button" data-canvas-file-action="print">Print artwork</button><a href="library-publications.html?id=design-studio-guide" target="_blank" rel="noopener">Open printable YO Guide</a></div>
       <button id="toolsChoiceCancelBtn" class="tools-choice-cancel" type="button">Cancel</button>
     </div>
   </div>
@@ -1010,7 +1010,7 @@
     const TOOLS_RETURN_KEY="sanctuaryYdsToolsReturnV1";
     const TOOLS_ACTION_KEY="sanctuaryYdsToolsActionV1";
 
-    /* Consistent YDS colour chooser */
+    /* Consistent YO colour chooser */
     const ydsColourPopover=document.getElementById("ydsColourPopover");
     const ydsColourSV=document.getElementById("ydsColourSV");
     const ydsColourMarker=document.getElementById("ydsColourMarker");
@@ -1281,11 +1281,11 @@
       try{
         const blob=new Blob([JSON.stringify(portableProject(),null,2)],{type:"application/json"});
         const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=safeProjectFilename();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
-        alert(IS_FUN_MODE?"Your editable creation has been saved to your computer. If you later enter through Info, you can open it again in Your Design Studio.":"Your editable Design Studio work has been saved to your computer.");
+        alert(IS_FUN_MODE?"Your editable creation has been saved to your computer. If you later enter through Info, you can open it again in Your Organiser.":"Your editable Organiser work has been saved to your computer.");
       }catch(err){console.error(err);alert("Your work could not be saved to your computer.");}
     }
     function importPortableProjectFile(file){
-      if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const project=JSON.parse(String(reader.result||""));if(project?.format!=="sanctuary-yds"||!project?.state)throw new Error("Not a Sanctuary Design Studio project.");if(!confirm("Open this saved Design Studio work? Any unsaved Canvas changes will be replaced."))return;undoStack=[];redoStack=[];restoreState(JSON.stringify(project.state));updateUndoRedo();if(!IS_FUN_MODE&&(project.origin==="just-for-fun"||project.editorialRequired===true)){sessionStorage.setItem("sanctuaryImportedEditorialRequired","true");alert("Saved work opened. Because it was created outside an authenticated publishing role, it will be treated as a new Writer/Artist creation and will require editorial approval before publication.");}else{alert("Saved Design Studio work opened.");}}catch(err){console.error(err);alert("This saved file could not be opened as Design Studio work.");}finally{importCanvasFileInput.value="";}};reader.readAsText(file);
+      if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const project=JSON.parse(String(reader.result||""));if(project?.format!=="sanctuary-yds"||!project?.state)throw new Error("Not a Sanctuary Design Studio project.");if(!confirm("Open this saved Organiser work? Any unsaved Canvas changes will be replaced."))return;undoStack=[];redoStack=[];restoreState(JSON.stringify(project.state));updateUndoRedo();if(!IS_FUN_MODE&&(project.origin==="just-for-fun"||project.editorialRequired===true)){sessionStorage.setItem("sanctuaryImportedEditorialRequired","true");alert("Saved work opened. Because it was created outside an authenticated publishing role, it will be treated as a new Writer/Artist creation and will require editorial approval before publication.");}else{alert("Saved Organiser work opened.");}}catch(err){console.error(err);alert("This saved file could not be opened as Organiser work.");}finally{importCanvasFileInput.value="";}};reader.readAsText(file);
     }
     function pushUndo(){if(!creativePages.children.length)return;const s=snapshotState();if(undoStack[undoStack.length-1]!==s)undoStack.push(s);if(undoStack.length>40)undoStack.shift();redoStack=[];updateUndoRedo()}
     function restoreState(raw){
@@ -2181,7 +2181,7 @@
         currentPageIndex=0;
         undoStack=[];
         redoStack=[];
-        // Artist work opens in Landscape by default; all other YDS routes open in Portrait.
+        // Artist work opens in Landscape by default; all other YO routes open in Portrait.
         // The Role Holder can switch orientation at any time and saved work retains its chosen setting.
         orientationSelect.value=(CANVAS_MODE==="artist")?"landscape":"portrait";
         createPage();
@@ -2369,7 +2369,7 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
 </style>
 </head>
 <body>
-<div class="viewer-note">View-only copy saved from Sanctuary Club — Your Design Studio.</div>
+<div class="viewer-note">View-only copy saved from Sanctuary Club — Your Organiser.</div>
 ${pageClones}
 </body>
 </html>`;
@@ -2388,16 +2388,16 @@ ${pageClones}
         a.click();
         a.remove();
         setTimeout(()=>URL.revokeObjectURL(url),1000);
-        alert("A viewable copy has been saved to your computer. Open the .html file in your normal web browser. Use Save My Work separately if you want an editable YDS copy.");
+        alert("A viewable copy has been saved to your computer. Open the .html file in your normal web browser. Use Save My Work separately if you want an editable YO copy.");
       }catch(err){
         console.error(err);
-        alert("The viewable copy could not be saved. Your YDS work remains unchanged.");
+        alert("The viewable copy could not be saved. Your YO work remains unchanged.");
       }
     }
 
  /*
   =========================================================
-  YDS PUBLISHING
+  YO PUBLISHING
   =========================================================
 */
 
@@ -2817,7 +2817,7 @@ async function publishDatedCanvas(){
 
 async function saveCanvasToVault(statusOverride=""){
   const token=getAuthToken();
-  if(!token) throw new Error("Your Design Studio session has expired. Please return to Your Design Studio and sign in again.");
+  if(!token) throw new Error("Your Organiser session has expired. Please return to Your Organiser and sign in again.");
   const title=clean(workNameInput?.value||firstUsefulText()||"");
   if(!title) throw new Error("Please give your work a title before submitting it.");
   const existing=sessionStorage.getItem("sanctuaryCurrentVaultWorkId")||"";
@@ -2915,7 +2915,7 @@ async function publishCanvas(){
   if(!token){
 
     alert(
-      "Your Design Studio session has expired. Please return to Your Design Studio and sign in again."
+      "Your Organiser session has expired. Please return to Your Organiser and sign in again."
     );
 
     return;
@@ -3402,7 +3402,7 @@ function configurePublishingButton(){
       if(IS_FUN_MODE){window.location.href="my-vault.html";return;}
       if(!requireWorkName())return;
       const token=getAuthToken();
-      if(!token){alert("Please return to Your Design Studio and sign in again.");return;}
+      if(!token){alert("Please return to Your Organiser and sign in again.");return;}
       const existing=sessionStorage.getItem("sanctuaryCurrentVaultWorkId")||"";
       const payload={
         work_id:existing,
@@ -3526,7 +3526,7 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
         backTopBtn.textContent="← My Vault";
         document.getElementById("backFromCanvasBtn").textContent="← My Vault";
       }else{
-        document.getElementById("backFromCanvasBtn").textContent="← Your Design Studio";
+        document.getElementById("backFromCanvasBtn").textContent="← Your Organiser";
       }
 
       if(IS_VAULT_OPEN&&PENDING_VAULT_PROJECT){
@@ -3630,6 +3630,7 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
 
 </body>
 </html>
+
 
 
 

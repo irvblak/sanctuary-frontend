@@ -216,14 +216,14 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
   /*
     =========================================================
-    YOUR DESIGN STUDIO — QUICK GUIDE
+    YOUR ORGANISER — QUICK GUIDE
     =========================================================
   */
 
   "design-studio-guide": {
     kind: "publication",
 
-    title: "Your Design Studio — Quick Guide",
+    title: "Your Organiser — Quick Guide",
 
     privacy: "access",
 
@@ -234,11 +234,11 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     updated: "18 August 2026",
 
     summary:
-      "A printable guide to creating and arranging work in Your Design Studio.",
+      "A printable guide to creating and arranging work in Your Organiser.",
 
     body: `
       <p class="lead">
-        Your Design Studio is designed to let you create
+        Your Organiser is designed to let you create
         by placing and arranging items directly on the page.
       </p>
 
@@ -400,18 +400,18 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       <p>
         Choose <strong>Save to my computer</strong>
         when you want to keep an editable copy
-        of your Design Studio work on your own computer.
+        of Your Organiser work on your own computer.
       </p>
 
       <p>
         You can later open that saved work again
-        in Your Design Studio and continue editing it.
+        in Your Organiser and continue editing it.
       </p>
 
       <p>
         Work created through <strong>Just for fun</strong>
         can also be saved this way.
-        If it is later opened through full YDS after entering through
+        If it is later opened through full YO after entering through
         <strong>Access All</strong>, it is treated as a new Writer or Artist
         creation and will require editorial approval before publication.
       </p>
@@ -443,7 +443,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         What happens to finished work — including publication,
         editorial approval, privacy and Library destinations —
         is explained in
-        <strong>Your Design Studio — Publishing Guide</strong>.
+        <strong>Your Organiser — Publishing Guide</strong>.
       </p>
 
       <div class="motto">
@@ -458,14 +458,14 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
   /*
     =========================================================
-    YOUR DESIGN STUDIO — PUBLISHING GUIDE
+    YOUR ORGANISER — PUBLISHING GUIDE
     =========================================================
   */
 
   "design-studio-publishing": {
     kind: "publication",
 
-    title: "Your Design Studio — Publishing Guide",
+    title: "Your Organiser — Publishing Guide",
 
     privacy: "access",
 
@@ -476,7 +476,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
     updated: "22 September 2026",
 
     summary:
-      "What happens to work created in Your Design Studio and where it may go.",
+      "What happens to work created in Your Organiser and where it may go.",
 
     body: `
       <p class="lead">
@@ -593,7 +593,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
 
       <p>
         For instructions on using the design tool itself,
-        see <strong>Your Design Studio — Quick Guide</strong>.
+        see <strong>Your Organiser — Quick Guide</strong>.
       </p>
 
       <div class="motto">
@@ -796,7 +796,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
         <li>email address, telephone numbers and other contact information provided by the member;</li>
         <li>Club or Residents Association roles undertaken by the member;</li>
         <li>Event bookings, cancellations and related information;</li>
-        <li>work created, saved or published through Your Design Studio;</li>
+        <li>work created, saved or published through Your Organiser;</li>
         <li>necessary administrative and security records.</li>
       </ul>
 
@@ -1264,3 +1264,4 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
   }
 
 };
+

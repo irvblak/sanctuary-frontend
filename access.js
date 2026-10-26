@@ -1123,7 +1123,7 @@
     /*
       An authenticated SCH publisher has already crossed its own restricted
       Publishing-PIN threshold. Do not let the What's On link protector
-      hijack its permitted Event/Notice workflow and send it toward YDS.
+      hijack its permitted Event/Notice workflow and send it toward YO.
     */
     if (
       validSchPublishingSession()
@@ -1455,6 +1455,7 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
   script.dataset.sanctuaryNavigation="true";
   (document.head||document.documentElement).appendChild(script);
 })();
+
 
 
 

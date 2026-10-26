@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Host or Post an Event | Your Design Studio | Sanctuary Club</title>
+  <title>Host or Post an Event | Your Organiser | Sanctuary Club</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
   <script src="content-access.js?v=WA_RESIDENT_SESSION_20261014"></script><script src="access.js?v=MEMBER_ICONS_20261016"></script>
@@ -337,7 +337,7 @@
       </div>
 
       <nav class="nav" aria-label="Page links">
-        <a class="pill" href="your-design-studio.html">Your Design Studio</a>
+        <a class="pill" href="your-design-studio.html">Your Organiser</a>
         <a class="pill" id="guideLink" href="role-guide.html">Guide</a>
         <a class="pill" href="members-info.html">Members Hub</a>
         <button class="secondary" id="logoutBtn" type="button">Logout</button>
@@ -1352,7 +1352,7 @@ async function saveEvent(){
     setStatus(
       els.saveStatus,
       "ok",
-      "Work in Progress saved privately. Opening the linked Notice in Your Design Studio…"
+      "Work in Progress saved privately. Opening the linked Notice in Your Organiser…"
     );
 
     const canvasParams = new URLSearchParams({
@@ -1523,7 +1523,7 @@ async function initialise(){
   applyMode();
 
   // SCH publishers have already authenticated with their own Publishing PIN.
-  // Keep them on the restricted Event route and out of ordinary YDS authority.
+  // Keep them on the restricted Event route and out of ordinary YO authority.
   if(params.get("admin") === "1" && noticeAdminToken()){
     const check = await apiFetch("/api/content-authority",{headers:{Authorization:`Bearer ${authToken}`}});
     if (!check.can_manage_content) throw new Error("Content management authority is required.");
@@ -1664,6 +1664,7 @@ initialise();
 </script>
 </body>
 </html>
+
 
 
 

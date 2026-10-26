@@ -34,12 +34,12 @@ Status terms:
 |---|---|---|---|
 | Arrived here from What's On/wxyz? | library-publications-data.js (check-information) | Needs review | Decide whether it remains useful or is evolutionary navigation material rather than a Library publication. |
 
-## B. Your Design Studio guides
+## B. Your Organiser guides
 
 | Publication | Current source | Working status |
 |---|---|---|
-| Your Design Studio — Quick Guide | library-publications-data.js (design-studio-guide) | Needs updating |
-| Your Design Studio — Publishing Guide | library-publications-data.js (design-studio-publishing) | Needs updating |
+| Your Organiser — Quick Guide | library-publications-data.js (design-studio-guide) | Needs updating |
+| Your Organiser — Publishing Guide | library-publications-data.js (design-studio-publishing) | Needs updating |
 
 These should be checked against the simplified Writer/Artist model, My Vault and the current publishing routes before finalisation.
 
@@ -86,3 +86,4 @@ For each surviving item we will decide:
 5. whether any older duplicate should then be marked superseded.
 
 **No Library destinations are changed by this register.**
+

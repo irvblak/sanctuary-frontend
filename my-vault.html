@@ -21,7 +21,7 @@
 .work-list{display:grid;gap:16px}.work{border:1px solid var(--line);border-radius:16px;padding:20px;background:#f9fbfb}.work-head{align-items:flex-start;margin:0}.work h3{margin:0;font-size:1.18rem}.meta{font-size:.96rem}.badge{border:1px solid var(--line);border-radius:999px;padding:.2rem .65rem;background:#fff;font-size:.88rem;font-weight:800;white-space:nowrap}.note{margin:.7rem 0;padding:.65rem .8rem;border-left:4px solid var(--accent);background:#fff;font-weight:600}.actions{margin-top:14px}.empty{border:1px dashed var(--line);border-radius:14px;padding:22px;background:#f9fbfb}
 @media(max-width:700px){.page{width:min(100% - 20px,1120px)}.topbar,.work-head{align-items:flex-start;flex-direction:column}}
 </style><script src="site-navigation.js?v=NAV_RR_20261012" defer></script></head><body><main class="page">
-<div class="topbar"><div><p class="eyebrow">Your Design Studio</p><h1>My Vault</h1></div><div class="actions"><a class="btn secondary" href="events-calendar.html">Calendar</a><a class="btn secondary" href="members-info.html">Members Hub</a><a class="btn secondary" href="your-design-studio.html">← Your Design Studio</a></div></div>
+<div class="topbar"><div><p class="eyebrow">Your Organiser</p><h1>My Vault</h1></div><div class="actions"><a class="btn secondary" href="events-calendar.html">Calendar</a><a class="btn secondary" href="members-info.html">Members Hub</a><a class="btn secondary" href="your-design-studio.html">← Your Organiser</a></div></div>
 <section class="card intro"><h2>What happens next</h2>
 <p>Your unfinished work is kept here and can be reopened whenever you want to continue.</p>
 <ul><li><strong>Calendar:</strong> publishing makes the dated item, its Events List entry and linked Notice live together.</li>
@@ -167,7 +167,7 @@ function render(items){
   list.innerHTML="";
   deleteAllBtn.hidden=!items.length;
   if(!items.length){
-    list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Design Studio, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';
+    list.innerHTML='<div class="empty">There is nothing in your Vault yet. When you create and name something in Your Organiser, clicking <strong>My Vault</strong> will put it safely here as Work in Progress.</div>';
     return;
   }
   items.forEach(i=>{
@@ -209,14 +209,14 @@ async function vaultWorkForEvent(items,eventId){
 }
 
 async function load(){
-  if(!token()){status.textContent="Your Studio session has expired. Please return to Your Design Studio.";return}
+  if(!token()){status.textContent="Your Studio session has expired. Please return to Your Organiser.";return}
   try{
     let r=await fetch(`${API}/api/vault`,{headers:{Authorization:`Bearer ${token()}`}}),d=await r.json().catch(()=>({}));
     if(!r.ok||d.success===false)throw Error(d.message||`Your Vault could not be opened (${r.status})`);
     let items=Array.isArray(d.items)?d.items:[];
 
     if(requestedVault){
-      status.textContent="Opening the Notice in Your Design Studio…";
+      status.textContent="Opening the Notice in Your Organiser…";
       await openWork(requestedVault);
       return;
     }
@@ -240,4 +240,5 @@ async function load(){
 }
 load()})();
 </script></body></html>
+
 

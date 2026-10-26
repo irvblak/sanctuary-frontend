@@ -10,10 +10,19 @@ const sectionOrder=["Reading Room","Tuition & Guides","Gallery"];
 root.innerHTML='<h2>Library indexes</h2><p>Browse all published work by section and category, or see each member’s work together. Select a title to open it.</p><div class="work-index-views" role="group" aria-label="Choose an index"><button type="button" data-work-view="category" aria-pressed="true" aria-controls="work-index-category">By section & category</button><button type="button" data-work-view="member" aria-pressed="false" aria-controls="work-index-member">By member</button></div><div class="work-index-tools"><button type="button" data-work-expand="true">Expand all headings</button><button type="button" data-work-expand="false">Collapse all headings</button></div><p id="work-index-status" role="status" aria-live="polite">Loading published work…</p><section id="work-index-category" aria-label="Index by section and category"></section><section id="work-index-member" aria-label="Index by member" hidden></section>';
 const status=root.querySelector("#work-index-status"),categoryRoot=root.querySelector("#work-index-category"),memberRoot=root.querySelector("#work-index-member");
 let records=[],view="category";
+const fallbackHat={"events":"host","club-activities":"activity","reading-room":"writer","gallery":"artist","committee-news-information":"committee","residents-association-news-information":"panel","general-useful-information":"information-officer","website-help":"website-helper","services":"services","administration":"website-administration"};
+function categoryFor(item,key,hat){
+ const hatKey=S.isManualPublication(item)?"information-officer":hat?.key||fallbackHat[key];
+ return S.libraryDestination(hatKey)?.label||"Other work";
+}
+function sectionIcon(label){
+ const id=label==="Reading Room"?"book-open-text":label==="Tuition & Guides"?"graduation-cap":"";
+ return id?'<svg class="work-section-icon" aria-hidden="true" focusable="false"><use href="assets/icons/library-icons.svg#'+id+'"></use></svg>':"";
+}
 function publication(item){
- const key=S.publicationSection(item),definition=S.SECTIONS.find(s=>s.key===key),hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
+ const key=S.publicationSection(item),hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
  const section=key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
- const category=key==="learning"?(hat?.label||"Learning"):definition?.title||"Other work";
+ const category=categoryFor(item,key,hat);
  const subcategory=(key==="learning"?S.publicationShelfSubject(item):S.publicationSubcategory(item))||"";
  const number=String(item.creator_resident_id||item.creator_member_id||"").toUpperCase();
  return {section,category,subcategory,name:item.creator_name||(number?"Member":"Sanctuary Club"),number,title:item.title||"Untitled",summary:item.summary||"",date:item.created_at||"",url:key==="gallery"?"library-gallery.html?id="+encodeURIComponent(item.publication_id||""):"library-publications.html?id="+encodeURIComponent(item.legacy_id||item.publication_id||"")};
@@ -29,19 +38,31 @@ function groups(rows,key){const map=new Map();for(const row of rows){const value
 function titleOrder(rows){return [...rows].sort((a,b)=>compare(a.title,b.title)||compare(a.name,b.name)||compare(a.number,b.number));}
 function count(rows){return '<span class="work-index-count">'+rows.length+' '+(rows.length===1?"work":"works")+'</span>';}
 function heading(label,rows,body,level,kind){
- return '<details open class="work-index-group '+kind+'"><summary><span class="work-index-chevron" aria-hidden="true">▸</span><h'+level+'>'+esc(label)+'</h'+level+'>'+count(rows)+'</summary><div class="work-index-group-body">'+body+'</div></details>';
+ return '<details class="work-index-group '+kind+'"><summary><span class="work-index-chevron" aria-hidden="true">▸</span><h'+level+'>'+sectionIcon(label)+esc(label)+'</h'+level+'>'+count(rows)+'</summary><div class="work-index-group-body">'+body+'</div></details>';
 }
 function render(){
  categoryRoot.innerHTML=sectionOrder.map(section=>{
-  const own=records.filter(row=>row.section===section);if(!own.length)return "";
-  const categories=groups(own,row=>row.category).map(([label,items])=>{
-   const subcategories=groups(items,row=>row.subcategory).map(([sub,rows])=>{
+  const own=records.filter(row=>row.section===section);
+  const categoryGroups=groups(own,row=>row.category);
+  const destinations=section==="Gallery"?S.LIBRARY_DESTINATIONS.filter(d=>d.hat==="artist"):S.LIBRARY_DESTINATIONS;
+  if(section==="Reading Room")["Letters to the Panel","Letters to the Committees"].forEach(label=>{if(!categoryGroups.some(([name])=>name===label))categoryGroups.push([label,[]]);});
+  destinations.forEach(({label})=>{if(!categoryGroups.some(([name])=>name===label))categoryGroups.push([label,[]]);});
+  categoryGroups.sort(([a],[b])=>compare(a,b));
+  const categories=categoryGroups.map(([label,items])=>{
+   const subjectGroups=groups(items,row=>row.subcategory);
+   const destination=S.LIBRARY_DESTINATIONS.find(d=>d.label===label);
+   if(label==="Letters to the Committees")["Mews","Court"].forEach(sub=>{if(!subjectGroups.some(([name])=>name===sub))subjectGroups.push([sub,[]]);});
+   if(destination)S.libraryDestinationSubjects(destination.hat).filter(sub=>!(section==="Tuition & Guides"&&sub==="Manuals")).forEach(sub=>{
+    if(!subjectGroups.some(([name])=>S.slug(name)===S.slug(sub)))subjectGroups.push([sub,[]]);
+   });
+   subjectGroups.sort(([a],[b])=>compare(a,b));
+   const subcategories=subjectGroups.map(([sub,rows])=>{
     const cards=titleOrder(rows).map(row=>card(row,false)).join("");
-    return sub?heading(sub,rows,cards,5,"work-index-subcategory"):cards;
+    return sub?heading(sub,rows,cards||'<p class="work-index-empty">No published work yet.</p>',5,"work-index-subcategory"):cards;
    }).join("");
-   return heading(label,items,subcategories,4,"work-index-category");
+   return heading(label,items,subcategories||'<p class="work-index-empty">No published work yet.</p>',4,"work-index-category");
   }).join("");
-  return heading(section,own,categories,3,"work-index-section");
+  return heading(section,own,categories||'<p class="work-index-empty">No published work yet.</p>',3,"work-index-section");
  }).join("");
  memberRoot.innerHTML=groups(records,row=>(row.number||row.name)).map(([,rows])=>({rows,name:rows[0].name,number:rows[0].number})).sort((a,b)=>compare(a.name,b.name)||compare(a.number,b.number)).map(({rows,name,number})=>heading(name+(number?" — "+number:""),rows,titleOrder(rows).map(row=>card(row,true)).join(""),3,"work-index-person")).join("");
 }
@@ -65,3 +86,4 @@ Promise.allSettled([read("/api/library-publications"),read("/api/panel-letters")
  status.textContent=(records.length?records.length+" published "+(records.length===1?"work":"works")+". Both indexes contain the same work.":"No published work yet.")+(errors.length?" "+errors.join(" ")+" Please reload to try again.":"");
 });
 })();
+

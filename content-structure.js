@@ -28,7 +28,7 @@
       "event-host":[["Event Host Guide","role-guide.html?role=event-host"]],
       "activity-organiser":[["Activity Organiser Guide","role-guide.html?role=activity-organiser"]],
       "writer":[["Writer Guide","role-guide.html?role=writer"]],
-      "artist":[["Artist Guide","role-guide.html?role=artist"],["Your Design Studio Guide","library-publications.html?id=design-studio-guide"]],
+      "artist":[["Artist Guide","role-guide.html?role=artist"],["Your Organiser Guide","library-publications.html?id=design-studio-guide"]],
       "committees":[["Committee Publications Guide","role-guide.html?role=club-publications"]],
       "residents-association":[["Residents Association Guide","role-guide.html?role=residents-association-panel"]],
       "administration":[["Administration Structure","library-publications.html?id=administration-structure"]],
@@ -131,8 +131,32 @@
     return "";
   }
 
-  global.SanctuaryContentStructure={publicationShelfSubject,isManualPublication,REGISTER_GROUPS,PRODUCTION_HATS,hatSubjects,hatSubdivision,libraryTarget,creationTarget,publicationLearningStream,publicationHatKey,ACTIVITIES,ACTIVITY_APPOINTMENT_SCOPES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
+  const LIBRARY_DESTINATIONS=[
+    {hat:"host",label:"Events"},
+    {hat:"activity",label:"Club Activities"},
+    {hat:"writer",label:"Articles & Stories"},
+    {hat:"artist",label:"Art & Photography"},
+    {hat:"committee",label:"Committees"},
+    {hat:"panel",label:"Residents Association"},
+    {hat:"information-officer",label:"General & Useful Information"},
+    {hat:"website-helper",label:"Website Help"},
+    {hat:"services",label:"Services"},
+    {hat:"website-custodian",label:"Website Custodianship"},
+    {hat:"website-administration",label:"Website Administration"},
+    {hat:"club-administration",label:"Club & Condo Admin"}
+  ];
+  function libraryDestination(hatKey){return LIBRARY_DESTINATIONS.find(d=>d.hat===hatKey);}
+  function libraryDestinationSubjects(hatKey){
+    const hat=PRODUCTION_HATS.find(h=>h.key===hatKey);
+    if(!hat)return [];
+    return hatSubjects(hat).flatMap(([key,label])=>{
+      const groups=hatSubdivision(hat,key);
+      return groups.length?groups.map(([,group])=>label+" — "+group):[label];
+    });
+  }
+  global.SanctuaryContentStructure={LIBRARY_DESTINATIONS,libraryDestination,libraryDestinationSubjects,publicationShelfSubject,isManualPublication,REGISTER_GROUPS,PRODUCTION_HATS,hatSubjects,hatSubdivision,libraryTarget,creationTarget,publicationLearningStream,publicationHatKey,ACTIVITIES,ACTIVITY_APPOINTMENT_SCOPES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
 })(window);
+
 
 
 

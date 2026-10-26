@@ -5,51 +5,63 @@ if(!root||!S)return;
 if(new URLSearchParams(location.search).has("section")){root.hidden=true;return;}
 const API="https://sanctuary-backend-8iqc.onrender.com";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-root.innerHTML='<h2>Find published work</h2><p>Choose any filters, then select a title to open the work.</p><div class="work-filters">'+
-[["section","Section"],["category","Category"],["subcategory","Subcategory"],["member","Member"]].map(([id,label])=>'<label>'+label+'<select id="work-'+id+'"><option value="">All</option></select></label>').join('')+
-'<label>Find a title or member<input id="work-search" type="search" placeholder="Type to search"></label><label>Sort by<select id="work-sort"><option value="newest">Date — newest first</option><option value="oldest">Date — oldest first</option><option value="member">Member name</option><option value="number">Membership number</option><option value="category">Section and category</option><option value="title">Title</option></select></label><button type="button" id="work-clear">Clear filters</button></div><p id="work-message" role="status" aria-live="polite">Loading published work…</p><div class="work-table-wrap"><table class="work-table"><caption class="work-sr">Published Library work</caption><thead><tr><th scope="col">Member</th><th scope="col">Membership no.</th><th scope="col">Date</th><th scope="col">Title</th><th scope="col">Section</th><th scope="col">Category / subcategory</th></tr></thead><tbody id="work-results"></tbody></table></div>';
-const get=id=>document.getElementById("work-"+id),keys=["section","category","subcategory","member"];
-let records=[],problems=[];
 const compare=(a,b)=>a.localeCompare(b,"en-GB",{numeric:true,sensitivity:"base"});
+const sectionOrder=["Reading Room","Tuition & Guides","Gallery"];
+root.innerHTML='<h2>Library indexes</h2><p>Browse all published work by section and category, or see each member’s work together. Select a title to open it.</p><div class="work-index-views" role="group" aria-label="Choose an index"><button type="button" data-work-view="category" aria-pressed="true" aria-controls="work-index-category">By section & category</button><button type="button" data-work-view="member" aria-pressed="false" aria-controls="work-index-member">By member</button></div><div class="work-index-tools"><button type="button" data-work-expand="true">Expand all headings</button><button type="button" data-work-expand="false">Collapse all headings</button></div><p id="work-index-status" role="status" aria-live="polite">Loading published work…</p><section id="work-index-category" aria-label="Index by section and category"></section><section id="work-index-member" aria-label="Index by member" hidden></section>';
+const status=root.querySelector("#work-index-status"),categoryRoot=root.querySelector("#work-index-category"),memberRoot=root.querySelector("#work-index-member");
+let records=[],view="category";
 function publication(item){
- const sectionKey=S.publicationSection(item),definition=S.SECTIONS.find(s=>s.key===sectionKey);
- const shelf=S.publicationSubcategory(item)||"",hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
- const section=sectionKey==="gallery"?"Gallery":sectionKey==="learning"?"Tuition & Guides":"Reading Room";
- const category=sectionKey==="learning"?(hat?.label||"Learning"):definition?.title||"Other work";
+ const key=S.publicationSection(item),definition=S.SECTIONS.find(s=>s.key===key),hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
+ const section=key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
+ const category=key==="learning"?(hat?.label||"Learning"):definition?.title||"Other work";
+ const subcategory=(key==="learning"?S.publicationShelfSubject(item):S.publicationSubcategory(item))||"";
  const number=String(item.creator_resident_id||item.creator_member_id||"").toUpperCase();
- const name=item.creator_name||(number?"Member":"Sanctuary Club");
- return {section,category,subcategory:shelf,name,number,member:name+" ("+(number||"Club publication")+")",title:item.title||"Untitled",date:item.published_at||item.created_at||"",url:sectionKey==="gallery"?"library-gallery.html?id="+encodeURIComponent(item.publication_id||""):"library-publications.html?id="+encodeURIComponent(item.legacy_id||item.publication_id||"")};
+ return {section,category,subcategory,name:item.creator_name||(number?"Member":"Sanctuary Club"),number,title:item.title||"Untitled",summary:item.summary||"",date:item.created_at||"",url:key==="gallery"?"library-gallery.html?id="+encodeURIComponent(item.publication_id||""):"library-publications.html?id="+encodeURIComponent(item.legacy_id||item.publication_id||"")};
 }
 function letter(t){
- const panel=t.destination==="panel",number=t.author_ref||"",name=t.author_name||"Member";
- return {section:"Reading Room",category:panel?"Letters to the Panel":"Letters to the Committees",subcategory:panel?"Panel":t.area||"",name,number,member:name+" ("+number+")",title:t.title||"Untitled letter",date:t.updated_at||t.created_at||"",url:"panel-letters.html?id="+encodeURIComponent(t.thread_id)};
+ return {section:"Reading Room",category:t.destination==="panel"?"Letters to the Panel":"Letters to the Committees",subcategory:t.destination==="panel"?"":t.area||"",name:t.author_name||"Member",number:String(t.author_ref||"").toUpperCase(),title:t.title||"Untitled letter",summary:t.summary||"",date:t.created_at||"",url:"panel-letters.html?id="+encodeURIComponent(t.thread_id)};
 }
-function matches(row,except){return keys.every(key=>key===except||!get(key).value||row[key]===get(key).value);}
-function filterOptions(){
- for(const key of keys){
-  const select=get(key),old=select.value;
-  const values=[...new Set(records.filter(row=>matches(row,key)).map(row=>row[key]).filter(Boolean))].sort(compare);
-  select.innerHTML='<option value="">All '+({section:"sections",category:"categories",subcategory:"subcategories",member:"members"})[key]+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");
-  if(values.includes(old))select.value=old;
- }
+function dateLabel(value){if(!value)return "Creation date not recorded";const d=new Date(value);return Number.isNaN(d.getTime())?"Creation date not recorded":"Created "+d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
+function card(row,showLocation){
+ return '<article class="work-synopsis"><h5><a href="'+esc(row.url)+'">'+esc(row.title)+'</a></h5><p class="work-synopsis-meta">'+esc(dateLabel(row.date))+'<span aria-hidden="true"> · </span>'+esc(row.name)+(row.number?' <span class="work-member-ref">'+esc(row.number)+'</span>':"")+'</p>'+(row.summary?'<p class="work-synopsis-description">'+esc(row.summary)+'</p>':"")+(showLocation?'<p class="work-synopsis-shelf">'+esc([row.section,row.category,row.subcategory].filter(Boolean).join(" / "))+'</p>':"")+'</article>';
+}
+function groups(rows,key){const map=new Map();for(const row of rows){const value=key(row);if(!map.has(value))map.set(value,[]);map.get(value).push(row);}return [...map.entries()].sort(([a],[b])=>compare(a,b));}
+function titleOrder(rows){return [...rows].sort((a,b)=>compare(a.title,b.title)||compare(a.name,b.name)||compare(a.number,b.number));}
+function count(rows){return '<span class="work-index-count">'+rows.length+' '+(rows.length===1?"work":"works")+'</span>';}
+function heading(label,rows,body,level,kind){
+ return '<details open class="work-index-group '+kind+'"><summary><span class="work-index-chevron" aria-hidden="true">▸</span><h'+level+'>'+esc(label)+'</h'+level+'>'+count(rows)+'</summary><div class="work-index-group-body">'+body+'</div></details>';
 }
 function render(){
- const query=get("search").value.trim().toLocaleLowerCase("en-GB"),sort=get("sort").value;
- const rows=records.filter(row=>matches(row)&&(!query||[row.title,row.name,row.number].some(v=>v.toLocaleLowerCase("en-GB").includes(query))));
- const stamp=r=>{const n=Date.parse(r.date);return Number.isFinite(n)?n:0;};
- rows.sort((a,b)=>{
-  let n=sort==="newest"?stamp(b)-stamp(a):sort==="oldest"?stamp(a)-stamp(b):sort==="member"?compare(a.name,b.name):sort==="number"?compare(a.number,b.number):sort==="title"?compare(a.title,b.title):compare(a.section,b.section)||compare(a.category,b.category)||compare(a.subcategory,b.subcategory);
-  return n||compare(a.title,b.title)||compare(a.number,b.number);
- });
- get("message").textContent=(rows.length?rows.length+" published item"+(rows.length===1?"":"s")+(rows.length!==records.length?" of "+records.length:"")+".":"No published work matches these choices.")+(problems.length?" "+problems.join(" ")+" Please reload to try again.":"");
- get("results").innerHTML=rows.map(row=>{const d=new Date(row.date),date=Number.isNaN(d.getTime())?"—":d.toLocaleDateString("en-GB");return '<tr><td>'+esc(row.name)+'</td><td>'+esc(row.number||"—")+'</td><td>'+esc(date)+'</td><td><a href="'+esc(row.url)+'">'+esc(row.title)+'</a></td><td>'+esc(row.section)+'</td><td>'+esc([row.category,row.subcategory].filter(Boolean).join(" / "))+'</td></tr>';}).join("");
+ categoryRoot.innerHTML=sectionOrder.map(section=>{
+  const own=records.filter(row=>row.section===section);if(!own.length)return "";
+  const categories=groups(own,row=>row.category).map(([label,items])=>{
+   const subcategories=groups(items,row=>row.subcategory).map(([sub,rows])=>{
+    const cards=titleOrder(rows).map(row=>card(row,false)).join("");
+    return sub?heading(sub,rows,cards,5,"work-index-subcategory"):cards;
+   }).join("");
+   return heading(label,items,subcategories,4,"work-index-category");
+  }).join("");
+  return heading(section,own,categories,3,"work-index-section");
+ }).join("");
+ memberRoot.innerHTML=groups(records,row=>(row.number||row.name)).map(([,rows])=>({rows,name:rows[0].name,number:rows[0].number})).sort((a,b)=>compare(a.name,b.name)||compare(a.number,b.number)).map(({rows,name,number})=>heading(name+(number?" — "+number:""),rows,titleOrder(rows).map(row=>card(row,true)).join(""),3,"work-index-person")).join("");
 }
-keys.forEach((key,index)=>get(key).addEventListener("change",()=>{if(index<3)keys.slice(index+1,3).forEach(k=>get(k).value="");filterOptions();render();}));
-get("search").addEventListener("input",render);get("sort").addEventListener("change",render);
-get("clear").addEventListener("click",()=>{keys.forEach(k=>get(k).value="");get("search").value="";get("sort").value="newest";filterOptions();render();});
+root.querySelectorAll("[data-work-view]").forEach(button=>button.addEventListener("click",()=>{
+ view=button.dataset.workView;categoryRoot.hidden=view!=="category";memberRoot.hidden=view!=="member";
+ root.querySelectorAll("[data-work-view]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+}));
+root.querySelectorAll("[data-work-expand]").forEach(button=>button.addEventListener("click",()=>{
+ (view==="category"?categoryRoot:memberRoot).querySelectorAll("details").forEach(details=>details.open=button.dataset.workExpand==="true");
+}));
 async function read(path){const response=await fetch(API+path,{cache:"no-store",headers:{Accept:"application/json"}});const data=await response.json();if(!response.ok||data.success===false)throw Error(path);return data;}
 Promise.allSettled([read("/api/library-publications"),read("/api/panel-letters")]).then(results=>{
- results.forEach((result,i)=>{if(result.status==="fulfilled"){const data=result.value;records.push(...(i===0?(data.publications||[]).filter(item=>["library","gallery"].includes(S.publicationCollection(item))).map(publication):(data.threads||[]).map(letter)));}else problems.push(i===0?"Library work could not be loaded.":"Published letters could not be loaded.");});
- filterOptions();render();
+ const errors=[];
+ results.forEach((result,i)=>{
+  if(result.status==="fulfilled"){
+   const data=result.value,items=i===0?(Array.isArray(data.publications)?data.publications:[]):(Array.isArray(data.threads)?data.threads:[]);
+   records.push(...(i===0?items.filter(item=>!item.status||item.status==="published").map(publication):items.filter(item=>!item.letter_status||item.letter_status==="published").map(letter)));
+  }else errors.push(i===0?"Library work could not be loaded.":"Published letters could not be loaded.");
+ });
+ render();
+ status.textContent=(records.length?records.length+" published "+(records.length===1?"work":"works")+". Both indexes contain the same work.":"No published work yet.")+(errors.length?" "+errors.join(" ")+" Please reload to try again.":"");
 });
 })();

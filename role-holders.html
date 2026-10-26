@@ -32,21 +32,75 @@ table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;borde
 th,td{padding:.72rem .8rem;text-align:left;vertical-align:top;border-bottom:1px solid #e4ebf1}th{background:#edf4fa;color:#26465f;font-size:.92rem;font-weight:850}
 th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 .status{margin-top:1rem;padding:.85rem 1rem;border-radius:12px;background:#f4f7f9;color:var(--muted)}.status.error{border:1px solid #e1c1c1;background:#fff7f7;color:#8a3434}
-.join-note{margin-top:1.3rem;padding:1rem 1.05rem;border:1px solid #c8dcea;border-radius:14px;background:#f3f9fd;color:#31506b}.join-note strong{color:var(--blue)}
+.join-note{font-weight:800;margin-top:1.3rem;padding:1rem 1.05rem;border:1px solid #c8dcea;border-radius:14px;background:#f3f9fd;color:#31506b}.join-note strong{color:var(--blue)}
 .motto{margin-top:2rem;padding-top:1.15rem;border-top:1px solid var(--line);color:#31506b;text-align:center;font-weight:850;line-height:1.55}
 @media(max-width:700px){body{font-size:17px}.topbar{align-items:flex-start;flex-direction:column}.panel{padding:1rem;border-radius:15px}.role-line{grid-template-columns:1fr;gap:.25rem}table,thead,tbody,th,td,tr{display:block}thead{display:none}table{border:none;background:transparent}tr{margin-bottom:.6rem;border:1px solid #d5e2eb;border-radius:12px;overflow:hidden;background:#fff}td{width:auto!important;border-bottom:none}td:first-child{padding-bottom:.25rem;color:#223b50;font-weight:850}td:last-child{padding-top:.25rem}}
 @media print{body{background:#fff;font-size:11pt}.topbar,.join-note,.motto{display:none!important}.shell{max-width:none;padding:0}.panel{border:none;box-shadow:none;padding:0}.register-section{break-inside:avoid;box-shadow:none}.section-body{display:block!important}.section-toggle::after{display:none}}
 .register-heading-content{display:flex;align-items:center;gap:.7rem;min-width:0;flex-wrap:wrap}.register-cap-icons{display:inline-flex;gap:.35rem;align-items:center;flex-wrap:wrap}.register-cap-icon{width:28px;height:28px;flex:0 0 28px;color:currentColor}.register-role-label{display:inline-flex;align-items:center;gap:.55rem}.register-role-label .register-cap-icon{width:24px;height:24px;flex-basis:24px}@media(max-width:600px){.register-heading-content{gap:.5rem}.register-cap-icon{width:24px;height:24px;flex-basis:24px}}
 .activity-subcategory td:first-child{padding-left:2rem;font-weight:750}.activity-subcategory{background:#f5f9fd}
+
+.top-link.organiser{background:#123a78}
+.register-section:nth-child(odd) .section-toggle{background:#123a78}
+.register-section:nth-child(even) .section-toggle{background:#008680}
+.register-section .section-toggle:hover{filter:brightness(.9)}
+.register-role-row>td:first-child{background:#e4edf9;color:#123a78;border-left:4px solid #123a78}
+.register-role-row .register-role-label{color:#123a78}
+.register-scope-summary{padding:.6rem .8rem;background:#e3f3ef;color:#185b49;font-weight:850;border-left:4px solid #2f806d;cursor:pointer}
+.register-scope-name{background:#f0f7f4;color:#185b49;font-weight:800}
+.register-scope-division td:first-child{background:#f8f0e4;color:#75501b;border-left:4px solid #a37834;padding-left:1.5rem}
+.register-destinations{margin:.5rem 0 0;font-size:.87rem;color:#475d70;display:flex;align-items:center;flex-wrap:wrap;gap:.45rem}
+.register-destinations a{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .5rem;border:1px solid #c9d7e2;border-radius:7px;background:white;color:#123a78;font-weight:750;text-decoration:none}
+.register-library-icon{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8}
+.register-destinations a:focus-visible,.section-toggle:focus-visible,.register-scope-summary:focus-visible{outline:3px solid #d09a34;outline-offset:2px}
+.register-subjects{margin:.7rem 0 0;padding:0;list-style:none}
+.register-subjects li{border-bottom:1px solid #d8e3ec;padding:.6rem .7rem}
+.register-subjects li:last-child{border-bottom:0}
+.register-subject-links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.3rem;font-size:.85rem}
+.register-subject-links a{color:#123a78}
+
+.register-column-headings,.register-category>summary,.register-assignment{display:grid;grid-template-columns:minmax(200px,1fr) minmax(220px,1fr);gap:1rem;align-items:start}
+.register-column-headings{padding:.6rem 1rem;color:#475d70;font-size:.9rem;font-weight:850}
+.register-category{margin:.7rem 0;border:1px solid #cbd9e3;border-radius:13px;overflow:hidden;background:#fff}
+.register-category>summary{padding:.85rem 1rem;background:#e4edf9;color:#123a78;cursor:pointer;list-style:none;border-left:5px solid #123a78}
+.register-category>summary::-webkit-details-marker{display:none}
+.register-category-label{display:flex;align-items:center;gap:.55rem;font-weight:850}
+.register-category-arrow{display:inline-block;transition:transform .15s}
+.register-category[open]>summary .register-category-arrow{transform:rotate(90deg)}
+.register-category-holders{font-size:.93rem;color:#334b5e;font-weight:500}
+.register-category-body{padding:.4rem .8rem .7rem;background:#f6f9fc}
+.register-assignment{padding:.75rem .7rem;border-bottom:1px solid #d8e3ec;background:white}
+.register-assignment:last-child{border-bottom:0}
+.register-assignment-name{font-weight:800;color:#185b49}
+.register-subgroup{margin:.6rem 0;border:1px solid #cbded5;border-radius:9px;overflow:hidden}
+.register-subgroup>summary{display:grid;grid-template-columns:minmax(200px,1fr) minmax(220px,1fr);gap:1rem;padding:.7rem;background:#e3f3ef;color:#185b49;cursor:pointer;font-weight:850}
+.register-subgroup .register-assignment-name{color:#75501b}
+.register-category .empty{font-size:.92rem}
+@media(max-width:700px){.register-column-headings{display:none}.register-category>summary,.register-assignment,.register-subgroup>summary{grid-template-columns:1fr;gap:.35rem}.register-category-holders{padding-left:2rem}.register-category-body{padding:.3rem .4rem}.register-category>summary{padding:.8rem}}
+@media print{.register-category-body{display:block!important}.register-category>summary{color:#123a78}}
+
+/* The same family colour identifies related categories. */
+.register-category{--category-ink:#143f75;--category-ground:#e6eefb;--category-edge:#315f99}
+.register-category[data-category="writer"],.register-category[data-category="artist"]{--category-ink:#6b3780;--category-ground:#f1e7f8;--category-edge:#87539a}
+.register-category[data-category="committee"],.register-category[data-category="panel"]{--category-ink:#7a263a;--category-ground:#f7e6ec;--category-edge:#a24c64}
+.register-category[data-category="website-helper"],.register-category[data-category="website-custodian"],.register-category[data-category="website-administration"]{--category-ink:#00685f;--category-ground:#e1f3ef;--category-edge:#258b7f}
+.register-category[data-category="information-officer"]{--category-ink:#814600;--category-ground:#fff0d7;--category-edge:#ac751f}
+.register-category[data-category="services"]{--category-ink:#40586c;--category-ground:#e8eef3;--category-edge:#668197}
+.register-category[data-category="club-administration"]{--category-ink:#4f641f;--category-ground:#edf2db;--category-edge:#7a8f42}
+.register-category>summary{background:var(--category-ground);color:var(--category-ink);border-left-color:var(--category-edge)}
+.register-category .register-subgroup>summary{background:var(--category-ground);color:var(--category-ink);border-left:4px solid var(--category-edge)}
+.register-category .register-assignment-name{color:var(--category-ink)}
+.register-category .register-assignment{background:#fff}
+.register-category-note{margin:.5rem .7rem;padding:.6rem .8rem;background:#fff;border-left:4px solid var(--category-edge);color:var(--category-ink);font-size:.91rem}
 </style>
 <script src="content-structure.js?v=YO_LIBRARY_20261026"></script>
 </head>
 <body>
-<div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link learning" href="library.html?section=learning#learning">Tuition &amp; Guides</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
+<div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link organiser" href="your-design-studio.html">Your Organiser</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
 <div class="shell"><main class="panel">
 <h1>Sanctuary Club Role Register</h1>
-<p class="intro">Current Role Holders and the activities or responsibilities attached to their appointment.</p>
+<p class="intro">Open a category to see its subcategories and the members responsible for them.</p>
 
+<p class="intro-note">Categories match Your Organiser and the Library. Writer and Artist are available to all members; the appointed Editor and Curator are listed within Articles &amp; Stories and Art &amp; Photography. Letters need no appointment.</p>
 <div id="registerContent" hidden></div>
 <div class="status" id="statusBox">Loading the current Role Register…</div>
 <div class="join-note"><strong>Would you like to take on a Club role?</strong><br>If you would like to help with an event, activity, Club publication, the website or another part of Sanctuary Club, please ask an Administrator. Roles can be added or changed at any time.</div>
@@ -77,40 +131,77 @@ function holdersWithRole(residents,role){return uniqueSorted(residents.filter(r=
 function holdersWithRoles(residents,roles){return uniqueSorted(residents.filter(r=>roles.some(role=>rolesFor(r).includes(role))))}
 function holderHtml(h){const name=clean(h.name)||"Member";const ref=clean(h.resident_id);return `<span class="holder">${escapeHtml(name)}${ref?` <span class="holder-ref">(${escapeHtml(ref)})</span>`:""}</span>`}
 function holdersHtml(list){const c=uniqueSorted(list);return c.length?c.map(holderHtml).join(", "):`<span class="empty">—</span>`}
-function fillCell(id,list){const el=document.getElementById(id);if(el)el.innerHTML=holdersHtml(list)}
-function renderEventHosts(residents){document.getElementById("eventHosts").innerHTML=`<div class="role-line"><div class="role-name">Current Event Hosts</div><div class="holders">${holdersHtml(holdersWithRole(residents,"host"))}</div></div>`}
-function renderActivities(residents){const tbody=document.getElementById("activityOrganisers");tbody.innerHTML="";ACTIVITIES.forEach(([scope,label])=>{const organisers=uniqueSorted(residents.filter(r=>rolesFor(r).includes("activity_organiser")&&scopesFor(r).includes(scope)));const subdivisions=ACTIVITY_SUBCATEGORIES[scope]||[];const subtext=subdivisions.length?`<div style="margin-top:.2rem;color:var(--muted);font-size:.92em;font-weight:650">${subdivisions.map(([,name])=>escapeHtml(name)).join(" · ")}</div>`:"";const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}${subtext}</td><td>${holdersHtml(organisers)}</td>`;tbody.appendChild(tr)})}
-function renderWebsiteHelpers(residents){const tbody=document.getElementById("websiteHelpers");tbody.innerHTML="";HELPER_SCOPES.forEach(([scope,label])=>{const holders=uniqueSorted(residents.filter(r=>rolesFor(r).includes("website_helper")&&helperScopesFor(r).includes(scope)));const tr=document.createElement("tr");tr.innerHTML=`<td>${escapeHtml(label)}</td><td>${holdersHtml(holders)}</td>`;tbody.appendChild(tr)})}
-function registerRoleIcon(role){
- const exact={host:'role-host',clubhouse_publisher:'role-host',activity_organiser:'role-activity',copy_editor:'role-editor',art_editor:'role-artist',website_helper:'role-helper',services:'role-services',information_officer:'role-news',condominium_coordinator:'role-admin',website_custodian:'role-admin',admin_website:'role-admin',admin_club:'role-admin'};
- return exact[role]||((role.startsWith('committee_')||role.startsWith('court_committee_'))?(role==='committee_treasurer'?'role-treasurer':'role-committee'):role.startsWith('ra_')?'role-panel':'role-admin');
+
+function registerIcon(id){return '<svg class="register-cap-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#'+id+'"></use></svg>';}
+function assignment(label,holders,role="",note=""){
+ return '<div class="register-assignment"'+(role?' data-role="'+escapeHtml(role)+'"':'')+'><div class="register-assignment-name">'+escapeHtml(label)+'</div><div>'+holdersHtml(holders)+(note?'<span class="empty">'+escapeHtml(note)+'</span>':'')+'</div></div>';
 }
-function registerIcon(id){return `<svg class="register-cap-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${id}"></use></svg>`;}
-function registerHeadingIcons(group){return `<span class="register-cap-icons" aria-hidden="true">${[...new Set(group.roles.map(([role])=>registerRoleIcon(role)))].map(registerIcon).join('')}</span>`;}
+function subgroup(label,holders,body,key=""){
+ return '<details class="register-subgroup"'+(key?' data-subcategory="'+escapeHtml(key)+'"':'')+'><summary><span>'+escapeHtml(label)+'</span><span>'+holdersHtml(holders)+'</span></summary><div>'+body+'</div></details>';
+}
 function renderRegister(residents){
  const S=SanctuaryContentStructure;
- registerContent.innerHTML=S.REGISTER_GROUPS.map(group=>`<section class="register-section"><h2 class="section-heading"><button class="section-toggle" type="button" aria-expanded="false"><span class="register-heading-content">${registerHeadingIcons(group)}<span>${escapeHtml(group.label)}</span></span></button></h2><div class="section-body"><table><thead><tr><th>Role or office</th><th>Current holder(s)</th></tr></thead><tbody>${group.roles.map(([role,label])=>{
-   let holders=holdersWithRoles(residents,role==="copy_editor"?["copy_editor","editor"]:role==="condominium_coordinator"?["condominium_coordinator","condo_admin"]:[role]);
-   let row=`<tr><td><span class="register-role-label">${registerIcon(registerRoleIcon(role))}${escapeHtml(label)}</span></td><td>${holdersHtml(holders)}</td></tr>`;
-   if(role==="activity_organiser")row+=`<tr><td colspan="2"><details><summary>Activities organised</summary><table><tbody>${S.ACTIVITIES.map(([scope,name])=>{
-     const divisions=S.ACTIVITY_SUBCATEGORIES[scope]||[];
-     const people=holders.filter(person=>scopesFor(person).includes(scope)||divisions.some(([key])=>scopesFor(person).includes(scope+"-"+key)));
-     const main=`<tr data-activity="${escapeHtml(scope)}"><td>${escapeHtml(name)}</td><td>${holdersHtml(people)}</td></tr>`;
-     const children=divisions.map(([key,sub])=>`<tr class="activity-subcategory" data-subcategory="${escapeHtml(scope+"-"+key)}"><td><span aria-hidden="true">↳ </span>${escapeHtml(sub)}</td><td>${holdersHtml(holders.filter(person=>scopesFor(person).includes(scope)||scopesFor(person).includes(scope+"-"+key)))}</td></tr>`).join("");
-     return main+children;
-   }).join("")}</tbody></table></details></td></tr>`;
-   if(role==="website_helper")row+=`<tr><td colspan="2"><details><summary>Website Helper areas</summary><table><tbody>${HELPER_SCOPES.map(([scope,name])=>`<tr><td>${escapeHtml(name)}</td><td>${holdersHtml(holders.filter(person=>helperScopesFor(person).includes(scope)))}</td></tr>`).join("")}</tbody></table></details></td></tr>`;
-   return row;
- }).join("")}</tbody></table></div></section>`).join("");registerContent.hidden=false;
+ const groupRoles=label=>(S.REGISTER_GROUPS.find(g=>g.label===label)?.roles||[]).map(([key])=>key);
+ const categoryRoles={
+  host:["host","clubhouse_publisher"],activity:["activity_organiser"],
+  writer:["copy_editor","editor"],artist:["art_editor"],
+  committee:[...groupRoles("Mews Committee"),...groupRoles("Court Committee")],
+  panel:groupRoles("Residents Association").concat(["panel","residents_association","panel_secretary"]),
+  "information-officer":["information_officer"],"website-helper":["website_helper"],services:["services"],
+  "website-custodian":["website_custodian"],"website-administration":["admin_website"],"club-administration":["admin_club","admin_condo"]
+ };
+ function offices(label){
+  return (S.REGISTER_GROUPS.find(g=>g.label===label)?.roles||[]).map(([role,title])=>assignment(title,holdersWithRole(residents,role),role)).join("");
+ }
+ const destinations=[...S.LIBRARY_DESTINATIONS];
+ const serviceIndex=destinations.findIndex(d=>d.hat==="services");
+ const services=destinations.splice(serviceIndex,1)[0];
+ destinations.splice(destinations.findIndex(d=>d.hat==="website-helper"),0,services);
+ registerContent.innerHTML='<div class="register-column-headings" aria-hidden="true"><span>Category / subcategory</span><span>Assigned member(s)</span></div>'+destinations.map(destination=>{
+  const hat=S.PRODUCTION_HATS.find(h=>h.key===destination.hat),key=hat.key,roles=categoryRoles[key]||hat.roles;
+  const holders=holdersWithRoles(residents,roles);
+  const universal=["writer","artist"].includes(key);
+  let body="";
+  if(key==="host"){
+   body='<p class="register-category-note"><strong>Self-publishing:</strong> Event Organisers publish their own event notices.</p>'+assignment("Event Organiser",holdersWithRole(residents,"host"),"host")+assignment("Clubhouse Publisher",holdersWithRole(residents,"clubhouse_publisher"),"clubhouse_publisher");
+  }else if(key==="activity"){
+   body=S.ACTIVITIES.map(([scope,label])=>{
+    const divisions=S.ACTIVITY_SUBCATEGORIES[scope]||[];
+    const relevant=holders.filter(person=>scopesFor(person).includes(scope)||divisions.some(([sub])=>scopesFor(person).includes(scope+"-"+sub)));
+    if(divisions.length)return subgroup(label,relevant,divisions.map(([sub,name])=>assignment(name,holders.filter(person=>scopesFor(person).includes(scope)||scopesFor(person).includes(scope+"-"+sub)),"activity_organiser:"+scope+"-"+sub)).join(""),scope);
+    return assignment(label,relevant,"activity_organiser:"+scope);
+   }).join("");
+  }else if(key==="writer"){
+   body=assignment("Editor",holders,"copy_editor");
+  }else if(key==="artist"){
+   body=assignment("Curator",holders,"art_editor");
+   body+=S.hatSubjects(hat).map(([,label])=>'<div class="register-assignment"><div class="register-assignment-name">'+escapeHtml(label)+'</div><div class="empty">Available to all members</div></div>').join("");
+  }else if(key==="committee"){
+   body=["Mews","Court"].map(area=>subgroup(area,holdersWithRoles(residents,groupRoles(area+" Committee")),offices(area+" Committee"),area.toLowerCase())).join("");
+  }else if(key==="panel"){
+   body=offices("Residents Association");
+   const extraSecretary=holdersWithRole(residents,"panel_secretary");
+   if(extraSecretary.length)body+=assignment("Panel Secretary",extraSecretary,"panel_secretary");
+  }else if(key==="club-administration"){
+   body=assignment("Club Admin",holdersWithRole(residents,"admin_club"),"admin_club")+assignment("Condo Admin",holdersWithRole(residents,"admin_condo"),"admin_condo");
+  }else if(key==="website-helper"){
+   body=S.hatSubjects(hat).map(([scope,label])=>assignment(label,holders.filter(person=>helperScopesFor(person).includes(scope.replace(/-/g,"_"))),"website_helper:"+scope)).join("");
+  }else{
+   const subjects=S.hatSubjects(hat);
+   body=subjects.length?subjects.map(([,label])=>assignment(label,holders)).join(""):assignment(hat.label,holders,roles[0]);
+  }
+  return '<details class="register-category" data-category="'+escapeHtml(key)+'"><summary><span class="register-category-label"><span class="register-category-arrow" aria-hidden="true">▸</span>'+registerIcon(hat.iconId)+escapeHtml(destination.label)+'</span><span class="register-category-holders">'+(universal?'Available to all members':holdersHtml(holders))+'</span></summary><div class="register-category-body">'+body+'</div></details>';
+ }).join("");
+ registerContent.hidden=false;
 }
-
-function setupAccordions(){const sections=Array.from(document.querySelectorAll(".register-section"));sections.forEach(section=>{const button=section.querySelector(".section-toggle");if(!button)return;button.addEventListener("click",()=>{const wasOpen=section.classList.contains("open");sections.forEach(other=>{other.classList.remove("open");const otherButton=other.querySelector(".section-toggle");if(otherButton)otherButton.setAttribute("aria-expanded","false")});if(!wasOpen){section.classList.add("open");button.setAttribute("aria-expanded","true")}})})}
+function setupAccordions(){ /* Native details provide independent accessible dropdowns. */ }
 async function initialise(){try{setStatus("Loading the current Role Register…");const residents=await loadRoleDirectory();renderRegister(residents);setupAccordions();setStatus("")}catch(error){console.error(error);registerContent.hidden=true;setStatus(error.message||"The Role Register could not be loaded.",true)}}
 initialise();
 })();
 </script>
 </body>
 </html>
+
 
 
 

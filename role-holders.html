@@ -92,7 +92,7 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 .register-category .register-assignment{background:#fff}
 .register-category-note{margin:.5rem .7rem;padding:.6rem .8rem;background:#fff;border-left:4px solid var(--category-edge);color:var(--category-ink);font-size:.91rem}
 </style>
-<script src="content-structure.js?v=WRITER_LETTERS_20261026"></script>
+<script src="content-structure.js?v=IO_HELP_SUBJECTS_20261027"></script>
 </head>
 <body>
 <div class="topbar"><div class="brand">Role Register</div><div class="top-actions"><a class="top-link library" href="library.html">Library</a><a class="top-link organiser" href="your-design-studio.html">Your Organiser</a><a class="top-link hub" href="members-info.html">Members Hub</a></div></div>
@@ -147,7 +147,7 @@ function renderRegister(residents){
   writer:["copy_editor","editor"],artist:["art_editor"],
   committee:[...groupRoles("Mews Committee"),...groupRoles("Court Committee")],
   panel:groupRoles("Residents Association").concat(["panel","residents_association","panel_secretary"]),
-  "information-officer":["information_officer"],"website-helper":["website_helper"],services:["services"],
+  "information-officer":["information_officer",...Object.values(S.INFORMATION_OFFICER_SUBJECT_ROLES)],"website-helper":["website_helper"],services:["services"],
   "website-custodian":["website_custodian"],"website-administration":["admin_website"],"club-administration":["admin_club","admin_condo"]
  };
  function offices(label){
@@ -186,8 +186,10 @@ function renderRegister(residents){
    if(extraSecretary.length)body+=assignment("Panel Secretary",extraSecretary,"panel_secretary");
   }else if(key==="club-administration"){
    body=assignment("Club Admin",holdersWithRole(residents,"admin_club"),"admin_club")+assignment("Condo Admin",holdersWithRole(residents,"admin_condo"),"admin_condo");
+  }else if(key==="information-officer"){
+   body=S.hatSubjects(hat).map(([scope,label])=>assignment(label,holders.filter(person=>rolesFor(person).includes("information_officer")||rolesFor(person).includes(S.INFORMATION_OFFICER_SUBJECT_ROLES[scope])),S.INFORMATION_OFFICER_SUBJECT_ROLES[scope])).join("");
   }else if(key==="website-helper"){
-   body=S.hatSubjects(hat).map(([scope,label])=>assignment(label,holders.filter(person=>helperScopesFor(person).includes(scope.replace(/-/g,"_"))),"website_helper:"+scope)).join("");
+   body=S.hatSubjects(hat).map(([scope,label])=>assignment(label,holders.filter(person=>{const selected=helperScopesFor(person);return selected.length===0||selected.includes(scope.replace(/-/g,"_"));}),"website_helper:"+scope)).join("");
   }else{
    const subjects=S.hatSubjects(hat);
    body=subjects.length?subjects.map(([,label])=>assignment(label,holders)).join(""):assignment(hat.label,holders,roles[0]);
@@ -203,6 +205,7 @@ initialise();
 </script>
 </body>
 </html>
+
 
 
 

@@ -490,7 +490,7 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=YO_LIBRARY_20261026"></script>
+<script src="content-structure.js?v=IO_HELP_SUBJECTS_20261027"></script>
 </head>
 
 <body>
@@ -773,10 +773,16 @@
               <label class="roleBox">
                 <input type="checkbox" id="roleInformationOfficer" />
                 <div class="roleText">
-                  <strong>Information Officer</strong>
-                  <span>Publishes miscellaneous Club information that does not belong to another role.</span>
+                  <strong>Information Officer — all subjects</strong>
+                  <span>May publish across all six G&amp;UI subjects. Existing full-scope appointments retain their authority.</span>
                 </div>
               </label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoGeneralInformation" data-information-role="information_officer_general_information" /><div class="roleText"><strong>Information Officer — General Information</strong><span>May publish in General Information.</span></div></label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoPlacesToGo" data-information-role="information_officer_places_to_go" /><div class="roleText"><strong>Information Officer — Places to Go</strong><span>May publish in Places to Go.</span></div></label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoPlacesToEat" data-information-role="information_officer_places_to_eat" /><div class="roleText"><strong>Information Officer — Places to Eat</strong><span>May publish in Places to Eat.</span></div></label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoArtisansServices" data-information-role="information_officer_artisans_services" /><div class="roleText"><strong>Information Officer — Artisans & Services</strong><span>May publish in Artisans & Services.</span></div></label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoUsefulContacts" data-information-role="information_officer_useful_contacts" /><div class="roleText"><strong>Information Officer — Useful Contacts</strong><span>May publish in Useful Contacts.</span></div></label>
+              <label class="roleBox"><input type="checkbox" id="roleInfoManuals" data-information-role="information_officer_manuals" /><div class="roleText"><strong>Information Officer — Manuals</strong><span>May publish in Manuals.</span></div></label>
             </div>
 
             <div class="scopePanel" id="websiteHelperScopePanel">
@@ -869,6 +875,7 @@
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
     const roleInformationOfficerEl = $("roleInformationOfficer");
+    const informationRoleBoxes = Array.from(document.querySelectorAll("[data-information-role]"));
 
     const roleWebsiteCustodianEl = $("roleWebsiteCustodian");
     const roleAdminWebsiteEl = $("roleAdminWebsite");
@@ -941,6 +948,7 @@
       editor: "Editor (legacy)"
     };
 
+    Object.entries(SanctuaryContentStructure.INFORMATION_OFFICER_SUBJECT_ROLES).forEach(([subject,role])=>{const h=SanctuaryContentStructure.PRODUCTION_HATS.find(h=>h.key==="information-officer");const label=SanctuaryContentStructure.hatSubjects(h).find(([key])=>key===subject)?.[1]||subject;ROLE_LABELS[role]="Information Officer — "+label;});
     SanctuaryContentStructure.REGISTER_GROUPS.forEach(group=>group.roles.forEach(([role,label,id])=>{const input=document.getElementById(id);const text=input?.closest("label")?.querySelector("strong");if(text)text.textContent=label;}));
 
     const LEGACY_ROLES = new Set([
@@ -1371,6 +1379,7 @@
         roleAdminCondoEl
       ].forEach(el => el.checked = false);
 
+      informationRoleBoxes.forEach(el=>el.checked=false);
       setSelectedActivityScopes([]);
       setSelectedHelperScopes([]);
       updateActivityPanel();
@@ -1560,6 +1569,7 @@
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
       roleInformationOfficerEl.checked = roles.includes("information_officer");
+      informationRoleBoxes.forEach(el=>el.checked=roles.includes(el.dataset.informationRole));
 
       roleWebsiteCustodianEl.checked = roles.includes("website_custodian");
       roleAdminWebsiteEl.checked = roles.includes("admin_website");
@@ -1606,6 +1616,7 @@
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");
       if(roleInformationOfficerEl.checked) roles.push("information_officer");
+      informationRoleBoxes.filter(el=>el.checked).forEach(el=>roles.push(el.dataset.informationRole));
 
       if(roleWebsiteCustodianEl.checked) roles.push("website_custodian");
       if(roleAdminWebsiteEl.checked) roles.push("admin_website");
@@ -1920,6 +1931,7 @@
   </script>
 </body>
 </html>
+
 
 
 

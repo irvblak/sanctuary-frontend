@@ -682,7 +682,7 @@
   </section>
 </main>
 
-<script src="content-structure.js?v=YO_LIBRARY_20261026"></script>
+<script src="content-structure.js?v=IO_HELP_SUBJECTS_20261027"></script>
 <script>
   const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
 
@@ -964,6 +964,13 @@
     court_committee_secretary:{label:"Court Committee — Secretary",icon:"role-committee",colour:"role-colour-committee"}
   };
 
+
+  ROLE_DETAILS.information_officer={label:"Information Officer — all subjects",icon:"role-news",colour:"role-colour-news"};
+  Object.entries(SanctuaryContentStructure.INFORMATION_OFFICER_SUBJECT_ROLES).forEach(([subject,role])=>{
+    const hat=SanctuaryContentStructure.PRODUCTION_HATS.find(h=>h.key==="information-officer");
+    const name=SanctuaryContentStructure.hatSubjects(hat).find(([key])=>key===subject)?.[1]||subject;
+    ROLE_DETAILS[role]={label:"Information Officer — "+name,icon:"role-news",colour:"role-colour-news"};
+  });
 
   function baseId(raw){
     return String(raw || "").trim().toUpperCase().split("/")[0];
@@ -1557,6 +1564,7 @@
 
       badges.innerHTML =
         entry.roles
+          .filter(role=>!Object.values(SanctuaryContentStructure.WEBSITE_HELPER_SUBJECT_ROLES).includes(role))
           .map(
             role =>
               roleBadgeHtml(
@@ -2419,6 +2427,7 @@
 
 </body>
 </html>
+
 
 
 

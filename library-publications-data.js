@@ -747,7 +747,7 @@ window.SANCTUARY_LIBRARY_PUBLICATIONS = {
       <h2>Conformity and Proportionate Protection</h2>
 
       <p>
-        Sanctuary Club intends to handle personal information in accordance with
+        Sanctuary Club handles personal information in accordance with
         the UK General Data Protection Regulation, the Data Protection Act 2018
         and the Data (Use and Access) Act 2025, together with any other
         data-protection rules applicable to its activities.

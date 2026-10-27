@@ -14,8 +14,8 @@
       --bg1:#cfe6f8;
       --bg2:#eef5f9;
       --card:#ffffff;
-      --ink:#243746;
-      --muted:#435b6a;
+      --ink:#1f2a37;
+      --muted:#42566b;
       --line:#c7d8e3;
       --accent:#005ea8;
       --accent-dark:#003b69;
@@ -43,6 +43,7 @@
       color:var(--ink);
       font-size:17px;
       line-height:1.62;
+      font-weight:500;
     }
 
     nav{
@@ -229,6 +230,8 @@
       font-weight:850;
     }
 
+    input,select,textarea{font-family:inherit;font-weight:500}
+
     input{
       width:100%;
       padding:.68rem;
@@ -244,7 +247,7 @@
       border-color:var(--accent);
     }
 
-    input::placeholder{color:#8999a5}
+    input::placeholder{color:#60717f;opacity:1}
     .member-input{width:190px}
     .pin-input{width:130px}
 
@@ -384,7 +387,7 @@
     .resident-card{border:1px solid #d0dce5;border-radius:14px;padding:.95rem;background:#fafcfd}
     .resident-card input{padding:.52rem;font-size:1rem;border-radius:9px;margin-bottom:.4rem}
 
-    .placeholder{height:42px;display:flex;align-items:center;color:#7c8992;font-size:.94rem;border:1px dashed #c9d5de;border-radius:9px;padding:0 .65rem;background:#fff;margin-bottom:.4rem}
+    .placeholder{height:42px;display:flex;align-items:center;color:#526574;font-size:.94rem;border:1px dashed #c9d5de;border-radius:9px;padding:0 .65rem;background:#fff;margin-bottom:.4rem}
     .hidden{display:none !important}
 
     .change-pin-box{margin-top:1rem;border:1px solid var(--line);border-radius:14px;background:#fbfdff;padding:1rem}
@@ -502,7 +505,7 @@
       display:none;
     }
   </style>
-</head>
+<link rel="stylesheet" href="role-family-colours.css?v=20261027"></head>
 
 <body>
 <nav>
@@ -682,7 +685,7 @@
   </section>
 </main>
 
-<script src="content-structure.js?v=IO_HELP_SUBJECTS_20261027"></script>
+<script src="content-structure.js?v=ROLE_COLOURS_20261027"></script>
 <script>
   const BACKEND = "https://sanctuary-backend-8iqc.onrender.com";
 
@@ -1498,6 +1501,7 @@
     return `
       <span
         class="role-badge"
+        data-role-family="${escapeHtml(SanctuaryContentStructure.roleFamilyForRole(role))}"
         title="${escapeHtml(label)}"
       >
         ${roleIconSvg(
@@ -2427,6 +2431,7 @@
 
 </body>
 </html>
+
 
 
 

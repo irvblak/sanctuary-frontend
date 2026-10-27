@@ -10,7 +10,7 @@
 <style>
 :root{--ink:#203747;--muted:#617583;--blue:#123a78;--line:#d8e3ec;--soft:#f5f9fc}
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(#e7f2fa,#f8fbfd);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:linear-gradient(#e7f2fa,#f8fbfd);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-weight:500}
 .wrap{max-width:900px;margin:0 auto;padding:26px 18px 50px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 a{color:var(--blue);font-weight:750;text-decoration:none}
@@ -67,4 +67,5 @@ h1{margin:0;color:var(--blue)}
 </script>
 <script>const guideRole=new URLSearchParams(location.search).get("role");if(guideRole)fetch("https://sanctuary-backend-8iqc.onrender.com/api/library-publications/role-guide-"+encodeURIComponent(guideRole)).then(r=>r.ok?r.json():null).then(d=>{if(d?.publication?.publication_id)location.replace("library-publications.html?id="+encodeURIComponent(d.publication.publication_id));}).catch(()=>{});</script></body>
 </html>
+
 

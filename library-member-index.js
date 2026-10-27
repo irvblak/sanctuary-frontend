@@ -37,8 +37,8 @@ function card(row,showLocation){
 function groups(rows,key){const map=new Map();for(const row of rows){const value=key(row);if(!map.has(value))map.set(value,[]);map.get(value).push(row);}return [...map.entries()].sort(([a],[b])=>compare(a,b));}
 function titleOrder(rows){return [...rows].sort((a,b)=>compare(a.title,b.title)||compare(a.name,b.name)||compare(a.number,b.number));}
 function count(rows){return '<span class="work-index-count">'+rows.length+' '+(rows.length===1?"work":"works")+'</span>';}
-function heading(label,rows,body,level,kind){
- return '<details class="work-index-group '+kind+'"><summary><span class="work-index-chevron" aria-hidden="true">▸</span><h'+level+'>'+sectionIcon(label)+esc(label)+'</h'+level+'>'+count(rows)+'</summary><div class="work-index-group-body">'+body+'</div></details>';
+function heading(label,rows,body,level,kind,family=""){
+ return '<details class="work-index-group '+kind+'"'+(family?' data-role-family="'+esc(family)+'"':'')+'><summary><span class="work-index-chevron" aria-hidden="true">▸</span><h'+level+'>'+sectionIcon(label)+esc(label)+'</h'+level+'>'+count(rows)+'</summary><div class="work-index-group-body">'+body+'</div></details>';
 }
 function render(){
  categoryRoot.innerHTML=sectionOrder.map(section=>{
@@ -67,7 +67,7 @@ function render(){
     const cards=titleOrder(rows).map(row=>card(row,false)).join("");
     return sub?heading(sub,rows,cards||'<p class="work-index-empty">No published work yet.</p>',5,"work-index-subcategory"):cards;
    }).join("");
-   return heading(label,items,subcategories||'<p class="work-index-empty">No published work yet.</p>',4,"work-index-category");
+   return heading(label,items,subcategories||'<p class="work-index-empty">No published work yet.</p>',4,"work-index-category",destination?.hat||"");
   }).join("");
   return heading(section,own,categories||'<p class="work-index-empty">No published work yet.</p>',3,"work-index-section");
  }).join("");
@@ -93,5 +93,6 @@ Promise.allSettled([read("/api/library-publications"),read("/api/panel-letters")
  status.textContent=(records.length?records.length+" published "+(records.length===1?"work":"works")+". Both indexes contain the same work.":"No published work yet.")+(errors.length?" "+errors.join(" ")+" Please reload to try again.":"");
 });
 })();
+
 
 

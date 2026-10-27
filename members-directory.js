@@ -75,6 +75,14 @@ const ROLE_DEFINITIONS = {
 };
 
 
+// Include the separately appointed information subjects in the same role colours.
+Object.entries(SanctuaryContentStructure.INFORMATION_OFFICER_SUBJECT_ROLES).forEach(([subject,role])=>{
+  const hat=SanctuaryContentStructure.PRODUCTION_HATS.find(h=>h.key==="information-officer");
+  const label=SanctuaryContentStructure.hatSubjects(hat).find(([key])=>key===subject)?.[1]||subject;
+  ROLE_DEFINITIONS[role]={label:"Information Officer — "+label,icon:"role-news"};
+});
+ROLE_DEFINITIONS.information_officer={label:"Information Officer",icon:"role-news"};
+
 // ---------- Load members safely (local fallback)
 
 function loadMembersLocal() {
@@ -230,6 +238,8 @@ function roleIconsHtml(resident) {
 
         return `
           <span
+            class="directory-role-badge"
+            data-role-family="${escapeHtml(SanctuaryContentStructure.roleFamilyForRole(role))}"
             title="${escapeHtml(def.label)}"
             aria-label="${escapeHtml(def.label)}"
             style="
@@ -239,8 +249,8 @@ function roleIconsHtml(resident) {
               width:30px;
               height:30px;
               border-radius:50%;
-              background:#f3f8fc;
-              color:#31506b;
+              background:var(--role-ground,#f3f8fc);
+              color:var(--role-ink,#31506b);
               margin-right:5px;
             "
           >
@@ -993,3 +1003,4 @@ document.addEventListener(
     );
   }
 );
+

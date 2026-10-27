@@ -183,8 +183,8 @@
     .fun-banner{margin:0 0 .8rem;padding:.8rem .95rem;border:1px solid #bfdce7;border-radius:14px;background:#eef7fa;color:#315c6d;font-weight:750;line-height:1.45}
     .fun-banner strong{color:var(--accent-dark)}
     .fun-banner[hidden]{display:none!important}
-  </style>
-</head>
+  #verifyCard,#studioCard,.topbar{font-weight:500}</style>
+<script src="content-structure.js?v=ROLE_COLOURS_20261027"></script><link rel="stylesheet" href="role-family-colours.css?v=20261027"></head>
 <body>
   <main class="page">
     <div class="topbar">
@@ -600,15 +600,21 @@
     function isChoiceAssigned(c,roles){return roles.includes("admin")||hasAnyRole(roles,c.roles)}
     function roleSvg(iconId){return `<svg class="role-icon" aria-hidden="true" focusable="false"><use href="assets/icons/icons.svg#${iconId}"></use></svg>`}
     function iconMarkup(c){return `<span class="role-tooltip" tabindex="0" data-tooltip="${c.tooltip}">${roleSvg(c.iconId)}<span class="icon-fallback" aria-hidden="true">${c.fallback}</span></span>`}
-    function renderMemberRoles(roles){els.memberRoleStrip.innerHTML="";MEMBER_ROLE_ICONS.forEach(c=>{if(!hasAnyRole(roles,c.roles))return;const b=document.createElement("span");b.className="member-role-badge role-tooltip";b.tabIndex=0;b.dataset.tooltip=c.tooltip;b.setAttribute("aria-label",c.tooltip);b.innerHTML=roleSvg(c.iconId);els.memberRoleStrip.appendChild(b)});els.memberRoleStrip.hidden=!els.memberRoleStrip.children.length}
-    function createActiveTile(c){
-      if(c.href){const a=document.createElement("a");a.className="studio-tile active";a.href=c.href;a.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Available now</span></div>`;return a}
-      const b=document.createElement("button");b.type="button";b.className="studio-tile active preparing";b.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Open workspace</span></div>`;b.addEventListener("click",()=>openPublishingWorkspace(c.mode,c.label));return b
+    function renderMemberRoles(roles){els.memberRoleStrip.innerHTML="";MEMBER_ROLE_ICONS.forEach(c=>{if(!hasAnyRole(roles,c.roles))return;const b=document.createElement("span");b.className="member-role-badge role-tooltip";b.dataset.roleFamily=legacyRoleFamily(c);b.tabIndex=0;b.dataset.tooltip=c.tooltip;b.setAttribute("aria-label",c.tooltip);b.innerHTML=roleSvg(c.iconId);els.memberRoleStrip.appendChild(b)});els.memberRoleStrip.hidden=!els.memberRoleStrip.children.length}
+    function legacyRoleFamily(c){
+      if(c.label==="Host an Event"||c.label==="Post an Event")return "host";
+      if(c.label==="Administrator")return "website-administration";
+      if(c.label==="Treasurer")return "committee";
+      return SanctuaryContentStructure.roleFamilyForRole((c.roles||[])[0]);
     }
-    function createPreparingTile(c){const b=document.createElement("button");b.type="button";b.className="studio-tile active preparing";b.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Workspace in preparation</span></div>`;b.addEventListener("click",()=>alert(`${c.label}
+    function createActiveTile(c){
+      if(c.href){const a=document.createElement("a");a.className="studio-tile active";a.dataset.roleFamily=legacyRoleFamily(c);a.href=c.href;a.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Available now</span></div>`;return a}
+      const b=document.createElement("button");b.type="button";b.className="studio-tile active preparing";b.dataset.roleFamily=legacyRoleFamily(c);b.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Open workspace</span></div>`;b.addEventListener("click",()=>openPublishingWorkspace(c.mode,c.label));return b
+    }
+    function createPreparingTile(c){const b=document.createElement("button");b.type="button";b.className="studio-tile active preparing";b.dataset.roleFamily=legacyRoleFamily(c);b.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">Workspace in preparation</span></div>`;b.addEventListener("click",()=>alert(`${c.label}
 
 This role is recognised and available to you. Its Organiser workspace is currently being prepared.`));return b}
-    function createDisabledTile(c){const x=document.createElement("article");x.className="studio-tile disabled";x.setAttribute("aria-disabled","true");x.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">This workspace will become available if this role is assigned to you.</span></div>`;return x}
+    function createDisabledTile(c){const x=document.createElement("article");x.className="studio-tile disabled";x.dataset.roleFamily=legacyRoleFamily(c);x.setAttribute("aria-disabled","true");x.innerHTML=`<div class="tile-mark">${iconMarkup(c)}</div><div class="tile-copy"><strong>${c.label}</strong><span>${c.description}</span><span class="availability">This workspace will become available if this role is assigned to you.</span></div>`;return x}
     function renderStudio(roles){els.studioGrid.innerHTML="";STUDIO_CHOICES.forEach(c=>{const assigned=isChoiceAssigned(c,roles);els.studioGrid.appendChild(!assigned?createDisabledTile(c):(c.ready?createActiveTile(c):createPreparingTile(c)))});els.existingTools.hidden=!roles.includes("host")&&!roles.includes("admin")}
     function storeSession(data,residentRef,memberId,roles,displayName){try{const token=data.token||data.authToken||data.access_token||"";if(token){localStorage.setItem("authToken",token);sessionStorage.setItem("authToken",token)}const values={currentMemberId:memberId,currentResidentId:residentRef,verifiedResidentId:residentRef,hostAreaVerified:"true",hostAreaRoles:JSON.stringify(roles),currentDisplayName:displayName||""};Object.entries(values).forEach(([k,v])=>{localStorage.setItem(k,v);sessionStorage.setItem(k,v)})}catch(e){console.warn("Could not store Design Studio session.",e)}}
     function recognisedStudioRole(roles){
@@ -1144,4 +1150,5 @@ This role is recognised and available to you. Its Organiser workspace is current
   </script>
 </body>
 </html>
+
 

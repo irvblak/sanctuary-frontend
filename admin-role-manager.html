@@ -38,6 +38,7 @@
       background:linear-gradient(180deg,var(--bg1) 0%,#f6faff 40%,var(--bg2) 100%);
       color:var(--ink);
       min-height:100vh;
+      font-weight:500;
     }
 
     nav{
@@ -490,8 +491,8 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=IO_HELP_SUBJECTS_20261027"></script>
-</head>
+<script src="content-structure.js?v=ROLE_COLOURS_20261027"></script>
+<link rel="stylesheet" href="role-family-colours.css?v=20261027"></head>
 
 <body>
   <nav>
@@ -1925,12 +1926,19 @@
 
     buildActivityScopeGrid();
     buildWebsiteHelperScopeGrid();
+    SanctuaryContentStructure.REGISTER_GROUPS.forEach(group=>group.roles.forEach(([role,,id])=>{
+      const box=document.getElementById(id)?.closest(".roleBox");
+      if(box)box.dataset.roleFamily=SanctuaryContentStructure.roleFamilyForRole(role);
+    }));
+    document.querySelectorAll("[data-helper-scope]").forEach(input=>input.closest(".scopeBox").dataset.roleFamily="website-helper");
+    document.querySelectorAll("[data-activity-scope]").forEach(input=>input.closest(".scopeBox").dataset.roleFamily="activity");
     initRoleAccordions();
     resetSelection();
     loadMembers();
   </script>
 </body>
 </html>
+
 
 
 

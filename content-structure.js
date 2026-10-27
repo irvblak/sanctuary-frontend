@@ -156,8 +156,19 @@
       return groups.length?groups.map(([,group])=>label+" — "+group):[label];
     });
   }
-  global.SanctuaryContentStructure={INFORMATION_OFFICER_SUBJECT_ROLES,WEBSITE_HELPER_SUBJECT_ROLES,LIBRARY_DESTINATIONS,libraryDestination,libraryDestinationSubjects,publicationShelfSubject,isManualPublication,REGISTER_GROUPS,PRODUCTION_HATS,hatSubjects,hatSubdivision,libraryTarget,creationTarget,publicationLearningStream,publicationHatKey,ACTIVITIES,ACTIVITY_APPOINTMENT_SCOPES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
+  function roleFamilyForRole(role){
+    role=String(role||"").trim().toLowerCase().replace(/[\s-]+/g,"_");
+    const direct={clubhouse_publisher:"host",copy_editor:"writer",editor:"writer",news_contributor:"writer",art_editor:"artist",art_teacher:"artist",panel_secretary:"panel",residents_association:"panel",panel:"panel",website_helper:"website-helper",information_officer:"information-officer"};
+    if(direct[role])return direct[role];
+    if(role.startsWith("court_committee_")||role.startsWith("committee_"))return "committee";
+    if(role.startsWith("ra_"))return "panel";
+    if(role.startsWith("information_officer_"))return "information-officer";
+    if(role.startsWith("website_helper_"))return "website-helper";
+    return PRODUCTION_HATS.find(h=>h.roles.includes(role))?.key||"";
+  }
+  global.SanctuaryContentStructure={roleFamilyForRole,INFORMATION_OFFICER_SUBJECT_ROLES,WEBSITE_HELPER_SUBJECT_ROLES,LIBRARY_DESTINATIONS,libraryDestination,libraryDestinationSubjects,publicationShelfSubject,isManualPublication,REGISTER_GROUPS,PRODUCTION_HATS,hatSubjects,hatSubdivision,libraryTarget,creationTarget,publicationLearningStream,publicationHatKey,ACTIVITIES,ACTIVITY_APPOINTMENT_SCOPES,ACTIVITY_SUBCATEGORIES,SECTIONS,ALIASES,slug,publicationSection,publicationCollection,publicationSubcategory,publicationWorkKind};
 })(window);
+
 
 
 

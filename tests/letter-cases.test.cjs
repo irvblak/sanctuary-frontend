@@ -33,11 +33,11 @@ async function libraryTest(){
  const context={window:{},document:{getElementById:()=>root},location:{search:''},URLSearchParams,fetch:async url=>({ok:true,json:async()=>url.endsWith('/api/panel-letters')?{threads:[{thread_id:'P',destination:'panel',title:'Panel test',letter_status:'published',author_ref:'SM99/1'},{thread_id:'M',destination:'committee',area:'Mews',title:'Mews test',letter_status:'published',author_ref:'SM99/1'},{thread_id:'C',destination:'committee',area:'Court',title:'Court test',letter_status:'published',status:'finalised',author_ref:'SC99/1'}]}:{publications:[]}})};
  vm.runInNewContext(fs.readFileSync('content-structure.js','utf8'),context);vm.runInNewContext(fs.readFileSync('library-member-index.js','utf8'),context);await tick();await tick();
  const html=parts['#work-index-category'].innerHTML;
- assert.equal((html.match(/<h4>Letters to…<\/h4>/g)||[]).length,1);
+ assert.equal((html.match(/<h4>Letters &amp; Suggestions to.....<\/h4>/g)||[]).length,1);
  for(const destination of ['Mews Committee','Court Committee','Panel'])assert(html.includes('<h5>'+destination+'</h5>'));
  assert(!html.includes('<h5>Letters to the Committee</h5>'));assert(!html.includes('<h5>Letters to the Panel</h5>'));
  assert(html.includes('<strong>In progress</strong>'));assert(html.includes('<strong>Closed</strong>'));
- assert(html.includes('panel-letters.html?id=C'));assert(parts['#work-index-member'].innerHTML.includes('Reading Room / Letters to… / Panel'));
+ assert(html.includes('panel-letters.html?id=C'));assert(parts['#work-index-member'].innerHTML.includes('Reading Room / Letters &amp; Suggestions to..... / Panel'));
 }
 async function controlsTest(){
  const source=fs.readFileSync('panel-letters.js','utf8'),start=source.indexOf('function renderThread(t)'),end=source.indexOf("$('chooseResidentBtn')",start);

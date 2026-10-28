@@ -7,7 +7,7 @@ const API="https://sanctuary-backend-8iqc.onrender.com";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const compare=(a,b)=>a.localeCompare(b,"en-GB",{numeric:true,sensitivity:"base"});
 const sectionOrder=["Reading Room","Tuition & Guides","Gallery"];
-const LETTERS="Letters to…",LETTER_DESTINATIONS=["Mews Committee","Court Committee","Panel"];
+const LETTERS="Letters & Suggestions to.....",LETTER_DESTINATIONS=["Mews Committee","Court Committee","Panel"];
 root.innerHTML='<h2>Library indexes</h2><p>Browse all published work by section and category, or see each member’s work together. Select a title to open it.</p><div class="work-index-views" role="group" aria-label="Choose an index"><button type="button" data-work-view="category" aria-pressed="true" aria-controls="work-index-category">By section & category</button><button type="button" data-work-view="member" aria-pressed="false" aria-controls="work-index-member">By member</button></div><div class="work-index-tools"><button type="button" data-work-expand="true">Expand all headings</button><button type="button" data-work-expand="false">Collapse all headings</button></div><p id="work-index-status" role="status" aria-live="polite">Loading published work…</p><section id="work-index-category" aria-label="Index by section and category"></section><section id="work-index-member" aria-label="Index by member" hidden></section>';
 const status=root.querySelector("#work-index-status"),categoryRoot=root.querySelector("#work-index-category"),memberRoot=root.querySelector("#work-index-member");
 let records=[],view="category";

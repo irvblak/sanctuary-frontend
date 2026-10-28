@@ -8,8 +8,8 @@
   ];
   const ACTIVITY_SUBCATEGORIES={spa:[["ladies","Ladies"],["gentlemen","Gentlemen"]]};
   const SECTIONS=[
-    {key:"letters-to-panel",title:"Letters to the Panel",hat:"Member",icon:"✉",libraryDescription:"Shared Panel correspondence reviewed by the Panel Secretary."},
-    {key:"letters-to-committee",title:"Letters to the Committees",hat:"Member",icon:"✉",libraryDescription:"Mews and Court committee correspondence reviewed by the corresponding Secretary."},
+    {key:"letters-to-panel",title:"Letters to the Panel",hat:"Member",icon:"✉",libraryDescription:"Opening letters to the Panel are independently reviewed by the Letters Editor."},
+    {key:"letters-to-committee",title:"Letters to the Committees",hat:"Member",icon:"✉",libraryDescription:"Opening letters to either Committee are independently reviewed by the Letters Editor."},
     {key:"events",title:"Events",hat:"Event Host",icon:"🎪",libraryDescription:"Event Notices and lasting Event information."},
     {key:"club-activities",title:"Club Activities",hat:"Activity Organiser",icon:"🌱",libraryDescription:"Information and work from each Club activity.",subcategories:ACTIVITIES},
     {key:"reading-room",title:"Reading Room",hat:"Writer",icon:"✍️",libraryDescription:"Articles, stories and courteous correspondence by members.",subcategories:[["articles-stories","Articles & Stories"],["letter-to-committee","Letter to the Committee"],["letter-to-panel","Letter to the Panel"]]},

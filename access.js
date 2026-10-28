@@ -1460,3 +1460,13 @@ function noticeAdminToken(){ return window.SanctuaryContentAccess?.token() || ""
 
 
 
+
+/* On-site letter notices reuse the household's existing private visit. */
+(function(){
+  if(document.querySelector('script[data-sanctuary-letter-notices]'))return;
+  const script=document.createElement('script');
+  script.src='letter-notifications.js?v=LETTER_CASES_20261028';
+  script.defer=true;
+  script.dataset.sanctuaryLetterNotices='true';
+  (document.head||document.documentElement).appendChild(script);
+})();

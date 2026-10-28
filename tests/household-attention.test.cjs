@@ -13,9 +13,9 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
 async function setup(people,{disabled=false,expired=false,other=false}={}){
  const elements={attention:new Element(),attentionList:new Element(),attentionToggle:new Element()};
  elements.attention.hidden=true;elements.attentionList.hidden=true;
- const saved={},requests=[],events={},documentEvents={};
+ const saved={hostAreaVerified:'true',verifiedResidentId:'SM99/2',hostAreaRoles:'["art_editor"]',currentDisplayName:'Other synthetic resident'},requests=[],events={},documentEvents={};
  const token=Buffer.from(JSON.stringify({mid:other?'SC99':'SM99',exp:Math.floor(Date.now()/1000)+(expired?-10:3600)})).toString('base64url')+'.signature';
- const storage={getItem:key=>key==='authToken'?token:key==='currentMemberId'?'SM99':saved[key]||null,setItem:(key,value)=>saved[key]=value,removeItem:()=>{}};
+ const storage={getItem:key=>key==='authToken'?token:key==='currentMemberId'?'SM99':saved[key]||null,setItem:(key,value)=>saved[key]=value,removeItem:key=>delete saved[key]};
  const location={href:''};
  const document={getElementById:id=>elements[id],createElement:tag=>new Element(tag),querySelectorAll:()=>[],addEventListener:(name,fn)=>documentEvents[name]=fn,visibilityState:'visible'};
  let queue=people;
@@ -39,7 +39,7 @@ async function setup(people,{disabled=false,expired=false,other=false}={}){
  const ui=await setup(people);assert(!ui.elements.attention.hidden);assert.equal(ui.elements.attentionList.children.length,2);
  ui.elements.attentionToggle.handlers.click();assert(!ui.elements.attentionList.hidden);assert.equal(ui.elements.attentionToggle.attrs['aria-expanded'],'true');
  const section=ui.elements.attentionList.children[0];assert(section.children[0].textContent.includes('Synthetic Editor'));
- await section.children[1].children[0].handlers.click();assert(ui.requests[1].url.endsWith('/auth/studio-session'));assert.equal(JSON.parse(ui.requests[1].options.body).residentId,'SM99/1');assert.equal(ui.saved.ydsAuthToken,'selected-resident-token');assert.equal(ui.saved.currentResidentId,'SM99/1');assert.equal(ui.location.href,'editor-desk.html');
+ await section.children[1].children[0].handlers.click();assert(ui.requests[1].url.endsWith('/auth/studio-session'));assert.equal(JSON.parse(ui.requests[1].options.body).residentId,'SM99/1');assert.equal(ui.saved.ydsAuthToken,'selected-resident-token');assert.equal(ui.saved.currentResidentId,'SM99/1');assert.equal(ui.saved.hostAreaVerified,undefined);assert.equal(ui.saved.verifiedResidentId,undefined);assert.equal(ui.location.href,'editor-desk.html');
  ui.setQueue([]);ui.events.pageshow({persisted:true});await tick();assert(ui.elements.attention.hidden);assert.equal(ui.elements.attentionList.children.length,0);
  ui.setQueue(people);ui.documentEvents.visibilitychange();await tick();assert(!ui.elements.attention.hidden);
  const lettersRoute=await setup([{resident_id:'SM99/1',name:'Synthetic Letters Editor',counts:{letters:1}}]);await lettersRoute.elements.attentionList.children[0].children[1].children[0].handlers.click();assert.equal(lettersRoute.location.href,'panel-letters.html#reviewCard');

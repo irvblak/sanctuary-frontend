@@ -372,7 +372,7 @@
 
 
             <div class="hub-row">
-              <a class="hub-btn" href="your-design-studio.html">Your Organiser</a>
+              <a class="hub-btn" href="your-design-studio.html?entry=1">Your Organiser</a>
               <div class="hub-note">
                 Create and prepare your work, then choose its Calendar or Library destination.
               </div>
@@ -454,6 +454,11 @@
       if(!token)return;
       const labels={writing:'Writing awaiting the Literary Editor',artwork:'Artwork awaiting a Curator',letters:'Letters and replies awaiting the Letters Editor',pin:'Forgotten PIN requests'};
       const routes={writing:'editor-desk.html',artwork:'editor-desk.html',letters:'panel-letters.html#reviewCard',pin:'admin-login.html?return=pin-requests'};
+      function clearOrganiserConfirmation(){
+        // Reviewing as a resident must not confirm a different person's studio.
+        ['hostAreaVerified','verifiedResidentId','hostAreaRoles','currentDisplayName'].forEach(key=>sessionStorage.removeItem(key));
+      }
+
       try{
         const response=await fetch(api+'/api/household-attention',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
         if(!response.ok)return;
@@ -472,11 +477,12 @@
                   if(result.message==='Design Studio access has not been enabled for this resident'){
                     const form=document.createElement('form'),label=document.createElement('label'),input=document.createElement('input'),submit=document.createElement('button');
                     label.textContent='Enter your household Personal PIN to continue: ';input.type='password';input.inputMode='numeric';input.autocomplete='current-password';input.required=true;label.append(input);submit.type='submit';submit.textContent='Continue';form.append(label,submit);p.append(form);
-                    form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{const login=await fetch(api+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({memberId:person.resident_id.split('/')[0],residentId:person.resident_id,pin:input.value})});const data=await login.json();input.value='';if(!login.ok||!data.token)throw new Error(data.message||'Sign-in failed.');sessionStorage.setItem('ydsAuthToken',data.token);sessionStorage.setItem('authToken',data.token);sessionStorage.setItem('currentResidentId',person.resident_id);localStorage.setItem('currentResidentId',person.resident_id);location.href=routes[key];}catch(error){submit.disabled=false;alert(error.message||'Please try again.');}});
+                    form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{const login=await fetch(api+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({memberId:person.resident_id.split('/')[0],residentId:person.resident_id,pin:input.value})});const data=await login.json();input.value='';if(!login.ok||!data.token)throw new Error(data.message||'Sign-in failed.');clearOrganiserConfirmation();sessionStorage.setItem('ydsAuthToken',data.token);sessionStorage.setItem('authToken',data.token);sessionStorage.setItem('currentResidentId',person.resident_id);localStorage.setItem('currentResidentId',person.resident_id);location.href=routes[key];}catch(error){submit.disabled=false;alert(error.message||'Please try again.');}});
                     return;
                   }
                   throw new Error(result.message||'Please sign in again.');
                 }
+                clearOrganiserConfirmation();
                 sessionStorage.setItem('ydsAuthToken',result.token);sessionStorage.setItem('authToken',result.token);
                 sessionStorage.setItem('currentResidentId',person.resident_id);localStorage.setItem('currentResidentId',person.resident_id);
                 location.href=routes[key];

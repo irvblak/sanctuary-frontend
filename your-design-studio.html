@@ -2998,6 +2998,7 @@
 
           if(
             !tokenResident ||
+            sessionStorage.getItem("verifiedResidentId") !== tokenResident ||
             tokenResident !== residentRef ||
             !tokenMember ||
             tokenMember !== memberId
@@ -3094,10 +3095,9 @@
 
 
       /*
-        If this member has already opened Your Organiser during the
-        current authenticated visit, restore that Studio identity now.
-        Do not ask for the Personal PIN again merely because the member
-        has returned from Canvas or another Studio page.
+        Entry from the Hub always shows the resident gate. Returning from
+        Canvas may resume only the resident who actually opened the studio.
+        An existing household Personal PIN session can still be reused.
       */
 
       let sharedVisitToken = "";
@@ -3107,7 +3107,8 @@
         const mid=clean(sessionStorage.getItem("currentMemberId")||localStorage.getItem("currentMemberId")).toUpperCase();
         return tokens.find(t=>{const d=decodeStudioToken(t);return t&&!d.starter_pin&&d.account_type!=="sch_publisher"&&!String(d.sub||"").startsWith("admin:")&&Number(d.exp)*1000>Date.now()&&(!mid||memberIdFromResidentRef(d.mid)===mid);})||"";
       }
-      if(!restoreStudioSession()){
+      const enteringFromHub = new URLSearchParams(location.search).get("entry") === "1";
+      if(enteringFromHub || !restoreStudioSession()){
         sharedVisitToken=sharedMemberToken();
         if(sharedVisitToken){
           const d=decodeStudioToken(sharedVisitToken);

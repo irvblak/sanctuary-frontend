@@ -1,21 +1,21 @@
-/* Role families use the same colours as the Role Register. */
-:where([data-role-family="host"],[data-role-family="activity"],.entry-cap[data-value="host"],.entry-cap[data-value="activity"]){--role-ink:#143f75;--role-ground:#e6eefb;--role-edge:#315f99}
-:where([data-role-family="writer"],[data-role-family="artist"],.entry-cap[data-value="writer"],.entry-cap[data-value="artist"]){--role-ink:#6b3780;--role-ground:#f1e7f8;--role-edge:#87539a}
-:where([data-role-family="committee"],[data-role-family="panel"],.entry-cap[data-value="committee"],.entry-cap[data-value="panel"]){--role-ink:#7a263a;--role-ground:#f7e6ec;--role-edge:#a24c64}
-:where([data-role-family="website-helper"],[data-role-family="website-custodian"],[data-role-family="website-administration"],.entry-cap[data-value="website-helper"],.entry-cap[data-value="website-custodian"],.entry-cap[data-value="website-administration"]){--role-ink:#00685f;--role-ground:#e1f3ef;--role-edge:#258b7f}
-:where([data-role-family="information-officer"],.entry-cap[data-value="information-officer"]){--role-ink:#814600;--role-ground:#fff0d7;--role-edge:#ac751f}
-:where([data-role-family="services"],.entry-cap[data-value="services"]){--role-ink:#40586c;--role-ground:#e8eef3;--role-edge:#668197}
-:where([data-role-family="club-administration"],.entry-cap[data-value="club-administration"]){--role-ink:#4f641f;--role-ground:#edf2db;--role-edge:#7a8f42}
-#studioGrid .entry-cap[data-value]{color:var(--role-ink,#123a78);background:var(--role-ground,#fff);border-color:var(--role-edge,#bacde2)}
+/* Matching hues identify role families; main categories use the stronger tint. */
+:where([data-role-family="host"],[data-role-family="activity"],.entry-cap[data-value="host"],.entry-cap[data-value="activity"]){--role-ink:#143f75;--role-ground:#e6eefb;--role-main-ground:#c2d1e7;--role-edge:#315f99}
+:where([data-role-family="writer"],[data-role-family="artist"],.entry-cap[data-value="writer"],.entry-cap[data-value="artist"]){--role-ink:#6b3780;--role-ground:#f1e7f8;--role-main-ground:#dcc9e5;--role-edge:#87539a}
+:where([data-role-family="committee"],[data-role-family="panel"],.entry-cap[data-value="committee"],.entry-cap[data-value="panel"]){--role-ink:#7a263a;--role-ground:#f7e6ec;--role-main-ground:#e6c7d1;--role-edge:#a24c64}
+:where([data-role-family="website-helper"],[data-role-family="website-custodian"],[data-role-family="website-administration"],.entry-cap[data-value="website-helper"],.entry-cap[data-value="website-custodian"],.entry-cap[data-value="website-administration"]){--role-ink:#00685f;--role-ground:#e1f3ef;--role-main-ground:#bbded9;--role-edge:#258b7f}
+:where([data-role-family="information-officer"],.entry-cap[data-value="information-officer"]){--role-ink:#814600;--role-ground:#fff0d7;--role-main-ground:#eed7b2;--role-edge:#ac751f}
+:where([data-role-family="services"],.entry-cap[data-value="services"]){--role-ink:#40586c;--role-ground:#e8eef3;--role-main-ground:#ced8e1;--role-edge:#668197}
+:where([data-role-family="club-administration"],.entry-cap[data-value="club-administration"]){--role-ink:#4f641f;--role-ground:#edf2db;--role-main-ground:#d6debc;--role-edge:#7a8f42}
+#studioGrid .entry-cap[data-value]{color:var(--role-ink,#123a78);background:var(--role-main-ground,var(--role-ground,#fff));border-color:var(--role-edge,#bacde2)}
 #studioGrid .entry-cap[data-value][aria-pressed="true"]{color:#fff;background:var(--role-ink,#123a78);border-color:var(--role-ink,#123a78)}
 #studioGrid .entry-cap[data-value]:hover{box-shadow:0 0 0 2px var(--role-edge,#afc8e4)}
-#memberWorkIndex .work-index-category[data-role-family]>summary{background:var(--role-ground,#eef4fa);color:var(--role-ink,#123a78);border-left:5px solid var(--role-edge,#123a78)}
+#memberWorkIndex .work-index-category[data-role-family]>summary{background:var(--role-main-ground,#c2d1e7);color:var(--role-ink,#123a78);border-left:5px solid var(--role-edge,#123a78)}
 #memberWorkIndex .work-index-category[data-role-family] .work-index-subcategory>summary{background:var(--role-ground,#f6f9fc);color:var(--role-ink,#123a78);border-left:4px solid var(--role-edge,#123a78)}
 .roleBox[data-role-family]:not([data-role-family=""]),.scopeBox[data-role-family]:not([data-role-family=""]){background:var(--role-ground,#fff);border-color:var(--role-edge,#c7d8e3);color:var(--role-ink,#123a78)}
 .roleBox[data-role-family]:not([data-role-family=""]) .roleText strong{color:var(--role-ink,#123a78)}
 .role-badge[data-role-family]:not([data-role-family=""]){background:var(--role-ground,#fff);color:var(--role-ink,#123a78);border-color:var(--role-edge,#c7d8e3)}
 .role-badge[data-role-family]:not([data-role-family=""]) .role-icon{color:inherit}
 
-.studio-tile.active[data-role-family]:not([data-role-family=""]){background:var(--role-ground,#fff);border-color:var(--role-edge,#c7d8e3);color:var(--role-ink,#123a78)}
+.studio-tile.active[data-role-family]:not([data-role-family=""]){background:var(--role-main-ground,var(--role-ground,#fff));border-color:var(--role-edge,#c7d8e3);color:var(--role-ink,#123a78)}
 .studio-tile.active[data-role-family]:not([data-role-family=""]) .tile-copy strong{color:var(--role-ink,#123a78)}
 .member-role-badge[data-role-family]:not([data-role-family=""]){background:var(--role-ground,#fff);color:var(--role-ink,#123a78);border-color:var(--role-edge,#c7d8e3)}

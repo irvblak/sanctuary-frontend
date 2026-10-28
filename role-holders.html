@@ -79,14 +79,14 @@ th:first-child,td:first-child{width:34%}tr:last-child td{border-bottom:none}
 @media print{.register-category-body{display:block!important}.register-category>summary{color:#123a78}}
 
 /* The same family colour identifies related categories. */
-.register-category{--category-ink:#143f75;--category-ground:#e6eefb;--category-edge:#315f99}
-.register-category[data-category="writer"],.register-category[data-category="artist"]{--category-ink:#6b3780;--category-ground:#f1e7f8;--category-edge:#87539a}
-.register-category[data-category="committee"],.register-category[data-category="panel"]{--category-ink:#7a263a;--category-ground:#f7e6ec;--category-edge:#a24c64}
-.register-category[data-category="website-helper"],.register-category[data-category="website-custodian"],.register-category[data-category="website-administration"]{--category-ink:#00685f;--category-ground:#e1f3ef;--category-edge:#258b7f}
-.register-category[data-category="information-officer"]{--category-ink:#814600;--category-ground:#fff0d7;--category-edge:#ac751f}
-.register-category[data-category="services"]{--category-ink:#40586c;--category-ground:#e8eef3;--category-edge:#668197}
-.register-category[data-category="club-administration"]{--category-ink:#4f641f;--category-ground:#edf2db;--category-edge:#7a8f42}
-.register-category>summary{background:var(--category-ground);color:var(--category-ink);border-left-color:var(--category-edge)}
+.register-category{--category-ink:#143f75;--category-ground:#e6eefb;--category-main-ground:#c2d1e7;--category-edge:#315f99}
+.register-category[data-category="writer"],.register-category[data-category="artist"]{--category-ink:#6b3780;--category-ground:#f1e7f8;--category-main-ground:#dcc9e5;--category-edge:#87539a}
+.register-category[data-category="committee"],.register-category[data-category="panel"]{--category-ink:#7a263a;--category-ground:#f7e6ec;--category-main-ground:#e6c7d1;--category-edge:#a24c64}
+.register-category[data-category="website-helper"],.register-category[data-category="website-custodian"],.register-category[data-category="website-administration"]{--category-ink:#00685f;--category-ground:#e1f3ef;--category-main-ground:#bbded9;--category-edge:#258b7f}
+.register-category[data-category="information-officer"]{--category-ink:#814600;--category-ground:#fff0d7;--category-main-ground:#eed7b2;--category-edge:#ac751f}
+.register-category[data-category="services"]{--category-ink:#40586c;--category-ground:#e8eef3;--category-main-ground:#ced8e1;--category-edge:#668197}
+.register-category[data-category="club-administration"]{--category-ink:#4f641f;--category-ground:#edf2db;--category-main-ground:#d6debc;--category-edge:#7a8f42}
+.register-category>summary{background:var(--category-main-ground);color:var(--category-ink);border-left-color:var(--category-edge)}
 .register-category .register-subgroup>summary{background:var(--category-ground);color:var(--category-ink);border-left:4px solid var(--category-edge)}
 .register-category .register-assignment-name{color:var(--category-ink)}
 .register-category .register-assignment{background:#fff}

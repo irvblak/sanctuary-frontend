@@ -282,6 +282,11 @@
     .hub-top-link:focus-visible{outline:3px solid #b17c27;outline-offset:3px}
     @media(max-width:850px){.hub-top-actions{order:3;flex-basis:100%;justify-content:flex-start}.hub-top-link{flex:1}}
     @media(max-width:450px){.brand{font-size:1.65rem}.hub-top-link{padding:.6rem .65rem;font-size:.95rem}.logout-tab{min-width:0;padding:.65rem .75rem;font-size:.95rem}}
+    #attentionList section{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--soft-blue)}
+    #attentionList h2{margin:0 0 .75rem;color:var(--blue);font-size:1.1rem}
+    #attentionList button{padding:.55rem .8rem;border:1px solid var(--blue);border-radius:10px;background:white;color:var(--blue);font-weight:750;cursor:pointer}
+    #attentionList input{font:inherit;max-width:10rem;padding:.4rem}
+    #attentionList button:focus-visible{outline:3px solid var(--roles);outline-offset:3px}
   </style>
 </head>
 
@@ -342,6 +347,11 @@
       <div class="content-grid">
         <section class="hub-card" aria-labelledby="hubHeading">
           <h1 id="hubHeading" class="hub-title">Sanctuary Club</h1>
+
+          <section id="attention" hidden aria-live="polite" style="margin-bottom:1rem">
+            <button class="hub-btn" type="button" id="attentionToggle" aria-expanded="false" aria-controls="attentionList">Needing your attention</button>
+            <div id="attentionList" hidden></div>
+          </section>
 
           <div class="hub-list">
             <div class="hub-row">
@@ -430,6 +440,58 @@
   </div>
 
   <script>
+    (function attention(){
+      const box=document.getElementById('attention'), list=document.getElementById('attentionList'), toggle=document.getElementById('attentionToggle');
+      let generation=0;
+      toggle.addEventListener('click',()=>{list.hidden=!list.hidden;toggle.setAttribute('aria-expanded',String(!list.hidden));});
+      async function refresh(){
+      const current=++generation;
+      box.hidden=true;list.replaceChildren();list.hidden=true;toggle.setAttribute('aria-expanded','false');
+      const api='https://sanctuary-backend-8iqc.onrender.com';
+      const activeMid=(sessionStorage.getItem('currentMemberId')||localStorage.getItem('currentMemberId')||'').toUpperCase();
+      function usable(t){try{let b=t.split('.')[0].replace(/-/g,'+').replace(/_/g,'/');b+='='.repeat((4-b.length%4)%4);const d=JSON.parse(atob(b));return Number(d.exp)*1000>Date.now()&&!d.starter_pin&&d.account_type!=='sch_publisher'&&!String(d.sub||'').startsWith('admin:')&&(!activeMid||String(d.mid||'').toUpperCase()===activeMid);}catch(_){return false;}}
+      const token=[sessionStorage.getItem('ydsAuthToken'),sessionStorage.getItem('authToken'),localStorage.getItem('memberToken'),sessionStorage.getItem('memberToken'),localStorage.getItem('authToken')].find(t=>t&&usable(t));
+      if(!token)return;
+      const labels={writing:'Writing awaiting the Literary Editor',artwork:'Artwork awaiting a Curator',letters:'Letters and replies awaiting the Letters Editor',pin:'Forgotten PIN requests'};
+      const routes={writing:'editor-desk.html',artwork:'editor-desk.html',letters:'panel-letters.html#reviewCard',pin:'admin-login.html?return=pin-requests'};
+      try{
+        const response=await fetch(api+'/api/household-attention',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+        if(!response.ok)return;
+        const data=await response.json();if(current!==generation||!Array.isArray(data.people)||!data.people.length)return;
+        for(const person of data.people){
+          const section=document.createElement('section'), title=document.createElement('h2');title.textContent=person.name+' ('+person.resident_id+')';section.append(title);
+          for(const [key,count] of Object.entries(person.counts)){
+            if(!labels[key]||!routes[key])continue;
+            const p=document.createElement('p'),button=document.createElement('button');button.type='button';button.textContent=labels[key]+' ('+count+')';
+            button.addEventListener('click',async()=>{
+              if(key==='pin'){location.href=routes[key];return;}
+              button.disabled=true;
+              try{
+                const res=await fetch(api+'/auth/studio-session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({residentId:person.resident_id})});
+                const result=await res.json();if(!res.ok||!result.token){
+                  if(result.message==='Design Studio access has not been enabled for this resident'){
+                    const form=document.createElement('form'),label=document.createElement('label'),input=document.createElement('input'),submit=document.createElement('button');
+                    label.textContent='Enter your household Personal PIN to continue: ';input.type='password';input.inputMode='numeric';input.autocomplete='current-password';input.required=true;label.append(input);submit.type='submit';submit.textContent='Continue';form.append(label,submit);p.append(form);
+                    form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{const login=await fetch(api+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({memberId:person.resident_id.split('/')[0],residentId:person.resident_id,pin:input.value})});const data=await login.json();input.value='';if(!login.ok||!data.token)throw new Error(data.message||'Sign-in failed.');sessionStorage.setItem('ydsAuthToken',data.token);sessionStorage.setItem('authToken',data.token);sessionStorage.setItem('currentResidentId',person.resident_id);localStorage.setItem('currentResidentId',person.resident_id);location.href=routes[key];}catch(error){submit.disabled=false;alert(error.message||'Please try again.');}});
+                    return;
+                  }
+                  throw new Error(result.message||'Please sign in again.');
+                }
+                sessionStorage.setItem('ydsAuthToken',result.token);sessionStorage.setItem('authToken',result.token);
+                sessionStorage.setItem('currentResidentId',person.resident_id);localStorage.setItem('currentResidentId',person.resident_id);
+                location.href=routes[key];
+              }catch(error){button.disabled=false;alert(error.message||'Please sign in again.');}
+            });p.append(button);section.append(p);
+          }
+          list.append(section);
+        }
+        box.hidden=false;
+      }catch(_){/* An unavailable service must not expose an outdated alert. */}
+      }
+      refresh();
+      window.addEventListener('pageshow',event=>{if(event.persisted)refresh();});
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh();});
+    })();
     document.querySelectorAll(".private-entry").forEach(link => {
       link.addEventListener("click", event => {
         const destination = link.getAttribute("href") || "members-info.html";

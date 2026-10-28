@@ -260,7 +260,7 @@
 
           localStorage.setItem(TOKEN_KEY, step.body.token);
           show(okEl, "Signed in. Redirecting…");
-          setTimeout(() => { location.href = "admin-dashboard.html"; }, 250);
+          setTimeout(() => { location.href = new URLSearchParams(location.search).get('return') === 'pin-requests' ? 'admin-members-grid.html#pinRequestsList' : 'admin-dashboard.html'; }, 250);
 
         } catch(err){
           console.error(err);

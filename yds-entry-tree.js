@@ -10,7 +10,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  // Letters are a universal member facility, even before a publishing name is set.
  if(!caps.some(h=>h.key==='writer'))caps.push({...S.PRODUCTION_HATS.find(h=>h.key==='writer'),lettersOnly:true});
  const isLetter=hat=>hat?.key==='writer'&&['letter-to-panel','letter-to-committee'].includes(state.subject);
- const letterSecretary=()=>state.subject==='letter-to-panel'?'the Panel Secretary':'the '+(state.subdivision==='mews'?'Mews':'Court')+' Committee Secretary';
+ const letterSecretary=()=>'the Letters to Committees and Panel Editor';
  const state={hat:'',subject:'',subdivision:'',destination:'',stream:'',kind:''};
  const getHat=()=>caps.find(h=>h.key===state.hat);
  const label=hat=>labels[hat.key]||hat.label;
@@ -19,7 +19,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  function destinations(hat){
   if(isLetter(hat))return [{key:'information',label:'Reading Room',icon:'reading-room',hint:letterSecretary().replace(/^the /,'The ')+' reviews and may edit your letter and replies before publication.'}];
   const values=[{key:'calendar',label:'Calendar',icon:'calendar',hint:'Enter the event details and go to your canvas to create your Poster/Notice.'},
-   {key:'information',label:hat.key==='artist'?'Gallery':'Reading Room',icon:'reading-room',hint:hat.key==='artist'?'Submit your artwork to the Curator for consideration.':hat.key==='writer'?'Submit your writing to the Editor for publication under your name or pseudonym.':'Share general information on the corresponding Library shelf.'},
+   {key:'information',label:hat.key==='artist'?'Gallery':'Reading Room',icon:'reading-room',hint:hat.key==='artist'?'Submit your artwork to the Curator for consideration.':hat.key==='writer'?'Submit your writing to the Literary Editor for publication under your name or pseudonym.':'Share general information on the corresponding Library shelf.'},
    {key:'learning',label:'Learning & Teaching',icon:'library-education',hint:'Prepare learning notes, a lesson or a guide for the corresponding Library shelf.'}];
   if(['artist','writer'].includes(hat.key))values.unshift({key:'private',label:'Just for you',symbol:'lock',hint:'Create for your own enjoyment and keep an editable copy. Nothing is submitted or published.'});
   return values;
@@ -44,7 +44,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
   if(state.destination==='private')return 'Your canvas will open for work that is just for you. Save an editable copy to your device to continue later.';
   if(state.destination==='calendar')return 'Enter the event details and go to your canvas to create your Poster/Notice.';
   if(state.destination==='learning')return 'Prepare your '+(state.kind==='lesson'?'lesson':'guide')+' for the corresponding Library learning shelf. '+(hat.key==='artist'?'Submit it to the Curator when ready.':hat.key==='writer'?'Submit it to the Editor when ready.':'Publish it when ready.');
-  return hat.key==='artist'?'Create your artwork and submit it to the Curator. It stays private until approved for the Gallery.':hat.key==='writer'?'Write and illustrate your piece, then submit it to the Editor. It stays private until approved for publication.':'Create your information, then publish it to the appropriate Reading Room shelf.';
+  return hat.key==='artist'?'Create your artwork and submit it to the Curator. It stays private until approved for the Gallery.':hat.key==='writer'?'Write and illustrate your piece, then submit it to the Literary Editor. It stays private until approved for publication.':'Create your information, then publish it to the appropriate Reading Room shelf.';
  }
  function render(){
   stepNumber=1;let html='<section class="entry-step"><span class="entry-number" aria-hidden="true">1</span><div class="entry-caprow"><h2>Which cap will you wear?</h2><div class="entry-capicons" role="group" aria-label="Choose your cap">'+caps.map(h=>'<button type="button" class="entry-cap" data-entry-choice="hat" data-value="'+h.key+'" aria-label="'+esc(label(h))+'" aria-pressed="'+(h.key===state.hat)+'">'+svg(h.iconId)+'<strong>'+esc(label(h))+'</strong></button>').join('')+'</div></div>'+(state.hat?'<p class="entry-capname" role="status">'+esc(label(getHat()))+'</p>':'')+'</section>';
@@ -61,9 +61,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
    if(complete){html+=step('What will you prepare?','','kind',[{key:'lesson',label:'Lesson',hint:'A topic or exercise to work through.'},{key:'guide',label:'Guide',hint:'An explanation or instructions to refer to.'}]);complete=!!state.kind;}
   }
   if(complete){stepNumber++;const letter=isLetter(hat);html+='<section class="entry-step"><span class="entry-number" aria-hidden="true">'+stepNumber+'</span><div class="entry-ready"><h3>Ready to begin</h3><p>'+esc(readyText(hat))+'</p><a class="btn entry-enter" href="'+esc(target(hat))+'">'+(state.destination==='calendar'?'Enter event details':letter?'Write your letter':'Open your canvas')+' <span aria-hidden="true">→</span></a></div></section>';}
-  const tools=[];if(roles.some(r=>['ra_secretary','panel_secretary'].includes(r)))tools.push('<a class="btn secondary" href="panel-letters.html?destination=panel">Review Letters to the Panel</a>');if(roles.some(r=>['copy_editor','art_editor','editor'].includes(r)))tools.push('<a class="btn secondary" href="editor-desk.html">Open review desk</a>');
-  for(const [role,community] of [['committee_secretary','Mews'],['court_committee_secretary','Court']])if(roles.includes(role))tools.push('<a class="btn secondary" href="panel-letters.html?destination=committee&amp;area='+community+'">Review Letters to the '+community+' Committee</a>');
-  root.innerHTML=html+(tools.length?'<div class="entry-review-tools">'+tools.join('')+'</div>':'');
+  root.innerHTML=html+'<div class="entry-review-tools"><a class="btn secondary" href="panel-letters.html?compose=1">Letter to a Committee or the Panel</a></div>';
  }
  root.onclick=event=>{
   const pick=event.target.closest('[data-entry-choice]');if(pick&&root.contains(pick)){

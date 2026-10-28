@@ -491,7 +491,7 @@
       margin-top:.45rem;
     }
   </style>
-<script src="content-structure.js?v=ROLE_COLOURS_20261027"></script>
+<script src="content-structure.js?v=EDITOR_ROLES_20261028"></script>
 <link rel="stylesheet" href="role-family-colours.css?v=20261027"></head>
 
 <body>
@@ -735,8 +735,16 @@
               <label class="roleBox">
                 <input type="checkbox" id="roleCopyEditor" />
                 <div class="roleText">
-                  <strong>Copy Editor</strong>
-                  <span>Reviews written material for presentation and publication.</span>
+                  <strong>Literary Editor</strong>
+                  <span>Reviews articles and stories for publication.</span>
+                </div>
+              </label>
+
+              <label class="roleBox">
+                <input type="checkbox" id="roleLettersEditor" />
+                <div class="roleText">
+                  <strong>Letters to Committees and Panel Editor</strong>
+                  <span>Reviews letters and replies independently before publication. Cannot approve their own submissions.</span>
                 </div>
               </label>
 
@@ -870,6 +878,7 @@
     const roleRaOfficerEl = $("roleRaOfficer");
 
     const roleCopyEditorEl = $("roleCopyEditor");
+    const roleLettersEditorEl = $("roleLettersEditor");
     const roleArtEditorEl = $("roleArtEditor");
     const roleArtTeacherEl = $("roleArtTeacher");
 
@@ -924,7 +933,8 @@
 
       writer: "Writer",
       artist: "Artist",
-      copy_editor: "Copy Editor",
+      copy_editor: "Literary Editor",
+      letters_editor: "Letters to Committees and Panel Editor",
       art_editor: "Art Editor or Curator",
       art_teacher: "Art Teacher",
 
@@ -946,7 +956,7 @@
       panel: "Residents Association Panel (legacy)",
       treasurer: "Treasurer (legacy)",
       news_contributor: "Writer (legacy)",
-      editor: "Editor (legacy)"
+      editor: "Literary Editor (legacy)"
     };
 
     Object.entries(SanctuaryContentStructure.INFORMATION_OFFICER_SUBJECT_ROLES).forEach(([subject,role])=>{const h=SanctuaryContentStructure.PRODUCTION_HATS.find(h=>h.key==="information-officer");const label=SanctuaryContentStructure.hatSubjects(h).find(([key])=>key===subject)?.[1]||subject;ROLE_LABELS[role]="Information Officer — "+label;});
@@ -1367,6 +1377,7 @@
         roleRaTreasurerEl,
         roleRaOfficerEl,
         roleCopyEditorEl,
+        roleLettersEditorEl,
         roleArtEditorEl,
         roleWebsiteHelperEl,
         roleServicesEl,
@@ -1564,6 +1575,7 @@
       roleRaOfficerEl.checked = roles.includes("ra_officer");
 
       roleCopyEditorEl.checked = roles.includes("copy_editor");
+      roleLettersEditorEl.checked = roles.includes("letters_editor");
       roleArtEditorEl.checked = roles.includes("art_editor");
       roleArtTeacherEl.checked = roles.includes("art_teacher");
 
@@ -1611,6 +1623,7 @@
       if(roleRaOfficerEl.checked) roles.push("ra_officer");
 
       if(roleCopyEditorEl.checked) roles.push("copy_editor");
+      if(roleLettersEditorEl.checked) roles.push("letters_editor");
       if(roleArtEditorEl.checked) roles.push("art_editor");
       if(roleArtTeacherEl.checked) roles.push("art_teacher");
 

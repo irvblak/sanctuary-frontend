@@ -484,7 +484,8 @@
             {
               method:"GET",
               headers:{
-                "Accept":"application/json"
+                "Accept":"application/json",
+                "Authorization":"Bearer "+(sessionStorage.getItem("authToken")||sessionStorage.getItem("ydsAuthToken")||"")
               },
               mode:"cors"
             }
@@ -528,7 +529,8 @@
             {
               method:"GET",
               headers:{
-                "Accept":"application/json"
+                "Accept":"application/json",
+                "Authorization":"Bearer "+(sessionStorage.getItem("authToken")||sessionStorage.getItem("ydsAuthToken")||"")
               },
               mode:"cors"
             }

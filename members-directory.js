@@ -98,18 +98,27 @@ function loadMembersLocal() {
 
 // ---------- Load members from backend first
 
+let directoryAccessDenied = false;
 async function loadMembers() {
+  const token = sessionStorage.getItem("authToken") || sessionStorage.getItem("ydsAuthToken") || "";
+  if (!token) { directoryAccessDenied = true; return {}; }
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/members-directory`,
       {
         method: "GET",
         headers: {
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": "Bearer " + token
         },
         mode: "cors"
       }
     );
+
+    if (res.status === 401 || res.status === 403) {
+      directoryAccessDenied = true;
+      return {};
+    }
 
     const data =
       await res.json().catch(() => null);
@@ -1001,6 +1010,9 @@ document.addEventListener(
       members,
       detailArea
     );
+    if (directoryAccessDenied && detailArea) {
+      detailArea.textContent = "Please return Home and sign in with your personal Membership PIN to open the Members Directory.";
+    }
   }
 );
 

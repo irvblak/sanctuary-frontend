@@ -380,6 +380,17 @@
       body.canvas-active .yds-colour-sv{height:82px;}
     }
 
+    .landscape-view-controls{display:grid;gap:.3rem;width:100%;font-size:.78rem;font-weight:750;}
+    .landscape-view-controls[hidden]{display:none!important;}
+    .landscape-view-controls label{display:flex;justify-content:space-between;gap:.5rem;}
+    .landscape-view-controls input[type="range"]{width:100%;margin:.2rem 0;cursor:pointer;}
+    @media screen{
+      body.canvas-active .canvas-page.landscape{
+        width:var(--landscape-view-width,860px);height:var(--landscape-view-height,608.0808px);
+        transform:scale(var(--landscape-view-scale,1));transform-origin:center;
+      }
+    }
+
     /* 31 Aug 2026 — keep text tools off the right panel and reclaim its full height. */
     body.canvas-active #creativeWorkspace{position:relative;}
     body.canvas-active .canvas-compact-head{
@@ -587,6 +598,12 @@
             <label class="toolbar-check">A4 orientation
               <select id="orientationSelect"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
             </label>
+          </div>
+
+          <div class="toolbar-row landscape-view-controls" id="landscapeViewControls" hidden>
+            <label for="landscapeViewSize">Landscape view <output id="landscapeViewValue" for="landscapeViewSize">100%</output></label>
+            <input id="landscapeViewSize" type="range" min="40" max="100" step="5" value="100" aria-label="Landscape view size">
+            <button id="fitLandscapeViewBtn" type="button">Fit area</button>
           </div>
 
           <div class="toolbar-row">
@@ -822,6 +839,7 @@
 
   <script src="yds-detached-tools.js?v=CANVAS_ONLY_20261017"></script>
   <script src="yds-work-size.js?v=UNLIMITED_IMAGES_20261019"></script>
+  <script src="canvas-view-size.js?v=LANDSCAPE_VIEW_20261029" defer></script>
   <script>
   (function(){
     "use strict";

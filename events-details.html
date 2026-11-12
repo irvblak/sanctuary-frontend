@@ -465,8 +465,9 @@
       }
 
       .body-box{
-        max-height:82mm;
-        overflow:hidden;
+        /* Preserve long narratives rather than cutting off their printed text. */
+        max-height:none;
+        overflow:visible;
         padding:4mm 0;
         font-size:10pt;
         line-height:1.45;

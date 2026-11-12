@@ -468,7 +468,22 @@
         margin:10mm;
       }
     }
-  </style>
+
+    /* Scroll wide reports without widening the rest of the phone page. */
+    #tableWrap{max-width:100%;overflow-x:auto;}
+    #tableWrap:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
+    .table-scroll-help{color:var(--muted);font-size:.9rem;line-height:1.4;}
+    .contact{overflow-wrap:anywhere;}
+    @media print{
+      #tableWrap{overflow:visible;}
+      .table-scroll-help{display:none;}
+      .card{break-inside:auto;page-break-inside:auto;}
+      thead{display:table-header-group;}
+      tr{break-inside:avoid;page-break-inside:avoid;}
+      .pay-edit{min-width:0;}
+    }
+
+</style>
 </head>
 
 <body>
@@ -593,7 +608,8 @@
 
       <div class="report-generated">Generated: <span id="reportGeneratedAt">—</span></div>
 
-      <div id="tableWrap">
+      <p class="table-scroll-help" id="tableScrollHelp">On a narrow screen, swipe across the table to see all columns.</p>
+      <div id="tableWrap" role="region" aria-label="Event responses" aria-describedby="tableScrollHelp" tabindex="0">
         <div class="empty">Loading responses…</div>
       </div>
     </section>

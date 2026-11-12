@@ -391,7 +391,15 @@
       .legendHelp{ margin-left:0; }
       .dow{ font-size:.8rem; }
     }
-  </style>
+
+    .calendar-scroll{max-width:100%;overflow-x:auto;}
+    .calendar-board{min-width:700px;}
+    .calendar-scroll:focus-visible{outline:3px solid var(--brand);outline-offset:3px;}
+    .calendar-scroll-help{display:none;color:var(--muted);font-size:.95rem;line-height:1.4;}
+    @media screen and (max-width:760px){.calendar-scroll-help{display:block;}}
+    @media print{.calendar-scroll{overflow:visible;}.calendar-board{min-width:0;}.calendar-scroll-help{display:none;}}
+
+</style>
 </head>
 
 <body>
@@ -442,10 +450,15 @@
         <div class="legendHelp">Filter categories</div>
       </div>
 
+      <p class="calendar-scroll-help" id="calendarScrollHelp">Swipe across the calendar to see every day, or use Events List.</p>
+      <div class="calendar-scroll" role="region" aria-label="Monthly calendar" aria-describedby="calendarScrollHelp" tabindex="0">
+      <div class="calendar-board">
       <div class="dow">
         <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
       </div>
       <div class="grid" id="grid"></div>
+      </div>
+      </div>
 
       <div class="public-route-note" id="publicRouteNote">
         You are viewing the public What’s On pages. Calendar, Events List and Event Notices remain available here.

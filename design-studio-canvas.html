@@ -512,6 +512,34 @@
     body.canvas-active.tools-detached .canvas-empty-hint{display:none!important}
     .tools-file-actions{display:flex;gap:.4rem;flex-wrap:wrap;padding-top:.8rem;margin-top:.8rem;border-top:1px solid var(--line)}
     .tools-file-actions button,.tools-file-actions a{min-height:42px;padding:.45rem .6rem;border:1px solid var(--accent);border-radius:9px;background:#fff;color:var(--accent-dark);font:750 .9rem/1.3 system-ui,sans-serif;text-decoration:none;cursor:pointer}
+
+    /* On phones, put the artwork above the tools instead of squeezing it between them. */
+    @media screen and (max-width:760px){
+      body.canvas-active{height:auto;min-height:100svh;overflow:auto;}
+      body.canvas-active > main.page{width:100%;height:auto;min-height:100svh;overflow:visible;}
+      body.canvas-active #creativeWorkspace{height:auto;min-height:100svh;overflow:visible;}
+      body.canvas-active .canvas-compact-head{position:static;inset:auto;height:auto;min-height:0;flex:0 0 auto;display:flex;flex-wrap:wrap;pointer-events:auto;}
+      body.canvas-active .canvas-compact-head h2{position:static;width:100%;white-space:normal;}
+      body.canvas-active .canvas-head-actions{flex-wrap:wrap;}
+      body.canvas-active .canvas-head-actions .btn{min-height:44px;white-space:normal;}
+      body.canvas-active .canvas-three-column{display:grid;grid-template-columns:minmax(0,1fr);height:auto;overflow:visible;flex:none;}
+      body.canvas-active .canvas-main-panel{grid-row:1;height:65vh;min-height:320px;padding-top:0;}
+      body.canvas-active .canvas-side{height:auto;max-height:none;margin-top:0;overflow:visible;min-width:0;}
+      body.canvas-active .canvas-side button,body.canvas-active .canvas-side select{min-height:44px;}
+      body.canvas-active .canvas-page.portrait{height:auto;max-height:100%;}
+    }
+    /* Printing must release the fitted screen's fixed heights and clipping. */
+    @media print{
+      body.print-canvas{height:auto!important;overflow:visible!important;}
+      body.print-canvas > main.page,body.print-canvas #creativeWorkspace,
+      body.print-canvas .canvas-three-column,body.print-canvas .canvas-main-panel,
+      body.print-canvas .canvas-shell,body.print-canvas .canvas-stage,body.print-canvas .canvas-pages{
+        display:block!important;height:auto!important;min-height:0!important;overflow:visible!important;
+        padding:0!important;margin:0!important;transform:none!important;
+      }
+      body.print-canvas .canvas-page{transform:none!important;flex:none!important;}
+    }
+
 </style>
 </head>
 <body>

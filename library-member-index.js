@@ -25,6 +25,12 @@ function publication(item){
  const section=key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
  let category=categoryFor(item,key,hat);
  let subcategory=(key==="learning"?S.publicationShelfSubject(item):S.publicationSubcategory(item))||"";
+ // Legacy Art Teacher publications belong to Artist, never the Residents Association.
+ if(key==="learning"&&S.slug(subcategory)==="art-teacher"){
+  category="Art & Photography";
+ }
+ // RAP has no teaching subcategories; its guidance remains under Residents Association.
+ if(key==="learning"&&category==="Residents Association")subcategory="";
  const number=String(item.creator_resident_id||item.creator_member_id||"").toUpperCase();
  const scope=S.slug(item.tertiary_category||"");
  if(section==="Reading Room"&&/^(letters?-to-(the-)?panel|letters?-to-(the-)?committee)(-|$)/.test(scope)){

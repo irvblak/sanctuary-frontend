@@ -267,7 +267,8 @@
         widows: 3;
       }
     }
-  </style>
+  body.discover-publication .publication-body{font-size:20px;font-weight:550;color:#315b83;line-height:1.65}body.discover-publication .publication h1{color:#123a78}body.discover-publication .summary,body.discover-publication .publication-meta{color:#315b83;font-weight:550}@media print{body.discover-publication .publication-body{font-size:12pt}}
+</style>
 </head>
 
 <body>
@@ -380,6 +381,7 @@
           .trim()
           .toLowerCase();
 
+      if (/^discover-sanctuary-\d+$/.test(publicationId)) document.body.classList.add("discover-publication");
       const publications =
         window.SANCTUARY_LIBRARY_PUBLICATIONS ||
         {};

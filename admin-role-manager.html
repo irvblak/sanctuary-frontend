@@ -756,7 +756,6 @@
                 </div>
               </label>
 
-              <input type="checkbox" id="roleArtTeacher" hidden aria-hidden="true" />
             </div>
           </div>
 
@@ -880,7 +879,6 @@
     const roleCopyEditorEl = $("roleCopyEditor");
     const roleLettersEditorEl = $("roleLettersEditor");
     const roleArtEditorEl = $("roleArtEditor");
-    const roleArtTeacherEl = $("roleArtTeacher");
 
     const roleWebsiteHelperEl = $("roleWebsiteHelper");
     const roleServicesEl = $("roleServices");
@@ -936,7 +934,6 @@
       copy_editor: "Literary Editor",
       letters_editor: "Letters to Committees and Panel Editor",
       art_editor: "Art Editor or Curator",
-      art_teacher: "Art Teacher",
 
       website_helper: "Website Helper",
       services: "Services",
@@ -1577,7 +1574,6 @@
       roleCopyEditorEl.checked = roles.includes("copy_editor");
       roleLettersEditorEl.checked = roles.includes("letters_editor");
       roleArtEditorEl.checked = roles.includes("art_editor");
-      roleArtTeacherEl.checked = roles.includes("art_teacher");
 
       roleWebsiteHelperEl.checked = roles.includes("website_helper");
       roleServicesEl.checked = roles.includes("services");
@@ -1625,7 +1621,6 @@
       if(roleCopyEditorEl.checked) roles.push("copy_editor");
       if(roleLettersEditorEl.checked) roles.push("letters_editor");
       if(roleArtEditorEl.checked) roles.push("art_editor");
-      if(roleArtTeacherEl.checked) roles.push("art_teacher");
 
       if(roleWebsiteHelperEl.checked) roles.push("website_helper");
       if(roleServicesEl.checked) roles.push("services");

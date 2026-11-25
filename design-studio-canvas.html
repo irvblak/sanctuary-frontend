@@ -342,13 +342,17 @@
     body.canvas-active .canvas-head-actions .btn{padding:.36rem .58rem;font-size:.78rem;}
     body.canvas-active .canvas-three-column{
       flex:1 1 auto;min-height:0;height:calc(100vh - 54px);
-      display:grid;grid-template-columns:190px minmax(0,1fr) 235px;gap:.4rem;align-items:stretch;overflow:hidden;
+      display:grid;grid-template-columns:190px minmax(0,1fr) 235px;grid-template-rows:minmax(0,1fr);gap:.4rem;align-items:stretch;overflow:hidden;
     }
     body.canvas-active .canvas-side{
-      position:static;top:auto;height:100%;max-height:none;min-height:0;overflow:hidden;
+      position:static;top:auto;height:100%;max-height:none;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;
       gap:.28rem;padding:.3rem;border-radius:11px;box-shadow:none;
     }
-    body.canvas-active .canvas-side .toolbar-row{gap:.22rem;padding:.3rem;border-radius:8px;}
+    body.canvas-active .canvas-side > *{flex-shrink:0;min-width:0;}
+    body.canvas-active .canvas-side .toolbar-row{flex-shrink:0;gap:.22rem;padding:.3rem;border-radius:8px;}
+    @media screen and (min-width:761px){
+      body.canvas-active:not(.tools-detached) .canvas-side{overflow-y:scroll;scrollbar-gutter:stable;overscroll-behavior-y:contain;}
+    }
     body.canvas-active .canvas-side .toolbar-label{font-size:.76rem;padding-bottom:.12rem;}
     body.canvas-active .canvas-side button,body.canvas-active .canvas-side select,body.canvas-active .canvas-side .toolbar-check{font-size:.74rem;line-height:1.15;}
     body.canvas-active .canvas-side button{padding:.3rem .36rem;min-height:27px;}
@@ -522,7 +526,7 @@
       body.canvas-active .canvas-compact-head h2{position:static;width:100%;white-space:normal;}
       body.canvas-active .canvas-head-actions{flex-wrap:wrap;}
       body.canvas-active .canvas-head-actions .btn{min-height:44px;white-space:normal;}
-      body.canvas-active .canvas-three-column{display:grid;grid-template-columns:minmax(0,1fr);height:auto;overflow:visible;flex:none;}
+      body.canvas-active .canvas-three-column{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:none;height:auto;overflow:visible;flex:none;}
       body.canvas-active .canvas-main-panel{grid-row:1;height:65vh;min-height:320px;padding-top:0;}
       body.canvas-active .canvas-side{height:auto;max-height:none;margin-top:0;overflow:visible;min-width:0;}
       body.canvas-active .canvas-side button,body.canvas-active .canvas-side select{min-height:44px;}

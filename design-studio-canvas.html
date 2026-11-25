@@ -350,9 +350,7 @@
     }
     body.canvas-active .canvas-side > *{flex-shrink:0;min-width:0;}
     body.canvas-active .canvas-side .toolbar-row{flex-shrink:0;gap:.22rem;padding:.3rem;border-radius:8px;}
-    @media screen and (min-width:761px){
-      body.canvas-active:not(.tools-detached) .canvas-side{overflow-y:scroll;scrollbar-gutter:stable;overscroll-behavior-y:contain;}
-    }
+
     body.canvas-active .canvas-side .toolbar-label{font-size:.76rem;padding-bottom:.12rem;}
     body.canvas-active .canvas-side button,body.canvas-active .canvas-side select,body.canvas-active .canvas-side .toolbar-check{font-size:.74rem;line-height:1.15;}
     body.canvas-active .canvas-side button{padding:.3rem .36rem;min-height:27px;}
@@ -531,6 +529,23 @@
       body.canvas-active .canvas-side{height:auto;max-height:none;margin-top:0;overflow:visible;min-width:0;}
       body.canvas-active .canvas-side button,body.canvas-active .canvas-side select{min-height:44px;}
       body.canvas-active .canvas-page.portrait{height:auto;max-height:100%;}
+    }
+    /* Single-screen workspace: bounded grid, natural-height tool groups. */
+    @media screen and (min-width:761px){
+      body.canvas-active:not(.tools-detached) .canvas-three-column{
+        flex:1 1 0; height:0; min-height:0;
+        grid-template-rows:minmax(0,1fr);
+      }
+      body.canvas-active:not(.tools-detached) .canvas-side{
+        display:block; height:auto; min-height:0; max-height:none;
+        align-self:stretch; overflow-y:scroll; overflow-x:hidden;
+        scrollbar-gutter:stable; overscroll-behavior-y:contain;
+      }
+      body.canvas-active:not(.tools-detached) .canvas-side-left{margin-top:32px;}
+      body.canvas-active:not(.tools-detached) .canvas-side-right{margin-top:0;}
+      body.canvas-active:not(.tools-detached) .canvas-side > .toolbar-row{
+        margin-bottom:.28rem; flex-shrink:0;
+      }
     }
     /* Printing must release the fitted screen's fixed heights and clipping. */
     @media print{

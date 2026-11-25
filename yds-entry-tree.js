@@ -19,8 +19,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  function destinations(hat){
   if(isLetter(hat))return [{key:'information',label:'Reading Room',icon:'reading-room',hint:letterSecretary().replace(/^the /,'The ')+' reviews and may edit your letter and replies before publication.'}];
   const values=[{key:'calendar',label:'Calendar',icon:'calendar',hint:'Enter the event details and go to your canvas to create your Poster/Notice.'},
-   {key:'information',label:hat.key==='artist'?'Gallery':'Reading Room',icon:'reading-room',hint:hat.key==='artist'?'Submit your artwork to the Curator for consideration.':hat.key==='writer'?'Submit your writing to the Literary Editor for publication under your name or pseudonym.':'Share general information on the corresponding Library shelf.'},
-   {key:'learning',label:'Learning & Teaching',icon:'library-education',hint:'Prepare learning notes, a lesson or a guide for the corresponding Library shelf.'}];
+   {key:'information',label:hat.key==='artist'?'Gallery':'Reading Room',icon:'reading-room',hint:hat.key==='artist'?'Submit your artwork to the Curator for consideration.':hat.key==='writer'?'Submit your writing to the Literary Editor for publication under your name or pseudonym.':'Share general information on the corresponding Library shelf.'}];
   if(['artist','writer'].includes(hat.key))values.unshift({key:'private',label:'Just for you',symbol:'lock',hint:'Create for your own enjoyment and keep an editable copy. Nothing is submitted or published.'});
   return values;
  }
@@ -36,14 +35,12 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
   if(isLetter(hat))return S.creationTarget(hat,'information',state.subject,state.subdivision,'teaching','');
   if(state.destination==='private')return 'design-studio-canvas.html?fun='+(hat.key==='writer'?'write':'create')+'&mode='+hat.mode;
   const url=S.creationTarget(hat,state.destination,state.subject,state.subdivision,state.stream,actingRole(hat));
-  if(state.destination==='learning'){const [path,query]=url.split('?');const params=new URLSearchParams(query);params.set('learning_type',state.kind);return path+'?'+params.toString();}
   return url;
  }
  function readyText(hat){
   if(isLetter(hat))return 'Write your letter. It goes privately to '+letterSecretary()+' for review before publication in the Reading Room.';
   if(state.destination==='private')return 'Your canvas will open for work that is just for you. Save an editable copy to your device to continue later.';
   if(state.destination==='calendar')return 'Enter the event details and go to your canvas to create your Poster/Notice.';
-  if(state.destination==='learning')return 'Prepare your '+(state.kind==='lesson'?'lesson':'guide')+' for the corresponding Library learning shelf. '+(hat.key==='artist'?'Submit it to the Curator when ready.':hat.key==='writer'?'Submit it to the Editor when ready.':'Publish it when ready.');
   return hat.key==='artist'?'Create your artwork and submit it to the Curator. It stays private until approved for the Gallery.':hat.key==='writer'?'Write and illustrate your piece, then submit it to the Literary Editor. It stays private until approved for publication.':'Create your information, then publish it to the appropriate Reading Room shelf.';
  }
  function render(){
@@ -55,11 +52,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
   if(complete&&hat.key==='activity'&&!subjects(hat).length){html+='<p class="entry-message">No activity has been assigned. Please ask a Club Administrator.</p>';complete=false;}
   if(complete&&(hat.key==='writer'||!creative)){complete=addSubject();if(complete)complete=addSubdivision();}
   if(complete){html+=step('Where will your work go?','','destination',destinations(hat));complete=!!state.destination;}
-  if(complete&&hat.key==='artist'&&['information','learning'].includes(state.destination)){complete=addSubject();}
-  if(complete&&state.destination==='learning'){
-   html+=step('Learning or teaching?','Choose whether you are recording your learning or helping others learn.','stream',[{key:'learning',label:'Learning',hint:'Record what you have learned or practised.'},{key:'teaching',label:'Teaching',hint:'Explain or demonstrate something for other members.'}]);complete=!!state.stream;
-   if(complete){html+=step('What will you prepare?','','kind',[{key:'lesson',label:'Lesson',hint:'A topic or exercise to work through.'},{key:'guide',label:'Guide',hint:'An explanation or instructions to refer to.'}]);complete=!!state.kind;}
-  }
+  if(complete&&hat.key==='artist'&&state.destination==='information'){complete=addSubject();}
   if(complete){stepNumber++;const letter=isLetter(hat);html+='<section class="entry-step"><span class="entry-number" aria-hidden="true">'+stepNumber+'</span><div class="entry-ready"><h3>Ready to begin</h3><p>'+esc(readyText(hat))+'</p><a class="btn entry-enter" href="'+esc(target(hat))+'">'+(state.destination==='calendar'?'Enter event details':letter?'Write your letter':'Open your canvas')+' <span aria-hidden="true">→</span></a></div></section>';}
   root.innerHTML=html+'<div class="entry-review-tools"><a class="btn secondary" href="panel-letters.html?compose=1">Letter to a Committee or the Panel</a></div>';
  }

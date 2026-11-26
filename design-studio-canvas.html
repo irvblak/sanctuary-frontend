@@ -547,6 +547,20 @@
         margin-bottom:.28rem; flex-shrink:0;
       }
     }
+    /* Keep artwork immediately below the main controls; distinguish side tools. */
+    @media screen and (min-width:761px){
+      body.canvas-active:not(.tools-detached) .canvas-main-panel{padding-top:34px;}
+      body.canvas-active:not(.tools-detached) .canvas-pages{align-items:flex-start;}
+    }
+    @media screen{
+      body.canvas-active:not(.tools-detached) .canvas-side .toolbar-row button:not(.mini-swatch):not(.yds-colour-trigger):not(.swatch):not(.active):not(.selected){
+        background-color:#dcebf5;
+        border-color:#b8cfdf;
+      }
+      body.canvas-active:not(.tools-detached) .canvas-side .toolbar-row button:not(:disabled):not(.mini-swatch):not(.yds-colour-trigger):not(.swatch):not(.active):not(.selected):hover{
+        background-color:#c5deee;
+      }
+    }
     /* Printing must release the fitted screen's fixed heights and clipping. */
     @media print{
       body.print-canvas{height:auto!important;overflow:visible!important;}

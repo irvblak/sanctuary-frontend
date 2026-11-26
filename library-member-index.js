@@ -7,6 +7,8 @@ const API="https://sanctuary-backend-8iqc.onrender.com";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const compare=(a,b)=>a.localeCompare(b,"en-GB",{numeric:true,sensitivity:"base"});
 const sectionOrder=["Reading Room","Tuition & Guides","Gallery"];
+const ROLE_GUIDES="A Guide to Club Roles";
+const ROLE_GUIDE_IDS=new Set(["event-host","activity-organiser","writer","artist","editor","club-publications","residents-association-panel","treasurer","website-helper","services","administrator"].map(key=>"role-guide-"+key));
 const LETTERS="Letters & Suggestions to.....",LETTER_DESTINATIONS=["Mews Committee","Court Committee","Panel"];
 root.innerHTML='<h2>Library indexes</h2><p>Browse all published work by section and category, or see each member’s work together. Select a title to open it.</p><div class="work-index-views" role="group" aria-label="Choose an index"><button type="button" data-work-view="category" aria-pressed="true" aria-controls="work-index-category">By section & category</button><button type="button" data-work-view="member" aria-pressed="false" aria-controls="work-index-member">By member</button></div><div class="work-index-tools"><button type="button" data-work-expand="true">Expand all headings</button><button type="button" data-work-expand="false">Collapse all headings</button></div><p id="work-index-status" role="status" aria-live="polite">Loading published work…</p><section id="work-index-category" aria-label="Index by section and category"></section><section id="work-index-member" aria-label="Index by member" hidden></section>';
 const status=root.querySelector("#work-index-status"),categoryRoot=root.querySelector("#work-index-category"),memberRoot=root.querySelector("#work-index-member");
@@ -22,7 +24,8 @@ function sectionIcon(label){
 }
 function publication(item){
  const key=S.publicationSection(item),hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
- const section=key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
+ const roleGuide=ROLE_GUIDE_IDS.has(String(item.legacy_id||""))||ROLE_GUIDE_IDS.has(String(item.publication_id||""));
+ const section=roleGuide?"Tuition & Guides":key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
  let category=categoryFor(item,key,hat);
  let subcategory=(key==="learning"?S.publicationShelfSubject(item):S.publicationSubcategory(item))||"";
  // Legacy Art Teacher publications belong to Artist, never the Residents Association.
@@ -31,6 +34,7 @@ function publication(item){
  }
  // RAP has no teaching subcategories; its guidance remains under Residents Association.
  if(key==="learning"&&category==="Residents Association")subcategory="";
+ if(roleGuide){category=ROLE_GUIDES;subcategory="";}
  const number=String(item.creator_resident_id||item.creator_member_id||"").toUpperCase();
  const scope=S.slug(item.tertiary_category||"");
  if(section==="Reading Room"&&/^(letters?-to-(the-)?panel|letters?-to-(the-)?committee)(-|$)/.test(scope)){
@@ -57,6 +61,7 @@ function render(){
   const categoryGroups=groups(own,row=>row.category);
   const destinations=section==="Gallery"?S.LIBRARY_DESTINATIONS.filter(d=>d.hat==="artist"):S.LIBRARY_DESTINATIONS;
 
+  if(section==="Tuition & Guides"&&!categoryGroups.some(([label])=>label===ROLE_GUIDES))categoryGroups.push([ROLE_GUIDES,[]]);
   destinations.forEach(({label})=>{if(!categoryGroups.some(([name])=>name===label))categoryGroups.push([label,[]]);});
   if(section==="Reading Room"&&!categoryGroups.some(([label])=>label===LETTERS))categoryGroups.push([LETTERS,[]]);
   categoryGroups.sort(([a],[b])=>compare(a,b));

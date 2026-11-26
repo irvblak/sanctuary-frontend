@@ -618,11 +618,11 @@
         <h2 id="creativeHeading">My Own Design</h2>
         <div class="canvas-head-actions">
           <button class="btn secondary" id="backFromCanvasBtn" type="button">← Studio</button>
-          <button class="btn secondary" id="myVaultBtn" type="button">Save to My Vault</button>
+          <button class="btn secondary" id="myVaultBtn" type="button">Save Options</button>
           <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
           <button class="btn secondary" id="repeatDatesBtn" type="button" hidden>Add another date</button>
-          <button class="btn secondary" id="canvasToolsBtn" type="button">Tools &amp; Guide</button><span style="font-size:.85rem;font-weight:650;color:#315b83;align-self:center">Click for many useful options</span><button class="btn secondary" id="returnCanvasToolsBtn" type="button" hidden>Bring tools back</button><button class="btn secondary" id="fullscreenCanvasBtn" type="button">Full screen canvas</button>
+          <button class="btn secondary" id="canvasToolsBtn" type="button">Release Tools to enlarge Canvas</button><button class="btn secondary" id="studioGuideBtn" type="button">Guide</button><button class="btn secondary" id="returnCanvasToolsBtn" type="button" hidden>Bring tools back</button><button class="btn secondary" id="fullscreenCanvasBtn" type="button">Full screen canvas</button>
           <div class="page-tabs compact-page-tabs" id="pageTabs" aria-label="Pages"></div>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
@@ -907,11 +907,11 @@
 
   <div id="toolsChoice" class="tools-choice-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="toolsChoiceTitle">
     <div class="tools-choice-box">
-      <h3 id="toolsChoiceTitle">Tools &amp; Guide</h3>
-      <p>Keep the working tools beside the canvas, or move all controls into a separate window. You can drag that window to a second monitor.</p>
-      <div class="tools-choice-actions">
+      <h3 id="toolsChoiceTitle">Save Options</h3>
+      <p>Save or recover your work.</p>
+      <div class="tools-choice-actions"><button id="saveVaultOption" type="button">Save to My Vault</button><button id="recoverVaultOption" type="button">Recover work from My Vault</button><div hidden>
         <button id="toolsThisScreenBtn" type="button">Keep tools beside canvas</button>
-        <button id="toolsSecondScreenBtn" class="secondary" type="button">Move all controls to a separate window</button>
+        <button id="toolsSecondScreenBtn" class="secondary" type="button">Move all controls to a separate window</button></div>
       </div>
       <div class="tools-file-actions"><button id="fullscreenFromToolsBtn" type="button">Full screen canvas</button><button type="button" data-canvas-file-action="save-work">Save editable copy to computer</button><button type="button" data-canvas-file-action="open-work">Open editable copy from computer</button><button type="button" data-canvas-file-action="save-view">Save viewable copy to computer</button><button type="button" data-canvas-file-action="print">Print artwork</button><a href="library-publications.html?id=design-studio-guide" target="_blank" rel="noopener">Open printable YO Guide</a></div>
       <button id="toolsChoiceCancelBtn" class="tools-choice-cancel" type="button">Cancel</button>
@@ -3285,7 +3285,10 @@ function configurePublishingButton(){
       sessionStorage.setItem(TOOLS_RETURN_KEY,window.location.href);
       sessionStorage.removeItem(TOOLS_ACTION_KEY);
     }
-    document.getElementById("canvasToolsBtn").addEventListener("click",()=>{toolsChoice.hidden=false;});
+    document.getElementById("canvasToolsBtn").addEventListener("click",()=>toolDock.open());
+    document.getElementById("studioGuideBtn").addEventListener("click",openPrintableGuide);
+    document.getElementById("myVaultBtn").addEventListener("click",()=>{const allowed=Boolean(getAuthToken())&&!IS_EDITOR_REVIEW&&!EDIT_PUBLICATION_ID;document.getElementById("saveVaultOption").hidden=!allowed;document.getElementById("recoverVaultOption").hidden=!allowed;toolsChoice.hidden=false;});
+    document.getElementById("recoverVaultOption").addEventListener("click",()=>{if(confirm("Open My Vault? Save any unfinished changes first."))window.location.href="my-vault.html";});
     const repeatDatesBox=document.getElementById("repeatDatesBox");
     document.getElementById("repeatDatesBtn").addEventListener("click",()=>{repeatDatesBox.hidden=false;});
     document.getElementById("closeRepeatDatesBtn").addEventListener("click",()=>{repeatDatesBox.hidden=true;});
@@ -3495,8 +3498,9 @@ function configurePublishingButton(){
       handle.addEventListener("pointercancel",stop);
     })();
     document.getElementById("drawLineSwatches").addEventListener("click",e=>{const b=e.target.closest(".mini-swatch");if(!b)return;drawLineColour.value=b.dataset.colour;document.querySelectorAll("#drawLineSwatches .mini-swatch").forEach(x=>x.classList.toggle("selected",x===b))});
-    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("myVaultBtn").addEventListener("click",async()=>{
-      if(IS_FUN_MODE){window.location.href="my-vault.html";return;}
+    document.getElementById("imageFitBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.remove("fill")});document.getElementById("imageFillBtn").addEventListener("click",()=>{if(!selectedItem)return;pushUndo();selectedItem.classList.add("fill")});document.getElementById("nudgeUpBtn").addEventListener("click",()=>moveSelectedBy(0,-5));document.getElementById("nudgeDownBtn").addEventListener("click",()=>moveSelectedBy(0,5));document.getElementById("nudgeLeftBtn").addEventListener("click",()=>moveSelectedBy(-5,0));document.getElementById("nudgeRightBtn").addEventListener("click",()=>moveSelectedBy(5,0));document.getElementById("centreObjectBtn").addEventListener("click",centreSelected);document.getElementById("overlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(1));document.getElementById("underlayObjectBtn").addEventListener("click",()=>moveSelectedLayer(-1));document.getElementById("duplicateObjectBtn").addEventListener("click",duplicateSelected);document.getElementById("deleteObjectBtn").addEventListener("click",deleteSelected);document.getElementById("undoCanvasBtn").addEventListener("click",undoCanvas);document.getElementById("redoCanvasBtn").addEventListener("click",redoCanvas);document.getElementById("saveVaultOption").addEventListener("click",async()=>{
+      if(IS_EDITOR_REVIEW||EDIT_PUBLICATION_ID)return;
+      finishDrawingEdit();
       if(!requireWorkName())return;
       const token=getAuthToken();
       if(!token){alert("Please return to Your Organiser and sign in again.");return;}
@@ -3653,7 +3657,7 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
     (async()=>{
     await initialiseCanvasPage();
 
-    if(EDIT_PUBLICATION_ID){document.getElementById("myVaultBtn").hidden=true;}
+    
     // A normal Studio opening starts a new Vault item.
     // Existing Vault work and Editor/Curator review retain their own work reference.
     if(!IS_VAULT_OPEN && !IS_EDITOR_REVIEW){

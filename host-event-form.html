@@ -510,7 +510,7 @@ const rawSource = String(params.get("source") || (eventMode === "host" ? "host" 
 const datedSource = [
   "host","activity","committee","panel","services",
   "information-officer","website-helper","condo",
-  "editorial","administration","writer","artist","art-teacher"
+  "editorial","administration","writer","artist"
 ].includes(rawSource)
   ? rawSource
   : (eventMode === "host" ? "host" : "host");
@@ -755,7 +755,6 @@ function roleAllowsMode(roles){
     editorial:["copy_editor","art_editor","editor"],
     administration:["admin_website","admin_club","admin_condo","website_custodian"],
     writer:["writer","news_contributor"],
-    "art-teacher":["art_teacher"],
     artist:["artist"]
   };
 

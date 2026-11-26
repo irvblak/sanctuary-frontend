@@ -39,7 +39,7 @@ global.SanctuaryYdsEntryTree={mount({root,choices,roles,activityScopes,residentR
  }
  function readyText(hat){
   if(isLetter(hat))return 'Write your letter. It goes privately to '+letterSecretary()+' for review before publication in the Reading Room.';
-  if(state.destination==='private')return 'Your canvas will open for work that is just for you. Save an editable copy to your device to continue later.';
+  if(state.destination==='private')return 'Your canvas will open for work that is just for you. Save unfinished work to My Vault or an editable copy to your computer.';
   if(state.destination==='calendar')return 'Enter the event details and go to your canvas to create your Poster/Notice.';
   return hat.key==='artist'?'Create your artwork and submit it to the Curator. It stays private until approved for the Gallery.':hat.key==='writer'?'Write and illustrate your piece, then submit it to the Literary Editor. It stays private until approved for publication.':'Create your information, then publish it to the appropriate Reading Room shelf.';
  }

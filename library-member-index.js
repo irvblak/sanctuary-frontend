@@ -24,7 +24,7 @@ function sectionIcon(label){
 }
 function publication(item){
  const key=S.publicationSection(item),hat=S.PRODUCTION_HATS.find(h=>h.key===S.publicationHatKey(item));
- const roleGuide=ROLE_GUIDE_IDS.has(String(item.legacy_id||""))||ROLE_GUIDE_IDS.has(String(item.publication_id||""));
+ const roleGuide=ROLE_GUIDE_IDS.has(String(item.legacy_id||""))||ROLE_GUIDE_IDS.has(String(item.publication_id||""))|| (key==="learning" && S.slug(S.publicationShelfSubject(item))==="art-teacher");
  const section=roleGuide?"Tuition & Guides":key==="gallery"?"Gallery":key==="learning"?"Tuition & Guides":"Reading Room";
  let category=categoryFor(item,key,hat);
  let subcategory=(key==="learning"?S.publicationShelfSubject(item):S.publicationSubcategory(item))||"";

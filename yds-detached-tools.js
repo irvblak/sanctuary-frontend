@@ -16,6 +16,7 @@ window.SanctuaryYdsToolDock={create(options={}){
  }});
  function restore(closeWindow=true){
   if(!child&&!moved.length)return;
+  window.resetStudioToolBlocks?.();
   const previous=child,td=toolDocument();
   if(fullscreenClick){nativeDocument.removeEventListener('pointerdown',fullscreenClick,true);fullscreenClick=null;}
   listeners.filter(x=>x.type==='keydown').forEach(x=>td?.removeEventListener(x.type,x.handler,x.settings));

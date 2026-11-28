@@ -3734,19 +3734,24 @@ const d=document,left=d.querySelector('.canvas-side-left'),right=d.querySelector
 const add=d.getElementById('addCanvasTextBtn').closest('.toolbar-row');
 const colour=d.getElementById('ydsColourPopover');
 right.prepend(colour);colour.after(add);
+const background=d.getElementById('pageBackgroundColour1').closest('.toolbar-row');colour.after(background);
+const orientation=d.getElementById('orientationSelect').closest('label');
+const orientationRow=d.createElement('div');orientationRow.className='toolbar-row';
+const orientationLabel=d.createElement('span');orientationLabel.className='toolbar-label';orientationLabel.textContent='Orientation';
+orientationRow.append(orientationLabel,orientation);left.prepend(orientationRow);
 const format=d.getElementById('formatToolbar');d.body.append(format);
 const groups=[...left.querySelectorAll(':scope > .toolbar-row'),...right.querySelectorAll(':scope > .toolbar-row')];
-const names={'Your work':'Name your work','Pages':'Add, copy or arrange pages','Page numbers':'Number your pages','Page background':'Set page background and gradient','Add':'Add text, images or drawings','Illustration':'Fit or replace an illustration','Draw / Paint':'Draw, paint and create shapes','Text background':'Fill or shade a text box','Selection':'Move, layer, copy or delete objects'};
+const names={'Orientation':'Page size and orientation','Your work':'Name your work','Pages':'Add, copy or arrange pages','Page numbers':'Number your pages','Page background':'Set page background and gradient','Add':'Add text, images or drawings','Illustration':'Fit or replace an illustration','Draw / Paint':'Draw, paint and create shapes','Text background':'Fill or shade a text box','Selection':'Move, layer, copy or delete objects'};
 
 function dock(g){const p=floating.get(g);if(!p)return;p.marker.replaceWith(g);p.box.remove();floating.delete(g);}
-function reset(){for(const g of [...floating.keys()])dock(g);for(const el of d.querySelectorAll('.exp-group'))el.open=false;}
+function reset(){for(const g of [...floating.keys()])dock(g);for(const el of d.querySelectorAll('.exp-group'))el.open=el.querySelector('#orientationSelect')!==null;}
 window.resetExperimentalPalettes=reset;
 groups.forEach((g,i)=>{
  const raw=g.querySelector('.toolbar-label')?.textContent.trim()||'';
  const label=names[raw]||'Adjust landscape viewing size';
  const creative=g.parentElement===right;
  const details=d.createElement('details');details.className='exp-group';
- const summary=d.createElement('summary');summary.textContent=label;details.append(summary);g.before(details);details.append(g);
+ const summary=d.createElement('summary');summary.textContent=label;details.append(summary);g.before(details);details.append(g);if(raw==='Orientation')details.open=true;
  const sync=()=>{details.hidden=g.hidden&&!floating.has(g);if(!g.hidden&&(g.id==='drawingToolbar'||g.id==='imageToolbar'))details.open=true;};
  new MutationObserver(sync).observe(g,{attributes:true,attributeFilter:['hidden']});sync();
  if(!creative)return;

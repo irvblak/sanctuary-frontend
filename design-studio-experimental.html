@@ -2469,23 +2469,7 @@ body{margin:0;padding:24px;background:#e7eef2;color:#173042;font-family:system-u
 <body>
 <div class="viewer-note">View-only copy saved from Sanctuary Club — Your Organiser.</div>
 ${pageClones}
-<style>.exp-palette{position:fixed;z-index:10010;width:260px;min-width:170px;max-width:90vw;max-height:85vh;overflow:auto;resize:both;background:#f7fbfd;border:1px solid #7897ac;box-shadow:0 6px 22px #17304240;padding:8px}.exp-handle{display:flex;align-items:center;gap:4px;background:#c9e0ef;padding:5px;cursor:move;touch-action:none}.exp-handle strong{flex:1}.exp-palette.exp-collapsed>:not(.exp-handle){display:none!important}body.canvas-active #formatToolbar{flex-direction:column;gap:4px}@media print{.exp-palette{display:none!important}}</style><script>(function(){
-const d=document, groups=[...d.querySelectorAll('.canvas-side > .toolbar-row')], floating=new Map();
-function dock(g){const p=floating.get(g);if(!p)return;p.marker.replaceWith(g);p.box.remove();floating.delete(g);}
-function reset(){for(const g of [...floating.keys()])dock(g);}
-window.resetExperimentalPalettes=reset;
-groups.forEach((g,i)=>{
- const label=g.querySelector('.toolbar-label')?.textContent||'Tools '+(i+1);
- const b=d.createElement('button');b.type='button';b.textContent='Float '+label;g.prepend(b);
- b.onclick=()=>{if(floating.has(g)){dock(g);return;}if(g.ownerDocument!==d)return;
- const marker=d.createComment('palette home');g.before(marker);const box=d.createElement('div');box.className='exp-palette';box.style.left=Math.max(8,Math.min(innerWidth-280,80+i*28))+'px';box.style.top=Math.max(8,Math.min(innerHeight-150,90+i*22))+'px';
- const h=d.createElement('div');h.className='exp-handle';const title=d.createElement('strong');title.textContent=label;h.append(title);
- const collapse=d.createElement('button');collapse.textContent='−';collapse.type='button';collapse.onclick=()=>{box.classList.toggle('exp-collapsed');collapse.textContent=box.classList.contains('exp-collapsed')?'+':'−';};const back=d.createElement('button');back.type='button';back.textContent='Dock';back.onclick=()=>dock(g);h.append(collapse,back);box.append(h,g);d.body.append(box);floating.set(g,{marker,box});
- h.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=box.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;h.setPointerCapture(e.pointerId);h.onpointermove=m=>{box.style.left=Math.max(0,Math.min(innerWidth-80,m.clientX-x))+'px';box.style.top=Math.max(0,Math.min(innerHeight-35,m.clientY-y))+'px';};h.onpointerup=h.onpointercancel=()=>{h.onpointermove=null;};});
- };
-});
-d.getElementById('resetPalettes').onclick=reset;
-})();</script></body></html>`;
+</body></html>`;
     }
 
     function saveCanvasViewCopy(){
@@ -3745,6 +3729,23 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
   })();
   </script>
 
+<style>.exp-palette{position:fixed;z-index:10010;width:260px;min-width:170px;max-width:90vw;max-height:85vh;overflow:auto;resize:both;background:#f7fbfd;border:1px solid #7897ac;box-shadow:0 6px 22px #17304240;padding:8px}.exp-handle{display:flex;align-items:center;gap:4px;background:#c9e0ef;padding:5px;cursor:move;touch-action:none}.exp-handle strong{flex:1}.exp-palette.exp-collapsed>:not(.exp-handle){display:none!important}body.canvas-active #formatToolbar{flex-direction:column;gap:4px}@media print{.exp-palette{display:none!important}}</style><script>(function(){
+const d=document, groups=[...d.querySelectorAll('.canvas-side > .toolbar-row')], floating=new Map();
+function dock(g){const p=floating.get(g);if(!p)return;p.marker.replaceWith(g);p.box.remove();floating.delete(g);}
+function reset(){for(const g of [...floating.keys()])dock(g);}
+window.resetExperimentalPalettes=reset;
+groups.forEach((g,i)=>{
+ const label=g.querySelector('.toolbar-label')?.textContent||'Tools '+(i+1);
+ const b=d.createElement('button');b.type='button';b.textContent='Float '+label;g.prepend(b);
+ b.onclick=()=>{if(floating.has(g)){dock(g);return;}if(g.ownerDocument!==d)return;
+ const marker=d.createComment('palette home');g.before(marker);const box=d.createElement('div');box.className='exp-palette';box.style.left=Math.max(8,Math.min(innerWidth-280,80+i*28))+'px';box.style.top=Math.max(8,Math.min(innerHeight-150,90+i*22))+'px';
+ const h=d.createElement('div');h.className='exp-handle';const title=d.createElement('strong');title.textContent=label;h.append(title);
+ const collapse=d.createElement('button');collapse.textContent='−';collapse.type='button';collapse.onclick=()=>{box.classList.toggle('exp-collapsed');collapse.textContent=box.classList.contains('exp-collapsed')?'+':'−';};const back=d.createElement('button');back.type='button';back.textContent='Dock';back.onclick=()=>dock(g);h.append(collapse,back);box.append(h,g);d.body.append(box);floating.set(g,{marker,box});
+ h.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=box.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;h.setPointerCapture(e.pointerId);h.onpointermove=m=>{box.style.left=Math.max(0,Math.min(innerWidth-80,m.clientX-x))+'px';box.style.top=Math.max(0,Math.min(innerHeight-35,m.clientY-y))+'px';};h.onpointerup=h.onpointercancel=()=>{h.onpointermove=null;};});
+ };
+});
+d.getElementById('resetPalettes').onclick=reset;
+})();</script>
 </body>
 </html>
 

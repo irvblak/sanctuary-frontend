@@ -622,7 +622,7 @@
           <button class="btn secondary" id="submitCanvasBtn" type="button">Artists &amp; Writers: Submit for Publication</button>
           <button class="btn" id="publishCanvasBtn" type="button">Publish</button>
           <button class="btn secondary" id="repeatDatesBtn" type="button" hidden>Add another date</button>
-          <button class="btn secondary" id="canvasToolsBtn" type="button">Release Tools to enlarge Canvas</button><button class="btn secondary" id="studioGuideBtn" type="button">Guide</button><button class="btn secondary" id="returnCanvasToolsBtn" type="button" hidden>Bring tools back</button><button class="btn secondary" id="fullscreenCanvasBtn" type="button">Full screen canvas</button>
+          <button class="btn secondary" id="canvasToolsBtn" type="button">Release Tools to enlarge Canvas</button><button class="btn secondary" id="resetPalettes" type="button">Reset Tools</button><button class="btn secondary" id="studioGuideBtn" type="button">Guide</button><button class="btn secondary" id="returnCanvasToolsBtn" type="button" hidden>Bring tools back</button><button class="btn secondary" id="fullscreenCanvasBtn" type="button">Full screen canvas</button>
           <div class="page-tabs compact-page-tabs" id="pageTabs" aria-label="Pages"></div>
 
           <!-- These established controls remain in the page for the separate Tools page to call. -->
@@ -918,14 +918,14 @@
     </div>
   </div>
 
-  <script src="yds-detached-tools.js?v=CANVAS_ONLY_20261017"></script>
+  <script src="yds-detached-tools.js?v=TOOL_BLOCKS_20261128"></script>
   <script src="yds-work-size.js?v=UNLIMITED_IMAGES_20261019"></script>
   <script src="canvas-view-size.js?v=LANDSCAPE_VIEW_20261029" defer></script>
   <script>
   (function(){
     "use strict";
     const toolDock=window.SanctuaryYdsToolDock.create({
-      beforeDetach:()=>captureCurrentTextSelection(),
+      beforeDetach:()=>{captureCurrentTextSelection();window.resetStudioToolBlocks?.();},
       onLayout:()=>{containCurrentPage();positionFloatingTextToolbar();},
       onAction:action=>runCanvasFileAction(action)
     });
@@ -3729,6 +3729,42 @@ if(!(PAGE_PARAMS.get("admin")==="1" && noticeAdminToken())&&!schEventHandoff&&(!
   })();
   </script>
 
+<style>.exp-palette{position:fixed;z-index:10010;width:260px;min-width:170px;max-width:90vw;max-height:85vh;overflow:auto;resize:both;background:#f7fbfd;border:1px solid #7897ac;box-shadow:0 6px 22px #17304240;padding:8px}.exp-handle{display:flex;align-items:center;gap:4px;background:#c9e0ef;padding:5px;cursor:move;touch-action:none}.exp-handle strong{flex:1}.exp-palette.exp-collapsed>:not(.exp-handle){display:none!important}body.canvas-active #formatToolbar{flex-direction:column;gap:4px}@media print{.exp-palette{display:none!important}} .exp-group{margin:4px 0;border:1px solid #a9c2d3;border-radius:7px;background:#f4f9fc}.exp-group summary{cursor:pointer;padding:8px 6px;background:#c9e0ef;color:#173042;font-weight:700;font-size:13px;border-radius:6px}.exp-group:not([open])>:not(summary){display:none!important}.exp-group[hidden]{display:none!important}.exp-group .toolbar-label{display:none}.exp-group .toolbar-row{border:0!important}.exp-palette .toolbar-row{display:flex;flex-direction:column;align-items:stretch}.exp-palette .toolbar-label{display:none}.exp-palette .toolbar-row[hidden]{display:none!important} .exp-palette{z-index:10010} </style><script>(function(){
+const d=document,left=d.querySelector('.canvas-side-left'),right=d.querySelector('.canvas-side-right'),floating=new Map();
+const add=d.getElementById('addCanvasTextBtn').closest('.toolbar-row');
+const colour=d.getElementById('ydsColourPopover');
+right.prepend(colour);colour.after(add);
+const background=d.getElementById('pageBackgroundColour1').closest('.toolbar-row');colour.after(background);
+const orientation=d.getElementById('orientationSelect').closest('label');
+const orientationRow=d.createElement('div');orientationRow.className='toolbar-row';
+const orientationLabel=d.createElement('span');orientationLabel.className='toolbar-label';orientationLabel.textContent='Orientation';
+orientationRow.append(orientationLabel,orientation);left.prepend(orientationRow);
+const format=d.getElementById('formatToolbar');d.body.append(format);
+const groups=[...left.querySelectorAll(':scope > .toolbar-row'),...right.querySelectorAll(':scope > .toolbar-row')];
+const names={'Orientation':'Page size and orientation','Your work':'Name your work','Pages':'Add, copy or arrange pages','Page numbers':'Number your pages','Page background':'Set page background and gradient','Add':'Add text, images or drawings','Illustration':'Fit or replace an illustration','Draw / Paint':'Draw, paint and create shapes','Text background':'Fill or shade a text box','Selection':'Move, layer, copy or delete objects'};
+
+function dock(g){const p=floating.get(g);if(!p)return;p.marker.replaceWith(g);p.box.remove();floating.delete(g);p.details.hidden=g.hidden;}
+function reset(){for(const g of [...floating.keys()])dock(g);for(const el of d.querySelectorAll('.exp-group'))el.open=el.querySelector('#orientationSelect')!==null;}
+window.resetStudioToolBlocks=reset;
+groups.forEach((g,i)=>{
+ const raw=g.querySelector('.toolbar-label')?.textContent.trim()||'';
+ const label=names[raw]||'Adjust landscape viewing size';
+ const creative=g.parentElement===right;
+ const details=d.createElement('details');details.className='exp-group';
+ const summary=d.createElement('summary');summary.textContent=label;details.append(summary);g.before(details);details.append(g);if(raw==='Orientation')details.open=true;
+ const sync=()=>{details.hidden=g.hidden&&!floating.has(g);const p=floating.get(g);if(p)p.box.hidden=g.hidden;if(!g.hidden&&(g.id==='drawingToolbar'||g.id==='imageToolbar'))details.open=true;};
+ new MutationObserver(sync).observe(g,{attributes:true,attributeFilter:['hidden']});sync();
+ if(!creative)return;
+ const b=d.createElement('button');b.type='button';b.textContent='Float on canvas';g.prepend(b);
+ b.onclick=()=>{if(floating.has(g)){dock(g);return;}
+ const marker=g.ownerDocument.createComment('tool block home');g.before(marker);const box=d.createElement('div');box.className='exp-palette';box.style.left=Math.max(8,Math.min(innerWidth-280,80+i*28))+'px';box.style.top=Math.max(8,Math.min(innerHeight-150,90+i*22))+'px';
+ const h=d.createElement('div');h.className='exp-handle';const title=d.createElement('strong');title.textContent=label;h.append(title);
+ const collapse=d.createElement('button');collapse.textContent='−';collapse.type='button';collapse.onclick=()=>{box.classList.toggle('exp-collapsed');collapse.textContent=box.classList.contains('exp-collapsed')?'+':'−';};const back=d.createElement('button');back.type='button';back.textContent='Dock';back.onclick=()=>dock(g);h.append(collapse,back);box.append(h,g);d.body.append(box);floating.set(g,{marker,box,details});
+ h.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=box.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;h.setPointerCapture(e.pointerId);h.onpointermove=m=>{box.style.left=Math.max(0,Math.min(innerWidth-80,m.clientX-x))+'px';box.style.top=Math.max(0,Math.min(innerHeight-35,m.clientY-y))+'px';};h.onpointerup=h.onpointercancel=()=>{h.onpointermove=null;};});
+ };
+});
+d.getElementById('resetPalettes').onclick=reset;
+})();</script>
 </body>
 </html>
 
